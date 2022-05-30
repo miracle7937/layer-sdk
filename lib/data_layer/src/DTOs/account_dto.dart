@@ -1,0 +1,268 @@
+import 'package:collection/collection.dart';
+
+import '../helpers.dart';
+import 'account_preferences_dto.dart';
+import 'account_type_dto.dart';
+
+/// The account DTO represents a customers account
+/// as provided by the infobanking service
+class AccountDTO {
+  /// Unique account identifier, SHA-1 of CIF
+  String? accountId;
+
+  /// The customer id associated with this account.
+  String? customerId;
+
+  /// Date when account entry was created
+  DateTime? created;
+
+  /// Date when account was last updated
+  DateTime? updated;
+
+  /// Account type [AccountTypeDTO]
+  AccountTypeDTO? type;
+
+  /// 3-letter ISO currency code
+  String? currency;
+
+  /// The Joint type of the account
+  JointTypeDTO? jointType;
+
+  /// Generic bank defined reference for account
+  String? reference;
+
+  /// Available balance in account
+  double? availableBalance;
+
+  /// current balance in account
+  double? currentBalance;
+
+  /// If the [availableBalance] and [currentBalance] should be shown
+  bool balanceVisible;
+
+  /// status of account
+  AccountDTOStatus? status;
+
+  /// date account was opened in the branch
+  DateTime? opened;
+
+  /// date when account was synced with core banking system
+  DateTime? synced;
+
+  /// can perform bill payment or do p2p transfers
+  bool canPay = true;
+
+  /// can transfer within own accounts
+  bool canTransferOwn = true;
+
+  /// can transfer to other accounts in same bank
+  bool canTransferBank = true;
+
+  /// can transfer to other banks in same country
+  bool canTransferDomestic = true;
+
+  /// can transfer to international banks
+  bool canTransferInternational = true;
+
+  /// can perform bulk transfers
+  bool canTransferBulk = true;
+
+  /// can cardless withdrawal request
+  bool canTransferCardless = true;
+
+  /// can receive transfers from anywhere
+  bool canReceiveTransfer = true;
+
+  /// card can be linked to this account
+  bool canRequestCard = true;
+
+  /// customer can request checkbooks on this account
+  bool canRequestChkbk = true;
+
+  /// account is overdraft capable
+  bool canOverdraft = true;
+
+  /// can perform a remittance payment(bank,cash,or wallet)
+  bool canTransferRemittance = true;
+
+  /// customer can request banker check
+  bool canRequestBankerCheck = true;
+
+  /// customer can request offline statement
+  bool canRequestStatement = true;
+
+  /// customer can request certificate account
+  bool canRequestCertificateOfAccount = true;
+
+  /// customer can request certificate deposit
+  bool canRequestCertificateOfDeposit = true;
+
+  /// generic account number
+  String? accountNumber;
+
+  /// account number formatted
+  String? displayAccountNumber;
+
+  /// The branch ID of this account
+  String? branchId;
+
+  /// The branch ID of this account in the extra
+  String? extraBranchId;
+
+  /// The preferences for this account.
+  AccountPreferencesDTO? preferences;
+
+  /// Creates a new [AccountDTO]
+  AccountDTO({
+    this.accountId,
+    this.customerId,
+    this.created,
+    this.updated,
+    this.type,
+    this.currency,
+    this.jointType,
+    this.reference,
+    this.availableBalance,
+    this.currentBalance,
+    this.balanceVisible = true,
+    this.status,
+    this.opened,
+    this.synced,
+    this.canPay = true,
+    this.canTransferOwn = true,
+    this.canTransferBank = true,
+    this.canTransferDomestic = true,
+    this.canTransferInternational = true,
+    this.canTransferBulk = true,
+    this.canTransferCardless = true,
+    this.canReceiveTransfer = true,
+    this.canRequestCard = true,
+    this.canRequestChkbk = true,
+    this.canOverdraft = true,
+    this.canTransferRemittance = true,
+    this.canRequestStatement = true,
+    this.canRequestBankerCheck = true,
+    this.canRequestCertificateOfAccount = true,
+    this.canRequestCertificateOfDeposit = true,
+    this.accountNumber,
+    this.displayAccountNumber,
+    this.branchId,
+    this.extraBranchId,
+    this.preferences,
+  });
+
+  /// Creates a [AccountDTO] from a JSON
+  factory AccountDTO.fromJson(Map<String, dynamic> json) {
+    return AccountDTO(
+      accountId: json['account_id'],
+      customerId: json['customer_id'],
+      created: JsonParser.parseDate(json['ts_created']),
+      updated: JsonParser.parseDate(json['ts_updated']),
+      type: json['account_type'] != null
+          ? AccountTypeDTO.fromJson(json['account_type'])
+          : null,
+      currency: json['currency'],
+      jointType: JointTypeDTO.fromRaw(json['joint_type']),
+      reference: json['reference'],
+      availableBalance: json['balance_available'] is num
+          ? JsonParser.parseDouble(json['balance_available'])
+          : 0.0,
+      currentBalance: json['balance_current'] is num
+          ? JsonParser.parseDouble(json['balance_current'])
+          : 0.0,
+      balanceVisible: !(json['balance_available'] is String &&
+              json['balance_available'].toLowerCase().contains('x')) &&
+          !(json['balance_current'] is String &&
+              json['balance_current'].toLowerCase().contains('x')),
+      status: AccountDTOStatus.fromRaw(json['status']),
+      opened: JsonParser.parseDate(json['ts_opened']),
+      synced: JsonParser.parseDate(json['ts_synced']),
+      canPay: json['can_pay'] ?? true,
+      canTransferOwn: json['can_trf_internal'] ?? true,
+      canTransferBank: json['can_trf_bank'] ?? true,
+      canTransferDomestic: json['can_trf_domestic'] ?? true,
+      canTransferInternational: json['can_trf_intl'] ?? true,
+      canTransferBulk: json['can_trf_bulk'] ?? true,
+      canTransferCardless: json['can_trf_cardless'] ?? true,
+      canReceiveTransfer: json['can_receive_trf'] ?? true,
+      canRequestChkbk: json['can_request_chkbk'] ?? true,
+      canTransferRemittance: json['can_trf_remittance'] ?? true,
+      canOverdraft: json['can_overdraft'] ?? true,
+      canRequestCard: json['can_request_card'] ?? true,
+      canRequestBankerCheck: json['can_request_banker_check'] ?? true,
+      canRequestStatement: json['can_request_stmt'] ?? true,
+      canRequestCertificateOfAccount: json['can_request_cert_account'] ?? true,
+      canRequestCertificateOfDeposit: json['can_request_cert_deposit'] ?? true,
+      accountNumber: json['account_no'],
+      displayAccountNumber: json['account_no_displayed'],
+      branchId: json['branch_id'],
+      extraBranchId: jsonLookup(json['branch'], ['location_id'])?.toString(),
+      preferences: AccountPreferencesDTO.fromJson(json),
+    );
+  }
+
+  /// Creates a list of [AccountDTO] from a list
+  static List<AccountDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(AccountDTO.fromJson).toList(growable: false);
+
+  /// Return account with same type as the type passed
+  factory AccountDTO.withType(AccountTypeDTOType type) {
+    return AccountDTO(
+      type: AccountTypeDTO(
+        type: type,
+      ),
+    );
+  }
+}
+
+/// The joint type of an account
+class JointTypeDTO extends EnumDTO {
+  /// Joint type single
+  static const single = JointTypeDTO._internal('S');
+
+  /// AND joint type
+  static const and = JointTypeDTO._internal('A');
+
+  /// AND/OR joint type
+  static const andOr = JointTypeDTO._internal('O');
+
+  /// List of all possible joint types
+  static const List<JointTypeDTO> values = [single, and, andOr];
+
+  const JointTypeDTO._internal(String value) : super.internal(value);
+
+  /// Convert string to [JointTypeDTO]
+  static JointTypeDTO? fromRaw(String? raw) => values.firstWhereOrNull(
+        (val) => val.value == raw,
+      );
+}
+
+/// The status of an account
+class AccountDTOStatus extends EnumDTO {
+  /// active status
+  static const active = AccountDTOStatus._internal('A');
+
+  /// dormant status
+  static const dormant = AccountDTOStatus._internal('O');
+
+  /// closed status
+  static const closed = AccountDTOStatus._internal('C');
+
+  /// deleted status
+  static const deleted = AccountDTOStatus._internal('D');
+
+  /// List of all possible account status
+  static const List<AccountDTOStatus> values = [
+    active,
+    dormant,
+    closed,
+    deleted
+  ];
+
+  const AccountDTOStatus._internal(String value) : super.internal(value);
+
+  /// Convert string to [AccountDTOStatus]
+  static AccountDTOStatus? fromRaw(String? raw) => values.firstWhereOrNull(
+        (val) => val.value == raw,
+      );
+}

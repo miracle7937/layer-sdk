@@ -1,0 +1,191 @@
+import 'package:collection/collection.dart';
+
+import '../../helpers.dart';
+import '../account_dto.dart';
+import '../card_dto.dart';
+import '../recurrence_dto.dart';
+import '../second_factor_dto.dart';
+import 'bill_dto.dart';
+
+/// Data transfer object representing payments
+/// in the payment service.
+class PaymentDTO {
+  /// The id of the payment
+  int? paymentId;
+
+  /// TODO: ask BE
+  DateTime? paymentTs;
+
+  /// The bill of the payment
+  BillDTO? bill;
+
+  /// The id of the bill of the payment
+  int? billId;
+
+  /// The from card id of the payment
+  int? fromCardId;
+
+  /// The from card of the payment
+  CardDTO? fromCard;
+
+  /// The from account of the payment
+  AccountDTO? fromAccount;
+
+  /// The from account id of the payment
+  String? fromAccountId;
+
+  /// The from wallet id of the payment
+  int? fromWalletId;
+
+  /// The payment status
+  PaymentDTOStatus? status;
+
+  /// The payment otp id
+  int? otpId;
+
+  /// A unique identifier of the payment
+  String? deviceUID;
+
+  /// The second factor type of the payment
+  SecondFactorDTO? secondFactor;
+
+  /// The date of creation of the payment
+  DateTime? created;
+
+  /// The date the payment was last updated
+  DateTime? updated;
+
+  /// The date the payment is scheduled to happen on
+  DateTime? scheduled;
+
+  /// The amount of the payment
+  double? amount;
+
+  /// Whether the `amount` should be shown
+  bool amountVisible;
+
+  /// The currency of the payment
+  String? currency;
+
+  /// The type of recurrence of the payment
+  RecurrenceDTO? recurrence;
+
+  /// The recurrence start date of the payment
+  DateTime? recurrenceStart;
+
+  /// The recurrence end date of the payment
+  DateTime? recurrenceEnd;
+
+  /// Creates a new [PaymentDTO]
+  PaymentDTO({
+    this.paymentId,
+    this.paymentTs,
+    this.bill,
+    this.billId,
+    this.fromCardId,
+    this.fromCard,
+    this.fromAccount,
+    this.fromAccountId,
+    this.amount,
+    this.amountVisible = true,
+    this.recurrence,
+    this.currency,
+    this.status,
+    this.otpId,
+    this.deviceUID,
+    this.secondFactor,
+    this.created,
+    this.updated,
+    this.fromWalletId,
+    this.scheduled,
+    this.recurrenceStart,
+    this.recurrenceEnd,
+  });
+
+  /// Creates a [PaymentDTO] from a JSON
+  factory PaymentDTO.fromJson(Map<String, dynamic> json) {
+    return PaymentDTO(
+      paymentId: json['payment_id'],
+      paymentTs: JsonParser.parseDate(json['payment_ts']),
+      billId: json['bill_id'],
+      bill: BillDTO.fromJson(json['bill']),
+      fromAccount: json['from_account_id'] != null
+          ? AccountDTO.fromJson(json['from_account'])
+          : null,
+      fromAccountId: json['from_account_id'],
+      fromCard: json['from_card_id'] != null
+          ? CardDTO.fromJson(json['from_card'])
+          : null,
+      fromCardId: json['from_card_id'],
+      fromWalletId: json['from_wallet_id'],
+      amount:
+          json['amount'] is num ? JsonParser.parseDouble(json['amount']) : 0.0,
+      amountVisible: !(json['amount'] is String &&
+          json['amount'].toLowerCase().contains('x')),
+      currency: json['currency'],
+      otpId: json['otp_id'],
+      deviceUID: json['device_uid'],
+      status: PaymentDTOStatus.fromRaw(json['status']),
+      secondFactor: SecondFactorDTO.fromRaw(json['second_factor']),
+      created: JsonParser.parseDate(json['ts_created']),
+      scheduled: JsonParser.parseDate(json['ts_scheduled']),
+      recurrence: RecurrenceDTO.fromRaw(json["recurrence"]),
+      recurrenceStart: JsonParser.parseDate(json["recurrence_start"]),
+      recurrenceEnd: JsonParser.parseDate(json["recurrence_end"]),
+    );
+  }
+
+  /// Creates a list of [PaymentDTO]s from the given JSON list.
+  static List<PaymentDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(PaymentDTO.fromJson).toList();
+}
+
+/// payment status options
+class PaymentDTOStatus extends EnumDTO {
+  /// payment status is pending OTP
+  static const otp = PaymentDTOStatus._internal('O');
+
+  /// payment status has expired OTP
+  static const otpExpired = PaymentDTOStatus._internal('T');
+
+  /// payment status is failed
+  static const failed = PaymentDTOStatus._internal('F');
+
+  /// payment status is completed
+  static const completed = PaymentDTOStatus._internal('C');
+
+  /// payment status is pending approval
+  static const pending = PaymentDTOStatus._internal('P');
+
+  /// payment status is cancelled
+  static const cancelled = PaymentDTOStatus._internal('X');
+
+  /// payment status is scheduled
+  static const scheduled = PaymentDTOStatus._internal('S');
+
+  /// payment status is pending bank approval
+  static const pendingBank = PaymentDTOStatus._internal('B');
+
+  /// payment status is pending expired
+  static const pendingExpired = PaymentDTOStatus._internal('E');
+
+  /// All the available payment status values in a list
+  static const List<PaymentDTOStatus> values = [
+    otp,
+    otpExpired,
+    failed,
+    completed,
+    pending,
+    cancelled,
+    scheduled,
+    pendingBank,
+    pendingExpired,
+  ];
+
+  const PaymentDTOStatus._internal(String value) : super.internal(value);
+
+  /// Creates a [PaymentDTOStatus] from a [String]
+  static PaymentDTOStatus? fromRaw(String? raw) => values.firstWhereOrNull(
+        (val) => val.value == raw?.toUpperCase(),
+      );
+}

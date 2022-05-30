@@ -1,0 +1,75 @@
+{
+  "menu": 0,
+  "colors": {},
+  "fonts": {},
+  "font_sizes": {},
+  "experience_id": "experienceId",
+  "image_url": "imageUrl",
+  "pages": [
+    {
+      "title": "page1",
+      "icon_name": "page1 icon",
+      "order": 3,
+      "containers": []
+    },
+    {
+      "title": "page2",
+      "icon_name": "page2 icon",
+      "order": 1,
+      "containers": []
+    },
+    {
+      "title": "page3",
+      "icon_name": "page3 icon",
+      "order": 2,
+      "containers": [
+        {
+          "card_id": 1,
+          "container": "container1 name",
+          "card_title": "container1 title",
+          "order": 3,
+          "type_code": "container1 type code",
+          "type": "container1 type name",
+          "settings": {},
+          "container_settings": []
+        },
+        {
+          "card_id": 2,
+          "container": "container2 name",
+          "card_title": "container2 title",
+          "order": 2,
+          "type_code": "container2 type code",
+          "type": "container2 type name",
+          "settings": {},
+          "container_settings": []
+        },
+        {
+          "card_id": 3,
+          "container": "container3 name",
+          "card_title": "container3 title",
+          "order": 1,
+          "type_code": "container3 type code",
+          "type": "container3 type name",
+          "settings": {},
+          "container_settings": [
+            {
+              "setting": "setting1",
+              "user": false,
+              "type": "image"
+            },
+            {
+              "setting": "setting2",
+              "user": true,
+              "type": "image"
+            },
+            {
+              "setting": "setting3",
+              "user": true,
+              "type": "int"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
