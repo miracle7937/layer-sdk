@@ -1,6 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:layer_sdk/migration/data_layer/network.dart';
-import 'package:layer_sdk/migration/domain_layer/abstract_repositories.dart';
 import 'package:layer_sdk/migration/features/offers.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
