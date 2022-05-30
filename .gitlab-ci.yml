@@ -5,7 +5,7 @@ stages:
 analyze:
   stage: analyze
   tags:
-    - build-flutter-2
+    - build-flutter-3
   script:
     - flutter analyze
     - dart analyze --fatal-infos
@@ -13,6 +13,6 @@ analyze:
 test:
   stage: test
   tags:
-    - build-flutter-2
+    - build-flutter-3
   script:
     - flutter test test
