@@ -1,5 +1,11 @@
 # Layer SDK
 
+## IMPORTANT - MIGRATION WORK ONLY
+
+This package contains a copy of our current 3 layers (Flutter, Business and Data) just for migration purposes. You should NOT use this package for developing new features, this package should be only used for working on migrating each feature to the new architecture. Here is a link for the documentation for the new architecture:
+
+- [New Layer SDK Architecture](https://outline.ubanquity.io/doc/layer-sdk-architecture-yv9Kg2nglh)
+
 ## Getting started
 
 To make it easy for you to get started with GitLab, here's a list of recommended next steps.
