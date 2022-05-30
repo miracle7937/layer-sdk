@@ -1,8 +1,8 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart';
-import 'package:layer_sdk/flutter_layer/flutter_layer.dart';
-import 'package:layer_sdk/flutter_layer/src/cubits/location/geofencing_state.dart';
+import 'package:layer_sdk/_migration/flutter_layer/flutter_layer.dart';
+import 'package:layer_sdk/_migration/flutter_layer/src/cubits/location/geofencing_state.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 

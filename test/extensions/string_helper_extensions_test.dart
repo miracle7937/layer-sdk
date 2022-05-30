@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:layer_sdk/flutter_layer/flutter_layer.dart';
+import 'package:layer_sdk/_migration/flutter_layer/flutter_layer.dart';
 
 void main() {
   group('capitalize', () {

@@ -1,4 +1,4 @@
 /// Errors.
 library errors;
 
-export 'src/errors/mapping_error.dart';
+export 'errors/mapping_error.dart';

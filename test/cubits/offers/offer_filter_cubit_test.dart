@@ -1,6 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/migration/features/offers.dart';
+import 'package:layer_sdk/features/offers.dart';
 import 'package:test/test.dart';
 
 final _defaultCategories = [1, 30, 27];
