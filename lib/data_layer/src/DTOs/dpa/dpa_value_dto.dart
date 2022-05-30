@@ -48,8 +48,8 @@ class DPAValueDTO {
       );
 
   /// Creates a list of [DPAValueDTO]s from the given list of JSONs.
-  static List<DPAValueDTO> fromJsonList(List json) =>
-      json.map((dpaValue) => DPAValueDTO.fromJson(dpaValue)).toList();
+  static List<DPAValueDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(DPAValueDTO.fromJson).toList();
 
   /// Creates a new JSON from the this [DPAValueDTO].
   Map<String, String?> toJson() => {

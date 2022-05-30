@@ -1,5 +1,5 @@
 import 'package:flutter/services.dart';
-import 'package:layer_sdk/data_layer/data_layer.dart';
+import '../../../data_layer/data_layer.dart';
 
 import '../utils.dart';
 

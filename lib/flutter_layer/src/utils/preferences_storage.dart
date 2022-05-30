@@ -1,8 +1,9 @@
 import 'dart:convert';
 
-import 'package:layer_sdk/business_layer/business_layer.dart';
 import 'package:logging/logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../business_layer/business_layer.dart';
 
 /// Uses [SharedPreferences] to handle preferences storage.
 ///

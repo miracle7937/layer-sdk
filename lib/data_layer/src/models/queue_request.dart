@@ -56,7 +56,7 @@ class QueueRequest extends Equatable {
     this.url,
     this.isRequest = false,
   }) : body = UnmodifiableListView(
-          body.map((element) => UnmodifiableMapView(element)).toList(),
+          body.map(UnmodifiableMapView.new).toList(),
         );
 
   @override

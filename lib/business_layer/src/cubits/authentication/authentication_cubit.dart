@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import '../../../../data_layer/data_layer.dart';
 
 import '../../cubits.dart';
-import 'authentication_states.dart';
 
 /// Maintains the states of authentication on the app
 class AuthenticationCubit extends Cubit<AuthenticationState> {

@@ -1,7 +1,6 @@
 import 'package:meta/meta.dart' show immutable;
 
 import '../helpers.dart';
-import '../helpers/enum_dto.dart' show EnumDTO;
 
 /// Class that hold all available timeframes in a specific date,
 /// when a branch opens, when it closes, the status of that day
@@ -13,7 +12,7 @@ class BranchFreeTimeDTO {
   /// Status of the selected day
   final BranchDayStatusDTO? dayStatus;
 
-  /// Time slot used in the value matrix 
+  /// Time slot used in the value matrix
   final int? slotTime;
 
   /// The first hour available
@@ -52,8 +51,8 @@ class BranchFreeTimeDTO {
   }
 
   /// Returns a list of [BranchFreeTimeDTO] from a list of json
-  static List<BranchFreeTimeDTO> fromJsonList(List json) {
-    return json.map((time) => BranchFreeTimeDTO.fromJson(time)).toList();
+  static List<BranchFreeTimeDTO> fromJsonList(List<Map<String, dynamic>> json) {
+    return json.map(BranchFreeTimeDTO.fromJson).toList();
   }
 }
 

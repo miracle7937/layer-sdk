@@ -153,8 +153,8 @@ class BillDTO {
   }
 
   /// Creates a list of [BillDTO]s from the given JSON list.
-  static List<BillDTO> fromJsonList(List json) =>
-      json.map((bill) => BillDTO.fromJson(bill)).toList();
+  static List<BillDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(BillDTO.fromJson).toList();
 }
 
 /// The bill status

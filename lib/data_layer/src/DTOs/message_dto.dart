@@ -26,6 +26,6 @@ class MessageDTO {
   }
 
   /// Creates a list of [Message] from a JSON list
-  static List<MessageDTO> fromJsonList(List json) =>
-      json.map((message) => MessageDTO.fromJson(message)).toList();
+  static List<MessageDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(MessageDTO.fromJson).toList();
 }

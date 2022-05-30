@@ -20,10 +20,9 @@ class ExperienceSettingDTO {
         );
 
   /// Creates a list of [ExperienceSettingDTO] from a list of json objects.
-  static List<ExperienceSettingDTO> fromJsonList(List json) {
-    return json
-        .map((setting) => ExperienceSettingDTO.fromJson(setting))
-        .toList(growable: false);
+  static List<ExperienceSettingDTO> fromJsonList(
+      List<Map<String, dynamic>> json) {
+    return json.map(ExperienceSettingDTO.fromJson).toList(growable: false);
   }
 }
 

@@ -1,4 +1,4 @@
-import 'package:layer_sdk/data_layer/data_layer.dart';
+import '../../../data_layer/data_layer.dart';
 
 /// Represents all environment variables used by in Flutter applications.
 class FlutterEnvironmentConfiguration extends EnvironmentConfiguration {

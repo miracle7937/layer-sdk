@@ -75,8 +75,8 @@ class ServiceFieldDTO {
   }
 
   /// Creates a list of [ServiceFieldDTO] from a list of json objects.
-  static List<ServiceFieldDTO> fromJsonList(List json) =>
-      json.map((container) => ServiceFieldDTO.fromJson(container)).toList();
+  static List<ServiceFieldDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(ServiceFieldDTO.fromJson).toList();
 }
 
 /// The service field type

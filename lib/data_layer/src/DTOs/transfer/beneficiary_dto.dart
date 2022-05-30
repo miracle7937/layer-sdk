@@ -141,8 +141,8 @@ class BeneficiaryDTO {
       );
 
   /// Returns a list of [BeneficiaryDTO] from a JSON
-  static List<BeneficiaryDTO> fromJsonList(List json) =>
-      json.map((beneficiary) => BeneficiaryDTO.fromJson(beneficiary)).toList();
+  static List<BeneficiaryDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(BeneficiaryDTO.fromJson).toList();
 }
 
 /// The beneficiary status

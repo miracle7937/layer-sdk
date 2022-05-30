@@ -20,8 +20,8 @@ class MessageProvider {
       forceRefresh: forceRefresh,
     );
 
-    return response.data is List
-        ? MessageDTO.fromJsonList(response.data as List)
+    return response.data is List<Map<String, dynamic>>
+        ? MessageDTO.fromJsonList(response.data)
         : [];
   }
 }

@@ -61,7 +61,6 @@ class GlobalSettingDTO {
       );
 
   /// Creates [GlobalSettingDTO]s from json list.
-  static List<GlobalSettingDTO> fromJsonList(List json) => json
-      .map((settingJson) => GlobalSettingDTO.fromJson(settingJson))
-      .toList();
+  static List<GlobalSettingDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(GlobalSettingDTO.fromJson).toList();
 }

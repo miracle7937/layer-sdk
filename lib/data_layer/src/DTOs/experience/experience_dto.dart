@@ -37,10 +37,8 @@ class ExperienceDTO {
       menu = ExperienceMenuTypeDTO.values[json['menu']];
     }
     experienceId = json['experience_id'];
-    final pageList = json['pages'] as List;
-    pages = pageList
-        .map((pageJson) => ExperiencePageDTO.fromJson(pageJson))
-        .toList();
+    final pageList = json['pages'] as List<Map<String, dynamic>>;
+    pages = pageList.map(ExperiencePageDTO.fromJson).toList();
     colors = json['colors'];
     fonts = json['fonts'];
     // TODO: Make sure the BE is returning `font_sizes` field

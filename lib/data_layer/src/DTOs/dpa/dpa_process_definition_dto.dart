@@ -101,9 +101,7 @@ class DPAProcessDefinitionDTO {
 
   /// Returns a list of [DPAProcessDefinitionDTO] based on the given list of
   /// JSONs.
-  static List<DPAProcessDefinitionDTO> fromJsonList(List json) => json
-      .map(
-        (p) => DPAProcessDefinitionDTO.fromJson(p),
-      )
-      .toList();
+  static List<DPAProcessDefinitionDTO> fromJsonList(
+          List<Map<String, dynamic>> json) =>
+      json.map(DPAProcessDefinitionDTO.fromJson).toList();
 }

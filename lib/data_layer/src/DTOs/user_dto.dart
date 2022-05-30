@@ -272,8 +272,8 @@ class UserDTO {
   }
 
   /// Returns a list of [UserDTO] from the JSON
-  static List<UserDTO> fromJsonList(List json) =>
-      json.map((user) => UserDTO.fromJson(user)).toList();
+  static List<UserDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(UserDTO.fromJson).toList();
 
   bool _readBlockedChannels(Map<String, dynamic> json) {
     if (json['blocked_channels'] != null) {

@@ -81,8 +81,8 @@ class AppointmentDTO {
   }
 
   /// Returns a list of [AppointmentDTO] based on a json list
-  static List<AppointmentDTO> fromJsonList(List json) {
-    return json.map((a) => AppointmentDTO.fromJson(a)).toList();
+  static List<AppointmentDTO> fromJsonList(List<Map<String, dynamic>> json) {
+    return json.map(AppointmentDTO.fromJson).toList();
   }
 
   @override

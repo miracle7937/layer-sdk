@@ -39,8 +39,8 @@ class RuleRewardDTO {
       );
 
   /// Creates a list of [RuleRewardDTO]s from the given JSON list.
-  static List<RuleRewardDTO> fromJsonList(List json) =>
-      json.map((reward) => RuleRewardDTO.fromJson(reward)).toList();
+  static List<RuleRewardDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(RuleRewardDTO.fromJson).toList();
 }
 
 ///Data transfer object representing the reward type

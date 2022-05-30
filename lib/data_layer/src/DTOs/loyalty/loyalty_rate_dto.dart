@@ -38,7 +38,7 @@ class LoyaltyRateDTO {
   }
 
   /// Return a list of [LoyaltyRateDTO] from a json list
-  static List<LoyaltyRateDTO> fromJsonList(List json) {
-    return json.map((l) => LoyaltyRateDTO.fromJson(l)).toList();
+  static List<LoyaltyRateDTO> fromJsonList(List<Map<String, dynamic>> json) {
+    return json.map(LoyaltyRateDTO.fromJson).toList();
   }
 }

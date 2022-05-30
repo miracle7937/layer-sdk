@@ -30,9 +30,9 @@ class ExperienceContainerDTO {
   Map<String, dynamic> messages = {};
 
   /// Creates a list of [ExperienceContainerDTO] from a list of json objects.
-  static List<ExperienceContainerDTO> fromJsonList(List json) => json
-      .map((container) => ExperienceContainerDTO.fromJson(container))
-      .toList();
+  static List<ExperienceContainerDTO> fromJsonList(
+          List<Map<String, dynamic>> json) =>
+      json.map(ExperienceContainerDTO.fromJson).toList();
 
   /// Creates [ExperienceContainerDTO] from a json object.
   ExperienceContainerDTO.fromJson(Map<String, dynamic> json) {

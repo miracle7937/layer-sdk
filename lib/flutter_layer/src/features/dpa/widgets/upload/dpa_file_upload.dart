@@ -6,10 +6,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:layer_sdk/business_layer/business_layer.dart';
-import 'package:layer_sdk/data_layer/data_layer.dart';
+
 import 'package:logging/logging.dart';
 import 'package:open_file/open_file.dart';
+
+import '../../../../../../business_layer/business_layer.dart';
+import '../../../../../../data_layer/data_layer.dart';
 
 import '../../../../extensions.dart';
 import '../../../../resources.dart';

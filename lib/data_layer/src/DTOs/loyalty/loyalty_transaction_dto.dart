@@ -85,8 +85,9 @@ class LoyaltyTransactionDTO {
   }
 
   /// Creates a list of [LoyaltyTransactionDTO] based on a JSON list
-  static List<LoyaltyTransactionDTO> fromJsonList(List json) {
-    return json.map((l) => LoyaltyTransactionDTO.fromJson(l)).toList();
+  static List<LoyaltyTransactionDTO> fromJsonList(
+      List<Map<String, dynamic>> json) {
+    return json.map(LoyaltyTransactionDTO.fromJson).toList();
   }
 }
 

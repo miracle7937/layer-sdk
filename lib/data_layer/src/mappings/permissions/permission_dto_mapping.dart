@@ -108,7 +108,7 @@ extension PermissionDTOListMapping on Iterable<PermissionDTO> {
   UserPermissions toUserPermissions() {
     // Gets the general defaults
     final defaults = where((e) => e.moduleId == PermissionDTO.defaultValue)
-        .map((e) => _Default.fromPermissionDTO(e))
+        .map(_Default.fromPermissionDTO)
         .toList(growable: false);
 
     return UserPermissions(

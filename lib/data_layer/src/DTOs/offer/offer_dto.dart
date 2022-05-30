@@ -96,8 +96,8 @@ class OfferDTO {
       );
 
   /// Creates a list of [OfferDTO]s from the given JSON list.
-  static List<OfferDTO> fromJsonList(List json) =>
-      json.map((offer) => OfferDTO.fromJson(offer)).toList();
+  static List<OfferDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(OfferDTO.fromJson).toList();
 }
 
 ///Data transfer object representing the status of an offer

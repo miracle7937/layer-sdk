@@ -1,7 +1,7 @@
 import 'dart:collection';
 
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/data_layer/data_layer.dart';
+import '../../../../data_layer/data_layer.dart';
 
 /// A state representing the user experience in the app.
 class ExperienceState extends Equatable {

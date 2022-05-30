@@ -316,8 +316,8 @@ class CustomerDTO {
       };
 
   /// Returns a list of [CustomerDTO] from a JSON
-  static List<CustomerDTO> fromJsonList(List json) =>
-      json.map((customer) => CustomerDTO.fromJson(customer)).toList();
+  static List<CustomerDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(CustomerDTO.fromJson).toList();
 }
 
 /// Holds the provider data for the extra information of a Customer
@@ -478,9 +478,9 @@ class CustomerInformationDTO {
       );
 
   /// Returns a list of [CustomerInformationDTO] from a JSON
-  static List<CustomerInformationDTO> fromJsonList(List json) => json
-      .map((customer) => CustomerInformationDTO.fromJson(customer))
-      .toList();
+  static List<CustomerInformationDTO> fromJsonList(
+          List<Map<String, dynamic>> json) =>
+      json.map(CustomerInformationDTO.fromJson).toList();
 
   /// Returns a copy of the customer DTO with select different values.
   CustomerInformationDTO copyWith({
@@ -593,8 +593,8 @@ class AddressDTO {
       );
 
   /// Returns a list of [AddressDTO] from a JSON
-  static List<AddressDTO> fromJsonList(List json) =>
-      json.map((address) => AddressDTO.fromJson(address)).toList();
+  static List<AddressDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(AddressDTO.fromJson).toList();
 }
 
 /// Holds the provider data for the Customer tax inforamtion.
@@ -623,8 +623,8 @@ class TaxDTO {
       );
 
   /// Creates a [TaxDTO] list from a JSON
-  static List<TaxDTO> fromJsonList(List json) =>
-      json.map((e) => TaxDTO.fromJson(e)).toList();
+  static List<TaxDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(TaxDTO.fromJson).toList();
 }
 
 /// Holds the provider data for a Customer nationality.
@@ -654,6 +654,6 @@ class NationalityDTO {
   }
 
   /// Creates a [NationalityDTO] list from a JSON
-  static List<NationalityDTO> fromJsonList(List json) =>
-      json.map((e) => NationalityDTO.fromJson(e)).toList();
+  static List<NationalityDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(NationalityDTO.fromJson).toList();
 }

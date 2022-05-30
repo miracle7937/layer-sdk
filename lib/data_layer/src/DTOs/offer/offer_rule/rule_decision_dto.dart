@@ -30,8 +30,8 @@ class RuleDecisionDTO {
       );
 
   /// Creates a list of [RuleDecisionDTO]s from the given JSON list.
-  static List<RuleDecisionDTO> fromJsonList(List json) =>
-      json.map((decision) => RuleDecisionDTO.fromJson(decision)).toList();
+  static List<RuleDecisionDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(RuleDecisionDTO.fromJson).toList();
 }
 
 ///Data transfer object repersenting the operation for a decision

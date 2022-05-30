@@ -25,9 +25,9 @@ class PermissionModuleDTO {
       );
 
   /// Creates a list of [PermissionModuleDTO] from a JSON list
-  static List<PermissionModuleDTO> fromJsonList(List json) => json
-      .map((element) => PermissionModuleDTO.fromJson(element))
-      .toList(growable: false);
+  static List<PermissionModuleDTO> fromJsonList(
+          List<Map<String, dynamic>> json) =>
+      json.map(PermissionModuleDTO.fromJson).toList(growable: false);
 }
 
 /// The DTO for a permission module object.
@@ -52,7 +52,7 @@ class PermissionModuleObjectDTO {
       );
 
   /// Creates a list of [PermissionModuleObjectDTO] from a JSON list
-  static List<PermissionModuleObjectDTO>? fromJsonList(List? json) => json
-      ?.map((element) => PermissionModuleObjectDTO.fromJson(element))
-      .toList(growable: false);
+  static List<PermissionModuleObjectDTO>? fromJsonList(
+          List<Map<String, dynamic>>? json) =>
+      json?.map(PermissionModuleObjectDTO.fromJson).toList(growable: false);
 }

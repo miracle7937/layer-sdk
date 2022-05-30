@@ -55,11 +55,8 @@ class BranchDTO {
       );
 
   /// Creates a list of [BranchDTO]s from the given JSON list.
-  static List<BranchDTO> fromJsonList(List json) => json
-      .map(
-        (branch) => BranchDTO.fromJson(branch),
-      )
-      .toList();
+  static List<BranchDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(BranchDTO.fromJson).toList();
 }
 
 /// Data transfer object for a branch location.
@@ -161,9 +158,7 @@ class BranchWorkTimeDTO {
       );
 
   /// Creates a list of [BranchWorkTimeDTO]s from the given JSON list.
-  static List<BranchWorkTimeDTO> fromJsonList(List json) => json
-      .map(
-        (worktime) => BranchWorkTimeDTO.fromJson(worktime),
-      )
-      .toList();
+  static List<BranchWorkTimeDTO> fromJsonList(
+          List<Map<String, dynamic>> json) =>
+      json.map(BranchWorkTimeDTO.fromJson).toList();
 }

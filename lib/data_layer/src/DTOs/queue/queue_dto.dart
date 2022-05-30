@@ -79,9 +79,7 @@ class QueueDTO {
   }
 
   /// Creates a new [QueueDTO] list instance from a JSON list
-  static List<QueueDTO> fromJsonList(List json) {
-    return json
-        .map((element) => QueueDTO.fromJson(element))
-        .toList(growable: false);
+  static List<QueueDTO> fromJsonList(List<Map<String, dynamic>> json) {
+    return json.map(QueueDTO.fromJson).toList(growable: false);
   }
 }

@@ -151,8 +151,8 @@ class AccountLoanDTO {
   }
 
   /// Creates a [AccountLoanDTO]s from a list of json maps.
-  static List<AccountLoanDTO> fromJsonList(List json) =>
-      json.map((loanJson) => AccountLoanDTO.fromJson(loanJson)).toList();
+  static List<AccountLoanDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(AccountLoanDTO.fromJson).toList();
 }
 
 /// The status of the account loan.

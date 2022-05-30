@@ -137,8 +137,8 @@ class DPATaskDTO {
   }
 
   /// Returns a list of [DPATaskDTO] based on the given list of JSONs.
-  static List<DPATaskDTO> fromJsonList(List json) =>
-      json.map((e) => DPATaskDTO.fromJson(e)).toList();
+  static List<DPATaskDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(DPATaskDTO.fromJson).toList();
 
   @override
   String toString() => 'DPAConstraintDTO{'

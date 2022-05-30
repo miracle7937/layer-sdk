@@ -107,12 +107,8 @@ class DPAVariableDTO {
 
   /// Returns an ordered list of [DPAVariableDTO] based on the given list of
   /// JSONs.
-  static List<DPAVariableDTO> fromJsonList(List json) {
-    final variables = json
-        .map(
-          (variable) => DPAVariableDTO.fromJson(variable),
-        )
-        .toList();
+  static List<DPAVariableDTO> fromJsonList(List<Map<String, dynamic>> json) {
+    final variables = json.map(DPAVariableDTO.fromJson).toList();
 
     return getSortedVariables(variables);
   }

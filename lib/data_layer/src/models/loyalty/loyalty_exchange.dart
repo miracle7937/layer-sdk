@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import '../../../models.dart';
-import '../otp_status.dart';
 
 /// Data class for exchanged loyalty points
 class LoyaltyExchange extends Equatable {

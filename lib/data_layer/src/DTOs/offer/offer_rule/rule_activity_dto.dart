@@ -28,6 +28,6 @@ class RuleActivityDTO {
       );
 
   /// Creates a list of [RuleActivityDTO]s from the given JSON list.
-  static List<RuleActivityDTO> fromJsonList(List json) =>
-      json.map((activity) => RuleActivityDTO.fromJson(activity)).toList();
+  static List<RuleActivityDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(RuleActivityDTO.fromJson).toList();
 }

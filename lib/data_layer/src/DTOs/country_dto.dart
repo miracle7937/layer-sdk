@@ -45,6 +45,6 @@ class CountryDTO {
   }
 
   /// Creates a list of [Country] from a JSON list
-  static List<CountryDTO> fromJsonList(List json) =>
-      json.map((country) => CountryDTO.fromJson(country)).toList();
+  static List<CountryDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(CountryDTO.fromJson).toList();
 }

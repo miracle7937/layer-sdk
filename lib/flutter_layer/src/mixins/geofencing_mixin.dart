@@ -3,10 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geofencing/geofencing.dart';
-import 'package:layer_sdk/business_layer/business_layer.dart';
+
 import 'package:logging/logging.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../../business_layer/business_layer.dart';
 import '../cubits.dart';
 
 /// Mixin that exposes common methods for the geofencing feature

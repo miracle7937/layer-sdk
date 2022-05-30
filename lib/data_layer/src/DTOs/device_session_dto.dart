@@ -184,9 +184,8 @@ class DeviceSessionDTO {
   }
 
   /// Creates a list of [DeviceSessionDTO]s from the given JSON list.
-  static List<DeviceSessionDTO> fromJsonList(List json) => json
-      .map((deviceSession) => DeviceSessionDTO.fromJson(deviceSession))
-      .toList();
+  static List<DeviceSessionDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(DeviceSessionDTO.fromJson).toList();
 }
 
 /// Holds the type of session.

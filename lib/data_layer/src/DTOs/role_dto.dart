@@ -26,6 +26,6 @@ class RoleDTO {
   }
 
   /// Creates a list of [RoleDTO]s from the given JSON list.
-  static List<RoleDTO> fromJsonList(List json) =>
-      json.map((role) => RoleDTO.fromJson(role)).toList();
+  static List<RoleDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(RoleDTO.fromJson).toList();
 }

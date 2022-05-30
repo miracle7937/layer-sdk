@@ -127,7 +127,7 @@ class LocalizationDelegate extends LocalizationsDelegate<Translation> {
   final List<String> supportedCodes;
 
   /// The supported locales for this application.
-  Iterable<Locale> get supportedLocales => supportedCodes.map((c) => Locale(c));
+  Iterable<Locale> get supportedLocales => supportedCodes.map(Locale.new);
 
   /// When set to true localizations will not be loaded
   /// and the key will be used instead of translation.

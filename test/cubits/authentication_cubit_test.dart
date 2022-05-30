@@ -168,7 +168,7 @@ void _loginFlowTests() {
     build: () => AuthenticationCubit(
       repository: _repository,
     ),
-    seed: () => AuthenticationState(),
+    seed: AuthenticationState.new,
     act: (c) => c.login(
       username: usernameActive,
       password: passwordActive,
@@ -477,7 +477,7 @@ void _accessPinTests() {
     build: () => AuthenticationCubit(
       repository: _repository,
     ),
-    seed: () => AuthenticationState(),
+    seed: AuthenticationState.new,
     act: (c) => c.lock(),
     expect: () => [],
   );

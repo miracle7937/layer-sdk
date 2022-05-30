@@ -90,9 +90,8 @@ class LoyaltyExchangeDTO {
   }
 
   /// Returns a list of [LoyaltyExchangeDTO] from a json list
-  static List<LoyaltyExchangeDTO> fromJsonList(List json) {
-    return json
-        .map((it) => LoyaltyExchangeDTO.fromJson(it))
-        .toList(growable: false);
+  static List<LoyaltyExchangeDTO> fromJsonList(
+      List<Map<String, dynamic>> json) {
+    return json.map(LoyaltyExchangeDTO.fromJson).toList(growable: false);
   }
 }

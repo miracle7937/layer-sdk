@@ -72,6 +72,6 @@ class CurrencyDTO {
       );
 
   /// Returns a list of [CurrencyDTO] from a JSON
-  static List<CurrencyDTO> fromJsonList(List json) =>
-      json.map((currency) => CurrencyDTO.fromJson(currency)).toList();
+  static List<CurrencyDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(CurrencyDTO.fromJson).toList();
 }

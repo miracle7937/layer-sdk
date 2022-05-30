@@ -71,6 +71,7 @@ class CardTransactionDTO {
   }
 
   /// Creates a list of [CardTransactionDTO] from a JSON list
-  static List<CardTransactionDTO> fromJsonList(List json) =>
-      json.map((x) => CardTransactionDTO.fromJson(x)).toList(growable: false);
+  static List<CardTransactionDTO> fromJsonList(
+          List<Map<String, dynamic>> json) =>
+      json.map(CardTransactionDTO.fromJson).toList(growable: false);
 }

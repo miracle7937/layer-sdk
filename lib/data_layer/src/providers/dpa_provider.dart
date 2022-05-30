@@ -42,10 +42,8 @@ class DPAProvider {
       forceRefresh: forceRefresh,
     );
 
-    return (response.data as List<dynamic>)
-        .map(
-          (item) => DPAProcessDefinitionDTO.fromJson(item),
-        )
+    return (response.data as List<Map<String, dynamic>>)
+        .map(DPAProcessDefinitionDTO.fromJson)
         .toList();
   }
 

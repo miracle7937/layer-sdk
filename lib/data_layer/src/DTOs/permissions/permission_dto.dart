@@ -35,7 +35,6 @@ class PermissionDTO {
       );
 
   /// Creates a list of [PermissionDTO] from a JSON list
-  static List<PermissionDTO>? fromJsonList(List? json) => json
-      ?.map((element) => PermissionDTO.fromJson(element))
-      .toList(growable: false);
+  static List<PermissionDTO>? fromJsonList(List<Map<String, dynamic>>? json) =>
+      json?.map(PermissionDTO.fromJson).toList(growable: false);
 }

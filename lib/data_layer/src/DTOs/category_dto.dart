@@ -53,8 +53,8 @@ class CategoryDTO {
       );
 
   /// Creates a list of [CategoryDTO]s from the given JSON list.
-  static List<CategoryDTO> fromJsonList(List json) =>
-      json.map((category) => CategoryDTO.fromJson(category)).toList();
+  static List<CategoryDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(CategoryDTO.fromJson).toList();
 }
 
 ///Data transfer object representing the type for a category

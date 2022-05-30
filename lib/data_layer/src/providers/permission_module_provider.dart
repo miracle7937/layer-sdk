@@ -23,8 +23,8 @@ class PermissionModuleProvider {
       forceRefresh: forceRefresh,
     );
 
-    return response.data is List
-        ? PermissionModuleDTO.fromJsonList(response.data as List)
+    return response.data is List<Map<String, dynamic>>
+        ? PermissionModuleDTO.fromJsonList(response.data)
         : <PermissionModuleDTO>[];
   }
 }

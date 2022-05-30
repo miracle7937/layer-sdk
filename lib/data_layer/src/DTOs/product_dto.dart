@@ -141,8 +141,8 @@ class ProductDTO {
   }
 
   /// Returns a list of [ProductDTO] from a json list
-  static List<ProductDTO> fromJsonList(List json) {
-    return json.map((product) => ProductDTO.fromJson(product)).toList();
+  static List<ProductDTO> fromJsonList(List<Map<String, dynamic>> json) {
+    return json.map(ProductDTO.fromJson).toList();
   }
 }
 

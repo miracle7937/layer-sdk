@@ -2,7 +2,7 @@ import 'dart:ui' as ui show TextHeightBehavior;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:layer_sdk/business_layer/business_layer.dart';
+import '../../../../business_layer/business_layer.dart';
 
 // TODO: add CurrencyText tests.
 /// Text widget that formats and displays the currency amount given.

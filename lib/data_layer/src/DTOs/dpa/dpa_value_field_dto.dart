@@ -20,8 +20,8 @@ class DPAValueFieldDTO {
       );
 
   /// Creates a list of [DPAValueFieldDTO] from the supplied JSON list.
-  static List<DPAValueFieldDTO> fromJsonList(List json) =>
-      json.map((e) => DPAValueFieldDTO.fromJson(e)).toList();
+  static List<DPAValueFieldDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(DPAValueFieldDTO.fromJson).toList();
 
   @override
   String toString() => 'DPAValueFieldDTO(label: $label, value: $value)';

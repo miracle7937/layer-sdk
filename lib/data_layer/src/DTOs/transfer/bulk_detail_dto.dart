@@ -21,6 +21,6 @@ class BulkDetailDTO {
       );
 
   /// Creates a List of [BulkDetailDTO] from list of JSON
-  static List<BulkDetailDTO> fromJsonList(List json) =>
-      json.map((bulkDetail) => BulkDetailDTO.fromJson(bulkDetail)).toList();
+  static List<BulkDetailDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(BulkDetailDTO.fromJson).toList();
 }

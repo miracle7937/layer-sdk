@@ -35,7 +35,7 @@ class OfferTransactionGroupDTO {
   }
 
   /// Creates [OfferTransactionGroupDTO]s from a list of json maps.
-  static List<OfferTransactionGroupDTO> fromJsonList(List json) => json
-      .map((groupJson) => OfferTransactionGroupDTO.fromJson(groupJson))
-      .toList();
+  static List<OfferTransactionGroupDTO> fromJsonList(
+          List<Map<String, dynamic>> json) =>
+      json.map(OfferTransactionGroupDTO.fromJson).toList();
 }

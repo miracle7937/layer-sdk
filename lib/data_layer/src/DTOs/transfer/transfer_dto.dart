@@ -216,6 +216,6 @@ class TransferDTO {
       );
 
   /// Returns a list of [TransferDTO] from a JSON
-  static List<TransferDTO> fromJsonList(List json) =>
-      json.map((transfer) => TransferDTO.fromJson(transfer)).toList();
+  static List<TransferDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(TransferDTO.fromJson).toList();
 }

@@ -74,8 +74,9 @@ class MerchantLocationDTO {
       );
 
   /// Creates a list of [MerchantLocationDTO]s from the given JSON list.
-  static List<MerchantLocationDTO> fromJsonList(List json) =>
-      json.map((location) => MerchantLocationDTO.fromJson(location)).toList();
+  static List<MerchantLocationDTO> fromJsonList(
+          List<Map<String, dynamic>> json) =>
+      json.map(MerchantLocationDTO.fromJson).toList();
 }
 
 ///Data transfer object representing the type for a merchant location

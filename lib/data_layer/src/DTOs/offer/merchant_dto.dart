@@ -63,8 +63,8 @@ class MerchantDTO {
       );
 
   /// Creates a list of [MerchantDTO]s from the given JSON list.
-  static List<MerchantDTO> fromJsonList(List json) =>
-      json.map((merchant) => MerchantDTO.fromJson(merchant)).toList();
+  static List<MerchantDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(MerchantDTO.fromJson).toList();
 }
 
 ///Data transfer object representing the possible redemption types for

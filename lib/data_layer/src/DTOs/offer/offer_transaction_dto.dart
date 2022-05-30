@@ -66,9 +66,9 @@ class OfferTransactionDTO {
   }
 
   /// Creates [OfferTransactionDTO]s from a list of json maps.
-  static List<OfferTransactionDTO> fromJsonList(List json) => json
-      .map((transactionJson) => OfferTransactionDTO.fromJson(transactionJson))
-      .toList();
+  static List<OfferTransactionDTO> fromJsonList(
+          List<Map<String, dynamic>> json) =>
+      json.map(OfferTransactionDTO.fromJson).toList();
 }
 
 /// The status of an offer transaction

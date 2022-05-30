@@ -74,8 +74,8 @@ class OfferRuleDTO {
       );
 
   /// Creates a list of [OfferRuleDTO]s from the given JSON list.
-  static List<OfferRuleDTO> fromJsonList(List json) =>
-      json.map((rule) => OfferRuleDTO.fromJson(rule)).toList();
+  static List<OfferRuleDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(OfferRuleDTO.fromJson).toList();
 }
 
 ///Data transfer object repersenting the logic for a rule

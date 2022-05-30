@@ -202,9 +202,8 @@ class AccountDTO {
   }
 
   /// Creates a list of [AccountDTO] from a list
-  static List<AccountDTO> fromJsonList(List json) => json
-      .map((element) => AccountDTO.fromJson(element))
-      .toList(growable: false);
+  static List<AccountDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(AccountDTO.fromJson).toList(growable: false);
 
   /// Return account with same type as the type passed
   factory AccountDTO.withType(AccountTypeDTOType type) {

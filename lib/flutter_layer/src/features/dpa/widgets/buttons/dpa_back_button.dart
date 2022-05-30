@@ -1,7 +1,7 @@
 import 'package:design_kit_layer/design_kit_layer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:layer_sdk/business_layer/business_layer.dart';
+import '../../../../../../business_layer/business_layer.dart';
 
 import '../../../../resources.dart';
 import '../../../../utils.dart';

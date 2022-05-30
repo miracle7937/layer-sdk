@@ -47,9 +47,7 @@ class RequestDTO {
   }
 
   /// Creates a new [RequestDTO] list instance from a JSON list
-  static List<RequestDTO> fromJsonList(List json) {
-    return json
-        .map((element) => RequestDTO.fromJson(element))
-        .toList(growable: false);
+  static List<RequestDTO> fromJsonList(List<Map<String, dynamic>> json) {
+    return json.map(RequestDTO.fromJson).toList(growable: false);
   }
 }

@@ -136,8 +136,8 @@ class PaymentDTO {
   }
 
   /// Creates a list of [PaymentDTO]s from the given JSON list.
-  static List<PaymentDTO> fromJsonList(List json) =>
-      json.map((bill) => PaymentDTO.fromJson(bill)).toList();
+  static List<PaymentDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(PaymentDTO.fromJson).toList();
 }
 
 /// payment status options
