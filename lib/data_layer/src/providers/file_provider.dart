@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 
-import '../../network.dart';
+import '../../../migration/data_layer/network.dart';
 
 /// A general provider for uploading/downloading files on the endpoints.
 class FileProvider {

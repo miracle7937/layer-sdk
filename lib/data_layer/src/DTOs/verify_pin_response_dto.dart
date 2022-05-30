@@ -1,4 +1,4 @@
-import '../../network.dart';
+import '../../../../migration/data_layer/network.dart';
 import '../helpers.dart';
 
 /// A data transfer object representing the verify pin response

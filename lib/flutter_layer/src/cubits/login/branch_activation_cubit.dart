@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../data_layer/data_layer.dart';
+import '../../../../migration/data_layer/network.dart';
 import '../../../flutter_layer.dart';
 import 'activation_code_utils.dart';
 import 'branch_activation_state.dart';

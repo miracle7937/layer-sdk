@@ -1,5 +1,5 @@
+import '../../../migration/data_layer/network.dart';
 import '../../models.dart';
-import '../../network.dart';
 import '../../providers.dart';
 import '../mappings.dart';
 

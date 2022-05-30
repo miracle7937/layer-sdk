@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import '../../../../data_layer/data_layer.dart';
+import '../../../../migration/data_layer/network.dart';
 import 'loyalty_exchange_states.dart';
 
 /// Cubit responsible for [LoyaltyExchange]

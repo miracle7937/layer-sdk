@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:intl/intl.dart';
 import '../../../../data_layer/data_layer.dart';
 
+import '../../../../migration/data_layer/network/net_exceptions.dart';
 import 'appointment_booking_state.dart';
 
 /// Cubit that handle inserting, editing, deleting appointments

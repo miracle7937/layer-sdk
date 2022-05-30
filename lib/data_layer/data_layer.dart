@@ -6,7 +6,6 @@ export 'environment.dart';
 export 'errors.dart';
 export 'extensions.dart';
 export 'models.dart';
-export 'network.dart';
 export 'parameters.dart';
 export 'providers.dart';
 export 'repositories.dart';

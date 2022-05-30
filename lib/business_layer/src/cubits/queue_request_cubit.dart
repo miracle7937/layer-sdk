@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 
 import '../../../data_layer/data_layer.dart';
+import '../../../migration/data_layer/network.dart';
 import 'queue_request_states.dart';
 
 /// Cubit responsible for retrieving the list of [QueueRequest]

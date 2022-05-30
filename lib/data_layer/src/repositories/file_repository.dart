@@ -1,4 +1,4 @@
-import '../../network.dart';
+import '../../../migration/data_layer/network.dart';
 import '../../providers.dart';
 
 /// A repository focused on generic file management on the servers.

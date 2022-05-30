@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 
 import '../../../../data_layer/data_layer.dart';
+import '../../../../migration/data_layer/network.dart';
 import '../../../business_layer.dart';
 
 ///A cubit that holds the user preferences from a [LoggedUser]

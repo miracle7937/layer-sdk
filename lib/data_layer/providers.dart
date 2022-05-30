@@ -25,8 +25,6 @@ export 'src/providers/global_setting_provider.dart';
 export 'src/providers/loyalty_provider.dart';
 export 'src/providers/message_provider.dart';
 export 'src/providers/ocra_provider.dart';
-export 'src/providers/offer_provider.dart';
-export 'src/providers/offer_transaction_provider.dart';
 export 'src/providers/otp_provider.dart';
 export 'src/providers/payment_provider.dart';
 export 'src/providers/permission_module_provider.dart';

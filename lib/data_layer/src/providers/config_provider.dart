@@ -1,6 +1,6 @@
 import 'package:logging/logging.dart';
 
-import '../../network.dart';
+import '../../../migration/data_layer/network.dart';
 import '../dtos.dart';
 
 /// A provider that handles API requests related to configurations.

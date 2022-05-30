@@ -1,6 +1,6 @@
+import '../../../migration/data_layer/network.dart';
 import '../../errors.dart';
 import '../../models.dart';
-import '../../network.dart';
 import '../dtos.dart';
 import '../mappings.dart';
 

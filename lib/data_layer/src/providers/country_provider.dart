@@ -1,4 +1,5 @@
-import '../../network.dart';
+import '../../../migration/data_layer/network.dart';
+
 import '../dtos.dart';
 import '../helpers.dart';
 

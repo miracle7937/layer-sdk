@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:validators/validators.dart';
 
 import '../../../../data_layer/data_layer.dart';
+import '../../../../migration/data_layer/network.dart';
 import 'link_states.dart';
 
 /// A cubit that helps with opening files from links.

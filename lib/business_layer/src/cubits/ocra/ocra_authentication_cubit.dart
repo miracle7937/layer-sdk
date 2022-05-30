@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:ocra_authentication/ocra_authentication.dart';
 
 import '../../../../data_layer/data_layer.dart';
+import '../../../../migration/data_layer/network.dart';
 import '../../cubits.dart';
 import '../../errors.dart';
 import '../../extensions.dart';

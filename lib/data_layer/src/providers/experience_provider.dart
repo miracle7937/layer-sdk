@@ -1,5 +1,5 @@
+import '../../../migration/data_layer/network.dart';
 import '../../environment.dart';
-import '../../network.dart';
 import '../dtos.dart';
 
 /// A provider that handles API requests related to [ExperienceDTO].

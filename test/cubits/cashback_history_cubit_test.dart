@@ -1,14 +1,15 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:layer_sdk/business_layer/business_layer.dart';
-import 'package:layer_sdk/data_layer/data_layer.dart';
+import 'package:layer_sdk/migration/data_layer/network.dart';
+import 'package:layer_sdk/migration/domain_layer/abstract_repositories.dart';
+import 'package:layer_sdk/migration/features/offers.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 class MockCashbackHistoryRepository extends Mock
-    implements CashbackHistoryRepository {}
+    implements CashbackHistoryRepositoryInterface {}
 
 void main() {
-  late CashbackHistoryRepository repositoryMock;
+  late CashbackHistoryRepositoryInterface repositoryMock;
 
   final history = CashbackHistory();
   final to = DateTime.now();

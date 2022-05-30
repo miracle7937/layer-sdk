@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 
-import '../../network.dart';
+import '../../../migration/data_layer/network.dart';
 import '../dtos.dart';
 
 /// Provides data related to [Queue] and [Request]

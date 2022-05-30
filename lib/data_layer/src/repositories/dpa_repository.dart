@@ -1,8 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
 
+import '../../../migration/data_layer/network.dart';
 import '../../models.dart';
-import '../../network.dart';
 import '../../providers.dart';
 import '../dtos.dart';
 import '../mappings.dart';

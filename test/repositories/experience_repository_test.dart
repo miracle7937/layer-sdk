@@ -1,5 +1,6 @@
 import 'package:layer_sdk/data_layer/data_layer.dart';
 import 'package:layer_sdk/data_layer/src/dtos.dart';
+import 'package:layer_sdk/migration/data_layer/network.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 

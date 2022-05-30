@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 
 import '../../../data_layer/data_layer.dart';
+import '../../../migration/data_layer/network.dart';
 import 'customers_states.dart';
 
 /// A cubit that keeps the list of customers.

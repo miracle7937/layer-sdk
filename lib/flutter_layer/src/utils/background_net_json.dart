@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import '../../../data_layer/data_layer.dart';
+import '../../../../migration/data_layer/network.dart';
 
 /// A Flutter-specific NetJson that encodes/decodes JSON outside the UI thread.
 class BackgroundNetJson extends NetJson {

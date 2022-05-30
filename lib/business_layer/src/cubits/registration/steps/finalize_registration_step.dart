@@ -1,5 +1,6 @@
 import '../../../../../data_layer/data_layer.dart';
 
+import '../../../../../migration/data_layer/network.dart';
 import '../../../cubits.dart';
 
 /// A step that encapsulates the logic for encrypting

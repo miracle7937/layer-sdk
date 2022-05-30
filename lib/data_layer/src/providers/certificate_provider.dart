@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
 
-import '../../network.dart';
+import '../../../migration/data_layer/network.dart';
 
 /// Customer certificates provider
 class CertificateProvider {

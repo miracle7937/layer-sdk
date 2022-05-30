@@ -7,6 +7,7 @@ import 'package:location/location.dart' as loc;
 
 import '../../../business_layer/business_layer.dart';
 import '../../../data_layer/data_layer.dart';
+import '../../../migration/data_layer/network.dart';
 import '../../flutter_layer.dart';
 import '../widgets/text_fields/auto_padding_keyboard_view.dart';
 

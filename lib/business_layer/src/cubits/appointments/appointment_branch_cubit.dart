@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 
 import '../../../../data_layer/data_layer.dart';
 
+import '../../../../migration/data_layer/network/net_exceptions.dart';
 import 'appointment_branch_state.dart';
 
 /// Class that manages a list of Branches and sets a selected branch

@@ -1,4 +1,4 @@
-import '../../network.dart';
+import '../../../migration/data_layer/network.dart';
 import '../dtos.dart';
 
 /// A provider that handles the API requests related to OCRA challenges.

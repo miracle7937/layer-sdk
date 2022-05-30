@@ -1,8 +1,9 @@
 import 'package:collection/collection.dart';
 
+import '../../../migration/data_layer/network.dart';
+
 import '../../environment.dart';
 import '../../models.dart';
-import '../../network.dart';
 import '../dtos.dart';
 import '../mappings.dart';
 

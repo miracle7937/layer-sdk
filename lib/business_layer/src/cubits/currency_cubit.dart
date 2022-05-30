@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:intl/intl.dart';
 
 import '../../../data_layer/data_layer.dart';
+import '../../../migration/data_layer/network.dart';
 import 'currency_state.dart';
 
 /// A cubit that keeps currencies

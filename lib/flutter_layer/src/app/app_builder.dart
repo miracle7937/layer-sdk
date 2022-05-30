@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 
-import '../../../data_layer/data_layer.dart';
+import '../../../migration/data_layer/network.dart';
 import '../utils.dart';
 
 /// An builder that exposes a way to add the [UserInactiveInterceptor]

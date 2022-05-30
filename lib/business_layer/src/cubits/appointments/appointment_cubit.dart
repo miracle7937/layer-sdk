@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import '../../../../data_layer/data_layer.dart';
 
+import '../../../../migration/data_layer/network/net_exceptions.dart';
 import 'appointment_states.dart';
 
 /// Holds Appointments data

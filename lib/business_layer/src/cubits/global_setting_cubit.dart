@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 
 import '../../../data_layer/data_layer.dart';
+import '../../../migration/data_layer/network.dart';
 import '../cubits.dart';
 
 /// A cubit responsible for fetching the global console settings.
