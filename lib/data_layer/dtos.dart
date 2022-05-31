@@ -1,5 +1,11 @@
 library dtos;
 
+export 'dtos/account/account_dto.dart';
+export 'dtos/account/account_preferences_dto.dart';
+export 'dtos/account/account_type_dto.dart';
+export 'dtos/account_loan/account_loan_dto.dart';
+export 'dtos/account_loan/account_loan_payment_dto.dart';
+export 'dtos/account_transfaction/account_transaction_dto.dart';
 export 'dtos/category/category_dto.dart';
 export 'dtos/offer/merchant_dto.dart';
 export 'dtos/offer/merchant_location_dto.dart';

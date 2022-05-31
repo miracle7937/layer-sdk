@@ -1,5 +1,5 @@
+import '../../../../data_layer/dtos.dart';
 import '../helpers.dart';
-import 'account_preferences_dto.dart';
 import 'card_preferences_dto.dart';
 
 /// User Preferences

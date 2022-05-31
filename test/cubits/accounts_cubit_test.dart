@@ -1,12 +1,13 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
+import 'package:layer_sdk/features/accounts.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockAccountRepository extends Mock implements AccountRepository {}
+class MockAccountRepository extends Mock implements AccountRepositoryInterface {
+}
 
 late MockAccountRepository _repo;
+late GetCustomerAccountsUseCase _getCustomerAccountsUseCase;
 
 final _loadAccountsCustomerId = '1';
 final _throwsExceptionCustomerId = '2';
@@ -24,10 +25,12 @@ void main() {
   setUpAll(
     () {
       _repo = MockAccountRepository();
+      _getCustomerAccountsUseCase =
+          GetCustomerAccountsUseCase(repository: _repo);
 
       /// Test case that retrieves all mocked accounts
       when(
-        () => _repo.listCustomerAccounts(
+        () => _repo.list(
           customerId: _loadAccountsCustomerId,
         ),
       ).thenAnswer(
@@ -36,7 +39,7 @@ void main() {
 
       /// Test case that throws Exception
       when(
-        () => _repo.listCustomerAccounts(
+        () => _repo.list(
           customerId: _throwsExceptionCustomerId,
         ),
       ).thenAnswer(
@@ -48,7 +51,7 @@ void main() {
   blocTest<AccountCubit, AccountState>(
     'Starts with empty state',
     build: () => AccountCubit(
-      repository: _repo,
+      getCustomerAccountsUseCase: _getCustomerAccountsUseCase,
       customerId: _loadAccountsCustomerId,
     ),
     verify: (c) => expect(
@@ -62,7 +65,7 @@ void main() {
   blocTest<AccountCubit, AccountState>(
     'Loads customer accounts',
     build: () => AccountCubit(
-      repository: _repo,
+      getCustomerAccountsUseCase: _getCustomerAccountsUseCase,
       customerId: _loadAccountsCustomerId,
     ),
     act: (c) => c.load(),
@@ -80,7 +83,7 @@ void main() {
     ],
     verify: (c) {
       verify(
-        () => _repo.listCustomerAccounts(
+        () => _repo.list(
           customerId: _loadAccountsCustomerId,
         ),
       ).called(1);
@@ -90,7 +93,7 @@ void main() {
   blocTest<AccountCubit, AccountState>(
     'Handles exceptions gracefully',
     build: () => AccountCubit(
-      repository: _repo,
+      getCustomerAccountsUseCase: _getCustomerAccountsUseCase,
       customerId: _throwsExceptionCustomerId,
     ),
     act: (c) => c.load(),
@@ -108,7 +111,7 @@ void main() {
     ],
     verify: (c) {
       verify(
-        () => _repo.listCustomerAccounts(
+        () => _repo.list(
           customerId: _throwsExceptionCustomerId,
         ),
       ).called(1);

@@ -1,5 +1,12 @@
 library models;
 
+export 'models/account/account.dart';
+export 'models/account/account_filter.dart';
+export 'models/account/account_info.dart';
+export 'models/account/account_preferences.dart';
+export 'models/account_loan/account_loan.dart';
+export 'models/account_loan/account_loan_payment.dart';
+export 'models/account_transaction/account_transaction.dart';
 export 'models/category/category.dart';
 export 'models/config/config.dart';
 export 'models/offer/cashback_history.dart';

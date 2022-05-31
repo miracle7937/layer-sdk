@@ -1,12 +1,14 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
+import 'package:layer_sdk/features/accounts.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockAccountRepository extends Mock implements AccountRepository {}
+class MockAccountRepository extends Mock
+    implements AccountTransactionRepositoryInterface {}
 
 late MockAccountRepository _repo;
+late GetCustomerAccountTransactionsUseCase
+    _getCustomerAccountTransactionsUseCase;
 
 final _loadsAccountTransactionsId = '1';
 final _throwsExceptionId = '2';
@@ -24,6 +26,8 @@ void main() {
 
   setUpAll(() {
     _repo = MockAccountRepository();
+    _getCustomerAccountTransactionsUseCase =
+        GetCustomerAccountTransactionsUseCase(repository: _repo);
 
     /// Test case that retrieves all mocked
     /// transactions between the default limit
@@ -75,9 +79,10 @@ void main() {
   blocTest<AccountTransactionsCubit, AccountTransactionsState>(
     'Starts with empty state',
     build: () => AccountTransactionsCubit(
+      getCustomerAccountTransactionsUseCase:
+          _getCustomerAccountTransactionsUseCase,
       accountId: _loadsAccountTransactionsId,
       customerId: _loadsAccountTransactionsId,
-      repository: _repo,
     ),
     verify: (c) => expect(
       c.state,
@@ -91,9 +96,10 @@ void main() {
   blocTest<AccountTransactionsCubit, AccountTransactionsState>(
     'Load account transactions',
     build: () => AccountTransactionsCubit(
+      getCustomerAccountTransactionsUseCase:
+          _getCustomerAccountTransactionsUseCase,
       accountId: _loadsAccountTransactionsId,
       customerId: _loadsAccountTransactionsId,
-      repository: _repo,
       limit: _defaultLimit,
     ),
     act: (c) => c.load(),
@@ -119,9 +125,10 @@ void main() {
   blocTest<AccountTransactionsCubit, AccountTransactionsState>(
     'Loads next page of transactions',
     build: () => AccountTransactionsCubit(
+      getCustomerAccountTransactionsUseCase:
+          _getCustomerAccountTransactionsUseCase,
       accountId: _loadsAccountTransactionsId,
       customerId: _loadsAccountTransactionsId,
-      repository: _repo,
       limit: _defaultLimit,
     ),
     seed: () => AccountTransactionsState(
@@ -162,9 +169,10 @@ void main() {
   blocTest<AccountTransactionsCubit, AccountTransactionsState>(
     'Sets canLoadMore == false when no more items to load',
     build: () => AccountTransactionsCubit(
+      getCustomerAccountTransactionsUseCase:
+          _getCustomerAccountTransactionsUseCase,
       accountId: _loadsAccountTransactionsId,
       customerId: _loadsAccountTransactionsId,
-      repository: _repo,
       limit: _defaultLimit,
     ),
     seed: () => AccountTransactionsState(
@@ -211,9 +219,10 @@ void main() {
   blocTest<AccountTransactionsCubit, AccountTransactionsState>(
     'Handles exceptions gracefully',
     build: () => AccountTransactionsCubit(
+      getCustomerAccountTransactionsUseCase:
+          _getCustomerAccountTransactionsUseCase,
       accountId: _throwsExceptionId,
       customerId: _throwsExceptionId,
-      repository: _repo,
     ),
     act: (c) => c.load(),
     expect: () => [

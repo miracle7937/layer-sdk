@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../../../../domain_layer/models.dart';
 import '../../../../data_layer/data_layer.dart';
 
 /// Handles LoyaltyExchange error status

@@ -1,5 +1,5 @@
 import '../../helpers.dart';
-import '../account_dto.dart';
+import '../../../../../data_layer/dtos/account/account_dto.dart';
 import '../card_dto.dart';
 import '../second_factor_dto.dart';
 import 'beneficiary_dto.dart';

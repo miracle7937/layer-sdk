@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
 
 import '../../../../../data_layer/network.dart';
+import '../../../../../data_layer/repositories.dart';
+import '../../../../../domain_layer/models.dart';
 import '../../../../data_layer/data_layer.dart';
 import 'loyalty_exchange_states.dart';
 
@@ -32,7 +34,7 @@ class LoyaltyExchangeCubit extends Cubit<LoyaltyExchangeState> {
     try {
       final res = await Future.wait<dynamic>([
         _repository.getCurrentRate(),
-        _accountRepository.listCustomerAccounts(
+        _accountRepository.list(
           statuses: [AccountStatus.active],
         ),
         _cardRepository.listCustomerCards(),

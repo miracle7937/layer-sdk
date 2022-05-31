@@ -1,8 +1,3 @@
-export 'mappings/account_dto_mapping.dart';
-export 'mappings/account_loan/account_loan_dto_mapping.dart';
-export 'mappings/account_loan/account_loan_payment_dto_mapping.dart';
-export 'mappings/account_preferences_dto_mapping.dart';
-export 'mappings/account_transaction_dto_mapping.dart';
 export 'mappings/appointment_mapping.dart';
 export 'mappings/bill_dto_mapping.dart';
 export 'mappings/branch_activation_response_dto_mapping.dart';

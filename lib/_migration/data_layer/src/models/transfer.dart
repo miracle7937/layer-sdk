@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+import '../../../../domain_layer/models.dart';
 import '../../models.dart';
 
 ///The recurrence of the transfer

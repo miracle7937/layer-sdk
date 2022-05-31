@@ -1,13 +1,6 @@
 /// Data Layer - Models
 library models;
 
-export 'src/models/account.dart';
-export 'src/models/account_filter.dart';
-export 'src/models/account_info.dart';
-export 'src/models/account_loan/account_loan.dart';
-export 'src/models/account_loan/account_loan_payment.dart';
-export 'src/models/account_preferences.dart';
-export 'src/models/account_transaction.dart';
 export 'src/models/appointment.dart';
 export 'src/models/banking_card.dart';
 export 'src/models/beneficiary.dart';
