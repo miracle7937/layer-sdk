@@ -2,11 +2,11 @@ import '../../abstract_repositories.dart';
 import '../../models.dart';
 
 /// Use case that loads an offer by its id.
-class LoadOfferById {
+class LoadOfferByIdUseCase {
   final OffersRepositoryInterface _repository;
 
-  /// Creates a new [LoadOfferById] use case.
-  LoadOfferById({
+  /// Creates a new [LoadOfferByIdUseCase] use case.
+  LoadOfferByIdUseCase({
     required OffersRepositoryInterface repository,
   }) : _repository = repository;
 

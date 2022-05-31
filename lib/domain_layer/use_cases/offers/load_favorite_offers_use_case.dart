@@ -1,16 +1,18 @@
 import '../../abstract_repositories.dart';
 import '../../models.dart';
+import '../../use_cases.dart';
 
-/// Use case for loading all type of offers.
-class LoadOffers {
+/// Use case for loading favorite offers.
+class LoadFavoriteOffersUseCase extends LoadOffersUseCase {
   final OffersRepositoryInterface _repository;
 
-  /// Creates a new [LoadOffers] use case.
-  LoadOffers({
+  /// Creates a new [LoadFavoriteOffersUseCase] use case.
+  LoadFavoriteOffersUseCase({
     required OffersRepositoryInterface repository,
-  }) : _repository = repository;
+  })  : _repository = repository,
+        super(repository: repository);
 
-  /// Returns an offer response containing a list of offers.
+  /// Returns an offer response containing a list of favorite offers.
   Future<OfferResponse> call({
     List<int>? ids,
     RewardType? rewardType,
@@ -27,6 +29,7 @@ class LoadOffers {
   }) =>
       _repository.list(
         ids: ids,
+        isFavorites: true,
         rewardType: rewardType,
         limit: limit,
         offset: offset,

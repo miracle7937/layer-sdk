@@ -1,8 +1,8 @@
 library models;
 
+export 'models/cashback_history/cashback_history.dart';
 export 'models/category/category.dart';
 export 'models/config/config.dart';
-export 'models/offer/cashback_history.dart';
 export 'models/offer/merchant.dart';
 export 'models/offer/merchant_location.dart';
 export 'models/offer/offer.dart';

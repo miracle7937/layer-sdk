@@ -6,12 +6,12 @@ import '../../cubits.dart';
 
 /// A cubit that handles logic related to the cashback history.
 class CashbackHistoryCubit extends Cubit<CashbackHistoryState> {
-  final LoadCashbackHistory _loadCashbackHistory;
+  final LoadCashbackHistoryUseCase _loadCashbackHistoryUseCase;
 
   /// Creates [CashbackHistoryCubit].
   CashbackHistoryCubit({
-    required LoadCashbackHistory loadCashbackHistory,
-  })  : _loadCashbackHistory = loadCashbackHistory,
+    required LoadCashbackHistoryUseCase loadCashbackHistoryUseCase,
+  })  : _loadCashbackHistoryUseCase = loadCashbackHistoryUseCase,
         super(CashbackHistoryState());
 
   /// Loads the cashback history.
@@ -28,7 +28,7 @@ class CashbackHistoryCubit extends Cubit<CashbackHistoryState> {
     ));
 
     try {
-      final cashbackHistory = await _loadCashbackHistory(
+      final cashbackHistory = await _loadCashbackHistoryUseCase(
         from: from,
         to: to,
         forceRefresh: forceRefresh,

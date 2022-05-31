@@ -1,7 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
 import 'package:layer_sdk/data_layer/network.dart';
-import 'package:layer_sdk/domain_layer/use_cases.dart';
 import 'package:layer_sdk/features/offers.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
@@ -9,7 +8,7 @@ import 'package:test/test.dart';
 class MockOfferRepository extends Mock implements OffersRepositoryInterface {}
 
 final _repository = MockOfferRepository();
-final _loadOfferById = LoadOfferById(repository: _repository);
+final _loadOfferById = LoadOfferByIdUseCase(repository: _repository);
 
 final _successOfferId = 1;
 final _netErrorOfferId = 2;
