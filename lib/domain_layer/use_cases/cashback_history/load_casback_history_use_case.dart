@@ -2,11 +2,11 @@ import '../../abstract_repositories.dart';
 import '../../models.dart';
 
 /// Use case that loads the cashback history.
-class LoadCashbackHistory {
+class LoadCashbackHistoryUseCase {
   final CashbackHistoryRepositoryInterface _repository;
 
-  /// Creates a new [LoadCashbackHistory] use case.
-  LoadCashbackHistory({
+  /// Creates a new [LoadCashbackHistoryUseCase] use case.
+  LoadCashbackHistoryUseCase({
     required CashbackHistoryRepositoryInterface repository,
   }) : _repository = repository;
 

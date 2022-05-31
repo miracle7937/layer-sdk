@@ -11,7 +11,7 @@ import '../utils.dart';
 class AllOffersCubit extends OfferCubit {
   /// Creates a new [AllOffersCubit].
   AllOffersCubit({
-    required LoadOffers loadOffers,
+    required LoadOffersUseCase loadOffers,
     required RewardType rewardType,
     int limit = 10,
   }) : super(
@@ -26,7 +26,7 @@ class AllOffersCubit extends OfferCubit {
 class ForMeOffersCubit extends OfferCubit {
   /// Creates a new [ForMeOffersCubit].
   ForMeOffersCubit({
-    required LoadOffersForMe loadOffersForMe,
+    required LoadOffersForMeUseCase loadOffersForMe,
     required RewardType rewardType,
     int limit = 10,
   }) : super(
@@ -41,7 +41,7 @@ class ForMeOffersCubit extends OfferCubit {
 class FavoriteOffersCubit extends OfferCubit {
   /// Creates a new [FavoriteOffersCubit].
   FavoriteOffersCubit({
-    required LoadFavoriteOffers loadFavoriteOffers,
+    required LoadFavoriteOffersUseCase loadFavoriteOffers,
     required RewardType rewardType,
     int limit = 10,
   }) : super(
@@ -57,11 +57,11 @@ class FavoriteOffersCubit extends OfferCubit {
 /// This is done to make it easier to use the cubits on a screen that has
 /// all the types.
 class OfferCubit extends Cubit<OfferState> {
-  final LoadOffers _loadOffers;
+  final LoadOffersUseCase _loadOffers;
 
   /// Creates a new [OfferCubit].
   OfferCubit({
-    required LoadOffers loadOffers,
+    required LoadOffersUseCase loadOffers,
     required OfferStateType offerStateType,
     required RewardType rewardType,
     required int limit,

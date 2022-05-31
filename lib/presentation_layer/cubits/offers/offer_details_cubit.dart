@@ -5,11 +5,11 @@ import '../../cubits.dart';
 
 ///A cubit that holds a single offer data.
 class OfferDetailsCubit extends Cubit<OfferDetailsState> {
-  final LoadOfferById _loadOfferById;
+  final LoadOfferByIdUseCase _loadOfferById;
 
   /// Creates a new [OfferDetailsCubit] providing an [OfferRepository]
   OfferDetailsCubit({
-    required LoadOfferById loadOfferById,
+    required LoadOfferByIdUseCase loadOfferById,
     required int offerId,
   })  : _loadOfferById = loadOfferById,
         super(

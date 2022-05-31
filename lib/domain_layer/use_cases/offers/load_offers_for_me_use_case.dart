@@ -3,11 +3,11 @@ import '../../models.dart';
 import '../../use_cases.dart';
 
 /// Use case for loading offers for me.
-class LoadOffersForMe extends LoadOffers {
+class LoadOffersForMeUseCase extends LoadOffersUseCase {
   final OffersRepositoryInterface _repository;
 
-  /// Creates a new [LoadOffersForMe] use case.
-  LoadOffersForMe({
+  /// Creates a new [LoadOffersForMeUseCase] use case.
+  LoadOffersForMeUseCase({
     required OffersRepositoryInterface repository,
   })  : _repository = repository,
         super(repository: repository);
