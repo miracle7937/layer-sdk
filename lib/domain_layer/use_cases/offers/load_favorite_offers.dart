@@ -3,11 +3,11 @@ import '../../models.dart';
 import '../../use_cases.dart';
 
 /// Use case for loading favorite offers.
-class LoadFavotireOffers extends LoadOffers {
+class LoadFavoriteOffers extends LoadOffers {
   final OffersRepositoryInterface _repository;
 
-  /// Creates a new [LoadFavotireOffers] use case.
-  LoadFavotireOffers({
+  /// Creates a new [LoadFavoriteOffers] use case.
+  LoadFavoriteOffers({
     required OffersRepositoryInterface repository,
   })  : _repository = repository,
         super(repository: repository);

@@ -1,9 +1,8 @@
 import 'dart:math';
 
 import 'package:bloc/bloc.dart';
+import '../../../../../data_layer/network.dart';
 import '../../../../data_layer/data_layer.dart';
-
-import '../../../../migration/data_layer/network.dart';
 import '../../cubits.dart';
 
 ///A cubit that holds the unread alerts count

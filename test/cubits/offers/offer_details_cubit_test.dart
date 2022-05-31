@@ -1,13 +1,15 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
 import 'package:layer_sdk/data_layer/network.dart';
+import 'package:layer_sdk/domain_layer/use_cases.dart';
 import 'package:layer_sdk/features/offers.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 class MockOfferRepository extends Mock implements OffersRepositoryInterface {}
 
-MockOfferRepository _repository = MockOfferRepository();
+final _repository = MockOfferRepository();
+final _loadOfferById = LoadOfferById(repository: _repository);
 
 final _successOfferId = 1;
 final _netErrorOfferId = 2;
@@ -68,7 +70,7 @@ void main() {
   blocTest<OfferDetailsCubit, OfferDetailsState>(
     'starts on empty state',
     build: () => OfferDetailsCubit(
-      repository: _repository,
+      loadOfferById: _loadOfferById,
       offerId: _successOfferId,
     ),
     verify: (c) => expect(
@@ -80,7 +82,7 @@ void main() {
   blocTest<OfferDetailsCubit, OfferDetailsState>(
     'should load an offer',
     build: () => OfferDetailsCubit(
-      repository: _repository,
+      loadOfferById: _loadOfferById,
       offerId: _successOfferId,
     ),
     act: (c) => c.load(),
@@ -106,7 +108,7 @@ void main() {
   blocTest<OfferDetailsCubit, OfferDetailsState>(
     'should force load an offer',
     build: () => OfferDetailsCubit(
-      repository: _repository,
+      loadOfferById: _loadOfferById,
       offerId: _successOfferId,
     ),
     act: (c) => c.load(forceRefresh: true),
@@ -132,7 +134,7 @@ void main() {
   blocTest<OfferDetailsCubit, OfferDetailsState>(
     'should load using all parameters',
     build: () => OfferDetailsCubit(
-      repository: _repository,
+      loadOfferById: _loadOfferById,
       offerId: _successOfferId,
     ),
     act: (c) => c.load(
@@ -161,7 +163,7 @@ void main() {
   blocTest<OfferDetailsCubit, OfferDetailsState>(
     'should handle NetException',
     build: () => OfferDetailsCubit(
-      repository: _repository,
+      loadOfferById: _loadOfferById,
       offerId: _netErrorOfferId,
     ),
     act: (c) => c.load(),
@@ -194,7 +196,7 @@ void main() {
   blocTest<OfferDetailsCubit, OfferDetailsState>(
     'should handle generic exceptions',
     build: () => OfferDetailsCubit(
-      repository: _repository,
+      loadOfferById: _loadOfferById,
       offerId: _genericErrorOfferId,
     ),
     act: (c) => c.load(),

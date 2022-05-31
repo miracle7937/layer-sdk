@@ -4,7 +4,7 @@ import '../../mappings.dart';
 import '../../providers.dart';
 
 /// Handles all the offers data
-class OfferRepository extends OffersRepositoryInterface {
+class OfferRepository implements OffersRepositoryInterface {
   ///The provider
   final OfferProvider provider;
 

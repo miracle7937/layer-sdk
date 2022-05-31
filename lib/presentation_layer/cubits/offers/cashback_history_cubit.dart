@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 
 import '../../../data_layer/network.dart';
-import '../../../domain_layer/abstract_repositories.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
 
@@ -11,10 +10,8 @@ class CashbackHistoryCubit extends Cubit<CashbackHistoryState> {
 
   /// Creates [CashbackHistoryCubit].
   CashbackHistoryCubit({
-    required CashbackHistoryRepositoryInterface repository,
-  })  : _loadCashbackHistory = LoadCashbackHistory(
-          repository: repository,
-        ),
+    required LoadCashbackHistory loadCashbackHistory,
+  })  : _loadCashbackHistory = loadCashbackHistory,
         super(CashbackHistoryState());
 
   /// Loads the cashback history.

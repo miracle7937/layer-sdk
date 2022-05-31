@@ -1,5 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:layer_sdk/data_layer/network.dart';
+import 'package:layer_sdk/domain_layer/use_cases/offers/load_casback_history.dart';
 import 'package:layer_sdk/features/offers.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
@@ -9,6 +10,7 @@ class MockCashbackHistoryRepository extends Mock
 
 void main() {
   late CashbackHistoryRepositoryInterface repositoryMock;
+  late LoadCashbackHistory loadCashbackHistory;
 
   final history = CashbackHistory();
   final to = DateTime.now();
@@ -19,6 +21,7 @@ void main() {
 
   setUp(() {
     repositoryMock = MockCashbackHistoryRepository();
+    loadCashbackHistory = LoadCashbackHistory(repository: repositoryMock);
 
     when(
       () => repositoryMock.getCashbackHistory(
@@ -43,7 +46,7 @@ void main() {
   blocTest<CashbackHistoryCubit, CashbackHistoryState>(
     'Should start on an empty state',
     build: () => CashbackHistoryCubit(
-      repository: repositoryMock,
+      loadCashbackHistory: loadCashbackHistory,
     ),
     verify: (c) => expect(c.state, CashbackHistoryState()),
   );
@@ -51,7 +54,7 @@ void main() {
   blocTest<CashbackHistoryCubit, CashbackHistoryState>(
     'Should load cashback history',
     build: () => CashbackHistoryCubit(
-      repository: repositoryMock,
+      loadCashbackHistory: loadCashbackHistory,
     ),
     act: (c) => c.load(
       from: from,
@@ -76,7 +79,7 @@ void main() {
   blocTest<CashbackHistoryCubit, CashbackHistoryState>(
     'Should handle NetException',
     build: () => CashbackHistoryCubit(
-      repository: repositoryMock,
+      loadCashbackHistory: loadCashbackHistory,
     ),
     act: (c) => c.load(from: from),
     expect: () => [
@@ -100,7 +103,7 @@ void main() {
   blocTest<CashbackHistoryCubit, CashbackHistoryState>(
     'Should handle Exception',
     build: () => CashbackHistoryCubit(
-      repository: repositoryMock,
+      loadCashbackHistory: loadCashbackHistory,
     ),
     act: (c) => c.load(to: to),
     expect: () => [

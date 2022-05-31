@@ -44,18 +44,3 @@ class JsonParser {
     return DateFormat(pattern, locale).format(date);
   }
 }
-
-///
-R? jsonLookup<R, K>(Map<K, dynamic>? map, Iterable<K> keys, [R? defaultValue]) {
-  if (map == null) return null;
-
-  dynamic value = map;
-  for (final key in keys) {
-    if (value is Map<K, dynamic> && value.containsKey(key)) {
-      value = value[key];
-    } else {
-      return defaultValue;
-    }
-  }
-  return value as R;
-}

@@ -6,7 +6,7 @@ import '../../mappings.dart';
 import '../../providers.dart';
 
 /// A repository that can be used to fetch the cashback history.
-class CashbackHistoryRepository extends CashbackHistoryRepositoryInterface {
+class CashbackHistoryRepository implements CashbackHistoryRepositoryInterface {
   final OfferTransactionProvider _provider;
 
   /// Creates [CashbackHistoryRepository].

@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import '../../../data_layer/network.dart';
-import '../../../domain_layer/abstract_repositories.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
@@ -12,11 +11,11 @@ import '../utils.dart';
 class AllOffersCubit extends OfferCubit {
   /// Creates a new [AllOffersCubit].
   AllOffersCubit({
-    required OffersRepositoryInterface repository,
+    required LoadOffers loadOffers,
     required RewardType rewardType,
     int limit = 10,
   }) : super(
-          repository: repository,
+          loadOffers: loadOffers,
           offerStateType: OfferStateType.all,
           rewardType: rewardType,
           limit: limit,
@@ -27,11 +26,11 @@ class AllOffersCubit extends OfferCubit {
 class ForMeOffersCubit extends OfferCubit {
   /// Creates a new [ForMeOffersCubit].
   ForMeOffersCubit({
-    required OffersRepositoryInterface repository,
+    required LoadOffersForMe loadOffersForMe,
     required RewardType rewardType,
     int limit = 10,
   }) : super(
-          repository: repository,
+          loadOffers: loadOffersForMe,
           offerStateType: OfferStateType.forMe,
           rewardType: rewardType,
           limit: limit,
@@ -42,11 +41,11 @@ class ForMeOffersCubit extends OfferCubit {
 class FavoriteOffersCubit extends OfferCubit {
   /// Creates a new [FavoriteOffersCubit].
   FavoriteOffersCubit({
-    required OffersRepositoryInterface repository,
+    required LoadFavoriteOffers loadFavoriteOffers,
     required RewardType rewardType,
     int limit = 10,
   }) : super(
-          repository: repository,
+          loadOffers: loadFavoriteOffers,
           offerStateType: OfferStateType.favorites,
           rewardType: rewardType,
           limit: limit,
@@ -62,15 +61,11 @@ class OfferCubit extends Cubit<OfferState> {
 
   /// Creates a new [OfferCubit].
   OfferCubit({
-    required OffersRepositoryInterface repository,
+    required LoadOffers loadOffers,
     required OfferStateType offerStateType,
     required RewardType rewardType,
     required int limit,
-  })  : _loadOffers = offerStateType == OfferStateType.all
-            ? LoadOffers(repository: repository)
-            : offerStateType == OfferStateType.favorites
-                ? LoadFavotireOffers(repository: repository)
-                : LoadOffersForMe(repository: repository),
+  })  : _loadOffers = loadOffers,
         super(
           OfferState(
             type: offerStateType,

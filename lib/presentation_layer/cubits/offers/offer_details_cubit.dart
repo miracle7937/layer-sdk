@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import '../../../data_layer/network.dart';
-import '../../../domain_layer/abstract_repositories.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
 
@@ -10,9 +9,9 @@ class OfferDetailsCubit extends Cubit<OfferDetailsState> {
 
   /// Creates a new [OfferDetailsCubit] providing an [OfferRepository]
   OfferDetailsCubit({
-    required OffersRepositoryInterface repository,
+    required LoadOfferById loadOfferById,
     required int offerId,
-  })  : _loadOfferById = LoadOfferById(repository: repository),
+  })  : _loadOfferById = loadOfferById,
         super(
           OfferDetailsState(
             offerId: offerId,

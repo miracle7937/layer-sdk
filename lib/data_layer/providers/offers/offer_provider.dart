@@ -43,7 +43,7 @@ class OfferProvider {
     DateTime? from,
     DateTime? to,
     List<int>? categories,
-    bool? forceRefresh = false,
+    bool forceRefresh = false,
     double? latitudeForDistance,
     double? longitudeForDistance,
     double? latitude,
