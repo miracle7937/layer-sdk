@@ -1,7 +1,8 @@
 import 'dart:collection';
+
 import 'package:equatable/equatable.dart';
 
-import '../../../data_layer/data_layer.dart';
+import '../../../domain_layer/models.dart';
 
 /// Represents the state of [MessageCubit]
 class MessageState extends Equatable {

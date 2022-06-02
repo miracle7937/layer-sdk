@@ -1,9 +1,10 @@
-import '../../models.dart';
+import '../../../domain_layer/abstract_repositories.dart';
+import '../../../domain_layer/models.dart';
+import '../../mappings.dart';
 import '../../providers.dart';
-import '../mappings.dart';
 
 /// A repository that can be used to fetch [Message].
-class MessageRepository {
+class MessageRepository implements MessageRepositoryInterface {
   final MessageProvider _messageProvider;
 
   /// Creates a new repository with the supplied [MessageProvider].
@@ -12,6 +13,7 @@ class MessageRepository {
   }) : _messageProvider = messageProvider;
 
   /// Fetches the list of [Message]
+  @override
   Future<List<Message>> getMessages({
     bool forceRefresh = false,
   }) async {

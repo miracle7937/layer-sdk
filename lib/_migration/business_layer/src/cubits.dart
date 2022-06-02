@@ -72,8 +72,6 @@ export 'cubits/loyalty/loyalty_exchange_states.dart';
 export 'cubits/loyalty/loyalty_states.dart';
 export 'cubits/loyalty/loyalty_transaction_cubit.dart';
 export 'cubits/loyalty/loyalty_transactions_states.dart';
-export 'cubits/message_cubit.dart';
-export 'cubits/message_state.dart';
 export 'cubits/ocra/ocra_authentication_cubit.dart';
 export 'cubits/ocra/ocra_authentication_state.dart';
 export 'cubits/payments/payment_cubit.dart';

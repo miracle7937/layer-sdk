@@ -1,18 +1,19 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
+import 'package:layer_sdk/domain_layer/models.dart';
+import 'package:layer_sdk/domain_layer/use_cases.dart';
+import 'package:layer_sdk/presentation_layer/cubits.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockMessageRepository extends Mock implements MessageRepository {}
+class GetMessagesUseCaseMock extends Mock implements GetMessageUseCase {}
 
-late MockMessageRepository _repo;
+late GetMessagesUseCaseMock _getMessagesUseCaseMock;
 
 final _failRefresh = true;
 final _successRefresh = false;
 
 void main() {
-  _repo = MockMessageRepository();
+  _getMessagesUseCaseMock = GetMessagesUseCaseMock();
 
   final mockedMessages = List.generate(
     20,
@@ -24,29 +25,27 @@ void main() {
   );
 
   when(
-    () => _repo.getMessages(forceRefresh: _successRefresh),
+    () => _getMessagesUseCaseMock(forceRefresh: _successRefresh),
   ).thenAnswer(
     (_) async => mockedMessages,
   );
 
   when(
-    () => _repo.getMessages(forceRefresh: _failRefresh),
+    () => _getMessagesUseCaseMock(forceRefresh: _failRefresh),
   ).thenAnswer(
     (_) async => throw Exception('Some error'),
   );
 
   blocTest<MessageCubit, MessageState>(
     'starts with empty state',
-    build: () => MessageCubit(
-      messageRepository: _repo,
-    ),
+    build: () => MessageCubit(_getMessagesUseCaseMock),
     verify: (c) => expect(c.state, MessageState()),
   );
 
   blocTest<MessageCubit, MessageState>(
     'get messages retrieves the list of messages',
     build: () => MessageCubit(
-      messageRepository: _repo,
+      _getMessagesUseCaseMock,
     ),
     act: (c) => c.load(forceRefresh: _successRefresh),
     expect: () => [
@@ -60,7 +59,7 @@ void main() {
       ),
     ],
     verify: (c) => verify(
-      () => _repo.getMessages(
+      () => _getMessagesUseCaseMock(
         forceRefresh: _successRefresh,
       ),
     ).called(1),
@@ -69,7 +68,7 @@ void main() {
   blocTest<MessageCubit, MessageState>(
     'get messages emits error on failure',
     build: () => MessageCubit(
-      messageRepository: _repo,
+      _getMessagesUseCaseMock,
     ),
     act: (c) => c.load(forceRefresh: _failRefresh),
     expect: () => [
@@ -83,7 +82,7 @@ void main() {
       ),
     ],
     verify: (c) => verify(
-      () => _repo.getMessages(
+      () => _getMessagesUseCaseMock(
         forceRefresh: _failRefresh,
       ),
     ).called(1),

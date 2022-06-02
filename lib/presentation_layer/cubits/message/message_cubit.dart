@@ -1,19 +1,14 @@
 import 'package:bloc/bloc.dart';
 
-import '../../../data_layer/data_layer.dart';
-import '../cubits.dart';
+import '../../../domain_layer/use_cases.dart';
+import 'message_state.dart';
 
 /// Cubit responsible for retrieving the list of [Message]s
 class MessageCubit extends Cubit<MessageState> {
-  final MessageRepository _messageRepository;
-
   /// Creates a new instance of [MessageCubit]
-  MessageCubit({
-    required MessageRepository messageRepository,
-  })  : _messageRepository = messageRepository,
-        super(
-          MessageState(),
-        );
+  MessageCubit(this._getMessageUseCase) : super(MessageState());
+
+  final GetMessageUseCase _getMessageUseCase;
 
   /// Loads all the messages
   Future<void> load({
@@ -27,7 +22,7 @@ class MessageCubit extends Cubit<MessageState> {
     );
 
     try {
-      final messages = await _messageRepository.getMessages(
+      final messages = await _getMessageUseCase(
         forceRefresh: forceRefresh,
       );
 
