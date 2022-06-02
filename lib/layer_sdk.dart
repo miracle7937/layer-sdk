@@ -1,3 +1,3 @@
 library layer_sdk;
 
-export 'features/offers.dart';
+export 'features/loyalty.dart';

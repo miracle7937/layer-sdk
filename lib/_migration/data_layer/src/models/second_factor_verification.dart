@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+import '../../../../domain_layer/models.dart';
+
 /// A model that represents the second factor verification data.
 class SecondFactorVerification extends Equatable {
   /// The identifier of the 2FA.
@@ -34,16 +36,4 @@ class SecondFactorVerification extends Equatable {
         type,
         value,
       ];
-}
-
-/// The type of the second factor authorization.
-enum SecondFactorType {
-  /// One time sms password.
-  otp,
-
-  /// Transaction pin
-  pin,
-
-  /// Hardware token
-  hardwareToken,
 }

@@ -1,6 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:layer_sdk/data_layer/network.dart';
-import 'package:layer_sdk/features/offers.dart';
+import 'package:layer_sdk/features/loyalty.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 

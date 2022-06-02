@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 
+import '../../../../../data_layer/dtos.dart';
 import '../../helpers.dart';
-import '../second_factor_dto.dart';
 import 'transfer_type_dto.dart';
 
 /// Data transfer object representing beneficiaries
@@ -77,7 +77,7 @@ class BeneficiaryDTO {
   String? routingCode;
 
   /// The beneficiary's second factor type.
-  SecondFactorDTO? secondFactor;
+  SecondFactorTypeDTO? secondFactor;
 
   /// The beneficiary's Bank image url
   String? bankImageUrl;
@@ -136,7 +136,7 @@ class BeneficiaryDTO {
         updated: JsonParser.parseDate(json['ts_updated']),
         description: json['description'],
         routingCode: json['routing_code'],
-        secondFactor: SecondFactorDTO.fromRaw(json['second_factor']),
+        secondFactor: SecondFactorTypeDTO.fromRaw(json['second_factor']),
         bankImageUrl: json['bank_image_url'],
       );
 

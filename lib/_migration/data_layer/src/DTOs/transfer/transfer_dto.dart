@@ -1,7 +1,7 @@
+import '../../../../../data_layer/dtos.dart';
 import '../../helpers.dart';
 import '../account_dto.dart';
 import '../card_dto.dart';
-import '../second_factor_dto.dart';
 import 'beneficiary_dto.dart';
 import 'bulk_detail_dto.dart';
 import 'share_type_dto.dart';
@@ -96,8 +96,8 @@ class TransferDTO {
   ///An additional description for the reason
   String? note;
 
-  /// The [SecondFactorDTO] second factor type of the transfer
-  SecondFactorDTO? secondFactor;
+  /// The [SecondFactorTypeDTO] second factor type of the transfer
+  SecondFactorTypeDTO? secondFactor;
 
   ///The [TransferEvaluationDTO] evaluation of the transfer
   TransferEvaluationDTO? evaluation;
@@ -203,7 +203,7 @@ class TransferDTO {
         reason: json['reason'],
         reasonId: json['reason_id'],
         note: json['note'],
-        secondFactor: SecondFactorDTO.fromRaw(json['second_factor']),
+        secondFactor: SecondFactorTypeDTO.fromRaw(json['second_factor']),
         evaluation: TransferEvaluationDTO.fromJson(json['extra'] ?? {}),
         fullName: json['name'],
         bulkFilePath: jsonLookup(json['extra'], ['bulk_file']),

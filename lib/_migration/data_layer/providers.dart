@@ -22,7 +22,6 @@ export 'src/providers/experience_provider.dart';
 export 'src/providers/file_provider.dart';
 export 'src/providers/financial_data_provider.dart';
 export 'src/providers/global_setting_provider.dart';
-export 'src/providers/loyalty_provider.dart';
 export 'src/providers/message_provider.dart';
 export 'src/providers/ocra_provider.dart';
 export 'src/providers/otp_provider.dart';
