@@ -1,7 +1,7 @@
 import '../../abstract_repositories.dart';
 import '../../models.dart';
 
-/// Use get to fetch all messages
+/// Use case for load all messages
 class LoadMessageUseCase {
   final MessageRepositoryInterface _repository;
 
