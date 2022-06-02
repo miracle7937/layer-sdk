@@ -5,10 +5,13 @@ import 'message_state.dart';
 
 /// Cubit responsible for retrieving the list of [Message]s
 class MessageCubit extends Cubit<MessageState> {
-  /// Creates a new instance of [MessageCubit]
-  MessageCubit(this._getMessageUseCase) : super(MessageState());
+  final LoadMessageUseCase _loadMessageUseCase;
 
-  final GetMessageUseCase _getMessageUseCase;
+  /// Creates a new instance of [MessageCubit]
+  MessageCubit({
+    required LoadMessageUseCase loadMessageUseCase,
+  })  : _loadMessageUseCase = loadMessageUseCase,
+        super(MessageState());
 
   /// Loads all the messages
   Future<void> load({
@@ -22,7 +25,7 @@ class MessageCubit extends Cubit<MessageState> {
     );
 
     try {
-      final messages = await _getMessageUseCase(
+      final messages = await _loadMessageUseCase(
         forceRefresh: forceRefresh,
       );
 

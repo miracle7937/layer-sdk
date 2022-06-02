@@ -5,15 +5,15 @@ import 'package:layer_sdk/presentation_layer/cubits.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class GetMessagesUseCaseMock extends Mock implements GetMessageUseCase {}
+class LoadMessagesUseCaseMock extends Mock implements LoadMessageUseCase {}
 
-late GetMessagesUseCaseMock _getMessagesUseCaseMock;
+late LoadMessagesUseCaseMock _loadMessagesUseCaseMock;
 
 final _failRefresh = true;
 final _successRefresh = false;
 
 void main() {
-  _getMessagesUseCaseMock = GetMessagesUseCaseMock();
+  _loadMessagesUseCaseMock = LoadMessagesUseCaseMock();
 
   final mockedMessages = List.generate(
     20,
@@ -25,27 +25,27 @@ void main() {
   );
 
   when(
-    () => _getMessagesUseCaseMock(forceRefresh: _successRefresh),
+    () => _loadMessagesUseCaseMock(forceRefresh: _successRefresh),
   ).thenAnswer(
     (_) async => mockedMessages,
   );
 
   when(
-    () => _getMessagesUseCaseMock(forceRefresh: _failRefresh),
+    () => _loadMessagesUseCaseMock(forceRefresh: _failRefresh),
   ).thenAnswer(
     (_) async => throw Exception('Some error'),
   );
 
   blocTest<MessageCubit, MessageState>(
     'starts with empty state',
-    build: () => MessageCubit(_getMessagesUseCaseMock),
+    build: () => MessageCubit(loadMessageUseCase: _loadMessagesUseCaseMock),
     verify: (c) => expect(c.state, MessageState()),
   );
 
   blocTest<MessageCubit, MessageState>(
     'get messages retrieves the list of messages',
     build: () => MessageCubit(
-      _getMessagesUseCaseMock,
+      loadMessageUseCase: _loadMessagesUseCaseMock,
     ),
     act: (c) => c.load(forceRefresh: _successRefresh),
     expect: () => [
@@ -59,7 +59,7 @@ void main() {
       ),
     ],
     verify: (c) => verify(
-      () => _getMessagesUseCaseMock(
+      () => _loadMessagesUseCaseMock(
         forceRefresh: _successRefresh,
       ),
     ).called(1),
@@ -68,7 +68,7 @@ void main() {
   blocTest<MessageCubit, MessageState>(
     'get messages emits error on failure',
     build: () => MessageCubit(
-      _getMessagesUseCaseMock,
+      loadMessageUseCase: _loadMessagesUseCaseMock,
     ),
     act: (c) => c.load(forceRefresh: _failRefresh),
     expect: () => [
@@ -82,7 +82,7 @@ void main() {
       ),
     ],
     verify: (c) => verify(
-      () => _getMessagesUseCaseMock(
+      () => _loadMessagesUseCaseMock(
         forceRefresh: _failRefresh,
       ),
     ).called(1),
