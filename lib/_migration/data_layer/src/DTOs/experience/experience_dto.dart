@@ -37,7 +37,7 @@ class ExperienceDTO {
       menu = ExperienceMenuTypeDTO.values[json['menu']];
     }
     experienceId = json['experience_id'];
-    final pageList = json['pages'] as List<Map<String, dynamic>>;
+    final pageList = List<Map<String, dynamic>>.from(json['pages']);
     pages = pageList.map(ExperiencePageDTO.fromJson).toList();
     colors = json['colors'];
     fonts = json['fonts'];
