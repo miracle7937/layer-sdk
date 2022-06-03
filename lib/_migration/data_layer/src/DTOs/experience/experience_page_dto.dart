@@ -19,5 +19,7 @@ class ExperiencePageDTO {
       : title = json['title'],
         icon = json['icon_name'],
         order = json['order'] ?? 0,
-        containers = ExperienceContainerDTO.fromJsonList(json['containers']);
+        containers = ExperienceContainerDTO.fromJsonList(
+          List<Map<String, dynamic>>.from(json['containers']),
+        );
 }

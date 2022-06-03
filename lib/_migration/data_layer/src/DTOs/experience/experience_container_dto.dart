@@ -47,7 +47,7 @@ class ExperienceContainerDTO {
     messages =
         Map<String, dynamic>.from(json['messages'] ?? <String, dynamic>{});
     settingDefinitions = ExperienceSettingDTO.fromJsonList(
-      json['container_settings'] ?? [],
+      List<Map<String, dynamic>>.from(json['container_settings'] ?? []),
     );
   }
 }

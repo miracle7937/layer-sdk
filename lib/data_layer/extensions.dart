@@ -1,6 +1,7 @@
 /// Data Layer - Extensions
 library extensions;
 
+export 'extensions/cashback_history/cashback_history_extensions.dart';
 export 'extensions/datetime/datetime_converters.dart';
 export 'extensions/datetime/datetime_extensions.dart';
 export 'extensions/map/map_extensions.dart';

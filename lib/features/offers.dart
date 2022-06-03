@@ -1,6 +1,7 @@
 /// The offers library from the Layer SDK
 library offers;
 
+export '../data_layer/extensions/cashback_history/cashback_history_extensions.dart';
 export '../data_layer/providers/offer_transaction/offer_transaction_provider.dart';
 export '../data_layer/providers/offers/offer_provider.dart';
 export '../data_layer/repositories/offers/offer_repository.dart';
@@ -21,8 +22,8 @@ export '../domain_layer/models/offer/offer_transaction.dart';
 export '../domain_layer/use_cases/cashback_history/load_casback_history_use_case.dart';
 export '../domain_layer/use_cases/offers/load_favorite_offers_use_case.dart';
 export '../domain_layer/use_cases/offers/load_offer_by_id_use_case.dart';
-export '../domain_layer/use_cases/offers/load_offers_use_case.dart';
 export '../domain_layer/use_cases/offers/load_offers_for_me_use_case.dart';
+export '../domain_layer/use_cases/offers/load_offers_use_case.dart';
 export '../presentation_layer/cubits/cashback_history/cashback_history_cubit.dart';
 export '../presentation_layer/cubits/cashback_history/cashback_history_state.dart';
 export '../presentation_layer/cubits/offers/offer_cubit.dart';
