@@ -1,14 +1,15 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:layer_sdk/business_layer/business_layer.dart';
-import 'package:layer_sdk/data_layer/data_layer.dart';
+import 'package:layer_sdk/data_layer/network.dart';
+import 'package:layer_sdk/features/offers.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 class MockCashbackHistoryRepository extends Mock
-    implements CashbackHistoryRepository {}
+    implements CashbackHistoryRepositoryInterface {}
 
 void main() {
-  late CashbackHistoryRepository repositoryMock;
+  late CashbackHistoryRepositoryInterface repositoryMock;
+  late LoadCashbackHistoryUseCase _loadCashbackHistoryUseCase;
 
   final history = CashbackHistory();
   final to = DateTime.now();
@@ -19,6 +20,8 @@ void main() {
 
   setUp(() {
     repositoryMock = MockCashbackHistoryRepository();
+    _loadCashbackHistoryUseCase =
+        LoadCashbackHistoryUseCase(repository: repositoryMock);
 
     when(
       () => repositoryMock.getCashbackHistory(
@@ -43,7 +46,7 @@ void main() {
   blocTest<CashbackHistoryCubit, CashbackHistoryState>(
     'Should start on an empty state',
     build: () => CashbackHistoryCubit(
-      repository: repositoryMock,
+      loadCashbackHistoryUseCase: _loadCashbackHistoryUseCase,
     ),
     verify: (c) => expect(c.state, CashbackHistoryState()),
   );
@@ -51,7 +54,7 @@ void main() {
   blocTest<CashbackHistoryCubit, CashbackHistoryState>(
     'Should load cashback history',
     build: () => CashbackHistoryCubit(
-      repository: repositoryMock,
+      loadCashbackHistoryUseCase: _loadCashbackHistoryUseCase,
     ),
     act: (c) => c.load(
       from: from,
@@ -76,7 +79,7 @@ void main() {
   blocTest<CashbackHistoryCubit, CashbackHistoryState>(
     'Should handle NetException',
     build: () => CashbackHistoryCubit(
-      repository: repositoryMock,
+      loadCashbackHistoryUseCase: _loadCashbackHistoryUseCase,
     ),
     act: (c) => c.load(from: from),
     expect: () => [
@@ -100,7 +103,7 @@ void main() {
   blocTest<CashbackHistoryCubit, CashbackHistoryState>(
     'Should handle Exception',
     build: () => CashbackHistoryCubit(
-      repository: repositoryMock,
+      loadCashbackHistoryUseCase: _loadCashbackHistoryUseCase,
     ),
     act: (c) => c.load(to: to),
     expect: () => [

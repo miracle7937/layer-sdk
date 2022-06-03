@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:layer_sdk/business_layer/src/cubits/ocra/ocra_challenge_generator.dart';
+import 'package:layer_sdk/_migration/business_layer/src/cubits/ocra/ocra_challenge_generator.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 

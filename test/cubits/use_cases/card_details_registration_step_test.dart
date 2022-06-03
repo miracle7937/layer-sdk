@@ -1,5 +1,5 @@
-import 'package:layer_sdk/business_layer/src/cubits.dart';
-import 'package:layer_sdk/data_layer/data_layer.dart';
+import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
+import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 

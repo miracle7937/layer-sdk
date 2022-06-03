@@ -40,7 +40,7 @@ dependencies:
   geofencing:
     git:
       url: git@gitlab.ubanquity.com:dart-packages/geofencing.git
-      ref: edcf18d766b092e4a8f85481dddb049c0ddbc777
+      ref: e3ec9d624b6db6bfc320f777dc980da43094eb67
   google_fonts: 2.2.0
   intl: ^0.17.0
   image: ^3.1.3
@@ -78,4 +78,4 @@ flutter:
   uses-material-design: true
 
   assets:
-    - lib/flutter_layer/assets/svgs/
+    - lib/_migration/flutter_layer/assets/svgs/

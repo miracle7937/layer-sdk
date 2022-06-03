@@ -1,4 +1,4 @@
-import 'package:layer_sdk/data_layer/src/helpers.dart';
+import 'package:layer_sdk/data_layer/helpers.dart';
 import 'package:test/test.dart';
 
 void main() {

@@ -1,13 +1,17 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/business_layer/business_layer.dart';
-import 'package:layer_sdk/data_layer/data_layer.dart';
+import 'package:layer_sdk/data_layer/network.dart';
+import 'package:layer_sdk/features/offers.dart';
+import 'package:layer_sdk/presentation_layer/cubits/utils.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockOfferRepository extends Mock implements OfferRepository {}
+class MockOfferRepository extends Mock implements OffersRepositoryInterface {}
 
 final _repository = MockOfferRepository();
+final _loadOffers = LoadOffersUseCase(repository: _repository);
+final _loadFavoriteOffers = LoadFavoriteOffersUseCase(repository: _repository);
+final _loadOffersForMe = LoadOffersForMeUseCase(repository: _repository);
 
 final _limit = 5;
 
@@ -187,15 +191,36 @@ void main() {
     ).thenThrow(_genericException);
   });
 
-  group('OfferCubit for All', () => _testType(OfferStateType.all));
-  group('OfferCubit for Favorite', () => _testType(OfferStateType.favorites));
-  group('OfferCubit for For me', () => _testType(OfferStateType.forMe));
+  group(
+    'OfferCubit for All',
+    () => _testType(
+      OfferStateType.all,
+      _loadOffers,
+    ),
+  );
+
+  group(
+    'OfferCubit for Favorite',
+    () => _testType(
+      OfferStateType.favorites,
+      _loadFavoriteOffers,
+    ),
+  );
+
+  group(
+    'OfferCubit for For me',
+    () => _testType(
+      OfferStateType.forMe,
+      _loadOffersForMe,
+    ),
+  );
+
   group('Specialized cubits', _specializedCubits);
 
   group('Get offers by their ids', _offersByTheirIds);
 }
 
-void _testType(OfferStateType type) {
+void _testType(OfferStateType type, LoadOffersUseCase userCase) {
   final defaultPagination = Pagination(limit: _limit);
 
   final defaultState = OfferState(
@@ -207,7 +232,7 @@ void _testType(OfferStateType type) {
   blocTest<OfferCubit, OfferState>(
     'starts on empty state',
     build: () => OfferCubit(
-      repository: _repository,
+      loadOffers: userCase,
       limit: _limit,
       offerStateType: type,
       rewardType: _successRewardType,
@@ -221,7 +246,7 @@ void _testType(OfferStateType type) {
   blocTest<OfferCubit, OfferState>(
     'should load offers',
     build: () => OfferCubit(
-      repository: _repository,
+      loadOffers: userCase,
       limit: _limit,
       offerStateType: type,
       rewardType: _successRewardType,
@@ -259,7 +284,7 @@ void _testType(OfferStateType type) {
   blocTest<OfferCubit, OfferState>(
     'should force load offers',
     build: () => OfferCubit(
-      repository: _repository,
+      loadOffers: userCase,
       limit: _limit,
       offerStateType: type,
       rewardType: _successRewardType,
@@ -297,7 +322,7 @@ void _testType(OfferStateType type) {
   blocTest<OfferCubit, OfferState>(
     'should load more offers',
     build: () => OfferCubit(
-      repository: _repository,
+      loadOffers: userCase,
       limit: _limit,
       offerStateType: type,
       rewardType: _successRewardType,
@@ -348,7 +373,7 @@ void _testType(OfferStateType type) {
   blocTest<OfferCubit, OfferState>(
     'should load using all parameters',
     build: () => OfferCubit(
-      repository: _repository,
+      loadOffers: userCase,
       limit: _limit,
       offerStateType: type,
       rewardType: _successRewardType,
@@ -394,7 +419,7 @@ void _testType(OfferStateType type) {
   blocTest<OfferCubit, OfferState>(
     'should handle NetException',
     build: () => OfferCubit(
-      repository: _repository,
+      loadOffers: userCase,
       limit: _limit,
       offerStateType: type,
       rewardType: _failureRewardType,
@@ -438,7 +463,7 @@ void _testType(OfferStateType type) {
   blocTest<OfferCubit, OfferState>(
     'should handle generic exceptions',
     build: () => OfferCubit(
-      repository: _repository,
+      loadOffers: userCase,
       limit: _limit,
       offerStateType: type,
       rewardType: _failureRewardType,
@@ -492,7 +517,7 @@ void _specializedCubits() {
   blocTest<AllOffersCubit, OfferState>(
     'AllOffersCubit initializes correctly',
     build: () => AllOffersCubit(
-      repository: _repository,
+      loadOffers: _loadOffers,
       limit: _limit,
       rewardType: _successRewardType,
     ),
@@ -509,7 +534,7 @@ void _specializedCubits() {
   blocTest<ForMeOffersCubit, OfferState>(
     'ForMeOffersCubit initializes correctly',
     build: () => ForMeOffersCubit(
-      repository: _repository,
+      loadOffersForMe: _loadOffersForMe,
       limit: _limit,
       rewardType: _successRewardType,
     ),
@@ -526,7 +551,7 @@ void _specializedCubits() {
   blocTest<FavoriteOffersCubit, OfferState>(
     'FavoriteOffersCubit initializes correctly',
     build: () => FavoriteOffersCubit(
-      repository: _repository,
+      loadFavoriteOffers: _loadFavoriteOffers,
       limit: _limit,
       rewardType: _successRewardType,
     ),
@@ -553,7 +578,7 @@ void _offersByTheirIds() {
   blocTest<OfferCubit, OfferState>(
     'starts on empty state',
     build: () => OfferCubit(
-      repository: _repository,
+      loadOffers: _loadOffers,
       limit: _limit,
       offerStateType: type,
       rewardType: _successRewardType,
@@ -567,7 +592,7 @@ void _offersByTheirIds() {
   blocTest<OfferCubit, OfferState>(
     'should load offers',
     build: () => OfferCubit(
-      repository: _repository,
+      loadOffers: _loadOffers,
       limit: _limit,
       offerStateType: type,
       rewardType: _successRewardType,
@@ -600,7 +625,7 @@ void _offersByTheirIds() {
   blocTest<OfferCubit, OfferState>(
     'should handle NetException',
     build: () => OfferCubit(
-      repository: _repository,
+      loadOffers: _loadOffers,
       limit: _limit,
       offerStateType: type,
       rewardType: _failureRewardType,
@@ -636,7 +661,7 @@ void _offersByTheirIds() {
   blocTest<OfferCubit, OfferState>(
     'should handle generic exceptions',
     build: () => OfferCubit(
-      repository: _repository,
+      loadOffers: _loadOffers,
       limit: _limit,
       offerStateType: type,
       rewardType: _failureRewardType,
