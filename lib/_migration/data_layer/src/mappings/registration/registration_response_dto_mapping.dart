@@ -1,7 +1,7 @@
+import '../../../../../data_layer/mappings.dart';
 import '../../../errors.dart';
 import '../../../models.dart';
 import '../../dtos.dart';
-import '../../mappings.dart';
 
 /// Extension that provides mapping from [RegistrationResponseDTO]
 /// to [RegistrationResponse].

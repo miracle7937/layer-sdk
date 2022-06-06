@@ -1,4 +1,4 @@
-import '../dtos.dart';
+import '../../../../data_layer/dtos.dart';
 
 /// Data transfer object representing the response received from the API
 /// after trying to log in using the branch activation feature.
@@ -10,7 +10,7 @@ class BranchActivationResponseDTO {
   int? otpId;
 
   /// The type of the 2FA to be used.
-  SecondFactorDTO? secondFactor;
+  SecondFactorTypeDTO? secondFactor;
 
   /// The device id;
   int? deviceId;
@@ -22,7 +22,7 @@ class BranchActivationResponseDTO {
   BranchActivationResponseDTO.fromJson(Map<String, dynamic> json) {
     token = json['token'];
     otpId = json['otp_id'];
-    secondFactor = SecondFactorDTO.fromRaw(json['second_factor']);
+    secondFactor = SecondFactorTypeDTO.fromRaw(json['second_factor']);
     deviceId = json['device_id'];
     ocraSecret = json['ocra_key'];
   }
