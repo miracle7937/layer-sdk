@@ -22,7 +22,6 @@ export 'src/repositories/experience_repository.dart';
 export 'src/repositories/file_repository.dart';
 export 'src/repositories/financial_data_repository.dart';
 export 'src/repositories/global_setting_repository.dart';
-export 'src/repositories/message_repository.dart';
 export 'src/repositories/ocra_repository.dart';
 export 'src/repositories/otp_repository.dart';
 export 'src/repositories/payment_repository.dart';

@@ -34,7 +34,6 @@ export 'mappings/experience/experience_page_dto_mapping.dart';
 export 'mappings/experience/experience_preferences_dto_mapping.dart';
 export 'mappings/financial_data_dto_mapping.dart';
 export 'mappings/global_setting_dto_mapping.dart';
-export 'mappings/message_dto_mapping.dart';
 export 'mappings/ocra/ocra_challenge_dto_mapping.dart';
 export 'mappings/ocra/ocra_challenge_response_dto_mapping.dart';
 export 'mappings/ocra/ocra_challenge_result_dto_mapping.dart';

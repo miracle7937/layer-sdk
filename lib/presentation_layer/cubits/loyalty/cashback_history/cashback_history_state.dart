@@ -28,14 +28,6 @@ class CashbackHistoryState extends Equatable {
   /// The error message.
   final String? errorMessage;
 
-  /// The sum of all rewards in the [cashbackHistory].
-  double get totalReward =>
-      (cashbackHistory?.totalRewards.values.isEmpty ?? true)
-          ? 0.0
-          : cashbackHistory!.totalRewards.values.reduce(
-              (r1, r2) => r1 + r2,
-            );
-
   /// Creates [CashbackHistoryState].
   CashbackHistoryState({
     this.busy = false,

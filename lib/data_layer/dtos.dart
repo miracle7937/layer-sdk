@@ -17,5 +17,6 @@ export 'dtos/loyalty/offer/offer_rule/rule_reward_dto.dart';
 export 'dtos/loyalty/offer_transaction/offer_transaction_dto.dart';
 export 'dtos/loyalty/offer_transaction/offer_transaction_group_dto.dart';
 export 'dtos/loyalty/offer_transaction/offer_transaction_response_dto.dart';
+export 'dtos/message/message_dto.dart';
 export 'dtos/otp/otp_status_dto.dart';
 export 'dtos/second_factor/second_factor_type_dto.dart';
