@@ -2,7 +2,6 @@ import 'package:collection/collection.dart';
 
 import '../../../../../data_layer/dtos.dart';
 import '../../helpers.dart';
-import '../../../../../data_layer/dtos/account/account_dto.dart';
 import '../card_dto.dart';
 import '../recurrence_dto.dart';
 import 'bill_dto.dart';
