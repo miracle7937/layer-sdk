@@ -43,7 +43,6 @@ export 'DTOs/loyalty/loyalty_exchange_dto.dart';
 export 'DTOs/loyalty/loyalty_expiration_dto.dart';
 export 'DTOs/loyalty/loyalty_rate_dto.dart';
 export 'DTOs/loyalty/loyalty_transaction_dto.dart';
-export 'DTOs/message_dto.dart';
 export 'DTOs/ocra/ocra_challenge_dto.dart';
 export 'DTOs/ocra/ocra_challenge_response_dto.dart';
 export 'DTOs/ocra/ocra_challenge_result_dto.dart';

@@ -1,6 +1,7 @@
 library dtos;
 
 export 'dtos/category/category_dto.dart';
+export 'dtos/message/message_dto.dart';
 export 'dtos/offer/merchant_dto.dart';
 export 'dtos/offer/merchant_location_dto.dart';
 export 'dtos/offer/offer_dto.dart';

@@ -2,6 +2,8 @@ library cubits;
 
 export 'cubits/cashback_history/cashback_history_cubit.dart';
 export 'cubits/cashback_history/cashback_history_state.dart';
+export 'cubits/message/message_cubit.dart';
+export 'cubits/message/message_state.dart';
 export 'cubits/offers/offer_cubit.dart';
 export 'cubits/offers/offer_details_cubit.dart';
 export 'cubits/offers/offer_details_state.dart';

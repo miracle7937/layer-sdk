@@ -62,7 +62,6 @@ export 'src/models/loyalty/loyalty_exchange.dart';
 export 'src/models/loyalty/loyalty_expiration.dart';
 export 'src/models/loyalty/loyalty_rate.dart';
 export 'src/models/loyalty/loyalty_transaction.dart';
-export 'src/models/message.dart';
 export 'src/models/message_response.dart';
 export 'src/models/ocra/ocra_challenge.dart';
 export 'src/models/ocra/ocra_challenge_response.dart';
