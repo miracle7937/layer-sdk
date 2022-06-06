@@ -8,8 +8,8 @@ abstract class AccountLoanRepositoryInterface {
   Future<List<AccountLoan>> listCustomerAccountLoans({
     String? customerId,
     String? accountId,
-    bool includeDetails,
-    bool forceRefresh,
+    bool includeDetails = true,
+    bool forceRefresh = false,
     int? limit,
     int? offset,
   });
@@ -17,7 +17,7 @@ abstract class AccountLoanRepositoryInterface {
   /// Returns an account loan associated with an id.
   Future<AccountLoan> getAccountLoan({
     required int id,
-    bool forceRefresh,
-    bool includeDetails,
+    bool forceRefresh = false,
+    bool includeDetails = true,
   });
 }

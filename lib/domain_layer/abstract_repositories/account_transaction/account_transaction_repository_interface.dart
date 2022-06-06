@@ -9,6 +9,6 @@ abstract class AccountTransactionRepositoryInterface {
     String? customerId,
     int? limit,
     int? offset,
-    bool forceRefresh,
+    bool forceRefresh = false,
   });
 }
