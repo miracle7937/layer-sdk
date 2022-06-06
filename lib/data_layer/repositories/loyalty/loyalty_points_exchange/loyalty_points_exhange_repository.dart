@@ -8,7 +8,8 @@ class LoyaltyPointsExchangeRepository
     implements LoyaltyPointsExchangeRepositoryInterface {
   final LoyaltyPointsExchangeProvider _provider;
 
-  ///  Creates a new repository with the supplied [LoyaltyPointsExchangeProvider]
+  ///  Creates a new repository with the supplied
+  /// [LoyaltyPointsExchangeProvider]
   LoyaltyPointsExchangeRepository(LoyaltyPointsExchangeProvider provider)
       : _provider = provider;
 
