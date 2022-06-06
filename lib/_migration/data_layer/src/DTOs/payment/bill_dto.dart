@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 
+import '../../../../../data_layer/dtos.dart';
 import '../../helpers.dart';
-import '../second_factor_dto.dart';
 import 'service_dto.dart';
 import 'service_field_dto.dart';
 
@@ -83,7 +83,7 @@ class BillDTO {
   double? billingAmount;
 
   /// The bill's second factor type
-  SecondFactorDTO? secondFactor;
+  SecondFactorTypeDTO? secondFactor;
 
   /// The bill's image url
   String? imageUrl;
@@ -147,7 +147,7 @@ class BillDTO {
           : [],
       additionalFields: json['additional_fields'],
       visible: json['visible'],
-      secondFactor: SecondFactorDTO.fromRaw(json['second_factor']),
+      secondFactor: SecondFactorTypeDTO.fromRaw(json['second_factor']),
       imageUrl: json['image_url'],
     );
   }
