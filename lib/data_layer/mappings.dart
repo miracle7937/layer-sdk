@@ -1,6 +1,7 @@
 library mappings;
 
 export 'mappings/campaign/campaign_dto_mapping.dart';
+export 'mappings/campaign/campaign_response_dto_mapping.dart';
 export 'mappings/category/category_dto_mapping.dart';
 export 'mappings/message/message_dto_mapping.dart';
 export 'mappings/offer/offer_dto_mapping.dart';

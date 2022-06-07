@@ -5,7 +5,7 @@ import '../../errors.dart';
 
 ///Extension for mapping the [CustomerCampaignDTO]
 extension CampaignDTOMapping on CustomerCampaignDTO {
-  ///Maps an [OfferDTO] into an [Offer]
+  ///Maps an [CustomerCampaignDTO] into an [CustomerCampaign]
   CustomerCampaign toCampaign() => CustomerCampaign(
         id: id,
         startDate: startDate,

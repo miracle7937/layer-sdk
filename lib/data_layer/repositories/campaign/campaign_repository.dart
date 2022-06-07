@@ -20,63 +20,59 @@ class CampaignRepository implements CampaignRepositoryInterface {
   ///
 
   @override
-  Future<CustomerCampaign> list({
+  Future<CampaignResponse> list({
     List<CampaignType>? types,
     bool? read,
-    int? limit,
+    required int limit,
+    required int offset,
     String? sortby,
     bool? desc,
   }) async {
-    assert(limit == null && types == null);
+    assert(types == null);
 
-    final campaignDTO = await provider.list(
+    final campaignResponseDTO = await provider.list(
       types: types,
       read: read,
       limit: limit,
+      offset: offset,
       sortby: sortby,
       desc: desc,
     );
 
-    return campaignDTO.toCampaign();
+    return campaignResponseDTO.toCampaignResponse();
   }
 
   ///Gets an Campaign by its id.
   @override
   Future<CustomerCampaign> getCampaign({
     required int id,
-    bool? read,
-    int? limit,
-    String? sortby,
-    bool? desc,
   }) async {
     final campaignDTO = await provider.getCampaign(
       id: id,
-      read: read,
-      limit: limit,
-      sortby: sortby,
-      desc: desc,
     );
     return campaignDTO.toCampaign();
   }
 
   @override
-  Future<CustomerCampaign> getPublicCampaigns({
+  Future<CampaignResponse> getPublicCampaigns({
     CampaignType medium = CampaignType.landingPage,
     CampaignTarget target = CampaignTarget.public,
     bool? read,
-    int? limit,
+    required int limit,
+    required int offset,
     String? sortby,
     bool? desc,
   }) async {
-    final campaignDTO = await provider.getPublicCampaigns(
+    final campaignResponseDTO = await provider.getPublicCampaigns(
       medium: medium,
       target: target,
       read: read,
       limit: limit,
+      offset: offset,
       sortby: sortby,
       desc: desc,
     );
-    return campaignDTO.toCampaign();
+    return campaignResponseDTO.toCampaignResponse();
   }
 
   @override

@@ -14,20 +14,21 @@ class LoadPublicCampaignsUseCase {
   ///
   /// The [medium] value is used for getting only the campaigns that
   /// belong to this campaign type.
-  /// 
+  ///
   /// The [target] value is used for getting only the campaigns that
   /// belong to public campaign target.
-  /// 
-  /// [limit] values are required for paginating the results.
-  /// 
+  ///
+  /// [limit] and [offset] values are required for paginating the results.
+  ///
   /// The [sortby] value is used for sorting the campaigns that belong to
   /// this.
 
-  Future<CustomerCampaign> call({
+  Future<CampaignResponse> call({
     CampaignType? medium,
     CampaignTarget? target,
     bool? read,
-    int? limit,
+    required int limit,
+    required int offset,
     String? sortby,
     bool? desc,
   }) =>
@@ -35,6 +36,7 @@ class LoadPublicCampaignsUseCase {
         medium: medium!,
         target: target!,
         limit: limit,
+        offset: offset,
         read: read,
         sortby: sortby,
         desc: desc,

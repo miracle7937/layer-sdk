@@ -1,5 +1,6 @@
 library dtos;
 
+export 'dtos/campaign/campaign_response_dto.dart';
 export 'dtos/campaign/customer_campaign_dto.dart';
 export 'dtos/category/category_dto.dart';
 export 'dtos/message/message_dto.dart';

@@ -1,5 +1,6 @@
 library models;
 
+export 'models/campaign/campaign_response.dart';
 export 'models/campaign/customer_campaign.dart';
 export 'models/cashback_history/cashback_history.dart';
 export 'models/category/category.dart';

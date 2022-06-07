@@ -15,21 +15,23 @@ class LoadCampaignsUseCase {
   /// The [types] value is used for getting only the campaigns that
   /// belong to those campaign type list.
   ///
-  /// [limit] values are required for paginating the results.
+  /// [limit] and [offset] values are required for paginating the results.
   ///
   /// The [sortby] value is used for sorting the campaigns that belong to
   /// this.
 
-  Future<CustomerCampaign> call({
+  Future<CampaignResponse> call({
     List<CampaignType>? types,
     bool? read,
-    int? limit,
+    required int limit,
+    required int offset,
     String? sortby,
     bool? desc,
   }) =>
       _repository.list(
         types: types,
         limit: limit,
+        offset: offset,
         read: read,
         sortby: sortby,
         desc: desc,

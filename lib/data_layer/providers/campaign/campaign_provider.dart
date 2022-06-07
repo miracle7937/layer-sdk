@@ -17,10 +17,11 @@ class CampaignProvider {
   /// Use cases:
   ///   - Listing the public campaigns on the app.
   ///
-  Future<CustomerCampaignDTO> list({
+  Future<CampaignResponseDTO> list({
     List<CampaignType>? types,
     bool? read,
     int? limit,
+    int? offset,
     String? sortby,
     bool? desc,
   }) async {
@@ -33,22 +34,23 @@ class CampaignProvider {
         if (types != null && types.isNotEmpty) 'medium': types.join(','),
         if (read != null) 'read': read,
         if (limit != null) 'limit': limit,
+        if (offset != null) 'offset': offset,
         if (sortby != null) 'sortby': sortby,
         if (desc != null) 'desc': desc,
       },
-      //  forceRefresh: forceRefresh,
     );
 
-    return CustomerCampaignDTO.fromJson(response.data);
+    return CampaignResponseDTO.fromJson(response.data);
   }
 
   /// Lists public campaigns
   ///
-  Future<CustomerCampaignDTO> getPublicCampaigns({
+  Future<CampaignResponseDTO> getPublicCampaigns({
     CampaignType medium = CampaignType.landingPage,
     CampaignTarget target = CampaignTarget.public,
     bool? read,
     int? limit,
+    int? offset,
     String? sortby,
     bool? desc,
   }) async {
@@ -58,22 +60,18 @@ class CampaignProvider {
       queryParameters: {
         if (read != null) 'read': read,
         if (limit != null) 'limit': limit,
+        if (offset != null) 'offset': offset,
         if (sortby != null) 'sortby': sortby,
         if (desc != null) 'desc': desc,
       },
-      //  forceRefresh: forceRefresh,
     );
 
-    return CustomerCampaignDTO.fromJson(response.data);
+    return CampaignResponseDTO.fromJson(response.data);
   }
 
   ///Gets an Campaign by its id.
   Future<CustomerCampaignDTO> getCampaign({
     required int id,
-    bool? read,
-    int? limit,
-    String? sortby,
-    bool? desc,
   }) async {
     final response = await netClient.request(
       '${netClient.netEndpoints.campaign}/$id',
