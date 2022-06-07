@@ -1,7 +1,7 @@
 import '../../abstract_repositories.dart';
 import '../../models.dart';
 
-/// Use case for loading all type of campaigns.
+/// Use case for loading public type of campaigns.
 class LoadPublicCampaignsUseCase {
   final CampaignRepositoryInterface _repository;
 
@@ -23,7 +23,7 @@ class LoadPublicCampaignsUseCase {
   /// The [sortby] value is used for sorting the campaigns that belong to
   /// this.
 
-  Future<List<CustomerCampaign>> call({
+  Future<CustomerCampaign> call({
     CampaignType? medium,
     CampaignTarget? target,
     bool? read,

@@ -7,6 +7,7 @@ abstract class CampaignRepositoryInterface {
     List<CampaignType>? types,
     bool? read,
     int? limit,
+    //offset
     String? sortby,
     bool? desc,
   });
@@ -21,7 +22,7 @@ abstract class CampaignRepositoryInterface {
   });
 
   ///Gets public campaigns that is public in [CampaignTarget]
-  Future<List<CustomerCampaign>> getPublicCampaigns({
+  Future<CustomerCampaign> getPublicCampaigns({
     CampaignType medium = CampaignType.landingPage,
     CampaignTarget target = CampaignTarget.public,
     bool? read,
@@ -30,13 +31,13 @@ abstract class CampaignRepositoryInterface {
     bool? desc,
   });
 
-  /// 
-  Future<dynamic> onCampaignOpened({
+  /// Send id on campaign action
+  Future<void> onCampaignOpened({
     required int id,
   });
 
-  ///
-  Future<dynamic> onCampaignAction({
+  /// Send id when campaign opened
+  Future<void> onCampaignAction({
     required int id,
   });
 }
