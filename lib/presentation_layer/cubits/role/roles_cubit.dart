@@ -1,17 +1,17 @@
 import 'package:bloc/bloc.dart';
 
-import '../../../../../../data_layer/network.dart';
-import '../../../data_layer/data_layer.dart';
-import '../cubits.dart';
+import '../../../../../data_layer/network.dart';
+import '../../../domain_layer/use_cases.dart';
+import '../../cubits.dart';
 
 /// Cubit responsible for [User] [Roles].
 class RolesCubit extends Cubit<RolesState> {
-  final RolesRepository _repository;
+  final LoadCustomerRolesUseCase _loadCustomerRolesUseCase;
 
   /// Creates a new [RolesCubit] instance.
   RolesCubit({
-    required RolesRepository repository,
-  })  : _repository = repository,
+    required LoadCustomerRolesUseCase loadCustomerRolesUseCase,
+  })  : _loadCustomerRolesUseCase = loadCustomerRolesUseCase,
         super(RolesState());
 
   /// Loads all available customer roles.
@@ -26,9 +26,8 @@ class RolesCubit extends Cubit<RolesState> {
     );
 
     try {
-      final roles = await _repository.listCustomerRoles(
-        forceRefresh: forceRefresh,
-      );
+      final roles = await _loadCustomerRolesUseCase(forceRefresh: forceRefresh);
+
       emit(
         state.copyWith(
           busy: false,

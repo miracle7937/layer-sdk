@@ -1,5 +1,5 @@
-import '../../../../data_layer/network.dart';
-import '../dtos.dart';
+import '../../dtos/role/role_dto.dart';
+import '../../network.dart';
 
 /// Provides data about the customer roles
 class RolesProvider {

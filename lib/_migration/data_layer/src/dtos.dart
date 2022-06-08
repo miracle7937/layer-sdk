@@ -59,7 +59,6 @@ export 'DTOs/registration/authentication_dto.dart';
 export 'DTOs/registration/authentication_response_dto.dart';
 export 'DTOs/registration/registration_dto.dart';
 export 'DTOs/registration/registration_response_dto.dart';
-export 'DTOs/role_dto.dart';
 export 'DTOs/transfer/beneficiary_dto.dart';
 export 'DTOs/transfer/transfer_dto.dart';
 export 'DTOs/transfer/transfer_evaluation_dto.dart';

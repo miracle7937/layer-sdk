@@ -1,14 +1,16 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
 import 'package:layer_sdk/data_layer/network.dart';
+import 'package:layer_sdk/domain_layer/models.dart';
+import 'package:layer_sdk/domain_layer/use_cases.dart';
+import 'package:layer_sdk/presentation_layer/cubits.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockRolesRepository extends Mock implements RolesRepository {}
+class MockLoadCustomRolesUseCase extends Mock
+    implements LoadCustomerRolesUseCase {}
 
-late MockRolesRepository _repo;
+late MockLoadCustomRolesUseCase _mockloadCustomRolesUseCase;
 late List<Role> _mockedRoles;
 
 void main() {
@@ -24,7 +26,7 @@ void main() {
   );
 
   setUpAll(() {
-    _repo = MockRolesRepository();
+    _mockloadCustomRolesUseCase = MockLoadCustomRolesUseCase();
   });
 
   group('RolesCubit general tests', _generalTests);
@@ -34,7 +36,7 @@ void main() {
 void _generalTests() {
   setUp(() {
     when(
-      () => _repo.listCustomerRoles(
+      () => _mockloadCustomRolesUseCase(
         forceRefresh: true,
       ),
     ).thenAnswer((_) async => _mockedRoles);
@@ -42,7 +44,9 @@ void _generalTests() {
 
   blocTest<RolesCubit, RolesState>(
     'Starts with empty state',
-    build: () => RolesCubit(repository: _repo),
+    build: () => RolesCubit(
+      loadCustomerRolesUseCase: _mockloadCustomRolesUseCase,
+    ),
     verify: (c) => expect(
       c.state,
       RolesState(),
@@ -51,7 +55,9 @@ void _generalTests() {
 
   blocTest<RolesCubit, RolesState>(
     'Loads roles successfully',
-    build: () => RolesCubit(repository: _repo),
+    build: () => RolesCubit(
+      loadCustomerRolesUseCase: _mockloadCustomRolesUseCase,
+    ),
     act: (c) => c.listCustomerRoles(
       forceRefresh: true,
     ),
@@ -65,7 +71,7 @@ void _generalTests() {
       ),
     ],
     verify: (c) => verify(
-      () => _repo.listCustomerRoles(forceRefresh: true),
+      () => _mockloadCustomRolesUseCase(forceRefresh: true),
     ).called(1),
   );
 }
@@ -73,13 +79,13 @@ void _generalTests() {
 void _failureTests() {
   setUp(() {
     when(
-      () => _repo.listCustomerRoles(
+      () => _mockloadCustomRolesUseCase(
         forceRefresh: true,
       ),
     ).thenAnswer((_) async => throw Exception('Some error'));
 
     when(
-      () => _repo.listCustomerRoles(
+      () => _mockloadCustomRolesUseCase(
         forceRefresh: false,
       ),
     ).thenAnswer((_) async => throw NetException(message: 'Some error'));
@@ -87,7 +93,9 @@ void _failureTests() {
 
   blocTest<RolesCubit, RolesState>(
     'Handles general exceptions gracefully',
-    build: () => RolesCubit(repository: _repo),
+    build: () => RolesCubit(
+      loadCustomerRolesUseCase: _mockloadCustomRolesUseCase,
+    ),
     act: (c) => c.listCustomerRoles(
       forceRefresh: true,
     ),
@@ -104,13 +112,15 @@ void _failureTests() {
       isA<Exception>(),
     ],
     verify: (c) => verify(
-      () => _repo.listCustomerRoles(forceRefresh: true),
+      () => _mockloadCustomRolesUseCase(forceRefresh: true),
     ).called(1),
   );
 
   blocTest<RolesCubit, RolesState>(
     'Handles network exceptions gracefully',
-    build: () => RolesCubit(repository: _repo),
+    build: () => RolesCubit(
+      loadCustomerRolesUseCase: _mockloadCustomRolesUseCase,
+    ),
     act: (c) => c.listCustomerRoles(
       forceRefresh: false,
     ),
@@ -127,7 +137,7 @@ void _failureTests() {
       isA<NetException>(),
     ],
     verify: (c) => verify(
-      () => _repo.listCustomerRoles(forceRefresh: false),
+      () => _mockloadCustomRolesUseCase(forceRefresh: false),
     ).called(1),
   );
 }

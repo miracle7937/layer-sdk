@@ -16,3 +16,5 @@ export 'cubits/loyalty/offers/offer_filter_state.dart';
 export 'cubits/loyalty/offers/offer_state.dart';
 export 'cubits/message/message_cubit.dart';
 export 'cubits/message/message_state.dart';
+export 'cubits/role/roles_cubit.dart';
+export 'cubits/role/roles_state.dart';
