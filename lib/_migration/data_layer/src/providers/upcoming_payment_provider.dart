@@ -30,7 +30,9 @@ class UpcomingPaymentProvider {
       forceRefresh: forceRefresh,
     );
 
-    return UpcomingPaymentDTO.fromJsonList(response.data['upcoming_payments']);
+    return UpcomingPaymentDTO.fromJsonList(
+      List<Map<String, dynamic>>.from(response.data['upcoming_payments']),
+    );
   }
 
   /// Returns the upcoming payments

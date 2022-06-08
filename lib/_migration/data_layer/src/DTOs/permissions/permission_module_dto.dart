@@ -21,7 +21,9 @@ class PermissionModuleDTO {
       PermissionModuleDTO(
         id: json['module_id'],
         urlRegex: json['url_re'],
-        objects: PermissionModuleObjectDTO.fromJsonList(json['object']),
+        objects: PermissionModuleObjectDTO.fromJsonList(
+          List<Map<String, dynamic>>.from(json['object']),
+        ),
       );
 
   /// Creates a list of [PermissionModuleDTO] from a JSON list

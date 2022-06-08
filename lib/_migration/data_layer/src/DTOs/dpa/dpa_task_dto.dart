@@ -120,7 +120,8 @@ class DPATaskDTO {
         taskDefinitionKey: json['taskDefinitionKey'],
         preVariables: json['PreVariables'] == null
             ? null
-            : DPAVariableDTO.fromJsonList(json['PreVariables']),
+            : DPAVariableDTO.fromJsonList(
+                List<Map<String, dynamic>>.from(json['PreVariables'])),
         taskVariables: json['taskVariables'] == null
             ? null
             : DPAVariableDTO.fromJsonMap(json['taskVariables']['variables']),

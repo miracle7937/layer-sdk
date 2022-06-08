@@ -51,12 +51,16 @@ class MerchantDTO {
         redemptionType: RedemptionTypeDTO.fromRaw(json['redemption_type']),
         categories: json['merchant']['categories'] == null
             ? []
-            : CategoryDTO.fromJsonList(json['merchant']['categories']),
+            : CategoryDTO.fromJsonList(
+                List<Map<String, dynamic>>.from(json['merchant']['categories']),
+              ),
         description: json['merchant']['description'],
         imageURL: json['merchant']['image_url'],
         locations: json['merchant']['locations'] == null
             ? []
-            : MerchantLocationDTO.fromJsonList(json['merchant']['locations']),
+            : MerchantLocationDTO.fromJsonList(
+                List<Map<String, dynamic>>.from(json['merchant']['locations']),
+              ),
         name: json['merchant']['merchant_name'],
         created: JsonParser.parseDate(json['merchant']['ts_created']),
         updated: JsonParser.parseDate(json['merchant']['ts_updated']),

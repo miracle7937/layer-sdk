@@ -34,8 +34,12 @@ class OfferTransactionResponseDTO {
       totalTransactionAmount:
           JsonParser.parseDouble(json['total_transaction_amount']),
       totalRewardAmount: JsonParser.parseDouble(json['total_reward_amount']),
-      offerGroups: OfferTransactionGroupDTO.fromJsonList(json['offer_total']),
-      transactions: OfferTransactionDTO.fromJsonList(json['offer_transaction']),
+      offerGroups: OfferTransactionGroupDTO.fromJsonList(
+        List<Map<String, dynamic>>.from(json['offer_total']),
+      ),
+      transactions: OfferTransactionDTO.fromJsonList(
+        List<Map<String, dynamic>>.from(json['offer_transaction']),
+      ),
     );
   }
 }

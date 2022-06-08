@@ -21,7 +21,9 @@ class MessageProvider {
     );
 
     return response.data is List<Map<String, dynamic>>
-        ? MessageDTO.fromJsonList(response.data)
+        ? MessageDTO.fromJsonList(
+            List<Map<String, dynamic>>.from(response.data),
+          )
         : [];
   }
 }

@@ -35,7 +35,9 @@ class AccountProvider {
       forceRefresh: forceRefresh,
     );
 
-    return AccountDTO.fromJsonList(response.data);
+    return AccountDTO.fromJsonList(
+      List<Map<String, dynamic>>.from(response.data),
+    );
   }
 
   /// Returns all completed transactions of the supplied customer account
@@ -59,7 +61,9 @@ class AccountProvider {
       forceRefresh: forceRefresh,
     );
 
-    return AccountTransactionDTO.fromJsonList(response.data);
+    return AccountTransactionDTO.fromJsonList(
+      List<Map<String, dynamic>>.from(response.data),
+    );
   }
 
   /// Returns all loans associated with the supplied [customerId]
@@ -92,7 +96,9 @@ class AccountProvider {
       forceRefresh: forceRefresh,
     );
 
-    return AccountLoanDTO.fromJsonList(response.data);
+    return AccountLoanDTO.fromJsonList(
+      List<Map<String, dynamic>>.from(response.data),
+    );
   }
 
   /// Returns an account loan associated with an id.

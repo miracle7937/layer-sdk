@@ -143,7 +143,9 @@ class BillDTO {
       created: JsonParser.parseDate(json['ts_created']),
       updated: JsonParser.parseDate(json['ts_updated']),
       billingFields: json['billing_fields'] != null
-          ? ServiceFieldDTO.fromJsonList(json['billing_fields'])
+          ? ServiceFieldDTO.fromJsonList(
+              List<Map<String, dynamic>>.from(json['billing_fields']),
+            )
           : [],
       additionalFields: json['additional_fields'],
       visible: json['visible'],

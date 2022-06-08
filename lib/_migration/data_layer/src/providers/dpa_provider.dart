@@ -24,7 +24,7 @@ class DPAProvider {
       forceRefresh: forceRefresh,
     );
 
-    return (response.data as List<dynamic>)
+    return List<Map<String, dynamic>>.from(response.data)
         .map(
           (item) => DPAProcessDefinitionDTO.fromJson(item['definition']),
         )
@@ -42,7 +42,7 @@ class DPAProvider {
       forceRefresh: forceRefresh,
     );
 
-    return (response.data as List<Map<String, dynamic>>)
+    return List<Map<String, dynamic>>.from(response.data)
         .map(DPAProcessDefinitionDTO.fromJson)
         .toList();
   }
@@ -63,7 +63,9 @@ class DPAProvider {
       },
     );
 
-    return DPATaskDTO.fromJsonList(response.data);
+    return DPATaskDTO.fromJsonList(
+      List<Map<String, dynamic>>.from(response.data),
+    );
   }
 
   /// Returns the current task of the process matching provided id.
@@ -102,7 +104,9 @@ class DPAProvider {
     );
 
     if (response.data is List) {
-      return DPATaskDTO.fromJsonList(response.data);
+      return DPATaskDTO.fromJsonList(
+        List<Map<String, dynamic>>.from(response.data),
+      );
     }
 
     return [DPATaskDTO.fromJson(response.data)];
@@ -120,7 +124,9 @@ class DPAProvider {
       forceRefresh: forceRefresh,
     );
 
-    return DPATaskDTO.fromJsonList(response.data);
+    return DPATaskDTO.fromJsonList(
+      List<Map<String, dynamic>>.from(response.data),
+    );
   }
 
   /// Claims a task to the logged in user.

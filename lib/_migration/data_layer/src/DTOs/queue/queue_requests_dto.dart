@@ -23,8 +23,12 @@ class QueueRequestDTO {
   /// Creates a new [QueueRequestDTO] from a JSON string
   factory QueueRequestDTO.fromJson(Map<String, dynamic> json) {
     return QueueRequestDTO(
-      queues: QueueDTO.fromJsonList(json['queues']),
-      requests: RequestDTO.fromJsonList(json['requests']),
+      queues: QueueDTO.fromJsonList(
+        List<Map<String, dynamic>>.from(json['queues']),
+      ),
+      requests: RequestDTO.fromJsonList(
+        List<Map<String, dynamic>>.from(json['requests']),
+      ),
     );
   }
 }

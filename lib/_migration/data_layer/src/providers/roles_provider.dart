@@ -21,7 +21,9 @@ class RolesProvider {
     );
 
     if (response.data is List) {
-      return RoleDTO.fromJsonList(response.data);
+      return RoleDTO.fromJsonList(
+        List<Map<String, dynamic>>.from(response.data),
+      );
     }
 
     return [];
