@@ -26,7 +26,6 @@ export 'src/repositories/ocra_repository.dart';
 export 'src/repositories/otp_repository.dart';
 export 'src/repositories/payment_repository.dart';
 export 'src/repositories/permission_module_repository.dart';
-export 'src/repositories/product_repository.dart';
 export 'src/repositories/queue_request_repository.dart';
 export 'src/repositories/registration_repository.dart';
 export 'src/repositories/second_factor_repository.dart';

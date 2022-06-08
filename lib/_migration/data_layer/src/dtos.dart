@@ -50,7 +50,6 @@ export 'DTOs/payment/service_field_dto.dart';
 export 'DTOs/permissions/permission_dto.dart';
 export 'DTOs/permissions/permission_module_dto.dart';
 export 'DTOs/preferences_dto.dart';
-export 'DTOs/product_dto.dart';
 export 'DTOs/queue/queue_dto.dart';
 export 'DTOs/queue/queue_requests_dto.dart';
 export 'DTOs/queue/request_dto.dart';

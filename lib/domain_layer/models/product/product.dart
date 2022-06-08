@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../DTOs/product_dto.dart';
+import '../../../data_layer/dtos.dart';
 
 /// Class that holds data of banking products
 class Product extends Equatable {

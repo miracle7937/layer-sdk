@@ -1,9 +1,10 @@
-import '../../models.dart';
-import '../mappings.dart';
-import '../providers/product_provider.dart';
+import '../../../domain_layer/abstract_repositories.dart';
+import '../../../domain_layer/models.dart';
+import '../../mappings.dart';
+import '../../providers.dart';
 
 /// Repository that handle Product data
-class ProductRepository {
+class ProductRepository implements ProductRepositoryInterface {
   /// Provider
   final ProductProvider provider;
 
@@ -13,6 +14,7 @@ class ProductRepository {
   });
 
   /// List the [Product]s
+  @override
   Future<List<Product>> list({
     String? productType,
     bool sortByName = false,
@@ -34,6 +36,7 @@ class ProductRepository {
   }
 
   /// Fetch a [Product] by id
+  @override
   Future<Product> fetchProduct(String productId) async {
     final product = await provider.fetchProduct(productId);
     return product.toProduct();

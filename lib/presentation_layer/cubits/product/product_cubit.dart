@@ -1,22 +1,23 @@
 import 'package:bloc/bloc.dart';
 
 import '../../../../../data_layer/network.dart';
-import '../../../../data_layer/data_layer.dart';
-import '../../utils.dart';
+import '../../../domain_layer/models.dart';
+import '../../../domain_layer/use_cases.dart';
+import '../utils.dart';
 import 'product_state.dart';
 
 /// Cubit that manages Product data
 class ProductCubit<Equatable> extends Cubit<ProductState> {
-  final ProductRepository _repository;
+  final LoadProductsUseCase _loadProductsUseCase;
 
   String? _searchQuery;
 
   /// Creates a new [ProductCubit]
   ProductCubit({
-    required ProductRepository repository,
+    required LoadProductsUseCase loadProductsUseCase,
     Iterable<Product> initialSelectedProducts = const <Product>[],
     int limit = 20,
-  })  : _repository = repository,
+  })  : _loadProductsUseCase = loadProductsUseCase,
         super(
           ProductState(
             selectedProducts: initialSelectedProducts,
@@ -27,33 +28,23 @@ class ProductCubit<Equatable> extends Cubit<ProductState> {
           ),
         );
 
-  /// Loads the cubit data
-  Future<void> load({
-    bool forceRefresh = false,
-
-    /// Search query for filtering [Product] leave it null to get all products
-    String? searchQuery,
-  }) {
-    _searchQuery = searchQuery;
-    return _load(
-      forceRefresh: forceRefresh,
-    );
-  }
-
   /// Loads the next page of products and adds them to the list
   Future<void> loadMore({
     bool forceRefresh = false,
   }) {
-    return _load(
+    return load(
       forceRefresh: forceRefresh,
       loadMore: true,
     );
   }
 
-  Future<void> _load({
+  /// Loads the cubit products
+  Future<void> load({
     bool loadMore = false,
     bool forceRefresh = false,
+    String? searchQuery,
   }) async {
+    _searchQuery = searchQuery;
     emit(
       state.copyWith(
         busy: true,
@@ -66,7 +57,7 @@ class ProductCubit<Equatable> extends Cubit<ProductState> {
 
     try {
       final newPage = state.pagination.paginate(loadMore: loadMore);
-      final response = await _repository.list(
+      final response = await _loadProductsUseCase(
         offset: newPage.offset,
         limit: newPage.limit,
         forceRefresh: forceRefresh,
