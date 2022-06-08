@@ -1,9 +1,7 @@
 import 'package:collection/collection.dart';
 
-import '../../../../../data_layer/dtos/second_factor/second_factor_type_dto.dart';
+import '../../dtos.dart';
 import '../../helpers.dart';
-import 'service_dto.dart';
-import 'service_field_dto.dart';
 
 /// Data transfer object representing bills
 /// retrieved from the payment service.
@@ -12,7 +10,6 @@ class BillDTO {
   int? billId;
 
   /// The id of the customer.
-  /// TODO: check with BE what this field represents
   String? customerId;
 
   /// The service linked to the bill
@@ -83,7 +80,7 @@ class BillDTO {
   double? billingAmount;
 
   /// The bill's second factor type
-  SecondFactorTypeDTO? secondFactor;
+  SecondFactorDTO? secondFactor;
 
   /// The bill's image url
   String? imageUrl;
@@ -144,12 +141,12 @@ class BillDTO {
       updated: JsonParser.parseDate(json['ts_updated']),
       billingFields: json['billing_fields'] != null
           ? ServiceFieldDTO.fromJsonList(
-              List<Map<String, dynamic>>.from(json['billing_fields']),
+              List.from(json['billing_fields']),
             )
           : [],
       additionalFields: json['additional_fields'],
       visible: json['visible'],
-      secondFactor: SecondFactorTypeDTO.fromRaw(json['second_factor']),
+      secondFactor: SecondFactorDTO.fromRaw(json['second_factor']),
       imageUrl: json['image_url'],
     );
   }
