@@ -10,29 +10,29 @@ extension CampaignDTOMapping on CustomerCampaignDTO {
         id: id,
         startDate: startDate,
         medium: medium?.toCampaignType(),
-        message: message,
+        message: message ?? '',
         action: action?.toCampaignActionType(),
-        actionMessage: actionMessage,
-        actionValue: actionValue,
-        title: title,
-        messageType: messageType,
-        description: description,
-        html: html,
+        actionMessage: actionMessage ?? '',
+        actionValue: actionValue ?? '',
+        title: title ?? '',
+        messageType: messageType ?? '',
+        description: description ?? '',
+        html: html ?? '',
         imageUrl: imageUrl != null && imageUrl!.isNotEmpty
             ? '${EnvironmentConfiguration.current.fullUrl}/infobanking/v1'
                 '$imageUrl'
-            : null,
+            : '',
         thumbnailUrl: thumbnailUrl != null && thumbnailUrl!.isNotEmpty
             ? '${EnvironmentConfiguration.current.fullUrl}/infobanking/v1'
                 '$thumbnailUrl'
-            : null,
+            : '',
         videoUrl: videoUrl != null && videoUrl!.isNotEmpty
             ? '${EnvironmentConfiguration.current.fullUrl}/infobanking/v1'
                 '$videoUrl'
-            : null,
+            : '',
         shareVideo: shareVideo,
         target: target?.toCampaignTarget(),
-        referenceImage: referenceImage,
+        referenceImage: referenceImage ?? '',
         updatedAt: updatedAt.toString(),
       );
 }
@@ -42,14 +42,12 @@ extension CampaignTypeDTOMapping on CampaignTypeDTO {
   ///Maps a [CampaignTypeDTO] into a [CampaignType]
   CampaignType toCampaignType() {
     switch (this) {
-      case CampaignTypeDTO.container:
-        return CampaignType.container;
+      case CampaignTypeDTO.newsfeed:
+        return CampaignType.newsfeed;
       case CampaignTypeDTO.arCampaign:
         return CampaignType.arCampaign;
       case CampaignTypeDTO.inbox:
         return CampaignType.inbox;
-      case CampaignTypeDTO.all:
-        return CampaignType.all;
       case CampaignTypeDTO.landingPage:
         return CampaignType.landingPage;
       case CampaignTypeDTO.popup:
@@ -97,8 +95,8 @@ extension CampaignTargetDTOMapping on CampaignTargetDTO {
         return CampaignTarget.public;
       case CampaignTargetDTO.targeted:
         return CampaignTarget.targeted;
-      case CampaignTargetDTO.none:
-        return CampaignTarget.none;
+      case CampaignTargetDTO.unknown:
+        return CampaignTarget.unknown;
       default:
         throw MappingException(from: CampaignTargetDTO, to: CampaignTarget);
     }

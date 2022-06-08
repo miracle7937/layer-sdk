@@ -6,26 +6,21 @@ import '../../../domain_layer/use_cases/campaign/load_campaigns_use_case.dart';
 import '../utils.dart';
 import 'campaign_state.dart';
 
-/// Holds campaigns data with types.
-/// The more specialized classes are the ones who set this type.
-/// This is done to make it easier to use the cubits on a screen that has
-/// all the types.
+/// A cubit that retrievs campaigns data with types.
 class CampaignCubit extends Cubit<CampaignState> {
   final LoadCampaignsUseCase _loadCampaigns;
 
   /// Creates a new [CampaignCubit].
   CampaignCubit({
     required LoadCampaignsUseCase loadCampaigns,
-    required CampaignStateType campaignStateType,
-    //  required CampaignType campaignType,
-    required int limit,
+    int limit = 10,
+    int offset = 0,
   })  : _loadCampaigns = loadCampaigns,
         super(
           CampaignState(
-            type: campaignStateType,
-            //     campaignType: campaignType,
             pagination: Pagination(
               limit: limit,
+              offset: offset,
             ),
           ),
         );
@@ -34,20 +29,15 @@ class CampaignCubit extends Cubit<CampaignState> {
   ///
   /// The [loadMore] value will load the next campaigns page if true.
   /// Use cases:
-  ///   - Listing the public campaigns on the app.
+  ///   - Listing the campaigns on the app.
   ///
-
   Future<void> load({
-    List<CampaignType>? types,
+    required List<CampaignType> types,
     bool? read,
-    required int limit,
-    required int offset,
     String? sortby,
     bool? desc,
     bool loadMore = false,
   }) async {
-    assert(types == null);
-
     emit(
       state.copyWith(
         busy: true,

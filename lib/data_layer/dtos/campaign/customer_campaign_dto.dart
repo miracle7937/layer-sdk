@@ -1,4 +1,3 @@
-
 import '../../helpers.dart';
 
 /// Represents the customers campaigns
@@ -58,10 +57,10 @@ class CustomerCampaignDTO {
   ///The campaign's reference image
   final String? referenceImage;
 
-  /// Contains all information about the card type
+  /// Contains all information about the campaign type
   CampaignTypeDTO? campaignType;
 
-  /// Contains all the accountIDs related to this card
+  /// Contains all the accountIDs related to this campaign
   List<String>? accountID;
 
   /// Creates a new [CustomerCampaignDTO]
@@ -99,7 +98,7 @@ class CustomerCampaignDTO {
       actionValue: map['action_value'],
       title: map['title'],
       messageType: map['message_type'],
-      description: map['ddescription'],
+      description: map['description'],
       html: map['html'],
       imageUrl: map['image'],
       thumbnailUrl: map['thumbnail'],
@@ -111,7 +110,7 @@ class CustomerCampaignDTO {
     );
   }
 
-  /// Creates a list of [CardDTO] from a JSON list
+  /// Creates a list of [CustomerCampaignDTO] from a JSON list
   static List<CustomerCampaignDTO> fromJsonList(
           List<Map<String, dynamic>> json) =>
       json.map(CustomerCampaignDTO.fromJson).toList(growable: false);
@@ -120,7 +119,7 @@ class CustomerCampaignDTO {
 /// The type of Campaign
 class CampaignTypeDTO extends EnumDTO {
   ///Newsfeed type
-  static const container = CampaignTypeDTO._internal('C');
+  static const newsfeed = CampaignTypeDTO._internal('C');
 
   ///Popup type
   static const popup = CampaignTypeDTO._internal('P');
@@ -137,19 +136,15 @@ class CampaignTypeDTO extends EnumDTO {
   ///AR Campaign Type
   static const arCampaign = CampaignTypeDTO._internal('R');
 
-  ///All Campaign types
-  static const all = CampaignTypeDTO._internal('');
-
   ///None
   static const none = CampaignTypeDTO._internal('');
 
   /// List of all possible Campaign types
   static const List<CampaignTypeDTO> values = [
-    container,
+    newsfeed,
     popup,
     transactionPopup,
     landingPage,
-    all,
     arCampaign,
     none
   ];
@@ -164,22 +159,23 @@ class CampaignTypeDTO extends EnumDTO {
 
 /// The type of Campaign Action
 class CampaignActionTypeDTO extends EnumDTO {
-  ///For call
+  /// The campaign has an action that starts a phone call.
   static const call = CampaignActionTypeDTO._internal('C');
 
-  ///Send message via inbox
+  /// The campaign has an action that send message via inbox
   static const sendMessage = CampaignActionTypeDTO._internal('M');
 
-  ///For call and send type
+  /// The campaign has an action to either start a phone call or send a message
+  /// via inbox.
   static const callOrSend = CampaignActionTypeDTO._internal('S');
 
-  ///For DPA type
+  /// For DPA type
   static const dpa = CampaignActionTypeDTO._internal('D');
 
   ///For open a link
   static const openLink = CampaignActionTypeDTO._internal('L');
 
-  ///None
+  /// None
   static const none = CampaignActionTypeDTO._internal('');
 
   /// List of all possible Campaign Action types
@@ -205,19 +201,19 @@ class CampaignTargetDTO extends EnumDTO {
   ///Public campaigns
   static const public = CampaignTargetDTO._internal('P');
 
-  ///Targeted campaigns
+  ///Targeted campaigns towards specific customers
   static const targeted = CampaignTargetDTO._internal('T');
 
-  ///None
-  static const none = CampaignTargetDTO._internal('');
+  ///If does not returns any value
+  static const unknown = CampaignTargetDTO._internal('');
 
   /// List of Campaign target types
-  static const List<CampaignTargetDTO> values = [public, targeted, none];
+  static const List<CampaignTargetDTO> values = [public, targeted, unknown];
   const CampaignTargetDTO._internal(String value) : super.internal(value);
 
   /// Find [CampaignTargetDTO] based in the letter passed
   factory CampaignTargetDTO(String raw) => values.singleWhere(
         (it) => it.value == raw,
-        orElse: () => CampaignTargetDTO.none,
+        orElse: () => CampaignTargetDTO.unknown,
       );
 }

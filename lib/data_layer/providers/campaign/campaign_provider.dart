@@ -12,42 +12,21 @@ class CampaignProvider {
     required this.netClient,
   });
 
-  /// Lists the campaigns
+  /// Lists the campaigns.
   ///
+  /// Allows for filtering by [CampaignType] and the `read` status.
+  /// 
+  /// Allows for pagination and sorting. It can sorted based on created time
+  /// using [sortby] parameter as `ts_created`.
+  ///
+  /// The [CampaignTarget] field is used for for filtering to targeted towards 
+  /// specific customers or to public.
   /// Use cases:
+  ///   - Listing the campaigns on the app.
   ///   - Listing the public campaigns on the app.
-  ///
   Future<CampaignResponseDTO> list({
-    List<CampaignType>? types,
-    bool? read,
-    int? limit,
-    int? offset,
-    String? sortby,
-    bool? desc,
-  }) async {
-    assert(limit == null && types == null);
-
-    final response = await netClient.request(
-      netClient.netEndpoints.campaign,
-      method: NetRequestMethods.get,
-      queryParameters: {
-        if (types != null && types.isNotEmpty) 'medium': types.join(','),
-        if (read != null) 'read': read,
-        if (limit != null) 'limit': limit,
-        if (offset != null) 'offset': offset,
-        if (sortby != null) 'sortby': sortby,
-        if (desc != null) 'desc': desc,
-      },
-    );
-
-    return CampaignResponseDTO.fromJson(response.data);
-  }
-
-  /// Lists public campaigns
-  ///
-  Future<CampaignResponseDTO> getPublicCampaigns({
-    CampaignType medium = CampaignType.landingPage,
-    CampaignTarget target = CampaignTarget.public,
+    required List<CampaignType> types,
+    CampaignTarget? target,
     bool? read,
     int? limit,
     int? offset,
@@ -58,6 +37,8 @@ class CampaignProvider {
       netClient.netEndpoints.campaign,
       method: NetRequestMethods.get,
       queryParameters: {
+        if (types.isNotEmpty) 'medium': types.join(','),
+        if (target != null) 'target': target,
         if (read != null) 'read': read,
         if (limit != null) 'limit': limit,
         if (offset != null) 'offset': offset,
@@ -81,27 +62,24 @@ class CampaignProvider {
     return CustomerCampaignDTO.fromJson(response.data);
   }
 
-  ///Gets an Campaign by its id.
-  Future<CustomerCampaignDTO> onCampaignAction({
+  /// Sends campaign's id on that campaign action
+  Future<void> onCampaignAction({
     required int id,
   }) async {
-    final response = await netClient.request(
+    await netClient.request(
       '${netClient.netEndpoints.campaign}/$id/action',
       method: NetRequestMethods.get,
     );
 
-    return CustomerCampaignDTO.fromJson(response.data);
   }
 
-  ///Gets an Campaign by its id.
-  Future<CustomerCampaignDTO> onCampaignOpened({
+  /// Sends campaign id when that campaign opened
+  Future<void> onCampaignOpened({
     required int id,
   }) async {
-    final response = await netClient.request(
+    await netClient.request(
       '${netClient.netEndpoints.campaign}/$id/open',
       method: NetRequestMethods.get,
     );
-
-    return CustomerCampaignDTO.fromJson(response.data);
   }
 }

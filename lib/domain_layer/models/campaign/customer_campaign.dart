@@ -17,14 +17,14 @@ enum CampaignActionType {
   ///The type for open a link
   openLink,
 
-  ///The type for not includes the other types
+  ///The type for when there's no action related to the campaign
   none,
 }
 
 ///The campaign type to show where
 enum CampaignType {
   ///To show newsfeed
-  container,
+  newsfeed,
 
   ///To show popup
   popup,
@@ -38,9 +38,6 @@ enum CampaignType {
   ///To show landing page
   landingPage,
 
-  ///To show all
-  all,
-
   ///To show AR campaign with qr or something
   arCampaign,
 
@@ -53,11 +50,11 @@ enum CampaignTarget {
   ///To public
   public,
 
-  ///To targeted something
+  ///To targeted towards specific customers
   targeted,
 
-  ///To not show anywhere
-  none
+  ///If does not returns any value
+  unknown
 }
 
 /// Contains the data for a customer campaign
@@ -69,7 +66,7 @@ class CustomerCampaign extends Equatable {
   final DateTime? startDate;
 
   ///The campaign's message
-  final String? message;
+  final String message;
 
   ///The campaign's medium
   final CampaignType? medium;
@@ -78,34 +75,34 @@ class CustomerCampaign extends Equatable {
   final CampaignActionType? action;
 
   ///The campaign's action message
-  final String? actionMessage;
+  final String actionMessage;
 
   ///The campaign's action value
-  final String? actionValue;
+  final String actionValue;
 
   ///The campaign's title
-  final String? title;
+  final String title;
 
   ///The campaign's message type
-  final String? messageType;
+  final String messageType;
 
   ///The campaign's description
-  final String? description;
+  final String description;
 
-  ///The campaign's html that includes page url
-  final String? html;
+  ///The campagn's html that includes page url
+  final String html;
 
-  ///The campaign's image url
-  final String? imageUrl;
+  ///The campagn's image url
+  final String imageUrl;
 
   ///The campaign's thumbnail url
-  final String? thumbnailUrl;
+  final String thumbnailUrl;
 
-  ///The campaign's video url
-  final String? videoUrl;
+  ///The campagn's video url
+  final String videoUrl;
 
-  ///Last time the campaing was updated
-  final String? updatedAt;
+  ///Last timethe campaing was updated
+  final String updatedAt;
 
   ///Is campaign's video can share or not
   final bool? shareVideo;
@@ -114,28 +111,28 @@ class CustomerCampaign extends Equatable {
   final CampaignTarget? target;
 
   ///The campaign's reference image
-  final String? referenceImage;
+  final String referenceImage;
 
   ///Creates a new [CustomerCampaign]
   CustomerCampaign({
     this.id,
     this.startDate,
     this.medium,
-    this.message,
+    required this.message,
     this.action,
-    this.actionMessage,
-    this.actionValue,
-    this.title,
-    this.messageType,
-    this.description,
-    this.html,
-    this.imageUrl,
-    this.thumbnailUrl,
-    this.videoUrl,
+    required this.actionMessage,
+    required this.actionValue,
+    required this.title,
+    required this.messageType,
+    required this.description,
+    required this.html,
+    required this.imageUrl,
+    required this.thumbnailUrl,
+    required this.videoUrl,
     this.shareVideo,
     this.target,
-    this.referenceImage,
-    this.updatedAt,
+    required this.referenceImage,
+    required this.updatedAt,
   });
 
   @override

@@ -11,9 +11,9 @@ class OpenCampaignsUseCase {
 
   /// Callable method to send id when campaign opened
   Future<void> call({
-    int? id,
+    required int id,
   }) =>
       _repository.onCampaignOpened(
-        id: id!,
+        id: id,
       );
 }

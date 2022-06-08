@@ -5,18 +5,6 @@ import 'package:equatable/equatable.dart';
 import '../../../../presentation_layer/cubits/utils.dart';
 import '../../../domain_layer/models/campaign/customer_campaign.dart';
 
-/// The state of campaigns we want to fetch.
-enum CampaignStateType {
-  /// If campaigns loaded
-  loaded,
-
-  /// If campaigns loading
-  loading,
-
-  /// No data for campaigns
-  noData,
-}
-
 /// The available errors.
 enum CampaignStateError {
   /// No errors reported.
@@ -31,9 +19,6 @@ enum CampaignStateError {
 
 /// The state of the campaign cubit
 class CampaignState extends Equatable {
-  /// The type of this state's campaigns.
-  final CampaignStateType? type;
-
   /// The campaigns.
   final UnmodifiableListView<CustomerCampaign> campaigns;
 
@@ -51,7 +36,6 @@ class CampaignState extends Equatable {
 
   /// Creates a new [CampaignState].
   CampaignState({
-    required this.type,
     Iterable<CustomerCampaign> campaigns = const <CustomerCampaign>[],
     this.busy = false,
     this.error = CampaignStateError.none,
@@ -61,7 +45,6 @@ class CampaignState extends Equatable {
 
   /// Copies the object with different values.
   CampaignState copyWith({
-    CampaignStateType? type,
     Iterable<CustomerCampaign>? campaigns,
     bool? busy,
     CampaignStateError? error,
@@ -69,7 +52,6 @@ class CampaignState extends Equatable {
     Pagination? pagination,
   }) =>
       CampaignState(
-        type: type ?? this.type,
         campaigns: campaigns ?? this.campaigns,
         busy: busy ?? this.busy,
         error: error ?? this.error,
@@ -81,7 +63,7 @@ class CampaignState extends Equatable {
 
   @override
   List<Object?> get props => [
-        type,
+        campaigns,
         busy,
         error,
         errorMessage,

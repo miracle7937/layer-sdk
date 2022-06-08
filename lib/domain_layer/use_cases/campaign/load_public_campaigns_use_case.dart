@@ -24,17 +24,19 @@ class LoadPublicCampaignsUseCase {
   /// this.
 
   Future<CampaignResponse> call({
-    CampaignType? medium,
-    CampaignTarget? target,
+    List<CampaignType> types = const [
+      CampaignType.newsfeed,
+      CampaignType.popup
+    ],
     bool? read,
     required int limit,
     required int offset,
     String? sortby,
     bool? desc,
   }) =>
-      _repository.getPublicCampaigns(
-        medium: medium!,
-        target: target!,
+      _repository.list(
+        types: types,
+        target: CampaignTarget.public,
         limit: limit,
         offset: offset,
         read: read,
