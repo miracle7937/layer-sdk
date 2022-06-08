@@ -210,6 +210,9 @@ class BrandingColorsDTO {
   /// Hex value for the quaternary success color.
   final String? successQuaternary;
 
+  /// Hex value for the quinary success color.
+  final String? successQuinary;
+
   /// Hex value for the dark primary error color.
   final String? errorDarkPrimary;
 
@@ -224,6 +227,9 @@ class BrandingColorsDTO {
 
   /// Hex value for the quaternary error color.
   final String? errorQuaternary;
+
+  /// Hex value for the quinary error color.
+  final String? errorQuinary;
 
   /// Hex value for the dark primary warning color.
   final String? warningDarkPrimary;
@@ -240,6 +246,9 @@ class BrandingColorsDTO {
   /// Hex value for the quaternary warning color.
   final String? warningQuaternary;
 
+  /// Hex value for the quinary warning color.
+  final String? warningQuinary;
+
   /// Hex value for the dark primary caution color.
   final String? cautionDarkPrimary;
 
@@ -255,6 +264,9 @@ class BrandingColorsDTO {
   /// Hex value for the quaternary caution color.
   final String? cautionQuaternary;
 
+  /// Hex value for the quinary caution color.
+  final String? cautionQuinary;
+
   /// Hex value for the dark primary info color.
   final String? infoDarkPrimary;
 
@@ -269,6 +281,24 @@ class BrandingColorsDTO {
 
   /// Hex value for the quaternary info color.
   final String? infoQuaternary;
+
+  /// Hex value for the quinary info color.
+  final String? infoQuinary;
+
+  /// Hex value for the success alpha color.
+  final String? successAlpha;
+
+  /// Hex value for the error alpha color.
+  final String? errorAlpha;
+
+  /// Hex value for the warning alpha color.
+  final String? warningAlpha;
+
+  /// Hex value for the caution alpha color.
+  final String? cautionAlpha;
+
+  /// Hex value for the info alpha color.
+  final String? infoAlpha;
 
   /// Creates a new [BrandingColorsDTO].
   const BrandingColorsDTO({
@@ -306,26 +336,36 @@ class BrandingColorsDTO {
     this.successSecondary,
     this.successTertiary,
     this.successQuaternary,
+    this.successQuinary,
     this.errorDarkPrimary,
     this.errorPrimary,
     this.errorSecondary,
     this.errorTertiary,
     this.errorQuaternary,
+    this.errorQuinary,
     this.warningDarkPrimary,
     this.warningPrimary,
     this.warningSecondary,
     this.warningTertiary,
     this.warningQuaternary,
+    this.warningQuinary,
     this.cautionDarkPrimary,
     this.cautionPrimary,
     this.cautionSecondary,
     this.cautionTertiary,
     this.cautionQuaternary,
+    this.cautionQuinary,
     this.infoDarkPrimary,
     this.infoPrimary,
     this.infoSecondary,
     this.infoTertiary,
     this.infoQuaternary,
+    this.infoQuinary,
+    this.successAlpha,
+    this.errorAlpha,
+    this.warningAlpha,
+    this.cautionAlpha,
+    this.infoAlpha,
   });
 
   /// Creates a [BrandingColorsDTO] from a JSON
@@ -365,26 +405,36 @@ class BrandingColorsDTO {
         successSecondary: json['successSecondary'],
         successTertiary: json['successTertiary'],
         successQuaternary: json['successQuaternary'],
+        successQuinary: json['successQuinary'],
         errorDarkPrimary: json['errorDarkPrimary'],
         errorPrimary: json['errorPrimary'],
         errorSecondary: json['errorSecondary'],
         errorTertiary: json['errorTertiary'],
         errorQuaternary: json['errorQuaternary'],
+        errorQuinary: json['errorQuinary'],
         warningDarkPrimary: json['warningDarkPrimary'],
         warningPrimary: json['warningPrimary'],
         warningSecondary: json['warningSecondary'],
         warningTertiary: json['warningTertiary'],
         warningQuaternary: json['warningQuaternary'],
+        warningQuinary: json['warningQuinary'],
         cautionDarkPrimary: json['cautionDarkPrimary'],
         cautionPrimary: json['cautionPrimary'],
         cautionSecondary: json['cautionSecondary'],
         cautionTertiary: json['cautionTertiary'],
         cautionQuaternary: json['cautionQuaternary'],
+        cautionQuinary: json['cautionQuinary'],
         infoDarkPrimary: json['infoDarkPrimary'],
         infoPrimary: json['infoPrimary'],
         infoSecondary: json['infoSecondary'],
         infoTertiary: json['infoTertiary'],
         infoQuaternary: json['infoQuaternary'],
+        infoQuinary: json['infoQuinary'],
+        successAlpha: json['successAlpha'],
+        errorAlpha: json['errorAlpha'],
+        warningAlpha: json['warningAlpha'],
+        cautionAlpha: json['cautionAlpha'],
+        infoAlpha: json['infoAlpha'],
       );
 }
 

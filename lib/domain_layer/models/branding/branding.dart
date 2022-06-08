@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../models.dart';
+import '../../models.dart';
 
 /// Holds the data used for the branding of the app.
 class Branding extends Equatable {

@@ -1,9 +1,10 @@
-import '../../models.dart';
+import '../../../domain_layer/abstract_repositories.dart';
+import '../../../domain_layer/models.dart';
+import '../../mappings.dart';
 import '../../providers.dart';
-import '../mappings.dart';
 
 /// Handles the branding data.
-class BrandingRepository {
+class BrandingRepository implements BrandingRepositoryInterface {
   final BrandingProvider _provider;
 
   /// Creates a new repository with the supplied [BrandingProvider]

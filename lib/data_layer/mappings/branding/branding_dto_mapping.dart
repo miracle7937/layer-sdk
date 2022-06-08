@@ -1,4 +1,4 @@
-import '../../../models.dart';
+import '../../../domain_layer/models.dart';
 import '../../dtos.dart';
 import '../../mappings.dart';
 
@@ -169,6 +169,8 @@ extension BrandingColorsDTOMapping on BrandingColorsDTO {
             defaultBrandingColors?.successTertiary,
         successQuaternary: successQuaternary?.parseHexValueToInt() ??
             defaultBrandingColors?.successQuaternary,
+        successQuinary: successQuinary?.parseHexValueToInt() ??
+            defaultBrandingColors?.successQuinary,
         errorDarkPrimary: errorDarkPrimary?.parseHexValueToInt() ??
             defaultBrandingColors?.errorDarkPrimary,
         errorPrimary: errorPrimary?.parseHexValueToInt() ??
@@ -179,6 +181,8 @@ extension BrandingColorsDTOMapping on BrandingColorsDTO {
             defaultBrandingColors?.errorTertiary,
         errorQuaternary: errorQuaternary?.parseHexValueToInt() ??
             defaultBrandingColors?.errorQuaternary,
+        errorQuinary: errorQuinary?.parseHexValueToInt() ??
+            defaultBrandingColors?.errorQuinary,
         warningDarkPrimary: warningDarkPrimary?.parseHexValueToInt() ??
             defaultBrandingColors?.warningDarkPrimary,
         warningPrimary: warningPrimary?.parseHexValueToInt() ??
@@ -189,6 +193,8 @@ extension BrandingColorsDTOMapping on BrandingColorsDTO {
             defaultBrandingColors?.warningTertiary,
         warningQuaternary: warningQuaternary?.parseHexValueToInt() ??
             defaultBrandingColors?.warningQuaternary,
+        warningQuinary: warningQuinary?.parseHexValueToInt() ??
+            defaultBrandingColors?.warningQuinary,
         cautionDarkPrimary: cautionDarkPrimary?.parseHexValueToInt() ??
             defaultBrandingColors?.cautionDarkPrimary,
         cautionPrimary: cautionPrimary?.parseHexValueToInt() ??
@@ -199,6 +205,8 @@ extension BrandingColorsDTOMapping on BrandingColorsDTO {
             defaultBrandingColors?.cautionTertiary,
         cautionQuaternary: cautionQuaternary?.parseHexValueToInt() ??
             defaultBrandingColors?.cautionQuaternary,
+        cautionQuinary: cautionQuinary?.parseHexValueToInt() ??
+            defaultBrandingColors?.cautionQuinary,
         infoDarkPrimary: infoDarkPrimary?.parseHexValueToInt() ??
             defaultBrandingColors?.infoDarkPrimary,
         infoPrimary: infoPrimary?.parseHexValueToInt() ??
@@ -209,5 +217,17 @@ extension BrandingColorsDTOMapping on BrandingColorsDTO {
             defaultBrandingColors?.infoTertiary,
         infoQuaternary: infoQuaternary?.parseHexValueToInt() ??
             defaultBrandingColors?.infoQuaternary,
+        infoQuinary: infoQuinary?.parseHexValueToInt() ??
+            defaultBrandingColors?.infoQuinary,
+        successAlpha: successAlpha?.parseHexValueToInt() ??
+            defaultBrandingColors?.successAlpha,
+        errorAlpha: errorAlpha?.parseHexValueToInt() ??
+            defaultBrandingColors?.errorAlpha,
+        warningAlpha: warningAlpha?.parseHexValueToInt() ??
+            defaultBrandingColors?.warningAlpha,
+        cautionAlpha: cautionAlpha?.parseHexValueToInt() ??
+            defaultBrandingColors?.cautionAlpha,
+        infoAlpha:
+            infoAlpha?.parseHexValueToInt() ?? defaultBrandingColors?.infoAlpha,
       );
 }

@@ -1,5 +1,6 @@
 library dtos;
 
+export 'dtos/branding/branding_dto.dart';
 export 'dtos/category/category_dto.dart';
 export 'dtos/loyalty/loyalty_points/loyalty_points_dto.dart';
 export 'dtos/loyalty/loyalty_points_exchange/loyalty_exchange_dto.dart';

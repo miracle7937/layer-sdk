@@ -28,8 +28,6 @@ export 'cubits/bill_cubit.dart';
 export 'cubits/bills_states.dart';
 export 'cubits/branch_cubit.dart';
 export 'cubits/branch_states.dart';
-export 'cubits/branding_cubit.dart';
-export 'cubits/branding_states.dart';
 export 'cubits/card_cubit.dart';
 export 'cubits/card_states.dart';
 export 'cubits/card_transactions_cubit.dart';

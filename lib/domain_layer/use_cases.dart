@@ -1,5 +1,6 @@
 library use_cases;
 
+export 'use_cases/branding/load_branding_use_case.dart';
 export 'use_cases/loyalty/cashback_history/load_casback_history_use_case.dart';
 export 'use_cases/loyalty/loyalty_points/load_all_loyalty_points_use_case.dart';
 export 'use_cases/loyalty/loyalty_points_exchange/confirm_second_factor_for_loyalty_points_exchange_use_case.dart';

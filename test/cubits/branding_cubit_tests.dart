@@ -1,8 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
 import 'package:layer_sdk/data_layer/network.dart';
+import 'package:layer_sdk/features/branding.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
@@ -35,7 +34,11 @@ void main() {
 
   blocTest<BrandingCubit, BrandingState>(
     'starts on empty state',
-    build: () => BrandingCubit(repository: _repository),
+    build: () => BrandingCubit(
+      getBrandingUseCase: LoadBrandingUseCase(
+        repository: _repository,
+      ),
+    ),
     verify: (c) => expect(
       c.state,
       BrandingState(),
@@ -44,7 +47,11 @@ void main() {
 
   blocTest<BrandingCubit, BrandingState>(
     'should load backend branding by default',
-    build: () => BrandingCubit(repository: _repository),
+    build: () => BrandingCubit(
+      getBrandingUseCase: LoadBrandingUseCase(
+        repository: _repository,
+      ),
+    ),
     act: (c) => c.load(),
     expect: () => [
       BrandingState(busy: true),
@@ -60,7 +67,11 @@ void main() {
 
   blocTest<BrandingCubit, BrandingState>(
     'should load backend branding',
-    build: () => BrandingCubit(repository: _repository),
+    build: () => BrandingCubit(
+      getBrandingUseCase: LoadBrandingUseCase(
+        repository: _repository,
+      ),
+    ),
     act: (c) => c.load(defaultBranding: false),
     expect: () => [
       BrandingState(busy: true),
@@ -76,7 +87,11 @@ void main() {
 
   blocTest<BrandingCubit, BrandingState>(
     'should load default branding',
-    build: () => BrandingCubit(repository: _repository),
+    build: () => BrandingCubit(
+      getBrandingUseCase: LoadBrandingUseCase(
+        repository: _repository,
+      ),
+    ),
     act: (c) => c.load(defaultBranding: true),
     expect: () => [
       BrandingState(busy: true),
@@ -103,7 +118,11 @@ void _dealWithErrors() {
 
   blocTest<BrandingCubit, BrandingState>(
     'should deal with exception',
-    build: () => BrandingCubit(repository: _repository),
+    build: () => BrandingCubit(
+      getBrandingUseCase: LoadBrandingUseCase(
+        repository: _repository,
+      ),
+    ),
     act: (c) => c.load(defaultBranding: false),
     expect: () => [
       BrandingState(busy: true),

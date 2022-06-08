@@ -1,6 +1,7 @@
 /// Data Layer - Repositories
 library repositories;
 
+export 'repositories/branding/branding_repository.dart';
 export 'repositories/loyalty/cashback_history/cashback_history_repository.dart';
 export 'repositories/loyalty/loyalty_points/loyalty_points_repository.dart';
 export 'repositories/loyalty/loyalty_points_exchange/loyalty_points_exhange_repository.dart';
