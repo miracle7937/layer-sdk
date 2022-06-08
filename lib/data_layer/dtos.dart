@@ -1,5 +1,6 @@
 library dtos;
 
+export 'dtos/beneficiary/beneficiary_dto.dart';
 export 'dtos/branding/branding_dto.dart';
 export 'dtos/category/category_dto.dart';
 export 'dtos/loyalty/loyalty_points/loyalty_points_dto.dart';
@@ -23,3 +24,5 @@ export 'dtos/otp/otp_status_dto.dart';
 export 'dtos/product/product_dto.dart';
 export 'dtos/role/role_dto.dart';
 export 'dtos/second_factor/second_factor_type_dto.dart';
+export 'dtos/second_factor_dto.dart';
+export 'dtos/transfer/transfer_type_dto.dart';

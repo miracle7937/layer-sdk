@@ -1,5 +1,7 @@
 library cubits;
 
+export 'cubits/beneficiary/beneficiaries_cubit.dart';
+export 'cubits/beneficiary/beneficiaries_states.dart';
 export 'cubits/branding/branding_cubit.dart';
 export 'cubits/branding/branding_states.dart';
 export 'cubits/loyalty/cashback_history/cashback_history_cubit.dart';

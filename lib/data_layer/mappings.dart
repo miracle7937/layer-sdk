@@ -1,5 +1,6 @@
 library mappings;
 
+export 'mappings/beneficiary/beneficiary_dto_mapping.dart';
 export 'mappings/branding/branding_dto_mapping.dart';
 export 'mappings/category/category_dto_mapping.dart';
 export 'mappings/loyalty/loyalty_points/loyalty_points_mapping.dart';
@@ -18,3 +19,4 @@ export 'mappings/product/products_dto_mapping.dart';
 export 'mappings/role/role_dto_mapping.dart';
 export 'mappings/second_factor/second_factor_type_dto_mapping.dart';
 export 'mappings/string_converters.dart';
+export 'mappings/transfer/transfer_dto_mapping.dart';

@@ -1,8 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
 import 'package:layer_sdk/data_layer/network.dart';
+import 'package:layer_sdk/features/beneficiaries.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
@@ -45,7 +44,7 @@ void main() {
         limit: _defaultLimit,
         offset: 0,
         searchText: null,
-        customerID: _customerID,
+        customerId: _customerID,
       ),
     ).thenAnswer(
       (_) async => _repositoryList.take(_defaultLimit).toList(),
@@ -56,7 +55,7 @@ void main() {
         limit: _defaultLimit,
         offset: _defaultLimit,
         searchText: null,
-        customerID: _customerID,
+        customerId: _customerID,
       ),
     ).thenAnswer(
       (_) async =>
@@ -68,7 +67,7 @@ void main() {
         limit: _defaultLimit,
         offset: _defaultLimit * 2,
         searchText: null,
-        customerID: _customerID,
+        customerId: _customerID,
       ),
     ).thenAnswer(
       (_) async => _repositoryList.skip(_defaultLimit * 2).toList(),
@@ -79,7 +78,7 @@ void main() {
         limit: _defaultLimit,
         offset: 0,
         searchText: _searchText,
-        customerID: _customerID,
+        customerId: _customerID,
       ),
     ).thenAnswer(
       (_) async => _repositoryList
@@ -93,7 +92,7 @@ void main() {
         limit: _defaultLimit,
         offset: any(named: 'offset'),
         searchText: any(named: 'searchText'),
-        customerID: _netExceptionId,
+        customerId: _netExceptionId,
       ),
     ).thenThrow(
       NetException(message: 'Some network error'),
@@ -104,7 +103,7 @@ void main() {
         limit: _defaultLimit,
         offset: any(named: 'offset'),
         searchText: any(named: 'searchText'),
-        customerID: _genericErrorId,
+        customerId: _genericErrorId,
       ),
     ).thenThrow(
       Exception('Some generic error'),
@@ -114,7 +113,9 @@ void main() {
   blocTest<BeneficiariesCubit, BeneficiariesState>(
     'starts on empty state',
     build: () => BeneficiariesCubit(
-      repository: _repository,
+      loadCustomerBeneficiariesUseCase: LoadCustomerBeneficiariesUseCase(
+        beneficiaryRepository: _repository,
+      ),
       customerID: _customerID,
     ),
     verify: (c) => expect(
@@ -127,7 +128,9 @@ void main() {
   blocTest<BeneficiariesCubit, BeneficiariesState>(
     'should load beneficiaries',
     build: () => BeneficiariesCubit(
-      repository: _repository,
+      loadCustomerBeneficiariesUseCase: LoadCustomerBeneficiariesUseCase(
+        beneficiaryRepository: _repository,
+      ),
       limit: _defaultLimit,
       customerID: _customerID,
     ),
@@ -148,7 +151,7 @@ void main() {
     verify: (c) {
       verify(() => _repository.list(
             limit: _defaultLimit,
-            customerID: _customerID,
+            customerId: _customerID,
           )).called(1);
     },
   );
@@ -156,7 +159,9 @@ void main() {
   blocTest<BeneficiariesCubit, BeneficiariesState>(
     'should load more beneficiaries',
     build: () => BeneficiariesCubit(
-      repository: _repository,
+      loadCustomerBeneficiariesUseCase: LoadCustomerBeneficiariesUseCase(
+        beneficiaryRepository: _repository,
+      ),
       limit: _defaultLimit,
       customerID: _customerID,
     ),
@@ -188,7 +193,7 @@ void main() {
       verify(() => _repository.list(
             limit: _defaultLimit,
             offset: _defaultLimit,
-            customerID: _customerID,
+            customerId: _customerID,
           )).called(1);
     },
   ); // should load more beneficiaries
@@ -196,7 +201,9 @@ void main() {
   blocTest<BeneficiariesCubit, BeneficiariesState>(
     'should return load more = false on list end',
     build: () => BeneficiariesCubit(
-      repository: _repository,
+      loadCustomerBeneficiariesUseCase: LoadCustomerBeneficiariesUseCase(
+        beneficiaryRepository: _repository,
+      ),
       limit: _defaultLimit,
       customerID: _customerID,
     ),
@@ -234,7 +241,7 @@ void main() {
       verify(() => _repository.list(
             limit: _defaultLimit,
             offset: _defaultLimit * 2,
-            customerID: _customerID,
+            customerId: _customerID,
           )).called(1);
     },
   ); // should return load more = false on list end
@@ -242,7 +249,9 @@ void main() {
   blocTest<BeneficiariesCubit, BeneficiariesState>(
     'should search beneficiaries',
     build: () => BeneficiariesCubit(
-      repository: _repository,
+      loadCustomerBeneficiariesUseCase: LoadCustomerBeneficiariesUseCase(
+        beneficiaryRepository: _repository,
+      ),
       limit: _defaultLimit,
       customerID: _customerID,
     ),
@@ -270,7 +279,7 @@ void main() {
       verify(() => _repository.list(
             limit: _defaultLimit,
             searchText: _searchText,
-            customerID: _customerID,
+            customerId: _customerID,
           )).called(1);
     },
   ); // should search beneficiaries
@@ -278,7 +287,9 @@ void main() {
   blocTest<BeneficiariesCubit, BeneficiariesState>(
     'should handle net exceptions',
     build: () => BeneficiariesCubit(
-      repository: _repository,
+      loadCustomerBeneficiariesUseCase: LoadCustomerBeneficiariesUseCase(
+        beneficiaryRepository: _repository,
+      ),
       limit: _defaultLimit,
       customerID: _netExceptionId,
     ),
@@ -302,7 +313,7 @@ void main() {
     verify: (c) {
       verify(() => _repository.list(
             limit: _defaultLimit,
-            customerID: _netExceptionId,
+            customerId: _netExceptionId,
           )).called(1);
     },
   );
@@ -310,7 +321,9 @@ void main() {
   blocTest<BeneficiariesCubit, BeneficiariesState>(
     'should handle generic errors',
     build: () => BeneficiariesCubit(
-      repository: _repository,
+      loadCustomerBeneficiariesUseCase: LoadCustomerBeneficiariesUseCase(
+        beneficiaryRepository: _repository,
+      ),
       limit: _defaultLimit,
       customerID: _genericErrorId,
     ),
@@ -334,7 +347,7 @@ void main() {
     verify: (c) {
       verify(() => _repository.list(
             limit: _defaultLimit,
-            customerID: _genericErrorId,
+            customerId: _genericErrorId,
           )).called(1);
     },
   );

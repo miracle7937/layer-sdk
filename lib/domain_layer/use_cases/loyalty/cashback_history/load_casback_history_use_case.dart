@@ -1,5 +1,4 @@
-import '../../../abstract_repositories.dart';
-import '../../../models.dart';
+import '../../../../features/loyalty.dart';
 
 /// Use case that loads the cashback history.
 class LoadCashbackHistoryUseCase {

@@ -1,4 +1,4 @@
-import '../../../../../data_layer/dtos.dart';
+import '../../../../../data_layer/dtos/second_factor/second_factor_type_dto.dart';
 import '../../helpers.dart';
 import '../account_dto.dart';
 import '../card_dto.dart';
