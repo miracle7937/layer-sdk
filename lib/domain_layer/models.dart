@@ -25,6 +25,7 @@ export 'models/loyalty/offer/offer_rule/rule_reward.dart';
 export 'models/loyalty/offer/offer_transaction.dart';
 export 'models/message/message.dart';
 export 'models/otp/otp_status.dart';
+export 'models/payment/payment.dart';
 export 'models/permissions/data/base_permission_data.dart';
 export 'models/permissions/data/beneficiary_permission_data.dart';
 export 'models/permissions/data/credentials_generation_permission_data.dart';

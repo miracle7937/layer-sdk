@@ -15,6 +15,7 @@ export 'use_cases/loyalty/offers/load_offer_by_id_use_case.dart';
 export 'use_cases/loyalty/offers/load_offers_for_me_use_case.dart';
 export 'use_cases/loyalty/offers/load_offers_use_case.dart';
 export 'use_cases/message/load_messages_use_case.dart';
+export 'use_cases/payments/load_customer_payments_use_case.dart';
 export 'use_cases/product/load_product_by_product_id_use_case.dart';
 export 'use_cases/product/load_products_use_case.dart';
 export 'use_cases/role/load_customer_roles_use_case.dart';

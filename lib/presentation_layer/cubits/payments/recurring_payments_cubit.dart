@@ -1,20 +1,20 @@
 import 'package:bloc/bloc.dart';
 
-import '../../../../../data_layer/network.dart';
-import '../../../../data_layer/data_layer.dart';
+import '../../../data_layer/network.dart';
+import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
 
 /// A cubit that keeps a list of recurring payments.
 class RecurringPaymentCubit extends Cubit<RecurringPaymentState> {
-  final PaymentRepository _repository;
+  final LoadCustomerPaymentsUseCase _loadCustomerPaymentsUseCase;
 
-  /// Creates a new cubit using the supplied [PaymentRepository] and
+  /// Creates a new cubit using the supplied [LoadCustomerPaymentsUseCase] and
   /// customer id.
   RecurringPaymentCubit({
-    required PaymentRepository repository,
+    required LoadCustomerPaymentsUseCase loadCustomerPaymentsUseCase,
     required String customerId,
     int limit = 50,
-  })  : _repository = repository,
+  })  : _loadCustomerPaymentsUseCase = loadCustomerPaymentsUseCase,
         super(
           RecurringPaymentState(
             customerId: customerId,
@@ -38,7 +38,7 @@ class RecurringPaymentCubit extends Cubit<RecurringPaymentState> {
     final offset = loadMore ? state.offset + state.limit : 0;
 
     try {
-      final recurringPayments = await _repository.list(
+      final recurringPayments = await _loadCustomerPaymentsUseCase(
         customerId: state.customerId,
         offset: offset,
         limit: state.limit,
