@@ -1,5 +1,6 @@
 library models;
 
+export 'models/beneficiary/beneficiary.dart';
 export 'models/branding/branding.dart';
 export 'models/branding/branding_colors.dart';
 export 'models/branding/branding_fonts.dart';
@@ -41,6 +42,7 @@ export 'models/product/product.dart';
 export 'models/resolution.dart';
 export 'models/role/role.dart';
 export 'models/second_factor/second_factor_type.dart';
+export 'models/transfer/transfer.dart';
 export 'models/user/user.dart';
 export 'models/user/user_permissions.dart';
 export 'models/user/user_preference.dart';
