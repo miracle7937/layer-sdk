@@ -33,6 +33,8 @@ class TransferProvider {
       forceRefresh: forceRefresh,
     );
 
-    return TransferDTO.fromJsonList(response.data);
+    return TransferDTO.fromJsonList(
+      List<Map<String, dynamic>>.from(response.data),
+    );
   }
 }

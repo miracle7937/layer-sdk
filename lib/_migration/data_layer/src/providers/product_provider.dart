@@ -42,7 +42,9 @@ class ProductProvider {
       queryParameters: params,
     );
 
-    return ProductDTO.fromJsonList(response.data);
+    return ProductDTO.fromJsonList(
+      List<Map<String, dynamic>>.from(response.data),
+    );
   }
 
   /// Fetch [ProductDTO] by id

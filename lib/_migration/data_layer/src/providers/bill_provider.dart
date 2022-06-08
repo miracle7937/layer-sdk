@@ -29,6 +29,8 @@ class BillProvider {
       forceRefresh: forceRefresh,
     );
 
-    return BillDTO.fromJsonList(response.data);
+    return BillDTO.fromJsonList(
+      List<Map<String, dynamic>>.from(response.data),
+    );
   }
 }

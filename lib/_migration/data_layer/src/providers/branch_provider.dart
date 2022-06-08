@@ -34,7 +34,9 @@ class BranchProvider {
       queryParameters: params,
     );
 
-    return BranchDTO.fromJsonList(response.data);
+    return BranchDTO.fromJsonList(
+      List<Map<String, dynamic>>.from(response.data),
+    );
   }
 
   /// Return a branch by its id

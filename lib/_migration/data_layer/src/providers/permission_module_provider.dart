@@ -24,7 +24,9 @@ class PermissionModuleProvider {
     );
 
     return response.data is List<Map<String, dynamic>>
-        ? PermissionModuleDTO.fromJsonList(response.data)
+        ? PermissionModuleDTO.fromJsonList(
+            List<Map<String, dynamic>>.from(response.data),
+          )
         : <PermissionModuleDTO>[];
   }
 }

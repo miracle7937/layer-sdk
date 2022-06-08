@@ -21,6 +21,8 @@ class CategoryProvider {
       forceRefresh: forceRefresh,
     );
 
-    return CategoryDTO.fromJsonList(response.data);
+    return CategoryDTO.fromJsonList(
+      List<Map<String, dynamic>>.from(response.data),
+    );
   }
 }

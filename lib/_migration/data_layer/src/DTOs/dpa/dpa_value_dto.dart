@@ -44,7 +44,8 @@ class DPAValueDTO {
         description: json["description"],
         fields: json["fields"] == null
             ? null
-            : DPAValueFieldDTO.fromJsonList(json["fields"]),
+            : DPAValueFieldDTO.fromJsonList(
+                List<Map<String, dynamic>>.from(json["fields"])),
       );
 
   /// Creates a list of [DPAValueDTO]s from the given list of JSONs.

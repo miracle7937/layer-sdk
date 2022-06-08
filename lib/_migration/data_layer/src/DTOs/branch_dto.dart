@@ -50,7 +50,8 @@ class BranchDTO {
         created: JsonParser.parseDate(json['ts_created']),
         updated: JsonParser.parseDate(json['ts_updated']),
         workingTime: json['worktime'] != null
-            ? BranchWorkTimeDTO.fromJsonList(json['worktime'])
+            ? BranchWorkTimeDTO.fromJsonList(
+                List<Map<String, dynamic>>.from(json['worktime']))
             : null,
       );
 

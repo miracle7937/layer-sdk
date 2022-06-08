@@ -209,7 +209,9 @@ class TransferDTO {
         bulkFilePath: jsonLookup(json['extra'], ['bulk_file']),
         bulkDetails: json['bulk_transfer_details'] == null
             ? null
-            : BulkDetailDTO.fromJsonList(json['bulk_transfer_details']),
+            : BulkDetailDTO.fromJsonList(
+                List<Map<String, dynamic>>.from(json['bulk_transfer_details']),
+              ),
         ribCode: json['rib_code'],
         extra: json['extra'] as Map<String, dynamic>,
         cbsLocked: json['locked'] ?? false,

@@ -47,7 +47,9 @@ class OfferRuleDTO {
         logic: RuleLogicDTO.fromRaw(json['logic']),
         decisions: json['decision'] == null
             ? null
-            : RuleDecisionDTO.fromJsonList(json['decision']),
+            : RuleDecisionDTO.fromJsonList(
+                List<Map<String, dynamic>>.from(json['decision']),
+              ),
         reward: json['reward'] == null
             ? null
             : RuleRewardDTO.fromJson(json['reward']),
@@ -69,7 +71,9 @@ class OfferRuleDTO {
                 .toList(),
         activities: json['activity_types'] == null
             ? []
-            : RuleActivityDTO.fromJsonList(json['activity_types']),
+            : RuleActivityDTO.fromJsonList(
+                List<Map<String, dynamic>>.from(json['activity_types']),
+              ),
         type: RuleTypeDTO.fromRaw(json['rule_type']),
       );
 

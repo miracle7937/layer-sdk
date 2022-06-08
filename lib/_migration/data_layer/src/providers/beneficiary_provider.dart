@@ -35,6 +35,8 @@ class BeneficiaryProvider {
       forceRefresh: forceRefresh,
     );
 
-    return BeneficiaryDTO.fromJsonList(response.data);
+    return BeneficiaryDTO.fromJsonList(
+      List<Map<String, dynamic>>.from(response.data),
+    );
   }
 }

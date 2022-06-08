@@ -35,7 +35,9 @@ class AppointmentProvider {
       queryParameters: params,
     );
 
-    return AppointmentDTO.fromJsonList(response.data);
+    return AppointmentDTO.fromJsonList(
+      List<Map<String, dynamic>>.from(response.data),
+    );
   }
 
   /// Book an appointment
@@ -104,6 +106,8 @@ class AppointmentProvider {
       queryParameters: params,
     );
 
-    return BranchFreeTimeDTO.fromJsonList(response.data);
+    return BranchFreeTimeDTO.fromJsonList(
+      List<Map<String, dynamic>>.from(response.data),
+    );
   }
 }

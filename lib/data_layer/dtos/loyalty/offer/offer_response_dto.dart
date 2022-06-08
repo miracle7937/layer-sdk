@@ -19,6 +19,7 @@ class OfferResponseDTO {
   factory OfferResponseDTO.fromJson(Map<String, dynamic> json) =>
       OfferResponseDTO(
         totalCount: JsonParser.parseInt(json['count']),
-        offers: OfferDTO.fromJsonList(json['offers']),
+        offers: OfferDTO.fromJsonList(
+            List<Map<String, dynamic>>.from(json['offers'])),
       );
 }

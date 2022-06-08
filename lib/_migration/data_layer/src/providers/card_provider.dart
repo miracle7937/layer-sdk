@@ -27,7 +27,9 @@ class CardProvider {
       forceRefresh: forceRefresh,
     );
 
-    return CardDTO.fromJsonList(response.data);
+    return CardDTO.fromJsonList(
+      List<Map<String, dynamic>>.from(response.data),
+    );
   }
 
   /// Returns all completed transactions of the supplied customer card
@@ -51,6 +53,8 @@ class CardProvider {
       forceRefresh: forceRefresh,
     );
 
-    return CardTransactionDTO.fromJsonList(response.data);
+    return CardTransactionDTO.fromJsonList(
+      List<Map<String, dynamic>>.from(response.data),
+    );
   }
 }
