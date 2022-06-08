@@ -29,7 +29,6 @@ export 'src/repositories/permission_module_repository.dart';
 export 'src/repositories/product_repository.dart';
 export 'src/repositories/queue_request_repository.dart';
 export 'src/repositories/registration_repository.dart';
-export 'src/repositories/roles_repository.dart';
 export 'src/repositories/second_factor_repository.dart';
 export 'src/repositories/standing_order_repository.dart';
 export 'src/repositories/transfer_repository.dart';

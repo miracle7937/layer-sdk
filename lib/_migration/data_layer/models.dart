@@ -82,7 +82,6 @@ export 'src/models/product.dart';
 export 'src/models/queue_request.dart';
 export 'src/models/registration/registration_response.dart';
 export 'src/models/resolution.dart';
-export 'src/models/role.dart';
 export 'src/models/second_factor_verification.dart';
 export 'src/models/service.dart';
 export 'src/models/standing_order.dart';

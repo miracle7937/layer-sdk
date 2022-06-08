@@ -47,7 +47,6 @@ export 'mappings/products_dto_mapping.dart';
 export 'mappings/queue/queue_dto_mapping.dart';
 export 'mappings/queue/request_dto_mapping.dart';
 export 'mappings/registration/registration_response_dto_mapping.dart';
-export 'mappings/role_dto_mapping.dart';
 export 'mappings/service_dto_mapping.dart';
 export 'mappings/string_converters.dart';
 export 'mappings/transfer/beneficiary_dto_mapping.dart';

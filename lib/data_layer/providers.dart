@@ -9,3 +9,4 @@ export 'providers/loyalty/loyalty_points_transaction/loyalty_points_transaction_
 export 'providers/loyalty/offer_transaction/offer_transaction_provider.dart';
 export 'providers/loyalty/offers/offer_provider.dart';
 export 'providers/message/message_provider.dart';
+export 'providers/role/roles_provider.dart';
