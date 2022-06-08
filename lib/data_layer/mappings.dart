@@ -13,5 +13,6 @@ export 'mappings/loyalty/offer_transaction/offer_transaction_dto_mapping.dart';
 export 'mappings/loyalty/offer_transaction/offer_transaction_response_dto_mapping.dart';
 export 'mappings/message/message_dto_mapping.dart';
 export 'mappings/otp/otp_status_mapping.dart';
+export 'mappings/product/products_dto_mapping.dart';
 export 'mappings/role/role_dto_mapping.dart';
 export 'mappings/second_factor/second_factor_type_dto_mapping.dart';

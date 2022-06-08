@@ -72,8 +72,6 @@ export 'cubits/payments/payment_cubit.dart';
 export 'cubits/payments/payment_state.dart';
 export 'cubits/payments/recurring_payments_cubit.dart';
 export 'cubits/payments/recurring_payments_states.dart';
-export 'cubits/product/product_cubit.dart';
-export 'cubits/product/product_state.dart';
 export 'cubits/queue_request_cubit.dart';
 export 'cubits/queue_request_states.dart';
 export 'cubits/registration/registration_cubit.dart';

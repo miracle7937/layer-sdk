@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart' show immutable;
 
+import '../../../../../domain_layer/models.dart';
 import '../../../../data_layer/data_layer.dart';
 
 /// Enum that indicates possible errors
