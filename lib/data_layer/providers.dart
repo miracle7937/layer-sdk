@@ -2,6 +2,7 @@
 library providers;
 
 export 'providers/beneficiary/beneficiary_provider.dart';
+export 'providers/bill/bill_provider.dart';
 export 'providers/branding/branding_provider.dart';
 export 'providers/loyalty/loyalty_points/loyalty_points_provider.dart';
 export 'providers/loyalty/loyalty_points_exchange/loyalty_points_exchange_provider.dart';
