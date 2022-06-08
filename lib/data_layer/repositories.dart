@@ -12,5 +12,6 @@ export 'repositories/loyalty/loyalty_points_rate/loyalty_points_rate_repository.
 export 'repositories/loyalty/loyalty_points_transaction/loyalty_points_transaction_repository.dart';
 export 'repositories/loyalty/offers/offer_repository.dart';
 export 'repositories/message/message_repository.dart';
+export 'repositories/payments/payments_repository.dart';
 export 'repositories/product/product_repository.dart';
 export 'repositories/role/roles_repository.dart';

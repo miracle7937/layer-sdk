@@ -1,8 +1,8 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
 import 'package:layer_sdk/data_layer/network.dart';
+import 'package:layer_sdk/features/bills.dart';
+import 'package:layer_sdk/features/payments.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
@@ -16,7 +16,9 @@ late MockPaymentRepository _repository;
 
 RecurringPaymentCubit _buildCubit() => RecurringPaymentCubit(
       customerId: _customerId,
-      repository: _repository,
+      loadCustomerPaymentsUseCase: LoadCustomerPaymentsUseCase(
+        repository: _repository,
+      ),
       limit: _defaultLimit,
     );
 

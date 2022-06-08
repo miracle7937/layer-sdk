@@ -5,9 +5,9 @@ import 'package:layer_sdk/features/branding.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockBrandingRepository extends Mock implements BrandingRepository {}
+class MockLoadBrandingUseCase extends Mock implements LoadBrandingUseCase {}
 
-late MockBrandingRepository _repository;
+late MockLoadBrandingUseCase _useCase;
 
 final _backendBranding = Branding(
   defaultFontFamily: 'Roboto',
@@ -19,25 +19,39 @@ final _backendBranding = Branding(
   ),
 );
 
+final _defaultBranding = Branding(
+  defaultFontFamily: 'thisisatest',
+  logoURL: 'logo.svg',
+  logo: '{width:30}',
+  lightColors: BrandingColors(
+    brandPrimary: 220,
+    brandSecondary: 5,
+  ),
+);
+
 void main() {
   EquatableConfig.stringify = true;
 
   setUpAll(() {
-    _repository = MockBrandingRepository();
+    _useCase = MockLoadBrandingUseCase();
 
     when(
-      () => _repository.getBranding(),
+      () => _useCase(forceDefault: false),
     ).thenAnswer(
       (_) async => _backendBranding,
+    );
+
+    when(
+      () => _useCase(forceDefault: true),
+    ).thenAnswer(
+      (_) async => _defaultBranding,
     );
   });
 
   blocTest<BrandingCubit, BrandingState>(
     'starts on empty state',
     build: () => BrandingCubit(
-      getBrandingUseCase: LoadBrandingUseCase(
-        repository: _repository,
-      ),
+      getBrandingUseCase: _useCase,
     ),
     verify: (c) => expect(
       c.state,
@@ -48,9 +62,7 @@ void main() {
   blocTest<BrandingCubit, BrandingState>(
     'should load backend branding by default',
     build: () => BrandingCubit(
-      getBrandingUseCase: LoadBrandingUseCase(
-        repository: _repository,
-      ),
+      getBrandingUseCase: _useCase,
     ),
     act: (c) => c.load(),
     expect: () => [
@@ -61,16 +73,14 @@ void main() {
       ),
     ],
     verify: (c) {
-      verify(() => _repository.getBranding()).called(1);
+      verify(() => _useCase()).called(1);
     },
   ); // should load backend branding by default
 
   blocTest<BrandingCubit, BrandingState>(
     'should load backend branding',
     build: () => BrandingCubit(
-      getBrandingUseCase: LoadBrandingUseCase(
-        repository: _repository,
-      ),
+      getBrandingUseCase: _useCase,
     ),
     act: (c) => c.load(defaultBranding: false),
     expect: () => [
@@ -81,26 +91,25 @@ void main() {
       ),
     ],
     verify: (c) {
-      verify(() => _repository.getBranding()).called(1);
+      verify(() => _useCase()).called(1);
     },
   ); // should load backend branding
 
   blocTest<BrandingCubit, BrandingState>(
     'should load default branding',
     build: () => BrandingCubit(
-      getBrandingUseCase: LoadBrandingUseCase(
-        repository: _repository,
-      ),
+      getBrandingUseCase: _useCase,
     ),
     act: (c) => c.load(defaultBranding: true),
     expect: () => [
       BrandingState(busy: true),
       BrandingState(
+        branding: _defaultBranding,
         action: BrandingStateActions.newBranding,
       ),
     ],
     verify: (c) {
-      verifyNever(() => _repository.getBranding());
+      verifyNever(() => _useCase());
     },
   ); // should load default branding
 
@@ -110,7 +119,7 @@ void main() {
 void _dealWithErrors() {
   setUpAll(() {
     when(
-      () => _repository.getBranding(),
+      () => _useCase(),
     ).thenThrow(
       NetException(message: 'Failed.'),
     );
@@ -119,9 +128,7 @@ void _dealWithErrors() {
   blocTest<BrandingCubit, BrandingState>(
     'should deal with exception',
     build: () => BrandingCubit(
-      getBrandingUseCase: LoadBrandingUseCase(
-        repository: _repository,
-      ),
+      getBrandingUseCase: _useCase,
     ),
     act: (c) => c.load(defaultBranding: false),
     expect: () => [
@@ -131,7 +138,7 @@ void _dealWithErrors() {
       ),
     ],
     verify: (c) {
-      verify(() => _repository.getBranding()).called(1);
+      verify(() => _useCase()).called(1);
     },
   ); // should deal with exception
 }
