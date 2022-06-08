@@ -1,6 +1,7 @@
 library dtos;
 
 export 'dtos/beneficiary/beneficiary_dto.dart';
+export 'dtos/branch/branch_dto.dart';
 export 'dtos/branding/branding_dto.dart';
 export 'dtos/category/category_dto.dart';
 export 'dtos/loyalty/loyalty_points/loyalty_points_dto.dart';

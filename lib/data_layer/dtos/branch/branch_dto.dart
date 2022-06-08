@@ -1,4 +1,4 @@
-import '../helpers.dart';
+import '../../helpers.dart';
 
 /// Data transfer object for a branch.
 class BranchDTO {

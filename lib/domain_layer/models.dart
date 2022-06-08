@@ -2,6 +2,7 @@ library models;
 
 export 'models/beneficiary/beneficiary.dart';
 export 'models/bill.dart';
+export 'models/branch/branch.dart';
 export 'models/branding/branding.dart';
 export 'models/branding/branding_colors.dart';
 export 'models/branding/branding_fonts.dart';

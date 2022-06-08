@@ -1,9 +1,10 @@
-import '../../models.dart';
+import '../../../domain_layer/abstract_repositories.dart';
+import '../../../domain_layer/models.dart';
+import '../../mappings.dart';
 import '../../providers.dart';
-import '../mappings.dart';
 
 /// Handles all the branches data.
-class BranchRepository {
+class BranchRepository implements BranchRepositoryInterface {
   /// The provider to use to fetch the branch data.
   final BranchProvider _provider;
 
@@ -13,6 +14,7 @@ class BranchRepository {
   }) : _provider = provider;
 
   ///Lists the currencies
+  @override
   Future<List<Branch>> list({
     bool forceRefresh = false,
     int? limit,
@@ -34,6 +36,7 @@ class BranchRepository {
   }
 
   /// Get a branch by its id
+  @override
   Future<Branch> getBranchById(String branchId) async {
     final branch = await _provider.fetchBranchById(branchId);
     return branch.toBranch();

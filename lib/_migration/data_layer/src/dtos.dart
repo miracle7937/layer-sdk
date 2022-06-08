@@ -6,7 +6,6 @@ export 'DTOs/account_transaction_dto.dart';
 export 'DTOs/account_type_dto.dart';
 export 'DTOs/appointment_dto.dart';
 export 'DTOs/branch_activation_response_dto.dart';
-export 'DTOs/branch_dto.dart';
 export 'DTOs/branch_freetime_dto.dart';
 export 'DTOs/card_category_dto.dart';
 export 'DTOs/card_dto.dart';
