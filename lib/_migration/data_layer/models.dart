@@ -12,7 +12,6 @@ export 'src/models/appointment.dart';
 export 'src/models/banking_card.dart';
 export 'src/models/beneficiary.dart';
 export 'src/models/bill.dart';
-export 'src/models/branch.dart';
 export 'src/models/branch_activation_response.dart';
 export 'src/models/branch_freetime.dart';
 export 'src/models/branch_timeslot.dart';

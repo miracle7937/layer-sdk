@@ -1,16 +1,16 @@
 import 'package:bloc/bloc.dart';
 
-import '../../../data_layer/data_layer.dart';
+import '../../../domain_layer/use_cases.dart';
 import 'branch_states.dart';
 
 /// Cubit responsible for the branches' data.
 class BranchCubit extends Cubit<BranchState> {
-  final BranchRepository _repository;
+  final LoadBranchesUseCase _loadBranchesUseCase;
 
   /// Creates a new instance of [BranchCubit]
   BranchCubit({
-    required BranchRepository repository,
-  })  : _repository = repository,
+    required LoadBranchesUseCase loadBranchesUseCase,
+  })  : _loadBranchesUseCase = loadBranchesUseCase,
         super(
           BranchState(),
         );
@@ -27,7 +27,7 @@ class BranchCubit extends Cubit<BranchState> {
     );
 
     try {
-      final branches = await _repository.list(
+      final branches = await _loadBranchesUseCase(
         forceRefresh: forceRefresh,
       );
 

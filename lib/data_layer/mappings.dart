@@ -2,6 +2,7 @@ library mappings;
 
 export 'mappings/beneficiary/beneficiary_dto_mapping.dart';
 export 'mappings/bill/bill_dto_mapping.dart';
+export 'mappings/branch/branch_dto_mapping.dart';
 export 'mappings/branding/branding_dto_mapping.dart';
 export 'mappings/category/category_dto_mapping.dart';
 export 'mappings/loyalty/loyalty_points/loyalty_points_mapping.dart';

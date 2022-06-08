@@ -1,5 +1,5 @@
-import '../../models.dart';
-import '../dtos.dart';
+import '../../../domain_layer/models.dart';
+import '../../dtos.dart';
 
 /// Extension that provides mapping for [BranchDTO]
 extension BranchDTOMapping on BranchDTO {

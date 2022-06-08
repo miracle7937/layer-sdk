@@ -4,6 +4,8 @@ export 'cubits/beneficiary/beneficiaries_cubit.dart';
 export 'cubits/beneficiary/beneficiaries_states.dart';
 export 'cubits/bill/bill_cubit.dart';
 export 'cubits/bill/bill_states.dart';
+export 'cubits/branch/branch_cubit.dart';
+export 'cubits/branch/branch_states.dart';
 export 'cubits/branding/branding_cubit.dart';
 export 'cubits/branding/branding_states.dart';
 export 'cubits/loyalty/cashback_history/cashback_history_cubit.dart';

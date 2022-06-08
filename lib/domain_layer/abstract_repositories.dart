@@ -2,6 +2,7 @@ library abstract_repositories;
 
 export 'abstract_repositories/beneficiary/beneficiary_repository_interface.dart';
 export 'abstract_repositories/bill/bill_repository_interface.dart';
+export 'abstract_repositories/branch/branch_repository_interface.dart';
 export 'abstract_repositories/branding/branding_repository_interface.dart';
 export 'abstract_repositories/loyalty/cashback_history/cashback_history_repository_interface.dart';
 export 'abstract_repositories/loyalty/loyalty_points/loyalty_points_repository_interface.dart';
