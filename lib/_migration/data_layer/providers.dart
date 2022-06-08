@@ -8,7 +8,6 @@ export 'src/providers/authentication_provider.dart';
 export 'src/providers/beneficiary_provider.dart';
 export 'src/providers/bill_provider.dart';
 export 'src/providers/branch_provider.dart';
-export 'src/providers/branding_provider.dart';
 export 'src/providers/card_provider.dart';
 export 'src/providers/category_provider.dart';
 export 'src/providers/certificate_provider.dart';

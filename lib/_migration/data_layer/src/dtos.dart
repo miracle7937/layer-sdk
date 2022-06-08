@@ -8,7 +8,6 @@ export 'DTOs/appointment_dto.dart';
 export 'DTOs/branch_activation_response_dto.dart';
 export 'DTOs/branch_dto.dart';
 export 'DTOs/branch_freetime_dto.dart';
-export 'DTOs/branding/branding_dto.dart';
 export 'DTOs/card_category_dto.dart';
 export 'DTOs/card_dto.dart';
 export 'DTOs/card_preferences_dto.dart';

@@ -104,6 +104,9 @@ class BrandingColors extends Equatable {
   /// Hex value for the quaternary success color.
   final int? successQuaternary;
 
+  /// Hex value for the quinary success color.
+  final int? successQuinary;
+
   /// Hex value for the primary dark error color.
   final int? errorDarkPrimary;
 
@@ -119,7 +122,10 @@ class BrandingColors extends Equatable {
   /// Hex value for the quaternary error color.
   final int? errorQuaternary;
 
-  /// Hex value for the primary dark warning color.
+  /// Hex value for the quinary error color.
+  final int? errorQuinary;
+
+  /// Hex value for the dark primary warning color.
   final int? warningDarkPrimary;
 
   /// Hex value for the primary warning color.
@@ -134,7 +140,10 @@ class BrandingColors extends Equatable {
   /// Hex value for the quaternary warning color.
   final int? warningQuaternary;
 
-  /// Hex value for the primary dark caution color.
+  /// Hex value for the quinary warning color.
+  final int? warningQuinary;
+
+  /// Hex value for the dark primary caution color.
   final int? cautionDarkPrimary;
 
   /// Hex value for the primary caution color.
@@ -149,7 +158,10 @@ class BrandingColors extends Equatable {
   /// Hex value for the quaternary caution color.
   final int? cautionQuaternary;
 
-  /// Hex value for the primary dark info color.
+  /// Hex value for the quinary caution color.
+  final int? cautionQuinary;
+
+  /// Hex value for the dark primary info color.
   final int? infoDarkPrimary;
 
   /// Hex value for the primary info color.
@@ -163,6 +175,24 @@ class BrandingColors extends Equatable {
 
   /// Hex value for the quaternary info color.
   final int? infoQuaternary;
+
+  /// Hex value for the quinary info color.
+  final int? infoQuinary;
+
+  /// Hex value for the success alpha color.
+  final int? successAlpha;
+
+  /// Hex value for the error alpha color.
+  final int? errorAlpha;
+
+  /// Hex value for the warning alpha color.
+  final int? warningAlpha;
+
+  /// Hex value for the caution alpha color.
+  final int? cautionAlpha;
+
+  /// Hex value for the info alpha color.
+  final int? infoAlpha;
 
   /// Creates a new [BrandingColors].
   const BrandingColors({
@@ -200,26 +230,36 @@ class BrandingColors extends Equatable {
     this.successSecondary,
     this.successTertiary,
     this.successQuaternary,
+    this.successQuinary,
     this.errorDarkPrimary,
     this.errorPrimary,
     this.errorSecondary,
     this.errorTertiary,
     this.errorQuaternary,
+    this.errorQuinary,
     this.warningDarkPrimary,
     this.warningPrimary,
     this.warningSecondary,
     this.warningTertiary,
     this.warningQuaternary,
+    this.warningQuinary,
     this.cautionDarkPrimary,
     this.cautionPrimary,
     this.cautionSecondary,
     this.cautionTertiary,
     this.cautionQuaternary,
+    this.cautionQuinary,
     this.infoDarkPrimary,
     this.infoPrimary,
     this.infoSecondary,
     this.infoTertiary,
     this.infoQuaternary,
+    this.infoQuinary,
+    this.successAlpha,
+    this.errorAlpha,
+    this.warningAlpha,
+    this.cautionAlpha,
+    this.infoAlpha,
   });
 
   @override
@@ -258,26 +298,36 @@ class BrandingColors extends Equatable {
         successSecondary,
         successTertiary,
         successQuaternary,
+        successQuinary,
         errorDarkPrimary,
         errorPrimary,
         errorSecondary,
         errorTertiary,
         errorQuaternary,
+        errorQuinary,
         warningDarkPrimary,
         warningPrimary,
         warningSecondary,
         warningTertiary,
         warningQuaternary,
+        warningQuinary,
         cautionDarkPrimary,
         cautionPrimary,
         cautionSecondary,
         cautionTertiary,
         cautionQuaternary,
+        cautionQuinary,
         infoDarkPrimary,
         infoPrimary,
         infoSecondary,
         infoTertiary,
         infoQuaternary,
+        infoQuinary,
+        successAlpha,
+        errorAlpha,
+        warningAlpha,
+        cautionAlpha,
+        infoAlpha,
       ];
 
   /// Creates a new [BrandingColors] based on this one.
@@ -316,26 +366,36 @@ class BrandingColors extends Equatable {
     int? successSecondary,
     int? successTertiary,
     int? successQuaternary,
+    int? successQuinary,
     int? errorDarkPrimary,
     int? errorPrimary,
     int? errorSecondary,
     int? errorTertiary,
     int? errorQuaternary,
+    int? errorQuinary,
     int? warningDarkPrimary,
     int? warningPrimary,
     int? warningSecondary,
     int? warningTertiary,
     int? warningQuaternary,
+    int? warningQuinary,
     int? cautionDarkPrimary,
     int? cautionPrimary,
     int? cautionSecondary,
     int? cautionTertiary,
     int? cautionQuaternary,
+    int? cautionQuinary,
     int? infoDarkPrimary,
     int? infoPrimary,
     int? infoSecondary,
     int? infoTertiary,
     int? infoQuaternary,
+    int? infoQuinary,
+    int? successAlpha,
+    int? errorAlpha,
+    int? warningAlpha,
+    int? cautionAlpha,
+    int? infoAlpha,
   }) =>
       BrandingColors(
         brandGradientStart: brandGradientStart ?? this.brandGradientStart,
@@ -372,25 +432,35 @@ class BrandingColors extends Equatable {
         successSecondary: successSecondary ?? this.successSecondary,
         successTertiary: successTertiary ?? this.successTertiary,
         successQuaternary: successQuaternary ?? this.successQuaternary,
+        successQuinary: successQuinary ?? this.successQuinary,
         errorDarkPrimary: errorDarkPrimary ?? this.errorDarkPrimary,
         errorPrimary: errorPrimary ?? this.errorPrimary,
         errorSecondary: errorSecondary ?? this.errorSecondary,
         errorTertiary: errorTertiary ?? this.errorTertiary,
         errorQuaternary: errorQuaternary ?? this.errorQuaternary,
+        errorQuinary: errorQuinary ?? this.errorQuinary,
         warningDarkPrimary: warningDarkPrimary ?? this.warningDarkPrimary,
         warningPrimary: warningPrimary ?? this.warningPrimary,
         warningSecondary: warningSecondary ?? this.warningSecondary,
         warningTertiary: warningTertiary ?? this.warningTertiary,
         warningQuaternary: warningQuaternary ?? this.warningQuaternary,
+        warningQuinary: warningQuinary ?? this.warningQuinary,
         cautionDarkPrimary: cautionDarkPrimary ?? this.cautionDarkPrimary,
         cautionPrimary: cautionPrimary ?? this.cautionPrimary,
         cautionSecondary: cautionSecondary ?? this.cautionSecondary,
         cautionTertiary: cautionTertiary ?? this.cautionTertiary,
         cautionQuaternary: cautionQuaternary ?? this.cautionQuaternary,
+        cautionQuinary: cautionQuinary ?? this.cautionQuinary,
         infoDarkPrimary: infoDarkPrimary ?? this.infoDarkPrimary,
         infoPrimary: infoPrimary ?? this.infoPrimary,
         infoSecondary: infoSecondary ?? this.infoSecondary,
         infoTertiary: infoTertiary ?? this.infoTertiary,
         infoQuaternary: infoQuaternary ?? this.infoQuaternary,
+        infoQuinary: infoQuinary ?? this.infoQuinary,
+        successAlpha: successAlpha ?? this.successAlpha,
+        errorAlpha: errorAlpha ?? this.errorAlpha,
+        warningAlpha: warningAlpha ?? this.warningAlpha,
+        cautionAlpha: cautionAlpha ?? this.cautionAlpha,
+        infoAlpha: infoAlpha ?? this.infoAlpha,
       );
 }

@@ -1,5 +1,7 @@
 library cubits;
 
+export 'cubits/branding/branding_cubit.dart';
+export 'cubits/branding/branding_states.dart';
 export 'cubits/loyalty/cashback_history/cashback_history_cubit.dart';
 export 'cubits/loyalty/cashback_history/cashback_history_state.dart';
 export 'cubits/loyalty/loyalty_points/loyalty_points_cubit.dart';

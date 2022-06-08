@@ -1,5 +1,9 @@
 library models;
 
+export 'models/branding/branding.dart';
+export 'models/branding/branding_colors.dart';
+export 'models/branding/branding_fonts.dart';
+export 'models/branding/layer_branding.dart';
 export 'models/category/category.dart';
 export 'models/config/config.dart';
 export 'models/loyalty/cashback_history/cashback_history.dart';
@@ -34,6 +38,7 @@ export 'models/permissions/permission_data.dart';
 export 'models/permissions/permission_module.dart';
 export 'models/preferences/preferences.dart';
 export 'models/product/product.dart';
+export 'models/resolution.dart';
 export 'models/role/role.dart';
 export 'models/second_factor/second_factor_type.dart';
 export 'models/user/user.dart';

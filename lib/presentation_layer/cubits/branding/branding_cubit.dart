@@ -1,16 +1,16 @@
 import 'package:bloc/bloc.dart';
 
-import '../../../data_layer/data_layer.dart';
+import '../../../domain_layer/use_cases.dart';
 import 'branding_states.dart';
 
 /// Cubit responsible for the branding data.
 class BrandingCubit extends Cubit<BrandingState> {
-  final BrandingRepository _repository;
+  final LoadBrandingUseCase _getBrandingUseCase;
 
   /// Creates a new instance of [BrandingCubit]
   BrandingCubit({
-    required BrandingRepository repository,
-  })  : _repository = repository,
+    required LoadBrandingUseCase getBrandingUseCase,
+  })  : _getBrandingUseCase = getBrandingUseCase,
         super(BrandingState());
 
   /// Loads the branding.
@@ -29,7 +29,7 @@ class BrandingCubit extends Cubit<BrandingState> {
     );
 
     try {
-      final branding = await _repository.getBranding(
+      final branding = await _getBrandingUseCase(
         forceDefault: defaultBranding,
         forceRefresh: forceRefresh,
       );

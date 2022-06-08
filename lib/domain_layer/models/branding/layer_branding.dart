@@ -1,4 +1,4 @@
-import '../../../models.dart';
+import '../../models.dart';
 
 /// The default [Branding] with the Layer colors and fonts.
 class LayerBranding extends Branding {

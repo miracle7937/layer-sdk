@@ -1,8 +1,8 @@
 import 'package:design_kit_layer/design_kit_layer.dart';
 import 'package:flutter/material.dart';
-import '../../../data_layer/data_layer.dart';
 
-import '../extensions.dart';
+import '../../domain_layer/models.dart';
+import '../../presentation_layer/extensions.dart';
 
 /// Flutter Extension for [Branding]
 extension BrandingFlutterExtension on Branding {

@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../data_layer/data_layer.dart';
-import '../../business_layer.dart';
+import '../../../domain_layer/models.dart';
 
 /// Enum for all possible errors for [BrandingCubit]
 enum BrandingStateErrors {

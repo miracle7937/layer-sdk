@@ -8,7 +8,6 @@ export 'src/repositories/authentication_repository.dart';
 export 'src/repositories/beneficiary_repository.dart';
 export 'src/repositories/bill_repository.dart';
 export 'src/repositories/branch_repository.dart';
-export 'src/repositories/branding_repository.dart';
 export 'src/repositories/card_repository.dart';
 export 'src/repositories/category_repository.dart';
 export 'src/repositories/certificate_repository.dart';
