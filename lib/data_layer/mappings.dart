@@ -26,6 +26,5 @@ export 'mappings/payment/payment_dto_mapping.dart';
 export 'mappings/product/products_dto_mapping.dart';
 export 'mappings/role/role_dto_mapping.dart';
 export 'mappings/second_factor/second_factor_type_dto_mapping.dart';
-export 'mappings/service_dto_mapping.dart';
-export 'mappings/string_converters.dart';
+export 'mappings/service/service_dto_mapping.dart';
 export 'mappings/transfer/transfer_dto_mapping.dart';

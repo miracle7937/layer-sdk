@@ -1,5 +1,5 @@
-import '../DTOs/payment/service_dto.dart';
-import '../models/service.dart';
+import '../../../domain_layer/models.dart';
+import '../../dtos.dart';
 
 /// Extension that provides mappings for [ServiceDTO]
 extension ServiceDTOMapping on ServiceDTO {

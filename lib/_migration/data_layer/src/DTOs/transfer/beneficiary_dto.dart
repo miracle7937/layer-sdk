@@ -1,8 +1,7 @@
 import 'package:collection/collection.dart';
 
-import '../../../../../data_layer/dtos/second_factor/second_factor_type_dto.dart';
+import '../../../../../data_layer/dtos.dart';
 import '../../helpers.dart';
-import 'transfer_type_dto.dart';
 
 /// Data transfer object representing beneficiaries
 /// retrieved from the txn service.

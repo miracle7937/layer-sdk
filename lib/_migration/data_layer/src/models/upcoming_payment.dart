@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import 'bill.dart';
+import '../../../../domain_layer/models.dart';
 import 'transfer.dart';
 
 /// The status an upcoming payment can have

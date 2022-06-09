@@ -1,4 +1,4 @@
-import '../../domain_layer/models.dart';
+import '../../../domain_layer/models.dart';
 
 /// Converter extension for the type String
 extension StringConverter on String {
