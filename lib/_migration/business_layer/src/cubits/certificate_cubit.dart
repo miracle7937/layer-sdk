@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 
 import '../../../../../../data_layer/network.dart';
 import '../../../../domain_layer/models.dart';
-import '../../../data_layer/data_layer.dart';
+import '../../../data_layer/repositories.dart';
 import 'certificate_states.dart';
 
 /// Cubit responsible for requesting customer certificates

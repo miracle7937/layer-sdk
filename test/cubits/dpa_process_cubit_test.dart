@@ -1,14 +1,42 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
 import 'package:layer_sdk/data_layer/network.dart';
+import 'package:layer_sdk/features/dpa.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockDPARepository extends Mock implements DPARepository {}
+class MockStartDPAProcessUseCase extends Mock
+    implements StartDPAProcessUseCase {}
 
-final MockDPARepository _repo = MockDPARepository();
+class MockResumeDPAProcessUsecase extends Mock
+    implements ResumeDPAProcessUsecase {}
+
+class MockLoadTaskByIdUseCase extends Mock implements LoadTaskByIdUseCase {}
+
+class MockDPAStepBackUseCase extends Mock implements DPAStepBackUseCase {}
+
+class MockDPAStepOrFinishProcessUseCase extends Mock
+    implements DPAStepOrFinishProcessUseCase {}
+
+class MockCancelDPAProcessUseCase extends Mock
+    implements CancelDPAProcessUseCase {}
+
+class MockUploadDPAImageUseCase extends Mock implements UploadDPAImageUseCase {}
+
+class MockDownloadDPAFileUseCase extends Mock
+    implements DownloadDPAFileUseCase {}
+
+class MockDeleteDPAFileUseCase extends Mock implements DeleteDPAFileUseCase {}
+
+final _startUseCase = MockStartDPAProcessUseCase();
+final _resumeUseCase = MockResumeDPAProcessUsecase();
+final _loadTaskUseCase = MockLoadTaskByIdUseCase();
+final _stepBackUseCase = MockDPAStepBackUseCase();
+final _stepOrFinishUseCase = MockDPAStepOrFinishProcessUseCase();
+final _cancelUseCase = MockCancelDPAProcessUseCase();
+final _uploadUseCase = MockUploadDPAImageUseCase();
+final _downloadUseCase = MockDownloadDPAFileUseCase();
+final _deleteUsecase = MockDeleteDPAFileUseCase();
 
 final _successId = '1';
 final _successKey = 'success';
@@ -50,14 +78,24 @@ final _mockedFailureProcess = _mockedSuccessProcess.copyWith(
   ),
 );
 
+DPAProcessCubit create() => DPAProcessCubit(
+      cancelDPAProcessUseCase: _cancelUseCase,
+      deleteDPAFileUseCase: _deleteUsecase,
+      downloadDPAFileUseCase: _downloadUseCase,
+      loadTaskByIdUseCase: _loadTaskUseCase,
+      resumeDPAProcessUsecase: _resumeUseCase,
+      startDPAProcessUseCase: _startUseCase,
+      stepBackUseCase: _stepBackUseCase,
+      stepOrFinishProcessUseCase: _stepOrFinishUseCase,
+      uploadDPAImageUseCase: _uploadUseCase,
+    );
+
 void main() {
   EquatableConfig.stringify = true;
 
   blocTest<DPAProcessCubit, DPAProcessState>(
     'Starts with empty state',
-    build: () => DPAProcessCubit(
-      repository: _repo,
-    ),
+    build: create,
     verify: (c) => expect(c.state, DPAProcessState()),
   );
 
@@ -74,7 +112,7 @@ void main() {
 void _startTests() {
   setUp(() {
     when(
-      () => _repo.startProcess(
+      () => _startUseCase(
         id: _successId,
         variables: any(named: 'variables'),
       ),
@@ -83,7 +121,7 @@ void _startTests() {
     );
 
     when(
-      () => _repo.startProcess(
+      () => _startUseCase(
         id: _failureId,
         variables: any(named: 'variables'),
       ),
@@ -94,9 +132,7 @@ void _startTests() {
 
   blocTest<DPAProcessCubit, DPAProcessState>(
     'Start starts a new process successfully',
-    build: () => DPAProcessCubit(
-      repository: _repo,
-    ),
+    build: create,
     act: (c) => c.start(
       definitionId: _successId,
       variables: [],
@@ -113,7 +149,7 @@ void _startTests() {
       ),
     ],
     verify: (c) => verify(
-      () => _repo.startProcess(
+      () => _startUseCase(
         id: _successId,
         variables: any(named: 'variables'),
       ),
@@ -122,9 +158,7 @@ void _startTests() {
 
   blocTest<DPAProcessCubit, DPAProcessState>(
     'Start emits error on network failure',
-    build: () => DPAProcessCubit(
-      repository: _repo,
-    ),
+    build: create,
     act: (c) => c.start(
       definitionId: _failureId,
       variables: [],
@@ -139,7 +173,7 @@ void _startTests() {
       ),
     ],
     verify: (c) => verify(
-      () => _repo.startProcess(
+      () => _startUseCase(
         id: _failureId,
         variables: any(named: 'variables'),
       ),
@@ -150,35 +184,34 @@ void _startTests() {
 void _resumeTests() {
   setUp(() {
     when(
-      () => _repo.getTask(processInstanceId: _successProcessInstanceId),
+      () => _loadTaskUseCase(processInstanceId: _successProcessInstanceId),
     ).thenAnswer((_) async => _mockedSuccessProcess.task);
 
     when(
-      () => _repo.getTask(processInstanceId: _taskEmptyProcessInstanceId),
+      () => _loadTaskUseCase(processInstanceId: _taskEmptyProcessInstanceId),
     ).thenAnswer((_) async => null);
 
     when(
-      () => _repo.getTask(processInstanceId: _taskFailureProcessInstanceId),
+      () => _loadTaskUseCase(processInstanceId: _taskFailureProcessInstanceId),
     ).thenThrow(NetException(message: 'Some error'));
 
     when(
-      () => _repo.getTask(processInstanceId: _resumeFailureProcessInstanceId),
+      () =>
+          _loadTaskUseCase(processInstanceId: _resumeFailureProcessInstanceId),
     ).thenAnswer((_) async => _mockedFailureProcess.task);
 
     when(
-      () => _repo.resumeProcess(id: _successId),
+      () => _resumeUseCase(id: _successId),
     ).thenAnswer((_) async => _mockedSuccessProcess);
 
     when(
-      () => _repo.resumeProcess(id: _failureId),
+      () => _resumeUseCase(id: _failureId),
     ).thenThrow(NetException(message: 'Some error'));
   });
 
   blocTest<DPAProcessCubit, DPAProcessState>(
     'Start resumes a new process successfully',
-    build: () => DPAProcessCubit(
-      repository: _repo,
-    ),
+    build: create,
     act: (c) => c.start(
       definitionId: _successId,
       instanceId: _successProcessInstanceId,
@@ -197,13 +230,13 @@ void _resumeTests() {
     ],
     verify: (c) {
       verify(
-        () => _repo.getTask(
+        () => _loadTaskUseCase(
           processInstanceId: _successProcessInstanceId,
         ),
       ).called(1);
 
       verify(
-        () => _repo.resumeProcess(
+        () => _resumeUseCase(
           id: _successId,
         ),
       ).called(1);
@@ -212,9 +245,7 @@ void _resumeTests() {
 
   blocTest<DPAProcessCubit, DPAProcessState>(
     'Start emits a network error when no task is returned',
-    build: () => DPAProcessCubit(
-      repository: _repo,
-    ),
+    build: create,
     act: (c) => c.start(
       definitionId: _successId,
       instanceId: _taskEmptyProcessInstanceId,
@@ -231,13 +262,13 @@ void _resumeTests() {
     ],
     verify: (c) {
       verify(
-        () => _repo.getTask(
+        () => _loadTaskUseCase(
           processInstanceId: _taskEmptyProcessInstanceId,
         ),
       ).called(1);
 
       return verifyNever(
-        () => _repo.resumeProcess(
+        () => _resumeUseCase(
           id: _successId,
         ),
       );
@@ -246,9 +277,7 @@ void _resumeTests() {
 
   blocTest<DPAProcessCubit, DPAProcessState>(
     'Start emits a network error when getTask fails',
-    build: () => DPAProcessCubit(
-      repository: _repo,
-    ),
+    build: create,
     act: (c) => c.start(
       definitionId: _successId,
       instanceId: _taskFailureProcessInstanceId,
@@ -265,13 +294,13 @@ void _resumeTests() {
     ],
     verify: (c) {
       verify(
-        () => _repo.getTask(
+        () => _loadTaskUseCase(
           processInstanceId: _taskFailureProcessInstanceId,
         ),
       ).called(1);
 
       return verifyNever(
-        () => _repo.resumeProcess(
+        () => _resumeUseCase(
           id: _successId,
         ),
       );
@@ -280,9 +309,7 @@ void _resumeTests() {
 
   blocTest<DPAProcessCubit, DPAProcessState>(
     'Start emits a network error when resume fails',
-    build: () => DPAProcessCubit(
-      repository: _repo,
-    ),
+    build: create,
     act: (c) => c.start(
       definitionId: _successId,
       instanceId: _resumeFailureProcessInstanceId,
@@ -299,13 +326,13 @@ void _resumeTests() {
     ],
     verify: (c) {
       verify(
-        () => _repo.getTask(
+        () => _loadTaskUseCase(
           processInstanceId: _resumeFailureProcessInstanceId,
         ),
       ).called(1);
 
       return verify(
-        () => _repo.resumeProcess(
+        () => _resumeUseCase(
           id: _failureId,
         ),
       ).called(1);
@@ -316,13 +343,13 @@ void _resumeTests() {
 void _stepBackTests() {
   setUp(() {
     when(
-      () => _repo.stepBack(process: _mockedSuccessProcess),
+      () => _stepBackUseCase(process: _mockedSuccessProcess),
     ).thenAnswer(
       (_) async => _mockedSuccessProcess,
     );
 
     when(
-      () => _repo.stepBack(process: _mockedFailureProcess),
+      () => _stepBackUseCase(process: _mockedFailureProcess),
     ).thenAnswer(
       (_) async => throw NetException(message: 'Some error'),
     );
@@ -330,9 +357,7 @@ void _stepBackTests() {
 
   blocTest<DPAProcessCubit, DPAProcessState>(
     'Step back emits correct action after successfully stepping back',
-    build: () => DPAProcessCubit(
-      repository: _repo,
-    ),
+    build: create,
     act: (c) => c.stepBack(),
     seed: () => DPAProcessState(
       process: _mockedSuccessProcess,
@@ -352,7 +377,7 @@ void _stepBackTests() {
       ),
     ],
     verify: (c) => verify(
-      () => _repo.stepBack(
+      () => _stepBackUseCase(
         process: _mockedSuccessProcess,
       ),
     ).called(1),
@@ -360,9 +385,7 @@ void _stepBackTests() {
 
   blocTest<DPAProcessCubit, DPAProcessState>(
     'Step back emits error on network failure',
-    build: () => DPAProcessCubit(
-      repository: _repo,
-    ),
+    build: create,
     act: (c) => c.stepBack(),
     seed: () => DPAProcessState(
       process: _mockedFailureProcess,
@@ -382,7 +405,7 @@ void _stepBackTests() {
       ),
     ],
     verify: (c) => verify(
-      () => _repo.stepBack(
+      () => _stepBackUseCase(
         process: _mockedFailureProcess,
       ),
     ).called(1),
@@ -392,19 +415,19 @@ void _stepBackTests() {
 void _stepOrFinishTests() {
   setUp(() {
     when(
-      () => _repo.stepOrFinishProcess(process: _mockedSuccessProcess),
+      () => _stepOrFinishUseCase(process: _mockedSuccessProcess),
     ).thenAnswer(
       (_) async => _mockedSuccessProcess,
     );
 
     when(
-      () => _repo.stepOrFinishProcess(process: _mockedFinishedProcess),
+      () => _stepOrFinishUseCase(process: _mockedFinishedProcess),
     ).thenAnswer(
       (_) async => _mockedFinishedProcess,
     );
 
     when(
-      () => _repo.stepOrFinishProcess(process: _mockedFailureProcess),
+      () => _stepOrFinishUseCase(process: _mockedFailureProcess),
     ).thenAnswer(
       (_) async => throw NetException(message: 'Some error'),
     );
@@ -412,9 +435,7 @@ void _stepOrFinishTests() {
 
   blocTest<DPAProcessCubit, DPAProcessState>(
     'Emits correct action after successfully stepping forward',
-    build: () => DPAProcessCubit(
-      repository: _repo,
-    ),
+    build: create,
     act: (c) => c.stepOrFinish(),
     seed: () => DPAProcessState(
       process: _mockedSuccessProcess,
@@ -434,7 +455,7 @@ void _stepOrFinishTests() {
       ),
     ],
     verify: (c) => verify(
-      () => _repo.stepOrFinishProcess(
+      () => _stepOrFinishUseCase(
         process: _mockedSuccessProcess,
       ),
     ).called(1),
@@ -442,9 +463,7 @@ void _stepOrFinishTests() {
 
   blocTest<DPAProcessCubit, DPAProcessState>(
     'Emits correct action after successfully finishing',
-    build: () => DPAProcessCubit(
-      repository: _repo,
-    ),
+    build: create,
     act: (c) => c.stepOrFinish(),
     seed: () => DPAProcessState(
       process: _mockedFinishedProcess,
@@ -464,7 +483,7 @@ void _stepOrFinishTests() {
       ),
     ],
     verify: (c) => verify(
-      () => _repo.stepOrFinishProcess(
+      () => _stepOrFinishUseCase(
         process: _mockedFinishedProcess,
       ),
     ).called(1),
@@ -472,9 +491,7 @@ void _stepOrFinishTests() {
 
   blocTest<DPAProcessCubit, DPAProcessState>(
     'Emits correct error on network failure',
-    build: () => DPAProcessCubit(
-      repository: _repo,
-    ),
+    build: create,
     act: (c) => c.stepOrFinish(),
     seed: () => DPAProcessState(
       process: _mockedFailureProcess,
@@ -494,7 +511,7 @@ void _stepOrFinishTests() {
       ),
     ],
     verify: (c) => verify(
-      () => _repo.stepOrFinishProcess(
+      () => _stepOrFinishUseCase(
         process: _mockedFailureProcess,
       ),
     ).called(1),
@@ -504,13 +521,13 @@ void _stepOrFinishTests() {
 void _cancelProcess() {
   setUp(() {
     when(
-      () => _repo.cancelProcess(process: _mockedFinishedProcess),
+      () => _cancelUseCase(process: _mockedFinishedProcess),
     ).thenAnswer(
       (_) async => true,
     );
 
     when(
-      () => _repo.cancelProcess(process: _mockedFailureProcess),
+      () => _cancelUseCase(process: _mockedFailureProcess),
     ).thenAnswer(
       (_) async => throw NetException(message: 'Some error'),
     );
@@ -518,9 +535,7 @@ void _cancelProcess() {
 
   blocTest<DPAProcessCubit, DPAProcessState>(
     'Emits correct action after successfully cancelling',
-    build: () => DPAProcessCubit(
-      repository: _repo,
-    ),
+    build: create,
     act: (c) => c.cancelProcess(),
     seed: () => DPAProcessState(
       process: _mockedFinishedProcess,
@@ -542,7 +557,7 @@ void _cancelProcess() {
       ),
     ],
     verify: (c) => verify(
-      () => _repo.cancelProcess(
+      () => _cancelUseCase(
         process: _mockedFinishedProcess,
       ),
     ).called(1),
@@ -550,9 +565,7 @@ void _cancelProcess() {
 
   blocTest<DPAProcessCubit, DPAProcessState>(
     'Emits correct error on network failure',
-    build: () => DPAProcessCubit(
-      repository: _repo,
-    ),
+    build: create,
     act: (c) => c.cancelProcess(),
     seed: () => DPAProcessState(
       process: _mockedFailureProcess,
@@ -572,7 +585,7 @@ void _cancelProcess() {
       ),
     ],
     verify: (c) => verify(
-      () => _repo.cancelProcess(
+      () => _cancelUseCase(
         process: _mockedFailureProcess,
       ),
     ).called(1),
@@ -586,9 +599,7 @@ void _updateValue() {
 
   blocTest<DPAProcessCubit, DPAProcessState>(
     'Emits new state with the new variable value',
-    build: () => DPAProcessCubit(
-      repository: _repo,
-    ),
+    build: create,
     act: (c) => c.updateValue(
       variable: _mockedVariable,
       newValue: _failureId,
@@ -638,7 +649,7 @@ void _uploadImagesTests() {
 
   setUp(() {
     when(
-      () => _repo.uploadImage(
+      () => _uploadUseCase(
         process: _mockedSuccessProcess,
         variable: _mockedVariable,
         imageName: _imageName,
@@ -651,7 +662,7 @@ void _uploadImagesTests() {
     );
 
     when(
-      () => _repo.uploadImage(
+      () => _uploadUseCase(
         process: _mockedFailureProcess,
         variable: _mockedVariable,
         imageName: _imageName,
@@ -666,9 +677,7 @@ void _uploadImagesTests() {
 
   blocTest<DPAProcessCubit, DPAProcessState>(
     'Emits updated upload data when upload completes',
-    build: () => DPAProcessCubit(
-      repository: _repo,
-    ),
+    build: create,
     act: (c) => c.uploadImage(
       variable: _mockedVariable,
       filename: _imageName,
@@ -709,7 +718,7 @@ void _uploadImagesTests() {
       ),
     ],
     verify: (c) => verify(
-      () => _repo.uploadImage(
+      () => _uploadUseCase(
         process: _mockedSuccessProcess,
         variable: _mockedVariable,
         imageName: _imageName,
@@ -722,9 +731,7 @@ void _uploadImagesTests() {
 
   blocTest<DPAProcessCubit, DPAProcessState>(
     'Emits correct error on network failure',
-    build: () => DPAProcessCubit(
-      repository: _repo,
-    ),
+    build: create,
     act: (c) => c.uploadImage(
       variable: _mockedVariable,
       filename: _imageName,
@@ -754,7 +761,7 @@ void _uploadImagesTests() {
       ),
     ],
     verify: (c) => verify(
-      () => _repo.uploadImage(
+      () => _uploadUseCase(
         process: _mockedFailureProcess,
         variable: _mockedVariable,
         imageName: _imageName,
@@ -804,7 +811,7 @@ void _deleteFileTests() {
 
   setUp(() {
     when(
-      () => _repo.deleteFile(
+      () => _deleteUsecase(
         process: _initialSuccessProcess,
         variable: _variableToDelete,
         onProgress: any(named: 'onProgress'),
@@ -814,7 +821,7 @@ void _deleteFileTests() {
     );
 
     when(
-      () => _repo.deleteFile(
+      () => _deleteUsecase(
         process: _initialErrorProcess,
         variable: _variableToThrow,
         onProgress: any(named: 'onProgress'),
@@ -826,9 +833,7 @@ void _deleteFileTests() {
 
   blocTest<DPAProcessCubit, DPAProcessState>(
     'Emits updated variable when file is deleted',
-    build: () => DPAProcessCubit(
-      repository: _repo,
-    ),
+    build: create,
     act: (c) => c.deleteFile(
       variable: _variableToDelete,
     ),
@@ -855,7 +860,7 @@ void _deleteFileTests() {
       ),
     ],
     verify: (c) => verify(
-      () => _repo.deleteFile(
+      () => _deleteUsecase(
         process: _initialSuccessProcess,
         variable: _variableToDelete,
         onProgress: any(named: 'onProgress'),
@@ -865,9 +870,7 @@ void _deleteFileTests() {
 
   blocTest<DPAProcessCubit, DPAProcessState>(
     'Emits correct error on delete exception',
-    build: () => DPAProcessCubit(
-      repository: _repo,
-    ),
+    build: create,
     act: (c) => c.deleteFile(
       variable: _variableToThrow,
     ),
@@ -895,7 +898,7 @@ void _deleteFileTests() {
       ),
     ],
     verify: (c) => verify(
-      () => _repo.deleteFile(
+      () => _deleteUsecase(
         process: _initialErrorProcess,
         variable: _variableToThrow,
         onProgress: any(named: 'onProgress'),

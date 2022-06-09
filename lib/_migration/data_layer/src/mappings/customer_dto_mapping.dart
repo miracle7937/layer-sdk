@@ -1,9 +1,9 @@
 import 'package:collection/collection.dart';
 
+import '../../../../domain_layer/models/dpa/dpa_mapping_custom_data.dart';
 import '../../errors.dart';
 import '../../models.dart';
 import '../dtos.dart';
-import '../mappings.dart';
 
 /// Extension that provides mappings for [CustomerDTO].
 extension CustomerDTOMapping on CustomerDTO {

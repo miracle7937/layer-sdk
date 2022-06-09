@@ -13,7 +13,6 @@ export 'src/providers/country_provider.dart';
 export 'src/providers/currency_provider.dart';
 export 'src/providers/customer_provider.dart';
 export 'src/providers/device_session_provider.dart';
-export 'src/providers/dpa_provider.dart';
 export 'src/providers/experience_provider.dart';
 export 'src/providers/file_provider.dart';
 export 'src/providers/financial_data_provider.dart';
