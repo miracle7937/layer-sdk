@@ -12,7 +12,6 @@ export 'src/repositories/country_repository.dart';
 export 'src/repositories/currency_repository.dart';
 export 'src/repositories/customer_repository.dart';
 export 'src/repositories/device_session_repository.dart';
-export 'src/repositories/dpa_repository.dart';
 export 'src/repositories/experience_repository.dart';
 export 'src/repositories/file_repository.dart';
 export 'src/repositories/financial_data_repository.dart';

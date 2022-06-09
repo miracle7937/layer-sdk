@@ -14,5 +14,3 @@ export 'cubits/permissions/device_permissions_state.dart';
 export 'cubits/permissions/device_permissions_wrapper.dart';
 export 'cubits/root_check/root_check_cubit.dart';
 export 'cubits/root_check/root_check_state.dart';
-export 'cubits/theme/app_theme_cubit.dart';
-export 'cubits/theme/app_theme_state.dart';

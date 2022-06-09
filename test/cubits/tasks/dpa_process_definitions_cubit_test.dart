@@ -1,16 +1,16 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
 import 'package:layer_sdk/data_layer/network.dart';
+import 'package:layer_sdk/features/dpa.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockDPARepository extends Mock implements DPARepository {}
+class MockListProcessDefinitionsUseCase extends Mock
+    implements ListProcessDefinitionsUseCase {}
 
 final _repositoryList = <DPAProcessDefinition>[];
 
-late MockDPARepository _repository;
+late MockListProcessDefinitionsUseCase _listUseCase;
 
 void main() {
   EquatableConfig.stringify = true;
@@ -31,10 +31,10 @@ void main() {
   }
 
   setUpAll(() {
-    _repository = MockDPARepository();
+    _listUseCase = MockListProcessDefinitionsUseCase();
 
     when(
-      () => _repository.listProcessDefinitions(),
+      () => _listUseCase(),
     ).thenAnswer(
       (_) async => _repositoryList.toList(),
     );
@@ -42,13 +42,17 @@ void main() {
 
   blocTest<DPAProcessDefinitionsCubit, DPAProcessDefinitionsState>(
     'starts on empty state',
-    build: () => DPAProcessDefinitionsCubit(repository: _repository),
+    build: () => DPAProcessDefinitionsCubit(
+      definitionsUseCase: _listUseCase,
+    ),
     verify: (c) => expect(c.state, DPAProcessDefinitionsState()),
   ); // starts on empty state
 
   blocTest<DPAProcessDefinitionsCubit, DPAProcessDefinitionsState>(
     'should load processes',
-    build: () => DPAProcessDefinitionsCubit(repository: _repository),
+    build: () => DPAProcessDefinitionsCubit(
+      definitionsUseCase: _listUseCase,
+    ),
     act: (c) => c.load(),
     expect: () => [
       DPAProcessDefinitionsState(busy: true),
@@ -57,18 +61,20 @@ void main() {
       ),
     ],
     verify: (c) {
-      verify(() => _repository.listProcessDefinitions(
-            onlyLatestVersions: true,
-            filterSuspended: true,
-            forceRefresh: false,
-          )).called(1);
+      verify(
+        () => _listUseCase(
+          onlyLatestVersions: true,
+          filterSuspended: true,
+          forceRefresh: false,
+        ),
+      ).called(1);
     },
   ); // should load tasks
 
   group('Error handling', () {
     setUp(() {
       when(
-        () => _repository.listProcessDefinitions(),
+        () => _listUseCase(),
       ).thenThrow(
         NetException(message: 'Error'),
       );
@@ -76,7 +82,9 @@ void main() {
 
     blocTest<DPAProcessDefinitionsCubit, DPAProcessDefinitionsState>(
       'should deal with simple exceptions',
-      build: () => DPAProcessDefinitionsCubit(repository: _repository),
+      build: () => DPAProcessDefinitionsCubit(
+        definitionsUseCase: _listUseCase,
+      ),
       act: (c) => c.load(),
       expect: () => [
         DPAProcessDefinitionsState(busy: true),
@@ -85,7 +93,7 @@ void main() {
         ),
       ],
       verify: (c) {
-        verify(() => _repository.listProcessDefinitions()).called(1);
+        verify(() => _listUseCase()).called(1);
       },
     ); // should deal with simple exceptions
   });

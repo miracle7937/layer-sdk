@@ -1,12 +1,15 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
 import 'package:layer_sdk/data_layer/network.dart';
+import 'package:layer_sdk/domain_layer/models.dart';
+import 'package:layer_sdk/domain_layer/use_cases.dart';
+import 'package:layer_sdk/presentation_layer/cubits.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockDPARepository extends Mock implements DPARepository {}
+class MockListUserTasksUseCase extends Mock implements ListUserTasksUseCase {}
+
+class MockFinishTaskUseCase extends Mock implements FinishTaskUseCase {}
 
 final _repositoryList = <DPATask>[];
 final _customerList = <DPATask>[];
@@ -18,7 +21,14 @@ final _fixedCustomer = Customer(
   type: CustomerType.personal,
 );
 
-late MockDPARepository _repository;
+late MockListUserTasksUseCase _listUserTasksUseCase;
+late MockFinishTaskUseCase _finishTaskUseCase;
+
+UserTasksCubit create({String? customerId}) => UserTasksCubit(
+      userTasksUseCase: _listUserTasksUseCase,
+      finishTaskUseCase: _finishTaskUseCase,
+      customerId: customerId,
+    );
 
 void main() {
   EquatableConfig.stringify = true;
@@ -65,10 +75,11 @@ void main() {
         previousTasksIds: [],
       ),
     );
-    _repository = MockDPARepository();
+    _listUserTasksUseCase = MockListUserTasksUseCase();
+    _finishTaskUseCase = MockFinishTaskUseCase();
 
     when(
-      () => _repository.listUserTasks(
+      () => _listUserTasksUseCase(
         customerId: _fixedCustomer.id,
         fetchCustomersData: false,
       ),
@@ -77,7 +88,7 @@ void main() {
     );
 
     when(
-      () => _repository.listUserTasks(
+      () => _listUserTasksUseCase(
         forceRefresh: any(named: 'forceRefresh'),
       ),
     ).thenAnswer(
@@ -87,9 +98,7 @@ void main() {
 
   blocTest<UserTasksCubit, UserTasksState>(
     'starts on empty state',
-    build: () => UserTasksCubit(
-      repository: _repository,
-    ),
+    build: create,
     verify: (c) => expect(
       c.state,
       UserTasksState(),
@@ -98,9 +107,7 @@ void main() {
 
   blocTest<UserTasksCubit, UserTasksState>(
     'should load tasks without customer id',
-    build: () => UserTasksCubit(
-      repository: _repository,
-    ),
+    build: create,
     act: (c) => c.load(),
     expect: () => [
       UserTasksState(busy: true),
@@ -110,7 +117,7 @@ void main() {
     ],
     verify: (c) {
       verify(
-        () => _repository.listUserTasks(
+        () => _listUserTasksUseCase(
           fetchCustomersData: true,
           forceRefresh: false,
         ),
@@ -120,8 +127,7 @@ void main() {
 
   blocTest<UserTasksCubit, UserTasksState>(
     'should load tasks with customer id',
-    build: () => UserTasksCubit(
-      repository: _repository,
+    build: () => create(
       customerId: _fixedCustomer.id,
     ),
     act: (c) => c.load(),
@@ -137,7 +143,7 @@ void main() {
     ],
     verify: (c) {
       verify(
-        () => _repository.listUserTasks(
+        () => _listUserTasksUseCase(
           customerId: _fixedCustomer.id,
           fetchCustomersData: false,
           forceRefresh: false,
@@ -148,9 +154,7 @@ void main() {
 
   blocTest<UserTasksCubit, UserTasksState>(
     'should force load tasks without customer id',
-    build: () => UserTasksCubit(
-      repository: _repository,
-    ),
+    build: create,
     act: (c) => c.load(forceRefresh: true),
     expect: () => [
       UserTasksState(busy: true),
@@ -160,7 +164,7 @@ void main() {
     ],
     verify: (c) {
       verify(
-        () => _repository.listUserTasks(
+        () => _listUserTasksUseCase(
           fetchCustomersData: true,
           forceRefresh: true,
         ),
@@ -171,7 +175,7 @@ void main() {
   group('Error handling', () {
     setUp(() {
       when(
-        () => _repository.listUserTasks(),
+        () => _listUserTasksUseCase(),
       ).thenThrow(
         NetException(message: 'Error'),
       );
@@ -179,9 +183,7 @@ void main() {
 
     blocTest<UserTasksCubit, UserTasksState>(
       'should deal with simple exceptions',
-      build: () => UserTasksCubit(
-        repository: _repository,
-      ),
+      build: create,
       act: (c) => c.load(),
       expect: () => [
         UserTasksState(busy: true),
@@ -190,7 +192,7 @@ void main() {
         ),
       ],
       verify: (c) {
-        verify(() => _repository.listUserTasks()).called(1);
+        verify(() => _listUserTasksUseCase()).called(1);
       },
     ); // should deal with simple exceptions
   });
@@ -238,13 +240,13 @@ void _finalizeTests() {
 
   setUpAll(() {
     when(
-      () => _repository.finishTask(task: any(named: 'task')),
+      () => _finishTaskUseCase(task: any(named: 'task')),
     ).thenAnswer(
       (_) async => true,
     );
 
     when(
-      () => _repository.finishTask(
+      () => _finishTaskUseCase(
         task: _updateDecision(failedTask, updatedDecision),
       ),
     ).thenAnswer(
@@ -252,7 +254,7 @@ void _finalizeTests() {
     );
 
     when(
-      () => _repository.finishTask(
+      () => _finishTaskUseCase(
         task: _updateDecision(errorTask, updatedDecision),
       ),
     ).thenThrow(
@@ -262,9 +264,7 @@ void _finalizeTests() {
 
   blocTest<UserTasksCubit, UserTasksState>(
     'should finalize task',
-    build: () => UserTasksCubit(
-      repository: _repository,
-    ),
+    build: create,
     seed: () => UserTasksState(
       tasks: finalizeTasks,
     ),
@@ -281,7 +281,7 @@ void _finalizeTests() {
     ],
     verify: (c) {
       verify(
-        () => _repository.finishTask(
+        () => _finishTaskUseCase(
           task: _updateDecision(successTask, updatedDecision),
         ),
       ).called(1);
@@ -290,9 +290,7 @@ void _finalizeTests() {
 
   blocTest<UserTasksCubit, UserTasksState>(
     'should emit error when failed to finalize',
-    build: () => UserTasksCubit(
-      repository: _repository,
-    ),
+    build: create,
     seed: () => UserTasksState(
       tasks: finalizeTasks,
     ),
@@ -309,7 +307,7 @@ void _finalizeTests() {
     ],
     verify: (c) {
       verify(
-        () => _repository.finishTask(
+        () => _finishTaskUseCase(
           task: _updateDecision(failedTask, updatedDecision),
         ),
       ).called(1);
@@ -318,9 +316,7 @@ void _finalizeTests() {
 
   blocTest<UserTasksCubit, UserTasksState>(
     'should deal with simple exceptions when finalizing',
-    build: () => UserTasksCubit(
-      repository: _repository,
-    ),
+    build: create,
     seed: () => UserTasksState(
       tasks: finalizeTasks,
     ),
@@ -337,7 +333,7 @@ void _finalizeTests() {
     ],
     verify: (c) {
       verify(
-        () => _repository.finishTask(
+        () => _finishTaskUseCase(
           task: _updateDecision(errorTask, updatedDecision),
         ),
       ).called(1);
