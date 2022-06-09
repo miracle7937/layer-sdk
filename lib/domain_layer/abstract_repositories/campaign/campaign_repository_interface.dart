@@ -10,8 +10,8 @@ abstract class CampaignRepositoryInterface {
     ],
     CampaignTarget target = CampaignTarget.public,
     bool? read,
-    required int limit,
-    required int offset,
+    int? limit,
+    int? offset,
     String? sortby,
     bool? desc,
   });
