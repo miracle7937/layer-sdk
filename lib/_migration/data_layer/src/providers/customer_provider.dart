@@ -59,7 +59,11 @@ class CustomerProvider {
 
     if (!response.success || response.data == null) return [];
 
-    if (response.data is List) return CustomerDTO.fromJsonList(response.data);
+    if (response.data is List) {
+      return CustomerDTO.fromJsonList(
+        List<Map<String, dynamic>>.from(response.data),
+      );
+    }
 
     return [
       CustomerDTO.fromJson(response.data),

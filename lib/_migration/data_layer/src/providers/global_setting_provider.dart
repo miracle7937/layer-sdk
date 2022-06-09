@@ -29,6 +29,7 @@ class GlobalSettingProvider {
       useDefaultToken: true,
     );
 
-    return GlobalSettingDTO.fromJsonList(response.data);
+    return GlobalSettingDTO.fromJsonList(
+        List<Map<String, dynamic>>.from(response.data));
   }
 }

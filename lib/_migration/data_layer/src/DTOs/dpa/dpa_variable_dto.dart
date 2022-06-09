@@ -101,7 +101,8 @@ class DPAVariableDTO {
         constraints: DPAConstraintDTO.fromJson(json['constraints']),
         values: json['values'] == null
             ? null
-            : DPAValueDTO.fromJsonList(json['values']),
+            : DPAValueDTO.fromJsonList(
+                List<Map<String, dynamic>>.from(json['values'])),
         valueInfo: json['valueInfo'] is String ? json['valueInfo'] : null,
       );
 

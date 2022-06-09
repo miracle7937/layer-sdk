@@ -31,6 +31,8 @@ class PaymentProvider {
       forceRefresh: forceRefresh,
     );
 
-    return PaymentDTO.fromJsonList(response.data);
+    return PaymentDTO.fromJsonList(
+      List<Map<String, dynamic>>.from(response.data),
+    );
   }
 }

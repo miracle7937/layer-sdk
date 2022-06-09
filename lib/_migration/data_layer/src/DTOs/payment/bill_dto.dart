@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 
-import '../../../../../data_layer/dtos.dart';
+import '../../../../../data_layer/dtos/second_factor/second_factor_type_dto.dart';
 import '../../helpers.dart';
 import 'service_dto.dart';
 import 'service_field_dto.dart';
@@ -143,7 +143,9 @@ class BillDTO {
       created: JsonParser.parseDate(json['ts_created']),
       updated: JsonParser.parseDate(json['ts_updated']),
       billingFields: json['billing_fields'] != null
-          ? ServiceFieldDTO.fromJsonList(json['billing_fields'])
+          ? ServiceFieldDTO.fromJsonList(
+              List<Map<String, dynamic>>.from(json['billing_fields']),
+            )
           : [],
       additionalFields: json['additional_fields'],
       visible: json['visible'],

@@ -1,12 +1,13 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
+import 'package:layer_sdk/domain_layer/models.dart';
+import 'package:layer_sdk/domain_layer/use_cases.dart';
+import 'package:layer_sdk/presentation_layer/cubits.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockBranchRepository extends Mock implements BranchRepository {}
+class MockLoadBranchesUseCase extends Mock implements LoadBranchesUseCase {}
 
-late MockBranchRepository _repo;
+late MockLoadBranchesUseCase _mockLoadBranchesUseCase;
 
 void main() {
   final mockBranches = List.generate(
@@ -21,10 +22,10 @@ void main() {
 
   setUpAll(
     () {
-      _repo = MockBranchRepository();
+      _mockLoadBranchesUseCase = MockLoadBranchesUseCase();
 
       when(
-        () => _repo.list(),
+        () => _mockLoadBranchesUseCase(),
       ).thenAnswer(
         (_) async => mockBranches,
       );
@@ -34,7 +35,7 @@ void main() {
   blocTest<BranchCubit, BranchState>(
     'Starts with empty state',
     build: () => BranchCubit(
-      repository: _repo,
+      loadBranchesUseCase: _mockLoadBranchesUseCase,
     ),
     verify: (c) {
       expect(
@@ -47,7 +48,7 @@ void main() {
   blocTest<BranchCubit, BranchState>(
     'Loads branches',
     build: () => BranchCubit(
-      repository: _repo,
+      loadBranchesUseCase: _mockLoadBranchesUseCase,
     ),
     act: (c) => c.load(),
     expect: () => [
@@ -62,7 +63,7 @@ void main() {
     ],
     verify: (c) {
       verify(
-        () => _repo.list(forceRefresh: false),
+        () => _mockLoadBranchesUseCase(forceRefresh: false),
       ).called(1);
     },
   );
@@ -73,7 +74,7 @@ void main() {
 void _exceptionTest() {
   setUp(() {
     when(
-      () => _repo.list(),
+      () => _mockLoadBranchesUseCase(),
     ).thenAnswer(
       (_) async => throw Exception('Some Error'),
     );
@@ -82,7 +83,7 @@ void _exceptionTest() {
   blocTest<BranchCubit, BranchState>(
     'Handles exceptions gracefully',
     build: () => BranchCubit(
-      repository: _repo,
+      loadBranchesUseCase: _mockLoadBranchesUseCase,
     ),
     act: (c) => c.load(),
     expect: () => [
@@ -99,7 +100,7 @@ void _exceptionTest() {
     ],
     verify: (c) {
       verify(
-        () => _repo.list(forceRefresh: false),
+        () => _mockLoadBranchesUseCase(forceRefresh: false),
       ).called(1);
     },
   );

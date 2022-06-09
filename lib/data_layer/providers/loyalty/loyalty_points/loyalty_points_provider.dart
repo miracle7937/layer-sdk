@@ -18,6 +18,7 @@ class LoyaltyPointsProvider {
       method: NetRequestMethods.get,
     );
 
-    return LoyaltyPointsDTO.fromJsonList(response.data);
+    return LoyaltyPointsDTO.fromJsonList(
+        List<Map<String, dynamic>>.from(response.data));
   }
 }

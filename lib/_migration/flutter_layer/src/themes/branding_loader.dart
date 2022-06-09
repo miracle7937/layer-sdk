@@ -1,9 +1,9 @@
 import 'package:design_kit_layer/design_kit_layer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../business_layer/business_layer.dart';
 
-import '../themes.dart';
+import '../../../../presentation_layer/widgets/branding_listener.dart';
+import '../../../business_layer/business_layer.dart';
 
 /// A widget that loads the theme settings to set the branding, and wraps on
 /// a [BrandingListener] to provide a [LayerDesign] to the tree.

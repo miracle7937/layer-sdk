@@ -222,7 +222,9 @@ class UserDTO {
 
     deviceId = json['device_id'];
 
-    permissions = PermissionDTO.fromJsonList(json['permission'] ?? []);
+    permissions = PermissionDTO.fromJsonList(
+      List<Map<String, dynamic>>.from(json['permission'] ?? []),
+    );
 
     onfidoToken = json['sdk_token'];
     lastLogin = JsonParser.parseDate(json['ts_last_login']);
@@ -277,7 +279,7 @@ class UserDTO {
 
   bool _readBlockedChannels(Map<String, dynamic> json) {
     if (json['blocked_channels'] != null) {
-      final list = List.from(json['blocked_channels']);
+      final list = List<Map<String, dynamic>>.from(json['blocked_channels']);
       if (list.isEmpty) return true;
     }
     return false;

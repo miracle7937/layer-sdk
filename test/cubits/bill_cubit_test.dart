@@ -1,14 +1,14 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
 import 'package:layer_sdk/data_layer/network.dart';
+import 'package:layer_sdk/features/bills.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockBillRepository extends Mock implements BillRepository {}
+class MockLoadCustomerBillsUseCase extends Mock
+    implements LoadCustomerBillsUseCase {}
 
-late MockBillRepository _repo;
+late MockLoadCustomerBillsUseCase _useCase;
 
 final _defaultLimit = 10;
 final _customerId = '200000';
@@ -37,12 +37,12 @@ void main() {
   );
 
   setUpAll(() {
-    _repo = MockBillRepository();
+    _useCase = MockLoadCustomerBillsUseCase();
 
     /// Test case that retrieves all mocked
     /// bills between the default limit
     when(
-      () => _repo.list(
+      () => _useCase(
         customerId: _customerId,
         limit: _defaultLimit,
         offset: 0,
@@ -52,7 +52,7 @@ void main() {
     /// Test case that retrieves a portion of mocked
     /// bills between the default limit
     when(
-      () => _repo.list(
+      () => _useCase(
         limit: _defaultLimit,
         offset: _defaultLimit,
         customerId: _customerId,
@@ -65,7 +65,7 @@ void main() {
     /// Test case that retrieves a portion of mocked
     /// transactions between the default limit
     when(
-      () => _repo.list(
+      () => _useCase(
         limit: _defaultLimit,
         offset: _defaultLimit * 2,
         customerId: _customerId,
@@ -75,7 +75,7 @@ void main() {
     );
 
     when(
-      () => _repo.list(
+      () => _useCase(
         customerId: _netExceptionId,
         limit: any(named: 'limit'),
         forceRefresh: any(named: 'forceRefresh'),
@@ -86,7 +86,7 @@ void main() {
     );
 
     when(
-      () => _repo.list(
+      () => _useCase(
         customerId: _genericExceptionId,
         limit: any(named: 'limit'),
         forceRefresh: any(named: 'forceRefresh'),
@@ -99,10 +99,8 @@ void main() {
 
   blocTest<BillCubit, BillState>(
     'Starts with empty state',
-    build: () => BillCubit(
-      customerId: _customerId,
-      repository: _repo,
-    ),
+    build: () =>
+        BillCubit(customerId: _customerId, loadCustomerBillsUseCase: _useCase),
     verify: (c) => expect(
       c.state,
       BillState(
@@ -115,7 +113,7 @@ void main() {
     'Load bills',
     build: () => BillCubit(
       customerId: _customerId,
-      repository: _repo,
+      loadCustomerBillsUseCase: _useCase,
       limit: _defaultLimit,
     ),
     act: (c) => c.load(),
@@ -137,7 +135,7 @@ void main() {
     'Loads next page of bills',
     build: () => BillCubit(
       customerId: _customerId,
-      repository: _repo,
+      loadCustomerBillsUseCase: _useCase,
       limit: _defaultLimit,
     ),
     seed: () => BillState(
@@ -157,7 +155,7 @@ void main() {
       ),
     ],
     verify: (c) {
-      verify(() => _repo.list(
+      verify(() => _useCase(
             customerId: _customerId,
             limit: _defaultLimit,
             offset: _defaultLimit,
@@ -169,7 +167,7 @@ void main() {
     'Sets canLoadMore == false when no more items to load',
     build: () => BillCubit(
       customerId: _customerId,
-      repository: _repo,
+      loadCustomerBillsUseCase: _useCase,
       limit: _defaultLimit,
     ),
     seed: () => BillState(
@@ -192,7 +190,7 @@ void main() {
     ],
     verify: (c) {
       verifyNever(
-        () => _repo.list(
+        () => _useCase(
           customerId: _customerId,
           limit: _defaultLimit,
           offset: _defaultLimit * 2,
@@ -205,7 +203,7 @@ void main() {
     'Should handle network exceptions',
     build: () => BillCubit(
       customerId: _netExceptionId,
-      repository: _repo,
+      loadCustomerBillsUseCase: _useCase,
       limit: _defaultLimit,
     ),
     act: (c) => c.load(),
@@ -229,7 +227,7 @@ void main() {
     'Should handle generic exceptions',
     build: () => BillCubit(
       customerId: _genericExceptionId,
-      repository: _repo,
+      loadCustomerBillsUseCase: _useCase,
       limit: _defaultLimit,
     ),
     act: (c) => c.load(),

@@ -27,7 +27,9 @@ class CountryProvider {
       forceRefresh: forceRefresh,
     );
 
-    return getSortedCountries(CountryDTO.fromJsonList(response.data));
+    return getSortedCountries(CountryDTO.fromJsonList(
+      List<Map<String, dynamic>>.from(response.data),
+    ));
   }
 
   /// Returns the list of countries sorted

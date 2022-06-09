@@ -1,10 +1,9 @@
 import 'dart:collection';
 
 import 'package:equatable/equatable.dart';
-
 import 'package:meta/meta.dart' show immutable;
-import '../../../../data_layer/data_layer.dart';
 
+import '../../../../../domain_layer/models.dart';
 import '../../utils/pagination.dart';
 
 /// Possible errors emitted by the state

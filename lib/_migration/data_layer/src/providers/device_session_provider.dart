@@ -25,7 +25,9 @@ class DeviceSessionProvider {
       },
     );
 
-    return DeviceSessionDTO.fromJsonList(response.data);
+    return DeviceSessionDTO.fromJsonList(
+      List<Map<String, dynamic>>.from(response.data),
+    );
   }
 
   /// Wipes a device.

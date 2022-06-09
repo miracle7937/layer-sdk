@@ -6,13 +6,16 @@ import 'package:test/test.dart';
 class MockAccountRepository extends Mock
     implements AccountTransactionRepositoryInterface {}
 
-late MockAccountRepository _repo;
-late GetCustomerAccountTransactionsUseCase
-    _getCustomerAccountTransactionsUseCase;
+final MockAccountRepository _repo = MockAccountRepository();
+final GetCustomerAccountTransactionsUseCase
+    _getCustomerAccountTransactionsUseCase =
+    GetCustomerAccountTransactionsUseCase(repository: _repo);
 
 final _loadsAccountTransactionsId = '1';
 final _throwsExceptionId = '2';
 final _defaultLimit = 10;
+
+final _genericException = Exception();
 
 void main() {
   final _mockedTransactions = List.generate(
@@ -25,10 +28,6 @@ void main() {
   );
 
   setUpAll(() {
-    _repo = MockAccountRepository();
-    _getCustomerAccountTransactionsUseCase =
-        GetCustomerAccountTransactionsUseCase(repository: _repo);
-
     /// Test case that retrieves all mocked
     /// transactions between the default limit
     when(
@@ -37,6 +36,7 @@ void main() {
         customerId: _loadsAccountTransactionsId,
         limit: _defaultLimit,
         offset: 0,
+        forceRefresh: any(named: 'forceRefresh'),
       ),
     ).thenAnswer((_) async => _mockedTransactions.take(_defaultLimit).toList());
 
@@ -48,6 +48,7 @@ void main() {
         offset: _defaultLimit,
         accountId: _loadsAccountTransactionsId,
         customerId: _loadsAccountTransactionsId,
+        forceRefresh: any(named: 'forceRefresh'),
       ),
     ).thenAnswer(
       (_) async =>
@@ -62,6 +63,7 @@ void main() {
         offset: _defaultLimit * 2,
         accountId: _loadsAccountTransactionsId,
         customerId: _loadsAccountTransactionsId,
+        forceRefresh: any(named: 'forceRefresh'),
       ),
     ).thenAnswer(
       (_) async => _mockedTransactions.skip(_defaultLimit * 2).toList(),
@@ -72,8 +74,11 @@ void main() {
       () => _repo.listCustomerAccountTransactions(
         accountId: _throwsExceptionId,
         customerId: _throwsExceptionId,
+        limit: any(named: 'limit'),
+        offset: any(named: 'offset'),
+        forceRefresh: any(named: 'forceRefresh'),
       ),
-    ).thenAnswer((_) async => throw Exception('Some error'));
+    ).thenThrow(_genericException);
   });
 
   blocTest<AccountTransactionsCubit, AccountTransactionsState>(

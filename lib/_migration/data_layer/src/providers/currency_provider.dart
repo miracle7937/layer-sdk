@@ -21,7 +21,8 @@ class CurrencyProvider {
       method: NetRequestMethods.get,
       forceRefresh: forceRefresh,
     );
-    return CurrencyDTO.fromJsonList(response.data);
+    return CurrencyDTO.fromJsonList(
+        List<Map<String, dynamic>>.from(response.data));
   }
 
   /// Gets a currency by a code
@@ -37,6 +38,7 @@ class CurrencyProvider {
       },
       forceRefresh: forceRefresh,
     );
-    return CurrencyDTO.fromJsonList(response.data);
+    return CurrencyDTO.fromJsonList(
+        List<Map<String, dynamic>>.from(response.data));
   }
 }

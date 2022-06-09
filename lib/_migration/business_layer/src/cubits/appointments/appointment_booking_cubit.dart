@@ -1,9 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:collection/collection.dart';
 import 'package:intl/intl.dart';
-import '../../../../../data_layer/network.dart';
-import '../../../../data_layer/data_layer.dart';
 
+import '../../../../../data_layer/network.dart';
+import '../../../../../domain_layer/models.dart';
+import '../../../../data_layer/data_layer.dart';
 import 'appointment_booking_state.dart';
 
 /// Cubit that handle inserting, editing, deleting appointments

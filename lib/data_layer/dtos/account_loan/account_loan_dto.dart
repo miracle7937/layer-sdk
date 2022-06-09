@@ -143,7 +143,7 @@ class AccountLoanDTO {
       payments: json['account_loan_payments'] == null
           ? null
           : AccountLoanPaymentDTO.fromJsonList(
-              json['account_loan_payments'],
+              List<Map<String, dynamic>>.from(json['account_loan_payments']),
             ),
       paidPayments: JsonParser.parseInt(json['installments_paid']),
       totalPayments: JsonParser.parseInt(json['installments_total']),
