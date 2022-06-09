@@ -1,4 +1,4 @@
-import 'package:layer_sdk/data_layer/mappings.dart';
+import 'package:layer_sdk/data_layer/extensions.dart';
 import 'package:layer_sdk/domain_layer/models.dart';
 import 'package:test/test.dart';
 

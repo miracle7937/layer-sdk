@@ -1,5 +1,10 @@
 library mappings;
 
+export 'mappings/account/account_dto_mapping.dart';
+export 'mappings/account/account_preferences_dto_mapping.dart';
+export 'mappings/account_loan/account_loan_dto_mapping.dart';
+export 'mappings/account_loan/account_loan_payment_dto_mapping.dart';
+export 'mappings/account_transfaction/account_transaction_dto_mapping.dart';
 export 'mappings/beneficiary/beneficiary_dto_mapping.dart';
 export 'mappings/bill/bill_dto_mapping.dart';
 export 'mappings/branch/branch_dto_mapping.dart';
@@ -21,6 +26,5 @@ export 'mappings/payment/payment_dto_mapping.dart';
 export 'mappings/product/products_dto_mapping.dart';
 export 'mappings/role/role_dto_mapping.dart';
 export 'mappings/second_factor/second_factor_type_dto_mapping.dart';
-export 'mappings/service_dto_mapping.dart';
-export 'mappings/string_converters.dart';
+export 'mappings/service/service_dto_mapping.dart';
 export 'mappings/transfer/transfer_dto_mapping.dart';

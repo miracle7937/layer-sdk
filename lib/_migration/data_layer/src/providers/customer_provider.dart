@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 
+import '../../../../data_layer/dtos.dart';
 import '../../../../data_layer/network.dart';
 
 import '../../environment.dart';

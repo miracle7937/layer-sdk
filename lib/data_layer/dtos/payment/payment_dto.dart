@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 
-import '../../../_migration/data_layer/src/DTOs/account_dto.dart';
 import '../../../_migration/data_layer/src/DTOs/card_dto.dart';
 import '../../dtos.dart';
 import '../../helpers.dart';

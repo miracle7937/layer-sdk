@@ -15,7 +15,7 @@ class LoyaltyPointsExchangeCubit extends Cubit<LoyaltyPointsExchangeState> {
   final ExchangeLoyaltyPointsUseCase _exchangeLoyaltyPointsUseCase;
   final ConfirmSecondFactorForLoyaltyPointsExchangeUseCase
       _confirmSecondFactorForLoyaltyPointsExchangeUseCase;
-  final AccountRepository _accountRepository;
+  final GetAccountsByStatusUseCase _getAccountsByStatusUseCase;
   final CardRepository _cardRepository;
 
   /// Creates a new [LoyaltyPointsExchangeCubit] using the supplied use cases.
@@ -25,14 +25,14 @@ class LoyaltyPointsExchangeCubit extends Cubit<LoyaltyPointsExchangeState> {
     required ExchangeLoyaltyPointsUseCase exchangeLoyaltyPointsUseCase,
     required ConfirmSecondFactorForLoyaltyPointsExchangeUseCase
         confirmSecondFactorForLoyaltyPointsExchangeUseCase,
-    required AccountRepository accountRepository,
+    required GetAccountsByStatusUseCase getAccountsByStatusUseCase,
     required CardRepository cardRepository,
   })  : _loadCurrentLoyaltyPointsRateUseCase =
             loadCurrentLoyaltyPointsRateUseCase,
         _exchangeLoyaltyPointsUseCase = exchangeLoyaltyPointsUseCase,
         _confirmSecondFactorForLoyaltyPointsExchangeUseCase =
             confirmSecondFactorForLoyaltyPointsExchangeUseCase,
-        _accountRepository = accountRepository,
+        _getAccountsByStatusUseCase = getAccountsByStatusUseCase,
         _cardRepository = cardRepository,
         super(LoyaltyPointsExchangeState());
 
@@ -48,7 +48,7 @@ class LoyaltyPointsExchangeCubit extends Cubit<LoyaltyPointsExchangeState> {
     try {
       final res = await Future.wait<dynamic>([
         _loadCurrentLoyaltyPointsRateUseCase(),
-        _accountRepository.listCustomerAccounts(
+        _getAccountsByStatusUseCase(
           statuses: [AccountStatus.active],
         ),
         _cardRepository.listCustomerCards(),

@@ -1,6 +1,6 @@
 import '../../../domain_layer/models.dart';
 import '../../dtos.dart';
-import '../../mappings.dart';
+import '../../extensions.dart';
 
 /// Extension that provides mappings for [BrandingDTO]
 extension BrandingDTOMapping on BrandingDTO {

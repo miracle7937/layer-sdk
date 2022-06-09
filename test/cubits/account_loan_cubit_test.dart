@@ -1,13 +1,19 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
+import 'package:layer_sdk/features/accounts.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockAccountRepository extends Mock implements AccountRepository {}
+class MockAccountRepository extends Mock
+    implements AccountLoanRepositoryInterface {}
 
 final _repository = MockAccountRepository();
+
+final _getAccountLoansUseCase = GetAccountLoansUseCase(repository: _repository);
+final _getCustomerAccountLoansUseCase =
+    GetCustomerAccountLoansUseCase(repository: _repository);
+final _getAccountLoanByIdUseCase =
+    GetAccountLoanByIdUseCase(repository: _repository);
 
 final _successId = '1';
 final _failId = '2';
@@ -129,9 +135,11 @@ void main() {
   blocTest<AccountLoansCubit, AccountLoanState>(
     'Starts with empty state',
     build: () => AccountLoansCubit(
+      getAccountLoanByIdUseCase: _getAccountLoanByIdUseCase,
+      getAccountLoansUseCase: _getAccountLoansUseCase,
+      getCustomerAccountLoansUseCase: _getCustomerAccountLoansUseCase,
       customerId: _successId,
       limit: _limit,
-      repository: _repository,
     ),
     verify: (c) => expect(
       c.state,
@@ -145,9 +153,11 @@ void main() {
   blocTest<AccountLoansCubit, AccountLoanState>(
     'Load retrieves a account loans successfully',
     build: () => AccountLoansCubit(
+      getAccountLoanByIdUseCase: _getAccountLoanByIdUseCase,
+      getAccountLoansUseCase: _getAccountLoansUseCase,
+      getCustomerAccountLoansUseCase: _getCustomerAccountLoansUseCase,
       customerId: _successId,
       limit: _limit,
-      repository: _repository,
     ),
     act: (c) => c.load(),
     expect: () => [
@@ -181,9 +191,11 @@ void main() {
   blocTest<AccountLoansCubit, AccountLoanState>(
     'Force load retrieves an account loans successfully',
     build: () => AccountLoansCubit(
+      getAccountLoanByIdUseCase: _getAccountLoanByIdUseCase,
+      getAccountLoansUseCase: _getAccountLoansUseCase,
+      getCustomerAccountLoansUseCase: _getCustomerAccountLoansUseCase,
       customerId: _successId,
       limit: _limit,
-      repository: _repository,
     ),
     act: (c) => c.load(forceRefresh: true),
     expect: () => [
@@ -217,9 +229,11 @@ void main() {
   blocTest<AccountLoansCubit, AccountLoanState>(
     'Load emits error when failing to load loans',
     build: () => AccountLoansCubit(
+      getAccountLoanByIdUseCase: _getAccountLoanByIdUseCase,
+      getAccountLoansUseCase: _getAccountLoansUseCase,
+      getCustomerAccountLoansUseCase: _getCustomerAccountLoansUseCase,
       customerId: _failId,
       limit: _limit,
-      repository: _repository,
     ),
     act: (c) => c.load(),
     expect: () => [
@@ -254,9 +268,11 @@ void main() {
   blocTest<AccountLoansCubit, AccountLoanState>(
     'Load retrieves the next page of account loans successfully',
     build: () => AccountLoansCubit(
+      getAccountLoanByIdUseCase: _getAccountLoanByIdUseCase,
+      getAccountLoansUseCase: _getAccountLoansUseCase,
+      getCustomerAccountLoansUseCase: _getCustomerAccountLoansUseCase,
       customerId: _successId,
       limit: _limit,
-      repository: _repository,
     ),
     seed: () => AccountLoanState(
       customerId: _successId,
@@ -300,9 +316,11 @@ void main() {
   blocTest<AccountLoansCubit, AccountLoanState>(
     'Load sets canLoadMore to false when reaching the end of the list',
     build: () => AccountLoansCubit(
+      getAccountLoanByIdUseCase: _getAccountLoanByIdUseCase,
+      getAccountLoansUseCase: _getAccountLoansUseCase,
+      getCustomerAccountLoansUseCase: _getCustomerAccountLoansUseCase,
       customerId: _successId,
       limit: _limit,
-      repository: _repository,
     ),
     seed: () => AccountLoanState(
       customerId: _successId,
@@ -348,9 +366,11 @@ void main() {
   blocTest<AccountLoansCubit, AccountLoanState>(
     'Gets a single account loan successfully',
     build: () => AccountLoansCubit(
+      getAccountLoanByIdUseCase: _getAccountLoanByIdUseCase,
+      getAccountLoansUseCase: _getAccountLoansUseCase,
+      getCustomerAccountLoansUseCase: _getCustomerAccountLoansUseCase,
       customerId: _successId,
       limit: _limit,
-      repository: _repository,
     ),
     act: (c) => c.loadById(id: _successLoandId),
     expect: () => [
@@ -381,9 +401,11 @@ void main() {
   blocTest<AccountLoansCubit, AccountLoanState>(
     'Getting a single account loan throws exception',
     build: () => AccountLoansCubit(
+      getAccountLoanByIdUseCase: _getAccountLoanByIdUseCase,
+      getAccountLoansUseCase: _getAccountLoansUseCase,
+      getCustomerAccountLoansUseCase: _getCustomerAccountLoansUseCase,
       customerId: _successId,
       limit: _limit,
-      repository: _repository,
     ),
     act: (c) => c.loadById(id: _failLoanId),
     expect: () => [
@@ -417,8 +439,10 @@ void main() {
   blocTest<AccountLoansCubit, AccountLoanState>(
     'Load By Account Ids retrieves all loans successfully',
     build: () => AccountLoansCubit(
+      getAccountLoanByIdUseCase: _getAccountLoanByIdUseCase,
+      getAccountLoansUseCase: _getAccountLoansUseCase,
+      getCustomerAccountLoansUseCase: _getCustomerAccountLoansUseCase,
       limit: _limit,
-      repository: _repository,
     ),
     act: (c) => c.loadByAccountIds(accountIds: ['1']),
     expect: () => [
@@ -448,8 +472,10 @@ void main() {
   blocTest<AccountLoansCubit, AccountLoanState>(
     'Force refresh Load By Account Ids retrieves all loans successfully',
     build: () => AccountLoansCubit(
+      getAccountLoanByIdUseCase: _getAccountLoanByIdUseCase,
+      getAccountLoansUseCase: _getAccountLoansUseCase,
+      getCustomerAccountLoansUseCase: _getCustomerAccountLoansUseCase,
       limit: _limit,
-      repository: _repository,
     ),
     act: (c) => c.loadByAccountIds(accountIds: ['1'], forceRefresh: true),
     expect: () => [
@@ -479,8 +505,10 @@ void main() {
   blocTest<AccountLoansCubit, AccountLoanState>(
     'Load By Account Ids emits error',
     build: () => AccountLoansCubit(
+      getAccountLoanByIdUseCase: _getAccountLoanByIdUseCase,
+      getAccountLoansUseCase: _getAccountLoansUseCase,
+      getCustomerAccountLoansUseCase: _getCustomerAccountLoansUseCase,
       limit: _limit,
-      repository: _repository,
     ),
     act: (c) => c.loadByAccountIds(accountIds: ['2']),
     expect: () => [

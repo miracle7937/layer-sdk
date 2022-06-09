@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
-import 'account_info.dart';
+import '../../../../domain_layer/models/account/account_info.dart';
 import 'card_type.dart';
 
 /// Keeps the financial data

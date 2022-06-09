@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../_migration/data_layer/src/models/account.dart';
 import '../../../_migration/data_layer/src/models/banking_card.dart';
 import '../../models.dart';
 
