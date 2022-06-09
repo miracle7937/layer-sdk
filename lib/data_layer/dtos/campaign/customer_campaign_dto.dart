@@ -136,8 +136,8 @@ class CampaignTypeDTO extends EnumDTO {
   ///AR Campaign Type
   static const arCampaign = CampaignTypeDTO._internal('R');
 
-  ///None
-  static const none = CampaignTypeDTO._internal('');
+  ///Unknown
+  static const unknown = CampaignTypeDTO._internal('');
 
   /// List of all possible Campaign types
   static const List<CampaignTypeDTO> values = [
@@ -146,14 +146,14 @@ class CampaignTypeDTO extends EnumDTO {
     transactionPopup,
     landingPage,
     arCampaign,
-    none
+    unknown
   ];
   const CampaignTypeDTO._internal(String value) : super.internal(value);
 
   /// Find [CampaignTypeDTO] based in the letter passed
   factory CampaignTypeDTO(String? raw) => values.singleWhere(
         (val) => val.value == raw,
-        orElse: () => CampaignTypeDTO.none,
+        orElse: () => CampaignTypeDTO.unknown,
       );
 }
 

@@ -54,6 +54,8 @@ extension CampaignTypeDTOMapping on CampaignTypeDTO {
         return CampaignType.popup;
       case CampaignTypeDTO.transactionPopup:
         return CampaignType.transactionPopup;
+      case CampaignTypeDTO.unknown:
+        return CampaignType.unknown;
       default:
         throw MappingException(from: CampaignTypeDTO, to: CampaignType);
     }

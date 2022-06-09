@@ -41,8 +41,8 @@ enum CampaignType {
   ///To show AR campaign with qr or something
   arCampaign,
 
-  ///To not show anywhere
-  none
+  ///If campaign type is null or unknown
+  unknown
 }
 
 ///The campaign taget
