@@ -26,7 +26,7 @@ export 'use_cases/dpa/load_task_by_id_use_case.dart';
 export 'use_cases/dpa/resume_dpa_process_use_case.dart';
 export 'use_cases/dpa/start_dpa_process_use_case.dart';
 export 'use_cases/dpa/upload_dpa_image_use_case.dart';
-export 'use_cases/loyalty/cashback_history/load_casback_history_use_case.dart';
+export 'use_cases/loyalty/cashback_history/load_cashback_history_use_case.dart';
 export 'use_cases/loyalty/loyalty_points/load_all_loyalty_points_use_case.dart';
 export 'use_cases/loyalty/loyalty_points_exchange/confirm_second_factor_for_loyalty_points_exchange_use_case.dart';
 export 'use_cases/loyalty/loyalty_points_exchange/exchange_loyalty_points_use_case.dart';
