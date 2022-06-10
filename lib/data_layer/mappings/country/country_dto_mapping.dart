@@ -1,6 +1,6 @@
-import '../../../_migration/data_layer/extensions.dart';
 import '../../../domain_layer/models.dart';
 import '../../dtos.dart';
+import '../../extensions/int/int_converters.dart';
 
 ///Extension for mapping the [CountryDTO]
 extension CountryDTOMapping on CountryDTO {

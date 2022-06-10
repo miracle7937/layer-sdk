@@ -1,4 +1,4 @@
-import '../../../domain_layer/abstract_repositories/country/country_repository_interface.dart';
+import '../../../domain_layer/abstract_repositories.dart';
 import '../../../domain_layer/models.dart';
 import '../../mappings.dart';
 import '../../providers.dart';
