@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 import '../../../../domain_layer/models.dart';
-import '../../utils.dart';
+import '../../../utils.dart';
 
 ///  The available error status
 enum LoyaltyPointsErrorStatus {

@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:layer_sdk/domain_layer/models.dart';
 import 'package:layer_sdk/domain_layer/use_cases.dart';
 import 'package:layer_sdk/presentation_layer/cubits.dart';
-import 'package:layer_sdk/presentation_layer/cubits/utils.dart';
+import 'package:layer_sdk/presentation_layer/utils.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';

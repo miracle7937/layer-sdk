@@ -10,6 +10,7 @@ export 'mappings/bill/bill_dto_mapping.dart';
 export 'mappings/branch/branch_dto_mapping.dart';
 export 'mappings/branding/branding_dto_mapping.dart';
 export 'mappings/category/category_dto_mapping.dart';
+export 'mappings/currency/currency_dto_mapping.dart';
 export 'mappings/customer/customer_dto_mapping.dart';
 export 'mappings/dpa/dpa_constraint_dto_mapping.dart';
 export 'mappings/dpa/dpa_process_definition_dto_mapping.dart';
