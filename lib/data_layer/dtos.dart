@@ -10,6 +10,7 @@ export 'dtos/beneficiary/beneficiary_dto.dart';
 export 'dtos/branch/branch_dto.dart';
 export 'dtos/branding/branding_dto.dart';
 export 'dtos/category/category_dto.dart';
+export 'dtos/country/country_dto.dart';
 export 'dtos/customer/customer_dto.dart';
 export 'dtos/dpa/dpa_constraint_dto.dart';
 export 'dtos/dpa/dpa_process_definition_dto.dart';

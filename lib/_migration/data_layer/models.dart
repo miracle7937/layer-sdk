@@ -11,7 +11,6 @@ export 'src/models/card_transaction.dart';
 export 'src/models/card_type.dart';
 export 'src/models/category.dart';
 export 'src/models/config/config.dart';
-export 'src/models/country.dart';
 export 'src/models/currency.dart';
 export 'src/models/customer/cpr.dart';
 export 'src/models/customer/customer.dart';

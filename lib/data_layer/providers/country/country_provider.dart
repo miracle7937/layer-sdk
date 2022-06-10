@@ -1,7 +1,6 @@
-import '../../../../data_layer/network.dart';
-
-import '../dtos.dart';
-import '../helpers.dart';
+import '../../../_migration/data_layer/src/helpers.dart';
+import '../../dtos.dart';
+import '../../network.dart';
 
 /// Provides data about the countries
 class CountryProvider {

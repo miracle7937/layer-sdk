@@ -9,7 +9,6 @@ export 'src/providers/card_provider.dart';
 export 'src/providers/category_provider.dart';
 export 'src/providers/certificate_provider.dart';
 export 'src/providers/config_provider.dart';
-export 'src/providers/country_provider.dart';
 export 'src/providers/currency_provider.dart';
 export 'src/providers/customer_provider.dart';
 export 'src/providers/device_session_provider.dart';

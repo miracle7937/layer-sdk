@@ -6,7 +6,6 @@ export 'mappings/card_preferences_dto_mapping.dart';
 export 'mappings/card_transaction_dto_mapping.dart';
 export 'mappings/category_dto_mapping.dart';
 export 'mappings/config/config_dto_mapping.dart';
-export 'mappings/country_dto_mapping.dart';
 export 'mappings/currency_dto_mapping.dart';
 export 'mappings/customer_dto_mapping.dart';
 export 'mappings/device_session_dto_mapping.dart';

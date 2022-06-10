@@ -16,6 +16,7 @@ export 'models/branding/branding_fonts.dart';
 export 'models/branding/layer_branding.dart';
 export 'models/category/category.dart';
 export 'models/config/config.dart';
+export 'models/country/country.dart';
 export 'models/customer/cpr.dart';
 export 'models/customer/customer.dart';
 export 'models/customer/customer_company.dart';
