@@ -10,6 +10,7 @@ export 'mappings/bill/bill_dto_mapping.dart';
 export 'mappings/branch/branch_dto_mapping.dart';
 export 'mappings/branding/branding_dto_mapping.dart';
 export 'mappings/category/category_dto_mapping.dart';
+export 'mappings/device_session/device_session_dto_mapping.dart';
 export 'mappings/loyalty/loyalty_points/loyalty_points_mapping.dart';
 export 'mappings/loyalty/loyalty_points_exchange/loyalty_points_exchange_mapping.dart';
 export 'mappings/loyalty/loyalty_points_expiration/loyalty_points_expiration_mapping.dart';

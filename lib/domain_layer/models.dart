@@ -16,6 +16,8 @@ export 'models/branding/branding_fonts.dart';
 export 'models/branding/layer_branding.dart';
 export 'models/category/category.dart';
 export 'models/config/config.dart';
+export 'models/device_session/device_session.dart';
+export 'models/device_session/location.dart';
 export 'models/loyalty/cashback_history/cashback_history.dart';
 export 'models/loyalty/loyalty_points/loyalty_points.dart';
 export 'models/loyalty/loyalty_points_exchange/loyalty_points_exchange.dart';

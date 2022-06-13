@@ -8,6 +8,7 @@ export 'providers/beneficiary/beneficiary_provider.dart';
 export 'providers/bill/bill_provider.dart';
 export 'providers/branch/branch_provider.dart';
 export 'providers/branding/branding_provider.dart';
+export 'providers/device_session/device_session_provider.dart';
 export 'providers/loyalty/loyalty_points/loyalty_points_provider.dart';
 export 'providers/loyalty/loyalty_points_exchange/loyalty_points_exchange_provider.dart';
 export 'providers/loyalty/loyalty_points_expiration/loyalty_points_expiration_provider.dart';
