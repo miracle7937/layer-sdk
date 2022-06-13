@@ -1,7 +1,7 @@
+import '../../../domain_layer/models.dart';
+import '../../dtos.dart';
 import '../../errors.dart';
-import '../../models.dart';
-import '../dtos.dart';
-import '../mappings.dart';
+import '../../mappings.dart';
 
 /// Extension that provides mapping for [CardDTO]
 extension CardDTOMapping on CardDTO {

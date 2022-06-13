@@ -1,6 +1,6 @@
 import '../../../../data_layer/dtos/account/account_preferences_dto.dart';
+import '../../../../data_layer/dtos/preference/card_preferences_dto.dart';
 import '../helpers.dart';
-import 'card_preferences_dto.dart';
 
 /// User Preferences
 class PreferencesDTO {

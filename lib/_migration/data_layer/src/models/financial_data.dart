@@ -1,8 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../../../domain_layer/models/account/account_info.dart';
-import 'card_type.dart';
+import '../../../../domain_layer/models.dart';
 
 /// Keeps the financial data
 class FinancialData extends Equatable {

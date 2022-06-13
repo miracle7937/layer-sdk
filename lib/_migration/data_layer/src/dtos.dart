@@ -1,11 +1,6 @@
 export 'DTOs/appointment_dto.dart';
 export 'DTOs/branch_activation_response_dto.dart';
 export 'DTOs/branch_freetime_dto.dart';
-export 'DTOs/card_category_dto.dart';
-export 'DTOs/card_dto.dart';
-export 'DTOs/card_preferences_dto.dart';
-export 'DTOs/card_transaction_dto.dart';
-export 'DTOs/card_type_dto.dart';
 export 'DTOs/category_dto.dart';
 export 'DTOs/change_user_password_dto.dart';
 export 'DTOs/config/config_dto.dart';

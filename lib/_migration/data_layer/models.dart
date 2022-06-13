@@ -2,13 +2,9 @@
 library models;
 
 export 'src/models/appointment.dart';
-export 'src/models/banking_card.dart';
 export 'src/models/branch_activation_response.dart';
 export 'src/models/branch_freetime.dart';
 export 'src/models/branch_timeslot.dart';
-export 'src/models/card_preferences.dart';
-export 'src/models/card_transaction.dart';
-export 'src/models/card_type.dart';
 export 'src/models/category.dart';
 export 'src/models/config/config.dart';
 export 'src/models/country.dart';
