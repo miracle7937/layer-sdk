@@ -8,6 +8,7 @@ export 'providers/beneficiary/beneficiary_provider.dart';
 export 'providers/bill/bill_provider.dart';
 export 'providers/branch/branch_provider.dart';
 export 'providers/branding/branding_provider.dart';
+export 'providers/card/card_provider.dart';
 export 'providers/country/country_provider.dart';
 export 'providers/customer/customer_provider.dart';
 export 'providers/dpa/dpa_provider.dart';

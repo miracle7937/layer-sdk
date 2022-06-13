@@ -4,7 +4,6 @@ import '../../../../../domain_layer/models.dart';
 import '../../../errors.dart';
 import '../../../models.dart';
 import '../../dtos.dart';
-import '../../mappings.dart';
 
 /// Extension that provides mappings for [TransferDTO]
 extension TransferDTOMapping on TransferDTO {

@@ -1,9 +1,10 @@
-import '../../models.dart';
+import '../../../domain_layer/abstract_repositories.dart';
+import '../../../domain_layer/models.dart';
+import '../../mappings.dart';
 import '../../providers.dart';
-import '../mappings.dart';
 
 /// Handles all the cards data
-class CardRepository {
+class CardRepository implements CardRepositoryInterface {
   final CardProvider _provider;
 
   /// Creates a new [CardRepository] instance

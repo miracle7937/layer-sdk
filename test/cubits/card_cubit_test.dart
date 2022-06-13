@@ -1,12 +1,15 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
+import 'package:layer_sdk/data_layer/repositories.dart';
+import 'package:layer_sdk/domain_layer/models.dart';
+import 'package:layer_sdk/domain_layer/use_cases/card/load_customer_cards_use_case.dart';
+import 'package:layer_sdk/presentation_layer/cubits.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 class MockCardRepository extends Mock implements CardRepository {}
 
 late MockCardRepository _repo;
+late LoadCustomerCardsUseCase _getCustomerCardsUseCase;
 
 final loadCardsCustomerId = '1';
 final throwsExceptionCustomerId = '2';
@@ -26,6 +29,9 @@ void main() {
   setUpAll(
     () {
       _repo = MockCardRepository();
+      _getCustomerCardsUseCase = LoadCustomerCardsUseCase(
+        repository: _repo,
+      );
 
       /// Test case that retrieves all mocked cards
       when(
@@ -50,7 +56,7 @@ void main() {
   blocTest<CardCubit, CardState>(
     'Starts with empty state',
     build: () => CardCubit(
-      repository: _repo,
+      getCustomerCardsUseCase: _getCustomerCardsUseCase,
       customerId: loadCardsCustomerId,
     ),
     verify: (c) {
@@ -61,7 +67,7 @@ void main() {
   blocTest<CardCubit, CardState>(
     'Loads customer cards',
     build: () => CardCubit(
-      repository: _repo,
+      getCustomerCardsUseCase: _getCustomerCardsUseCase,
       customerId: loadCardsCustomerId,
     ),
     act: (c) => c.load(),
@@ -86,7 +92,7 @@ void main() {
   blocTest<CardCubit, CardState>(
     'Handles exceptions gracefully',
     build: () => CardCubit(
-      repository: _repo,
+      getCustomerCardsUseCase: _getCustomerCardsUseCase,
       customerId: throwsExceptionCustomerId,
     ),
     act: (c) => c.load(),

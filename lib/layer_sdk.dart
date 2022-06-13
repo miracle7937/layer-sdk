@@ -10,8 +10,6 @@ export 'features/branding.dart';
 export 'features/country.dart';
 export 'features/dpa.dart';
 export 'features/loyalty.dart';
-export 'features/loyalty.dart';
-export 'features/message.dart';
 export 'features/message.dart';
 export 'features/roles.dart';
 export 'presentation_layer/app.dart';
