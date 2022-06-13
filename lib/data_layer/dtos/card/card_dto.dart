@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 
-import '../helpers.dart';
-import 'card_preferences_dto.dart';
+import '../../../_migration/data_layer/src/helpers.dart';
+import '../preference/card_preferences_dto.dart';
 import 'card_type_dto.dart';
 
 /// Represents the customers card
