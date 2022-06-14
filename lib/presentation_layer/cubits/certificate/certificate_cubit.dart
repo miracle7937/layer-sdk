@@ -3,7 +3,7 @@ import 'package:bloc/bloc.dart';
 import '../../../../../../data_layer/network.dart';
 import '../../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
-import 'certificate_states.dart';
+import '../../cubits.dart';
 
 /// Cubit responsible for requesting customer certificates
 class CertificateCubit extends Cubit<CertificateStates> {

@@ -13,6 +13,7 @@ class CertificateRepository implements CertificateRepositoryInterface {
 
   /// Request a new `Certificate of deposit`
   /// Returns the file list of bytes to be used by the application
+  @override
   Future<List<int>> requestCertificateOfDeposit({
     required String customerId,
     required String accountId,
@@ -25,6 +26,7 @@ class CertificateRepository implements CertificateRepositoryInterface {
 
   /// Request a new `Account certificate`
   /// Returns the file list of bytes to be used by the application
+  @override
   Future<List<int>> requestAccountCertificate({
     required String customerId,
     required String accountId,
@@ -37,6 +39,7 @@ class CertificateRepository implements CertificateRepositoryInterface {
 
   /// Request a new `Bank statement`
   /// Returns the file list of bytes to be used by the application
+  @override
   Future<List<int>> requestBankStatement({
     required String customerId,
     required String accountId,
