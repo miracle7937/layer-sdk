@@ -1,9 +1,6 @@
 export 'mappings/appointment_mapping.dart';
 export 'mappings/branch_activation_response_dto_mapping.dart';
 export 'mappings/branch_freetime_mapping.dart';
-export 'mappings/card_dto_mapping.dart';
-export 'mappings/card_preferences_dto_mapping.dart';
-export 'mappings/card_transaction_dto_mapping.dart';
 export 'mappings/category_dto_mapping.dart';
 export 'mappings/config/config_dto_mapping.dart';
 export 'mappings/country_dto_mapping.dart';

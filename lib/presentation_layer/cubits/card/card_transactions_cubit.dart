@@ -1,19 +1,21 @@
 import 'package:bloc/bloc.dart';
 
-import '../../../data_layer/data_layer.dart';
+import '../../../domain_layer/use_cases/card/load_customer_card_transactions_use_case.dart';
 import 'card_transactions_states.dart';
 
 /// Cubit responsible for retrieving the list of customer [CardTransaction]
 class CardTransactionsCubit extends Cubit<CardTransactionsState> {
-  final CardRepository _repository;
+  final LoadCustomerCardTransactionsUseCase _getCustomerCardTransactionsUseCase;
 
   /// Creates a new instance of [CardTransactionsCubit]
   CardTransactionsCubit({
-    required CardRepository repository,
+    required LoadCustomerCardTransactionsUseCase
+        getCustomerCardTransactionsUseCase,
     required String customerId,
     required String cardId,
     int limit = 50,
-  })  : _repository = repository,
+  })  : _getCustomerCardTransactionsUseCase =
+            getCustomerCardTransactionsUseCase,
         super(
           CardTransactionsState(
             customerId: customerId,
@@ -41,7 +43,7 @@ class CardTransactionsCubit extends Cubit<CardTransactionsState> {
       final offset =
           loadMore ? state.listData.offset + state.listData.limit : 0;
 
-      final transactions = await _repository.listCustomerCardTransactions(
+      final transactions = await _getCustomerCardTransactionsUseCase(
         cardId: state.cardId,
         customerId: state.customerId,
         limit: state.listData.limit,

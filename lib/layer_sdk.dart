@@ -7,6 +7,7 @@ export 'features/beneficiaries.dart';
 export 'features/bills.dart';
 export 'features/branch.dart';
 export 'features/branding.dart';
+export 'features/cards.dart';
 export 'features/currency.dart';
 export 'features/dpa.dart';
 export 'features/loyalty.dart';

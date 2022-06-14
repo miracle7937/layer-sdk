@@ -1,17 +1,17 @@
 import 'package:bloc/bloc.dart';
 
-import '../../../data_layer/data_layer.dart';
+import '../../../domain_layer/use_cases/card/load_customer_cards_use_case.dart';
 import 'card_states.dart';
 
 /// Cubit responsible for retrieving the list of customer [Card]
 class CardCubit extends Cubit<CardState> {
-  final CardRepository _repository;
+  final LoadCustomerCardsUseCase _getCustomerCardsUseCase;
 
   /// Creates a new instance of [CardCubit]
   CardCubit({
-    required CardRepository repository,
+    required LoadCustomerCardsUseCase getCustomerCardsUseCase,
     required String customerId,
-  })  : _repository = repository,
+  })  : _getCustomerCardsUseCase = getCustomerCardsUseCase,
         super(
           CardState(
             customerId: customerId,
@@ -30,7 +30,7 @@ class CardCubit extends Cubit<CardState> {
     );
 
     try {
-      final cards = await _repository.listCustomerCards(
+      final cards = await _getCustomerCardsUseCase(
         customerId: state.customerId,
         forceRefresh: forceRefresh,
       );

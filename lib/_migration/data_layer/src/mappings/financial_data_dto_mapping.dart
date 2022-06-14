@@ -3,7 +3,6 @@ import '../../../../data_layer/mappings.dart';
 import '../../../../domain_layer/models.dart';
 import '../../models.dart';
 import '../dtos.dart';
-import '../mappings.dart';
 
 /// Extension that provides mapping for [FinancialDataDTO]
 extension FinancialDataDTOMapping on FinancialDataDTO {

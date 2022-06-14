@@ -11,6 +11,8 @@ export 'use_cases/bill/load_customer_bills_use_case.dart';
 export 'use_cases/branch/load_branch_by_id_use_case.dart';
 export 'use_cases/branch/load_branches_use_case.dart';
 export 'use_cases/branding/load_branding_use_case.dart';
+export 'use_cases/card/load_customer_card_transactions_use_case.dart';
+export 'use_cases/card/load_customer_cards_use_case.dart';
 export 'use_cases/currency/load_all_currencies_use_case.dart';
 export 'use_cases/currency/load_currency_by_code_use_case.dart';
 export 'use_cases/dpa/cancel_dpa_process_use_case.dart';

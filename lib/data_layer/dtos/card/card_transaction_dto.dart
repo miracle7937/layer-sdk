@@ -1,4 +1,4 @@
-import '../helpers.dart';
+import '../../helpers.dart';
 
 /// Represents a customer's card transaction
 /// as provided by the infobanking service
