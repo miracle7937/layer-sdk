@@ -2,17 +2,25 @@ import 'package:bloc/bloc.dart';
 
 import '../../../../../../data_layer/network.dart';
 import '../../../../domain_layer/models.dart';
-import '../../../data_layer/repositories.dart';
+import '../../../domain_layer/use_cases.dart';
 import 'certificate_states.dart';
 
 /// Cubit responsible for requesting customer certificates
 class CertificateCubit extends Cubit<CertificateStates> {
-  final CertificateRepository _repository;
+  final RequestAccountCertificateUseCase _requestAccountCertificateUseCase;
+  final RequestBankStatementUseCase _requestBankStatementUseCase;
+  final RequestCertificateOfDepositUseCase _requestCertificateOfDepositUseCase;
 
   /// Creates a new [CertificateCubit] instance
   CertificateCubit({
-    required CertificateRepository repository,
-  })  : _repository = repository,
+    required RequestAccountCertificateUseCase requestAccountCertificateUseCase,
+    required RequestBankStatementUseCase requestBankStatementUseCase,
+    required RequestCertificateOfDepositUseCase
+        requestCertificateOfDepositUseCase,
+  })  : _requestAccountCertificateUseCase = requestAccountCertificateUseCase,
+        _requestBankStatementUseCase = requestBankStatementUseCase,
+        _requestCertificateOfDepositUseCase =
+            requestCertificateOfDepositUseCase,
         super(CertificateStates());
 
   /// Sets the customer to be used by the request
@@ -56,7 +64,7 @@ class CertificateCubit extends Cubit<CertificateStates> {
     );
 
     try {
-      final bytes = await _repository.requestCertificateOfDeposit(
+      final bytes = await _requestCertificateOfDepositUseCase(
         accountId: state.account!.id!,
         customerId: state.customer!.id,
       );
@@ -93,7 +101,7 @@ class CertificateCubit extends Cubit<CertificateStates> {
     );
 
     try {
-      final bytes = await _repository.requestAccountCertificate(
+      final bytes = await _requestAccountCertificateUseCase(
         accountId: state.account!.id!,
         customerId: state.customer!.id,
       );
@@ -130,7 +138,7 @@ class CertificateCubit extends Cubit<CertificateStates> {
     );
 
     try {
-      final bytes = await _repository.requestBankStatement(
+      final bytes = await _requestBankStatementUseCase(
         accountId: state.account!.id!,
         customerId: state.customer!.id,
         fromDate: state.startDate!,

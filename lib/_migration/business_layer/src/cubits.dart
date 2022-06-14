@@ -19,8 +19,6 @@ export 'cubits/authentication/second_factor_states.dart';
 export 'cubits/cashback_history_state.dart';
 export 'cubits/category_cubit.dart';
 export 'cubits/category_state.dart';
-export 'cubits/certificate_cubit.dart';
-export 'cubits/certificate_states.dart';
 export 'cubits/configurations/config_cubit.dart';
 export 'cubits/configurations/config_state.dart';
 export 'cubits/country_cubit.dart';

@@ -1,7 +1,8 @@
+import '../../../domain_layer/abstract_repositories.dart';
 import '../../providers.dart';
 
 /// Customer certificates repository
-class CertificateRepository {
+class CertificateRepository implements CertificateRepositoryInterface {
   /// The NetClient to use for the network requests
   final CertificateProvider _provider;
 
