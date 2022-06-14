@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 
 import '../../../../../../data_layer/network.dart';
+import '../../../../../domain_layer/models.dart';
 import '../../../../data_layer/data_layer.dart';
 import '../../../business_layer.dart';
 

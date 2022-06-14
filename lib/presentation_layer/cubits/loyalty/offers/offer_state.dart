@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'package:equatable/equatable.dart';
 
 import '../../../../domain_layer/models.dart';
-import '../../utils.dart';
+import '../../../utils.dart';
 
 /// The kind of offers we want to fetch.
 enum OfferStateType {

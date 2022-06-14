@@ -1,5 +1,5 @@
 import 'package:intl/intl.dart';
-import '../../../data_layer/data_layer.dart';
+import '../../../../domain_layer/models.dart';
 
 // ignore: avoid_classes_with_only_static_members
 /// A utils class that exposes some amount formatting functions
@@ -32,12 +32,15 @@ class AmountFormatter {
     Currency currency, {
     String? customPattern,
     bool addPlus = false,
+    int? decimals,
+    String? locale,
+    bool withSymbol = true,
   }) {
     final formatter = NumberFormat.currency(
-      locale: defaultLocale,
-      decimalDigits: currency.decimals ?? 0,
+      locale: locale ?? defaultLocale,
+      decimalDigits: decimals ?? currency.decimals ?? 0,
       name: currency.name ?? '',
-      symbol: currency.symbol ?? currency.code,
+      symbol: withSymbol ? (currency.symbol ?? currency.code) : '',
       customPattern: customPattern ?? defaultPattern,
     );
 
