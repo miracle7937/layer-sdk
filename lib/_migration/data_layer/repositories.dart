@@ -6,7 +6,6 @@ export 'src/repositories/appointment_repository.dart';
 export 'src/repositories/authentication_repository.dart';
 export 'src/repositories/category_repository.dart';
 export 'src/repositories/certificate_repository.dart';
-export 'src/repositories/config_repository.dart';
 export 'src/repositories/country_repository.dart';
 export 'src/repositories/currency_repository.dart';
 export 'src/repositories/customer_repository.dart';

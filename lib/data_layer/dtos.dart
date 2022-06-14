@@ -14,6 +14,7 @@ export 'dtos/card/card_dto.dart';
 export 'dtos/card/card_transaction_dto.dart';
 export 'dtos/card/card_type_dto.dart';
 export 'dtos/category/category_dto.dart';
+export 'dtos/config/config_dto.dart';
 export 'dtos/customer/customer_dto.dart';
 export 'dtos/dpa/dpa_constraint_dto.dart';
 export 'dtos/dpa/dpa_process_definition_dto.dart';

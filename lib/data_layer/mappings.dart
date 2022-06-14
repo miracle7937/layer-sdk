@@ -13,6 +13,7 @@ export 'mappings/card/card_dto_mapping.dart';
 export 'mappings/card/card_preferences_dto_mapping.dart';
 export 'mappings/card/card_transaction_dto_mapping.dart';
 export 'mappings/category/category_dto_mapping.dart';
+export 'mappings/config/config_dto_mapping.dart';
 export 'mappings/customer/customer_dto_mapping.dart';
 export 'mappings/dpa/dpa_constraint_dto_mapping.dart';
 export 'mappings/dpa/dpa_process_definition_dto_mapping.dart';
