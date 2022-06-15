@@ -20,7 +20,7 @@ void main() {
 
     when(
       () => _repository.resendCustomerOTP(
-        otpId: any(named: 'token'),
+        otpId: any(named: 'otpId'),
       ),
     ).thenAnswer((_) async => _response);
   });
