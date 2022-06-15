@@ -6,6 +6,7 @@ export 'abstract_repositories/account_transaction/account_transaction_repository
 export 'abstract_repositories/beneficiary/beneficiary_repository_interface.dart';
 export 'abstract_repositories/bill/bill_repository_interface.dart';
 export 'abstract_repositories/branch/branch_repository_interface.dart';
+export 'abstract_repositories/branch_activation/branch_activation_repository_interface.dart';
 export 'abstract_repositories/branding/branding_repository_interface.dart';
 export 'abstract_repositories/card/card_repository_interface.dart';
 export 'abstract_repositories/currency/currency_repository_interface.dart';

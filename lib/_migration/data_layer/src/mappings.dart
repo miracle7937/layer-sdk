@@ -1,5 +1,4 @@
 export 'mappings/appointment_mapping.dart';
-export 'mappings/branch_activation_response_dto_mapping.dart';
 export 'mappings/branch_freetime_mapping.dart';
 export 'mappings/category_dto_mapping.dart';
 export 'mappings/config/config_dto_mapping.dart';

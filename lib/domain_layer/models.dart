@@ -10,6 +10,7 @@ export 'models/account_transaction/account_transaction.dart';
 export 'models/beneficiary/beneficiary.dart';
 export 'models/bill/bill.dart';
 export 'models/branch/branch.dart';
+export 'models/branch_activation/branch_activation_response.dart';
 export 'models/branding/branding.dart';
 export 'models/branding/branding_colors.dart';
 export 'models/branding/branding_fonts.dart';

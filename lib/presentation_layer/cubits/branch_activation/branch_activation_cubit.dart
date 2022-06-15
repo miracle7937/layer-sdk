@@ -3,16 +3,18 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../data_layer/network.dart';
-import '../../../../data_layer/data_layer.dart';
-import '../../../flutter_layer.dart';
-import 'activation_code_utils.dart';
-import 'branch_activation_state.dart';
+import '../../../domain_layer/use_cases.dart';
+import '../../cubits.dart';
+import '../../utils.dart';
 
 /// A cubit that handles requesting device permissions.
 class BranchActivationCubit extends Cubit<BranchActivationState> {
-  final AuthenticationRepository _authenticationRepository;
-  final UserRepository _userRepository;
-  final OTPRepository _otpRepository;
+  final CheckBranchActivationCodeUseCase _checkBranchActivationCodeUseCase;
+  final VerifyOTPForBranchActivationUseCase
+      _verifyOTPForBranchActivationUseCase;
+  final ResendOTPUseCase _resendOTPUseCase;
+  final GetUserDetailsFromTokenUseCase _getUserDetailsFromTokenUseCase;
+  final SetAccessPinForUserUseCase _setAccessPinForUserUseCase;
   final int _activationCodeLength;
 
   /// Whether if the otp second factor is needed or not.
@@ -30,18 +32,24 @@ class BranchActivationCubit extends Cubit<BranchActivationState> {
 
   /// Creates a new [BranchActivationCubit].
   BranchActivationCubit({
-    required AuthenticationRepository authenticationRepository,
-    required UserRepository userRepository,
-    required OTPRepository otpRepository,
+    required CheckBranchActivationCodeUseCase checkBranchActivationCodeUseCase,
+    required VerifyOTPForBranchActivationUseCase
+        verifyOTPForBranchActivationUseCase,
+    required ResendOTPUseCase resendOTPUseCase,
+    required GetUserDetailsFromTokenUseCase getUserDetailsFromTokenUseCase,
+    required SetAccessPinForUserUseCase setAccessPinForUserUseCase,
     int activationCodeLength = 6,
     this.useOTP = true,
     this.delay = 3000,
 
     /// This parameter should only be used for testing purposses
     String? testActivationCode,
-  })  : _authenticationRepository = authenticationRepository,
-        _userRepository = userRepository,
-        _otpRepository = otpRepository,
+  })  : _checkBranchActivationCodeUseCase = checkBranchActivationCodeUseCase,
+        _verifyOTPForBranchActivationUseCase =
+            verifyOTPForBranchActivationUseCase,
+        _resendOTPUseCase = resendOTPUseCase,
+        _getUserDetailsFromTokenUseCase = getUserDetailsFromTokenUseCase,
+        _setAccessPinForUserUseCase = setAccessPinForUserUseCase,
         _activationCodeLength = activationCodeLength,
         super(
           BranchActivationState(
@@ -80,10 +88,9 @@ class BranchActivationCubit extends Cubit<BranchActivationState> {
 
     while (_shouldPoll) {
       try {
-        final activationResponse =
-            await _authenticationRepository.checkBranchActivationCode(
+        final activationResponse = await _checkBranchActivationCodeUseCase(
           code: state.activationCode,
-          useOtp: useOTP,
+          useOTP: useOTP,
         );
 
         if (activationResponse != null) {
@@ -142,11 +149,10 @@ class BranchActivationCubit extends Cubit<BranchActivationState> {
     );
 
     try {
-      final activationResponse =
-          await _authenticationRepository.checkBranchActivationCode(
+      final activationResponse = await _verifyOTPForBranchActivationUseCase(
         code: state.activationCode,
         otpValue: otpValue,
-        useOtp: useOTP,
+        useOTP: useOTP,
       );
 
       if (activationResponse != null) {
@@ -192,7 +198,7 @@ class BranchActivationCubit extends Cubit<BranchActivationState> {
         return;
       }
 
-      await _otpRepository.resendCustomerOTP(
+      await _resendOTPUseCase(
         otpId: state.activationResponse!.secondFactorVerification!.id!,
       );
 
@@ -236,7 +242,7 @@ class BranchActivationCubit extends Cubit<BranchActivationState> {
         return;
       }
 
-      final user = await _userRepository.getUserFromToken(
+      final user = await _getUserDetailsFromTokenUseCase(
         token: state.activationResponse!.token!,
       );
 
@@ -283,7 +289,7 @@ class BranchActivationCubit extends Cubit<BranchActivationState> {
         return;
       }
 
-      final user = await _userRepository.setAccessPin(
+      final user = await _setAccessPinForUserUseCase(
         pin: pin,
         token: state.activationResponse!.token!,
       );

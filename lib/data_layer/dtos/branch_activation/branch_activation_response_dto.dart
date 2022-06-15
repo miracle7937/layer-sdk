@@ -1,4 +1,4 @@
-import '../../../../data_layer/dtos.dart';
+import '../../dtos.dart';
 
 /// Data transfer object representing the response received from the API
 /// after trying to log in using the branch activation feature.

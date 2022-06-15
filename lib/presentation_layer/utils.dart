@@ -1,5 +1,6 @@
 library utils;
 
+export 'utils/activation_code_utils.dart';
 export 'utils/codec_utils.dart';
 export 'utils/file_utils.dart';
 export 'utils/interceptors/fl_interceptor.dart';

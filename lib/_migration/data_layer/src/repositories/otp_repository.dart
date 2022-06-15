@@ -1,3 +1,4 @@
+import '../../../../data_layer/network.dart';
 import '../../providers.dart';
 import '../dtos.dart';
 
@@ -28,7 +29,7 @@ class OTPRepository {
   ///
   /// The optional [token] parameter can be provided to be used
   /// as an authorization header for the request.
-  Future<void> resendCustomerOTP({
+  Future<NetResponse> resendCustomerOTP({
     required int otpId,
     String? token,
   }) =>

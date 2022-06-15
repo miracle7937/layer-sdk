@@ -1,8 +1,6 @@
 import 'package:equatable/equatable.dart';
 
 import '../../../../../domain_layer/models.dart';
-import '../../../../data_layer/data_layer.dart';
-import '../../../flutter_layer.dart';
 
 /// Enum for all possible errors for the [BranchActivationCubit].
 enum BranchActivationError {
