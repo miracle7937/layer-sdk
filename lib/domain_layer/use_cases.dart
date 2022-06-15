@@ -44,3 +44,4 @@ export 'use_cases/payments/load_customer_payments_use_case.dart';
 export 'use_cases/product/load_product_by_product_id_use_case.dart';
 export 'use_cases/product/load_products_use_case.dart';
 export 'use_cases/role/load_customer_roles_use_case.dart';
+export 'use_cases/setting/load_global_settings_use_case.dart';

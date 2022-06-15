@@ -79,6 +79,7 @@ export 'models/resolution.dart';
 export 'models/role/role.dart';
 export 'models/second_factor/second_factor_type.dart';
 export 'models/service.dart';
+export 'models/setting/global_setting.dart';
 export 'models/transfer/transfer.dart';
 export 'models/user/user.dart';
 export 'models/user/user_permissions.dart';

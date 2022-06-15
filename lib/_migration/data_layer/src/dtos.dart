@@ -14,7 +14,6 @@ export 'DTOs/experience/experience_page_dto.dart';
 export 'DTOs/experience/experience_preferences_dto.dart';
 export 'DTOs/experience/experience_setting_dto.dart';
 export 'DTOs/financial_data_dto.dart';
-export 'DTOs/global_setting_dto.dart';
 export 'DTOs/ocra/ocra_challenge_dto.dart';
 export 'DTOs/ocra/ocra_challenge_response_dto.dart';
 export 'DTOs/ocra/ocra_challenge_result_dto.dart';
