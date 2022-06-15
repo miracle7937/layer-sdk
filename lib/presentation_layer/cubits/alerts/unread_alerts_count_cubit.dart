@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:bloc/bloc.dart';
 
 import '../../../../../data_layer/network.dart';
-import '../../../data_layer/repositories.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
 
@@ -11,7 +10,8 @@ import '../../cubits.dart';
 class UnreadAlertsCountCubit extends Cubit<UnreadAlertsCountState> {
   final LoadUnreadAlertsUseCase _loadUnreadAlertsUseCase;
 
-  ///Crates a new [UnreadAlertsCountCubit] providing an [AlertRepository]
+  /// Crates a new [UnreadAlertsCountCubit] providing
+  /// an [LoadUnreadAlertsUseCase]
   UnreadAlertsCountCubit({
     required LoadUnreadAlertsUseCase loadUnreadAlertsUseCase,
   })  : _loadUnreadAlertsUseCase = loadUnreadAlertsUseCase,
