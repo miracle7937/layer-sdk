@@ -24,7 +24,6 @@ export 'src/models/experience/experience_page.dart';
 export 'src/models/experience/experience_preferences.dart';
 export 'src/models/experience/experience_setting.dart';
 export 'src/models/financial_data.dart';
-export 'src/models/global_setting.dart';
 export 'src/models/location.dart';
 export 'src/models/message_response.dart';
 export 'src/models/ocra/ocra_challenge.dart';

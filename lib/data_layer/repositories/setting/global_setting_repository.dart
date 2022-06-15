@@ -1,9 +1,10 @@
-import '../../models.dart';
+import '../../../domain_layer/abstract_repositories.dart';
+import '../../../domain_layer/models/setting/global_setting.dart';
+import '../../mappings.dart';
 import '../../providers.dart';
-import '../mappings.dart';
 
 /// A repository that can be used to fetch global console settings.
-class GlobalSettingRepository {
+class GlobalSettingRepository implements GlobalSettingRepositoryInterface {
   final GlobalSettingProvider _provider;
 
   /// Creates [GlobalSettingRepository].

@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
+import 'package:equatable/equatable.dart';
 
-import '../../../data_layer/data_layer.dart';
+import '../../../domain_layer/models/setting/global_setting.dart';
 
 /// The available errors.
 enum GlobalSettingError {
@@ -15,7 +16,7 @@ enum GlobalSettingError {
 }
 
 /// The state of the [GlobalSettingCubit].
-class GlobalSettingState {
+class GlobalSettingState extends Equatable {
   /// The list of already fetched settings.
   final UnmodifiableListView<GlobalSetting> settings;
 
@@ -35,6 +36,14 @@ class GlobalSettingState {
     this.error = GlobalSettingError.none,
     this.errorMessage,
   }) : settings = UnmodifiableListView(settings);
+
+  @override
+  List<Object?> get props => [
+        settings,
+        busy,
+        error,
+        errorMessage,
+      ];
 
   /// Creates a new instance based on this one.
   GlobalSettingState copyWith({

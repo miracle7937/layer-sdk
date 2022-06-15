@@ -54,5 +54,7 @@ export 'cubits/product/product_cubit.dart';
 export 'cubits/product/product_state.dart';
 export 'cubits/role/roles_cubit.dart';
 export 'cubits/role/roles_state.dart';
+export 'cubits/setting/global_setting_cubit.dart';
+export 'cubits/setting/global_setting_state.dart';
 export 'cubits/theme/app_theme_cubit.dart';
 export 'cubits/theme/app_theme_state.dart';

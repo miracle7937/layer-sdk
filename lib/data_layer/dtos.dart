@@ -61,5 +61,6 @@ export 'dtos/second_factor/second_factor_type_dto.dart';
 export 'dtos/second_factor/second_factor_type_dto.dart';
 export 'dtos/second_factor_dto.dart';
 export 'dtos/second_factor_dto.dart';
+export 'dtos/setting/global_setting_dto.dart';
 export 'dtos/transfer/transfer_type_dto.dart';
 export 'dtos/user/user_dto.dart';
