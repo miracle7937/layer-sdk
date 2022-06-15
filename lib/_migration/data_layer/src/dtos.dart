@@ -3,7 +3,6 @@ export 'DTOs/branch_activation_response_dto.dart';
 export 'DTOs/branch_freetime_dto.dart';
 export 'DTOs/category_dto.dart';
 export 'DTOs/change_user_password_dto.dart';
-export 'DTOs/config/config_dto.dart';
 export 'DTOs/customer_dto.dart';
 export 'DTOs/device_session_dto.dart';
 export 'DTOs/experience/experience_container_dto.dart';

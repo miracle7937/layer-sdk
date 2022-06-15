@@ -1,32 +1,41 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
 import 'package:layer_sdk/data_layer/network.dart';
+import 'package:layer_sdk/domain_layer/models.dart';
+import 'package:layer_sdk/domain_layer/use_cases.dart';
+import 'package:layer_sdk/presentation_layer/cubits.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockConfigRepository extends Mock implements ConfigRepository {}
+class MockLoadConfigUseCase extends Mock implements LoadConfigUseCase {}
 
-late MockConfigRepository _configRepository;
+late MockLoadConfigUseCase _loadConfigUseCase;
+late ConfigCubit _cubit;
 
-Config _backendConfig = Config(
+final _backendConfig = Config(
   showCustomersTab: true,
 );
 
 void main() {
-  setUpAll(() {
-    _configRepository = MockConfigRepository();
+  setUp(() {
+    _loadConfigUseCase = MockLoadConfigUseCase();
+    _cubit = ConfigCubit(loadConfigUseCase: _loadConfigUseCase);
 
     when(
-      () => _configRepository.load(),
+      () => _loadConfigUseCase(),
     ).thenAnswer(
       (_) async => _backendConfig,
+    );
+
+    when(
+      () => _loadConfigUseCase(forceRefresh: false),
+    ).thenThrow(
+      NetException(message: 'Failed.'),
     );
   });
 
   blocTest<ConfigCubit, ConfigState>(
-    'starts on empty state',
-    build: () => ConfigCubit(repository: _configRepository),
+    'Starts on empty state',
+    build: () => _cubit,
     verify: (c) => expect(
       c.state,
       ConfigState(),
@@ -34,40 +43,28 @@ void main() {
   );
 
   blocTest<ConfigCubit, ConfigState>(
-    'load backend configurations',
-    build: () => ConfigCubit(repository: _configRepository),
+    'Load backend configurations',
+    build: () => _cubit,
     act: (c) => c.load(),
     expect: () => [
       ConfigState(busy: true),
       ConfigState(config: _backendConfig),
     ],
     verify: (c) {
-      verify(() => _configRepository.load()).called(1);
+      verify(() => _loadConfigUseCase()).called(1);
     },
   );
 
-  group('Error handling', _dealWithErrors);
-}
-
-void _dealWithErrors() {
-  setUpAll(() {
-    when(
-      () => _configRepository.load(),
-    ).thenThrow(
-      NetException(message: 'Failed.'),
-    );
-  });
-
   blocTest<ConfigCubit, ConfigState>(
-    'should deal with exception',
-    build: () => ConfigCubit(repository: _configRepository),
-    act: (c) => c.load(),
+    'Should deal with exception',
+    build: () => _cubit,
+    act: (c) => c.load(forceRefresh: false),
     expect: () => [
       ConfigState(busy: true),
       ConfigState(error: ConfigStateErrors.generic),
     ],
     verify: (c) {
-      verify(() => _configRepository.load()).called(1);
+      verify(() => _loadConfigUseCase(forceRefresh: false)).called(1);
     },
     errors: () => [isA<NetException>()],
   );

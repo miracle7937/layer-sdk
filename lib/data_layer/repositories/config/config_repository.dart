@@ -1,9 +1,10 @@
-import '../../models.dart';
+import '../../../domain_layer/abstract_repositories.dart';
+import '../../../domain_layer/models.dart';
+import '../../mappings.dart';
 import '../../providers.dart';
-import '../mappings.dart';
 
 /// Handles the config data.
-class ConfigRepository {
+class ConfigRepository implements ConfigRepositoryInterface {
   final ConfigProvider _configProvider;
 
   /// Creates a new [ConfigRepository] with the supplied [ConfigProvider]
@@ -12,6 +13,7 @@ class ConfigRepository {
   }) : _configProvider = configProvider;
 
   /// Returns a [Config] from the connected backend.
+  @override
   Future<Config> load({
     bool forceRefresh = true,
   }) async {
