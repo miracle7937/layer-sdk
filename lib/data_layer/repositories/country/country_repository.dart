@@ -1,9 +1,10 @@
-import '../../models.dart';
+import '../../../domain_layer/abstract_repositories.dart';
+import '../../../domain_layer/models.dart';
+import '../../mappings.dart';
 import '../../providers.dart';
-import '../mappings.dart';
 
 /// Handles all the countries data
-class CountryRepository {
+class CountryRepository implements CountryRepositoryInterface {
   ///The country provider
   final CountryProvider _provider;
 
@@ -12,7 +13,8 @@ class CountryRepository {
     required CountryProvider provider,
   }) : _provider = provider;
 
-  ///Lists the categories
+  ///Lists the countries
+  @override
   Future<List<Country>> list({
     bool registration = false,
     bool forceRefresh = false,
