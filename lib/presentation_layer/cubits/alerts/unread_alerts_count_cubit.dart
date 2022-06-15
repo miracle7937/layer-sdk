@@ -1,18 +1,20 @@
 import 'dart:math';
 
 import 'package:bloc/bloc.dart';
+
 import '../../../../../data_layer/network.dart';
-import '../../../../data_layer/data_layer.dart';
+import '../../../data_layer/repositories.dart';
+import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
 
 ///A cubit that holds the unread alerts count
 class UnreadAlertsCountCubit extends Cubit<UnreadAlertsCountState> {
-  final AlertRepository _repository;
+  final LoadUnreadAlertsUseCase _loadUnreadAlertsUseCase;
 
   ///Crates a new [UnreadAlertsCountCubit] providing an [AlertRepository]
   UnreadAlertsCountCubit({
-    required AlertRepository repository,
-  })  : _repository = repository,
+    required LoadUnreadAlertsUseCase loadUnreadAlertsUseCase,
+  })  : _loadUnreadAlertsUseCase = loadUnreadAlertsUseCase,
         super(UnreadAlertsCountState());
 
   ///Fetches the unread alerts count
@@ -25,7 +27,7 @@ class UnreadAlertsCountCubit extends Cubit<UnreadAlertsCountState> {
     );
 
     try {
-      final count = await _repository.getUnreadAlertsCount(
+      final count = await _loadUnreadAlertsUseCase(
         forceRefresh: true,
       );
 

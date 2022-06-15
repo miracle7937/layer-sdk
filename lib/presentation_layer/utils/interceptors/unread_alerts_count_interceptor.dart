@@ -1,9 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:logging/logging.dart';
 
-import '../../../../business_layer/business_layer.dart';
+import '../../cubits.dart';
 import '../../utils.dart';
 
 /// A request interceptor that will read for the unread alerts count

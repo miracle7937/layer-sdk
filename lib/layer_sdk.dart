@@ -3,6 +3,7 @@ library layer_sdk;
 export 'package:design_kit_layer/design_kit_layer.dart';
 
 export 'features/accounts.dart';
+export 'features/alert.dart';
 export 'features/beneficiaries.dart';
 export 'features/bills.dart';
 export 'features/branch.dart';

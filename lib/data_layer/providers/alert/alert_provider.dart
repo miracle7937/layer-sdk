@@ -1,5 +1,5 @@
-import '../../../../data_layer/network.dart';
-import '../helpers.dart';
+import '../../helpers.dart';
+import '../../network.dart';
 
 /// Provides data related to the alerts
 class AlertProvider {

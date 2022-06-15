@@ -4,6 +4,7 @@ library repositories;
 export 'repositories/account/account_repository.dart';
 export 'repositories/account_loan/account_loan_repository.dart';
 export 'repositories/account_transaction/account_transaction_repository.dart';
+export 'repositories/alert/alert_repository.dart';
 export 'repositories/beneficiary/beneficiary_repository.dart';
 export 'repositories/bill/bill_repository.dart';
 export 'repositories/branch/branch_repository.dart';

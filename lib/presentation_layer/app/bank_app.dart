@@ -238,9 +238,11 @@ class BankAppState extends State<BankApp> {
       ),
       BlocProvider<UnreadAlertsCountCubit>(
         create: (_) => UnreadAlertsCountCubit(
-          repository: AlertRepository(
-            AlertProvider(
-              widget.netClient,
+          loadUnreadAlertsUseCase: LoadUnreadAlertsUseCase(
+            repository: AlertRepository(
+              AlertProvider(
+                widget.netClient,
+              ),
             ),
           ),
         ),
