@@ -30,7 +30,7 @@ extension CampaignDTOMapping on CustomerCampaignDTO {
             ? '${EnvironmentConfiguration.current.fullUrl}/infobanking/v1'
                 '$videoUrl'
             : '',
-        shareVideo: shareVideo,
+        shareVideo: shareVideo ?? false,
         target: target?.toCampaignTarget(),
         referenceImage: referenceImage ?? '',
         updatedAt: updatedAt.toString(),

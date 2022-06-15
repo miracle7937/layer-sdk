@@ -105,7 +105,7 @@ class CustomerCampaign extends Equatable {
   final String updatedAt;
 
   ///Is campaign's video can share or not
-  final bool? shareVideo;
+  final bool shareVideo;
 
   ///The campaign's target to show public or spesific target
   final CampaignTarget? target;
@@ -129,7 +129,7 @@ class CustomerCampaign extends Equatable {
     required this.imageUrl,
     required this.thumbnailUrl,
     required this.videoUrl,
-    this.shareVideo,
+    this.shareVideo = false,
     this.target,
     required this.referenceImage,
     required this.updatedAt,
