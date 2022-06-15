@@ -122,6 +122,23 @@ class DPAVariablesList extends StatelessWidget {
               : EdgeInsets.zero,
         );
 
+      case DPAVariableType.text:
+        if (variable.property.dialCodes.isNotEmpty) {
+          return DPAPhoneText(
+            variable: variable,
+            padding: const EdgeInsets.symmetric(
+              vertical: 12.0,
+            ),
+          );
+        }
+        return DPAText(
+          variable: variable,
+          readonly: readonly,
+          padding: const EdgeInsets.symmetric(
+            vertical: 12.0,
+          ),
+        );
+
       default:
         Logger('DPAVariablesList').severe(
           'Could not create widget for ${variable.type}',

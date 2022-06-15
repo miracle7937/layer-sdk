@@ -4,6 +4,7 @@ export '../data_layer/providers/dpa/dpa_provider.dart';
 export '../data_layer/repositories/dpa/dpa_repository.dart';
 export '../domain_layer/abstract_repositories/dpa/dpa_repository_interface.dart';
 export '../domain_layer/models/dpa/dpa_constraint.dart';
+export '../domain_layer/models/dpa/dpa_dial_code.dart';
 export '../domain_layer/models/dpa/dpa_file_data.dart';
 export '../domain_layer/models/dpa/dpa_link_data.dart';
 export '../domain_layer/models/dpa/dpa_mapping_custom_data.dart';

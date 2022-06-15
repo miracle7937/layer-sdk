@@ -71,17 +71,16 @@ class DPAHeader extends StatelessWidget {
 
     // TODO: update with the correct Layer Design Kit implementation.
     final header = Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         customBackButton ?? const DPABackButton(),
-        Expanded(
-          child: Padding(
-            padding: titlePadding,
-            child: customTitleBuilder?.call(context, taskName) ??
-                Text(
-                  taskName.isNotEmpty ? taskName : ' ',
-                  style: layerDesign.titleL(),
-                ),
-          ),
+        Padding(
+          padding: titlePadding,
+          child: customTitleBuilder?.call(context, taskName) ??
+              Text(
+                taskName.isNotEmpty ? taskName : ' ',
+                style: layerDesign.titleL(),
+              ),
         ),
         customCancelButton ?? const DPACancelButton(),
       ],
