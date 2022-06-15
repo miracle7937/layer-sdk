@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:equatable/equatable.dart';
 
-import '../../../models.dart';
+import '../../../../../domain_layer/models.dart';
 
 ///The redemption type of the merchant
 enum RedemptionType {

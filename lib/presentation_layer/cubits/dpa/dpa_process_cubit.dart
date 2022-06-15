@@ -183,8 +183,15 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
   }
 
   /// Proceeds to next step, or finishes the process if at the last one.
+  ///
+  /// Use the the `extra` param to inform the backend to rectification events
+  /// Eg: Changing the mobile number or email.
+  ///
+  /// Please be aware that passing the `extra` param causes the DPAVariables
+  /// validation to be ignored since they aren't used in these events.
   Future<void> stepOrFinish({
     bool chosenValue = false,
+    DPAVariable? extra,
   }) async {
     assert(state.runStatus == DPAProcessRunStatus.running);
 
@@ -205,9 +212,17 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
     try {
       var process = state.activeProcess.validate();
 
-      if (process.canProceed) {
+      if (process.canProceed || extra != null) {
+        if (extra != null) {
+          process = process.copyWith(
+            variables: [
+              ...process.variables,
+              extra,
+            ],
+          );
+        }
         process = await _stepOrFinishProcessUseCase(
-          process: state.activeProcess,
+          process: process,
           chosenValue: chosenValue,
         );
       }
