@@ -37,10 +37,6 @@ dependencies:
   flutter_keyboard_visibility: ^5.0.3
   flutter_local_notifications: ^8.0.0
   flutter_secure_storage: ^4.2.0
-  geofencing:
-    git:
-      url: git@gitlab.ubanquity.com:dart-packages/geofencing.git
-      ref: 5e5e7a31edec622f76b6772be1a0dc86b6305dec
   google_fonts: 2.2.0
   intl: ^0.17.0
   image: ^3.1.3
