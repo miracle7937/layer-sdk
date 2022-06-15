@@ -7,7 +7,6 @@ export 'src/models/branch_freetime.dart';
 export 'src/models/branch_timeslot.dart';
 export 'src/models/category.dart';
 export 'src/models/config/config.dart';
-export 'src/models/country.dart';
 export 'src/models/currency.dart';
 export 'src/models/customer/cpr.dart';
 export 'src/models/customer/customer.dart';

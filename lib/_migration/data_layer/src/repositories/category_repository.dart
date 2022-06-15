@@ -1,4 +1,4 @@
-import '../../models.dart';
+import '../../../../domain_layer/models.dart';
 import '../../providers.dart';
 import '../mappings.dart';
 

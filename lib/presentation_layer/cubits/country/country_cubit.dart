@@ -1,18 +1,17 @@
 import 'package:bloc/bloc.dart';
 
 import '../../../../../../data_layer/network.dart';
-import '../../../data_layer/data_layer.dart';
-import '../cubits.dart';
+import '../../../domain_layer/use_cases.dart';
+import '../../cubits.dart';
 
-///TODO: missing unit test
 ///A cubit that holds the countries data
 class CountryCubit extends Cubit<CountryState> {
-  final CountryRepository _repository;
+  final LoadCountriesUseCase _loadCountriesUseCase;
 
   /// Creates a new [CountryCubit] providing an [CountryState].
   CountryCubit({
-    required CountryRepository repository,
-  })  : _repository = repository,
+    required LoadCountriesUseCase loadCountriesUseCase,
+  })  : _loadCountriesUseCase = loadCountriesUseCase,
         super(
           CountryState(),
         );
@@ -30,7 +29,7 @@ class CountryCubit extends Cubit<CountryState> {
     );
 
     try {
-      final countries = await _repository.list(
+      final countries = await _loadCountriesUseCase(
         registration: registration,
         forceRefresh: forceRefresh,
       );

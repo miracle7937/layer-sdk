@@ -20,6 +20,7 @@ export 'models/card/card_transaction.dart';
 export 'models/card/card_type.dart';
 export 'models/category/category.dart';
 export 'models/config/config.dart';
+export 'models/country/country.dart';
 export 'models/customer/cpr.dart';
 export 'models/customer/customer.dart';
 export 'models/customer/customer_company.dart';
