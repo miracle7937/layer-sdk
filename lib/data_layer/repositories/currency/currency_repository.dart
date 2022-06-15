@@ -1,9 +1,10 @@
-import '../../models.dart';
+import '../../../domain_layer/abstract_repositories.dart';
+import '../../../domain_layer/models.dart';
+import '../../mappings.dart';
 import '../../providers.dart';
-import '../mappings.dart';
 
 /// Handles all the currency data
-class CurrencyRepository {
+class CurrencyRepository implements CurrencyRepositoryInterface {
   ///The [CurrencyProvider] object
   final CurrencyProvider provider;
 
@@ -13,6 +14,7 @@ class CurrencyRepository {
   });
 
   ///Lists the currencies
+  @override
   Future<List<Currency>> list({
     bool forceRefresh = false,
   }) async {
@@ -23,6 +25,7 @@ class CurrencyRepository {
   }
 
   ///Gets a currency by a code
+  @override
   Future<Currency?> getCurrencyByCode({
     required String code,
     bool forceRefresh = false,

@@ -10,6 +10,7 @@ export 'repositories/branch/branch_repository.dart';
 export 'repositories/branding/branding_repository.dart';
 export 'repositories/card/card_repository.dart';
 export 'repositories/country/country_repository.dart';
+export 'repositories/currency/currency_repository.dart';
 export 'repositories/dpa/dpa_repository.dart';
 export 'repositories/loyalty/cashback_history/cashback_history_repository.dart';
 export 'repositories/loyalty/loyalty_points/loyalty_points_repository.dart';

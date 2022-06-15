@@ -1,6 +1,5 @@
-import '../../../../data_layer/network.dart';
-
-import '../dtos.dart';
+import '../../dtos.dart';
+import '../../network.dart';
 
 ///Provides data about the currencies
 class CurrencyProvider {

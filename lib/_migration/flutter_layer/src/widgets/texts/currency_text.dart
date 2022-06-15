@@ -1,7 +1,9 @@
 import 'dart:ui' as ui show TextHeightBehavior;
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../features/currency.dart';
 import '../../../../business_layer/business_layer.dart';
 
 // TODO: add CurrencyText tests.
@@ -169,17 +171,20 @@ class CurrencyText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currencyCubit = context.watch<CurrencyCubit>();
+    final currency = currencyCubit.state.currencies
+        .singleWhereOrNull((element) => element.code == currencyCode);
 
     return Text(
-      currencyCubit.formatCurrency(
-            value: amount,
-            withSymbol: withSymbol,
-            currencyCode: currencyCode,
-            decimals: decimals,
-            locale: locale?.toString(),
-            customPattern: customPattern,
-          ) ??
-          textIfNull,
+      currency != null && amount != null
+          ? AmountFormatter.formatAmountWithCurrency(
+              amount ?? 0.0,
+              currency: currency,
+              customPattern: customPattern,
+              withSymbol: withSymbol,
+              decimals: decimals,
+              locale: locale?.toString(),
+            )
+          : textIfNull,
       style: style,
       strutStyle: strutStyle,
       textAlign: textAlign,

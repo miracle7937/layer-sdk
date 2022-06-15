@@ -12,9 +12,9 @@ import '../../_migration/flutter_layer/src/cubits.dart';
 import '../../_migration/flutter_layer/src/widgets/text_fields/auto_padding_keyboard_view.dart';
 import '../../data_layer/interfaces.dart';
 import '../../data_layer/network.dart';
-import '../../data_layer/providers/setting/global_setting_provider.dart';
-import '../../data_layer/repositories/setting/global_setting_repository.dart';
-import '../../domain_layer/use_cases/setting/load_global_settings_use_case.dart';
+import '../../data_layer/providers.dart';
+import '../../data_layer/repositories.dart';
+import '../../domain_layer/use_cases.dart';
 import '../app.dart';
 import '../cubits.dart';
 import '../design.dart';
@@ -204,9 +204,18 @@ class BankAppState extends State<BankApp> {
       ),
       BlocProvider<CurrencyCubit>(
         create: (_) => CurrencyCubit(
-          repository: CurrencyRepository(
-            provider: CurrencyProvider(
-              netClient: widget.netClient,
+          loadAllCurrenciesUseCase: LoadAllCurrenciesUseCase(
+            repository: CurrencyRepository(
+              provider: CurrencyProvider(
+                netClient: widget.netClient,
+              ),
+            ),
+          ),
+          loadCurrencyByCodeUseCase: LoadCurrencyByCodeUseCase(
+            repository: CurrencyRepository(
+              provider: CurrencyProvider(
+                netClient: widget.netClient,
+              ),
             ),
           ),
         ),

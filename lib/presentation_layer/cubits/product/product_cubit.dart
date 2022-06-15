@@ -3,7 +3,7 @@ import 'package:bloc/bloc.dart';
 import '../../../../../data_layer/network.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
-import '../utils.dart';
+import '../../utils.dart';
 import 'product_state.dart';
 
 /// Cubit that manages Product data

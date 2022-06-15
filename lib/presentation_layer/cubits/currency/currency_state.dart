@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../../data_layer/data_layer.dart';
+import '../../../features/currency.dart';
 
 /// The available error status
 enum CurrencyErrorStatus {

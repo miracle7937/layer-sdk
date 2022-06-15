@@ -1,4 +1,4 @@
-import '../helpers.dart';
+import '../../helpers.dart';
 
 ///Data transfer object representing the currencies
 class CurrencyDTO {

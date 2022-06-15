@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 
-import '../helpers.dart';
+import '../../helpers.dart';
 
 /// Possible recurrence options
 class RecurrenceDTO extends EnumDTO {

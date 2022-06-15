@@ -76,7 +76,7 @@ class BeneficiaryDTO {
   String? routingCode;
 
   /// The beneficiary's second factor type.
-  SecondFactorDTO? secondFactor;
+  SecondFactorTypeDTO? secondFactor;
 
   /// The beneficiary's Bank image url
   String? bankImageUrl;
@@ -135,7 +135,7 @@ class BeneficiaryDTO {
         updated: JsonParser.parseDate(json['ts_updated']),
         description: json['description'],
         routingCode: json['routing_code'],
-        secondFactor: SecondFactorDTO.fromRaw(json['second_factor']),
+        secondFactor: SecondFactorTypeDTO.fromRaw(json['second_factor']),
         bankImageUrl: json['bank_image_url'],
       );
 

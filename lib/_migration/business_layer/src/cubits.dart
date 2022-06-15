@@ -23,8 +23,6 @@ export 'cubits/certificate_cubit.dart';
 export 'cubits/certificate_states.dart';
 export 'cubits/configurations/config_cubit.dart';
 export 'cubits/configurations/config_state.dart';
-export 'cubits/currency_cubit.dart';
-export 'cubits/currency_state.dart';
 export 'cubits/customers_cubit.dart';
 export 'cubits/customers_states.dart';
 export 'cubits/device_session_cubit.dart';
