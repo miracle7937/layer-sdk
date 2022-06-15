@@ -20,7 +20,7 @@ class LoadSessionsUseCase {
   ///
   /// The [sortby] value is used for sorting the sessions that belong to
   /// this. For ex. `last_activity`
-  Future<DeviceSession> call({
+  Future<List<DeviceSession>> call({
     List<SessionType> deviceTypes = const [
       SessionType.android,
       SessionType.iOS

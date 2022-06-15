@@ -1,21 +1,24 @@
 import 'package:bloc/bloc.dart';
 import '../../../_migration/data_layer/src/models/customer/customer.dart';
 import '../../../data_layer/network.dart';
-import '../../../data_layer/repositories.dart';
 import '../../../domain_layer/models.dart';
+import '../../../domain_layer/use_cases/device_session/load_sessions_use_case.dart';
+import '../../../domain_layer/use_cases/device_session/session_terminate_use_case.dart';
 import 'device_session_state.dart';
 
 /// A cubit that keeps a list of device sessions.
 class DeviceSessionCubit extends Cubit<DeviceSessionState> {
-  final DeviceSessionRepository _repository;
+  final LoadSessionsUseCase _loadSessionsUseCase;
+  final DeviceSessionTerminateUseCase _terminateUseCase;
 
   /// Creates a new cubit using the supplied [CustomerRepository] and
   /// customer id and type.
   DeviceSessionCubit({
-    required DeviceSessionRepository repository,
+    required LoadSessionsUseCase loadSessionsUseCase,
+    required DeviceSessionTerminateUseCase terminateUseCase,
     required String customerId,
     required CustomerType customerType,
-  })  : _repository = repository,
+  })  : _loadSessionsUseCase = loadSessionsUseCase, _terminateUseCase =terminateUseCase,
         super(
           DeviceSessionState(
             customerId: customerId,
@@ -45,8 +48,7 @@ class DeviceSessionCubit extends Cubit<DeviceSessionState> {
     );
 
     try {
-      final sessions = await _repository.getDeviceSessions(
-        customerId: state.customerId,
+      final sessions = await _loadSessionsUseCase(
         forceRefresh: forceRefresh,
         deviceTypes: deviceTypes,
         status: status,
@@ -83,7 +85,7 @@ class DeviceSessionCubit extends Cubit<DeviceSessionState> {
   ///
   /// The error status is similarly localized to the session.
   Future<void> terminateSession({
-    required String deviceId,
+    required int deviceId,
   }) async {
     // Emits a new state with the current session busy, and without errors.
     emit(
@@ -102,8 +104,7 @@ class DeviceSessionCubit extends Cubit<DeviceSessionState> {
     );
 
     try {
-      final newSession = await _repository.terminateSession(
-        customerType: state.customerType,
+      await _terminateUseCase(
         deviceId: deviceId,
       );
 
@@ -112,7 +113,6 @@ class DeviceSessionCubit extends Cubit<DeviceSessionState> {
           .map(
             (e) => e.session.deviceId == deviceId
                 ? e.copyWith(
-                    session: newSession,
                     busy: false,
                   )
                 : e,

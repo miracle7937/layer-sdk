@@ -3,7 +3,7 @@ import '../../models.dart';
 /// The abstract repository for the device session.
 abstract class DeviceSessionRepositoryInterface {
   /// Returns the [DeviceSession] for the provided parameters.
-  Future<DeviceSession> getDeviceSessions({
+  Future<List<DeviceSession>> getDeviceSessions({
     List<SessionType> deviceTypes = const [
       SessionType.android,
       SessionType.iOS
@@ -24,5 +24,4 @@ abstract class DeviceSessionRepositoryInterface {
   Future<void> terminateSession({
     required int deviceId,
   });
-
 }
