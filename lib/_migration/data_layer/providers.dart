@@ -6,7 +6,6 @@ export 'src/providers/appointment_provider.dart';
 export 'src/providers/authentication_provider.dart';
 export 'src/providers/beneficiary_provider.dart';
 export 'src/providers/category_provider.dart';
-export 'src/providers/certificate_provider.dart';
 export 'src/providers/config_provider.dart';
 export 'src/providers/customer_provider.dart';
 export 'src/providers/device_session_provider.dart';
