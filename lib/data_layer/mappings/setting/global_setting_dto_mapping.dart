@@ -1,6 +1,6 @@
+import '../../../domain_layer/models/setting/global_setting.dart';
+import '../../dtos.dart';
 import '../../errors.dart';
-import '../../models.dart';
-import '../dtos.dart';
 
 /// Extension that provides mapping for [GlobalSettingDTO]
 extension GlobalSettingDTOMapping on GlobalSettingDTO {

@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../data_layer/data_layer.dart';
+import '../../../../../data_layer/repositories/setting/global_setting_repository.dart';
 import 'check_super_wrapper.dart';
 import 'root_check_state.dart';
 

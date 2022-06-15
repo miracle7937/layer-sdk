@@ -1,5 +1,5 @@
 import '../../../../data_layer/network.dart';
-import '../dtos.dart';
+import '../../dtos.dart';
 
 /// A provider that handles API requests related to the [GlobalSettingDTO].
 class GlobalSettingProvider {

@@ -28,8 +28,8 @@ class AmountFormatter {
   ///
   /// The grouping and decimal separators are based on [Intl.defaultLocale].
   static String formatAmountWithCurrency(
-    num amount,
-    Currency currency, {
+    num amount, {
+    Currency? currency,
     String? customPattern,
     bool addPlus = false,
     int? decimals,
@@ -38,12 +38,13 @@ class AmountFormatter {
   }) {
     final formatter = NumberFormat.currency(
       locale: locale ?? defaultLocale,
-      decimalDigits: decimals ?? currency.decimals ?? 0,
-      name: currency.name ?? '',
-      symbol: withSymbol ? (currency.symbol ?? currency.code) : '',
+      decimalDigits: decimals ?? currency?.decimals,
+      name: currency?.name ?? null,
+      symbol: withSymbol ? (currency?.symbol ?? currency?.code) : '',
       customPattern: customPattern ?? defaultPattern,
     );
 
-    return '${(addPlus && amount > 0) ? '+' : ''}${formatter.format(amount)}';
+    return '${(addPlus && amount > 0) ? '+' : ''}${formatter.format(amount)}'
+        .trim();
   }
 }

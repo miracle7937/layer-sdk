@@ -240,9 +240,11 @@ class BankAppState extends State<BankApp> {
       ),
       BlocProvider<GlobalSettingCubit>(
         create: (_) => GlobalSettingCubit(
-          repository: GlobalSettingRepository(
-            provider: GlobalSettingProvider(
-              netClient: widget.netClient,
+          getGlobalSettingUseCase: LoadGlobalSettingsUseCase(
+            repository: GlobalSettingRepository(
+              provider: GlobalSettingProvider(
+                netClient: widget.netClient,
+              ),
             ),
           ),
         ),
