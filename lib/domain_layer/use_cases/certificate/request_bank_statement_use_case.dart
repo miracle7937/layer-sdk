@@ -17,12 +17,11 @@ class RequestBankStatementUseCase {
     required String accountId,
     required DateTime fromDate,
     required DateTime toDate,
-  }) {
-    return _repository.requestBankStatement(
-      customerId: customerId,
-      accountId: accountId,
-      fromDate: fromDate,
-      toDate: toDate,
-    );
-  }
+  }) =>
+      _repository.requestBankStatement(
+        customerId: customerId,
+        accountId: accountId,
+        fromDate: fromDate,
+        toDate: toDate,
+      );
 }

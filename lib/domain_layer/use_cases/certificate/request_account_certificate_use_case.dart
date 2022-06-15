@@ -15,10 +15,9 @@ class RequestAccountCertificateUseCase {
   Future<List<int>> call({
     required String customerId,
     required String accountId,
-  }) {
-    return _repository.requestAccountCertificate(
-      customerId: customerId,
-      accountId: accountId,
-    );
-  }
+  }) =>
+      _repository.requestAccountCertificate(
+        customerId: customerId,
+        accountId: accountId,
+      );
 }

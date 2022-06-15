@@ -15,10 +15,9 @@ class RequestCertificateOfDepositUseCase {
   Future<List<int>> call({
     required String customerId,
     required String accountId,
-  }) {
-    return _repository.requestCertificateOfDeposit(
-      customerId: customerId,
-      accountId: accountId,
-    );
-  }
+  }) =>
+      _repository.requestCertificateOfDeposit(
+        customerId: customerId,
+        accountId: accountId,
+      );
 }
