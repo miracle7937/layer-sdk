@@ -175,10 +175,10 @@ class CurrencyText extends StatelessWidget {
         .singleWhereOrNull((element) => element.code == currencyCode);
 
     return Text(
-      currency != null
+      currency != null && amount != null
           ? AmountFormatter.formatAmountWithCurrency(
               amount ?? 0.0,
-              currency,
+              currency: currency,
               customPattern: customPattern,
               withSymbol: withSymbol,
               decimals: decimals,

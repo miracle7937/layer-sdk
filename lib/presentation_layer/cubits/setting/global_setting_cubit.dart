@@ -1,18 +1,17 @@
 import 'package:bloc/bloc.dart';
 
 import '../../../../../../data_layer/network.dart';
-import '../../../data_layer/data_layer.dart';
-import '../cubits.dart';
+import '../../../domain_layer/use_cases/setting/load_global_settings_use_case.dart';
+import 'global_setting_state.dart';
 
 /// A cubit responsible for fetching the global console settings.
-// TODO: unit tests
 class GlobalSettingCubit extends Cubit<GlobalSettingState> {
-  final GlobalSettingRepository _repository;
+  final LoadGlobalSettingsUseCase _getGlobalSettingUseCase;
 
   /// Creates [GlobalSettingCubit].
   GlobalSettingCubit({
-    required GlobalSettingRepository repository,
-  })  : _repository = repository,
+    required LoadGlobalSettingsUseCase getGlobalSettingUseCase,
+  })  : _getGlobalSettingUseCase = getGlobalSettingUseCase,
         super(
           GlobalSettingState(),
         );
@@ -32,18 +31,21 @@ class GlobalSettingCubit extends Cubit<GlobalSettingState> {
     ));
 
     try {
-      final settings = await _repository.list(
+      final settings = await _getGlobalSettingUseCase(
         codes: codes,
+        currentSettings: state.settings,
         forceRefresh: forceRefresh,
       );
 
       emit(
         state.copyWith(
           busy: false,
-          settings: {
-            ...state.settings,
-            ...settings,
-          },
+          settings: forceRefresh
+              ? settings
+              : {
+                  ...state.settings,
+                  ...settings,
+                },
         ),
       );
     } on Exception catch (e) {

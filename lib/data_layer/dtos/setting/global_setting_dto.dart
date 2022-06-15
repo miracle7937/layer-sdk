@@ -1,4 +1,4 @@
-import '../helpers.dart';
+import '../../helpers/json_parser.dart';
 
 /// Data transfer object that represents a global console setting.
 class GlobalSettingDTO {
