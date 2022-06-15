@@ -11,10 +11,7 @@ class LoadConfigUseCase {
   }) : _repository = repository;
 
   /// Callable method to load the [Config]
-  Future<Config> call({
-    bool forceRefresh = true,
-  }) =>
-      _repository.load(
+  Future<Config> call({bool forceRefresh = true}) => _repository.load(
         forceRefresh: forceRefresh,
       );
 }

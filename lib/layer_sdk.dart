@@ -8,6 +8,7 @@ export 'features/bills.dart';
 export 'features/branch.dart';
 export 'features/branding.dart';
 export 'features/cards.dart';
+export 'features/certificate.dart';
 export 'features/config.dart';
 export 'features/country.dart';
 export 'features/currency.dart';

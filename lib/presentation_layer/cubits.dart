@@ -18,6 +18,8 @@ export 'cubits/card/card_cubit.dart';
 export 'cubits/card/card_states.dart';
 export 'cubits/card/card_transactions_cubit.dart';
 export 'cubits/card/card_transactions_states.dart';
+export 'cubits/certificate/certificate_cubit.dart';
+export 'cubits/certificate/certificate_states.dart';
 export 'cubits/config/config_cubit.dart';
 export 'cubits/config/config_state.dart';
 export 'cubits/country/country_cubit.dart';
