@@ -5,7 +5,8 @@ import '../../errors.dart';
 /// Extension that provides mappings for [DPAVariablePropertyDTO]
 extension DPAVariablePropertyDTOMapping on DPAVariablePropertyDTO {
   /// Maps into a [DPAVariableProperty]
-  DPAVariableProperty toDPAVariableProperty() => DPAVariableProperty(
+  DPAVariableProperty toDPAVariableProperty(DPAMappingCustomData customData) =>
+      DPAVariableProperty(
         link: link,
         step: step == null ? null : int.tryParse(step!),
         display: display,
@@ -31,6 +32,8 @@ extension DPAVariablePropertyDTOMapping on DPAVariablePropertyDTO {
         icon: icon,
         type: propertyType?.toDPAVariablePropertyType(),
         allowedTypes: allowedTypes,
+        image: image == null ? null : '${customData.fileBaseURL}$image',
+        dialCodes: dialCodes?.map((e) => e.toDialCode()).toList() ?? [],
       );
 }
 
@@ -113,4 +116,14 @@ extension DPAVariablePropertyTypeMapping on DPAVariablePropertyType {
         return null;
     }
   }
+}
+
+/// Extension that provides mappings for [DPADialCodeDTO].
+extension DPADialCodeDTOMapping on DPADialCodeDTO {
+  /// Maps into a [DPADialCode].
+  DPADialCode toDialCode() => DPADialCode(
+        countryCode: countryCode ?? '',
+        countryName: countryName ?? '',
+        dialCode: dialCode ?? '',
+      );
 }

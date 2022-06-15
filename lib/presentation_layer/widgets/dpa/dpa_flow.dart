@@ -169,6 +169,11 @@ class DPAFlow extends StatelessWidget {
   /// If null, the default navigator.pop is called.
   final DPAHidePopUpCallback? customHidePopUp;
 
+  /// Whether or not the current task description/image should be shown
+  ///
+  /// Defaults to `true`.
+  final bool showTaskDescription;
+
   /// Creates a new [DPAFlow].
   const DPAFlow({
     Key? key,
@@ -180,6 +185,7 @@ class DPAFlow extends StatelessWidget {
     this.customChild,
     this.customShowPopUp,
     this.customHidePopUp,
+    this.showTaskDescription = true,
   }) : super(key: key);
 
   @override
@@ -191,6 +197,20 @@ class DPAFlow extends StatelessWidget {
     final hasPopup = context.select<DPAProcessCubit, bool>(
       (cubit) => cubit.state.hasPopup,
     );
+
+    final isCarouselScreen = process.variables.every(
+      (e) => e.type == DPAVariableType.swipe,
+    );
+
+    final isOTPScreen = process.stepProperties?.screenType == DPAScreenType.otp;
+
+    final effectiveCustomChild = isCarouselScreen
+        ? DPACarouselScreen()
+        : isOTPScreen
+            ? DPAOTPScreen(
+                customDPAHeader: customHeader,
+              )
+            : customChild;
 
     return MultiBlocListener(
       listeners: [
@@ -218,26 +238,46 @@ class DPAFlow extends StatelessWidget {
           listener: _showPopUp,
         ),
       ],
-      child: customChild ??
+      child: effectiveCustomChild ??
           // TODO: update to use the correct Layer Design Kit design.
-          // TODO: update to handle the different pages like Jumio, PIN, etc.
+          // TODO: update to handle the different pages
           Column(
             children: [
               customHeader ?? DPAHeader(process: process),
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.all(32.0),
-                  child: customVariableListBuilder?.call(
-                        context,
-                        process,
-                      ) ??
-                      DPAVariablesList(process: process),
+              Flexible(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      if (showTaskDescription)
+                        DPATaskDescription(
+                          process: process,
+                        ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                        ),
+                        child: customVariableListBuilder?.call(
+                              context,
+                              process,
+                            ) ??
+                            DPAVariablesList(process: process),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               customContinueButton ??
-                  DPAContinueButton(
-                    process: process,
-                    enabled: !hasPopup,
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                      16.0,
+                      0.0,
+                      16.0,
+                      42.0,
+                    ),
+                    child: DPAContinueButton(
+                      process: process,
+                      enabled: !hasPopup,
+                    ),
                   ),
             ],
           ),

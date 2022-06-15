@@ -1,5 +1,5 @@
+import '../../../../data_layer/dtos.dart';
 import '../../../../data_layer/network.dart';
-import '../dtos.dart';
 
 /// A provider that handles API requests related to [CategoryDTO].
 class CategoryProvider {

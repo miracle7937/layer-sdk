@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 
 import '../../../../../../data_layer/network.dart';
+import '../../../../presentation_layer/utils.dart';
 import '../../../data_layer/data_layer.dart';
-import '../utils.dart';
 import 'transfer_state.dart';
 
 /// A cubit that keeps the list of customer transfers.

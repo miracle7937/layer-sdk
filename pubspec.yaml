@@ -2,11 +2,11 @@ name: layer_sdk
 description: A new Flutter package project.
 version: 0.0.1
 
-publish_to: "none" # Remove this line if you wish to publish to pub.dev
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 environment:
-  sdk: ">=2.17.1 <3.0.0"
-  flutter: ">=1.17.0"
+  sdk: '>=2.17.1 <3.0.0'
+  flutter: '>=1.17.0'
 
 dependencies:
   flutter:
@@ -23,7 +23,7 @@ dependencies:
   design_kit_layer:
     git:
       url: git@gitlab.ubanquity.com:dart-packages/design-kit-layer.git
-      ref: 6e4c8d821f893866b119ce46bf70ee22c28bc10a
+      ref: 87372825c7362e1fc6591fc16976ef7fe8bbee62
   device_info: ^2.0.2
   dio: ^4.0.4
   equatable: ^2.0.2
@@ -37,6 +37,7 @@ dependencies:
   flutter_keyboard_visibility: ^5.0.3
   flutter_local_notifications: ^8.0.0
   flutter_secure_storage: ^4.2.0
+  flutter_svg: ^1.1.0
   geofencing:
     git:
       url: git@gitlab.ubanquity.com:dart-packages/geofencing.git
@@ -78,4 +79,9 @@ flutter:
   uses-material-design: true
 
   assets:
-    - lib/presentation_layer/assets/svgs/
+    - assets/svgs/back.svg
+    - assets/svgs/camera.svg
+    - assets/svgs/close.svg
+    - assets/svgs/error.svg
+    - assets/svgs/success.svg
+    - assets/svgs/warning.svg
