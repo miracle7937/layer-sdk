@@ -53,6 +53,9 @@ enum DPAVariableType {
 
   /// Search results
   searchResults,
+
+  /// The swipe (Carousel) variable type.
+  swipe,
 }
 
 /// Helper extension for [DPAVariableType]

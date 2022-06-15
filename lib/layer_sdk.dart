@@ -18,5 +18,6 @@ export 'presentation_layer/app.dart';
 export 'presentation_layer/design.dart';
 export 'presentation_layer/environment.dart';
 export 'presentation_layer/extensions.dart';
+export 'presentation_layer/mixins.dart';
 export 'presentation_layer/utils.dart';
 export 'presentation_layer/widgets.dart';
