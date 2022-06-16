@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
 import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
 import 'package:layer_sdk/data_layer/network.dart';
-import 'package:layer_sdk/domain_layer/models/second_factor/second_factor_type.dart';
+import 'package:layer_sdk/domain_layer/models.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 

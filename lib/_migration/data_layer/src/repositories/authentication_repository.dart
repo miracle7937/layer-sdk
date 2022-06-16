@@ -1,3 +1,5 @@
+import '../../../../data_layer/dtos.dart';
+import '../../../../domain_layer/models.dart';
 import '../../models.dart';
 import '../../providers.dart';
 import '../dtos.dart';

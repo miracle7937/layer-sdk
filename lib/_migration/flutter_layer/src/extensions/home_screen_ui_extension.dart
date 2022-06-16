@@ -3,7 +3,8 @@ import 'dart:collection';
 import 'package:design_kit_layer/design_kit_layer.dart';
 import 'package:flutter/material.dart';
 
-import '../../../data_layer/data_layer.dart';
+import '../../../../domain_layer/models.dart';
+import '../../../../presentation_layer/utils.dart';
 import '../../flutter_layer.dart';
 
 /// UI Extension for the [HomeScreen].

@@ -1,5 +1,5 @@
-import '../../models.dart';
-import '../dtos.dart';
+import '../../../../data_layer/dtos.dart';
+import '../../../../domain_layer/models.dart';
 
 /// Extension that provides mappings for [PreferencesDTO]
 extension PreferencesDTOMapping on PreferencesDTO {
