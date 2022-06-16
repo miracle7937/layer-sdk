@@ -18,7 +18,14 @@ void main() {
     _repository = MockQueueRepository();
     _rejectQueueUseCase = RejectQueueUseCase(repository: _repository);
 
-    when(() => _rejectQueueUseCase('1', isRequest: true)).thenAnswer(
+    when(
+      () => _rejectQueueUseCase(
+        '1',
+        isRequest: any(
+          named: 'isRequest',
+        ),
+      ),
+    ).thenAnswer(
       (_) async => _mockedBool,
     );
   });
@@ -28,7 +35,14 @@ void main() {
 
     expect(response, _mockedBool);
 
-    verify(() => _repository.reject('1', isRequest: true));
+    verify(
+      () => _repository.reject(
+        '1',
+        isRequest: any(
+          named: 'isRequest',
+        ),
+      ),
+    );
 
     verifyNoMoreInteractions(_repository);
   });

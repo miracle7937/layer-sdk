@@ -2,9 +2,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:layer_sdk/data_layer/network.dart';
-import 'package:layer_sdk/domain_layer/models.dart';
-import 'package:layer_sdk/domain_layer/use_cases.dart';
-import 'package:layer_sdk/presentation_layer/cubits.dart';
+import 'package:layer_sdk/layer_sdk.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 

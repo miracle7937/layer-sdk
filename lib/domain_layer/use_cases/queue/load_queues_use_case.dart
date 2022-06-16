@@ -11,9 +11,11 @@ class LoadQueuesUseCase {
   }) : _repository = repository;
 
   /// Callable method to load all [Queue]s
+  ///
+  /// Use `limit` and `offset` to paginate.
   Future<List<QueueRequest>> call({
-    int limit = 50,
-    int offset = 0,
+    int? limit,
+    int? offset,
     bool forceRefresh = true,
   }) =>
       _repository.list(

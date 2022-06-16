@@ -16,8 +16,8 @@ class QueueRequestRepository implements QueueRepositoryInterface {
   /// on the supplied limit and offset
   @override
   Future<List<QueueRequest>> list({
-    int limit = 50,
-    int offset = 0,
+    int? limit,
+    int? offset,
     bool forceRefresh = true,
   }) async {
     final queueRequestDTO = await _provider.list(

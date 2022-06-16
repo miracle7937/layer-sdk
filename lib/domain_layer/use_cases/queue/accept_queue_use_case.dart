@@ -9,7 +9,15 @@ class AcceptQueueUseCase {
     required QueueRepositoryInterface repository,
   }) : _repository = repository;
 
-  /// Callable method to accept the [Queue]
+  /// Callable method to accepts a [QueueRequest] item
+  /// using the provided `requestId`.
+  ///
+  /// `isRequest` is used to determinate which `endpointUrl` is going to be used
+  ///
+  /// We have to options, if `isRequest` is `true` the `endpointUrl` will be
+  /// `netEndpoints.requests`
+  ///
+  /// If is `false` the `endpointUrl` will be `netEndpoints.queueRequest`
   Future<bool> call(
     String requestId, {
     required bool isRequest,
