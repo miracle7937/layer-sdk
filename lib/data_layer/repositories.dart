@@ -9,6 +9,8 @@ export 'repositories/bill/bill_repository.dart';
 export 'repositories/branch/branch_repository.dart';
 export 'repositories/branding/branding_repository.dart';
 export 'repositories/card/card_repository.dart';
+export 'repositories/certificate/certificate_repository.dart';
+export 'repositories/config/config_repository.dart';
 export 'repositories/country/country_repository.dart';
 export 'repositories/currency/currency_repository.dart';
 export 'repositories/dpa/dpa_repository.dart';

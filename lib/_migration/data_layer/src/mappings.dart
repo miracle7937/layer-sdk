@@ -2,7 +2,6 @@ export 'mappings/appointment_mapping.dart';
 export 'mappings/branch_activation_response_dto_mapping.dart';
 export 'mappings/branch_freetime_mapping.dart';
 export 'mappings/category_dto_mapping.dart';
-export 'mappings/config/config_dto_mapping.dart';
 export 'mappings/device_session_dto_mapping.dart';
 export 'mappings/financial_data_dto_mapping.dart';
 export 'mappings/ocra/ocra_challenge_dto_mapping.dart';

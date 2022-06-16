@@ -82,6 +82,7 @@ void main() {
       getExperienceAndConfigureItUseCase: getExperienceAndConfigureItUseCase,
       saveExperiencePreferencesUseCase: saveExperiencePreferencesUseCase,
     ),
+    // ignore: deprecated_member_use_from_same_package
     act: (c) => c.update(experience: _newExperience),
     expect: () => [
       ExperienceState(

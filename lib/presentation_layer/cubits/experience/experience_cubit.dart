@@ -27,8 +27,8 @@ class ExperienceCubit extends Cubit<ExperienceState> {
         super(ExperienceState());
 
   /// Updates the [Experience] object in the state
-  @Deprecated('This method was introduces for core-banking compatibility.'
-      'Only use it if you are trying to implement the layer sdk in a project'
+  @Deprecated('This method was introduces for core-banking compatibility. '
+      'Only use it if you are trying to implement the layer sdk in a project '
       'that also depends on the core-banking package.')
   Future<void> update({
     required Experience experience,

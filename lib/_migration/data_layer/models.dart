@@ -5,7 +5,6 @@ export 'src/models/appointment.dart';
 export 'src/models/branch_activation_response.dart';
 export 'src/models/branch_freetime.dart';
 export 'src/models/branch_timeslot.dart';
-export 'src/models/config/config.dart';
 export 'src/models/device_session.dart';
 export 'src/models/document/passport.dart';
 export 'src/models/financial_data.dart';

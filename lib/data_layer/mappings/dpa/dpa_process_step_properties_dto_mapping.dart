@@ -2,6 +2,7 @@ import 'package:validators/validators.dart';
 
 import '../../../domain_layer/models.dart';
 import '../../dtos.dart';
+import '../../errors.dart';
 
 /// Extension that provides mappings for [DPAProcessStepPropertiesDTO]
 extension DPAProcessStepPropertiesDTOMapping on DPAProcessStepPropertiesDTO {
@@ -18,8 +19,12 @@ extension DPAProcessStepPropertiesDTOMapping on DPAProcessStepPropertiesDTO {
         maskedNumber: maskedNumber,
         email: email,
         image: toCompleteImageUrl(customData),
-        backgroundUrl: bgImagePath,
+        backgroundUrl: bgImagePath == null
+            ? null
+            : '${customData.fileBaseURL}$bgImagePath',
         feedback: feedback,
+        alignment: alignment?.toDPAScreenAlignment() ??
+            DPAScreenAlignment.descriptionImage,
       );
 
   /// Checks if this [DPAProcessStepPropertiesDTO] has a valid URL and appends
@@ -81,6 +86,27 @@ extension DPAScreenTypeDTOMapping on DPAScreenTypeDTO {
 
       default:
         return DPAScreenType.other;
+    }
+  }
+}
+
+/// Extension that provides mappings for [DPAScreenAlignmentDTO].
+extension DPAScreenAlignmentDTOMapping on DPAScreenAlignmentDTO {
+  /// Maps into a [DPAScreenAlignment].
+  DPAScreenAlignment toDPAScreenAlignment() {
+    switch (this) {
+      case DPAScreenAlignmentDTO.imageDescription:
+        return DPAScreenAlignment.imageDescription;
+
+      case DPAScreenAlignmentDTO.descriptionImage:
+        return DPAScreenAlignment.descriptionImage;
+
+      default:
+        throw MappingException(
+          from: DPAScreenAlignmentDTO,
+          to: DPAScreenAlignment,
+          value: this,
+        );
     }
   }
 }
