@@ -1,4 +1,4 @@
-import '../../../models.dart';
+import '../../../../../domain_layer/models.dart';
 
 ///The model used for patching the favorite offers prefs
 class FavoriteOffersPreference extends UserPreference<List<int>> {

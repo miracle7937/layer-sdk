@@ -178,13 +178,26 @@ class BankAppState extends State<BankApp> {
       ),
       BlocProvider<ExperienceCubit>(
         create: (context) => ExperienceCubit(
-          repository: ExperienceRepository(
-            experienceProvider: ExperienceProvider(
-              netClient: widget.netClient,
+          configureUserExperienceByExperiencePreferencesUseCase:
+              ConfigureUserExperienceWithPreferencesUseCase(),
+          getExperienceAndConfigureItUseCase:
+              GetExperienceAndConfigureItUseCase(
+            repository: ExperienceRepository(
+              experienceProvider: ExperienceProvider(
+                netClient: widget.netClient,
+              ),
+              userProvider: UserProvider(
+                netClient: widget.netClient,
+              ),
             ),
-            userProvider: userProvider,
           ),
-          configureUserExperience: ConfigureUserExperience(),
+          saveExperiencePreferencesUseCase: SaveExperiencePreferencesUseCase(
+            repository: ExperiencePreferencesRepository(
+              experienceProvider: ExperiencePreferencesProvider(
+                netClient: widget.netClient,
+              ),
+            ),
+          ),
         ),
       ),
       BlocProvider<DevicePermissionsCubit>(

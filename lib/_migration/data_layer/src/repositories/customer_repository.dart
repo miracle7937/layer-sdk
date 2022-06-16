@@ -1,11 +1,10 @@
 import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
 
+import '../../../../data_layer/mappings.dart';
 import '../../../../data_layer/network.dart';
-import '../../../../domain_layer/models/dpa/dpa_mapping_custom_data.dart';
-import '../../models.dart';
-import '../../providers.dart';
-import '../mappings.dart';
+import '../../../../data_layer/providers.dart';
+import '../../../../domain_layer/models.dart';
 
 /// Handles all the customers data
 class CustomerRepository {
