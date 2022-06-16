@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../business_layer/business_layer.dart';
-import '../../../../data_layer/data_layer.dart';
-
-import '../../../flutter_layer.dart';
+import '../../../../../domain_layer/models.dart';
+import '../../../../../presentation_layer/cubits.dart';
 import '../../extensions/home_screen_ui_extension.dart';
 
 /// Custom type created for building an [ExperiencePage].

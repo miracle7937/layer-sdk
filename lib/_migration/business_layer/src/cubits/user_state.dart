@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:equatable/equatable.dart';
 
-import '../../../data_layer/data_layer.dart';
+import '../../../../domain_layer/models.dart';
 
 /// All possible errors for [UserState]
 enum UserStateError {

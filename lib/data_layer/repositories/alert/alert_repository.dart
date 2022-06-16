@@ -1,5 +1,4 @@
-import '../../../domain_layer/abstract_repositories.dart';
-import '../../providers.dart';
+import '../../../layer_sdk.dart';
 
 /// Handles all the alerts data
 class AlertRepository implements AlertRepositoryInterface {

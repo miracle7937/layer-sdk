@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+import '../../../../../domain_layer/models.dart';
 import '../../../models.dart';
 
 /// A model representing data returned after calling the registration endpoint.

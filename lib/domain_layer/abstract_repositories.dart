@@ -14,6 +14,8 @@ export 'abstract_repositories/config/config_repository_interface.dart';
 export 'abstract_repositories/country/country_repository_interface.dart';
 export 'abstract_repositories/currency/currency_repository_interface.dart';
 export 'abstract_repositories/dpa/dpa_repository_interface.dart';
+export 'abstract_repositories/experience/experience_repository_interface.dart';
+export 'abstract_repositories/experience_preferences/experience_preferences_repository_interface.dart';
 export 'abstract_repositories/loyalty/cashback_history/cashback_history_repository_interface.dart';
 export 'abstract_repositories/loyalty/loyalty_points/loyalty_points_repository_interface.dart';
 export 'abstract_repositories/loyalty/loyalty_points_exchange/loyalty_points_exchange_repository_interface.dart';

@@ -16,6 +16,8 @@ export 'providers/country/country_provider.dart';
 export 'providers/currency/currency_provider.dart';
 export 'providers/customer/customer_provider.dart';
 export 'providers/dpa/dpa_provider.dart';
+export 'providers/experience/experience_provider.dart';
+export 'providers/experience_preferences/experience_preferences_provider.dart';
 export 'providers/loyalty/loyalty_points/loyalty_points_provider.dart';
 export 'providers/loyalty/loyalty_points_exchange/loyalty_points_exchange_provider.dart';
 export 'providers/loyalty/loyalty_points_expiration/loyalty_points_expiration_provider.dart';
