@@ -10,7 +10,7 @@ class MockExperiencePreferencesRepository extends Mock
     implements ExperiencePreferencesRepository {}
 
 class MockConfigureUserExperience extends Mock
-    implements ConfigureUserExperienceByExperiencePreferencesUseCase {}
+    implements ConfigureUserExperienceWithPreferencesUseCase {}
 
 late MockExperienceRepository experienceRepositoryMock;
 late MockExperiencePreferencesRepository experiencePreferencesRepository;

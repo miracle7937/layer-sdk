@@ -31,7 +31,7 @@ export 'use_cases/dpa/load_task_by_id_use_case.dart';
 export 'use_cases/dpa/resume_dpa_process_use_case.dart';
 export 'use_cases/dpa/start_dpa_process_use_case.dart';
 export 'use_cases/dpa/upload_dpa_image_use_case.dart';
-export 'use_cases/experience/configure_user_experience_by_experience_preferences_use_case.dart';
+export 'use_cases/experience/configure_user_experience_with_preferences_use_case.dart';
 export 'use_cases/experience/get_experience_and_configure_it_use_case.dart';
 export 'use_cases/experience_preferences/save_experience_preferences_use_case.dart';
 export 'use_cases/loyalty/cashback_history/load_cashback_history_use_case.dart';
