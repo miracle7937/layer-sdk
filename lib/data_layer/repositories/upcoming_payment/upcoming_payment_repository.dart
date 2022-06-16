@@ -1,9 +1,10 @@
-import '../../models.dart';
+import '../../../domain_layer/abstract_repositories.dart';
+import '../../../domain_layer/models.dart';
+import '../../mappings.dart';
 import '../../providers.dart';
-import '../mappings.dart';
 
 /// Handles all the upcoming payments data
-class UpcomingPaymentRepository {
+class UpcomingPaymentRepository implements UpcomingPaymentRepositoryInterface {
   final UpcomingPaymentProvider _provider;
 
   /// Creates a new repository with the supplied [UpcomingPaymentProvider]
@@ -15,6 +16,7 @@ class UpcomingPaymentRepository {
   ///
   /// When indicating the cardId, it will only get the upcoming payments
   /// for that card
+  @override
   Future<List<UpcomingPayment>> list({
     String? cardId,
     UpcomingPaymentType? type,
@@ -32,10 +34,11 @@ class UpcomingPaymentRepository {
   }
 
   /// Lists all the upcoming payments for this customer
+  @override
   Future<UpcomingPaymentGroup> listAllUpcomingPayments({
     required String customerID,
-    int limit = 50,
-    int offset = 0,
+    int? limit,
+    int? offset,
     bool forceRefresh = false,
   }) async {
     final upcomingPaymentGroupDTO = await _provider.listAllUpcomingPayments(

@@ -2,20 +2,26 @@ import 'package:bloc/bloc.dart';
 
 import '../../../../../../data_layer/network.dart';
 import '../../../../presentation_layer/utils.dart';
-import '../../../data_layer/data_layer.dart';
-import 'upcoming_payment_state.dart';
+import '../../../domain_layer/models.dart';
+import '../../../domain_layer/use_cases.dart';
+import '../../cubits.dart';
 
 /// A cubit that keeps upcoming payments
 class UpcomingPaymentCubit extends Cubit<UpcomingPaymentState> {
-  final UpcomingPaymentRepository _repository;
+  final GetUpcomingPaymentsUseCase _getUpcomingPaymentsUseCase;
+  final GetCustomerUpcomingPaymentsUseCase _getCustomerUpcomingPaymentsUseCase;
 
-  /// Creates a new cubit using the supplied [UpcomingPaymentRepository]
+  /// Creates a new cubit using the supplied use cases
   /// and an optional [customerId].
   UpcomingPaymentCubit({
-    required UpcomingPaymentRepository repository,
+    required GetUpcomingPaymentsUseCase getUpcomingPaymentsUseCase,
+    required GetCustomerUpcomingPaymentsUseCase
+        getCustomerUpcomingPaymentsUseCase,
     String? customerId,
     int limit = 50,
-  })  : _repository = repository,
+  })  : _getUpcomingPaymentsUseCase = getUpcomingPaymentsUseCase,
+        _getCustomerUpcomingPaymentsUseCase =
+            getCustomerUpcomingPaymentsUseCase,
         super(
           UpcomingPaymentState(
             customerId: customerId,
@@ -23,10 +29,10 @@ class UpcomingPaymentCubit extends Cubit<UpcomingPaymentState> {
           ),
         );
 
-  ///Gets the upcoming payments
+  /// Gets the upcoming payments
   ///
-  ///When indicating the cardId it only will return the upcoming payments
-  ///for that card
+  /// When indicating the cardId it only will return the upcoming payments
+  /// for that card
   Future<void> load({
     String? cardId,
     UpcomingPaymentType? type,
@@ -40,7 +46,7 @@ class UpcomingPaymentCubit extends Cubit<UpcomingPaymentState> {
     );
 
     try {
-      final upcomingPayments = await _repository.list(
+      final upcomingPayments = await _getUpcomingPaymentsUseCase(
         cardId: cardId,
         type: type,
         forceRefresh: forceRefresh,
@@ -74,7 +80,7 @@ class UpcomingPaymentCubit extends Cubit<UpcomingPaymentState> {
     }
   }
 
-  ///Gets the upcoming payments for the passed customer
+  /// Gets the upcoming payments for the passed customer
   Future<void> loadForCustomer({
     bool loadMore = false,
     bool forceRefresh = false,
@@ -93,7 +99,7 @@ class UpcomingPaymentCubit extends Cubit<UpcomingPaymentState> {
     final newPage = state.pagination.paginate(loadMore: loadMore);
 
     try {
-      final upcomingPayments = await _repository.listAllUpcomingPayments(
+      final upcomingPayments = await _getCustomerUpcomingPaymentsUseCase(
         customerID: state.customerId!,
         offset: newPage.offset,
         limit: newPage.limit,

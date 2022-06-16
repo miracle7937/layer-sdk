@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 import '../../../../domain_layer/models.dart';
-import 'transfer.dart';
+import '../../../_migration/data_layer/models.dart';
 
 /// The status an upcoming payment can have
 enum UpcomingPaymentStatus {

@@ -90,6 +90,8 @@ export 'models/second_factor/second_factor_type.dart';
 export 'models/service/service.dart';
 export 'models/setting/global_setting.dart';
 export 'models/transfer/transfer.dart';
+export 'models/upcoming_payment/upcoming_payment.dart';
+export 'models/upcoming_payment/upcoming_payment_group.dart';
 export 'models/user/user.dart';
 export 'models/user/user_permissions.dart';
 export 'models/user/user_preference.dart';

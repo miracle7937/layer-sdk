@@ -1,8 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
 import 'package:layer_sdk/data_layer/network.dart';
+import 'package:layer_sdk/features/upcoming_payment.dart';
 import 'package:layer_sdk/presentation_layer/utils.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
@@ -11,6 +10,9 @@ class MockUpcomingPaymentRepository extends Mock
     implements UpcomingPaymentRepository {}
 
 late MockUpcomingPaymentRepository _repositoryMock;
+
+late GetCustomerUpcomingPaymentsUseCase _getCustomerUpcomingPaymentsUseCase;
+late GetUpcomingPaymentsUseCase _getUpcomingPaymentsUseCase;
 
 late List<UpcomingPayment> _payments;
 
@@ -58,20 +60,30 @@ void main() {
   setUp(() {
     _repositoryMock = MockUpcomingPaymentRepository();
 
+    _getCustomerUpcomingPaymentsUseCase =
+        GetCustomerUpcomingPaymentsUseCase(repository: _repositoryMock);
+    _getUpcomingPaymentsUseCase =
+        GetUpcomingPaymentsUseCase(repository: _repositoryMock);
+
     when(
-      () => _repositoryMock.list(),
+      () => _repositoryMock.list(
+        forceRefresh: any(named: 'forceRefresh'),
+      ),
     ).thenAnswer((_) async => _payments);
 
     when(
       () => _repositoryMock.list(
         cardId: _cardId,
+        forceRefresh: any(named: 'forceRefresh'),
       ),
     ).thenAnswer((_) async => _cardPayments);
 
     when(
       () => _repositoryMock.listAllUpcomingPayments(
-        customerID: _customerId,
-        limit: _limit,
+        customerID: any(named: 'customerID'),
+        limit: any(named: 'limit'),
+        offset: any(named: 'offset'),
+        forceRefresh: any(named: 'forceRefresh'),
       ),
     ).thenAnswer((_) async => _paymentsGroup);
   });
@@ -79,7 +91,8 @@ void main() {
   blocTest<UpcomingPaymentCubit, UpcomingPaymentState>(
     'Should start on an empty state',
     build: () => UpcomingPaymentCubit(
-      repository: _repositoryMock,
+      getCustomerUpcomingPaymentsUseCase: _getCustomerUpcomingPaymentsUseCase,
+      getUpcomingPaymentsUseCase: _getUpcomingPaymentsUseCase,
       customerId: _customerId,
       limit: _limit,
     ),
@@ -91,7 +104,8 @@ void main() {
   blocTest<UpcomingPaymentCubit, UpcomingPaymentState>(
     'Should load all upcoming payments',
     build: () => UpcomingPaymentCubit(
-      repository: _repositoryMock,
+      getCustomerUpcomingPaymentsUseCase: _getCustomerUpcomingPaymentsUseCase,
+      getUpcomingPaymentsUseCase: _getUpcomingPaymentsUseCase,
       customerId: _customerId,
       limit: _limit,
     ),
@@ -120,7 +134,8 @@ void main() {
   blocTest<UpcomingPaymentCubit, UpcomingPaymentState>(
     'Should load upcoming payments for card id',
     build: () => UpcomingPaymentCubit(
-      repository: _repositoryMock,
+      getCustomerUpcomingPaymentsUseCase: _getCustomerUpcomingPaymentsUseCase,
+      getUpcomingPaymentsUseCase: _getUpcomingPaymentsUseCase,
       customerId: _customerId,
       limit: _limit,
     ),
@@ -149,7 +164,8 @@ void main() {
   blocTest<UpcomingPaymentCubit, UpcomingPaymentState>(
     'Should load upcoming payments for customer id',
     build: () => UpcomingPaymentCubit(
-      repository: _repositoryMock,
+      getCustomerUpcomingPaymentsUseCase: _getCustomerUpcomingPaymentsUseCase,
+      getUpcomingPaymentsUseCase: _getUpcomingPaymentsUseCase,
       customerId: _customerId,
       limit: _limit,
     ),
@@ -173,6 +189,7 @@ void main() {
         () => _repositoryMock.listAllUpcomingPayments(
           customerID: _customerId,
           limit: _limit,
+          offset: 0,
         ),
       ).called(1);
     },
@@ -200,7 +217,8 @@ void _testErrors() {
   blocTest<UpcomingPaymentCubit, UpcomingPaymentState>(
     'Should handle net exceptions',
     build: () => UpcomingPaymentCubit(
-      repository: _repositoryMock,
+      getCustomerUpcomingPaymentsUseCase: _getCustomerUpcomingPaymentsUseCase,
+      getUpcomingPaymentsUseCase: _getUpcomingPaymentsUseCase,
       customerId: _customerId,
       limit: _limit,
     ),
@@ -242,7 +260,8 @@ void _testErrors() {
   blocTest<UpcomingPaymentCubit, UpcomingPaymentState>(
     'Should handle generic exceptions',
     build: () => UpcomingPaymentCubit(
-      repository: _repositoryMock,
+      getCustomerUpcomingPaymentsUseCase: _getCustomerUpcomingPaymentsUseCase,
+      getUpcomingPaymentsUseCase: _getUpcomingPaymentsUseCase,
       customerId: _customerId,
       limit: _limit,
     ),

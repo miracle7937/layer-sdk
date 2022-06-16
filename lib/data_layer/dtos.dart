@@ -68,4 +68,6 @@ export 'dtos/role/role_dto.dart';
 export 'dtos/second_factor/second_factor_type_dto.dart';
 export 'dtos/setting/global_setting_dto.dart';
 export 'dtos/transfer/transfer_type_dto.dart';
+export 'dtos/upcoming_payment/upcoming_payment_dto.dart';
+export 'dtos/upcoming_payment/upcoming_payment_group_dto.dart';
 export 'dtos/user/user_dto.dart';

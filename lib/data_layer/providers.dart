@@ -29,3 +29,4 @@ export 'providers/payments/payment_provider.dart';
 export 'providers/product/product_provider.dart';
 export 'providers/role/roles_provider.dart';
 export 'providers/setting/global_setting_provider.dart';
+export 'providers/upcoming_payment/upcoming_payment_provider.dart';

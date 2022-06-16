@@ -1,5 +1,5 @@
-import '../../../../data_layer/network.dart';
-import '../dtos.dart';
+import '../../dtos.dart';
+import '../../network.dart';
 
 /// Provides data about customer's upcoming payments
 class UpcomingPaymentProvider {
@@ -41,16 +41,16 @@ class UpcomingPaymentProvider {
   /// all the upcoming payments for this customer
   Future<UpcomingPaymentGroupDTO> listAllUpcomingPayments({
     required String customerID,
-    int limit = 50,
-    int offset = 0,
+    int? limit,
+    int? offset,
     bool forceRefresh = false,
   }) async {
     final response = await netClient.request(
       '${netClient.netEndpoints.upcomingPayment}/$customerID',
       method: NetRequestMethods.get,
       queryParameters: {
-        'limit': limit,
-        'offset': offset,
+        if (limit != null) 'limit': limit,
+        if (offset != null) 'offset': offset,
         'include_details': true,
         'get_upcoming_payments_for': 'next_no_days',
         'next_no_days': 30,

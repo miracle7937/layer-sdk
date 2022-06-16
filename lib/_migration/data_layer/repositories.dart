@@ -17,5 +17,4 @@ export 'src/repositories/registration_repository.dart';
 export 'src/repositories/second_factor_repository.dart';
 export 'src/repositories/standing_order_repository.dart';
 export 'src/repositories/transfer_repository.dart';
-export 'src/repositories/upcoming_payment_repository.dart';
 export 'src/repositories/user_repository.dart';

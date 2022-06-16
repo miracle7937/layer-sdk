@@ -27,3 +27,4 @@ export 'abstract_repositories/payments/payments_repository_interface.dart';
 export 'abstract_repositories/product/product_repository_interface.dart';
 export 'abstract_repositories/role/roles_repository_interface.dart';
 export 'abstract_repositories/setting/global_setting_repository_interface.dart';
+export 'abstract_repositories/upcoming_payment/upcoming_payment_repository_interface.dart';
