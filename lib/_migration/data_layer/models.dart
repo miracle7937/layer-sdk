@@ -44,7 +44,6 @@ export 'src/models/permissions/permission_data.dart';
 export 'src/models/permissions/permission_module.dart';
 export 'src/models/permissions/user_permissions.dart';
 export 'src/models/preferences.dart';
-export 'src/models/queue_request.dart';
 export 'src/models/registration/registration_response.dart';
 export 'src/models/resolution.dart';
 export 'src/models/second_factor_verification.dart';

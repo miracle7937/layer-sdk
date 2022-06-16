@@ -1,15 +1,28 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
 import 'package:layer_sdk/data_layer/network.dart';
+import 'package:layer_sdk/domain_layer/models.dart';
+import 'package:layer_sdk/domain_layer/use_cases.dart';
+import 'package:layer_sdk/presentation_layer/cubits.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockQueueRequestRepository extends Mock
-    implements QueueRequestRepository {}
+class MockLoadQueuesUseCase extends Mock implements LoadQueuesUseCase {}
 
-late MockQueueRequestRepository _repo;
+class MockAcceptQueueUseCase extends Mock implements AcceptQueueUseCase {}
+
+class MockRejectQueueUseCase extends Mock implements RejectQueueUseCase {}
+
+class MockRemoveQueueFromRequestUseCase extends Mock
+    implements RemoveQueueFromRequestsUseCase {}
+
+late MockLoadQueuesUseCase _loadQueuesUseCase;
+late MockAcceptQueueUseCase _acceptQueueUseCase;
+late MockRejectQueueUseCase _rejectQueueUseCase;
+late MockRemoveQueueFromRequestUseCase _removeQueueFromRequestUseCase;
+
+late QueueRequestCubit _cubit;
 
 final _defaultLimit = 10;
 
@@ -30,13 +43,23 @@ void main() {
   );
 
   group('Success cases', () {
-    setUpAll(() {
-      _repo = MockQueueRequestRepository();
+    setUp(() {
+      _loadQueuesUseCase = MockLoadQueuesUseCase();
+      _acceptQueueUseCase = MockAcceptQueueUseCase();
+      _rejectQueueUseCase = MockRejectQueueUseCase();
+      _removeQueueFromRequestUseCase = MockRemoveQueueFromRequestUseCase();
+
+      _cubit = QueueRequestCubit(
+        loadQueuesUseCase: _loadQueuesUseCase,
+        acceptQueueUseCase: _acceptQueueUseCase,
+        rejectQueueUseCase: _rejectQueueUseCase,
+        removeQueueFromRequestsUseCase: _removeQueueFromRequestUseCase,
+      );
 
       /// Test case that retrieves a portion of requests successfully
       /// This is the first load, so offset == 0
       when(
-        () => _repo.list(
+        () => _loadQueuesUseCase(
           limit: _defaultLimit,
           offset: 0,
           forceRefresh: any(named: 'forceRefresh'),
@@ -45,7 +68,7 @@ void main() {
 
       /// Test case that retrieves a portion of requests successfully
       when(
-        () => _repo.list(
+        () => _loadQueuesUseCase(
           limit: _defaultLimit,
           offset: _defaultLimit,
           forceRefresh: any(named: 'forceRefresh'),
@@ -55,7 +78,7 @@ void main() {
 
       /// Test case that retrieves the next portion of requests successfully
       when(
-        () => _repo.list(
+        () => _loadQueuesUseCase(
           limit: _defaultLimit,
           offset: _defaultLimit * 2,
           forceRefresh: any(named: 'forceRefresh'),
@@ -65,7 +88,7 @@ void main() {
 
       /// Test case that approves a request successfully
       when(
-        () => _repo.accept(
+        () => _acceptQueueUseCase(
           mockedRequests.first.id!,
           isRequest: true,
         ),
@@ -73,19 +96,25 @@ void main() {
 
       /// Test case that rejects a request successfully
       when(
-        () => _repo.reject(
+        () => _rejectQueueUseCase(
           mockedRequests.first.id!,
           isRequest: true,
         ),
       ).thenAnswer((_) async => true);
+
+      when(
+        () => _removeQueueFromRequestUseCase(
+            requests: UnmodifiableListView(
+              mockedRequests.take(_defaultLimit).toList(),
+            ),
+            requestId: mockedRequests.first.id!),
+      ).thenAnswer(
+          (_) => mockedRequests.take(_defaultLimit).toList()..removeAt(0));
     });
 
     blocTest<QueueRequestCubit, QueueRequestStates>(
       'Starts with empty state',
-      build: () => QueueRequestCubit(
-        limit: _defaultLimit,
-        repository: _repo,
-      ),
+      build: () => _cubit,
       verify: (c) => expect(
         c.state,
         QueueRequestStates(),
@@ -94,11 +123,11 @@ void main() {
 
     blocTest<QueueRequestCubit, QueueRequestStates>(
       'Does first load successfully',
-      build: () => QueueRequestCubit(
-        limit: _defaultLimit,
-        repository: _repo,
-      ),
+      build: () => _cubit,
       act: (c) => c.load(loadMore: false),
+      seed: () => QueueRequestStates(
+        limit: _defaultLimit,
+      ),
       expect: () => [
         QueueRequestStates(
           action: QueueRequestStateActionResults.none,
@@ -108,6 +137,7 @@ void main() {
           error: QueueRequestStatesErrors.none,
           offset: 0,
           requests: [],
+          limit: _defaultLimit,
         ),
         QueueRequestStates(
           action: QueueRequestStateActionResults.none,
@@ -117,16 +147,14 @@ void main() {
           error: QueueRequestStatesErrors.none,
           offset: 0,
           requests: mockedRequests.take(_defaultLimit).toList(),
+          limit: _defaultLimit,
         ),
       ],
     );
 
     blocTest<QueueRequestCubit, QueueRequestStates>(
       'Loads next page successfully',
-      build: () => QueueRequestCubit(
-        limit: _defaultLimit,
-        repository: _repo,
-      ),
+      build: () => _cubit,
       act: (c) => c.load(loadMore: true),
       seed: () => QueueRequestStates(
         action: QueueRequestStateActionResults.none,
@@ -135,6 +163,7 @@ void main() {
         canLoadMore: true,
         error: QueueRequestStatesErrors.none,
         requests: mockedRequests.take(_defaultLimit).toList(),
+        limit: _defaultLimit,
       ),
       expect: () => [
         QueueRequestStates(
@@ -144,6 +173,7 @@ void main() {
           canLoadMore: true,
           error: QueueRequestStatesErrors.none,
           requests: mockedRequests.take(_defaultLimit).toList(),
+          limit: _defaultLimit,
         ),
         QueueRequestStates(
           action: QueueRequestStateActionResults.none,
@@ -153,16 +183,14 @@ void main() {
           error: QueueRequestStatesErrors.none,
           offset: _defaultLimit,
           requests: mockedRequests.take(_defaultLimit * 2).toList(),
+          limit: _defaultLimit,
         ),
       ],
     );
 
     blocTest<QueueRequestCubit, QueueRequestStates>(
       'Sets canLoadMore to false when no more items left to load',
-      build: () => QueueRequestCubit(
-        limit: _defaultLimit,
-        repository: _repo,
-      ),
+      build: () => _cubit,
       act: (c) => c.load(loadMore: true),
       seed: () => QueueRequestStates(
         offset: _defaultLimit,
@@ -172,6 +200,7 @@ void main() {
         canLoadMore: true,
         error: QueueRequestStatesErrors.none,
         requests: mockedRequests.take(_defaultLimit * 2).toList(),
+        limit: _defaultLimit,
       ),
       expect: () => [
         QueueRequestStates(
@@ -182,6 +211,7 @@ void main() {
           canLoadMore: true,
           error: QueueRequestStatesErrors.none,
           requests: mockedRequests.take(_defaultLimit * 2).toList(),
+          limit: _defaultLimit,
         ),
         QueueRequestStates(
           action: QueueRequestStateActionResults.none,
@@ -191,16 +221,14 @@ void main() {
           error: QueueRequestStatesErrors.none,
           offset: _defaultLimit * 2,
           requests: mockedRequests,
+          limit: _defaultLimit,
         ),
       ],
     );
 
     blocTest<QueueRequestCubit, QueueRequestStates>(
       'Approves request successfully',
-      build: () => QueueRequestCubit(
-        limit: _defaultLimit,
-        repository: _repo,
-      ),
+      build: () => _cubit,
       act: (c) => c.acceptRequest(mockedRequests.first),
       seed: () => QueueRequestStates(
         offset: _defaultLimit,
@@ -210,6 +238,7 @@ void main() {
         canLoadMore: true,
         error: QueueRequestStatesErrors.none,
         requests: mockedRequests.take(_defaultLimit).toList(),
+        limit: _defaultLimit,
       ),
       expect: () => [
         QueueRequestStates(
@@ -220,6 +249,7 @@ void main() {
           canLoadMore: true,
           error: QueueRequestStatesErrors.none,
           requests: mockedRequests.take(_defaultLimit).toList(),
+          limit: _defaultLimit,
         ),
         QueueRequestStates(
           offset: _defaultLimit,
@@ -229,16 +259,14 @@ void main() {
           canLoadMore: true,
           error: QueueRequestStatesErrors.none,
           requests: mockedRequests.take(_defaultLimit).toList()..removeAt(0),
+          limit: _defaultLimit,
         ),
       ],
     );
 
     blocTest<QueueRequestCubit, QueueRequestStates>(
       'Rejects request successfully',
-      build: () => QueueRequestCubit(
-        limit: _defaultLimit,
-        repository: _repo,
-      ),
+      build: () => _cubit,
       act: (c) => c.rejectRequest(mockedRequests.first),
       seed: () => QueueRequestStates(
         offset: _defaultLimit,
@@ -248,6 +276,7 @@ void main() {
         canLoadMore: true,
         error: QueueRequestStatesErrors.none,
         requests: mockedRequests.take(_defaultLimit).toList(),
+        limit: _defaultLimit,
       ),
       expect: () => [
         QueueRequestStates(
@@ -258,6 +287,7 @@ void main() {
           canLoadMore: true,
           error: QueueRequestStatesErrors.none,
           requests: mockedRequests.take(_defaultLimit).toList(),
+          limit: _defaultLimit,
         ),
         QueueRequestStates(
           offset: _defaultLimit,
@@ -267,18 +297,29 @@ void main() {
           canLoadMore: true,
           error: QueueRequestStatesErrors.none,
           requests: mockedRequests.take(_defaultLimit).toList()..removeAt(0),
+          limit: _defaultLimit,
         ),
       ],
     );
   });
 
   group('Error cases', () {
-    setUpAll(() {
-      _repo = MockQueueRequestRepository();
+    setUp(() {
+      _loadQueuesUseCase = MockLoadQueuesUseCase();
+      _acceptQueueUseCase = MockAcceptQueueUseCase();
+      _rejectQueueUseCase = MockRejectQueueUseCase();
+      _removeQueueFromRequestUseCase = MockRemoveQueueFromRequestUseCase();
+
+      _cubit = QueueRequestCubit(
+        loadQueuesUseCase: _loadQueuesUseCase,
+        acceptQueueUseCase: _acceptQueueUseCase,
+        rejectQueueUseCase: _rejectQueueUseCase,
+        removeQueueFromRequestsUseCase: _removeQueueFromRequestUseCase,
+      );
 
       /// Test case that throws network exception when trying to load requests
       when(
-        () => _repo.list(
+        () => _loadQueuesUseCase(
           limit: _networkErrorLimit,
           offset: any(named: 'offset'),
           forceRefresh: any(named: 'forceRefresh'),
@@ -289,7 +330,7 @@ void main() {
 
       /// Test case that throws generic exception when trying to load requests
       when(
-        () => _repo.list(
+        () => _loadQueuesUseCase(
           limit: _genericErrorLimit,
           offset: any(named: 'offset'),
           forceRefresh: any(named: 'forceRefresh'),
@@ -300,7 +341,7 @@ void main() {
 
       /// Test case that fails when approving a request
       when(
-        () => _repo.accept(
+        () => _acceptQueueUseCase(
           mockedRequests.first.id!,
           isRequest: true,
         ),
@@ -308,20 +349,29 @@ void main() {
 
       /// Test case that fails when rejecting a request
       when(
-        () => _repo.reject(
+        () => _rejectQueueUseCase(
           mockedRequests.first.id!,
           isRequest: true,
         ),
       ).thenAnswer((_) async => false);
+
+      when(
+        () => _removeQueueFromRequestUseCase(
+            requests: UnmodifiableListView(
+              mockedRequests.take(_defaultLimit).toList(),
+            ),
+            requestId: mockedRequests.first.id!),
+      ).thenAnswer(
+          (_) => mockedRequests.take(_defaultLimit).toList()..removeAt(0));
     });
 
     blocTest<QueueRequestCubit, QueueRequestStates>(
       'Should handle network error',
-      build: () => QueueRequestCubit(
-        repository: _repo,
+      build: () => _cubit,
+      act: (c) => c.load(),
+      seed: () => QueueRequestStates(
         limit: _networkErrorLimit,
       ),
-      act: (c) => c.load(),
       expect: () => [
         QueueRequestStates(
           action: QueueRequestStateActionResults.none,
@@ -329,6 +379,7 @@ void main() {
           busyOnFirstLoad: true,
           error: QueueRequestStatesErrors.none,
           requests: [],
+          limit: _networkErrorLimit,
         ),
         QueueRequestStates(
           action: QueueRequestStateActionResults.none,
@@ -336,6 +387,7 @@ void main() {
           busyOnFirstLoad: false,
           error: QueueRequestStatesErrors.network,
           requests: [],
+          limit: _networkErrorLimit,
         ),
       ],
       errors: () => [
@@ -345,11 +397,11 @@ void main() {
 
     blocTest<QueueRequestCubit, QueueRequestStates>(
       'Should handle generic error',
-      build: () => QueueRequestCubit(
-        repository: _repo,
+      build: () => _cubit,
+      act: (c) => c.load(),
+      seed: () => QueueRequestStates(
         limit: _genericErrorLimit,
       ),
-      act: (c) => c.load(),
       expect: () => [
         QueueRequestStates(
           action: QueueRequestStateActionResults.none,
@@ -357,6 +409,7 @@ void main() {
           busyOnFirstLoad: true,
           error: QueueRequestStatesErrors.none,
           requests: [],
+          limit: _genericErrorLimit,
         ),
         QueueRequestStates(
           action: QueueRequestStateActionResults.none,
@@ -364,6 +417,7 @@ void main() {
           busyOnFirstLoad: false,
           error: QueueRequestStatesErrors.generic,
           requests: [],
+          limit: _genericErrorLimit,
         ),
       ],
       errors: () => [
@@ -373,10 +427,7 @@ void main() {
 
     blocTest<QueueRequestCubit, QueueRequestStates>(
       'Correct error when failling to approve request',
-      build: () => QueueRequestCubit(
-        limit: _defaultLimit,
-        repository: _repo,
-      ),
+      build: () => _cubit,
       act: (c) => c.acceptRequest(mockedRequests.first),
       seed: () => QueueRequestStates(
         offset: _defaultLimit,
@@ -411,10 +462,7 @@ void main() {
 
     blocTest<QueueRequestCubit, QueueRequestStates>(
       'Correct error when failling to reject request',
-      build: () => QueueRequestCubit(
-        limit: _defaultLimit,
-        repository: _repo,
-      ),
+      build: () => _cubit,
       act: (c) => c.rejectRequest(mockedRequests.first),
       seed: () => QueueRequestStates(
         offset: _defaultLimit,

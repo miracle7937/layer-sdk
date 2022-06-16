@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:equatable/equatable.dart';
 
-import '../../../data_layer/data_layer.dart';
+import '../../../domain_layer/models.dart';
 
 /// Represents the state of [QueueRequestCubit]
 class QueueRequestStates extends Equatable {
@@ -27,6 +27,9 @@ class QueueRequestStates extends Equatable {
   /// Whether or not the cubit can load more data
   final bool canLoadMore;
 
+  /// Maximum number of transactions to load at a time.
+  final int limit;
+
   /// Creates a new [QueueRequestStates] instance
   QueueRequestStates({
     this.error = QueueRequestStatesErrors.none,
@@ -35,6 +38,7 @@ class QueueRequestStates extends Equatable {
     this.busyOnFirstLoad = false,
     this.canLoadMore = false,
     this.offset = 0,
+    this.limit = 50,
     Iterable<QueueRequest> requests = const [],
   }) : requests = UnmodifiableListView(requests);
 
@@ -47,6 +51,7 @@ class QueueRequestStates extends Equatable {
         offset,
         canLoadMore,
         action,
+        limit,
       ];
 
   /// Creates a new instance of [QueueRequestStates]
@@ -59,6 +64,7 @@ class QueueRequestStates extends Equatable {
     int? offset,
     bool? canLoadMore,
     bool? busyOnFirstLoad,
+    int? limit,
   }) {
     return QueueRequestStates(
       error: error ?? this.error,
@@ -68,6 +74,7 @@ class QueueRequestStates extends Equatable {
       canLoadMore: canLoadMore ?? this.canLoadMore,
       busyOnFirstLoad: busyOnFirstLoad ?? this.busyOnFirstLoad,
       action: action ?? this.action,
+      limit: limit ?? this.limit,
     );
   }
 }

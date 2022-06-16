@@ -13,7 +13,6 @@ export 'src/repositories/financial_data_repository.dart';
 export 'src/repositories/ocra_repository.dart';
 export 'src/repositories/otp_repository.dart';
 export 'src/repositories/permission_module_repository.dart';
-export 'src/repositories/queue_request_repository.dart';
 export 'src/repositories/registration_repository.dart';
 export 'src/repositories/second_factor_repository.dart';
 export 'src/repositories/standing_order_repository.dart';

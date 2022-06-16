@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 
-import '../../../../data_layer/network.dart';
-import '../dtos.dart';
+import '../../dtos.dart';
+import '../../network.dart';
 
 /// Provides data related to [Queue] and [Request]
 class QueueRequestProvider {

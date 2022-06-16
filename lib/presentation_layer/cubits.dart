@@ -58,6 +58,8 @@ export 'cubits/payments/recurring_payments_cubit.dart';
 export 'cubits/payments/recurring_payments_states.dart';
 export 'cubits/product/product_cubit.dart';
 export 'cubits/product/product_state.dart';
+export 'cubits/queue/queue_request_cubit.dart';
+export 'cubits/queue/queue_request_states.dart';
 export 'cubits/role/roles_cubit.dart';
 export 'cubits/role/roles_state.dart';
 export 'cubits/setting/global_setting_cubit.dart';
