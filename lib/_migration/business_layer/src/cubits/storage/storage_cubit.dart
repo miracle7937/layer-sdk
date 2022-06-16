@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 
 import '../../../../../data_layer/interfaces.dart';
+import '../../../../../domain_layer/models.dart';
 import '../../../../data_layer/data_layer.dart';
 import '../../cubits.dart';
 import '../../resources.dart';

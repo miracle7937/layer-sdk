@@ -32,13 +32,17 @@ class DPAProcessStepProperties extends Equatable {
   /// Feedback from the server.
   final String? feedback;
 
+  /// The alignment of the DPAScreen.
+  final DPAScreenAlignment alignment;
+
   /// Creates a new [DPAProcessStepProperties].
   DPAProcessStepProperties({
     required this.format,
     required this.screenType,
+    required this.alignment,
+    required this.showSave,
     this.confirmLabel,
     this.cancelLabel,
-    required this.showSave,
     this.maskedNumber,
     this.email,
     this.image,
@@ -58,6 +62,7 @@ class DPAProcessStepProperties extends Equatable {
         image,
         backgroundUrl,
         feedback,
+        alignment,
       ];
 
   /// Creates a new [DPAProcessStepProperties] using another as a base.
@@ -72,6 +77,7 @@ class DPAProcessStepProperties extends Equatable {
     String? image,
     String? backgroundUrl,
     String? feedback,
+    DPAScreenAlignment? alignment,
   }) =>
       DPAProcessStepProperties(
         format: format ?? this.format,
@@ -84,6 +90,7 @@ class DPAProcessStepProperties extends Equatable {
         image: image ?? this.image,
         backgroundUrl: backgroundUrl ?? this.backgroundUrl,
         feedback: feedback ?? this.feedback,
+        alignment: alignment ?? this.alignment,
       );
 }
 
@@ -118,4 +125,13 @@ enum DPAStepFormat {
 
   /// Other
   other,
+}
+
+/// All available DPAScreen alignments
+enum DPAScreenAlignment {
+  /// Image on top, description below.
+  imageDescription,
+
+  /// Description on top, image below.
+  descriptionImage,
 }

@@ -1,24 +1,36 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
+import 'package:layer_sdk/features/experience.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 class MockExperienceRepository extends Mock implements ExperienceRepository {}
 
+class MockExperiencePreferencesRepository extends Mock
+    implements ExperiencePreferencesRepository {}
+
 class MockConfigureUserExperience extends Mock
-    implements ConfigureUserExperience {}
+    implements ConfigureUserExperienceWithPreferencesUseCase {}
 
 late MockExperienceRepository experienceRepositoryMock;
+late MockExperiencePreferencesRepository experiencePreferencesRepository;
 late MockConfigureUserExperience configureUserExperienceMock;
+
+late GetExperienceAndConfigureItUseCase getExperienceAndConfigureItUseCase;
+late SaveExperiencePreferencesUseCase saveExperiencePreferencesUseCase;
 
 void main() {
   EquatableConfig.stringify = true;
 
   setUp(() {
     experienceRepositoryMock = MockExperienceRepository();
+    experiencePreferencesRepository = MockExperiencePreferencesRepository();
     configureUserExperienceMock = MockConfigureUserExperience();
+
+    getExperienceAndConfigureItUseCase = GetExperienceAndConfigureItUseCase(
+        repository: experienceRepositoryMock);
+    saveExperiencePreferencesUseCase = SaveExperiencePreferencesUseCase(
+        repository: experiencePreferencesRepository);
 
     when(() => experienceRepositoryMock.getExperience(
           public: true,
@@ -30,7 +42,7 @@ void main() {
           minPublicVersion: any(named: 'minPublicVersion'),
         )).thenAnswer((_) async => _experienceWithPreferences);
 
-    when(() => experienceRepositoryMock.saveExperiencePreferences(
+    when(() => experiencePreferencesRepository.saveExperiencePreferences(
           experienceId: _experience.id,
           parameters: _parameters,
         )).thenAnswer((_) async => _preferences);
@@ -51,8 +63,10 @@ void main() {
   blocTest<ExperienceCubit, ExperienceState>(
     'Should start with an empty state.',
     build: () => ExperienceCubit(
-      repository: experienceRepositoryMock,
-      configureUserExperience: configureUserExperienceMock,
+      configureUserExperienceByExperiencePreferencesUseCase:
+          configureUserExperienceMock,
+      getExperienceAndConfigureItUseCase: getExperienceAndConfigureItUseCase,
+      saveExperiencePreferencesUseCase: saveExperiencePreferencesUseCase,
     ),
     verify: (c) => expect(
       c.state,
@@ -63,9 +77,12 @@ void main() {
   blocTest<ExperienceCubit, ExperienceState>(
     'should update the experience',
     build: () => ExperienceCubit(
-      repository: experienceRepositoryMock,
-      configureUserExperience: configureUserExperienceMock,
+      configureUserExperienceByExperiencePreferencesUseCase:
+          configureUserExperienceMock,
+      getExperienceAndConfigureItUseCase: getExperienceAndConfigureItUseCase,
+      saveExperiencePreferencesUseCase: saveExperiencePreferencesUseCase,
     ),
+    // ignore: deprecated_member_use_from_same_package
     act: (c) => c.update(experience: _newExperience),
     expect: () => [
       ExperienceState(
@@ -78,8 +95,11 @@ void main() {
   blocTest<ExperienceCubit, ExperienceState>(
       'Should load the public experience.',
       build: () => ExperienceCubit(
-            repository: experienceRepositoryMock,
-            configureUserExperience: configureUserExperienceMock,
+            configureUserExperienceByExperiencePreferencesUseCase:
+                configureUserExperienceMock,
+            getExperienceAndConfigureItUseCase:
+                getExperienceAndConfigureItUseCase,
+            saveExperiencePreferencesUseCase: saveExperiencePreferencesUseCase,
           ),
       act: (c) => c.load(public: true),
       expect: () => [
@@ -101,8 +121,10 @@ void main() {
   blocTest<ExperienceCubit, ExperienceState>(
     'Should load the after login experience and configure user preferences',
     build: () => ExperienceCubit(
-      repository: experienceRepositoryMock,
-      configureUserExperience: configureUserExperienceMock,
+      configureUserExperienceByExperiencePreferencesUseCase:
+          configureUserExperienceMock,
+      getExperienceAndConfigureItUseCase: getExperienceAndConfigureItUseCase,
+      saveExperiencePreferencesUseCase: saveExperiencePreferencesUseCase,
     ),
     act: (c) => c.load(
       public: false,
@@ -127,8 +149,10 @@ void main() {
   blocTest<ExperienceCubit, ExperienceState>(
     'Should save and configure the user experience preferences.',
     build: () => ExperienceCubit(
-      repository: experienceRepositoryMock,
-      configureUserExperience: configureUserExperienceMock,
+      configureUserExperienceByExperiencePreferencesUseCase:
+          configureUserExperienceMock,
+      getExperienceAndConfigureItUseCase: getExperienceAndConfigureItUseCase,
+      saveExperiencePreferencesUseCase: saveExperiencePreferencesUseCase,
     ),
     seed: () => ExperienceState(experience: _experience),
     act: (c) => c.updatePreferences(
@@ -146,7 +170,7 @@ void main() {
       ),
     ],
     verify: (c) {
-      verify(() => experienceRepositoryMock.saveExperiencePreferences(
+      verify(() => experiencePreferencesRepository.saveExperiencePreferences(
             parameters: _parameters,
             experienceId: _experience.id,
           )).called(1);

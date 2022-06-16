@@ -1,4 +1,4 @@
-import '../dtos.dart';
+import '../../../../data_layer/dtos.dart';
 
 /// The available types for the [ChangeUserPasswordDTO]
 enum ChangeUserPasswordDTOType {

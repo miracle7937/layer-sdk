@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
-import '../../utils.dart';
+import '../../../../../presentation_layer/utils.dart';
 
 /// A request interceptor that will handle an error when app version
 /// is lower than the minimum required version.
