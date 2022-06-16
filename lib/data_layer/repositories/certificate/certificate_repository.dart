@@ -1,7 +1,8 @@
+import '../../../domain_layer/abstract_repositories.dart';
 import '../../providers.dart';
 
 /// Customer certificates repository
-class CertificateRepository {
+class CertificateRepository implements CertificateRepositoryInterface {
   /// The NetClient to use for the network requests
   final CertificateProvider _provider;
 
@@ -12,6 +13,7 @@ class CertificateRepository {
 
   /// Request a new `Certificate of deposit`
   /// Returns the file list of bytes to be used by the application
+  @override
   Future<List<int>> requestCertificateOfDeposit({
     required String customerId,
     required String accountId,
@@ -24,6 +26,7 @@ class CertificateRepository {
 
   /// Request a new `Account certificate`
   /// Returns the file list of bytes to be used by the application
+  @override
   Future<List<int>> requestAccountCertificate({
     required String customerId,
     required String accountId,
@@ -36,6 +39,7 @@ class CertificateRepository {
 
   /// Request a new `Bank statement`
   /// Returns the file list of bytes to be used by the application
+  @override
   Future<List<int>> requestBankStatement({
     required String customerId,
     required String accountId,

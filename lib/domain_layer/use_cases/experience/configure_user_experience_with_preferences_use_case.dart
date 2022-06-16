@@ -6,7 +6,7 @@ import '../../../presentation_layer/extensions.dart';
 /// the experience with user preferences and permissions.
 ///
 /// A callable class.
-class ConfigureUserExperienceByExperiencePreferencesUseCase {
+class ConfigureUserExperienceWithPreferencesUseCase {
   /// Returns [ExperiencePage]s filtered by the user preferred visibility
   /// and his permissions with containers sorted by his preferred order.
   ///

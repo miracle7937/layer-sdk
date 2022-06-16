@@ -33,6 +33,7 @@ export 'models/customer/kyc.dart';
 export 'models/customer/next_of_kin.dart';
 export 'models/document/passport.dart';
 export 'models/dpa/dpa_constraint.dart';
+export 'models/dpa/dpa_dial_code.dart';
 export 'models/dpa/dpa_file_data.dart';
 export 'models/dpa/dpa_link_data.dart';
 export 'models/dpa/dpa_mapping_custom_data.dart';

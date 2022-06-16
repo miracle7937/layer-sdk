@@ -7,16 +7,6 @@ import '../../../cubits.dart';
 /// A widget that displays the DPA step using the title and a line.
 // TODO: make animated in the future
 class DPALineStep extends StatelessWidget {
-  /// The optional padding to apply to the title.
-  ///
-  /// Defaults to [EdgeInsets.fromLTRB(56.0, 2.0, 56.0, 21.0)].
-  final EdgeInsets titlePadding;
-
-  /// The optional style to use when painting the title.
-  ///
-  /// If not supplied, will default to [LayerDesign.titleS].
-  final TextStyle? titleStyle;
-
   /// The thickness of the line.
   ///
   /// Defaults to `2.0`.
@@ -35,8 +25,6 @@ class DPALineStep extends StatelessWidget {
   /// Creates a new [DPALineStep].
   const DPALineStep({
     Key? key,
-    this.titlePadding = const EdgeInsets.fromLTRB(56.0, 2.0, 56.0, 21.0),
-    this.titleStyle,
     this.thickness = 2.0,
     this.activeColor,
     this.inactiveColor,
@@ -48,24 +36,16 @@ class DPALineStep extends StatelessWidget {
     final state = context.watch<DPAProcessCubit>().state;
 
     return CustomPaint(
+      size: Size(
+        double.infinity,
+        thickness,
+      ),
       painter: _StepLinePainter(
         currentStep: state.activeProcess.step,
         totalSteps: state.activeProcess.stepCount,
         thickness: thickness,
         activeColor: activeColor ?? layerDesign.brandPrimary,
-        inactiveColor: inactiveColor ?? layerDesign.baseSeptenary,
-      ),
-      child: Padding(
-        padding: titlePadding,
-        child: Row(
-          children: [
-            Text(
-              state.activeProcess.stepName,
-              style: titleStyle ?? layerDesign.titleS(),
-            ),
-            const Spacer(),
-          ],
-        ),
+        inactiveColor: inactiveColor ?? layerDesign.surfaceSeptenary4,
       ),
     );
   }
@@ -93,7 +73,7 @@ class _StepLinePainter extends CustomPainter {
     canvas.drawRect(
       Rect.fromLTWH(
         0.0,
-        size.height - thickness,
+        thickness,
         size.width,
         thickness,
       ),
@@ -107,7 +87,7 @@ class _StepLinePainter extends CustomPainter {
     canvas.drawRect(
       Rect.fromLTWH(
         0.0,
-        size.height - thickness,
+        thickness,
         (size.width * currentStep) / totalSteps,
         thickness,
       ),

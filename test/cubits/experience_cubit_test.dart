@@ -10,7 +10,7 @@ class MockExperiencePreferencesRepository extends Mock
     implements ExperiencePreferencesRepository {}
 
 class MockConfigureUserExperience extends Mock
-    implements ConfigureUserExperienceByExperiencePreferencesUseCase {}
+    implements ConfigureUserExperienceWithPreferencesUseCase {}
 
 late MockExperienceRepository experienceRepositoryMock;
 late MockExperiencePreferencesRepository experiencePreferencesRepository;
@@ -82,6 +82,7 @@ void main() {
       getExperienceAndConfigureItUseCase: getExperienceAndConfigureItUseCase,
       saveExperiencePreferencesUseCase: saveExperiencePreferencesUseCase,
     ),
+    // ignore: deprecated_member_use_from_same_package
     act: (c) => c.update(experience: _newExperience),
     expect: () => [
       ExperienceState(

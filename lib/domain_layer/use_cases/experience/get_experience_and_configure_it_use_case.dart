@@ -32,25 +32,15 @@ class GetExperienceAndConfigureItUseCase {
   /// - sorts pages by their [order].
   /// - sorts containers by their [order].
   List<ExperiencePage> _configureExperience(Experience experience) {
-    final pages = experience.pages.toList();
-    pages.sort((p1, p2) => p1.order.compareTo(p2.order));
-
-    pages.sort((p1, p2) => p1.order.compareTo(p2.order));
-    for (var page in pages) {
-      page.copyWith(containers: _sortPageContainers(page));
+    final pages = <ExperiencePage>[];
+    for (var page in experience.pages) {
+      final containers = page.containers.toList();
+      containers.sort((a, b) => a.order.compareTo(b.order));
+      pages.add(page.copyWith(containers: containers));
     }
+    pages.sort((a, b) => a.order.compareTo(b.order));
     pages.expand((page) => page.containers);
 
     return pages;
-  }
-
-  /// Sorts containers by their [order].
-  ///
-  /// Containers without an order value will come first.
-  List<ExperienceContainer> _sortPageContainers(ExperiencePage page) {
-    final containers = page.containers.toList();
-    containers.sort((a, b) => a.order.compareTo(b.order));
-
-    return containers;
   }
 }

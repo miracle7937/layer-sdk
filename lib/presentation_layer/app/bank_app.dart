@@ -179,7 +179,7 @@ class BankAppState extends State<BankApp> {
       BlocProvider<ExperienceCubit>(
         create: (context) => ExperienceCubit(
           configureUserExperienceByExperiencePreferencesUseCase:
-              ConfigureUserExperienceByExperiencePreferencesUseCase(),
+              ConfigureUserExperienceWithPreferencesUseCase(),
           getExperienceAndConfigureItUseCase:
               GetExperienceAndConfigureItUseCase(
             repository: ExperienceRepository(

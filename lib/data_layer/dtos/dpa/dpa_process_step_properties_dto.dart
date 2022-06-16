@@ -54,6 +54,9 @@ class DPAProcessStepPropertiesDTO {
   /// The delay interval
   final int? delay;
 
+  /// The screen alignment.
+  final DPAScreenAlignmentDTO? alignment;
+
   /// Creates a new [DPAProcessStepPropertiesDTO].
   DPAProcessStepPropertiesDTO({
     this.image,
@@ -72,6 +75,7 @@ class DPAProcessStepPropertiesDTO {
     this.email,
     this.bgImagePath,
     this.delay,
+    this.alignment,
   });
 
   /// Creates a new [DPAProcessStepPropertiesDTO] from a JSON.
@@ -97,6 +101,9 @@ class DPAProcessStepPropertiesDTO {
         email: json['email'],
         bgImagePath: json['image_bg'],
         delay: json['delay'],
+        alignment: json['alignment'] != null
+            ? DPAScreenAlignmentDTO(json['alignment'])
+            : null,
       );
 }
 
@@ -254,4 +261,34 @@ class DPAScreenTypeDTO extends EnumDTO {
 
   @override
   String toString() => 'DPAScreenType{$value}';
+}
+
+/// The type of the screen to display for this step.
+class DPAScreenAlignmentDTO extends EnumDTO {
+  /// Image on top, description below.
+  static const imageDescription = DPAScreenAlignmentDTO._internal(
+    'image_description',
+  );
+
+  /// Description on top, image below.
+  static const descriptionImage = DPAScreenAlignmentDTO._internal(
+    'description_image',
+  );
+
+  /// The available values.
+  static const List<DPAScreenAlignmentDTO> values = [
+    imageDescription,
+    descriptionImage,
+  ];
+
+  const DPAScreenAlignmentDTO._internal(String value) : super.internal(value);
+
+  /// Creates a new [DPAScreenAlignmentDTO] from a `String` value.
+  factory DPAScreenAlignmentDTO(String raw) => values.singleWhere(
+        (val) => val.value == raw,
+        orElse: () => DPAScreenAlignmentDTO.imageDescription,
+      );
+
+  @override
+  String toString() => 'DPAScreenAlignmentDTO{$value}';
 }

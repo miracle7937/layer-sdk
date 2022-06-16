@@ -12,7 +12,7 @@ export '../domain_layer/models/experience/experience_page.dart';
 export '../domain_layer/models/experience/experience_setting.dart';
 export '../domain_layer/models/experience_preferences/experience_preferences.dart';
 export '../domain_layer/models/experience_preferences/save_experience_preferences_parameters.dart';
-export '../domain_layer/use_cases/experience/configure_user_experience_by_experience_preferences_use_case.dart';
+export '../domain_layer/use_cases/experience/configure_user_experience_with_preferences_use_case.dart';
 export '../domain_layer/use_cases/experience/get_experience_and_configure_it_use_case.dart';
 export '../domain_layer/use_cases/experience_preferences/save_experience_preferences_use_case.dart';
 export '../presentation_layer/cubits/experience/experience_cubit.dart';

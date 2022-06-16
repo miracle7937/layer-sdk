@@ -1,6 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../models.dart';
+
 /// The type of keyboard allowed when entering a DPA variable value.
 enum DPAVariableKeyboard {
   /// All text
@@ -84,6 +86,12 @@ class DPAVariableProperty extends Equatable {
   /// The types that should be allowed for upload.
   final UnmodifiableSetView<String> allowedTypes;
 
+  /// The image asset path.
+  final String? image;
+
+  /// The list of [DPADialCode] associated with this [DPAVariable].
+  final UnmodifiableListView<DPADialCode> dialCodes;
+
   /// Creates a new [DPAVariableProperty].
   DPAVariableProperty({
     this.step,
@@ -103,8 +111,11 @@ class DPAVariableProperty extends Equatable {
     this.prefix,
     this.icon,
     this.type,
+    this.image,
     Iterable<String>? allowedTypes,
-  }) : allowedTypes = UnmodifiableSetView(allowedTypes?.toSet() ?? <String>{});
+    Iterable<DPADialCode>? dialCodes,
+  })  : allowedTypes = UnmodifiableSetView(allowedTypes?.toSet() ?? <String>{}),
+        dialCodes = UnmodifiableListView(dialCodes ?? []);
 
   @override
   List<Object?> get props => [
@@ -126,6 +137,8 @@ class DPAVariableProperty extends Equatable {
         icon,
         type,
         allowedTypes,
+        image,
+        dialCodes,
       ];
 
   /// Creates a new [DPAVariableProperty] using another as a base.
@@ -148,6 +161,8 @@ class DPAVariableProperty extends Equatable {
     String? icon,
     DPAVariablePropertyType? type,
     Iterable<String>? allowedTypes,
+    String? image,
+    Iterable<DPADialCode>? dialCodes,
   }) =>
       DPAVariableProperty(
         step: step ?? this.step,
@@ -168,5 +183,7 @@ class DPAVariableProperty extends Equatable {
         icon: icon ?? this.icon,
         type: type ?? this.type,
         allowedTypes: allowedTypes ?? this.allowedTypes,
+        image: image ?? this.image,
+        dialCodes: dialCodes ?? this.dialCodes,
       );
 }

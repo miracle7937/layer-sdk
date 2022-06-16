@@ -1,8 +1,8 @@
 import 'package:layer_sdk/features/experience.dart';
 import 'package:test/test.dart';
 
-ConfigureUserExperienceByExperiencePreferencesUseCase configureUserExperience =
-    ConfigureUserExperienceByExperiencePreferencesUseCase();
+ConfigureUserExperienceWithPreferencesUseCase configureUserExperience =
+    ConfigureUserExperienceWithPreferencesUseCase();
 
 void main() {
   test(

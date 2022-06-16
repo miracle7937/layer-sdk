@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 
+import '../../dtos.dart';
 import '../../helpers.dart';
 
 /// Holds the property of a DPA variable
@@ -64,10 +65,16 @@ class DPAVariablePropertyDTO {
   /// Address to the icon to use.
   final String? icon;
 
+  /// The image asset path.
+  final String? image;
+
   /// The types that should be allowed for upload.
   ///
   /// The types will be split by commas.
   final List<String>? allowedTypes;
+
+  /// The list of dial codes.
+  final List<DPADialCodeDTO>? dialCodes;
 
   /// Creates a new [DPAVariablePropertyDTO].
   DPAVariablePropertyDTO({
@@ -92,6 +99,8 @@ class DPAVariablePropertyDTO {
     this.icon,
     this.labelType,
     this.allowedTypes,
+    this.image,
+    this.dialCodes,
   });
 
   /// Creates a new [DPAVariablePropertyDTO] from the given JSON.
@@ -114,12 +123,7 @@ class DPAVariablePropertyDTO {
         encrypt: json['encrypt'] ?? false,
         propertiesRegExp: json['regex'] != null ? RegExp(json['regex']) : null,
         hint: json['hint'],
-        // TODO: make automation just return a bool instead of string on `/task_variables` ;(
-        searchBar: json['searchbar'] is bool
-            ? json['searchbar']
-            : json['searchbar'] is String
-            ? json['searchbar'] == 'true'
-            : null,
+        searchBar: json['searchbar'],
         multipleValues: json['multiple_values'] ?? false,
         direction: json['direction'] != null
             ? DPADirectionDTO.fromRaw(json['direction'])
@@ -131,6 +135,12 @@ class DPAVariablePropertyDTO {
             ? null
             : DPALabelTypeDTO(json['label_type']),
         allowedTypes: json['allowed_types']?.split(','),
+        image: json['image'],
+        dialCodes: json['prefix_list'] == null
+            ? []
+            : DPADialCodeDTO.fromStringList(
+                json['prefix_list'],
+              ),
       );
 
   @override
@@ -158,6 +168,8 @@ class DPAVariablePropertyDTO {
       '${icon != null ? ' icon: $icon' : ''}'
       '${labelType != null ? ' labelType: $labelType' : ''}'
       '${allowedTypes != null ? 'allowedTypes: $allowedTypes ' : ''}'
+      '${image != null ? 'image: $image ' : ''}'
+      '${dialCodes != null ? 'dialCodes: $dialCodes ' : ''}'
       '}';
 }
 

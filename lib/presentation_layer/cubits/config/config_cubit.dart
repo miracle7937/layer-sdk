@@ -1,15 +1,16 @@
 import 'package:bloc/bloc.dart';
-import '../../../../data_layer/data_layer.dart';
-import 'config_state.dart';
+
+import '../../../domain_layer/use_cases.dart';
+import '../../cubits.dart';
 
 /// Cubit responsible for configurations.
 class ConfigCubit extends Cubit<ConfigState> {
-  final ConfigRepository _repository;
+  final LoadConfigUseCase _loadConfigUseCase;
 
   /// Creates a new instance of [ConfigCubit]
   ConfigCubit({
-    required ConfigRepository repository,
-  })  : _repository = repository,
+    required LoadConfigUseCase loadConfigUseCase,
+  })  : _loadConfigUseCase = loadConfigUseCase,
         super(ConfigState());
 
   /// Loads configurations.
@@ -24,7 +25,7 @@ class ConfigCubit extends Cubit<ConfigState> {
     );
 
     try {
-      final config = await _repository.load(
+      final config = await _loadConfigUseCase(
         forceRefresh: forceRefresh,
       );
 

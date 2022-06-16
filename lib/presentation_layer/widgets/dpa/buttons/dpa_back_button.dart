@@ -140,7 +140,7 @@ class _DPAHeaderBackButton extends StatelessWidget {
               ) ??
               DKButton.icon(
                 onPressed: onTap,
-                iconPath: FLImages.chevronBack,
+                iconPath: FLImages.back,
                 type: DKButtonType.basePlain,
                 padding: EdgeInsets.zero,
                 iconColor: layerDesign.baseQuaternary,

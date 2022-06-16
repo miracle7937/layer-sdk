@@ -11,7 +11,7 @@ extension DPAVariableDTOMapping on DPAVariableDTO {
   /// Maps into a [DPAVariable]
   DPAVariable toDPAVariable(DPAMappingCustomData customData) {
     final type = toDPAVariableType();
-    final dpaVariableProperty = property?.toDPAVariableProperty();
+    final dpaVariableProperty = property?.toDPAVariableProperty(customData);
     final availableValues = values?.toDPAValueList(
           customData.copyWith(
             propertyType: dpaVariableProperty?.type,
@@ -64,6 +64,11 @@ extension DPAVariableDTOMapping on DPAVariableDTO {
 
           return DPAVariableType.image;
         }
+
+        if (property?.propertyType == PropertyTypeDTO.swipe) {
+          return DPAVariableType.swipe;
+        }
+
         return DPAVariableType.text;
 
       case DPATypeDTO.long:
@@ -260,6 +265,7 @@ extension DPAVariableTypeMapping on DPAVariableType {
       case DPAVariableType.image:
       case DPAVariableType.signature:
       case DPAVariableType.link:
+      case DPAVariableType.swipe:
         return DPATypeDTO.string;
 
       case DPAVariableType.number:
