@@ -1,4 +1,4 @@
-import '../../abstract_repositories/queue/queue_repository_interface.dart';
+import '../../abstract_repositories.dart';
 
 /// Use case to reject the [Queue]
 class RejectQueueUseCase {

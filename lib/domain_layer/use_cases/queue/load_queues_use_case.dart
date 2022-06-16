@@ -1,4 +1,4 @@
-import '../../abstract_repositories/queue/queue_repository_interface.dart';
+import '../../abstract_repositories.dart';
 import '../../models.dart';
 
 /// Use case to load all [Queue]s
