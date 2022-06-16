@@ -2,11 +2,11 @@ name: layer_sdk
 description: A new Flutter package project.
 version: 0.0.1
 
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 environment:
-  sdk: '>=2.17.1 <3.0.0'
-  flutter: '>=1.17.0'
+  sdk: ">=2.17.1 <3.0.0"
+  flutter: ">=1.17.0"
 
 dependencies:
   flutter:
