@@ -1,5 +1,5 @@
-import '../../../../data_layer/network.dart';
-import '../dtos.dart';
+import '../../dtos.dart';
+import '../../network.dart';
 
 /// A provider that handles the API requests related to OCRA challenges.
 class OcraProvider {
