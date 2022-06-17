@@ -6,6 +6,8 @@ export 'cubits/account_loan/account_loan_cubit.dart';
 export 'cubits/account_loan/account_loan_states.dart';
 export 'cubits/account_transaction/account_transactions_cubit.dart';
 export 'cubits/account_transaction/account_transactions_states.dart';
+export 'cubits/audit/customer_audits_cubit.dart';
+export 'cubits/audit/customer_audits_state.dart';
 export 'cubits/beneficiary/beneficiaries_cubit.dart';
 export 'cubits/beneficiary/beneficiaries_states.dart';
 export 'cubits/bill/bill_cubit.dart';

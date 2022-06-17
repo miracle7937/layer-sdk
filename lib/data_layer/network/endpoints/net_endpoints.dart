@@ -256,4 +256,7 @@ class NetEndpoints {
 
   /// Endpoint for verifying the device on login
   String get verifyDeviceLogin => '$_customer/v1/verify_device_login';
+
+  /// Endpoint for getting customer audits
+  String get customerAudits => '$_customer/v1/audit';
 }

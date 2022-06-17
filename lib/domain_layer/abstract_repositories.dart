@@ -3,6 +3,7 @@ library abstract_repositories;
 export 'abstract_repositories/account/account_repository_interface.dart';
 export 'abstract_repositories/account_loan/account_loan_repository_interface.dart';
 export 'abstract_repositories/account_transaction/account_transaction_repository_interface.dart';
+export 'abstract_repositories/audit/audit_repository_interface.dart';
 export 'abstract_repositories/beneficiary/beneficiary_repository_interface.dart';
 export 'abstract_repositories/bill/bill_repository_interface.dart';
 export 'abstract_repositories/branch/branch_repository_interface.dart';
