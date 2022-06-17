@@ -12,14 +12,14 @@ void main() {
 
     when(
       () => nowWrapperMock.now(),
-    ).thenReturn(DateTime(1989, 12, 31, 14, 56, 2, 20, 123));
+    ).thenReturn(DateTime.utc(1989, 12, 31, 14, 56, 2, 20, 123));
   });
 
   test(
     'Should calculate the number of 10s timesteps since 1970',
     () {
       final ocraSuite = 'OCRA-1:HOTP-SHA256-8:QA08-T10S-PSHA256';
-      final expectedResult = 63111576;
+      final expectedResult = 63111936;
 
       final useCase = GenerateOcraTimestampUseCase(
         ocraSuite: ocraSuite,
@@ -37,7 +37,7 @@ void main() {
     'Should calculate the number of 5m timesteps since 1970',
     () {
       final ocraSuite = 'OCRA-1:HOTP-SHA256-8:QA08-T5M-PSHA256';
-      final expectedResult = 2103719;
+      final expectedResult = 2103731;
 
       final useCase = GenerateOcraTimestampUseCase(
         ocraSuite: ocraSuite,
@@ -55,7 +55,7 @@ void main() {
     'Should calculate the number of 1h timesteps since 1970',
     () {
       final ocraSuite = 'OCRA-1:HOTP-SHA256-8:QA08-T1H-PSHA256';
-      final expectedResult = 175309;
+      final expectedResult = 175310;
 
       final useCase = GenerateOcraTimestampUseCase(
         ocraSuite: ocraSuite,
