@@ -1,8 +1,8 @@
 import 'package:collection/collection.dart';
 
+import '../../../../../data_layer/dtos.dart';
+import '../../../../../domain_layer/models.dart';
 import '../../../errors.dart';
-import '../../../models.dart';
-import '../../dtos.dart';
 
 /// Extension that provides mappings for a list of [PermissionDTO]
 ///

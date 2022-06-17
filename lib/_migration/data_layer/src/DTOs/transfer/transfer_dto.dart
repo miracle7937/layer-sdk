@@ -1,6 +1,5 @@
 import '../../../../../data_layer/dtos.dart';
 import '../../helpers.dart';
-import '../card_dto.dart';
 import 'bulk_detail_dto.dart';
 import 'share_type_dto.dart';
 import 'transfer_evaluation_dto.dart';

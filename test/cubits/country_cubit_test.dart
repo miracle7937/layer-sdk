@@ -1,18 +1,19 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
 import 'package:layer_sdk/data_layer/network.dart';
+import 'package:layer_sdk/domain_layer/models.dart';
+import 'package:layer_sdk/domain_layer/use_cases.dart';
+import 'package:layer_sdk/presentation_layer/cubits.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
 
-class CountryRepositoryMock extends Mock implements CountryRepository {}
+class MockLoadCountriesUseCase extends Mock implements LoadCountriesUseCase {}
 
 void main() {
   EquatableConfig.stringify = true;
 
-  late CountryRepositoryMock _repository;
+  late MockLoadCountriesUseCase _loadCountriesUseCase;
   late CountryCubit _cubit;
 
   final _mockedCountries = List.generate(
@@ -21,18 +22,18 @@ void main() {
   );
 
   setUp(() {
-    _repository = CountryRepositoryMock();
-    _cubit = CountryCubit(repository: _repository);
+    _loadCountriesUseCase = MockLoadCountriesUseCase();
+    _cubit = CountryCubit(loadCountriesUseCase: _loadCountriesUseCase);
 
     when(
-      () => _repository.list(
+      () => _loadCountriesUseCase(
         registration: true,
         forceRefresh: true,
       ),
     ).thenAnswer((_) async => _mockedCountries);
 
     when(
-      () => _repository.list(
+      () => _loadCountriesUseCase(
         registration: false,
         forceRefresh: false,
       ),
@@ -41,7 +42,7 @@ void main() {
     );
 
     when(
-      () => _repository.list(
+      () => _loadCountriesUseCase(
         forceRefresh: true,
         registration: false,
       ),
@@ -80,7 +81,7 @@ void main() {
     ],
     verify: (c) {
       verify(
-        () => _repository.list(
+        () => _loadCountriesUseCase(
           registration: true,
           forceRefresh: true,
         ),
@@ -108,7 +109,7 @@ void main() {
     ],
     verify: (c) {
       verify(
-        () => _repository.list(
+        () => _loadCountriesUseCase(
           registration: false,
           forceRefresh: false,
         ),
@@ -136,7 +137,7 @@ void main() {
     ],
     verify: (c) {
       verify(
-        () => _repository.list(
+        () => _loadCountriesUseCase(
           forceRefresh: true,
           registration: false,
         ),

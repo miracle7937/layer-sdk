@@ -1,5 +1,5 @@
-import '../../models.dart';
-import '../dtos.dart';
+import '../../../../data_layer/dtos.dart';
+import '../../../../domain_layer/models.dart';
 import '../mappings.dart';
 
 /// Extension that provides mappings for [UserDTO]

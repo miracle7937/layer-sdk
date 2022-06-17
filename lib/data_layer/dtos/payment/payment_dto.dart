@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 
-import '../../../_migration/data_layer/src/DTOs/card_dto.dart';
 import '../../dtos.dart';
 import '../../helpers.dart';
 
@@ -44,7 +43,7 @@ class PaymentDTO {
   String? deviceUID;
 
   /// The second factor type of the payment
-  SecondFactorDTO? secondFactor;
+  SecondFactorTypeDTO? secondFactor;
 
   /// The date of creation of the payment
   DateTime? created;
@@ -123,7 +122,7 @@ class PaymentDTO {
       otpId: json['otp_id'],
       deviceUID: json['device_uid'],
       status: PaymentDTOStatus.fromRaw(json['status']),
-      secondFactor: SecondFactorDTO.fromRaw(json['second_factor']),
+      secondFactor: SecondFactorTypeDTO.fromRaw(json['second_factor']),
       created: JsonParser.parseDate(json['ts_created']),
       scheduled: JsonParser.parseDate(json['ts_scheduled']),
       recurrence: RecurrenceDTO.fromRaw(json["recurrence"]),

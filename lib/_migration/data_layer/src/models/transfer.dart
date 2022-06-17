@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 
 import '../../../../domain_layer/models.dart';
-import '../../models.dart';
 
 ///The transfer data used by the application
 class Transfer extends Equatable {

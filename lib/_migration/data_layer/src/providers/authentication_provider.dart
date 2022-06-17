@@ -1,3 +1,4 @@
+import '../../../../data_layer/dtos.dart';
 import '../../../../data_layer/network.dart';
 import '../dtos.dart';
 

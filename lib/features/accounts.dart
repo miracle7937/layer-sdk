@@ -15,6 +15,7 @@ export '../domain_layer/models/account/account_info.dart';
 export '../domain_layer/models/account/account_preferences.dart';
 export '../domain_layer/models/account_loan/account_loan.dart';
 export '../domain_layer/models/account_transaction/account_transaction.dart';
+export '../domain_layer/use_cases/account/get_accounts_by_status_use_case.dart';
 export '../domain_layer/use_cases/account/get_customer_accounts_use_case.dart';
 export '../domain_layer/use_cases/account_loan/get_account_loan_by_id_use_case.dart';
 export '../domain_layer/use_cases/account_loan/get_account_loans_use_case.dart';
