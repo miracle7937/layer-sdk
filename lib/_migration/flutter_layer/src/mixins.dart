@@ -1,3 +1,3 @@
 library mixins;
 
-export 'mixins/geofencing_mixin.dart';
+export 'mixins/tutorial_mixin.dart';
