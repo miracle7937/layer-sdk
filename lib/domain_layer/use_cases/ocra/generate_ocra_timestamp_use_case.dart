@@ -1,4 +1,4 @@
-import '../../extensions/ocra_suite_utils.dart';
+import '../../utils.dart';
 
 /// The use case responsible for generating an OCRA timestamp.
 ///

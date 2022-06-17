@@ -4,7 +4,7 @@ import '../../../data_layer/network.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
-import '../../errors/ocra_wrong_result_exception.dart';
+import '../../errors.dart';
 
 /// A cubit that provides the functionality to generate a new access token using
 /// the OCRA mutual authentication flow.
