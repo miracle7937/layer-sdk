@@ -21,6 +21,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
   final DeleteDPAFileUseCase _deleteDPAFileUseCase;
   final DPAResendCodeUseCase _resendCodeUseCase;
   final DPAChangePhoneNumberUseCase _changePhoneNumberUseCase;
+  final DPAChangeEmailAddressUseCase _changeEmailAddressUseCase;
 
   /// Creates a new cubit using the necessary use cases.
   DPAProcessCubit({
@@ -35,6 +36,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
     required DeleteDPAFileUseCase deleteDPAFileUseCase,
     required DPAResendCodeUseCase resendCodeUseCase,
     required DPAChangePhoneNumberUseCase changePhoneNumberUseCase,
+    required DPAChangeEmailAddressUseCase changeEmailAddressUseCase,
   })  : _startDPAProcessUseCase = startDPAProcessUseCase,
         _resumeDPAProcessUsecase = resumeDPAProcessUsecase,
         _loadTaskByIdUseCase = loadTaskByIdUseCase,
@@ -46,6 +48,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
         _deleteDPAFileUseCase = deleteDPAFileUseCase,
         _resendCodeUseCase = resendCodeUseCase,
         _changePhoneNumberUseCase = changePhoneNumberUseCase,
+        _changeEmailAddressUseCase = changeEmailAddressUseCase,
         super(DPAProcessState());
 
   /// Starts a DPA process, either by starting a new one (if [instanceId] is
@@ -586,6 +589,51 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
         state.copyWith(
           actions: state.actions.difference({
             DPAProcessBusyAction.requestingPhoneChange,
+          }),
+          errorStatus: DPAProcessErrorStatus.network,
+        ),
+      );
+    }
+  }
+
+  /// Requests a email address change by stepping in the process with the
+  /// necessary [DPAVariable].
+  Future<void> requestEmailAddressChange() async {
+    assert(state.runStatus == DPAProcessRunStatus.running);
+
+    emit(
+      state.copyWith(
+        actions: state.actions.union({
+          DPAProcessBusyAction.requestingEmailChange,
+        }),
+        errorStatus: DPAProcessErrorStatus.none,
+      ),
+    );
+
+    try {
+      var process = state.activeProcess;
+
+      process = await _changeEmailAddressUseCase(
+        process: process,
+      );
+
+      emit(
+        state.copyWith(
+          process: process.isPopUp() ? null : process,
+          popUp: process.isPopUp() ? process : null,
+          clearPopUp: !process.isPopUp(),
+          actions: state.actions.difference({
+            DPAProcessBusyAction.requestingEmailChange,
+          }),
+          runStatus: process.finished ? DPAProcessRunStatus.finished : null,
+          clearProcessingFiles: true,
+        ),
+      );
+    } on NetException {
+      emit(
+        state.copyWith(
+          actions: state.actions.difference({
+            DPAProcessBusyAction.requestingEmailChange,
           }),
           errorStatus: DPAProcessErrorStatus.network,
         ),
