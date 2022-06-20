@@ -28,6 +28,11 @@ class MockDownloadDPAFileUseCase extends Mock
 
 class MockDeleteDPAFileUseCase extends Mock implements DeleteDPAFileUseCase {}
 
+class MockChangePhoneNumberUseCase extends Mock
+    implements DPAChangePhoneNumberUseCase {}
+
+class MockResendCodeUseCase extends Mock implements DPAResendCodeUseCase {}
+
 final _startUseCase = MockStartDPAProcessUseCase();
 final _resumeUseCase = MockResumeDPAProcessUsecase();
 final _loadTaskUseCase = MockLoadTaskByIdUseCase();
@@ -37,6 +42,8 @@ final _cancelUseCase = MockCancelDPAProcessUseCase();
 final _uploadUseCase = MockUploadDPAImageUseCase();
 final _downloadUseCase = MockDownloadDPAFileUseCase();
 final _deleteUsecase = MockDeleteDPAFileUseCase();
+final _resendCodeUseCase = MockResendCodeUseCase();
+final _changePhoneNumberUseCase = MockChangePhoneNumberUseCase();
 
 final _successId = '1';
 final _successKey = 'success';
@@ -88,6 +95,8 @@ DPAProcessCubit create() => DPAProcessCubit(
       stepBackUseCase: _stepBackUseCase,
       stepOrFinishProcessUseCase: _stepOrFinishUseCase,
       uploadDPAImageUseCase: _uploadUseCase,
+      changePhoneNumberUseCase: _changePhoneNumberUseCase,
+      resendCodeUseCase: _resendCodeUseCase,
     );
 
 void main() {

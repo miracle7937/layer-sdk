@@ -19,6 +19,15 @@ enum DPAProcessBusyAction {
 
   /// Updating a variable value.
   updatingValue,
+
+  /// Busy resending a code.
+  resendingCode,
+
+  /// Busy requesting to change Email.
+  requestingEmailChange,
+
+  /// Busy requesting to change phone number.
+  requestingPhoneChange,
 }
 
 /// Denotes the status of the process in the cubit.
