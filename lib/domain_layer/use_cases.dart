@@ -24,6 +24,7 @@ export 'use_cases/dpa/cancel_dpa_process_use_case.dart';
 export 'use_cases/dpa/claim_dpa_task_use_case.dart';
 export 'use_cases/dpa/delete_dpa_file_use_case.dart';
 export 'use_cases/dpa/download_dpa_file_use_case.dart';
+export 'use_cases/dpa/dpa_change_email_address_use_case.dart';
 export 'use_cases/dpa/dpa_change_phone_number_use_case.dart';
 export 'use_cases/dpa/dpa_resend_code_use_case.dart';
 export 'use_cases/dpa/dpa_step_back_use_case.dart';
