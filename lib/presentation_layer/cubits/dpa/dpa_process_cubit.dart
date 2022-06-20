@@ -19,6 +19,8 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
   final UploadDPAImageUseCase _uploadDPAImageUseCase;
   final DownloadDPAFileUseCase _downloadDPAFileUseCase;
   final DeleteDPAFileUseCase _deleteDPAFileUseCase;
+  final DPAResendCodeUseCase _resendCodeUseCase;
+  final DPAChangePhoneNumberUseCase _changePhoneNumberUseCase;
 
   /// Creates a new cubit using the necessary use cases.
   DPAProcessCubit({
@@ -31,6 +33,8 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
     required UploadDPAImageUseCase uploadDPAImageUseCase,
     required DownloadDPAFileUseCase downloadDPAFileUseCase,
     required DeleteDPAFileUseCase deleteDPAFileUseCase,
+    required DPAResendCodeUseCase resendCodeUseCase,
+    required DPAChangePhoneNumberUseCase changePhoneNumberUseCase,
   })  : _startDPAProcessUseCase = startDPAProcessUseCase,
         _resumeDPAProcessUsecase = resumeDPAProcessUsecase,
         _loadTaskByIdUseCase = loadTaskByIdUseCase,
@@ -40,6 +44,8 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
         _uploadDPAImageUseCase = uploadDPAImageUseCase,
         _downloadDPAFileUseCase = downloadDPAFileUseCase,
         _deleteDPAFileUseCase = deleteDPAFileUseCase,
+        _resendCodeUseCase = resendCodeUseCase,
+        _changePhoneNumberUseCase = changePhoneNumberUseCase,
         super(DPAProcessState());
 
   /// Starts a DPA process, either by starting a new one (if [instanceId] is
@@ -183,15 +189,8 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
   }
 
   /// Proceeds to next step, or finishes the process if at the last one.
-  ///
-  /// Use the the `extra` param to inform the backend to rectification events
-  /// Eg: Changing the mobile number or email.
-  ///
-  /// Please be aware that passing the `extra` param causes the DPAVariables
-  /// validation to be ignored since they aren't used in these events.
   Future<void> stepOrFinish({
     bool chosenValue = false,
-    DPAVariable? extra,
   }) async {
     assert(state.runStatus == DPAProcessRunStatus.running);
 
@@ -212,15 +211,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
     try {
       var process = state.activeProcess.validate();
 
-      if (process.canProceed || extra != null) {
-        if (extra != null) {
-          process = process.copyWith(
-            variables: [
-              ...process.variables,
-              extra,
-            ],
-          );
-        }
+      if (process.canProceed) {
         process = await _stepOrFinishProcessUseCase(
           process: process,
           chosenValue: chosenValue,
@@ -507,6 +498,96 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
               .toSet(),
           errorStatus: DPAProcessErrorStatus.network,
           errorMessage: e.message,
+        ),
+      );
+    }
+  }
+
+  /// Requests a new code by stepping in the process with the
+  /// necessary [DPAVariable].
+  Future<void> resendCode() async {
+    assert(state.runStatus == DPAProcessRunStatus.running);
+
+    emit(
+      state.copyWith(
+        actions: state.actions.union({
+          DPAProcessBusyAction.resendingCode,
+        }),
+        errorStatus: DPAProcessErrorStatus.none,
+      ),
+    );
+
+    try {
+      var process = state.activeProcess;
+
+      process = await _resendCodeUseCase(
+        process: process,
+      );
+
+      emit(
+        state.copyWith(
+          process: process.isPopUp() ? null : process,
+          popUp: process.isPopUp() ? process : null,
+          clearPopUp: !process.isPopUp(),
+          actions: state.actions.difference({
+            DPAProcessBusyAction.resendingCode,
+          }),
+          runStatus: process.finished ? DPAProcessRunStatus.finished : null,
+          clearProcessingFiles: true,
+        ),
+      );
+    } on NetException {
+      emit(
+        state.copyWith(
+          actions: state.actions.difference({
+            DPAProcessBusyAction.resendingCode,
+          }),
+          errorStatus: DPAProcessErrorStatus.network,
+        ),
+      );
+    }
+  }
+
+  /// Requests a phone number change by stepping in the process with the
+  /// necessary [DPAVariable].
+  Future<void> requestPhoneNumberChange() async {
+    assert(state.runStatus == DPAProcessRunStatus.running);
+
+    emit(
+      state.copyWith(
+        actions: state.actions.union({
+          DPAProcessBusyAction.requestingPhoneChange,
+        }),
+        errorStatus: DPAProcessErrorStatus.none,
+      ),
+    );
+
+    try {
+      var process = state.activeProcess;
+
+      process = await _changePhoneNumberUseCase(
+        process: process,
+      );
+
+      emit(
+        state.copyWith(
+          process: process.isPopUp() ? null : process,
+          popUp: process.isPopUp() ? process : null,
+          clearPopUp: !process.isPopUp(),
+          actions: state.actions.difference({
+            DPAProcessBusyAction.requestingPhoneChange,
+          }),
+          runStatus: process.finished ? DPAProcessRunStatus.finished : null,
+          clearProcessingFiles: true,
+        ),
+      );
+    } on NetException {
+      emit(
+        state.copyWith(
+          actions: state.actions.difference({
+            DPAProcessBusyAction.requestingPhoneChange,
+          }),
+          errorStatus: DPAProcessErrorStatus.network,
         ),
       );
     }
