@@ -127,7 +127,7 @@ void _startTests() {
   setUp(() {
     when(
       () => _startUseCase(
-        id: _successId,
+        key: _successId,
         variables: any(named: 'variables'),
       ),
     ).thenAnswer(
@@ -136,7 +136,7 @@ void _startTests() {
 
     when(
       () => _startUseCase(
-        id: _failureId,
+        key: _failureId,
         variables: any(named: 'variables'),
       ),
     ).thenAnswer(
@@ -164,7 +164,7 @@ void _startTests() {
     ],
     verify: (c) => verify(
       () => _startUseCase(
-        id: _successId,
+        key: _successId,
         variables: any(named: 'variables'),
       ),
     ).called(1),
@@ -188,7 +188,7 @@ void _startTests() {
     ],
     verify: (c) => verify(
       () => _startUseCase(
-        id: _failureId,
+        key: _failureId,
         variables: any(named: 'variables'),
       ),
     ).called(1),

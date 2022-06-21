@@ -77,7 +77,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
               instanceId: instanceId,
             )
           : await _startDPAProcessUseCase(
-              id: definitionId,
+              key: definitionId,
               variables: variables,
             );
 
