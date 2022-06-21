@@ -15,6 +15,7 @@ export 'widgets/dpa/description/dpa_task_description.dart';
 export 'widgets/dpa/dpa_flow.dart';
 export 'widgets/dpa/dpa_variables_list.dart';
 export 'widgets/dpa/dropdowns/dpa_dropdown.dart';
+export 'widgets/dpa/email/dpa_email_screen.dart';
 export 'widgets/dpa/headers/dpa_header.dart';
 export 'widgets/dpa/headers/dpa_popup_header.dart';
 export 'widgets/dpa/images/dpa_step_image.dart';

@@ -204,13 +204,20 @@ class DPAFlow extends StatelessWidget {
 
     final isOTPScreen = process.stepProperties?.screenType == DPAScreenType.otp;
 
+    final isEmailValidationScreen =
+        process.stepProperties?.screenType == DPAScreenType.email;
+
     final effectiveCustomChild = isCarouselScreen
         ? DPACarouselScreen()
         : isOTPScreen
             ? DPAOTPScreen(
                 customDPAHeader: customHeader,
               )
-            : customChild;
+            : isEmailValidationScreen
+                ? DPAEmailScreen(
+                    customDPAHeader: customHeader,
+                  )
+                : customChild;
 
     return MultiBlocListener(
       listeners: [

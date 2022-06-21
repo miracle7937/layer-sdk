@@ -28,6 +28,9 @@ enum DPAProcessBusyAction {
 
   /// Busy requesting to change phone number.
   requestingPhoneChange,
+
+  /// Busy requesting a manual verification.
+  requestingManualVerification,
 }
 
 /// Denotes the status of the process in the cubit.

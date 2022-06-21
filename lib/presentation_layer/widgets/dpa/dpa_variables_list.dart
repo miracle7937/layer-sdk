@@ -126,6 +126,7 @@ class DPAVariablesList extends StatelessWidget {
         if (variable.property.dialCodes.isNotEmpty) {
           return DPAPhoneText(
             variable: variable,
+            readonly: readonly,
             padding: const EdgeInsets.symmetric(
               vertical: 12.0,
             ),

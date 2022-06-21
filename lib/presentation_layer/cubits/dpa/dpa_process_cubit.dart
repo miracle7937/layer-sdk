@@ -22,6 +22,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
   final DPAResendCodeUseCase _resendCodeUseCase;
   final DPAChangePhoneNumberUseCase _changePhoneNumberUseCase;
   final DPAChangeEmailAddressUseCase _changeEmailAddressUseCase;
+  final DPARequestManualVerificationUseCase _manualVerificationUseCase;
 
   /// Creates a new cubit using the necessary use cases.
   DPAProcessCubit({
@@ -37,6 +38,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
     required DPAResendCodeUseCase resendCodeUseCase,
     required DPAChangePhoneNumberUseCase changePhoneNumberUseCase,
     required DPAChangeEmailAddressUseCase changeEmailAddressUseCase,
+    required DPARequestManualVerificationUseCase manualVerificationUseCase,
   })  : _startDPAProcessUseCase = startDPAProcessUseCase,
         _resumeDPAProcessUsecase = resumeDPAProcessUsecase,
         _loadTaskByIdUseCase = loadTaskByIdUseCase,
@@ -49,6 +51,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
         _resendCodeUseCase = resendCodeUseCase,
         _changePhoneNumberUseCase = changePhoneNumberUseCase,
         _changeEmailAddressUseCase = changeEmailAddressUseCase,
+        _manualVerificationUseCase = manualVerificationUseCase,
         super(DPAProcessState());
 
   /// Starts a DPA process, either by starting a new one (if [instanceId] is
@@ -634,6 +637,51 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
         state.copyWith(
           actions: state.actions.difference({
             DPAProcessBusyAction.requestingEmailChange,
+          }),
+          errorStatus: DPAProcessErrorStatus.network,
+        ),
+      );
+    }
+  }
+
+  /// Requests a manual verification by stepping in the process with the
+  /// necessary [DPAVariable].
+  Future<void> requestManualVerification() async {
+    assert(state.runStatus == DPAProcessRunStatus.running);
+
+    emit(
+      state.copyWith(
+        actions: state.actions.union({
+          DPAProcessBusyAction.requestingManualVerification,
+        }),
+        errorStatus: DPAProcessErrorStatus.none,
+      ),
+    );
+
+    try {
+      var process = state.activeProcess;
+
+      process = await _manualVerificationUseCase(
+        process: process,
+      );
+
+      emit(
+        state.copyWith(
+          process: process.isPopUp() ? null : process,
+          popUp: process.isPopUp() ? process : null,
+          clearPopUp: !process.isPopUp(),
+          actions: state.actions.difference({
+            DPAProcessBusyAction.requestingManualVerification,
+          }),
+          runStatus: process.finished ? DPAProcessRunStatus.finished : null,
+          clearProcessingFiles: true,
+        ),
+      );
+    } on NetException {
+      emit(
+        state.copyWith(
+          actions: state.actions.difference({
+            DPAProcessBusyAction.requestingManualVerification,
           }),
           errorStatus: DPAProcessErrorStatus.network,
         ),
