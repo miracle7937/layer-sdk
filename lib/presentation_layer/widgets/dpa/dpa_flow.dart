@@ -198,9 +198,10 @@ class DPAFlow extends StatelessWidget {
       (cubit) => cubit.state.hasPopup,
     );
 
-    final isCarouselScreen = process.variables.every(
-      (e) => e.type == DPAVariableType.swipe,
-    );
+    final isCarouselScreen = process.variables.isNotEmpty &&
+        process.variables.every(
+          (e) => e.type == DPAVariableType.swipe,
+        );
 
     final isOTPScreen = process.stepProperties?.screenType == DPAScreenType.otp;
 

@@ -30,7 +30,7 @@ class DPAEmailScreen extends StatelessWidget {
     );
 
     final header = customDPAHeader ?? DPAHeader(process: process);
-    final imageUrl = process.stepProperties?.backgroundUrl;
+    final imageUrl = process.stepProperties?.image;
     final email = process.stepProperties?.email;
 
     return Column(
