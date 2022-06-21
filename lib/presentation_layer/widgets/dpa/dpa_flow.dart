@@ -277,7 +277,7 @@ class DPAFlow extends StatelessWidget {
               Column(
                 children: [
                   customHeader ?? DPAHeader(process: process),
-                  Flexible(
+                  Expanded(
                     child: SingleChildScrollView(
                       child: Column(
                         children: [

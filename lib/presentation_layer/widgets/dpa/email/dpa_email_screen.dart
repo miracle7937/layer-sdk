@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:open_mail_app/open_mail_app.dart';
 
-import '../../../../data_layer/environment.dart';
 import '../../../../layer_sdk.dart';
 
 /// DPA Email screen to handle the [DPAScreenType.email]
@@ -41,7 +40,6 @@ class DPAEmailScreen extends StatelessWidget {
         if (imageUrl != null)
           NetworkImageContainer(
             imageURL: imageUrl,
-            customToken: EnvironmentConfiguration.current.defaultToken,
           ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -64,7 +62,6 @@ class DPAEmailScreen extends StatelessWidget {
           title: translation.translate('enter_verification_code').toLowerCase(),
           type: DKButtonType.brandPlain,
           expands: false,
-          padding: const EdgeInsets.symmetric(vertical: 12.0),
           status: isRequestingManualVerification
               ? DKButtonStatus.loading
               : DKButtonStatus.idle,
@@ -75,7 +72,6 @@ class DPAEmailScreen extends StatelessWidget {
           title: translation.translate('change_email_address'),
           type: DKButtonType.basePlain,
           expands: false,
-          padding: const EdgeInsets.symmetric(vertical: 12.0),
           status: isRequestingEmailChange
               ? DKButtonStatus.loading
               : DKButtonStatus.idle,
