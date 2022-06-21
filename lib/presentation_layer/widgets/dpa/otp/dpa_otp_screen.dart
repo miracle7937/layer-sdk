@@ -79,7 +79,9 @@ class _DPAOTPScreenState extends State<DPAOTPScreen>
       DPAProcessBusyAction.resendingCode,
     );
 
-    final imageUrl = process.stepProperties?.backgroundUrl;
+    final imageUrl = process.stepProperties?.image;
+
+    final isPhoneOTP = process.stepProperties?.maskedNumber != null;
 
     final effectiveHeader = widget.customDPAHeader ??
         DPAHeader(
@@ -93,75 +95,93 @@ class _DPAOTPScreenState extends State<DPAOTPScreen>
       listener: (_, __) => _startTimer(),
       child: Stack(
         children: [
-          Positioned(
-            child: effectiveHeader,
-          ),
           Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (imageUrl != null)
-                NetworkImageContainer(
-                  imageURL: imageUrl,
-                  customToken: EnvironmentConfiguration.current.defaultToken,
-                ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(
-                  16.0,
-                  imageUrl != null ? 24.0 : 0.0,
-                  16.0,
-                  0.0,
-                ),
-                child: Text(
-                  translation
-                      .translate('enter_code_sent_to_placeholder')
-                      .replaceAll(
-                        '{phone}',
-                        process.stepProperties?.maskedNumber ?? '',
-                      ),
-                  style: design.bodyM(),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12.0),
-                child: _PinWidgetRow(
-                  onPinSet: _onPinSet,
-                ),
-              ),
-              DKButton(
-                title: resendEnabled
-                    ? translation.translate('resend')
-                    : translation
-                        .translate('resend_code_in_placeholder')
-                        .replaceAll(
-                          '{time}',
-                          _remainingTime.toMinutesTimestamp(),
+              effectiveHeader,
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (imageUrl != null)
+                        NetworkImageContainer(
+                          imageURL: imageUrl,
+                          customToken:
+                              EnvironmentConfiguration.current.defaultToken,
                         ),
-                type: DKButtonType.brandPlain,
-                status: isResendingCode
-                    ? DKButtonStatus.loading
-                    : resendEnabled
-                        ? DKButtonStatus.idle
-                        : DKButtonStatus.disabled,
-                expands: false,
-                padding: const EdgeInsets.symmetric(vertical: 12.0),
-                onPressed: () {
-                  if (!resendEnabled) return;
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(
+                          16.0,
+                          imageUrl != null ? 24.0 : 0.0,
+                          16.0,
+                          0.0,
+                        ),
+                        child: Text(
+                          isPhoneOTP
+                              ? translation
+                                  .translate('enter_code_sent_to_placeholder')
+                                  .replaceAll(
+                                    '{phone}',
+                                    process.stepProperties?.maskedNumber ?? '',
+                                  )
+                              : translation
+                                  .translate(
+                                    'enter_code_sent_to_email_placeholder',
+                                  )
+                                  .replaceAll(
+                                    '{email}',
+                                    process.stepProperties?.email ?? '',
+                                  ),
+                          style: design.bodyM(),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12.0),
+                        child: _PinWidgetRow(
+                          onPinSet: _onPinSet,
+                        ),
+                      ),
+                      DKButton(
+                        title: resendEnabled
+                            ? translation.translate('resend')
+                            : translation
+                                .translate('resend_code_in_placeholder')
+                                .replaceAll(
+                                  '{time}',
+                                  _remainingTime.toMinutesTimestamp(),
+                                ),
+                        type: DKButtonType.brandPlain,
+                        status: isResendingCode
+                            ? DKButtonStatus.loading
+                            : resendEnabled
+                                ? DKButtonStatus.idle
+                                : DKButtonStatus.disabled,
+                        expands: false,
+                        padding: const EdgeInsets.symmetric(vertical: 12.0),
+                        onPressed: () {
+                          if (!resendEnabled) return;
 
-                  context.read<DPAProcessCubit>().resendCode();
-                },
-              ),
-              DKButton(
-                title: translation.translate('change_phone_number'),
-                type: DKButtonType.basePlain,
-                expands: false,
-                padding: const EdgeInsets.symmetric(vertical: 12.0),
-                status: isRequestingPhoneChange
-                    ? DKButtonStatus.loading
-                    : DKButtonStatus.idle,
-                onPressed: () =>
-                    context.read<DPAProcessCubit>().requestPhoneNumberChange(),
+                          context.read<DPAProcessCubit>().resendCode();
+                        },
+                      ),
+                      if (isPhoneOTP)
+                        DKButton(
+                          title: translation.translate('change_phone_number'),
+                          type: DKButtonType.basePlain,
+                          expands: false,
+                          padding: const EdgeInsets.symmetric(vertical: 12.0),
+                          status: isRequestingPhoneChange
+                              ? DKButtonStatus.loading
+                              : DKButtonStatus.idle,
+                          onPressed: () => context
+                              .read<DPAProcessCubit>()
+                              .requestPhoneNumberChange(),
+                        ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),
