@@ -30,6 +30,13 @@ typedef DPAShowPopUpCallback = void Function(
   DPAProcess popUp,
 );
 
+/// Signature for [DPAFlow.startSDK].
+typedef DPAStartSDKCallback = void Function(
+  BuildContext context,
+  DPAProcessCubit cubit,
+  DPAProcess process,
+);
+
 /// Signature for [DPAFlow.customHidePopUp].
 typedef DPAHidePopUpCallback = void Function(
   BuildContext context,
@@ -174,6 +181,9 @@ class DPAFlow extends StatelessWidget {
   /// Defaults to `true`.
   final bool showTaskDescription;
 
+  /// The callback called when the dpa step needs to launch an sdk.
+  final DPAStartSDKCallback sdkCallback;
+
   /// Creates a new [DPAFlow].
   const DPAFlow({
     Key? key,
@@ -186,6 +196,7 @@ class DPAFlow extends StatelessWidget {
     this.customShowPopUp,
     this.customHidePopUp,
     this.showTaskDescription = true,
+    required this.sdkCallback,
   }) : super(key: key);
 
   @override
@@ -220,6 +231,8 @@ class DPAFlow extends StatelessWidget {
                   )
                 : customChild;
 
+    final isDelayTask = process.stepProperties?.delay != null;
+
     return MultiBlocListener(
       listeners: [
         BlocListener<DPAProcessCubit, DPAProcessState>(
@@ -228,6 +241,16 @@ class DPAFlow extends StatelessWidget {
               newState.errorStatus != DPAProcessErrorStatus.none,
           // TODO: see if we can have a default LDK error.
           listener: (context, state) => onError(context, state.errorStatus),
+        ),
+        BlocListener<DPAProcessCubit, DPAProcessState>(
+          listenWhen: (oldState, newState) =>
+              oldState.process.stepProperties?.jumioConfig !=
+                  newState.process.stepProperties?.jumioConfig &&
+              newState.process.stepProperties?.jumioConfig != null,
+          listener: (context, state) {
+            final dpaProcessCubit = context.read<DPAProcessCubit>();
+            sdkCallback(context, dpaProcessCubit, state.process);
+          },
         ),
         BlocListener<DPAProcessCubit, DPAProcessState>(
           listenWhen: (oldState, newState) =>
@@ -246,49 +269,54 @@ class DPAFlow extends StatelessWidget {
           listener: _showPopUp,
         ),
       ],
-      child: effectiveCustomChild ??
-          // TODO: update to use the correct Layer Design Kit design.
-          // TODO: update to handle the different pages
-          Column(
-            children: [
-              customHeader ?? DPAHeader(process: process),
-              Flexible(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      if (showTaskDescription)
-                        DPATaskDescription(
-                          process: process,
-                        ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0,
-                        ),
-                        child: customVariableListBuilder?.call(
-                              context,
-                              process,
-                            ) ??
-                            DPAVariablesList(process: process),
+      child: Stack(
+        children: [
+          effectiveCustomChild ??
+              // TODO: update to use the correct Layer Design Kit design.
+              // TODO: update to handle the different pages
+              Column(
+                children: [
+                  customHeader ?? DPAHeader(process: process),
+                  Flexible(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          if (showTaskDescription)
+                            DPATaskDescription(
+                              process: process,
+                            ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
+                            child: customVariableListBuilder?.call(
+                                  context,
+                                  process,
+                                ) ??
+                                DPAVariablesList(process: process),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                  customContinueButton ??
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(
+                          16.0,
+                          0.0,
+                          16.0,
+                          42.0,
+                        ),
+                        child: DPAContinueButton(
+                          process: process,
+                          enabled: !hasPopup,
+                        ),
+                      ),
+                ],
               ),
-              customContinueButton ??
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(
-                      16.0,
-                      0.0,
-                      16.0,
-                      42.0,
-                    ),
-                    child: DPAContinueButton(
-                      process: process,
-                      enabled: !hasPopup,
-                    ),
-                  ),
-            ],
-          ),
+          if (isDelayTask) DPAFullscreenLoader(),
+        ],
+      ),
     );
   }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:open_mail_app/open_mail_app.dart';
 
+import '../../../../data_layer/environment.dart';
 import '../../../../layer_sdk.dart';
 
 /// DPA Email screen to handle the [DPAScreenType.email]

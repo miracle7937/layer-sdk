@@ -85,6 +85,8 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
             );
 
       if (process != null) {
+        final delay = process.stepProperties?.delay;
+
         emit(
           state.copyWith(
             process: process.isPopUp() ? null : process,
@@ -92,6 +94,8 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
             clearPopUp: !process.isPopUp(),
             actions: state.actions.difference({
               DPAProcessBusyAction.starting,
+            }).union({
+              if (delay != null) DPAProcessBusyAction.steppingForward,
             }),
             runStatus: process.finished
                 ? DPAProcessRunStatus.finished
@@ -99,6 +103,11 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
             clearProcessingFiles: true,
           ),
         );
+
+        if (delay != null) {
+          await Future.delayed(Duration(seconds: delay));
+          stepOrFinish(chosenValue: false);
+        }
       } else {
         emit(
           state.copyWith(
@@ -224,6 +233,8 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
         );
       }
 
+      final delay = process.stepProperties?.delay;
+
       emit(
         state.copyWith(
           process: process.isPopUp() ? null : process,
@@ -231,11 +242,18 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
           clearPopUp: !process.isPopUp(),
           actions: state.actions.difference({
             DPAProcessBusyAction.steppingForward,
+          }).union({
+            if (delay != null) DPAProcessBusyAction.steppingForward,
           }),
           runStatus: process.finished ? DPAProcessRunStatus.finished : null,
           clearProcessingFiles: true,
         ),
       );
+
+      if (delay != null) {
+        await Future.delayed(Duration(seconds: delay));
+        stepOrFinish(chosenValue: false);
+      }
     } on NetException {
       emit(
         state.copyWith(
