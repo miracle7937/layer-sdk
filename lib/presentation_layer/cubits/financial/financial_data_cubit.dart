@@ -1,17 +1,17 @@
 import 'package:bloc/bloc.dart';
 
-import '../../../data_layer/data_layer.dart';
-import 'financial_data_states.dart';
+import '../../../domain_layer/use_cases.dart';
+import '../../cubits.dart';
 
 /// Cubit responsible for retrieving the financial data for a customer
 class FinancialDataCubit extends Cubit<FinancialDataState> {
-  final FinancialDataRepository _repository;
+  final LoadFinancialDataUseCase _loadFinancialDataUseCase;
 
   /// Creates a new instance of [FinancialDataCubit]
   FinancialDataCubit({
     required String customerId,
-    required FinancialDataRepository repository,
-  })  : _repository = repository,
+    required LoadFinancialDataUseCase loadFinancialDataUseCase,
+  })  : _loadFinancialDataUseCase = loadFinancialDataUseCase,
         super(
           FinancialDataState(
             customerId: customerId,
@@ -30,7 +30,7 @@ class FinancialDataCubit extends Cubit<FinancialDataState> {
     );
 
     try {
-      final data = await _repository.loadFinancialData(
+      final data = await _loadFinancialDataUseCase(
         customerId: state.customerId,
         forceRefresh: forceRefresh,
       );

@@ -31,6 +31,7 @@ export 'mappings/experience/experience_dto_mapping.dart';
 export 'mappings/experience/experience_page_dto_mapping.dart';
 export 'mappings/experience_preferences/experience_preferences_dto_mapping.dart';
 export 'mappings/experience_preferences/save_experience_preferences_parameter_dto_mapping.dart';
+export 'mappings/financial/financial_data_dto_mapping.dart';
 export 'mappings/loyalty/loyalty_points/loyalty_points_mapping.dart';
 export 'mappings/loyalty/loyalty_points_exchange/loyalty_points_exchange_mapping.dart';
 export 'mappings/loyalty/loyalty_points_expiration/loyalty_points_expiration_mapping.dart';

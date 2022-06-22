@@ -8,7 +8,6 @@ export 'src/repositories/category_repository.dart';
 export 'src/repositories/customer_repository.dart';
 export 'src/repositories/device_session_repository.dart';
 export 'src/repositories/file_repository.dart';
-export 'src/repositories/financial_data_repository.dart';
 export 'src/repositories/otp_repository.dart';
 export 'src/repositories/permission_module_repository.dart';
 export 'src/repositories/queue_request_repository.dart';

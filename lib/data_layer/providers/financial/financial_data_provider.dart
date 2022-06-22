@@ -1,5 +1,5 @@
-import '../../../../data_layer/network.dart';
-import '../dtos.dart';
+import '../../dtos.dart';
+import '../../network.dart';
 
 /// Provides data related to financial data for accounts and card
 class FinancialDataProvider {

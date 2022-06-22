@@ -35,6 +35,7 @@ export 'dtos/experience/experience_page_dto.dart';
 export 'dtos/experience/experience_setting_dto.dart';
 export 'dtos/experience_preferences/experience_preferences_dto.dart';
 export 'dtos/experience_preferences/save_experience_preferences_parameters_dto.dart';
+export 'dtos/financial/financial_data_dto.dart';
 export 'dtos/loyalty/loyalty_points/loyalty_points_dto.dart';
 export 'dtos/loyalty/loyalty_points_exchange/loyalty_exchange_dto.dart';
 export 'dtos/loyalty/loyalty_points_expiration/loyalty_expiration_dto.dart';

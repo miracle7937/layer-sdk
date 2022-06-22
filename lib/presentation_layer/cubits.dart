@@ -38,6 +38,8 @@ export 'cubits/dpa/user_tasks_cubit.dart';
 export 'cubits/dpa/user_tasks_states.dart';
 export 'cubits/experience/experience_cubit.dart';
 export 'cubits/experience/experience_state.dart';
+export 'cubits/financial/financial_data_cubit.dart';
+export 'cubits/financial/financial_data_states.dart';
 export 'cubits/loyalty/cashback_history/cashback_history_cubit.dart';
 export 'cubits/loyalty/cashback_history/cashback_history_state.dart';
 export 'cubits/loyalty/loyalty_points/loyalty_points_cubit.dart';

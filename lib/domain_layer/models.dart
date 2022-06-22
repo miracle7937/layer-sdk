@@ -51,6 +51,7 @@ export 'models/experience/experience_page.dart';
 export 'models/experience/experience_setting.dart';
 export 'models/experience_preferences/experience_preferences.dart';
 export 'models/experience_preferences/save_experience_preferences_parameters.dart';
+export 'models/financial/financial_data.dart';
 export 'models/loyalty/cashback_history/cashback_history.dart';
 export 'models/loyalty/loyalty_points/loyalty_points.dart';
 export 'models/loyalty/loyalty_points_exchange/loyalty_points_exchange.dart';
