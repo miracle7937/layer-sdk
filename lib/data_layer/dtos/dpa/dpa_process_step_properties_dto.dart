@@ -40,8 +40,8 @@ class DPAProcessStepPropertiesDTO {
   /// An optional jumio configuration.
   final DPAJumioConfigDTO? jumioConfig;
 
-  /// Block // TODO: see what this is.
-  final String? block;
+  /// Defines the screen type that should be blocked (Automatically finished)
+  final DPAScreenBlockDTO? block;
 
   /// An email address
   final String? email;
@@ -96,7 +96,7 @@ class DPAProcessStepPropertiesDTO {
         maskedNumber: json['masked_number'],
         jumioConfig:
             json['sdk'] == null ? null : DPAJumioConfigDTO.fromJson(json),
-        block: json['block'],
+        block: json['block'] == null ? null : DPAScreenBlockDTO(json['block']),
         email: json['email'],
         bgImagePath: json['image_bg'],
         delay: json['delay'],
@@ -221,4 +221,32 @@ class DPAScreenAlignmentDTO extends EnumDTO {
 
   @override
   String toString() => 'DPAScreenAlignmentDTO{$value}';
+}
+
+/// All available DPA blocks.
+class DPAScreenBlockDTO extends EnumDTO {
+  /// Nothing should be blocked.
+  static const none = DPAScreenBlockDTO._internal('');
+
+  /// Email screen should be automatically finished
+  static const email = DPAScreenBlockDTO._internal(
+    'email',
+  );
+
+  /// The available values.
+  static const List<DPAScreenBlockDTO> values = [
+    none,
+    email,
+  ];
+
+  const DPAScreenBlockDTO._internal(String value) : super.internal(value);
+
+  /// Creates a new [DPAScreenBlockDTO] from a `String` value.
+  factory DPAScreenBlockDTO(String raw) => values.singleWhere(
+        (val) => val.value == raw,
+        orElse: () => DPAScreenBlockDTO.none,
+      );
+
+  @override
+  String toString() => 'DPAScreenBlockDTO{$value}';
 }
