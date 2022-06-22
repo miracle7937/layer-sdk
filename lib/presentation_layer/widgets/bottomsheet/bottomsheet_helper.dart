@@ -34,11 +34,13 @@ class BottomSheetHelper {
     ShapeBorder? customShape,
     bool dismissible = true,
     bool enableDrag = true,
+    bool isScrollControlled = true,
   }) =>
       showModalBottomSheet<T>(
         context: context,
         isDismissible: dismissible,
         enableDrag: enableDrag,
+        isScrollControlled: isScrollControlled,
         shape: customShape ??
             const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
