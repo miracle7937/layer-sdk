@@ -42,6 +42,9 @@ class DPAProcessStepProperties extends Equatable {
   /// If not null, the taks is a delay task.
   final int? delay;
 
+  /// Defines the screen type that should be blocked (Automatically finished)
+  final DPAScreenBlock block;
+
   /// Creates a new [DPAProcessStepProperties].
   DPAProcessStepProperties({
     required this.format,
@@ -57,6 +60,7 @@ class DPAProcessStepProperties extends Equatable {
     this.feedback,
     this.jumioConfig,
     this.delay,
+    this.block = DPAScreenBlock.none,
   });
 
   @override
@@ -74,6 +78,7 @@ class DPAProcessStepProperties extends Equatable {
         alignment,
         jumioConfig,
         delay,
+        block,
       ];
 
   /// Creates a new [DPAProcessStepProperties] using another as a base.
@@ -91,6 +96,7 @@ class DPAProcessStepProperties extends Equatable {
     DPAScreenAlignment? alignment,
     DPAJumioConfig? jumioConfig,
     int? delay,
+    DPAScreenBlock? block,
   }) =>
       DPAProcessStepProperties(
         format: format ?? this.format,
@@ -106,6 +112,7 @@ class DPAProcessStepProperties extends Equatable {
         alignment: alignment ?? this.alignment,
         jumioConfig: jumioConfig ?? this.jumioConfig,
         delay: delay ?? this.delay,
+        block: block ?? this.block,
       );
 }
 
@@ -182,4 +189,13 @@ enum DPAScreenAlignment {
 
   /// Description on top, image below.
   descriptionImage,
+}
+
+/// All available DPA screen blocks
+enum DPAScreenBlock {
+  /// No screen should be blocked.
+  none,
+
+  /// Email screen should be blocked.
+  email,
 }

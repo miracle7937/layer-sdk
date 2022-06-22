@@ -5,6 +5,7 @@ import '../../../data_layer/network.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 
 /// A cubit that manages a DPA process.
 class DPAProcessCubit extends Cubit<DPAProcessState> {
@@ -104,9 +105,16 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
           ),
         );
 
+        final shouldBlock = process.stepProperties?.block
+            .shouldBlock(process.stepProperties?.screenType);
+
+        if (shouldBlock ?? false) {
+          stepOrFinish();
+        }
+
         if (delay != null) {
           await Future.delayed(Duration(seconds: delay));
-          stepOrFinish(chosenValue: false);
+          stepOrFinish();
         }
       } else {
         emit(
