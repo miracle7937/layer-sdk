@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -35,8 +33,7 @@ class DevicePermissionsCubit extends Cubit<DevicePermissionsState> {
       return status;
     }
 
-    if (status == PermissionStatus.permanentlyDenied ||
-        (Platform.isIOS && status == PermissionStatus.denied)) {
+    if (status == PermissionStatus.permanentlyDenied) {
       await openSettings();
       status = await _wrapper.status(permission);
     } else {

@@ -269,9 +269,6 @@ class BankAppState extends State<BankApp> {
           ),
         ),
       ),
-      BlocProvider<GeofencingCubit>(
-        create: (_) => GeofencingCubit(),
-      ),
     ];
   }
 

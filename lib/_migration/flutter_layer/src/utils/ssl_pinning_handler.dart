@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:logging/logging.dart';
 
-import '../../../data_layer/data_layer.dart';
+import '../../../../data_layer/environment.dart';
 
 /// The default SSL pinning handler implementation.
 ///

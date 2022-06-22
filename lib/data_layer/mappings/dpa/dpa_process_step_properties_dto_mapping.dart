@@ -25,6 +25,8 @@ extension DPAProcessStepPropertiesDTOMapping on DPAProcessStepPropertiesDTO {
         feedback: feedback,
         alignment: alignment?.toDPAScreenAlignment() ??
             DPAScreenAlignment.descriptionImage,
+        jumioConfig: jumioConfig?.toJumioConfig(),
+        delay: delay,
       );
 
   /// Checks if this [DPAProcessStepPropertiesDTO] has a valid URL and appends
@@ -45,6 +47,15 @@ extension DPAProcessStepPropertiesDTOMapping on DPAProcessStepPropertiesDTO {
 
     return image;
   }
+}
+
+/// Extension that provides mappings for [DPAJumioConfigDTO].
+extension DPAJumioConfigDTOMapping on DPAJumioConfigDTO {
+  /// Maps into a [DPAJumioConfig].
+  DPAJumioConfig toJumioConfig() => DPAJumioConfig(
+        authorizationToken: authorizationToken,
+        dataCenter: dataCenter,
+      );
 }
 
 /// Extension that provides mappings for [DPAPropertyTypeDTO]

@@ -56,6 +56,8 @@ export 'cubits/loyalty/offers/offer_filter_state.dart';
 export 'cubits/loyalty/offers/offer_state.dart';
 export 'cubits/message/message_cubit.dart';
 export 'cubits/message/message_state.dart';
+export 'cubits/ocra/ocra_authentication_cubit.dart';
+export 'cubits/ocra/ocra_authentication_state.dart';
 export 'cubits/payments/payment_cubit.dart';
 export 'cubits/payments/payment_state.dart';
 export 'cubits/payments/recurring_payments_cubit.dart';

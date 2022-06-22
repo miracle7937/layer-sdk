@@ -9,3 +9,18 @@ This package contains a copy of our current 3 layers (Flutter, Business and Data
 ## Breaking changes
 
 - The `CurrencyCubit` does not contain a method for formatting an amount with a currency anymore. Instead, the `AmountFormatter` util class should be used.
+- The old loyalty related objects (Loyalty, LoyaltyCubit, etc) were renamed since they are indeed related to the loyalty points feature. Now all the files naming and classes starts with `LoyaltyPoints`. The files that changed where:
+  - `Loyalty` -> `LoyaltyPoints`
+  - `LoyaltyExchange` -> `LoyaltyPointsExchange`
+  - `LoyaltyExpiration` -> `LoyaltyPointsExpiration`
+  - `LoyaltyRate` -> `LoyaltyPointsRate`
+  - `LoyaltyTransaction` -> `LoyaltyPointsTransaction`
+  - `LoyaltyCubit` -> `LoyaltyPointsCubit`
+  - `LoyaltyExchangeCubit` -> `LoyaltyPointsExchangeCubit`
+  - `LoyaltyTransactionCubit` -> `LoyaltyPointsTransactionCubit`
+- The old loyalty repository was divided into 5 separte repositories:
+  - `LoyaltyPointsRepository`
+  - `LoyaltyPointsExchangeRepository`
+  - `LoyaltyPointsExpiration`
+  - `LoyaltyPointsRateRepository`
+  - `LoyaltyPointsTransactionRepository`
