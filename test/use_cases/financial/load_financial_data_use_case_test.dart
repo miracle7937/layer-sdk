@@ -1,8 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:layer_sdk/domain_layer/abstract_repositories.dart';
-import 'package:layer_sdk/domain_layer/models.dart';
-import 'package:layer_sdk/domain_layer/use_cases.dart';
+import 'package:layer_sdk/layer_sdk.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockFinancialDataRepository extends Mock
