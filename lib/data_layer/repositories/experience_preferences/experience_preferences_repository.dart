@@ -1,7 +1,5 @@
-import '../../../domain_layer/abstract_repositories.dart';
-import '../../../domain_layer/models.dart';
+import '../../../layer_sdk.dart';
 import '../../mappings.dart';
-import '../../providers.dart';
 
 /// A repository for the [ExperiencePreferences].
 class ExperiencePreferencesRepository

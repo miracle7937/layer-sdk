@@ -166,13 +166,16 @@ class DPAProvider {
     return response.success;
   }
 
-  /// Starts a new process.
+  /// Starts a new DPA process using the given key, and the optional
+  /// variables.
+  ///
+  /// Returns a [DPAProcessDTO] with the first step of this process.
   Future<DPAProcessDTO> startProcess({
-    required String id,
+    required String key,
     required List<DPAVariableDTO> variables,
   }) async {
     final response = await netClient.request(
-      '${netClient.netEndpoints.taskStart}/$id',
+      '${netClient.netEndpoints.taskStart}/key/$key',
       method: NetRequestMethods.post,
       forceRefresh: true,
       data: {

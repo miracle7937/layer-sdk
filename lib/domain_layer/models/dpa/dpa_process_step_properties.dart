@@ -35,6 +35,13 @@ class DPAProcessStepProperties extends Equatable {
   /// The alignment of the DPAScreen.
   final DPAScreenAlignment alignment;
 
+  /// An optional jumio configuration.
+  final DPAJumioConfig? jumioConfig;
+
+  /// The amount of seconds to wait in order to auto finish the task.
+  /// If not null, the taks is a delay task.
+  final int? delay;
+
   /// Creates a new [DPAProcessStepProperties].
   DPAProcessStepProperties({
     required this.format,
@@ -48,6 +55,8 @@ class DPAProcessStepProperties extends Equatable {
     this.image,
     this.backgroundUrl,
     this.feedback,
+    this.jumioConfig,
+    this.delay,
   });
 
   @override
@@ -63,6 +72,8 @@ class DPAProcessStepProperties extends Equatable {
         backgroundUrl,
         feedback,
         alignment,
+        jumioConfig,
+        delay,
       ];
 
   /// Creates a new [DPAProcessStepProperties] using another as a base.
@@ -78,6 +89,8 @@ class DPAProcessStepProperties extends Equatable {
     String? backgroundUrl,
     String? feedback,
     DPAScreenAlignment? alignment,
+    DPAJumioConfig? jumioConfig,
+    int? delay,
   }) =>
       DPAProcessStepProperties(
         format: format ?? this.format,
@@ -91,7 +104,42 @@ class DPAProcessStepProperties extends Equatable {
         backgroundUrl: backgroundUrl ?? this.backgroundUrl,
         feedback: feedback ?? this.feedback,
         alignment: alignment ?? this.alignment,
+        jumioConfig: jumioConfig ?? this.jumioConfig,
+        delay: delay ?? this.delay,
       );
+}
+
+/// TODO: this sdk config only works for jumio for the moment. If a new sdk
+/// was needed on the future, we would need to refactor this.
+/// Holds the SDK configuration for a DPA step.
+class DPAJumioConfig extends Equatable {
+  /// The authorization token.
+  final String? authorizationToken;
+
+  /// The data center to connect to.
+  final String? dataCenter;
+
+  /// Creates a new [DPAJumioConfig].
+  DPAJumioConfig({
+    this.authorizationToken,
+    this.dataCenter,
+  });
+
+  /// Creates a new [DPAJumioConfig] using another as a base.
+  DPAJumioConfig copyWith({
+    String? authorizationToken,
+    String? dataCenter,
+  }) =>
+      DPAJumioConfig(
+        authorizationToken: authorizationToken ?? this.authorizationToken,
+        dataCenter: dataCenter ?? this.dataCenter,
+      );
+
+  @override
+  List<Object?> get props => [
+        authorizationToken,
+        dataCenter,
+      ];
 }
 
 /// The type of screen to show for this step.

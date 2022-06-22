@@ -17,11 +17,15 @@ class DPAPhoneText extends StatefulWidget {
   /// Default is [EdgeInsets.zero].
   final EdgeInsets padding;
 
+  /// If the values can be changed.
+  final bool readonly;
+
   /// Creates a new [DPAPhoneText]
   const DPAPhoneText({
     Key? key,
     required this.variable,
     this.padding = EdgeInsets.zero,
+    required this.readonly,
   }) : super(key: key);
 
   @override
@@ -55,6 +59,9 @@ class _DPAPhoneTextState extends State<DPAPhoneText> {
     return Padding(
       padding: widget.padding,
       child: DKPhoneField(
+        status: widget.readonly || widget.variable.constraints.readonly
+            ? DKTextFieldStatus.disabled
+            : DKTextFieldStatus.idle,
         controller: _controller,
         label: widget.variable.label,
         size: widget.variable.property.multiline

@@ -1,5 +1,4 @@
-import '../../abstract_repositories.dart';
-import '../../models.dart';
+import '../../../layer_sdk.dart';
 
 /// An use case for saving the experience preferences.
 class SaveExperiencePreferencesUseCase {

@@ -4,7 +4,6 @@ export 'cubits/link/link_cubit.dart';
 export 'cubits/link/link_states.dart';
 export 'cubits/localization/localization_cubit.dart';
 export 'cubits/localization/localization_state.dart';
-export 'cubits/location/geofencing_cubit.dart';
 export 'cubits/location/location_cubit.dart';
 export 'cubits/location/location_state.dart';
 export 'cubits/login/branch_activation_cubit.dart';
