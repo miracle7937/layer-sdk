@@ -22,6 +22,8 @@ export 'cubits/card/card_transactions_cubit.dart';
 export 'cubits/card/card_transactions_states.dart';
 export 'cubits/certificate/certificate_cubit.dart';
 export 'cubits/certificate/certificate_states.dart';
+export 'cubits/checkbook/checkbook_cubit.dart';
+export 'cubits/checkbook/checkbook_state.dart';
 export 'cubits/config/config_cubit.dart';
 export 'cubits/config/config_state.dart';
 export 'cubits/country/country_cubit.dart';

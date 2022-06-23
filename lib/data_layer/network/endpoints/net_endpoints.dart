@@ -259,4 +259,7 @@ class NetEndpoints {
 
   /// Endpoint for getting customer audits
   String get customerAudits => '$_customer/v1/audit';
+
+  /// Endpoint for getting customer checkbooks
+  String get checkbooks => '$_infoBanking/v1/checkbook';
 }

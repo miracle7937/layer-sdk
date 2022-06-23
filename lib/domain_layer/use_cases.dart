@@ -17,6 +17,7 @@ export 'use_cases/card/load_customer_cards_use_case.dart';
 export 'use_cases/certificate/request_account_certificate_use_case.dart';
 export 'use_cases/certificate/request_bank_statement_use_case.dart';
 export 'use_cases/certificate/request_certificate_of_deposit_use_case.dart';
+export 'use_cases/checkbook/load_customer_checkbooks_use_case.dart';
 export 'use_cases/config/load_config_use_case.dart';
 export 'use_cases/country/load_countries_use_case.dart';
 export 'use_cases/currency/load_all_currencies_use_case.dart';
