@@ -18,6 +18,9 @@ class CustomerAuditsState extends Equatable {
   /// The current error.
   final CustomerAuditsStateError error;
 
+  /// The currrent limit for the loaded list.
+  final int limit;
+
   /// The current offset for the loaded list.
   final int offset;
 
@@ -36,6 +39,7 @@ class CustomerAuditsState extends Equatable {
     Iterable<Audit> audits = const [],
     this.busy = false,
     this.error = CustomerAuditsStateError.none,
+    this.limit = 50,
     this.offset = 0,
     this.canLoadMore = true,
     this.sortBy = AuditSort.date,
@@ -48,6 +52,7 @@ class CustomerAuditsState extends Equatable {
         audits,
         busy,
         error,
+        limit,
         offset,
         canLoadMore,
         sortBy,

@@ -9,9 +9,6 @@ import '../../cubits.dart';
 class CustomerAuditsCubit extends Cubit<CustomerAuditsState> {
   final LoadCustomerAuditsUseCase _loadCustomerAuditsUseCase;
 
-  /// Maximum number of audits to load at a time.
-  final int limit;
-
   /// Application configurations
   final Config? config;
 
@@ -20,9 +17,12 @@ class CustomerAuditsCubit extends Cubit<CustomerAuditsState> {
     required LoadCustomerAuditsUseCase loadCustomerAuditsUseCase,
     required String customerId,
     this.config,
-    this.limit = 50,
+    int limit = 50,
   })  : _loadCustomerAuditsUseCase = loadCustomerAuditsUseCase,
-        super(CustomerAuditsState(customerId: customerId));
+        super(CustomerAuditsState(
+          customerId: customerId,
+          limit: limit,
+        ));
 
   /// Loads the audits done by the provided customerId
   Future<void> load({
@@ -38,12 +38,12 @@ class CustomerAuditsCubit extends Cubit<CustomerAuditsState> {
     ));
 
     try {
-      final offset = loadMore ? state.offset + limit : 0;
+      final offset = loadMore ? state.offset + state.limit : 0;
 
       var audits = await _loadCustomerAuditsUseCase(
         customerId: state.customerId,
         forceRefresh: forceRefresh,
-        limit: limit,
+        limit: state.limit,
         offset: offset,
         sortBy: sortBy,
         descendingOrder: descendingOrder,
@@ -71,7 +71,7 @@ class CustomerAuditsCubit extends Cubit<CustomerAuditsState> {
         busy: false,
         error: CustomerAuditsStateError.none,
         offset: offset,
-        canLoadMore: audits.length >= limit,
+        canLoadMore: audits.length >= state.limit,
         sortBy: sortBy,
         descendingOrder: descendingOrder,
       ));
