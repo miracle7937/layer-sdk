@@ -8,7 +8,7 @@ abstract class CheckbookRepositoryInterface {
     bool forceRefresh = false,
     int? limit,
     int? offset,
-    CheckbookSort? sortBy,
+    CheckbookSort? sort,
     bool descendingOrder = true,
   });
 }

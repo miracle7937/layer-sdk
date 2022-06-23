@@ -29,7 +29,7 @@ class LoadCustomerCheckbooksUseCase {
         limit: limit,
         offset: offset,
         forceRefresh: forceRefresh,
-        sortBy: sortBy,
+        sort: sortBy,
         descendingOrder: descendingOrder,
       );
 }
