@@ -8,13 +8,6 @@ import 'package:layer_sdk/presentation_layer/utils.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockBranchActivationRepository extends Mock
-    implements BranchActivationRepository {}
-
-class MockUserRepository extends Mock implements UserRepository {}
-
-class MockOtpRepository extends Mock implements OTPRepository {}
-
 class MockCheckBranchActivationCodeUseCase extends Mock
     implements CheckBranchActivationCodeUseCase {}
 
@@ -76,7 +69,7 @@ void main() {
   EquatableConfig.stringify = true;
 
   setUpAll(() {
-    /// Authentication repository
+    /// Branch activation
     when(
       () => _checkBranchActivationCodeUseCase(
         code: _pollingCode,
@@ -154,7 +147,7 @@ void main() {
       ),
     ).thenThrow(_genericException);
 
-    /// User Repository
+    /// User
     when(
       () => _loadUserDetailsFromTokenUseCase(
         token: _successUserToken,
