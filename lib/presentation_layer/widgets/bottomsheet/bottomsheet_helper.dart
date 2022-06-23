@@ -34,11 +34,13 @@ class BottomSheetHelper {
     ShapeBorder? customShape,
     bool dismissible = true,
     bool enableDrag = true,
+    bool isScrollControlled = true,
   }) =>
       showModalBottomSheet<T>(
         context: context,
         isDismissible: dismissible,
         enableDrag: enableDrag,
+        isScrollControlled: isScrollControlled,
         shape: customShape ??
             const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
@@ -59,9 +61,11 @@ class BottomSheetHelper {
     required String titleKey,
     String? descriptionKey,
     String dismissKey = 'ok',
+    bool isScrollControlled = true,
   }) async =>
       showModalBottomSheet(
         context: context,
+        isScrollControlled: isScrollControlled,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(
@@ -90,9 +94,11 @@ class BottomSheetHelper {
     String? descriptionKey,
     String confirmKey = 'yes',
     String denyKey = 'no',
+    bool isScrollControlled = true,
   }) async {
     final result = await showModalBottomSheet(
       context: context,
+      isScrollControlled: isScrollControlled,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(
@@ -141,6 +147,7 @@ class _ErrorBottomSheet extends StatelessWidget {
         horizontal: 16.0,
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SvgPicture.asset(
@@ -204,6 +211,7 @@ class _ConfirmationBottomSheet extends StatelessWidget {
         horizontal: 16.0,
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SvgPicture.asset(
