@@ -4,8 +4,6 @@
 /// {@subCategory Cubits}
 library cubits;
 
-export 'cubits/alerts/unread_alerts_count_cubit.dart';
-export 'cubits/alerts/unread_alerts_count_state.dart';
 export 'cubits/appointments/appointment_booking_cubit.dart';
 export 'cubits/appointments/appointment_booking_state.dart';
 export 'cubits/appointments/appointment_branch_cubit.dart';

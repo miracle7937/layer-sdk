@@ -8,6 +8,7 @@ export '_migration/data_layer/data_layer.dart';
 export '_migration/flutter_layer/flutter_layer.dart';
 
 export 'features/accounts.dart';
+export 'features/alert.dart';
 export 'features/beneficiaries.dart';
 export 'features/bills.dart';
 export 'features/branch.dart';

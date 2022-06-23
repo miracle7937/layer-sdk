@@ -1,7 +1,6 @@
 /// Data Layer - Providers
 library providers;
 
-export 'src/providers/alert_provider.dart';
 export 'src/providers/appointment_provider.dart';
 export 'src/providers/authentication_provider.dart';
 export 'src/providers/category_provider.dart';
