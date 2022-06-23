@@ -71,11 +71,13 @@ void main() {
     build: () => CheckbookCubit(
       loadCustomerCheckbooksUseCase: _loadCustomerCheckbooksUseCase,
       customerId: _customerId,
+      limit: _defaultLimit,
     ),
     verify: (c) => expect(
       c.state,
       CheckbookState(
         customerId: _customerId,
+        limit: _defaultLimit,
         error: CheckbookStateError.none,
       ),
     ),
@@ -93,11 +95,13 @@ void main() {
       CheckbookState(
         customerId: _customerId,
         error: CheckbookStateError.none,
+        limit: _defaultLimit,
         busy: true,
       ),
       CheckbookState(
         customerId: _customerId,
         checkbooks: _checkbooks.take(_defaultLimit),
+        limit: _defaultLimit,
         error: CheckbookStateError.none,
         busy: false,
       ),
@@ -123,6 +127,7 @@ void main() {
     seed: () => CheckbookState(
       customerId: _customerId,
       checkbooks: _checkbooks.take(_defaultLimit),
+      limit: _defaultLimit,
     ),
     act: (c) => c.load(
       loadMore: true,
@@ -131,12 +136,14 @@ void main() {
       CheckbookState(
         customerId: _customerId,
         checkbooks: _checkbooks.take(_defaultLimit),
+        limit: _defaultLimit,
         error: CheckbookStateError.none,
         busy: true,
       ),
       CheckbookState(
         customerId: _customerId,
         checkbooks: _checkbooks.take(2 * _defaultLimit),
+        limit: _defaultLimit,
         offset: _defaultLimit,
         error: CheckbookStateError.none,
         busy: false,
@@ -164,6 +171,7 @@ void main() {
     seed: () => CheckbookState(
       customerId: _customerId,
       checkbooks: _checkbooks.take(2 * _defaultLimit),
+      limit: _defaultLimit,
       offset: _defaultLimit,
     ),
     act: (c) => c.load(
@@ -173,6 +181,7 @@ void main() {
       CheckbookState(
         customerId: _customerId,
         checkbooks: _checkbooks.take(2 * _defaultLimit),
+        limit: _defaultLimit,
         offset: _defaultLimit,
         error: CheckbookStateError.none,
         busy: true,
@@ -180,6 +189,7 @@ void main() {
       CheckbookState(
         customerId: _customerId,
         checkbooks: _checkbooks,
+        limit: _defaultLimit,
         offset: 2 * _defaultLimit,
         error: CheckbookStateError.none,
         busy: false,
@@ -213,12 +223,14 @@ void main() {
         customerId: _errorId,
         error: CheckbookStateError.none,
         busy: true,
+        limit: _defaultLimit,
       ),
       CheckbookState(
         customerId: _errorId,
         error: CheckbookStateError.generic,
         busy: false,
         checkbooks: [],
+        limit: _defaultLimit,
       ),
     ],
     verify: (c) {

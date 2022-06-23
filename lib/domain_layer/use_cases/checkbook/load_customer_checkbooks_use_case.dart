@@ -6,9 +6,9 @@ class LoadCustomerCheckbooksUseCase {
   final CheckbookRepositoryInterface _repository;
 
   /// Creates a new [LoadCustomerCheckbooksUseCase].
-  const LoadCustomerCheckbooksUseCase(
-      {required CheckbookRepositoryInterface repository})
-      : _repository = repository;
+  const LoadCustomerCheckbooksUseCase({
+    required CheckbookRepositoryInterface repository,
+  }) : _repository = repository;
 
   /// Returns a list of checkbooks related to the passed customer id.
   ///

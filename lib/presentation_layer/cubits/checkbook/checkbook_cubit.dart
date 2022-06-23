@@ -8,17 +8,15 @@ import '../../cubits.dart';
 class CheckbookCubit extends Cubit<CheckbookState> {
   final LoadCustomerCheckbooksUseCase _loadCustomerCheckbooksUseCase;
 
-  /// Maximum number of checkbooks to load at a time.
-  final int limit;
-
   /// Creates a new [CheckbookCubit]
   CheckbookCubit({
     required LoadCustomerCheckbooksUseCase loadCustomerCheckbooksUseCase,
     required String customerId,
-    this.limit = 50,
+    required int limit,
   })  : _loadCustomerCheckbooksUseCase = loadCustomerCheckbooksUseCase,
         super(CheckbookState(
           customerId: customerId,
+          limit: limit,
         ));
 
   /// Loads the customer's checkbooks
@@ -34,12 +32,12 @@ class CheckbookCubit extends Cubit<CheckbookState> {
         error: CheckbookStateError.none,
       ));
 
-      final offset = loadMore ? limit + state.offset : 0;
+      final offset = loadMore ? state.limit + state.offset : 0;
 
       final checkbooks = await _loadCustomerCheckbooksUseCase(
         customerId: state.customerId,
         forceRefresh: forceRefresh,
-        limit: limit,
+        limit: state.limit,
         offset: offset,
         sortBy: sortBy,
         descendingOrder: descendingOrder,
@@ -52,7 +50,7 @@ class CheckbookCubit extends Cubit<CheckbookState> {
         busy: false,
         checkbooks: list,
         offset: offset,
-        canLoadMore: checkbooks.length >= limit,
+        canLoadMore: checkbooks.length >= state.limit,
         descendingOrder: descendingOrder,
         sortBy: sortBy,
       ));

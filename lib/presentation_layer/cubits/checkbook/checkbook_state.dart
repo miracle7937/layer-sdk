@@ -18,6 +18,9 @@ class CheckbookState extends Equatable {
   /// The current error
   final CheckbookStateError error;
 
+  /// The current limit
+  final int limit;
+
   /// The current offset
   final int offset;
 
@@ -36,6 +39,7 @@ class CheckbookState extends Equatable {
     Iterable<Checkbook> checkbooks = const [],
     this.busy = false,
     this.error = CheckbookStateError.none,
+    this.limit = 50,
     this.offset = 0,
     this.canLoadMore = true,
     this.descendingOrder = true,
@@ -48,6 +52,7 @@ class CheckbookState extends Equatable {
         checkbooks,
         busy,
         error,
+        limit,
         offset,
         canLoadMore,
         descendingOrder,
@@ -69,6 +74,7 @@ class CheckbookState extends Equatable {
         customerId: customerId ?? this.customerId,
         checkbooks: checkbooks ?? this.checkbooks,
         busy: busy ?? this.busy,
+        limit: limit,
         error: error ?? this.error,
         offset: offset ?? this.offset,
         canLoadMore: canLoadMore ?? this.canLoadMore,
