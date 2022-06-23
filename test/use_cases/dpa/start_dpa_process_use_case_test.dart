@@ -27,7 +27,7 @@ void main() {
 
     when(
       () => _repository.startProcess(
-        id: processId,
+        key: processId,
         variables: [],
       ),
     ).thenAnswer(
@@ -37,7 +37,7 @@ void main() {
 
   test('Should return the correct DPAProcess', () async {
     final result = await _useCase(
-      id: processId,
+      key: processId,
       variables: [],
     );
 
@@ -45,7 +45,7 @@ void main() {
 
     verify(
       () => _repository.startProcess(
-        id: processId,
+        key: processId,
         variables: [],
       ),
     ).called(1);

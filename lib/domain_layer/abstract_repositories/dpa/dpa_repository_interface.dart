@@ -84,12 +84,12 @@ abstract class DPARepositoryInterface {
     required DPATask task,
   });
 
-  /// Starts a new DPA process. using the given id, and the optional
+  /// Starts a new DPA process. using the given key, and the optional
   /// variables.
   ///
   /// Returns a [DPAProcess] with the first step of this process.
   Future<DPAProcess> startProcess({
-    required String id,
+    required String key,
     List<DPAVariable> variables,
   });
 

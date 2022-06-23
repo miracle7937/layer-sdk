@@ -73,12 +73,6 @@ extension DPAVariableUIExtension on DPAVariable {
       formatters.add(FilteringTextInputFormatter.digitsOnly);
     }
 
-    if (constraints.regExp != null) {
-      formatters.add(
-        FilteringTextInputFormatter.allow(constraints.regExp!),
-      );
-    }
-
     if (constraints.maxLength != null) {
       formatters.add(
         LengthLimitingTextInputFormatter(constraints.maxLength),

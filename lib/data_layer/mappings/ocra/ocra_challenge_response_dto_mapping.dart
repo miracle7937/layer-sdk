@@ -1,6 +1,6 @@
-import '../../../errors.dart';
-import '../../../models.dart';
+import '../../../domain_layer/models.dart';
 import '../../dtos.dart';
+import '../../errors/mapping_error.dart';
 
 /// Defines the mapping between [OcraChallengeResponseDTO] and
 /// [OcraChallengeResponse].
