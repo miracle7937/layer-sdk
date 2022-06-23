@@ -91,13 +91,14 @@ void main() {
   blocTest<CustomerAuditsCubit, CustomerAuditsState>(
     'Starts on empty state',
     build: () => CustomerAuditsCubit(
-      loadCustomerAuditsUseCase: _loadCustomerAuditsUseCase,
-      customerId: _customerId,
-    ),
+        loadCustomerAuditsUseCase: _loadCustomerAuditsUseCase,
+        customerId: _customerId,
+        limit: _defaultLimit),
     verify: (c) => expect(
       c.state,
       CustomerAuditsState(
         customerId: _customerId,
+        limit: _defaultLimit,
       ),
     ),
   );
@@ -115,11 +116,13 @@ void main() {
         customerId: _customerId,
         busy: true,
         error: CustomerAuditsStateError.none,
+        limit: _defaultLimit,
       ),
       CustomerAuditsState(
         customerId: _customerId,
         audits: _repositoryList.take(_defaultLimit),
         busy: false,
+        limit: _defaultLimit,
         error: CustomerAuditsStateError.none,
       ),
     ],
@@ -141,6 +144,7 @@ void main() {
     ),
     seed: () => CustomerAuditsState(
       customerId: _customerId,
+      limit: _defaultLimit,
       audits: _repositoryList.take(_defaultLimit),
     ),
     act: (c) => c.load(
@@ -151,6 +155,7 @@ void main() {
         customerId: _customerId,
         busy: true,
         error: CustomerAuditsStateError.none,
+        limit: _defaultLimit,
         audits: _repositoryList.take(_defaultLimit),
       ),
       CustomerAuditsState(
@@ -158,6 +163,7 @@ void main() {
         audits: _repositoryList.take(2 * _defaultLimit),
         offset: _defaultLimit,
         busy: false,
+        limit: _defaultLimit,
         error: CustomerAuditsStateError.none,
       ),
     ],
@@ -180,6 +186,7 @@ void main() {
     seed: () => CustomerAuditsState(
       customerId: _customerId,
       audits: _repositoryList.take(2 * _defaultLimit),
+      limit: _defaultLimit,
       offset: _defaultLimit,
     ),
     act: (c) => c.load(
@@ -191,11 +198,13 @@ void main() {
         busy: true,
         error: CustomerAuditsStateError.none,
         audits: _repositoryList.take(2 * _defaultLimit),
+        limit: _defaultLimit,
         offset: _defaultLimit,
       ),
       CustomerAuditsState(
         customerId: _customerId,
         audits: _repositoryList,
+        limit: _defaultLimit,
         offset: 2 * _defaultLimit,
         busy: false,
         error: CustomerAuditsStateError.none,
@@ -225,10 +234,12 @@ void main() {
       CustomerAuditsState(
         customerId: _customerId,
         busy: true,
+        limit: _defaultLimit,
         error: CustomerAuditsStateError.none,
       ),
       CustomerAuditsState(
         customerId: _customerId,
+        limit: _defaultLimit,
         audits: _repositoryList
             .where(
               (audit) => audit.auditId.toString().contains(
@@ -266,11 +277,13 @@ void main() {
       CustomerAuditsState(
         customerId: _genericErrorId,
         busy: true,
+        limit: _defaultLimit,
         error: CustomerAuditsStateError.none,
       ),
       CustomerAuditsState(
         customerId: _genericErrorId,
         busy: false,
+        limit: _defaultLimit,
         error: CustomerAuditsStateError.generic,
         audits: [],
       ),

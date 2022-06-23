@@ -17,7 +17,7 @@ class CustomerAuditsCubit extends Cubit<CustomerAuditsState> {
     required LoadCustomerAuditsUseCase loadCustomerAuditsUseCase,
     required String customerId,
     this.config,
-    int limit = 50,
+    required int limit,
   })  : _loadCustomerAuditsUseCase = loadCustomerAuditsUseCase,
         super(CustomerAuditsState(
           customerId: customerId,

@@ -75,6 +75,7 @@ class CustomerAuditsState extends Equatable {
         audits: audits ?? this.audits,
         busy: busy ?? this.busy,
         error: error ?? this.error,
+        limit: limit,
         offset: offset ?? this.offset,
         canLoadMore: canLoadMore ?? this.canLoadMore,
         sortBy: sortBy ?? this.sortBy,
