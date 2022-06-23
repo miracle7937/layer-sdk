@@ -245,6 +245,7 @@ class _PinWidgetRowState extends State<_PinWidgetRow>
   late final TextEditingController thirdPin;
   late final TextEditingController fourthPin;
 
+  late final FocusNode firstNode;
   late final FocusNode secondNode;
   late final FocusNode thirdNode;
   late final FocusNode fourthNode;
@@ -257,6 +258,7 @@ class _PinWidgetRowState extends State<_PinWidgetRow>
     thirdPin = TextEditingController();
     fourthPin = TextEditingController();
 
+    firstNode = FocusNode();
     secondNode = FocusNode();
     thirdNode = FocusNode();
     fourthNode = FocusNode();
@@ -269,6 +271,7 @@ class _PinWidgetRowState extends State<_PinWidgetRow>
     thirdPin.dispose();
     fourthPin.dispose();
 
+    firstNode.dispose();
     secondNode.dispose();
     thirdNode.dispose();
     fourthNode.dispose();
@@ -286,7 +289,9 @@ class _PinWidgetRowState extends State<_PinWidgetRow>
             controller: firstPin,
             onFill: () => _onPinUpdated(
               next: secondNode,
+              self: firstNode,
             ),
+            node: firstNode,
           ),
         ),
         Padding(
@@ -295,6 +300,7 @@ class _PinWidgetRowState extends State<_PinWidgetRow>
             controller: secondPin,
             onFill: () => _onPinUpdated(
               next: thirdNode,
+              self: secondNode,
             ),
             node: secondNode,
           ),
@@ -305,6 +311,7 @@ class _PinWidgetRowState extends State<_PinWidgetRow>
             controller: thirdPin,
             onFill: () => _onPinUpdated(
               next: fourthNode,
+              self: thirdNode,
             ),
             node: thirdNode,
           ),
@@ -314,7 +321,9 @@ class _PinWidgetRowState extends State<_PinWidgetRow>
           child: _PinWidget(
             controller: fourthPin,
             node: fourthNode,
-            onFill: _onPinUpdated,
+            onFill: () => _onPinUpdated(
+              self: fourthNode,
+            ),
           ),
         ),
       ],
@@ -322,6 +331,7 @@ class _PinWidgetRowState extends State<_PinWidgetRow>
   }
 
   void _onPinUpdated({
+    required FocusNode self,
     FocusNode? next,
   }) {
     final otp = [
@@ -334,7 +344,10 @@ class _PinWidgetRowState extends State<_PinWidgetRow>
     next?.requestFocus();
 
     // TODO: Remove this magic number.
-    if (otp.length == 4) widget.onPinSet(otp);
+    if (otp.length == 4) {
+      self.unfocus();
+      widget.onPinSet(otp);
+    }
   }
 }
 

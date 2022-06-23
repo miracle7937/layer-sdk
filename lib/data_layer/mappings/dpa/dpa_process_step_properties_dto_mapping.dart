@@ -27,6 +27,7 @@ extension DPAProcessStepPropertiesDTOMapping on DPAProcessStepPropertiesDTO {
             DPAScreenAlignment.descriptionImage,
         jumioConfig: jumioConfig?.toJumioConfig(),
         delay: delay,
+        block: block?.toDPAScreenBlock() ?? DPAScreenBlock.none,
       );
 
   /// Checks if this [DPAProcessStepPropertiesDTO] has a valid URL and appends
@@ -116,6 +117,27 @@ extension DPAScreenAlignmentDTOMapping on DPAScreenAlignmentDTO {
         throw MappingException(
           from: DPAScreenAlignmentDTO,
           to: DPAScreenAlignment,
+          value: this,
+        );
+    }
+  }
+}
+
+/// Extension that provides mappings for [DPAScreenBlockDTO].
+extension DPAScreenBlockDTOMapping on DPAScreenBlockDTO {
+  /// Maps into a [DPAScreenBlock].
+  DPAScreenBlock toDPAScreenBlock() {
+    switch (this) {
+      case DPAScreenBlockDTO.none:
+        return DPAScreenBlock.none;
+
+      case DPAScreenBlockDTO.email:
+        return DPAScreenBlock.email;
+
+      default:
+        throw MappingException(
+          from: DPAScreenBlockDTO,
+          to: DPAScreenBlock,
           value: this,
         );
     }
