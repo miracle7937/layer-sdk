@@ -23,6 +23,7 @@ export 'features/dpa.dart';
 export 'features/experience.dart';
 export 'features/loyalty.dart';
 export 'features/message.dart';
+export 'features/queue.dart';
 export 'features/roles.dart';
 export 'presentation_layer/app.dart';
 export 'presentation_layer/design.dart';

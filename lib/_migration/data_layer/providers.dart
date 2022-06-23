@@ -9,7 +9,6 @@ export 'src/providers/file_provider.dart';
 export 'src/providers/financial_data_provider.dart';
 export 'src/providers/otp_provider.dart';
 export 'src/providers/permission_module_provider.dart';
-export 'src/providers/queue_request_provider.dart';
 export 'src/providers/registration_provider.dart';
 export 'src/providers/transfer_provider.dart';
 export 'src/providers/upcoming_payment_provider.dart';

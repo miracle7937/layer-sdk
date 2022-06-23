@@ -1,8 +1,8 @@
 import 'package:logging/logging.dart';
 
-import '../../../errors.dart';
-import '../../../models.dart';
-import '../../DTOs/queue/queue_dto.dart';
+import '../../../domain_layer/models.dart';
+import '../../dtos.dart';
+import '../../errors.dart';
 
 /// Extension that provides mapping for [QueueDTO]
 extension QueueDTOMapping on QueueDTO {

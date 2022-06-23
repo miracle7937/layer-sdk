@@ -90,6 +90,7 @@ export 'models/permissions/permission_data.dart';
 export 'models/permissions/permission_module.dart';
 export 'models/preferences/preferences.dart';
 export 'models/product/product.dart';
+export 'models/queue/queue_request.dart';
 export 'models/resolution/resolution.dart';
 export 'models/role/role.dart';
 export 'models/second_factor/second_factor_type.dart';

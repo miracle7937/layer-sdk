@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 
-import '../../../../data_layer/network.dart';
-import '../dtos.dart';
+import '../../dtos.dart';
+import '../../network.dart';
 
 /// Provides data related to [Queue] and [Request]
 class QueueRequestProvider {
@@ -15,19 +15,21 @@ class QueueRequestProvider {
 
   /// Retrieves the list of Queues and Requests from the console service
   Future<QueueRequestDTO> list({
-    int limit = 50,
-    int offset = 0,
+    int? limit,
+    int? offset,
     bool forceRefresh = true,
   }) async {
+    final params = <String, dynamic>{};
+
+    if (limit != null) params['limit'] = limit;
+    if (offset != null) params['offset'] = offset;
+    params['desc'] = true;
+    params['sortBy'] = 'make_ts';
+
     final response = await netClient.request(
       netClient.netEndpoints.queueRequest,
       method: NetRequestMethods.get,
-      queryParameters: {
-        'desc': true,
-        'sortBy': 'make_ts',
-        'limit': limit,
-        'offset': offset,
-      },
+      queryParameters: params,
       forceRefresh: forceRefresh,
     );
 

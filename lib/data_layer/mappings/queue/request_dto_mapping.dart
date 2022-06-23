@@ -1,5 +1,5 @@
-import '../../../models.dart';
-import '../../DTOs/queue/request_dto.dart';
+import '../../../domain_layer/models.dart';
+import '../../dtos.dart';
 
 /// Extension that provides mapping for [QueueDTO]
 extension RequestDTOMapping on RequestDTO {

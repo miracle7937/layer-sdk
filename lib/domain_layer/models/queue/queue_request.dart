@@ -1,8 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
-import '../dtos.dart';
-
 /// All possible operations for queues
 enum QueueOperation {
   /// Add operation

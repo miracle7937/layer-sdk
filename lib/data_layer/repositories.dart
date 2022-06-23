@@ -30,5 +30,6 @@ export 'repositories/message/message_repository.dart';
 export 'repositories/ocra/ocra_repository.dart';
 export 'repositories/payments/payments_repository.dart';
 export 'repositories/product/product_repository.dart';
+export 'repositories/queue/queue_request_repository.dart';
 export 'repositories/role/roles_repository.dart';
 export 'repositories/setting/global_setting_repository.dart';
