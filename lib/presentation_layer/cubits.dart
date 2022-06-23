@@ -66,5 +66,7 @@ export 'cubits/role/roles_cubit.dart';
 export 'cubits/role/roles_state.dart';
 export 'cubits/setting/global_setting_cubit.dart';
 export 'cubits/setting/global_setting_state.dart';
+export 'cubits/standing_orders/standing_orders_cubit.dart';
+export 'cubits/standing_orders/standing_orders_state.dart';
 export 'cubits/theme/app_theme_cubit.dart';
 export 'cubits/theme/app_theme_state.dart';

@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'package:equatable/equatable.dart';
 
 import '../../../../presentation_layer/utils.dart';
-import '../../../data_layer/data_layer.dart';
+import '../../../domain_layer/models.dart';
 
 /// The available errors
 enum StandingOrdersError {

@@ -17,7 +17,6 @@ export 'src/models/queue_request.dart';
 export 'src/models/registration/registration_response.dart';
 export 'src/models/resolution.dart';
 export 'src/models/second_factor_verification.dart';
-export 'src/models/standing_order.dart';
 export 'src/models/transfer.dart';
 export 'src/models/upcoming_payment.dart';
 export 'src/models/upcoming_payment_group.dart';
