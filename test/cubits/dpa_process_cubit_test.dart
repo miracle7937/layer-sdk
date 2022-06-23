@@ -28,6 +28,17 @@ class MockDownloadDPAFileUseCase extends Mock
 
 class MockDeleteDPAFileUseCase extends Mock implements DeleteDPAFileUseCase {}
 
+class MockChangePhoneNumberUseCase extends Mock
+    implements DPAChangePhoneNumberUseCase {}
+
+class MockResendCodeUseCase extends Mock implements DPAResendCodeUseCase {}
+
+class MockChangeEmailAddressUseCase extends Mock
+    implements DPAChangeEmailAddressUseCase {}
+
+class MockDPARequestManualVerificationUseCase extends Mock
+    implements DPARequestManualVerificationUseCase {}
+
 final _startUseCase = MockStartDPAProcessUseCase();
 final _resumeUseCase = MockResumeDPAProcessUsecase();
 final _loadTaskUseCase = MockLoadTaskByIdUseCase();
@@ -37,6 +48,11 @@ final _cancelUseCase = MockCancelDPAProcessUseCase();
 final _uploadUseCase = MockUploadDPAImageUseCase();
 final _downloadUseCase = MockDownloadDPAFileUseCase();
 final _deleteUsecase = MockDeleteDPAFileUseCase();
+final _resendCodeUseCase = MockResendCodeUseCase();
+final _changePhoneNumberUseCase = MockChangePhoneNumberUseCase();
+final _changeEmailAddressuseCase = MockChangeEmailAddressUseCase();
+final _requestManualVerificationUseCase =
+    MockDPARequestManualVerificationUseCase();
 
 final _successId = '1';
 final _successKey = 'success';
@@ -88,6 +104,10 @@ DPAProcessCubit create() => DPAProcessCubit(
       stepBackUseCase: _stepBackUseCase,
       stepOrFinishProcessUseCase: _stepOrFinishUseCase,
       uploadDPAImageUseCase: _uploadUseCase,
+      changePhoneNumberUseCase: _changePhoneNumberUseCase,
+      resendCodeUseCase: _resendCodeUseCase,
+      changeEmailAddressUseCase: _changeEmailAddressuseCase,
+      manualVerificationUseCase: _requestManualVerificationUseCase,
     );
 
 void main() {
@@ -113,7 +133,7 @@ void _startTests() {
   setUp(() {
     when(
       () => _startUseCase(
-        id: _successId,
+        key: _successId,
         variables: any(named: 'variables'),
       ),
     ).thenAnswer(
@@ -122,7 +142,7 @@ void _startTests() {
 
     when(
       () => _startUseCase(
-        id: _failureId,
+        key: _failureId,
         variables: any(named: 'variables'),
       ),
     ).thenAnswer(
@@ -150,7 +170,7 @@ void _startTests() {
     ],
     verify: (c) => verify(
       () => _startUseCase(
-        id: _successId,
+        key: _successId,
         variables: any(named: 'variables'),
       ),
     ).called(1),
@@ -174,7 +194,7 @@ void _startTests() {
     ],
     verify: (c) => verify(
       () => _startUseCase(
-        id: _failureId,
+        key: _failureId,
         variables: any(named: 'variables'),
       ),
     ).called(1),

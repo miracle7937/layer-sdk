@@ -1,30 +1,36 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
-import 'package:layer_sdk/_migration/business_layer/src/cubits/ocra/ocra_challenge_generator.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
+import 'package:layer_sdk/features/ocra_authentication.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:ocra_authentication/ocra_authentication.dart';
 import 'package:test/test.dart';
 
-class OcraAuthenticationMock extends Mock implements OcraAuthentication {}
+class GenerateOcraChallengeUseCaseMock extends Mock
+    implements GenerateOcraChallengeUseCase {}
 
-class OcraChallengeGeneratorMock extends Mock
-    implements OcraChallengeGenerator {}
+class GenerateOcraTimestampUseCaseMock extends Mock
+    implements GenerateOcraTimestampUseCase {}
 
-class OcraRepositoryMock extends Mock implements OcraRepository {}
+class ClientOcraChallengeUseCaseMock extends Mock
+    implements ClientOcraChallengeUseCase {}
+
+class VerifyOcraResultUseCaseMock extends Mock
+    implements VerifyOcraResultUseCase {}
+
+class SolveOcraChallengeUseCaseMock extends Mock
+    implements SolveOcraChallengeUseCase {}
 
 void main() {
   EquatableConfig.stringify = true;
 
   final secret = 'secret';
   final deviceId = 1;
-  final ocraSuite = 'OCRA-1:HOTP-SHA256-8:QA08-T1H';
   final remainingAttempts = 3;
 
-  late OcraRepositoryMock repositoryMock;
-  late OcraChallengeGeneratorMock ocraChallengeGeneratorMock;
-  late OcraAuthenticationMock ocraAuthenticationMock;
+  late GenerateOcraChallengeUseCaseMock generateOcraChallengeUseCaseMock;
+  late GenerateOcraTimestampUseCaseMock generateOcraTimestampUseCaseMock;
+  late ClientOcraChallengeUseCaseMock clientOcraChallengeUseCaseMock;
+  late VerifyOcraResultUseCaseMock verifyOcraResultUseCaseMock;
+  late SolveOcraChallengeUseCaseMock solveOcraChallengeUseCaseMock;
 
   final successfulClientChallenge = 'successfulClientChallenge';
   final wrongPinClientChallenge = 'wrongPinClientChallenge';
@@ -77,96 +83,99 @@ void main() {
     result: wrongPinClientResult,
   );
 
+  OcraAuthenticationCubit _buildCubit() => OcraAuthenticationCubit(
+        secret: secret,
+        deviceId: deviceId,
+        generateOcraChallengeUseCase: generateOcraChallengeUseCaseMock,
+        generateOcraTimestampUseCase: generateOcraTimestampUseCaseMock,
+        clientChallengeOcraUseCase: clientOcraChallengeUseCaseMock,
+        verifyOcraResultUseCase: verifyOcraResultUseCaseMock,
+        solveOcraChallengeUseCase: solveOcraChallengeUseCaseMock,
+      );
+
   setUp(() {
-    repositoryMock = OcraRepositoryMock();
-    ocraChallengeGeneratorMock = OcraChallengeGeneratorMock();
-    ocraAuthenticationMock = OcraAuthenticationMock();
+    generateOcraChallengeUseCaseMock = GenerateOcraChallengeUseCaseMock();
+    generateOcraTimestampUseCaseMock = GenerateOcraTimestampUseCaseMock();
+    clientOcraChallengeUseCaseMock = ClientOcraChallengeUseCaseMock();
+    verifyOcraResultUseCaseMock = VerifyOcraResultUseCaseMock();
+    solveOcraChallengeUseCaseMock = SolveOcraChallengeUseCaseMock();
 
     when(
-      () => repositoryMock.challenge(challenge: successfulOcraChallenge),
+      () => clientOcraChallengeUseCaseMock(
+        challenge: successfulOcraChallenge,
+      ),
     ).thenAnswer((_) async => challengeResponse);
 
     when(
-      () => repositoryMock.challenge(challenge: resultMismatchOcraChallenge),
+      () => clientOcraChallengeUseCaseMock(
+        challenge: resultMismatchOcraChallenge,
+      ),
     ).thenAnswer((_) async => challengeResponse);
 
     when(
-      () => repositoryMock.challenge(challenge: wrongPinOcraChallenge),
+      () => clientOcraChallengeUseCaseMock(challenge: wrongPinOcraChallenge),
     ).thenAnswer((_) async => wrongPinChallengeResponse);
 
     when(
-      () => repositoryMock.challenge(challenge: genericFailureOcraChallenge),
+      () => clientOcraChallengeUseCaseMock(
+          challenge: genericFailureOcraChallenge),
     ).thenThrow(Exception());
 
     when(
-      () => ocraAuthenticationMock.solve(
+      () => solveOcraChallengeUseCaseMock(
         question: successfulClientChallenge + serverChallenge,
         timestamp: any(named: 'timestamp'),
       ),
     ).thenReturn(serverResponse);
 
     when(
-      () => ocraAuthenticationMock.solve(
+      () => solveOcraChallengeUseCaseMock(
         question: resultMismatchClientChallenge + serverChallenge,
         timestamp: any(named: 'timestamp'),
       ),
     ).thenReturn(wrongClientResult);
     when(
-      () => ocraAuthenticationMock.solve(
+      () => solveOcraChallengeUseCaseMock(
         question: wrongPinClientChallenge + serverChallenge,
         timestamp: any(named: 'timestamp'),
       ),
     ).thenReturn(wrongPinClientResult);
 
     when(
-      () => ocraAuthenticationMock.solve(
+      () => solveOcraChallengeUseCaseMock(
         question: serverChallenge + successfulClientChallenge,
         timestamp: any(named: 'timestamp'),
       ),
     ).thenReturn(clientResponse);
 
     when(
-      () => ocraAuthenticationMock.solve(
+      () => solveOcraChallengeUseCaseMock(
         question: serverChallenge + wrongPinClientChallenge,
         timestamp: any(named: 'timestamp'),
       ),
     ).thenReturn(wrongPinClientResult);
 
     when(
-      () => repositoryMock.verifyResult(result: challengeResult),
+      () => verifyOcraResultUseCaseMock(result: challengeResult),
     ).thenAnswer((_) async => resultResponse);
 
     when(
-      () => repositoryMock.verifyResult(result: wrongPinResult),
+      () => verifyOcraResultUseCaseMock(result: wrongPinResult),
     ).thenAnswer((_) async => wrongPinResultResponse);
   });
 
   blocTest<OcraAuthenticationCubit, OcraAuthenticationState>(
     'Should start on an empty state',
-    build: () => OcraAuthenticationCubit(
-      ocraSuite: ocraSuite,
-      secret: secret,
-      repository: repositoryMock,
-      deviceId: deviceId,
-      ocraAuthentication: ocraAuthenticationMock,
-      challengeGenerator: ocraChallengeGeneratorMock,
-    ),
+    build: _buildCubit,
     verify: (c) => expect(c.state, OcraAuthenticationState()),
   );
 
   blocTest<OcraAuthenticationCubit, OcraAuthenticationState>(
     'Should generate a token successfully',
-    build: () => OcraAuthenticationCubit(
-      ocraSuite: ocraSuite,
-      secret: secret,
-      repository: repositoryMock,
-      deviceId: deviceId,
-      ocraAuthentication: ocraAuthenticationMock,
-      challengeGenerator: ocraChallengeGeneratorMock,
-    ),
+    build: _buildCubit,
     act: (c) {
       when(
-        () => ocraChallengeGeneratorMock.alphaNumericChallenge(8),
+        () => generateOcraChallengeUseCaseMock(),
       ).thenReturn(successfulClientChallenge);
 
       return c.generateToken();
@@ -177,44 +186,39 @@ void main() {
     ],
     verify: (c) {
       verify(
-        () => ocraChallengeGeneratorMock.alphaNumericChallenge(8),
+        () => generateOcraChallengeUseCaseMock(),
       ).called(1);
 
       verify(
-        () => ocraAuthenticationMock.solve(
+        () => solveOcraChallengeUseCaseMock(
           question: successfulClientChallenge + serverChallenge,
           timestamp: any(named: 'timestamp'),
         ),
       ).called(1);
       verify(
-        () => ocraAuthenticationMock.solve(
+        () => solveOcraChallengeUseCaseMock(
           question: serverChallenge + successfulClientChallenge,
           timestamp: any(named: 'timestamp'),
         ),
       ).called(1);
 
       verify(
-        () => repositoryMock.challenge(challenge: successfulOcraChallenge),
+        () => clientOcraChallengeUseCaseMock(
+          challenge: successfulOcraChallenge,
+        ),
       ).called(1);
       verify(
-        () => repositoryMock.verifyResult(result: challengeResult),
+        () => verifyOcraResultUseCaseMock(result: challengeResult),
       ).called(1);
     },
   );
 
   blocTest<OcraAuthenticationCubit, OcraAuthenticationState>(
     'Should handle a generic failure',
-    build: () => OcraAuthenticationCubit(
-      ocraSuite: ocraSuite,
-      secret: secret,
-      repository: repositoryMock,
-      deviceId: deviceId,
-      ocraAuthentication: ocraAuthenticationMock,
-      challengeGenerator: ocraChallengeGeneratorMock,
-    ),
+    build: _buildCubit,
     act: (c) {
       when(
-        () => ocraChallengeGeneratorMock.alphaNumericChallenge(8),
+        () => generateOcraChallengeUseCaseMock(),
       ).thenReturn(genericFailureClientChallenge);
 
       return c.generateToken();
@@ -225,44 +229,39 @@ void main() {
     ],
     verify: (c) {
       verify(
-        () => ocraChallengeGeneratorMock.alphaNumericChallenge(8),
+        () => generateOcraChallengeUseCaseMock(),
       ).called(1);
 
       verifyNever(
-        () => ocraAuthenticationMock.solve(
+        () => solveOcraChallengeUseCaseMock(
           question: successfulClientChallenge + serverChallenge,
           timestamp: any(named: 'timestamp'),
         ),
       );
       verifyNever(
-        () => ocraAuthenticationMock.solve(
+        () => solveOcraChallengeUseCaseMock(
           question: serverChallenge + successfulClientChallenge,
           timestamp: any(named: 'timestamp'),
         ),
       );
 
       verify(
-        () => repositoryMock.challenge(challenge: genericFailureOcraChallenge),
+        () => clientOcraChallengeUseCaseMock(
+          challenge: genericFailureOcraChallenge,
+        ),
       ).called(1);
       verifyNever(
-        () => repositoryMock.verifyResult(result: challengeResult),
+        () => verifyOcraResultUseCaseMock(result: challengeResult),
       );
     },
   );
 
   blocTest<OcraAuthenticationCubit, OcraAuthenticationState>(
     'Should handle a result mismatch',
-    build: () => OcraAuthenticationCubit(
-      ocraSuite: ocraSuite,
-      secret: secret,
-      repository: repositoryMock,
-      deviceId: deviceId,
-      ocraAuthentication: ocraAuthenticationMock,
-      challengeGenerator: ocraChallengeGeneratorMock,
-    ),
+    build: _buildCubit,
     act: (c) {
       when(
-        () => ocraChallengeGeneratorMock.alphaNumericChallenge(8),
+        () => generateOcraChallengeUseCaseMock(),
       ).thenReturn(resultMismatchClientChallenge);
 
       return c.generateToken();
@@ -275,44 +274,39 @@ void main() {
     ],
     verify: (c) {
       verify(
-        () => ocraChallengeGeneratorMock.alphaNumericChallenge(8),
+        () => generateOcraChallengeUseCaseMock(),
       ).called(1);
 
       verify(
-        () => ocraAuthenticationMock.solve(
+        () => solveOcraChallengeUseCaseMock(
           question: resultMismatchClientChallenge + serverChallenge,
           timestamp: any(named: 'timestamp'),
         ),
       ).called(1);
       verifyNever(
-        () => ocraAuthenticationMock.solve(
+        () => solveOcraChallengeUseCaseMock(
           question: serverChallenge + successfulClientChallenge,
           timestamp: any(named: 'timestamp'),
         ),
       );
 
       verify(
-        () => repositoryMock.challenge(challenge: resultMismatchOcraChallenge),
+        () => clientOcraChallengeUseCaseMock(
+          challenge: resultMismatchOcraChallenge,
+        ),
       ).called(1);
       verifyNever(
-        () => repositoryMock.verifyResult(result: challengeResult),
+        () => verifyOcraResultUseCaseMock(result: challengeResult),
       );
     },
   );
 
   blocTest<OcraAuthenticationCubit, OcraAuthenticationState>(
     'Should handle remaining attempts',
-    build: () => OcraAuthenticationCubit(
-      ocraSuite: ocraSuite,
-      secret: secret,
-      repository: repositoryMock,
-      deviceId: deviceId,
-      ocraAuthentication: ocraAuthenticationMock,
-      challengeGenerator: ocraChallengeGeneratorMock,
-    ),
+    build: _buildCubit,
     act: (c) {
       when(
-        () => ocraChallengeGeneratorMock.alphaNumericChallenge(8),
+        () => generateOcraChallengeUseCaseMock(),
       ).thenReturn(wrongPinClientChallenge);
 
       return c.generateToken();
@@ -326,23 +320,23 @@ void main() {
     ],
     verify: (c) {
       verify(
-        () => ocraChallengeGeneratorMock.alphaNumericChallenge(8),
+        () => generateOcraChallengeUseCaseMock(),
       ).called(1);
 
-      verify(() => ocraAuthenticationMock.solve(
+      verify(() => solveOcraChallengeUseCaseMock(
             question: wrongPinClientChallenge + serverChallenge,
             timestamp: any(named: 'timestamp'),
           )).called(1);
-      verify(() => ocraAuthenticationMock.solve(
+      verify(() => solveOcraChallengeUseCaseMock(
             question: serverChallenge + wrongPinClientChallenge,
             timestamp: any(named: 'timestamp'),
           )).called(1);
 
       verify(
-        () => repositoryMock.challenge(challenge: wrongPinOcraChallenge),
+        () => clientOcraChallengeUseCaseMock(challenge: wrongPinOcraChallenge),
       ).called(1);
       verify(
-        () => repositoryMock.verifyResult(result: wrongPinResult),
+        () => verifyOcraResultUseCaseMock(result: wrongPinResult),
       ).called(1);
     },
   );

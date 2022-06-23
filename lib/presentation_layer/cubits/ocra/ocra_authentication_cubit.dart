@@ -1,14 +1,10 @@
-import 'dart:math';
-
 import 'package:bloc/bloc.dart';
-import 'package:ocra_authentication/ocra_authentication.dart';
 
-import '../../../../../data_layer/network.dart';
-import '../../../../data_layer/data_layer.dart';
+import '../../../data_layer/network.dart';
+import '../../../domain_layer/models.dart';
+import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
 import '../../errors.dart';
-import '../../extensions.dart';
-import 'ocra_challenge_generator.dart';
 
 /// A cubit that provides the functionality to generate a new access token using
 /// the OCRA mutual authentication flow.
@@ -32,15 +28,14 @@ import 'ocra_challenge_generator.dart';
 /// In order to use this cubit [EnvironmentConfiguration.ocraSuite] must be
 /// configured.
 class OcraAuthenticationCubit extends Cubit<OcraAuthenticationState> {
-  final OcraAuthentication _ocraAuthentication;
-  final OcraChallengeGenerator _challengeGenerator;
-  final OcraRepository _repository;
+  final GenerateOcraChallengeUseCase _generateOcraChallengeUseCase;
+  final GenerateOcraTimestampUseCase _generateOcraTimestampUseCase;
+  final ClientOcraChallengeUseCase _clientChallengeOcraUseCase;
+  final SolveOcraChallengeUseCase _solveOcraChallengeUseCase;
+  final VerifyOcraResultUseCase _verifyOcraResultUseCase;
 
   /// The device identifier.
   final int _deviceId;
-
-  /// The configuration string for the OCRA algorithm.
-  final String _ocraSuite;
 
   /// Creates a new [OcraAuthenticationCubit].
   ///
@@ -48,23 +43,18 @@ class OcraAuthenticationCubit extends Cubit<OcraAuthenticationState> {
   /// meant to be passed, they are just there for unit tests.
   OcraAuthenticationCubit({
     required String secret,
-    required OcraRepository repository,
     required int deviceId,
-    required String ocraSuite,
-    // Should not be passed outside unit tests.
-    OcraAuthentication? ocraAuthentication,
-    // Should not be passed outside unit tests.
-    OcraChallengeGenerator? challengeGenerator,
-  })  : _ocraAuthentication = ocraAuthentication ??
-            OcraAuthentication(
-              secret: secret,
-              ocraSuite: ocraSuite,
-            ),
-        _deviceId = deviceId,
-        _ocraSuite = ocraSuite,
-        _challengeGenerator =
-            challengeGenerator ?? OcraChallengeGenerator(Random()),
-        _repository = repository,
+    required SolveOcraChallengeUseCase solveOcraChallengeUseCase,
+    required ClientOcraChallengeUseCase clientChallengeOcraUseCase,
+    required VerifyOcraResultUseCase verifyOcraResultUseCase,
+    required GenerateOcraChallengeUseCase generateOcraChallengeUseCase,
+    required GenerateOcraTimestampUseCase generateOcraTimestampUseCase,
+  })  : _deviceId = deviceId,
+        _solveOcraChallengeUseCase = solveOcraChallengeUseCase,
+        _clientChallengeOcraUseCase = clientChallengeOcraUseCase,
+        _verifyOcraResultUseCase = verifyOcraResultUseCase,
+        _generateOcraChallengeUseCase = generateOcraChallengeUseCase,
+        _generateOcraTimestampUseCase = generateOcraTimestampUseCase,
         super(OcraAuthenticationState());
 
   /// Generates a new access token using the OCRA mutual authentication flow.
@@ -79,29 +69,30 @@ class OcraAuthenticationCubit extends Cubit<OcraAuthenticationState> {
     );
 
     try {
-      final challenge = _generateChallenge();
-      final response = await _repository.challenge(
+      final challenge = _generateOcraChallengeUseCase();
+      final timestamp = _generateOcraTimestampUseCase();
+      final response = await _clientChallengeOcraUseCase(
         challenge: OcraChallenge(
           deviceId: _deviceId,
           challenge: challenge,
         ),
       );
 
-      final expectedResult = _ocraAuthentication.solve(
+      final expectedResult = _solveOcraChallengeUseCase(
         question: challenge + response.serverChallenge,
-        timestamp: _getTimestamp(),
+        timestamp: timestamp,
       );
 
       if (expectedResult != response.serverResponse) {
         throw OcraWrongResultException();
       }
 
-      final serverChallengeResult = _ocraAuthentication.solve(
+      final serverChallengeResult = _solveOcraChallengeUseCase(
         question: response.serverChallenge + challenge,
-        timestamp: _getTimestamp(),
+        timestamp: timestamp,
         password: password,
       );
-      final resultResponse = await _repository.verifyResult(
+      final resultResponse = await _verifyOcraResultUseCase(
         result: OcraChallengeResult(
           deviceId: _deviceId,
           result: serverChallengeResult,
@@ -135,64 +126,5 @@ class OcraAuthenticationCubit extends Cubit<OcraAuthenticationState> {
 
       rethrow;
     }
-  }
-
-  /// Returns a random question challenge generated according to the [ocraSuite]
-  /// configuration.
-  String _generateChallenge() {
-    final type = _ocraSuite.questionType;
-    final length = _ocraSuite.questionLength;
-    if (type == null || length == null) {
-      throw ArgumentError(
-        'The provided ocra suite does not contain '
-        'the challenge question specification',
-      );
-    }
-    switch (type) {
-      case 'N':
-        return _challengeGenerator.numericChallenge(length);
-      case 'A':
-        return _challengeGenerator.alphaNumericChallenge(length);
-      default:
-        throw UnsupportedError(
-          'Challenge question described by "$type" is not supported',
-        );
-    }
-  }
-
-  /// Returns the amount of time steps that passed since January 1st 1970 00:00.
-  ///
-  /// Returns null if the [ocraSuite] does not contain timestamp configuration.
-  ///
-  /// The time steps are defined in the [ocraSuite] as [1-59] seconds / minutes,
-  /// [1-48] hours or a number of days.
-  ///
-  /// More information regarding the [ocraSuite] can be found here:
-  /// https://datatracker.ietf.org/doc/html/rfc6287#section-6.3
-  int? _getTimestamp() {
-    final type = _ocraSuite.timestampType;
-    final timeStep = _ocraSuite.timeStep;
-    if (type == null || timeStep == null) {
-      return null;
-    }
-    var divider = 1000 * timeStep;
-    switch (type) {
-      case 'S':
-        break;
-      case 'M':
-        divider *= 60;
-        break;
-      case 'H':
-        divider *= 3600;
-        break;
-      case 'D':
-        divider *= 86400;
-        break;
-      default:
-        throw UnsupportedError(
-          'Timestamp described by "$type" is not supported',
-        );
-    }
-    return DateTime.now().toUtc().millisecondsSinceEpoch ~/ divider;
   }
 }

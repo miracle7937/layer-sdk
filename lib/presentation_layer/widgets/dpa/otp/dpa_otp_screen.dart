@@ -70,96 +70,124 @@ class _DPAOTPScreenState extends State<DPAOTPScreen>
     final isSteppingForward = state.actions.contains(
       DPAProcessBusyAction.steppingForward,
     );
-    final imageUrl = process.stepProperties?.backgroundUrl;
+
+    final isRequestingPhoneChange = state.actions.contains(
+      DPAProcessBusyAction.requestingPhoneChange,
+    );
+
+    final isResendingCode = state.actions.contains(
+      DPAProcessBusyAction.resendingCode,
+    );
+
+    final imageUrl = process.stepProperties?.image;
+
+    final isPhoneOTP = process.stepProperties?.maskedNumber != null;
 
     final effectiveHeader = widget.customDPAHeader ??
         DPAHeader(
           process: state.process,
         );
 
-    return Stack(
-      children: [
-        Positioned(
-          child: effectiveHeader,
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (imageUrl != null)
-              NetworkImageContainer(
-                imageURL: imageUrl,
-                customToken: EnvironmentConfiguration.current.defaultToken,
-              ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(
-                16.0,
-                imageUrl != null ? 24.0 : 0.0,
-                16.0,
-                0.0,
-              ),
-              child: Text(
-                translation
-                    .translate('enter_code_sent_to_placeholder')
-                    .replaceAll(
-                      '{phone}',
-                      process.stepProperties?.maskedNumber ?? '',
-                    ),
-                style: design.bodyM(),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12.0),
-              child: _PinWidgetRow(
-                onPinSet: _onPinSet,
-              ),
-            ),
-            DKButton(
-              title: resendEnabled
-                  ? translation.translate('resend')
-                  : translation
-                      .translate('resend_code_in_placeholder')
-                      .replaceAll(
-                        '{time}',
-                        _remainingTime.toMinutesTimestamp(),
+    return BlocListener<DPAProcessCubit, DPAProcessState>(
+      listenWhen: (previous, current) =>
+          previous.actions.contains(DPAProcessBusyAction.resendingCode) &&
+          !current.actions.contains(DPAProcessBusyAction.resendingCode),
+      listener: (_, __) => _startTimer(),
+      child: Stack(
+        children: [
+          Column(
+            children: [
+              effectiveHeader,
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (imageUrl != null)
+                        NetworkImageContainer(
+                          imageURL: imageUrl,
+                          customToken:
+                              EnvironmentConfiguration.current.defaultToken,
+                        ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(
+                          16.0,
+                          imageUrl != null ? 24.0 : 0.0,
+                          16.0,
+                          0.0,
+                        ),
+                        child: Text(
+                          isPhoneOTP
+                              ? translation
+                                  .translate('enter_code_sent_to_placeholder')
+                                  .replaceAll(
+                                    '{phone}',
+                                    process.stepProperties?.maskedNumber ?? '',
+                                  )
+                              : translation
+                                  .translate(
+                                    'enter_code_sent_to_email_placeholder',
+                                  )
+                                  .replaceAll(
+                                    '{email}',
+                                    process.stepProperties?.email ?? '',
+                                  ),
+                          style: design.bodyM(),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-              type: DKButtonType.brandPlain,
-              status:
-                  resendEnabled ? DKButtonStatus.idle : DKButtonStatus.disabled,
-              expands: false,
-              padding: const EdgeInsets.symmetric(vertical: 12.0),
-              onPressed: () {
-                if (!resendEnabled) return;
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12.0),
+                        child: _PinWidgetRow(
+                          onPinSet: _onPinSet,
+                        ),
+                      ),
+                      DKButton(
+                        title: resendEnabled
+                            ? translation.translate('resend')
+                            : translation
+                                .translate('resend_code_in_placeholder')
+                                .replaceAll(
+                                  '{time}',
+                                  _remainingTime.toMinutesTimestamp(),
+                                ),
+                        type: DKButtonType.brandPlain,
+                        status: isResendingCode
+                            ? DKButtonStatus.loading
+                            : resendEnabled
+                                ? DKButtonStatus.idle
+                                : DKButtonStatus.disabled,
+                        expands: false,
+                        padding: const EdgeInsets.symmetric(vertical: 12.0),
+                        onPressed: () {
+                          if (!resendEnabled) return;
 
-                context.read<DPAProcessCubit>().stepOrFinish(
-                      extra: DPAVariable(
-                        id: 'timeout',
-                        type: DPAVariableType.boolean,
-                        value: true,
-                        property: DPAVariableProperty(),
+                          context.read<DPAProcessCubit>().resendCode();
+                        },
                       ),
-                    );
-              },
-            ),
-            DKButton(
-              title: translation.translate('change_phone_number'),
-              type: DKButtonType.basePlain,
-              expands: false,
-              padding: const EdgeInsets.symmetric(vertical: 12.0),
-              onPressed: () => context.read<DPAProcessCubit>().stepOrFinish(
-                    extra: DPAVariable(
-                      id: 'rectify_mobile_number',
-                      type: DPAVariableType.boolean,
-                      value: true,
-                      property: DPAVariableProperty(),
-                    ),
+                      if (isPhoneOTP)
+                        DKButton(
+                          title: translation.translate('change_phone_number'),
+                          type: DKButtonType.basePlain,
+                          expands: false,
+                          padding: const EdgeInsets.symmetric(vertical: 12.0),
+                          status: isRequestingPhoneChange
+                              ? DKButtonStatus.loading
+                              : DKButtonStatus.idle,
+                          onPressed: () => context
+                              .read<DPAProcessCubit>()
+                              .requestPhoneNumberChange(),
+                        ),
+                    ],
                   ),
-            ),
-          ],
-        ),
-        if (isSteppingForward) _Loader(),
-      ],
+                ),
+              ),
+            ],
+          ),
+          if (isSteppingForward) DPAFullscreenLoader(),
+        ],
+      ),
     );
   }
 
@@ -217,6 +245,7 @@ class _PinWidgetRowState extends State<_PinWidgetRow>
   late final TextEditingController thirdPin;
   late final TextEditingController fourthPin;
 
+  late final FocusNode firstNode;
   late final FocusNode secondNode;
   late final FocusNode thirdNode;
   late final FocusNode fourthNode;
@@ -229,6 +258,7 @@ class _PinWidgetRowState extends State<_PinWidgetRow>
     thirdPin = TextEditingController();
     fourthPin = TextEditingController();
 
+    firstNode = FocusNode();
     secondNode = FocusNode();
     thirdNode = FocusNode();
     fourthNode = FocusNode();
@@ -241,6 +271,7 @@ class _PinWidgetRowState extends State<_PinWidgetRow>
     thirdPin.dispose();
     fourthPin.dispose();
 
+    firstNode.dispose();
     secondNode.dispose();
     thirdNode.dispose();
     fourthNode.dispose();
@@ -258,7 +289,9 @@ class _PinWidgetRowState extends State<_PinWidgetRow>
             controller: firstPin,
             onFill: () => _onPinUpdated(
               next: secondNode,
+              self: firstNode,
             ),
+            node: firstNode,
           ),
         ),
         Padding(
@@ -267,6 +300,7 @@ class _PinWidgetRowState extends State<_PinWidgetRow>
             controller: secondPin,
             onFill: () => _onPinUpdated(
               next: thirdNode,
+              self: secondNode,
             ),
             node: secondNode,
           ),
@@ -277,6 +311,7 @@ class _PinWidgetRowState extends State<_PinWidgetRow>
             controller: thirdPin,
             onFill: () => _onPinUpdated(
               next: fourthNode,
+              self: thirdNode,
             ),
             node: thirdNode,
           ),
@@ -286,7 +321,9 @@ class _PinWidgetRowState extends State<_PinWidgetRow>
           child: _PinWidget(
             controller: fourthPin,
             node: fourthNode,
-            onFill: _onPinUpdated,
+            onFill: () => _onPinUpdated(
+              self: fourthNode,
+            ),
           ),
         ),
       ],
@@ -294,6 +331,7 @@ class _PinWidgetRowState extends State<_PinWidgetRow>
   }
 
   void _onPinUpdated({
+    required FocusNode self,
     FocusNode? next,
   }) {
     final otp = [
@@ -306,7 +344,10 @@ class _PinWidgetRowState extends State<_PinWidgetRow>
     next?.requestFocus();
 
     // TODO: Remove this magic number.
-    if (otp.length == 4) widget.onPinSet(otp);
+    if (otp.length == 4) {
+      self.unfocus();
+      widget.onPinSet(otp);
+    }
   }
 }
 
@@ -356,27 +397,6 @@ class _PinWidget extends StatelessWidget {
         inputFormatters: [
           LengthLimitingTextInputFormatter(1),
         ],
-      ),
-    );
-  }
-}
-
-class _Loader extends StatelessWidget {
-  const _Loader({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final design = DesignSystem.of(context);
-
-    return Container(
-      // TODO: Add this color to the design system (modal/overlay)
-      color: Color(0xFF191A19).withOpacity(0.64),
-      child: Center(
-        child: DKLoader(
-          size: 72,
-          startColor: design.basePrimaryWhite,
-          endColor: design.basePrimaryWhite.withOpacity(0),
-        ),
       ),
     );
   }

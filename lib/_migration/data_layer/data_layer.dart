@@ -2,7 +2,6 @@
 library data_layer;
 
 export 'encryption.dart';
-export 'environment.dart';
 export 'errors.dart';
 export 'extensions.dart';
 export 'models.dart';

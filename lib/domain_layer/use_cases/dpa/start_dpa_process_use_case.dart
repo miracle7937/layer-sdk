@@ -10,16 +10,16 @@ class StartDPAProcessUseCase {
     required DPARepositoryInterface repository,
   }) : _repository = repository;
 
-  /// Starts a new DPA process using the given id, and the optional
+  /// Starts a new DPA process using the given key, and the optional
   /// variables.
   ///
   /// Returns a [DPAProcess] with the first step of this process.
   Future<DPAProcess> call({
-    required String id,
+    required String key,
     List<DPAVariable> variables = const [],
   }) =>
       _repository.startProcess(
-        id: id,
+        key: key,
         variables: variables,
       );
 }
