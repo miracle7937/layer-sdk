@@ -31,19 +31,18 @@ class OTPProvider {
   ///
   /// The optional [token] parameter can be provided to be used
   /// as an authorization header for the request.
-  Future<void> resendCustomerOTP({
+  Future<NetResponse> resendCustomerOTP({
     required int otpId,
     String? token,
-  }) {
-    return netClient.request(
-      netClient.netEndpoints.resendOTP,
-      data: {
-        'otp_id': otpId,
-      },
-      method: NetRequestMethods.post,
-      authorizationHeader: token,
-    );
-  }
+  }) =>
+      netClient.request(
+        netClient.netEndpoints.resendOTP,
+        data: {
+          'otp_id': otpId,
+        },
+        method: NetRequestMethods.post,
+        authorizationHeader: token,
+      );
 
   /// Requests a new 2FA authentication id for the provided `deviceId`.
   ///

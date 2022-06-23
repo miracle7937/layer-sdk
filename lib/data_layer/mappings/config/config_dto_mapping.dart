@@ -8,6 +8,7 @@ extension ConfigDTOMapping on ConfigDTO {
         showCustomersTab: showCustomersTab ?? false,
         internalServices:
             internalServices?.toInternalServices() ?? InternalServices(),
+        graphanaUrl: graphanaUrl ?? '',
       );
 }
 
