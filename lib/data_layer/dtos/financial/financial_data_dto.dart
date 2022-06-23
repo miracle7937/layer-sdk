@@ -1,5 +1,5 @@
-import '../../../../data_layer/dtos.dart';
-import '../helpers.dart';
+import '../../dtos.dart';
+import '../../helpers.dart';
 
 ///Data object that represents financial data
 class FinancialDataDTO {

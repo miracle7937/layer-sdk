@@ -1,14 +1,17 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
+import 'package:layer_sdk/features/financial_data.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockFinancialDataRepository extends Mock
-    implements FinancialDataRepository {}
+class MockLoadFinancialDataUseCase extends Mock
+    implements LoadFinancialDataUseCase {}
 
-final _repository = MockFinancialDataRepository();
+final _loadFinancialDataUseCase = MockLoadFinancialDataUseCase();
+
+late FinancialDataCubit _successCubit;
+
+late FinancialDataCubit _failureCubit;
 
 final _successId = '1';
 final _failureId = '2';
@@ -23,7 +26,7 @@ void main() {
   );
 
   when(
-    () => _repository.loadFinancialData(
+    () => _loadFinancialDataUseCase(
       customerId: _successId,
       forceRefresh: true,
     ),
@@ -32,7 +35,7 @@ void main() {
   );
 
   when(
-    () => _repository.loadFinancialData(
+    () => _loadFinancialDataUseCase(
       customerId: _successId,
       forceRefresh: false,
     ),
@@ -41,17 +44,26 @@ void main() {
   );
 
   when(
-    () => _repository.loadFinancialData(customerId: _failureId),
+    () => _loadFinancialDataUseCase(customerId: _failureId),
   ).thenAnswer(
     (_) async => throw Exception('Some error'),
   );
 
+  setUp(() {
+    _successCubit = FinancialDataCubit(
+      customerId: _successId,
+      loadFinancialDataUseCase: _loadFinancialDataUseCase,
+    );
+
+    _failureCubit = FinancialDataCubit(
+      customerId: _failureId,
+      loadFinancialDataUseCase: _loadFinancialDataUseCase,
+    );
+  });
+
   blocTest<FinancialDataCubit, FinancialDataState>(
     'Starts with empty state',
-    build: () => FinancialDataCubit(
-      customerId: _successId,
-      repository: _repository,
-    ),
+    build: () => _successCubit,
     verify: (c) => expect(
       c.state,
       FinancialDataState(
@@ -62,10 +74,7 @@ void main() {
 
   blocTest<FinancialDataCubit, FinancialDataState>(
     'Load retrieves the customer financial data successfully',
-    build: () => FinancialDataCubit(
-      customerId: _successId,
-      repository: _repository,
-    ),
+    build: () => _successCubit,
     act: (c) => c.load(),
     expect: () => [
       FinancialDataState(
@@ -81,7 +90,7 @@ void main() {
     ],
     verify: (c) {
       verify(
-        () => _repository.loadFinancialData(
+        () => _loadFinancialDataUseCase(
           customerId: _successId,
           forceRefresh: false,
         ),
@@ -91,10 +100,7 @@ void main() {
 
   blocTest<FinancialDataCubit, FinancialDataState>(
     'Load with force refresh',
-    build: () => FinancialDataCubit(
-      customerId: _successId,
-      repository: _repository,
-    ),
+    build: () => _successCubit,
     act: (c) => c.load(forceRefresh: true),
     expect: () => [
       FinancialDataState(
@@ -110,7 +116,7 @@ void main() {
     ],
     verify: (c) {
       verify(
-        () => _repository.loadFinancialData(
+        () => _loadFinancialDataUseCase(
           customerId: _successId,
           forceRefresh: true,
         ),
@@ -120,10 +126,7 @@ void main() {
 
   blocTest<FinancialDataCubit, FinancialDataState>(
     'Load emits error on failure',
-    build: () => FinancialDataCubit(
-      customerId: _failureId,
-      repository: _repository,
-    ),
+    build: () => _failureCubit,
     act: (c) => c.load(),
     errors: () => [
       isA<Exception>(),
@@ -141,7 +144,7 @@ void main() {
     ],
     verify: (c) {
       verify(
-        () => _repository.loadFinancialData(customerId: _failureId),
+        () => _loadFinancialDataUseCase(customerId: _failureId),
       ).called(1);
     },
   ); // Load emits error on failure

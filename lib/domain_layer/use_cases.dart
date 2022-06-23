@@ -47,6 +47,7 @@ export 'use_cases/dpa/upload_dpa_image_use_case.dart';
 export 'use_cases/experience/configure_user_experience_with_preferences_use_case.dart';
 export 'use_cases/experience/get_experience_and_configure_it_use_case.dart';
 export 'use_cases/experience_preferences/save_experience_preferences_use_case.dart';
+export 'use_cases/financial/load_financial_data_use_case.dart';
 export 'use_cases/loyalty/cashback_history/load_cashback_history_use_case.dart';
 export 'use_cases/loyalty/loyalty_points/load_all_loyalty_points_use_case.dart';
 export 'use_cases/loyalty/loyalty_points_exchange/confirm_second_factor_for_loyalty_points_exchange_use_case.dart';
