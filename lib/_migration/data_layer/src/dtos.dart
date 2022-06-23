@@ -1,14 +1,10 @@
 export 'DTOs/appointment_dto.dart';
-export 'DTOs/branch_activation_response_dto.dart';
 export 'DTOs/branch_freetime_dto.dart';
 export 'DTOs/category_dto.dart';
 export 'DTOs/change_user_password_dto.dart';
 export 'DTOs/device_session_dto.dart';
 export 'DTOs/financial_data_dto.dart';
 export 'DTOs/permissions/permission_module_dto.dart';
-export 'DTOs/queue/queue_dto.dart';
-export 'DTOs/queue/queue_requests_dto.dart';
-export 'DTOs/queue/request_dto.dart';
 export 'DTOs/recurrence_dto.dart';
 export 'DTOs/registration/authentication_dto.dart';
 export 'DTOs/registration/authentication_response_dto.dart';
