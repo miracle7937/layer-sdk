@@ -10,5 +10,4 @@ export 'src/providers/otp_provider.dart';
 export 'src/providers/permission_module_provider.dart';
 export 'src/providers/registration_provider.dart';
 export 'src/providers/transfer_provider.dart';
-export 'src/providers/upcoming_payment_provider.dart';
 export 'src/providers/user_provider.dart';

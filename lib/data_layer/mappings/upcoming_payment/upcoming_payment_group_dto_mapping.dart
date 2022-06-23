@@ -1,6 +1,6 @@
-import '../../models.dart';
-import '../dtos.dart';
-import '../mappings.dart';
+import '../../../domain_layer/models.dart';
+import '../../dtos.dart';
+import '../../mappings.dart';
 
 /// Extension that provides mappings for [UpcomingPaymentGroupDTO]
 extension UpcomingPaymentGroupDTOMapping on UpcomingPaymentGroupDTO {

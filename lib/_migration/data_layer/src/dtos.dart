@@ -1,5 +1,4 @@
 export 'DTOs/appointment_dto.dart';
-export 'DTOs/branch_activation_response_dto.dart';
 export 'DTOs/branch_freetime_dto.dart';
 export 'DTOs/category_dto.dart';
 export 'DTOs/change_user_password_dto.dart';
@@ -15,7 +14,5 @@ export 'DTOs/transfer/transfer_dto.dart';
 export 'DTOs/transfer/transfer_evaluation_dto.dart';
 export 'DTOs/transfer/transfer_recurrence_dto.dart';
 export 'DTOs/transfer/transfer_status_dto.dart';
-export 'DTOs/upcoming_payment_dto.dart';
-export 'DTOs/upcoming_payment_group_dto.dart';
 export 'DTOs/verify_otp_dto.dart';
 export 'DTOs/verify_pin_response_dto.dart';
