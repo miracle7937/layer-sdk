@@ -12,6 +12,7 @@ export 'features/alert.dart';
 export 'features/beneficiaries.dart';
 export 'features/bills.dart';
 export 'features/branch.dart';
+export 'features/branch_activation.dart';
 export 'features/branding.dart';
 export 'features/cards.dart';
 export 'features/certificate.dart';

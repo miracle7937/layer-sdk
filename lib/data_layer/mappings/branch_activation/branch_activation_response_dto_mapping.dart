@@ -1,6 +1,7 @@
-import '../../../../data_layer/mappings.dart';
-import '../../models.dart';
-import '../dtos.dart';
+import '../../../_migration/data_layer/models.dart';
+import '../../../domain_layer/models.dart';
+import '../../dtos.dart';
+import '../../mappings.dart';
 
 /// Extension that provides mapping from [BranchActivationResponseDTO]
 /// to [BranchActivationResponse].

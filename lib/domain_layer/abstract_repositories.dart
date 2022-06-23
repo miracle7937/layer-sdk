@@ -8,6 +8,7 @@ export 'abstract_repositories/audit/audit_repository_interface.dart';
 export 'abstract_repositories/beneficiary/beneficiary_repository_interface.dart';
 export 'abstract_repositories/bill/bill_repository_interface.dart';
 export 'abstract_repositories/branch/branch_repository_interface.dart';
+export 'abstract_repositories/branch_activation/branch_activation_repository_interface.dart';
 export 'abstract_repositories/branding/branding_repository_interface.dart';
 export 'abstract_repositories/card/card_repository_interface.dart';
 export 'abstract_repositories/certificate/certificate_repository_interface.dart';

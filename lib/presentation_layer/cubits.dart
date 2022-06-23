@@ -16,6 +16,8 @@ export 'cubits/bill/bill_cubit.dart';
 export 'cubits/bill/bill_states.dart';
 export 'cubits/branch/branch_cubit.dart';
 export 'cubits/branch/branch_states.dart';
+export 'cubits/branch_activation/branch_activation_cubit.dart';
+export 'cubits/branch_activation/branch_activation_state.dart';
 export 'cubits/branding/branding_cubit.dart';
 export 'cubits/branding/branding_states.dart';
 export 'cubits/card/card_cubit.dart';
