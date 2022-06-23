@@ -7,7 +7,7 @@ class MockUserRepository extends Mock implements UserRepository {}
 class MockUser extends Mock implements User {}
 
 late MockUserRepository _repository;
-late GetUserDetailsFromTokenUseCase _useCase;
+late LoadUserDetailsFromTokenUseCase _useCase;
 late MockUser _user;
 
 final _token = 'Bearer test';
@@ -15,7 +15,7 @@ final _token = 'Bearer test';
 void main() {
   setUp(() {
     _repository = MockUserRepository();
-    _useCase = GetUserDetailsFromTokenUseCase(repository: _repository);
+    _useCase = LoadUserDetailsFromTokenUseCase(repository: _repository);
 
     _user = MockUser();
 

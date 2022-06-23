@@ -11,6 +11,10 @@ class CheckBranchActivationCodeUseCase {
   }) : _repository = repository;
 
   /// Checks the passed branch activation code.
+  ///
+  /// The [useOTP] parameter is used for indicating if the branch activation
+  /// feature should return a second factor method when the bank has submitted
+  /// the code.
   Future<BranchActivationResponse?> call({
     required String code,
     bool useOTP = true,

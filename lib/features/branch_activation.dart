@@ -10,7 +10,7 @@ export '../domain_layer/models/user/user.dart';
 export '../domain_layer/use_cases/branch_activation/check_branch_activation_code_use_case.dart';
 export '../domain_layer/use_cases/branch_activation/verify_otp_for_branch_activation_use_case.dart';
 export '../domain_layer/use_cases/otp/resend_otp_use_case.dart';
-export '../domain_layer/use_cases/user/get_user_details_from_token_use_case.dart';
+export '../domain_layer/use_cases/user/load_user_details_from_token_use_case.dart';
 export '../domain_layer/use_cases/user/set_access_pin_for_user_use_case.dart';
 export '../presentation_layer/cubits/branch_activation/branch_activation_cubit.dart';
 export '../presentation_layer/cubits/branch_activation/branch_activation_state.dart';

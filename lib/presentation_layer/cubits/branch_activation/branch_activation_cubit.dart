@@ -13,7 +13,7 @@ class BranchActivationCubit extends Cubit<BranchActivationState> {
   final VerifyOTPForBranchActivationUseCase
       _verifyOTPForBranchActivationUseCase;
   final ResendOTPUseCase _resendOTPUseCase;
-  final GetUserDetailsFromTokenUseCase _getUserDetailsFromTokenUseCase;
+  final LoadUserDetailsFromTokenUseCase _loadUserDetailsFromTokenUseCase;
   final SetAccessPinForUserUseCase _setAccessPinForUserUseCase;
   final int _activationCodeLength;
 
@@ -36,7 +36,7 @@ class BranchActivationCubit extends Cubit<BranchActivationState> {
     required VerifyOTPForBranchActivationUseCase
         verifyOTPForBranchActivationUseCase,
     required ResendOTPUseCase resendOTPUseCase,
-    required GetUserDetailsFromTokenUseCase getUserDetailsFromTokenUseCase,
+    required LoadUserDetailsFromTokenUseCase loadUserDetailsFromTokenUseCase,
     required SetAccessPinForUserUseCase setAccessPinForUserUseCase,
     int activationCodeLength = 6,
     this.useOTP = true,
@@ -48,7 +48,7 @@ class BranchActivationCubit extends Cubit<BranchActivationState> {
         _verifyOTPForBranchActivationUseCase =
             verifyOTPForBranchActivationUseCase,
         _resendOTPUseCase = resendOTPUseCase,
-        _getUserDetailsFromTokenUseCase = getUserDetailsFromTokenUseCase,
+        _loadUserDetailsFromTokenUseCase = loadUserDetailsFromTokenUseCase,
         _setAccessPinForUserUseCase = setAccessPinForUserUseCase,
         _activationCodeLength = activationCodeLength,
         super(
@@ -242,7 +242,7 @@ class BranchActivationCubit extends Cubit<BranchActivationState> {
         return;
       }
 
-      final user = await _getUserDetailsFromTokenUseCase(
+      final user = await _loadUserDetailsFromTokenUseCase(
         token: state.activationResponse!.token!,
       );
 
