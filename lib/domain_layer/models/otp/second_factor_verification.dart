@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../../domain_layer/models.dart';
+import '../../models.dart';
 
 /// A model that represents the second factor verification data.
 class SecondFactorVerification extends Equatable {

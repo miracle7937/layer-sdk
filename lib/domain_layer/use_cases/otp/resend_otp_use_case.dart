@@ -1,14 +1,13 @@
-import '../../../_migration/data_layer/repositories.dart';
 import '../../../data_layer/network/net_response.dart';
+import '../../abstract_repositories.dart';
 
 /// Use case for resending an OTP.
 class ResendOTPUseCase {
-  /// TODO: Replace this with the abstract repository when available.
-  final OTPRepository _repository;
+  final OTPRepositoryInterface _repository;
 
   /// Creates a [ResendOTPUseCase].
   const ResendOTPUseCase({
-    required OTPRepository repository,
+    required OTPRepositoryInterface repository,
   }) : _repository = repository;
 
   /// Resends the OTP using the otp id.

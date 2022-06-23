@@ -1,10 +1,10 @@
-import '../../../../domain_layer/models.dart';
-import '../../models.dart';
+import '../../../domain_layer/abstract_repositories.dart';
+import '../../../domain_layer/models.dart';
+import '../../dtos.dart';
 import '../../providers.dart';
-import '../dtos.dart';
 
 /// A repository that can be used to handle the 2FA.
-class SecondFactorRepository {
+class SecondFactorRepository implements SecondFactorRepositoryInterface {
   final OTPProvider _otpProvider;
 
   /// Creates [RegistrationRepository].
@@ -13,6 +13,10 @@ class SecondFactorRepository {
   }) : _otpProvider = otpProvider;
 
   /// Verifies the given second factor for a customer user.
+  ///
+  /// The optional [token] parameter can be provided to be used
+  /// as an authorization header for the request.
+  @override
   Future<void> verifyCustomerSecondFactor({
     required SecondFactorVerification secondFactor,
     required String token,
@@ -37,6 +41,7 @@ class SecondFactorRepository {
   ///
   /// The optional [token] parameter can be provided to be used
   /// as an authorization header for the request.
+  @override
   Future<void> resendCustomerOTP({
     required int otpId,
     String? token,
@@ -51,6 +56,7 @@ class SecondFactorRepository {
   ///
   /// The `deviceID` parameter represents the current device the console user
   /// is trying to login with.
+  @override
   Future<int?> verifyConsoleUserDeviceLogin({
     required int deviceId,
     String method = 'OTP',
@@ -60,9 +66,13 @@ class SecondFactorRepository {
         method: method,
       );
 
-  /// Verifies the OTP with the provided value.
+  /// Verifies the OTP with the provided `value` and `otpId`.
+  ///
+  /// The `deviceID` parameter represents the current device the console user
+  /// is trying to login with.
   ///
   /// Returns whether or not the OTP value is correct.
+  @override
   Future<bool> verifyConsoleUserOTP({
     required int otpId,
     required int deviceId,

@@ -1,6 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
 import 'package:layer_sdk/data_layer/network.dart';
 import 'package:layer_sdk/domain_layer/models.dart';
 import 'package:layer_sdk/features/branch_activation.dart';

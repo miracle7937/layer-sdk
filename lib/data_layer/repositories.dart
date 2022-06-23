@@ -30,6 +30,8 @@ export 'repositories/loyalty/loyalty_points_transaction/loyalty_points_transacti
 export 'repositories/loyalty/offers/offer_repository.dart';
 export 'repositories/message/message_repository.dart';
 export 'repositories/ocra/ocra_repository.dart';
+export 'repositories/otp/otp_repository.dart';
+export 'repositories/otp/second_factor_repository.dart';
 export 'repositories/payments/payments_repository.dart';
 export 'repositories/product/product_repository.dart';
 export 'repositories/queue/queue_request_repository.dart';

@@ -76,6 +76,7 @@ export 'models/ocra/ocra_challenge_response.dart';
 export 'models/ocra/ocra_challenge_result.dart';
 export 'models/ocra/ocra_challenge_result_response.dart';
 export 'models/otp/otp_status.dart';
+export 'models/otp/second_factor_verification.dart';
 export 'models/payment/payment.dart';
 export 'models/permissions/data/base_permission_data.dart';
 export 'models/permissions/data/beneficiary_permission_data.dart';

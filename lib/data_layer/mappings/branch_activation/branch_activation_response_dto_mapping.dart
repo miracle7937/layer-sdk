@@ -1,4 +1,3 @@
-import '../../../_migration/data_layer/models.dart';
 import '../../../domain_layer/models.dart';
 import '../../dtos.dart';
 import '../../mappings.dart';
