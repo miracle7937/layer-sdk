@@ -3,7 +3,7 @@ import 'package:bloc/bloc.dart';
 import '../../../data_layer/network.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
-import 'experience_state.dart';
+import '../../cubits.dart';
 
 /// A cubit that manages the state of the [Experience]s.
 class ExperienceCubit extends Cubit<ExperienceState> {

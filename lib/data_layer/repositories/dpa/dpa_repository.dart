@@ -254,18 +254,18 @@ class DPARepository implements DPARepositoryInterface {
     );
   }
 
-  /// Starts a new DPA process. using the given id, and the optional
+  /// Starts a new DPA process using the given key, and the optional
   /// variables.
   ///
   /// Returns a [DPAProcess] with the first step of this process.
   Future<DPAProcess> startProcess({
-    required String id,
+    required String key,
     List<DPAVariable> variables = const [],
   }) async {
-    _log.finest('Starting process id $id');
+    _log.finest('Starting process id $key');
 
     final dto = await _provider.startProcess(
-      id: id,
+      key: key,
       variables: variables.toDPAVariableDTOList(),
     );
 

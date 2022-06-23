@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:collection/collection.dart';
 
 import '../../helpers.dart';
@@ -39,11 +37,11 @@ class DPAProcessStepPropertiesDTO {
   /// The number mask.
   final String? maskedNumber;
 
-  /// An optional SDK configuration.
-  final DPASDKConfigDTO? sdkConfig;
+  /// An optional jumio configuration.
+  final DPAJumioConfigDTO? jumioConfig;
 
-  /// Block // TODO: see what this is.
-  final String? block;
+  /// Defines the screen type that should be blocked (Automatically finished)
+  final DPAScreenBlockDTO? block;
 
   /// An email address
   final String? email;
@@ -70,7 +68,7 @@ class DPAProcessStepPropertiesDTO {
     this.showSaveButton,
     this.screenType,
     this.maskedNumber,
-    this.sdkConfig,
+    this.jumioConfig,
     this.block,
     this.email,
     this.bgImagePath,
@@ -96,8 +94,9 @@ class DPAProcessStepPropertiesDTO {
             ? null
             : DPAScreenTypeDTO(json['screen'] ?? json['screen_type']),
         maskedNumber: json['masked_number'],
-        sdkConfig: DPASDKConfigDTO.fromJson(json),
-        block: json['block'],
+        jumioConfig:
+            json['sdk'] == null ? null : DPAJumioConfigDTO.fromJson(json),
+        block: json['block'] == null ? null : DPAScreenBlockDTO(json['block']),
         email: json['email'],
         bgImagePath: json['image_bg'],
         delay: json['delay'],
@@ -107,97 +106,28 @@ class DPAProcessStepPropertiesDTO {
       );
 }
 
+/// TODO: this sdk config only works for jumio for the moment. If a new sdk
+/// was needed on the future, we would need to refactor this.
 /// Holds the SDK configuration for a DPA step.
-class DPASDKConfigDTO {
-  /// The sdk package.
-  final DPASDKPackageDTO? sdk;
+class DPAJumioConfigDTO {
+  /// The authorization token.
+  final String? authorizationToken;
 
-  /// The API token
-  final String? apiToken;
-
-  /// The API secret
-  final String? apiSecret;
-
-  /// The data center to connect to
+  /// The data center to connect to.
   final String? dataCenter;
 
-  /// The SDK type.
-  final DPASDKTypeDTO? type;
-
-  /// Extra options.
-  final Map<String, dynamic>? options;
-
-  /// Creates a new [DPASDKConfigDTO].
-  DPASDKConfigDTO({
-    this.sdk,
-    this.apiToken,
-    this.apiSecret,
+  /// Creates a new [DPAJumioConfigDTO].
+  DPAJumioConfigDTO({
+    this.authorizationToken,
     this.dataCenter,
-    this.type,
-    this.options,
   });
 
-  /// Creates a new [DPASDKConfigDTO] from a JSON.
-  factory DPASDKConfigDTO.fromJson(Map<String, dynamic> json) =>
-      DPASDKConfigDTO(
-        sdk: DPASDKPackageDTO.fromRaw(json['sdk']),
-        apiToken: json['api_token'],
-        apiSecret: json['api_secret'],
+  /// Creates a new [DPAJumioConfigDTO] from a JSON.
+  factory DPAJumioConfigDTO.fromJson(Map<String, dynamic> json) =>
+      DPAJumioConfigDTO(
+        authorizationToken: json['authorization_token'],
         dataCenter: json['data_center'],
-        type: DPASDKTypeDTO.fromRaw(json['type']),
-        options: json['conf'] == null ? null : jsonDecode(json['conf']),
       );
-}
-
-/// The SDK package.
-class DPASDKPackageDTO extends EnumDTO {
-  /// Jumio package.
-  static const jumio = DPASDKPackageDTO._internal('jumio');
-
-  /// The available values.
-  static const List<DPASDKPackageDTO> values = [
-    jumio,
-  ];
-
-  const DPASDKPackageDTO._internal(String value) : super.internal(value);
-
-  /// Creates a new [DPASDKPackageDTO] from a `String` value.
-  static DPASDKPackageDTO? fromRaw(String? raw) => values.firstWhereOrNull(
-        (val) => val.value == raw,
-      );
-
-  @override
-  String toString() => 'DPASDKPackage{$value}';
-}
-
-/// The SDK type.
-class DPASDKTypeDTO extends EnumDTO {
-  /// Netverify
-  static const netverify = DPASDKTypeDTO._internal('NetVerify');
-
-  /// Document verification
-  static const documentVerification =
-      DPASDKTypeDTO._internal('DocumentVerification');
-
-  /// Authentication
-  static const authentication = DPASDKTypeDTO._internal('Authentication');
-
-  /// The available values.
-  static const List<DPASDKTypeDTO> values = [
-    netverify,
-    documentVerification,
-    authentication,
-  ];
-
-  const DPASDKTypeDTO._internal(String value) : super.internal(value);
-
-  /// Creates a new [DPASDKTypeDTO] from a `String` value.
-  static DPASDKTypeDTO? fromRaw(String? raw) => values.firstWhereOrNull(
-        (val) => val.value == raw,
-      );
-
-  @override
-  String toString() => 'DPASDKType{$value}';
 }
 
 /// The type of property for this step.
@@ -291,4 +221,32 @@ class DPAScreenAlignmentDTO extends EnumDTO {
 
   @override
   String toString() => 'DPAScreenAlignmentDTO{$value}';
+}
+
+/// All available DPA blocks.
+class DPAScreenBlockDTO extends EnumDTO {
+  /// Nothing should be blocked.
+  static const none = DPAScreenBlockDTO._internal('');
+
+  /// Email screen should be automatically finished
+  static const email = DPAScreenBlockDTO._internal(
+    'email',
+  );
+
+  /// The available values.
+  static const List<DPAScreenBlockDTO> values = [
+    none,
+    email,
+  ];
+
+  const DPAScreenBlockDTO._internal(String value) : super.internal(value);
+
+  /// Creates a new [DPAScreenBlockDTO] from a `String` value.
+  factory DPAScreenBlockDTO(String raw) => values.singleWhere(
+        (val) => val.value == raw,
+        orElse: () => DPAScreenBlockDTO.none,
+      );
+
+  @override
+  String toString() => 'DPAScreenBlockDTO{$value}';
 }

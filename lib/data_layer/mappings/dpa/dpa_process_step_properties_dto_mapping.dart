@@ -25,6 +25,9 @@ extension DPAProcessStepPropertiesDTOMapping on DPAProcessStepPropertiesDTO {
         feedback: feedback,
         alignment: alignment?.toDPAScreenAlignment() ??
             DPAScreenAlignment.descriptionImage,
+        jumioConfig: jumioConfig?.toJumioConfig(),
+        delay: delay,
+        block: block?.toDPAScreenBlock() ?? DPAScreenBlock.none,
       );
 
   /// Checks if this [DPAProcessStepPropertiesDTO] has a valid URL and appends
@@ -45,6 +48,15 @@ extension DPAProcessStepPropertiesDTOMapping on DPAProcessStepPropertiesDTO {
 
     return image;
   }
+}
+
+/// Extension that provides mappings for [DPAJumioConfigDTO].
+extension DPAJumioConfigDTOMapping on DPAJumioConfigDTO {
+  /// Maps into a [DPAJumioConfig].
+  DPAJumioConfig toJumioConfig() => DPAJumioConfig(
+        authorizationToken: authorizationToken,
+        dataCenter: dataCenter,
+      );
 }
 
 /// Extension that provides mappings for [DPAPropertyTypeDTO]
@@ -105,6 +117,27 @@ extension DPAScreenAlignmentDTOMapping on DPAScreenAlignmentDTO {
         throw MappingException(
           from: DPAScreenAlignmentDTO,
           to: DPAScreenAlignment,
+          value: this,
+        );
+    }
+  }
+}
+
+/// Extension that provides mappings for [DPAScreenBlockDTO].
+extension DPAScreenBlockDTOMapping on DPAScreenBlockDTO {
+  /// Maps into a [DPAScreenBlock].
+  DPAScreenBlock toDPAScreenBlock() {
+    switch (this) {
+      case DPAScreenBlockDTO.none:
+        return DPAScreenBlock.none;
+
+      case DPAScreenBlockDTO.email:
+        return DPAScreenBlock.email;
+
+      default:
+        throw MappingException(
+          from: DPAScreenBlockDTO,
+          to: DPAScreenBlock,
           value: this,
         );
     }

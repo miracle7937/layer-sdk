@@ -271,6 +271,10 @@ class DPAVariable extends Equatable {
     if (v.value is String) {
       final stringValue = v.value!.toString();
 
+      if (stringValue.isEmpty && v.constraints.required) {
+        DPAValidationError.required;
+      }
+
       if (stringValue.length < (v.constraints.minLength ?? 0)) {
         return DPAValidationError.minLength;
       }

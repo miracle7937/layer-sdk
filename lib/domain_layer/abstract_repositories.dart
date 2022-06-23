@@ -24,6 +24,7 @@ export 'abstract_repositories/loyalty/loyalty_points_rate/loyalty_points_rate_re
 export 'abstract_repositories/loyalty/loyalty_points_transaction/loyalty_points_transaction_repository_interface.dart';
 export 'abstract_repositories/loyalty/offers/offers_repository_interface.dart';
 export 'abstract_repositories/message/message_repository_interface.dart';
+export 'abstract_repositories/ocra/ocra_repository_interface.dart';
 export 'abstract_repositories/payments/payments_repository_interface.dart';
 export 'abstract_repositories/product/product_repository_interface.dart';
 export 'abstract_repositories/role/roles_repository_interface.dart';
