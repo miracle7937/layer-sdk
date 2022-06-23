@@ -40,7 +40,9 @@ class DPATaskDescription extends StatelessWidget {
             child: Text(
               taskDescription,
               style: design.bodyM(),
-              textAlign: TextAlign.center,
+              textAlign: alignment == DPAScreenAlignment.imageDescription
+                  ? TextAlign.left
+                  : TextAlign.center,
             ),
           );
 
