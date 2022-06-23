@@ -1,4 +1,4 @@
-import '../../models.dart';
+import '../../../features/financial_data.dart';
 
 /// An abstract repository for the financial data
 abstract class FinancialDataRepositoryInterface {
