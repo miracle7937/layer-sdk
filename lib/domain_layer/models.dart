@@ -19,6 +19,7 @@ export 'models/card/card_preferences.dart';
 export 'models/card/card_transaction.dart';
 export 'models/card/card_type.dart';
 export 'models/category/category.dart';
+export 'models/checkbook/checkbook.dart';
 export 'models/config/config.dart';
 export 'models/country/country.dart';
 export 'models/currency/currency.dart';

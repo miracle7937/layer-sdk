@@ -13,6 +13,7 @@ export 'mappings/card/card_dto_mapping.dart';
 export 'mappings/card/card_preferences_dto_mapping.dart';
 export 'mappings/card/card_transaction_dto_mapping.dart';
 export 'mappings/category/category_dto_mapping.dart';
+export 'mappings/checkbook/checkbook_dto_mapping.dart';
 export 'mappings/config/config_dto_mapping.dart';
 export 'mappings/country/country_dto_mapping.dart';
 export 'mappings/currency/currency_dto_mapping.dart';
