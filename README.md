@@ -24,3 +24,4 @@ This package contains a copy of our current 3 layers (Flutter, Business and Data
   - `LoyaltyPointsExpiration`
   - `LoyaltyPointsRateRepository`
   - `LoyaltyPointsTransactionRepository`
+- The `AuditState` class was renamed to `CustomerAuditsState` to match the cubit's naming.

@@ -13,13 +13,16 @@ class CheckbookRepository implements CheckbookRepositoryInterface {
   }) : _provider = provider;
 
   /// List checkbooks of the provided customer ID
+  ///
+  /// The [limit] and [offset] parameters can be used for pagination purposes.
+  /// Use the [sort] field for filtering.
   @override
   Future<List<Checkbook>> list({
     required String customerId,
     bool forceRefresh = false,
     int? limit,
     int? offset,
-    CheckbookSort? sortBy,
+    CheckbookSort? sort,
     bool descendingOrder = true,
   }) async {
     final dtos = await _provider.listCustomerCheckbooks(
@@ -27,7 +30,7 @@ class CheckbookRepository implements CheckbookRepositoryInterface {
       forceRefresh: forceRefresh,
       limit: limit,
       offset: offset,
-      sortBy: sortBy?.toFieldName(),
+      sortBy: sort?.toFieldName(),
       descendingOrder: descendingOrder,
     );
 

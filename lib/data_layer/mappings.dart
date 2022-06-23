@@ -5,6 +5,7 @@ export 'mappings/account/account_preferences_dto_mapping.dart';
 export 'mappings/account_loan/account_loan_dto_mapping.dart';
 export 'mappings/account_loan/account_loan_payment_dto_mapping.dart';
 export 'mappings/account_transfaction/account_transaction_dto_mapping.dart';
+export 'mappings/audit/audit_dto_mapping.dart';
 export 'mappings/beneficiary/beneficiary_dto_mapping.dart';
 export 'mappings/bill/bill_dto_mapping.dart';
 export 'mappings/branch/branch_dto_mapping.dart';

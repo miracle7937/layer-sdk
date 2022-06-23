@@ -6,6 +6,7 @@ export 'dtos/account/account_type_dto.dart';
 export 'dtos/account_loan/account_loan_dto.dart';
 export 'dtos/account_loan/account_loan_payment_dto.dart';
 export 'dtos/account_transfaction/account_transaction_dto.dart';
+export 'dtos/audit/audit_dto.dart';
 export 'dtos/beneficiary/beneficiary_dto.dart';
 export 'dtos/branch/branch_dto.dart';
 export 'dtos/branding/branding_dto.dart';
