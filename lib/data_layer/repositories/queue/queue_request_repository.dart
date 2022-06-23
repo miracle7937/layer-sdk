@@ -1,9 +1,10 @@
-import '../../models.dart';
+import '../../../domain_layer/abstract_repositories.dart';
+import '../../../domain_layer/models.dart';
+import '../../mappings.dart';
 import '../../providers.dart';
-import '../mappings.dart';
 
 /// Handles all the Queues/Requests data
-class QueueRequestRepository {
+class QueueRequestRepository implements QueueRepositoryInterface {
   final QueueRequestProvider _provider;
 
   /// Creates a new [QueueRequestRepository] instance
@@ -13,9 +14,10 @@ class QueueRequestRepository {
 
   /// Retrieves a list of [QueueRequest] from the console service based
   /// on the supplied limit and offset
+  @override
   Future<List<QueueRequest>> list({
-    int limit = 50,
-    int offset = 0,
+    int? limit,
+    int? offset,
     bool forceRefresh = true,
   }) async {
     final queueRequestDTO = await _provider.list(
@@ -50,6 +52,7 @@ class QueueRequestRepository {
   }
 
   /// Accepts a [QueueRequest] item
+  @override
   Future<bool> accept(
     String requestId, {
     required bool isRequest,
@@ -58,6 +61,7 @@ class QueueRequestRepository {
   }
 
   /// Rejects a [QueueRequest] item
+  @override
   Future<bool> reject(
     String requestId, {
     required bool isRequest,

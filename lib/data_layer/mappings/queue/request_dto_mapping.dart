@@ -1,4 +1,4 @@
-import '../../../models.dart';
+import '../../../domain_layer/models.dart';
 import '../../dtos.dart';
 
 /// Extension that provides mapping for [QueueDTO]

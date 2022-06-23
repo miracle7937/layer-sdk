@@ -1,22 +1,27 @@
 import 'package:bloc/bloc.dart';
 
 import '../../../../../../data_layer/network.dart';
-import '../../../data_layer/data_layer.dart';
-import 'queue_request_states.dart';
+import '../../../domain_layer/models.dart';
+import '../../../domain_layer/use_cases.dart';
+import '../../cubits.dart';
 
 /// Cubit responsible for retrieving the list of [QueueRequest]
 class QueueRequestCubit extends Cubit<QueueRequestStates> {
-  final QueueRequestRepository _repository;
-
-  // TODO(VF): Move this property to this cubit's state.
-  /// Maximum number of transactions to load at a time.
-  final int limit;
+  final LoadQueuesUseCase _loadQueuesUseCase;
+  final AcceptQueueUseCase _acceptQueueUseCase;
+  final RejectQueueUseCase _rejectQueueUseCase;
+  final RemoveQueueFromRequestsUseCase _removeQueueFromRequestsUseCase;
 
   /// Creates a new instance of [CardTransactionsCubit]
   QueueRequestCubit({
-    required QueueRequestRepository repository,
-    this.limit = 50,
-  })  : _repository = repository,
+    required LoadQueuesUseCase loadQueuesUseCase,
+    required AcceptQueueUseCase acceptQueueUseCase,
+    required RejectQueueUseCase rejectQueueUseCase,
+    required RemoveQueueFromRequestsUseCase removeQueueFromRequestsUseCase,
+  })  : _loadQueuesUseCase = loadQueuesUseCase,
+        _acceptQueueUseCase = acceptQueueUseCase,
+        _rejectQueueUseCase = rejectQueueUseCase,
+        _removeQueueFromRequestsUseCase = removeQueueFromRequestsUseCase,
         super(QueueRequestStates());
 
   /// Loads the most recent requests
@@ -33,10 +38,10 @@ class QueueRequestCubit extends Cubit<QueueRequestStates> {
     );
 
     try {
-      final offset = loadMore ? state.offset + limit : 0;
+      final offset = loadMore ? state.offset + state.limit : 0;
 
-      final requests = await _repository.list(
-        limit: limit,
+      final requests = await _loadQueuesUseCase(
+        limit: state.limit,
         offset: offset,
         forceRefresh: forceRefresh,
       );
@@ -49,7 +54,7 @@ class QueueRequestCubit extends Cubit<QueueRequestStates> {
           requests: list,
           busy: false,
           busyOnFirstLoad: false,
-          canLoadMore: requests.length >= limit,
+          canLoadMore: requests.length >= state.limit,
           offset: offset,
         ),
       );
@@ -83,7 +88,7 @@ class QueueRequestCubit extends Cubit<QueueRequestStates> {
     );
 
     try {
-      final accepted = await _repository.accept(
+      final accepted = await _acceptQueueUseCase(
         queueRequest.id!,
         isRequest: queueRequest.isRequest,
       );
@@ -92,8 +97,9 @@ class QueueRequestCubit extends Cubit<QueueRequestStates> {
         state.copyWith(
           busy: false,
           requests: accepted
-              ? _removeFromRequests(
-                  queueRequest.id!,
+              ? _removeQueueFromRequestsUseCase(
+                  requests: state.requests,
+                  requestId: queueRequest.id!,
                 )
               : state.requests,
           error: accepted
@@ -130,7 +136,7 @@ class QueueRequestCubit extends Cubit<QueueRequestStates> {
     );
 
     try {
-      final rejected = await _repository.reject(
+      final rejected = await _rejectQueueUseCase(
         queueRequest.id!,
         isRequest: queueRequest.isRequest,
       );
@@ -139,8 +145,9 @@ class QueueRequestCubit extends Cubit<QueueRequestStates> {
         state.copyWith(
           busy: false,
           requests: rejected
-              ? _removeFromRequests(
-                  queueRequest.id!,
+              ? _removeQueueFromRequestsUseCase(
+                  requests: state.requests,
+                  requestId: queueRequest.id!,
                 )
               : state.requests,
           error: rejected
@@ -160,9 +167,5 @@ class QueueRequestCubit extends Cubit<QueueRequestStates> {
         ),
       );
     }
-  }
-
-  List<QueueRequest> _removeFromRequests(String requestId) {
-    return state.requests.where((x) => x.id != requestId).toList();
   }
 }
