@@ -1,16 +1,16 @@
 import '../../abstract_repositories.dart';
 import '../../models.dart';
 
-/// Use case for getting a list of upcoming payments.
-class GetUpcomingPaymentsUseCase {
+/// Use case for loading a list of upcoming payments.
+class LoadUpcomingPaymentsUseCase {
   final UpcomingPaymentRepositoryInterface _repository;
 
-  /// Creates a new [GetUpcomingPaymentsUseCase].
-  const GetUpcomingPaymentsUseCase({
+  /// Creates a new [LoadUpcomingPaymentsUseCase].
+  const LoadUpcomingPaymentsUseCase({
     required UpcomingPaymentRepositoryInterface repository,
   }) : _repository = repository;
 
-  /// Gets the upcoming payments.
+  /// Loads the upcoming payments.
   ///
   /// Use the [cardId] to get only the upcoming payments related to that card.
   /// The [type] parameter is used for filtering purposes.

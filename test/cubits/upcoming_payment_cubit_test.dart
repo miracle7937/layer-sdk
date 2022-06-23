@@ -6,18 +6,18 @@ import 'package:layer_sdk/presentation_layer/utils.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockUpcomingPaymentRepository extends Mock
-    implements UpcomingPaymentRepository {}
+class MockLoadCustomerUpcomingPaymentsUseCase extends Mock
+    implements LoadCustomerUpcomingPaymentsUseCase {}
 
-late MockUpcomingPaymentRepository _repositoryMock;
+class MockLoadUpcomingPaymentsUseCase extends Mock
+    implements LoadUpcomingPaymentsUseCase {}
 
-late GetCustomerUpcomingPaymentsUseCase _getCustomerUpcomingPaymentsUseCase;
-late GetUpcomingPaymentsUseCase _getUpcomingPaymentsUseCase;
+late MockLoadCustomerUpcomingPaymentsUseCase
+    _loadCustomerUpcomingPaymentsUseCase;
+late MockLoadUpcomingPaymentsUseCase _loadUpcomingPaymentsUseCase;
 
 late List<UpcomingPayment> _payments;
-
 late List<UpcomingPayment> _cardPayments;
-
 late UpcomingPaymentGroup _paymentsGroup;
 
 final _cardId = 'cardId';
@@ -58,28 +58,25 @@ void main() {
   );
 
   setUp(() {
-    _repositoryMock = MockUpcomingPaymentRepository();
-
-    _getCustomerUpcomingPaymentsUseCase =
-        GetCustomerUpcomingPaymentsUseCase(repository: _repositoryMock);
-    _getUpcomingPaymentsUseCase =
-        GetUpcomingPaymentsUseCase(repository: _repositoryMock);
+    _loadCustomerUpcomingPaymentsUseCase =
+        MockLoadCustomerUpcomingPaymentsUseCase();
+    _loadUpcomingPaymentsUseCase = MockLoadUpcomingPaymentsUseCase();
 
     when(
-      () => _repositoryMock.list(
+      () => _loadUpcomingPaymentsUseCase(
         forceRefresh: any(named: 'forceRefresh'),
       ),
     ).thenAnswer((_) async => _payments);
 
     when(
-      () => _repositoryMock.list(
+      () => _loadUpcomingPaymentsUseCase(
         cardId: _cardId,
         forceRefresh: any(named: 'forceRefresh'),
       ),
     ).thenAnswer((_) async => _cardPayments);
 
     when(
-      () => _repositoryMock.listAllUpcomingPayments(
+      () => _loadCustomerUpcomingPaymentsUseCase(
         customerID: any(named: 'customerID'),
         limit: any(named: 'limit'),
         offset: any(named: 'offset'),
@@ -91,8 +88,8 @@ void main() {
   blocTest<UpcomingPaymentCubit, UpcomingPaymentState>(
     'Should start on an empty state',
     build: () => UpcomingPaymentCubit(
-      getCustomerUpcomingPaymentsUseCase: _getCustomerUpcomingPaymentsUseCase,
-      getUpcomingPaymentsUseCase: _getUpcomingPaymentsUseCase,
+      loadCustomerUpcomingPaymentsUseCase: _loadCustomerUpcomingPaymentsUseCase,
+      loadUpcomingPaymentsUseCase: _loadUpcomingPaymentsUseCase,
       customerId: _customerId,
       limit: _limit,
     ),
@@ -104,8 +101,8 @@ void main() {
   blocTest<UpcomingPaymentCubit, UpcomingPaymentState>(
     'Should load all upcoming payments',
     build: () => UpcomingPaymentCubit(
-      getCustomerUpcomingPaymentsUseCase: _getCustomerUpcomingPaymentsUseCase,
-      getUpcomingPaymentsUseCase: _getUpcomingPaymentsUseCase,
+      loadCustomerUpcomingPaymentsUseCase: _loadCustomerUpcomingPaymentsUseCase,
+      loadUpcomingPaymentsUseCase: _loadUpcomingPaymentsUseCase,
       customerId: _customerId,
       limit: _limit,
     ),
@@ -126,7 +123,7 @@ void main() {
     ],
     verify: (c) {
       verify(
-        () => _repositoryMock.list(),
+        () => _loadUpcomingPaymentsUseCase(),
       ).called(1);
     },
   );
@@ -134,8 +131,8 @@ void main() {
   blocTest<UpcomingPaymentCubit, UpcomingPaymentState>(
     'Should load upcoming payments for card id',
     build: () => UpcomingPaymentCubit(
-      getCustomerUpcomingPaymentsUseCase: _getCustomerUpcomingPaymentsUseCase,
-      getUpcomingPaymentsUseCase: _getUpcomingPaymentsUseCase,
+      loadCustomerUpcomingPaymentsUseCase: _loadCustomerUpcomingPaymentsUseCase,
+      loadUpcomingPaymentsUseCase: _loadUpcomingPaymentsUseCase,
       customerId: _customerId,
       limit: _limit,
     ),
@@ -156,7 +153,7 @@ void main() {
     ],
     verify: (c) {
       verify(
-        () => _repositoryMock.list(cardId: _cardId),
+        () => _loadUpcomingPaymentsUseCase(cardId: _cardId),
       ).called(1);
     },
   );
@@ -164,8 +161,8 @@ void main() {
   blocTest<UpcomingPaymentCubit, UpcomingPaymentState>(
     'Should load upcoming payments for customer id',
     build: () => UpcomingPaymentCubit(
-      getCustomerUpcomingPaymentsUseCase: _getCustomerUpcomingPaymentsUseCase,
-      getUpcomingPaymentsUseCase: _getUpcomingPaymentsUseCase,
+      loadCustomerUpcomingPaymentsUseCase: _loadCustomerUpcomingPaymentsUseCase,
+      loadUpcomingPaymentsUseCase: _loadUpcomingPaymentsUseCase,
       customerId: _customerId,
       limit: _limit,
     ),
@@ -186,7 +183,7 @@ void main() {
     ],
     verify: (c) {
       verify(
-        () => _repositoryMock.listAllUpcomingPayments(
+        () => _loadCustomerUpcomingPaymentsUseCase(
           customerID: _customerId,
           limit: _limit,
           offset: 0,
@@ -208,7 +205,7 @@ double _getTotal(List<UpcomingPayment> payments) {
 void _testErrors() {
   setUp(() {
     when(
-      () => _repositoryMock.list(
+      () => _loadUpcomingPaymentsUseCase(
         cardId: _wrongCardId,
       ),
     ).thenThrow(_netException);
@@ -217,8 +214,8 @@ void _testErrors() {
   blocTest<UpcomingPaymentCubit, UpcomingPaymentState>(
     'Should handle net exceptions',
     build: () => UpcomingPaymentCubit(
-      getCustomerUpcomingPaymentsUseCase: _getCustomerUpcomingPaymentsUseCase,
-      getUpcomingPaymentsUseCase: _getUpcomingPaymentsUseCase,
+      loadCustomerUpcomingPaymentsUseCase: _loadCustomerUpcomingPaymentsUseCase,
+      loadUpcomingPaymentsUseCase: _loadUpcomingPaymentsUseCase,
       customerId: _customerId,
       limit: _limit,
     ),
@@ -240,18 +237,18 @@ void _testErrors() {
     ],
     verify: (c) {
       verify(
-        () => _repositoryMock.list(cardId: _wrongCardId),
+        () => _loadUpcomingPaymentsUseCase(cardId: _wrongCardId),
       ).called(1);
     },
   );
 
   setUp(() {
     when(
-      () => _repositoryMock.list(),
+      () => _loadUpcomingPaymentsUseCase(),
     ).thenThrow(_genericException);
 
     when(
-      () => _repositoryMock.list(
+      () => _loadUpcomingPaymentsUseCase(
         cardId: _wrongCardId,
       ),
     ).thenThrow(_netException);
@@ -260,8 +257,8 @@ void _testErrors() {
   blocTest<UpcomingPaymentCubit, UpcomingPaymentState>(
     'Should handle generic exceptions',
     build: () => UpcomingPaymentCubit(
-      getCustomerUpcomingPaymentsUseCase: _getCustomerUpcomingPaymentsUseCase,
-      getUpcomingPaymentsUseCase: _getUpcomingPaymentsUseCase,
+      loadCustomerUpcomingPaymentsUseCase: _loadCustomerUpcomingPaymentsUseCase,
+      loadUpcomingPaymentsUseCase: _loadUpcomingPaymentsUseCase,
       customerId: _customerId,
       limit: _limit,
     ),
@@ -282,7 +279,7 @@ void _testErrors() {
     ],
     verify: (c) {
       verify(
-        () => _repositoryMock.list(),
+        () => _loadUpcomingPaymentsUseCase(),
       ).called(1);
     },
   );

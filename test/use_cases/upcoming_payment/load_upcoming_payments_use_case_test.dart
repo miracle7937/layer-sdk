@@ -8,13 +8,13 @@ class MockUpcomingPaymentRepository extends Mock
 class MockUpcomingPayment extends Mock implements UpcomingPayment {}
 
 late MockUpcomingPaymentRepository _repository;
-late GetUpcomingPaymentsUseCase _useCase;
+late LoadUpcomingPaymentsUseCase _useCase;
 late List<MockUpcomingPayment> _mockedUpcomingPaymentList;
 
 void main() {
   setUp(() {
     _repository = MockUpcomingPaymentRepository();
-    _useCase = GetUpcomingPaymentsUseCase(repository: _repository);
+    _useCase = LoadUpcomingPaymentsUseCase(repository: _repository);
 
     _mockedUpcomingPaymentList = List.generate(
       5,

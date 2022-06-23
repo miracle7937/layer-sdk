@@ -1,12 +1,12 @@
 import '../../abstract_repositories.dart';
 import '../../models.dart';
 
-/// Use case for getting the upcoming payments related to a customer.
-class GetCustomerUpcomingPaymentsUseCase {
+/// Use case for loading the upcoming payments related to a customer.
+class LoadCustomerUpcomingPaymentsUseCase {
   final UpcomingPaymentRepositoryInterface _repository;
 
-  /// Creates a new [GetCustomerUpcomingPaymentsUseCase].
-  const GetCustomerUpcomingPaymentsUseCase({
+  /// Creates a new [LoadCustomerUpcomingPaymentsUseCase].
+  const LoadCustomerUpcomingPaymentsUseCase({
     required UpcomingPaymentRepositoryInterface repository,
   }) : _repository = repository;
 

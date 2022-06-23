@@ -8,7 +8,7 @@ class MockUpcomingPaymentRepository extends Mock
 class MockUpcomingPaymentGroup extends Mock implements UpcomingPaymentGroup {}
 
 late MockUpcomingPaymentRepository _repository;
-late GetCustomerUpcomingPaymentsUseCase _useCase;
+late LoadCustomerUpcomingPaymentsUseCase _useCase;
 late MockUpcomingPaymentGroup _mockedUpcomingPaymentGroup;
 
 final _customerId = '1';
@@ -16,7 +16,7 @@ final _customerId = '1';
 void main() {
   setUp(() {
     _repository = MockUpcomingPaymentRepository();
-    _useCase = GetCustomerUpcomingPaymentsUseCase(repository: _repository);
+    _useCase = LoadCustomerUpcomingPaymentsUseCase(repository: _repository);
 
     _mockedUpcomingPaymentGroup = MockUpcomingPaymentGroup();
 
