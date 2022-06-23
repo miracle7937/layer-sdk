@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:layer_sdk/features/financial.dart';
+import 'package:layer_sdk/features/financial_data.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockFinancialDataRepository extends Mock

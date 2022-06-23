@@ -21,7 +21,7 @@ export 'features/country.dart';
 export 'features/currency.dart';
 export 'features/dpa.dart';
 export 'features/experience.dart';
-export 'features/financial.dart';
+export 'features/financial_data.dart';
 export 'features/loyalty.dart';
 export 'features/message.dart';
 export 'features/queue.dart';
