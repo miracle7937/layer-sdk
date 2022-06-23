@@ -1,4 +1,4 @@
-library financial;
+library financial_data;
 
 export '../data_layer/providers/financial/financial_data_provider.dart';
 export '../data_layer/repositories/financial/financial_data_repository.dart';

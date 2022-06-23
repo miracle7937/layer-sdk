@@ -1,6 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/layer_sdk.dart';
+import 'package:layer_sdk/features/financial.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
