@@ -34,3 +34,4 @@ export 'repositories/product/product_repository.dart';
 export 'repositories/queue/queue_request_repository.dart';
 export 'repositories/role/roles_repository.dart';
 export 'repositories/setting/global_setting_repository.dart';
+export 'repositories/upcoming_payment/upcoming_payment_repository.dart';

@@ -74,5 +74,7 @@ export 'use_cases/queue/reject_queue_use_case.dart';
 export 'use_cases/queue/remove_queue_from_requests_use_case.dart';
 export 'use_cases/role/load_customer_roles_use_case.dart';
 export 'use_cases/setting/load_global_settings_use_case.dart';
+export 'use_cases/upcoming_payment/load_customer_upcoming_payments_use_case.dart';
+export 'use_cases/upcoming_payment/load_upcoming_payments_use_case.dart';
 export 'use_cases/user/load_user_details_from_token_use_case.dart';
 export 'use_cases/user/set_access_pin_for_user_use_case.dart';

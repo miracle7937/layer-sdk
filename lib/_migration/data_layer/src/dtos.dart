@@ -15,7 +15,5 @@ export 'DTOs/transfer/transfer_dto.dart';
 export 'DTOs/transfer/transfer_evaluation_dto.dart';
 export 'DTOs/transfer/transfer_recurrence_dto.dart';
 export 'DTOs/transfer/transfer_status_dto.dart';
-export 'DTOs/upcoming_payment_dto.dart';
-export 'DTOs/upcoming_payment_group_dto.dart';
 export 'DTOs/verify_otp_dto.dart';
 export 'DTOs/verify_pin_response_dto.dart';

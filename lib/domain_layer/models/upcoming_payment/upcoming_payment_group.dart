@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:equatable/equatable.dart';
 
-import 'upcoming_payment.dart';
+import '../../models.dart';
 
 /// Keeps the data of an upcoming payment
 class UpcomingPaymentGroup extends Equatable {

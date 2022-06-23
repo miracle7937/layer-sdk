@@ -1,8 +1,8 @@
-import '../../../../data_layer/mappings.dart';
+import '../../../_migration/data_layer/src/mappings.dart';
+import '../../../domain_layer/models.dart';
+import '../../dtos.dart';
 import '../../errors.dart';
-import '../../models.dart';
-import '../dtos.dart';
-import '../mappings.dart';
+import '../../mappings.dart';
 
 /// Extension that provides mappings for [UpcomingPaymentDTO]
 extension UpcomingPaymentDTOMapping on UpcomingPaymentDTO {

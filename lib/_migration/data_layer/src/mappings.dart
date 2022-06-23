@@ -10,8 +10,6 @@ export 'mappings/preferences_dto_mapping.dart';
 export 'mappings/registration/registration_response_dto_mapping.dart';
 export 'mappings/string_converters.dart';
 export 'mappings/transfer/transfer_dto_mapping.dart';
-export 'mappings/upcoming_payment_dto_mapping.dart';
-export 'mappings/upcoming_payment_group_dto_mapping.dart';
 export 'mappings/user_dto_mapping.dart';
 export 'mappings/user_json_mapping.dart';
 export 'mappings/verify_pin_response_dto_mapping.dart';

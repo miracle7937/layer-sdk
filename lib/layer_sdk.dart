@@ -26,6 +26,7 @@ export 'features/loyalty.dart';
 export 'features/message.dart';
 export 'features/queue.dart';
 export 'features/roles.dart';
+export 'features/upcoming_payment.dart';
 export 'presentation_layer/app.dart';
 export 'presentation_layer/design.dart';
 export 'presentation_layer/environment.dart';
