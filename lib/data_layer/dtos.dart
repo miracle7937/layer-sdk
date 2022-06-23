@@ -61,6 +61,7 @@ export 'dtos/ocra/ocra_challenge_response_dto.dart';
 export 'dtos/ocra/ocra_challenge_result_dto.dart';
 export 'dtos/ocra/ocra_challenge_result_response_dto.dart';
 export 'dtos/otp/otp_status_dto.dart';
+export 'dtos/otp/verify_otp_dto.dart';
 export 'dtos/payment/biller_dto.dart';
 export 'dtos/payment/bills_dto.dart';
 export 'dtos/payment/payment_dto.dart';

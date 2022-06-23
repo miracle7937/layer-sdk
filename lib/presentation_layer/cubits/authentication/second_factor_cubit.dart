@@ -1,18 +1,21 @@
 import 'package:bloc/bloc.dart';
 
-import '../../../../../data_layer/network.dart';
-import '../../../../data_layer/data_layer.dart';
+import '../../../data_layer/network.dart';
+import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
 
 /// Cubit responsible for 2FA
 class SecondFactorCubit extends Cubit<SecondFactorState> {
-  final SecondFactorRepository _repository;
+  final VerifyConsoleUserOTPUseCase _verifyConsoleUserOTPUseCase;
+  final RequestConsoleUserOTPUseCase _requestConsoleUserOTPUseCase;
 
   /// Creates a new [SecondFactorCubit] instance.
   SecondFactorCubit({
-    required SecondFactorRepository repository,
     required int deviceId,
-  })  : _repository = repository,
+    required VerifyConsoleUserOTPUseCase verifyConsoleUserOTPUseCase,
+    required RequestConsoleUserOTPUseCase requestConsoleUserOTPUseCase,
+  })  : _verifyConsoleUserOTPUseCase = verifyConsoleUserOTPUseCase,
+        _requestConsoleUserOTPUseCase = requestConsoleUserOTPUseCase,
         super(SecondFactorState(deviceId: deviceId));
 
   /// Verifies the OTP value for the current 2fa ID.
@@ -29,7 +32,7 @@ class SecondFactorCubit extends Cubit<SecondFactorState> {
     );
 
     try {
-      final result = await _repository.verifyConsoleUserOTP(
+      final result = await _verifyConsoleUserOTPUseCase(
         deviceId: state.deviceId,
         otpId: state.otpId!,
         value: value,
@@ -66,7 +69,7 @@ class SecondFactorCubit extends Cubit<SecondFactorState> {
     );
 
     try {
-      final otpId = await _repository.verifyConsoleUserDeviceLogin(
+      final otpId = await _requestConsoleUserOTPUseCase(
         deviceId: state.deviceId,
       );
 

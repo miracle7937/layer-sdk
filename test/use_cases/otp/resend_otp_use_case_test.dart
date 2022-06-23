@@ -1,9 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:layer_sdk/data_layer/network.dart';
+import 'package:layer_sdk/domain_layer/abstract_repositories.dart';
 import 'package:layer_sdk/features/branch_activation.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockOTPRepository extends Mock implements OTPRepository {}
+class MockOTPRepository extends Mock implements OTPRepositoryInterface {}
 
 class MockUser extends Mock implements User {}
 
