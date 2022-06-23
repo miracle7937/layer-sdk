@@ -6,16 +6,21 @@ class ConfigDTO {
   /// The internal services' URLs
   final InternalServicesDTO? internalServices;
 
+  /// Graphana URL
+  final String? graphanaUrl;
+
   /// Creates a new [ConfigDTO].
   ConfigDTO({
     this.showCustomersTab = false,
     this.internalServices,
+    this.graphanaUrl,
   });
 
   /// Creates a [ConfigDTO] from a JSON
   factory ConfigDTO.fromJson(Map<String, dynamic> json) => ConfigDTO(
         showCustomersTab: json['SHOW_CUSTOMERS_TAB'],
         internalServices: InternalServicesDTO.fromJson(json['API_INTERNAL']),
+        graphanaUrl: json['UUID_URL'],
       );
 }
 

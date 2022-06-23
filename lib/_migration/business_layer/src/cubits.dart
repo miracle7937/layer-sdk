@@ -4,8 +4,6 @@
 /// {@subCategory Cubits}
 library cubits;
 
-export 'cubits/alerts/unread_alerts_count_cubit.dart';
-export 'cubits/alerts/unread_alerts_count_state.dart';
 export 'cubits/appointments/appointment_booking_cubit.dart';
 export 'cubits/appointments/appointment_booking_state.dart';
 export 'cubits/appointments/appointment_branch_cubit.dart';
@@ -22,8 +20,6 @@ export 'cubits/customers_cubit.dart';
 export 'cubits/customers_states.dart';
 export 'cubits/device_session_cubit.dart';
 export 'cubits/device_session_states.dart';
-export 'cubits/queue_request_cubit.dart';
-export 'cubits/queue_request_states.dart';
 export 'cubits/registration/registration_cubit.dart';
 export 'cubits/registration/registration_state.dart';
 export 'cubits/registration/steps/authentication_registration_step.dart';
