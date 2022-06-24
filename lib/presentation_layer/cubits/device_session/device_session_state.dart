@@ -33,11 +33,15 @@ class SessionData extends Equatable {
   /// the others.
   final DeviceSessionErrorStatus errorStatus;
 
+  /// Holds the error message
+  final String? errorMessage;
+
   /// Creates a new SessionData
   SessionData({
     required this.session,
     this.busy = false,
     this.errorStatus = DeviceSessionErrorStatus.none,
+    this.errorMessage,
   });
 
   @override
@@ -45,6 +49,7 @@ class SessionData extends Equatable {
         session,
         busy,
         errorStatus,
+        errorMessage,
       ];
 
   /// Creates a new session data based on this one.
@@ -52,11 +57,15 @@ class SessionData extends Equatable {
     DeviceSession? session,
     bool? busy,
     DeviceSessionErrorStatus? errorStatus = DeviceSessionErrorStatus.none,
+    String? errorMessage,
   }) =>
       SessionData(
         session: session ?? this.session,
         busy: busy ?? this.busy,
         errorStatus: errorStatus ?? this.errorStatus,
+        errorMessage: errorStatus == DeviceSessionErrorStatus.none
+            ? null
+            : (errorMessage ?? this.errorMessage),
       );
 }
 
@@ -86,6 +95,9 @@ class DeviceSessionState extends Equatable {
   /// True when at least one of the sessions has an error
   final bool hasErrorSession;
 
+  /// Holds the error message
+  final String? errorMessage;
+
   /// Creates a new state.
   DeviceSessionState({
     required this.customerId,
@@ -93,6 +105,7 @@ class DeviceSessionState extends Equatable {
     List<SessionData> sessions = const <SessionData>[],
     this.busy = false,
     this.errorStatus = DeviceSessionErrorStatus.none,
+    this.errorMessage,
   })  : sessions = UnmodifiableListView(sessions),
         hasBusySession = sessions.firstWhereOrNull((e) => e.busy) != null,
         hasErrorSession = sessions.firstWhereOrNull(
@@ -107,6 +120,7 @@ class DeviceSessionState extends Equatable {
         sessions,
         busy,
         errorStatus,
+        errorMessage,
         hasBusySession,
         hasErrorSession,
       ];
@@ -118,6 +132,7 @@ class DeviceSessionState extends Equatable {
     List<SessionData>? sessions,
     bool? busy,
     DeviceSessionErrorStatus? errorStatus,
+    String? errorMessage,
   }) =>
       DeviceSessionState(
         customerId: customerId ?? this.customerId,
@@ -125,5 +140,8 @@ class DeviceSessionState extends Equatable {
         sessions: sessions ?? this.sessions,
         busy: busy ?? this.busy,
         errorStatus: errorStatus ?? this.errorStatus,
+        errorMessage: errorStatus == DeviceSessionErrorStatus.none
+            ? null
+            : (errorMessage ?? this.errorMessage),
       );
 }

@@ -18,7 +18,8 @@ class DeviceSessionCubit extends Cubit<DeviceSessionState> {
     required DeviceSessionTerminateUseCase terminateUseCase,
     required String customerId,
     required CustomerType customerType,
-  })  : _loadSessionsUseCase = loadSessionsUseCase, _terminateUseCase =terminateUseCase,
+  })  : _loadSessionsUseCase = loadSessionsUseCase,
+        _terminateUseCase = terminateUseCase,
         super(
           DeviceSessionState(
             customerId: customerId,
@@ -70,6 +71,7 @@ class DeviceSessionCubit extends Cubit<DeviceSessionState> {
           errorStatus: e is NetException
               ? DeviceSessionErrorStatus.network
               : DeviceSessionErrorStatus.generic,
+          errorMessage: e is NetException ? e.message : null,
         ),
       );
 
