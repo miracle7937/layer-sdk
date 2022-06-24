@@ -97,6 +97,12 @@ extension ExperienceSettingTypeDTOMapping on ExperienceSettingTypeDTO {
       case ExperienceSettingTypeDTO.multiChoice:
         return ExperienceSettingType.multiChoice;
 
+      case ExperienceSettingTypeDTO.currencyMultiChoice:
+        return ExperienceSettingType.currencyMultiChoice;
+
+      case ExperienceSettingTypeDTO.currencyChoice:
+        return ExperienceSettingType.currencyChoice;
+
       default:
         throw MappingException(
           from: ExperienceSettingTypeDTO,
