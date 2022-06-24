@@ -40,29 +40,37 @@ class AppThemeCubit extends Cubit<AppThemeState> {
   /// Sets user preferred light [AppTheme].
   Future<void> setLightTheme(AppTheme theme) async {
     emit(state.copyWith(selectedLightTheme: theme));
+
     final name = state.availableLightThemes.entries
-        .firstWhere(
+        .firstWhereOrNull(
           (entry) => entry.value == theme,
         )
-        .key;
-    await storage.setString(
-      key: FlutterStorageKeys.userSelectedLightTheme,
-      value: name,
-    );
+        ?.key;
+
+    if (name != null) {
+      await storage.setString(
+        key: FlutterStorageKeys.userSelectedLightTheme,
+        value: name,
+      );
+    }
   }
 
   /// Sets user preferred dark [AppTheme].
   Future<void> setDarkTheme(AppTheme theme) async {
     emit(state.copyWith(selectedDarkTheme: theme));
+
     final name = state.availableDarkThemes.entries
-        .firstWhere(
+        .firstWhereOrNull(
           (entry) => entry.value == theme,
         )
-        .key;
-    await storage.setString(
-      key: FlutterStorageKeys.userSelectedDarkTheme,
-      value: name,
-    );
+        ?.key;
+
+    if (name != null) {
+      await storage.setString(
+        key: FlutterStorageKeys.userSelectedDarkTheme,
+        value: name,
+      );
+    }
   }
 
   /// Sets user preferred [ThemeMode].

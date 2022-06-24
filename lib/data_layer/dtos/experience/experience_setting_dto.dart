@@ -43,6 +43,17 @@ class ExperienceSettingTypeDTO extends EnumDTO {
   /// Type representing a setting which value is a list of integer choice codes.
   static const multiChoice = ExperienceSettingTypeDTO._internal('multichoice');
 
+  /// Type representing a setting which value is a list of currencies choice
+  /// codes.
+  static const currencyMultiChoice = ExperienceSettingTypeDTO._internal(
+    'currency_multichoice',
+  );
+
+  /// Type representing a setting which value a currency
+  static const currencyChoice = ExperienceSettingTypeDTO._internal(
+    'currency_choice',
+  );
+
   /// Available [ExperienceSettingTypeDTO] values.
   static const List<ExperienceSettingTypeDTO> values = [
     integer,
@@ -50,6 +61,8 @@ class ExperienceSettingTypeDTO extends EnumDTO {
     boolean,
     image,
     multiChoice,
+    currencyMultiChoice,
+    currencyChoice,
   ];
 
   /// Mapping of the strings returned by the API to the enum values.
@@ -59,6 +72,8 @@ class ExperienceSettingTypeDTO extends EnumDTO {
     'boolean': ExperienceSettingTypeDTO.boolean,
     'image': ExperienceSettingTypeDTO.image,
     'multichoice': ExperienceSettingTypeDTO.multiChoice,
+    'currency_multichoice': ExperienceSettingTypeDTO.currencyMultiChoice,
+    'currency_choice': ExperienceSettingTypeDTO.currencyMultiChoice,
   };
 
   const ExperienceSettingTypeDTO._internal(String value)
