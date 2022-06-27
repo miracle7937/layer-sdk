@@ -14,6 +14,5 @@ export 'src/models/permissions/permission_module.dart';
 export 'src/models/registration/registration_response.dart';
 export 'src/models/resolution.dart';
 export 'src/models/standing_order.dart';
-export 'src/models/transfer.dart';
 export 'src/models/user/favorite_offers_preference.dart';
 export 'src/models/verify_pin_response.dart';

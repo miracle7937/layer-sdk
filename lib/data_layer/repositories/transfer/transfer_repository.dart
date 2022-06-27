@@ -1,17 +1,21 @@
-import '../../models.dart';
+import '../../../domain_layer/abstract_repositories.dart';
+import '../../../domain_layer/models.dart';
+import '../../mappings.dart';
 import '../../providers.dart';
-import '../mappings.dart';
 
 /// Handles all the transfers data
-class TransferRepository {
+class TransferRepository implements TransferRepositoryInterface {
   final TransferProvider _provider;
 
   /// Creates a new repository with the supplied [TransferProvider]
-  TransferRepository(TransferProvider provider) : _provider = provider;
+  TransferRepository({
+    required TransferProvider provider,
+  }) : _provider = provider;
 
   /// Lists the transfers from a customer.
   ///
   /// Use [limit] and [offset] to paginate.
+  @override
   Future<List<Transfer>> list({
     required String customerId,
     int limit = 50,

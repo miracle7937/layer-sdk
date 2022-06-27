@@ -1,4 +1,4 @@
-import 'transfer_status_dto.dart';
+import '../../dtos.dart';
 
 ///Data transfer object representing the bulk detail of a transfer
 class BulkDetailDTO {

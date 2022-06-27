@@ -1,10 +1,5 @@
-import '../../../../../data_layer/dtos.dart';
+import '../../dtos.dart';
 import '../../helpers.dart';
-import 'bulk_detail_dto.dart';
-import 'share_type_dto.dart';
-import 'transfer_evaluation_dto.dart';
-import 'transfer_recurrence_dto.dart';
-import 'transfer_status_dto.dart';
 
 ///Data transfer object representing transfers
 class TransferDTO {
@@ -202,7 +197,7 @@ class TransferDTO {
         secondFactor: SecondFactorTypeDTO.fromRaw(json['second_factor']),
         evaluation: TransferEvaluationDTO.fromJson(json['extra'] ?? {}),
         fullName: json['name'],
-        bulkFilePath: jsonLookup(json['extra'], ['bulk_file']),
+        bulkFilePath: JsonParser.jsonLookup(json['extra'], ['bulk_file']),
         bulkDetails: json['bulk_transfer_details'] == null
             ? null
             : BulkDetailDTO.fromJsonList(
