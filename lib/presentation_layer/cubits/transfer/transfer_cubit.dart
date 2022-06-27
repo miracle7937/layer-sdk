@@ -2,19 +2,19 @@ import 'package:bloc/bloc.dart';
 
 import '../../../../../../data_layer/network.dart';
 import '../../../../presentation_layer/utils.dart';
-import '../../../data_layer/data_layer.dart';
-import 'transfer_state.dart';
+import '../../../domain_layer/use_cases.dart';
+import '../../cubits.dart';
 
 /// A cubit that keeps the list of customer transfers.
 class TransferCubit extends Cubit<TransferState> {
-  final TransferRepository _repository;
+  final LoadTransfersUseCase _loadTransfersUseCase;
 
   /// Creates a new cubit using the supplied [TransferRepository].
   TransferCubit({
-    required TransferRepository repository,
     required String customerId,
+    required LoadTransfersUseCase loadTransfersUseCase,
     int limit = 50,
-  })  : _repository = repository,
+  })  : _loadTransfersUseCase = loadTransfersUseCase,
         super(
           TransferState(
             customerId: customerId,
@@ -40,7 +40,7 @@ class TransferCubit extends Cubit<TransferState> {
     try {
       final newPage = state.pagination.paginate(loadMore: loadMore);
 
-      final list = await _repository.list(
+      final list = await _loadTransfersUseCase(
         customerId: state.customerId,
         offset: newPage.offset,
         limit: newPage.limit,

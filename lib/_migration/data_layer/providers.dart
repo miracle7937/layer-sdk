@@ -8,5 +8,4 @@ export 'src/providers/device_session_provider.dart';
 export 'src/providers/file_provider.dart';
 export 'src/providers/permission_module_provider.dart';
 export 'src/providers/registration_provider.dart';
-export 'src/providers/transfer_provider.dart';
 export 'src/providers/user_provider.dart';
