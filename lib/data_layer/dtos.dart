@@ -87,4 +87,5 @@ export 'dtos/transfer/transfer_status_dto.dart';
 export 'dtos/transfer/transfer_type_dto.dart';
 export 'dtos/upcoming_payment/upcoming_payment_dto.dart';
 export 'dtos/upcoming_payment/upcoming_payment_group_dto.dart';
+export 'dtos/user/change_user_password_dto.dart';
 export 'dtos/user/user_dto.dart';

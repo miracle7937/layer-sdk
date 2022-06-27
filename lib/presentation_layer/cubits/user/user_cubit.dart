@@ -1,18 +1,42 @@
 import 'package:bloc/bloc.dart';
 
 import '../../../../domain_layer/models.dart';
-import '../../../data_layer/data_layer.dart';
+import '../../../domain_layer/use_cases.dart';
 import 'user_state.dart';
 
 /// A cubit that manages the state of the [User]s.
 class UserCubit extends Cubit<UserState> {
-  final UserRepository _repository;
+  final LoadUserByCustomerIdUseCase _loadUserByCustomerIdUseCase;
+  final RequestLockUseCase _requestLockUseCase;
+  final RequestUnlockUseCase _requestUnlockUseCase;
+  final RequestActivateUseCase _requestActivateUseCase;
+  final RequestDeactivateUseCase _requestDeactivateUseCase;
+  final RequestPasswordResetUseCase _requestPasswordResetUseCase;
+  final RequestPINResetUseCase _requestPINResetUseCase;
+  final PatchUserRolesUseCase _patchUserRolesUseCase;
+  final PatchUserBlockedChannelUseCase _patchUserBlockedChannelUseCase;
 
   /// Creates the [UserCubit].
   UserCubit({
-    required UserRepository repository,
     required String customerId,
-  })  : _repository = repository,
+    required LoadUserByCustomerIdUseCase loadUserByCustomerIdUseCase,
+    required RequestLockUseCase requestLockUseCase,
+    required RequestUnlockUseCase requestUnlockUseCase,
+    required RequestActivateUseCase requestActivateUseCase,
+    required RequestDeactivateUseCase requestDeactivateUseCase,
+    required RequestPasswordResetUseCase requestPasswordResetUseCase,
+    required RequestPINResetUseCase requestPINResetUseCase,
+    required PatchUserRolesUseCase patchUserRolesUseCase,
+    required PatchUserBlockedChannelUseCase patchUserBlockedChannelUseCase,
+  })  : _loadUserByCustomerIdUseCase = loadUserByCustomerIdUseCase,
+        _requestLockUseCase = requestLockUseCase,
+        _requestUnlockUseCase = requestUnlockUseCase,
+        _requestActivateUseCase = requestActivateUseCase,
+        _requestDeactivateUseCase = requestDeactivateUseCase,
+        _requestPasswordResetUseCase = requestPasswordResetUseCase,
+        _requestPINResetUseCase = requestPINResetUseCase,
+        _patchUserRolesUseCase = patchUserRolesUseCase,
+        _patchUserBlockedChannelUseCase = patchUserBlockedChannelUseCase,
         super(
           UserState(
             customerId: customerId,
@@ -31,7 +55,7 @@ class UserCubit extends Cubit<UserState> {
     );
 
     try {
-      final user = await _repository.getUser(
+      final user = await _loadUserByCustomerIdUseCase(
         customerID: state.customerId,
         forceRefresh: forceRefresh,
       );
@@ -70,7 +94,7 @@ class UserCubit extends Cubit<UserState> {
     try {
       if (state.user == null) throw Exception('No user loaded.');
 
-      await _repository.requestLock(
+      await _requestLockUseCase(
         userId: state.user!.id,
         customerType: customerType,
       );
@@ -108,7 +132,7 @@ class UserCubit extends Cubit<UserState> {
     try {
       if (state.user == null) throw Exception('No user loaded.');
 
-      await _repository.requestUnlock(
+      await _requestUnlockUseCase(
         userId: state.user!.id,
         customerType: customerType,
       );
@@ -146,7 +170,7 @@ class UserCubit extends Cubit<UserState> {
     try {
       if (state.user == null) throw Exception('No user loaded.');
 
-      await _repository.requestActivate(
+      await _requestActivateUseCase(
         userId: state.user!.id,
         customerType: customerType,
       );
@@ -184,7 +208,7 @@ class UserCubit extends Cubit<UserState> {
     try {
       if (state.user == null) throw Exception('No user loaded.');
 
-      await _repository.requestDeactivate(
+      await _requestDeactivateUseCase(
         userId: state.user!.id,
         customerType: customerType,
       );
@@ -222,7 +246,7 @@ class UserCubit extends Cubit<UserState> {
     try {
       if (state.user == null) throw Exception('No user loaded.');
 
-      await _repository.requestPasswordReset(
+      await _requestPasswordResetUseCase(
         userId: state.user!.id,
         customerType: customerType,
       );
@@ -260,7 +284,7 @@ class UserCubit extends Cubit<UserState> {
     try {
       if (state.user == null) throw Exception('No user loaded.');
 
-      await _repository.requestPINReset(
+      await _requestPINResetUseCase(
         userId: state.user!.id,
         customerType: customerType,
       );
@@ -300,7 +324,7 @@ class UserCubit extends Cubit<UserState> {
     );
 
     try {
-      final result = await _repository.patchUserRoles(
+      final result = await _patchUserRolesUseCase(
         userId: state.user!.id,
         roles: roles,
       );
@@ -345,7 +369,7 @@ class UserCubit extends Cubit<UserState> {
     );
 
     try {
-      final result = await _repository.patchUserBlockedChannels(
+      final result = await _patchUserBlockedChannelUseCase(
         userId: state.user!.id,
         channels: channels,
       );
