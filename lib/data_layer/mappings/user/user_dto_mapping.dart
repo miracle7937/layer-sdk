@@ -1,6 +1,6 @@
-import '../../../../data_layer/dtos.dart';
-import '../../../../domain_layer/models.dart';
-import '../mappings.dart';
+import '../../../_migration/data_layer/src/mappings.dart';
+import '../../../domain_layer/models.dart';
+import '../../dtos.dart';
 
 /// Extension that provides mappings for [UserDTO]
 extension UserDTOMapping on UserDTO {

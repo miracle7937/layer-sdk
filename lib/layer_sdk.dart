@@ -29,6 +29,7 @@ export 'features/queue.dart';
 export 'features/roles.dart';
 export 'features/transfer.dart';
 export 'features/upcoming_payment.dart';
+export 'features/user.dart';
 export 'presentation_layer/app.dart';
 export 'presentation_layer/design.dart';
 export 'presentation_layer/environment.dart';

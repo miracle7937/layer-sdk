@@ -86,3 +86,5 @@ export 'cubits/transfer/transfer_cubit.dart';
 export 'cubits/transfer/transfer_state.dart';
 export 'cubits/upcoming_payment/upcoming_payment_cubit.dart';
 export 'cubits/upcoming_payment/upcoming_payment_state.dart';
+export 'cubits/user/user_cubit.dart';
+export 'cubits/user/user_state.dart';

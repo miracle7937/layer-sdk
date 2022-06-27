@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 
 import '../../../../../../data_layer/network.dart';
+import '../../../../../domain_layer/abstract_repositories.dart';
 import '../../../../../domain_layer/models.dart';
 import '../../../../data_layer/data_layer.dart';
 import '../../../business_layer.dart';
@@ -8,12 +9,12 @@ import '../../../business_layer.dart';
 ///A cubit that holds the user preferences from a [LoggedUser]
 class UserPreferencesCubit extends Cubit<UserPreferencesState> {
   ///The repository
-  final UserRepository _repository;
+  final UserRepositoryInterface _repository;
 
   ///Creates a new [UserPreferencesCubit]
   UserPreferencesCubit({
     required User user,
-    required UserRepository repository,
+    required UserRepositoryInterface repository,
   })  : _repository = repository,
         super(
           UserPreferencesState(

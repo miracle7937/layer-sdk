@@ -38,3 +38,4 @@ export 'abstract_repositories/role/roles_repository_interface.dart';
 export 'abstract_repositories/setting/global_setting_repository_interface.dart';
 export 'abstract_repositories/transfer/transfer_repository_interface.dart';
 export 'abstract_repositories/upcoming_payment/upcoming_payment_repository_interface.dart';
+export 'abstract_repositories/user/user_repository_interface.dart';

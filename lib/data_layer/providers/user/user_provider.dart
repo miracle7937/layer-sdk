@@ -1,9 +1,8 @@
-import '../../../../data_layer/dtos.dart';
-import '../../../../data_layer/network.dart';
-import '../../../../domain_layer/models.dart';
+import '../../../_migration/data_layer/src/mappings.dart';
+import '../../../domain_layer/models.dart';
+import '../../dtos.dart';
 import '../../errors.dart';
-import '../dtos.dart';
-import '../mappings.dart';
+import '../../network.dart';
 
 /// A provider that handles API requests related to [UserDTO].
 class UserProvider {
