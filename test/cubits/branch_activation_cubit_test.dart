@@ -1,23 +1,36 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
-import 'package:layer_sdk/_migration/flutter_layer/flutter_layer.dart';
-import 'package:layer_sdk/_migration/flutter_layer/src/cubits/login/activation_code_utils.dart';
 import 'package:layer_sdk/data_layer/network.dart';
-import 'package:layer_sdk/domain_layer/models/second_factor/second_factor_type.dart';
+import 'package:layer_sdk/domain_layer/models.dart';
+import 'package:layer_sdk/features/branch_activation.dart';
+import 'package:layer_sdk/presentation_layer/utils.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockAuthenticationRepository extends Mock
-    implements AuthenticationRepository {}
+class MockCheckBranchActivationCodeUseCase extends Mock
+    implements CheckBranchActivationCodeUseCase {}
 
-class MockUserRepository extends Mock implements UserRepository {}
+class MockVerifyOTPForBranchActivationUseCase extends Mock
+    implements VerifyOTPForBranchActivationUseCase {}
 
-class MockOtpRepository extends Mock implements OTPRepository {}
+class MockResendOTPUseCase extends Mock implements ResendOTPUseCase {}
 
-final _authenticationRepository = MockAuthenticationRepository();
-final _userRepository = MockUserRepository();
-final _otpRepository = MockOtpRepository();
+class MockLoadUserDetailsFromTokenUseCase extends Mock
+    implements LoadUserDetailsFromTokenUseCase {}
+
+class MockSetAccessPinForUserUseCase extends Mock
+    implements SetAccessPinForUserUseCase {}
+
+final MockCheckBranchActivationCodeUseCase _checkBranchActivationCodeUseCase =
+    MockCheckBranchActivationCodeUseCase();
+final MockVerifyOTPForBranchActivationUseCase
+    _verifyOTPForBranchActivationUseCase =
+    MockVerifyOTPForBranchActivationUseCase();
+final MockResendOTPUseCase _resendOTPUseCase = MockResendOTPUseCase();
+final MockLoadUserDetailsFromTokenUseCase _loadUserDetailsFromTokenUseCase =
+    MockLoadUserDetailsFromTokenUseCase();
+final MockSetAccessPinForUserUseCase _setAccessPinForUserUseCase =
+    MockSetAccessPinForUserUseCase();
 
 final _keepPollingException = NetException(statusCode: 404);
 final _netException = NetException(message: 'Server timed out');
@@ -55,9 +68,9 @@ void main() {
   EquatableConfig.stringify = true;
 
   setUpAll(() {
-    /// Authentication repository
+    /// Branch activation
     when(
-      () => _authenticationRepository.checkBranchActivationCode(
+      () => _checkBranchActivationCodeUseCase(
         code: _pollingCode,
       ),
     ).thenAnswer((_) async {
@@ -70,104 +83,104 @@ void main() {
     });
 
     when(
-      () => _authenticationRepository.checkBranchActivationCode(
+      () => _checkBranchActivationCodeUseCase(
         code: _successCode,
       ),
     ).thenAnswer((_) async => _codeSuccessResult);
 
     when(
-      () => _authenticationRepository.checkBranchActivationCode(
+      () => _checkBranchActivationCodeUseCase(
         code: _otpCode,
       ),
     ).thenAnswer((_) async => _codeOtpResult);
 
     when(
-      () => _authenticationRepository.checkBranchActivationCode(
+      () => _checkBranchActivationCodeUseCase(
         code: _netExceptionCode,
       ),
     ).thenThrow(_netException);
 
     when(
-      () => _authenticationRepository.checkBranchActivationCode(
+      () => _checkBranchActivationCodeUseCase(
         code: _genericExceptionCode,
       ),
     ).thenThrow(_genericException);
 
     /// OTP
     when(
-      () => _authenticationRepository.checkBranchActivationCode(
+      () => _verifyOTPForBranchActivationUseCase(
         code: any(named: 'code'),
         otpValue: _successOtp,
       ),
     ).thenAnswer((_) async => _codeSuccessResult);
 
     when(
-      () => _authenticationRepository.checkBranchActivationCode(
+      () => _verifyOTPForBranchActivationUseCase(
         code: any(named: 'code'),
         otpValue: _netExceptionOtp,
       ),
     ).thenThrow(_netException);
 
     when(
-      () => _authenticationRepository.checkBranchActivationCode(
+      () => _verifyOTPForBranchActivationUseCase(
         code: any(named: 'code'),
         otpValue: _genericExceptionOtp,
       ),
     ).thenThrow(_genericException);
 
     when(
-      () => _otpRepository.resendCustomerOTP(
+      () => _resendOTPUseCase(
         otpId: int.parse(_successOtp),
       ),
-    ).thenAnswer((_) async => true);
+    ).thenAnswer((_) async => NetResponse(statusCode: 200));
 
     when(
-      () => _otpRepository.resendCustomerOTP(
+      () => _resendOTPUseCase(
         otpId: int.parse(_netExceptionOtp),
       ),
     ).thenThrow(_netException);
 
     when(
-      () => _otpRepository.resendCustomerOTP(
+      () => _resendOTPUseCase(
         otpId: int.parse(_genericExceptionOtp),
       ),
     ).thenThrow(_genericException);
 
-    /// User Repository
+    /// User
     when(
-      () => _userRepository.getUserFromToken(
+      () => _loadUserDetailsFromTokenUseCase(
         token: _successUserToken,
       ),
     ).thenAnswer((_) async => _user);
 
     when(
-      () => _userRepository.getUserFromToken(
+      () => _loadUserDetailsFromTokenUseCase(
         token: _netExceptionUserToken,
       ),
     ).thenThrow(_netException);
 
     when(
-      () => _userRepository.getUserFromToken(
+      () => _loadUserDetailsFromTokenUseCase(
         token: _genericExceptionUserToken,
       ),
     ).thenThrow(_genericException);
 
     when(
-      () => _userRepository.setAccessPin(
+      () => _setAccessPinForUserUseCase(
         pin: _successAccessPin,
         token: any(named: 'token'),
       ),
     ).thenAnswer((_) async => _user);
 
     when(
-      () => _userRepository.setAccessPin(
+      () => _setAccessPinForUserUseCase(
         pin: _netExceptionAccessPin,
         token: any(named: 'token'),
       ),
     ).thenThrow(_netException);
 
     when(
-      () => _userRepository.setAccessPin(
+      () => _setAccessPinForUserUseCase(
         pin: _genericExceptionAccessPin,
         token: any(named: 'token'),
       ),
@@ -177,9 +190,11 @@ void main() {
   blocTest<BranchActivationCubit, BranchActivationState>(
     'check activation code length',
     build: () => BranchActivationCubit(
-      authenticationRepository: _authenticationRepository,
-      userRepository: _userRepository,
-      otpRepository: _otpRepository,
+      checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
+      verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
+      resendOTPUseCase: _resendOTPUseCase,
+      loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
+      setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       activationCodeLength: 7,
     ),
     verify: (c) => expect(
@@ -205,9 +220,11 @@ void _activationCodeTests() {
   blocTest<BranchActivationCubit, BranchActivationState>(
     'polls activation code, gets response and gets user',
     build: () => BranchActivationCubit(
-      authenticationRepository: _authenticationRepository,
-      userRepository: _userRepository,
-      otpRepository: _otpRepository,
+      checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
+      verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
+      resendOTPUseCase: _resendOTPUseCase,
+      loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
+      setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       testActivationCode: _pollingCode,
       delay: 1,
     ),
@@ -238,13 +255,13 @@ void _activationCodeTests() {
     ],
     verify: (c) {
       verify(
-        () => _authenticationRepository.checkBranchActivationCode(
+        () => _checkBranchActivationCodeUseCase(
           code: _pollingCode,
         ),
       ).called(2);
 
       verify(
-        () => _userRepository.getUserFromToken(
+        () => _loadUserDetailsFromTokenUseCase(
           token: _successUserToken,
         ),
       ).called(1);
@@ -258,9 +275,11 @@ void _activationCodeTests() {
   blocTest<BranchActivationCubit, BranchActivationState>(
     'gets response without polling and gets user',
     build: () => BranchActivationCubit(
-      authenticationRepository: _authenticationRepository,
-      userRepository: _userRepository,
-      otpRepository: _otpRepository,
+      checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
+      verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
+      resendOTPUseCase: _resendOTPUseCase,
+      loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
+      setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       testActivationCode: _successCode,
       delay: 1,
     ),
@@ -291,13 +310,13 @@ void _activationCodeTests() {
     ],
     verify: (c) {
       verify(
-        () => _authenticationRepository.checkBranchActivationCode(
+        () => _checkBranchActivationCodeUseCase(
           code: _successCode,
         ),
       ).called(1);
 
       verify(
-        () => _userRepository.getUserFromToken(
+        () => _loadUserDetailsFromTokenUseCase(
           token: _successUserToken,
         ),
       ).called(1);
@@ -311,9 +330,11 @@ void _activationCodeTests() {
   blocTest<BranchActivationCubit, BranchActivationState>(
     'gets second factor method when checking the activation code',
     build: () => BranchActivationCubit(
-      authenticationRepository: _authenticationRepository,
-      userRepository: _userRepository,
-      otpRepository: _otpRepository,
+      checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
+      verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
+      resendOTPUseCase: _resendOTPUseCase,
+      loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
+      setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       testActivationCode: _otpCode,
       delay: 1,
     ),
@@ -331,7 +352,7 @@ void _activationCodeTests() {
     ],
     verify: (c) {
       verify(
-        () => _authenticationRepository.checkBranchActivationCode(
+        () => _checkBranchActivationCodeUseCase(
           code: _otpCode,
         ),
       ).called(1);
@@ -341,9 +362,11 @@ void _activationCodeTests() {
   blocTest<BranchActivationCubit, BranchActivationState>(
     'reset the activation code',
     build: () => BranchActivationCubit(
-      authenticationRepository: _authenticationRepository,
-      userRepository: _userRepository,
-      otpRepository: _otpRepository,
+      checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
+      verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
+      resendOTPUseCase: _resendOTPUseCase,
+      loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
+      setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       delay: 1,
     ),
     seed: () => BranchActivationState(
@@ -362,9 +385,11 @@ void _activationCodeTests() {
   blocTest<BranchActivationCubit, BranchActivationState>(
     'net exception',
     build: () => BranchActivationCubit(
-      authenticationRepository: _authenticationRepository,
-      userRepository: _userRepository,
-      otpRepository: _otpRepository,
+      checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
+      verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
+      resendOTPUseCase: _resendOTPUseCase,
+      loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
+      setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       delay: 1,
       testActivationCode: _netExceptionCode,
     ),
@@ -382,7 +407,7 @@ void _activationCodeTests() {
     ],
     verify: (c) {
       verify(
-        () => _authenticationRepository.checkBranchActivationCode(
+        () => _checkBranchActivationCodeUseCase(
           code: _netExceptionCode,
         ),
       ).called(1);
@@ -396,9 +421,11 @@ void _activationCodeTests() {
   blocTest<BranchActivationCubit, BranchActivationState>(
     'generic exception',
     build: () => BranchActivationCubit(
-      authenticationRepository: _authenticationRepository,
-      userRepository: _userRepository,
-      otpRepository: _otpRepository,
+      checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
+      verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
+      resendOTPUseCase: _resendOTPUseCase,
+      loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
+      setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       delay: 1,
       testActivationCode: _genericExceptionCode,
     ),
@@ -415,7 +442,7 @@ void _activationCodeTests() {
     ],
     verify: (c) {
       verify(
-        () => _authenticationRepository.checkBranchActivationCode(
+        () => _checkBranchActivationCodeUseCase(
           code: _genericExceptionCode,
         ),
       ).called(1);
@@ -431,9 +458,11 @@ void _otpTests() {
   blocTest<BranchActivationCubit, BranchActivationState>(
     'gets response when sending opt value and gets user',
     build: () => BranchActivationCubit(
-      authenticationRepository: _authenticationRepository,
-      userRepository: _userRepository,
-      otpRepository: _otpRepository,
+      checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
+      verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
+      resendOTPUseCase: _resendOTPUseCase,
+      loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
+      setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       testActivationCode: '',
       delay: 1,
     ),
@@ -464,14 +493,14 @@ void _otpTests() {
     ],
     verify: (c) {
       verify(
-        () => _authenticationRepository.checkBranchActivationCode(
+        () => _verifyOTPForBranchActivationUseCase(
           code: any(named: 'code'),
           otpValue: _successOtp,
         ),
       ).called(1);
 
       verify(
-        () => _userRepository.getUserFromToken(
+        () => _loadUserDetailsFromTokenUseCase(
           token: _successUserToken,
         ),
       ).called(1);
@@ -481,9 +510,11 @@ void _otpTests() {
   blocTest<BranchActivationCubit, BranchActivationState>(
     'net exception on verify otp',
     build: () => BranchActivationCubit(
-      authenticationRepository: _authenticationRepository,
-      userRepository: _userRepository,
-      otpRepository: _otpRepository,
+      checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
+      verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
+      resendOTPUseCase: _resendOTPUseCase,
+      loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
+      setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       testActivationCode: '',
       delay: 1,
     ),
@@ -501,7 +532,7 @@ void _otpTests() {
     ],
     verify: (c) {
       verify(
-        () => _authenticationRepository.checkBranchActivationCode(
+        () => _verifyOTPForBranchActivationUseCase(
           code: any(named: 'code'),
           otpValue: _netExceptionOtp,
         ),
@@ -512,9 +543,11 @@ void _otpTests() {
   blocTest<BranchActivationCubit, BranchActivationState>(
     'generic exception on verify otp',
     build: () => BranchActivationCubit(
-      authenticationRepository: _authenticationRepository,
-      userRepository: _userRepository,
-      otpRepository: _otpRepository,
+      checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
+      verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
+      resendOTPUseCase: _resendOTPUseCase,
+      loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
+      setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       testActivationCode: '',
       delay: 1,
     ),
@@ -531,7 +564,7 @@ void _otpTests() {
     ],
     verify: (c) {
       verify(
-        () => _authenticationRepository.checkBranchActivationCode(
+        () => _verifyOTPForBranchActivationUseCase(
           code: any(named: 'code'),
           otpValue: _genericExceptionOtp,
         ),
@@ -549,9 +582,11 @@ void _otpTests() {
   blocTest<BranchActivationCubit, BranchActivationState>(
     'resends otp successfully',
     build: () => BranchActivationCubit(
-      authenticationRepository: _authenticationRepository,
-      userRepository: _userRepository,
-      otpRepository: _otpRepository,
+      checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
+      verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
+      resendOTPUseCase: _resendOTPUseCase,
+      loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
+      setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       testActivationCode: '',
       delay: 1,
     ),
@@ -575,7 +610,7 @@ void _otpTests() {
     ],
     verify: (c) {
       verify(
-        () => _otpRepository.resendCustomerOTP(
+        () => _resendOTPUseCase(
           otpId: any(named: 'otpId'),
         ),
       ).called(1);
@@ -592,9 +627,11 @@ void _otpTests() {
   blocTest<BranchActivationCubit, BranchActivationState>(
     'net exception on resend otp',
     build: () => BranchActivationCubit(
-      authenticationRepository: _authenticationRepository,
-      userRepository: _userRepository,
-      otpRepository: _otpRepository,
+      checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
+      verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
+      resendOTPUseCase: _resendOTPUseCase,
+      loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
+      setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       testActivationCode: '',
       delay: 1,
     ),
@@ -619,7 +656,7 @@ void _otpTests() {
     ],
     verify: (c) {
       verify(
-        () => _otpRepository.resendCustomerOTP(
+        () => _resendOTPUseCase(
           otpId: any(named: 'otpId'),
         ),
       ).called(1);
@@ -635,9 +672,11 @@ void _otpTests() {
   blocTest<BranchActivationCubit, BranchActivationState>(
     'generic exception on resend otp',
     build: () => BranchActivationCubit(
-      authenticationRepository: _authenticationRepository,
-      userRepository: _userRepository,
-      otpRepository: _otpRepository,
+      checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
+      verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
+      resendOTPUseCase: _resendOTPUseCase,
+      loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
+      setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       testActivationCode: '',
       delay: 1,
     ),
@@ -661,7 +700,7 @@ void _otpTests() {
     ],
     verify: (c) {
       verify(
-        () => _otpRepository.resendCustomerOTP(
+        () => _resendOTPUseCase(
           otpId: any(named: 'otpId'),
         ),
       ).called(1);
@@ -681,9 +720,11 @@ void _userTests() {
   blocTest<BranchActivationCubit, BranchActivationState>(
     'gets user successfully',
     build: () => BranchActivationCubit(
-      authenticationRepository: _authenticationRepository,
-      userRepository: _userRepository,
-      otpRepository: _otpRepository,
+      checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
+      verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
+      resendOTPUseCase: _resendOTPUseCase,
+      loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
+      setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       testActivationCode: '',
       delay: 1,
     ),
@@ -708,7 +749,7 @@ void _userTests() {
     ],
     verify: (c) {
       verify(
-        () => _userRepository.getUserFromToken(
+        () => _loadUserDetailsFromTokenUseCase(
           token: any(named: 'token'),
         ),
       ).called(1);
@@ -722,9 +763,11 @@ void _userTests() {
   blocTest<BranchActivationCubit, BranchActivationState>(
     'net exception on get user',
     build: () => BranchActivationCubit(
-      authenticationRepository: _authenticationRepository,
-      userRepository: _userRepository,
-      otpRepository: _otpRepository,
+      checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
+      verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
+      resendOTPUseCase: _resendOTPUseCase,
+      loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
+      setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       testActivationCode: '',
       delay: 1,
     ),
@@ -749,7 +792,7 @@ void _userTests() {
     ],
     verify: (c) {
       verify(
-        () => _userRepository.getUserFromToken(
+        () => _loadUserDetailsFromTokenUseCase(
           token: any(named: 'token'),
         ),
       ).called(1);
@@ -762,9 +805,11 @@ void _userTests() {
   blocTest<BranchActivationCubit, BranchActivationState>(
     'generic exception on get user',
     build: () => BranchActivationCubit(
-      authenticationRepository: _authenticationRepository,
-      userRepository: _userRepository,
-      otpRepository: _otpRepository,
+      checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
+      verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
+      resendOTPUseCase: _resendOTPUseCase,
+      loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
+      setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       testActivationCode: '',
       delay: 1,
     ),
@@ -788,7 +833,7 @@ void _userTests() {
     ],
     verify: (c) {
       verify(
-        () => _userRepository.getUserFromToken(
+        () => _loadUserDetailsFromTokenUseCase(
           token: any(named: 'token'),
         ),
       ).called(1);
@@ -805,9 +850,11 @@ void _accesPinTests() {
   blocTest<BranchActivationCubit, BranchActivationState>(
     'set access pin successfully',
     build: () => BranchActivationCubit(
-      authenticationRepository: _authenticationRepository,
-      userRepository: _userRepository,
-      otpRepository: _otpRepository,
+      checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
+      verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
+      resendOTPUseCase: _resendOTPUseCase,
+      loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
+      setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       testActivationCode: '',
       delay: 1,
     ),
@@ -828,7 +875,7 @@ void _accesPinTests() {
     ],
     verify: (c) {
       verify(
-        () => _userRepository.setAccessPin(
+        () => _setAccessPinForUserUseCase(
           pin: _successAccessPin,
           token: any(named: 'token'),
         ),
@@ -839,9 +886,11 @@ void _accesPinTests() {
   blocTest<BranchActivationCubit, BranchActivationState>(
     'net exception on set access pin',
     build: () => BranchActivationCubit(
-      authenticationRepository: _authenticationRepository,
-      userRepository: _userRepository,
-      otpRepository: _otpRepository,
+      checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
+      verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
+      resendOTPUseCase: _resendOTPUseCase,
+      loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
+      setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       testActivationCode: '',
       delay: 1,
     ),
@@ -862,7 +911,7 @@ void _accesPinTests() {
     ],
     verify: (c) {
       verify(
-        () => _userRepository.setAccessPin(
+        () => _setAccessPinForUserUseCase(
           pin: _netExceptionAccessPin,
           token: any(named: 'token'),
         ),
@@ -873,9 +922,11 @@ void _accesPinTests() {
   blocTest<BranchActivationCubit, BranchActivationState>(
     'generic exception on set access pin',
     build: () => BranchActivationCubit(
-      authenticationRepository: _authenticationRepository,
-      userRepository: _userRepository,
-      otpRepository: _otpRepository,
+      checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
+      verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
+      resendOTPUseCase: _resendOTPUseCase,
+      loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
+      setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       testActivationCode: '',
       delay: 1,
     ),
@@ -895,7 +946,7 @@ void _accesPinTests() {
     ],
     verify: (c) {
       verify(
-        () => _userRepository.setAccessPin(
+        () => _setAccessPinForUserUseCase(
           pin: _genericExceptionAccessPin,
           token: any(named: 'token'),
         ),

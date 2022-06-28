@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 
-import '../../../../_migration/data_layer/data_layer.dart';
 import '../../../../data_layer/network.dart';
+import '../../../../data_layer/repositories.dart';
 import '../../../../domain_layer/models.dart';
 import '../../../../domain_layer/use_cases.dart';
 import '../../../cubits.dart';

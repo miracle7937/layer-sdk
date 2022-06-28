@@ -14,4 +14,7 @@ abstract class FlutterStorageKeys {
 
   /// If the application was already launched since installation.
   static const launchedBefore = 'launchedBefore';
+
+  /// If the user pass and finished the landing page tutorial
+  static const completedLandingPageTutorial = 'completed_landing_page_tutorial';
 }

@@ -1,17 +1,23 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
 import 'package:layer_sdk/data_layer/network.dart';
+import 'package:layer_sdk/domain_layer/models.dart';
+import 'package:layer_sdk/domain_layer/use_cases.dart';
+import 'package:layer_sdk/presentation_layer/cubits.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockDPARepository extends Mock implements DPARepository {}
+class MockListUnassignedTasksUseCase extends Mock
+    implements ListUnassignedTasksUseCase {}
+
+class MockClaimDPATaskUseCase extends Mock implements ClaimDPATaskUseCase {}
 
 final _repositoryList = <DPATask>[];
 final _customerList = <DPATask>[];
 
-late MockDPARepository _repository;
+late MockListUnassignedTasksUseCase _listUnassignedTasksUseCase;
+
+late MockClaimDPATaskUseCase _claimDPATaskUseCase;
 
 final _fixedCustomer = Customer(
   id: 'Fixed',
@@ -19,6 +25,15 @@ final _fixedCustomer = Customer(
   status: CustomerStatus.active,
   type: CustomerType.personal,
 );
+
+UnassignedTasksCubit create({
+  String? customerId,
+}) =>
+    UnassignedTasksCubit(
+      claimDPATaskUseCase: _claimDPATaskUseCase,
+      unassignedTasksUseCase: _listUnassignedTasksUseCase,
+      customerId: customerId,
+    );
 
 void main() {
   EquatableConfig.stringify = true;
@@ -57,29 +72,30 @@ void main() {
   }
 
   setUpAll(() {
-    _repository = MockDPARepository();
+    _listUnassignedTasksUseCase = MockListUnassignedTasksUseCase();
+    _claimDPATaskUseCase = MockClaimDPATaskUseCase();
 
     when(
-      () => _repository.listUnassignedTasks(),
+      () => _listUnassignedTasksUseCase(),
     ).thenAnswer(
       (_) async => _repositoryList.toList(),
     );
 
     when(
-      () => _repository.listUnassignedTasks(
+      () => _listUnassignedTasksUseCase(
         customerId: _fixedCustomer.id,
       ),
     ).thenAnswer(
       (_) async => _customerList.toList(),
     );
 
-    when(() => _repository.claimTask(
+    when(() => _claimDPATaskUseCase(
           taskId: '2',
         )).thenAnswer(
       (_) async => false,
     );
 
-    when(() => _repository.claimTask(
+    when(() => _claimDPATaskUseCase(
           taskId: any(
             named: 'taskId',
             that: isNot(contains('2')),
@@ -91,17 +107,13 @@ void main() {
 
   blocTest<UnassignedTasksCubit, UnassignedTasksState>(
     'starts on empty state',
-    build: () => UnassignedTasksCubit(
-      repository: _repository,
-    ),
+    build: create,
     verify: (c) => expect(c.state, UnassignedTasksState()),
   ); // starts on empty state
 
   blocTest<UnassignedTasksCubit, UnassignedTasksState>(
     'should load tasks without customer id',
-    build: () => UnassignedTasksCubit(
-      repository: _repository,
-    ),
+    build: create,
     act: (c) => c.load(),
     expect: () => [
       UnassignedTasksState(busy: true),
@@ -110,7 +122,7 @@ void main() {
       ),
     ],
     verify: (c) {
-      verify(() => _repository.listUnassignedTasks(
+      verify(() => _listUnassignedTasksUseCase(
             fetchCustomersData: true,
             forceRefresh: false,
           )).called(1);
@@ -119,8 +131,7 @@ void main() {
 
   blocTest<UnassignedTasksCubit, UnassignedTasksState>(
     'should load tasks with customer id',
-    build: () => UnassignedTasksCubit(
-      repository: _repository,
+    build: () => create(
       customerId: _fixedCustomer.id,
     ),
     act: (c) => c.load(),
@@ -135,7 +146,7 @@ void main() {
       )
     ],
     verify: (c) {
-      verify(() => _repository.listUnassignedTasks(
+      verify(() => _listUnassignedTasksUseCase(
             customerId: _fixedCustomer.id,
           )).called(1);
     },
@@ -144,7 +155,7 @@ void main() {
   group('Error handling', () {
     setUp(() {
       when(
-        () => _repository.listUnassignedTasks(),
+        () => _listUnassignedTasksUseCase(),
       ).thenThrow(
         NetException(message: 'Error'),
       );
@@ -152,9 +163,7 @@ void main() {
 
     blocTest<UnassignedTasksCubit, UnassignedTasksState>(
       'should deal with simple exceptions',
-      build: () => UnassignedTasksCubit(
-        repository: _repository,
-      ),
+      build: create,
       act: (c) => c.load(),
       expect: () => [
         UnassignedTasksState(busy: true),
@@ -163,7 +172,7 @@ void main() {
         ),
       ],
       verify: (c) {
-        verify(() => _repository.listUnassignedTasks()).called(1);
+        verify(() => _listUnassignedTasksUseCase()).called(1);
       },
     ); // should deal with simple exceptions
   });
@@ -174,7 +183,7 @@ void main() {
 void _claimTests() {
   blocTest<UnassignedTasksCubit, UnassignedTasksState>(
     'should claim tasks',
-    build: () => UnassignedTasksCubit(repository: _repository),
+    build: create,
     seed: () => UnassignedTasksState(tasks: _repositoryList),
     act: (c) => c.claimTasks(tasksIds: ['1', '2', '3']),
     expect: () => [
@@ -188,18 +197,18 @@ void _claimTests() {
       ),
     ],
     verify: (c) {
-      verifyNever(() => _repository.claimTask(taskId: '0'));
-      verify(() => _repository.claimTask(taskId: '1')).called(1);
-      verify(() => _repository.claimTask(taskId: '2')).called(1);
-      verify(() => _repository.claimTask(taskId: '3')).called(1);
-      verifyNever(() => _repository.claimTask(taskId: '4'));
-      verifyNever(() => _repository.claimTask(taskId: '5'));
+      verifyNever(() => _claimDPATaskUseCase(taskId: '0'));
+      verify(() => _claimDPATaskUseCase(taskId: '1')).called(1);
+      verify(() => _claimDPATaskUseCase(taskId: '2')).called(1);
+      verify(() => _claimDPATaskUseCase(taskId: '3')).called(1);
+      verifyNever(() => _claimDPATaskUseCase(taskId: '4'));
+      verifyNever(() => _claimDPATaskUseCase(taskId: '5'));
     },
   ); // should claim tasks
   group('Exception handling', () {
     setUp(() {
       when(
-        () => _repository.claimTask(taskId: '1'),
+        () => _claimDPATaskUseCase(taskId: '1'),
       ).thenThrow(
         NetException(),
       );
@@ -207,7 +216,7 @@ void _claimTests() {
 
     blocTest<UnassignedTasksCubit, UnassignedTasksState>(
       'should handle exception on claim tasks',
-      build: () => UnassignedTasksCubit(repository: _repository),
+      build: create,
       seed: () => UnassignedTasksState(tasks: _repositoryList),
       act: (c) => c.claimTasks(tasksIds: ['1', '2', '3']),
       expect: () => [
@@ -221,12 +230,12 @@ void _claimTests() {
         ),
       ],
       verify: (c) {
-        verifyNever(() => _repository.claimTask(taskId: '0'));
-        verify(() => _repository.claimTask(taskId: '1')).called(1);
-        verifyNever(() => _repository.claimTask(taskId: '2'));
-        verifyNever(() => _repository.claimTask(taskId: '3'));
-        verifyNever(() => _repository.claimTask(taskId: '4'));
-        verifyNever(() => _repository.claimTask(taskId: '5'));
+        verifyNever(() => _claimDPATaskUseCase(taskId: '0'));
+        verify(() => _claimDPATaskUseCase(taskId: '1')).called(1);
+        verifyNever(() => _claimDPATaskUseCase(taskId: '2'));
+        verifyNever(() => _claimDPATaskUseCase(taskId: '3'));
+        verifyNever(() => _claimDPATaskUseCase(taskId: '4'));
+        verifyNever(() => _claimDPATaskUseCase(taskId: '5'));
       },
     );
   });

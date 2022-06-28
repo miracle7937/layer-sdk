@@ -1,6 +1,9 @@
+import '../../../../data_layer/dtos.dart';
+import '../../../../data_layer/mappings.dart';
+import '../../../../data_layer/providers.dart';
+import '../../../../domain_layer/models.dart';
 import '../../models.dart';
 import '../../providers.dart';
-import '../dtos.dart';
 import '../mappings.dart';
 
 /// Handles authentication data
@@ -92,33 +95,5 @@ class AuthenticationRepository {
       success: dto.success ?? false,
       message: dto.message ?? '',
     );
-  }
-
-  /// Checks if the provided branch activation code was already submitted by
-  /// the bank on the console.
-  ///
-  /// If the first success response returns that the otp is needed, you can
-  /// retry this by passing the otpValue and the user token returned in the
-  /// first response.
-  ///
-  /// The [useOTP] parameter is used for indicating if the branch activation
-  /// feature should return a second factor method when the bank has submitted
-  /// the code.
-  Future<BranchActivationResponse?> checkBranchActivationCode({
-    required String code,
-    String? otpValue,
-    String? token,
-    bool useOtp = true,
-    bool throwAllErrors = true,
-  }) async {
-    final dto = await _provider.checkBranchActivationCode(
-      code: code,
-      otpValue: otpValue,
-      token: token,
-      useOTP: useOtp,
-      throwAllErrors: throwAllErrors,
-    );
-
-    return dto?.toBranchActivationResponse();
   }
 }

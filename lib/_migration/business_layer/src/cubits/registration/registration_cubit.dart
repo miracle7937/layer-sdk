@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:collection/collection.dart';
 
 import '../../../../../../data_layer/network.dart';
-import '../../../../data_layer/data_layer.dart';
+import '../../../../../data_layer/repositories.dart';
 import '../../cubits.dart';
 import '../../errors.dart';
 import '../../resources.dart';

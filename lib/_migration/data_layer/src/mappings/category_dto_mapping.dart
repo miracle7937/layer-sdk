@@ -1,5 +1,5 @@
+import '../../../../domain_layer/models.dart';
 import '../../errors.dart';
-import '../../models.dart';
 import '../dtos.dart';
 
 ///Extension for mapping the [CategoryDTO]

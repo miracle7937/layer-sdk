@@ -2,20 +2,19 @@ import 'dart:math';
 
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
 import 'package:layer_sdk/data_layer/network.dart';
-import 'package:layer_sdk/domain_layer/models.dart';
+import 'package:layer_sdk/features/transfer.dart';
+import 'package:layer_sdk/presentation_layer/utils.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockTransferRepository extends Mock implements TransferRepository {}
+class MockLoadTransfersUseCase extends Mock implements LoadTransfersUseCase {}
 
 final _repositoryList = <Transfer>[];
 final _defaultLimit = 10;
 final _customerId = '200000';
 
-late MockTransferRepository _repository;
+late MockLoadTransfersUseCase _loadTransfersUseCase;
 late TransferCubit _cubit;
 
 final _defaultState = TransferState(
@@ -43,11 +42,16 @@ void main() {
     );
   }
 
-  setUpAll(() {
-    _repository = MockTransferRepository();
+  setUp(() {
+    _loadTransfersUseCase = MockLoadTransfersUseCase();
+    _cubit = TransferCubit(
+      customerId: _customerId,
+      loadTransfersUseCase: _loadTransfersUseCase,
+      limit: _defaultLimit,
+    );
 
     when(
-      () => _repository.list(
+      () => _loadTransfersUseCase(
         customerId: _customerId,
         limit: _defaultLimit,
         offset: 0,
@@ -60,7 +64,7 @@ void main() {
     );
 
     when(
-      () => _repository.list(
+      () => _loadTransfersUseCase(
         customerId: _customerId,
         limit: _defaultLimit,
         offset: _defaultLimit,
@@ -74,7 +78,7 @@ void main() {
     );
 
     when(
-      () => _repository.list(
+      () => _loadTransfersUseCase(
         customerId: _customerId,
         limit: _defaultLimit,
         offset: _defaultLimit * 2,
@@ -84,14 +88,6 @@ void main() {
       ),
     ).thenAnswer(
       (_) async => _repositoryList.skip(_defaultLimit * 2).toList(),
-    );
-  });
-
-  setUp(() {
-    _cubit = TransferCubit(
-      customerId: _customerId,
-      repository: _repository,
-      limit: _defaultLimit,
     );
   });
 
@@ -126,7 +122,7 @@ void _baseTests() {
     ],
     verify: (c) {
       verify(
-        () => _repository.list(
+        () => _loadTransfersUseCase(
           customerId: _customerId,
           limit: _defaultLimit,
           offset: 0,
@@ -162,7 +158,7 @@ void _baseTests() {
     ],
     verify: (c) {
       verify(
-        () => _repository.list(
+        () => _loadTransfersUseCase(
           customerId: _customerId,
           limit: _defaultLimit,
           offset: _defaultLimit,
@@ -204,7 +200,7 @@ void _baseTests() {
     ],
     verify: (c) {
       verify(
-        () => _repository.list(
+        () => _loadTransfersUseCase(
           customerId: _customerId,
           limit: _defaultLimit,
           offset: _defaultLimit * 2,
@@ -233,7 +229,7 @@ void _includeDetails() {
     ],
     verify: (c) {
       verify(
-        () => _repository.list(
+        () => _loadTransfersUseCase(
           customerId: _customerId,
           limit: _defaultLimit,
           offset: 0,
@@ -260,7 +256,7 @@ void _includeDetails() {
     ],
     verify: (c) {
       verify(
-        () => _repository.list(
+        () => _loadTransfersUseCase(
           customerId: _customerId,
           limit: _defaultLimit,
           offset: 0,
@@ -289,7 +285,7 @@ void _forceRefresh() {
     ],
     verify: (c) {
       verify(
-        () => _repository.list(
+        () => _loadTransfersUseCase(
           customerId: _customerId,
           limit: _defaultLimit,
           offset: 0,
@@ -316,7 +312,7 @@ void _forceRefresh() {
     ],
     verify: (c) {
       verify(
-        () => _repository.list(
+        () => _loadTransfersUseCase(
           customerId: _customerId,
           limit: _defaultLimit,
           offset: 0,
@@ -332,7 +328,7 @@ void _forceRefresh() {
 void _exceptions() {
   setUp(() {
     when(
-      () => _repository.list(
+      () => _loadTransfersUseCase(
         customerId: _customerId,
         limit: _defaultLimit,
         offset: 0,
@@ -345,7 +341,7 @@ void _exceptions() {
     );
 
     when(
-      () => _repository.list(
+      () => _loadTransfersUseCase(
         customerId: _customerId,
         limit: _defaultLimit,
         offset: _defaultLimit,
@@ -375,7 +371,7 @@ void _exceptions() {
     ],
     verify: (c) {
       verify(
-        () => _repository.list(
+        () => _loadTransfersUseCase(
           customerId: _customerId,
           limit: _defaultLimit,
           offset: 0,
@@ -412,7 +408,7 @@ void _exceptions() {
     ],
     verify: (c) {
       verify(
-        () => _repository.list(
+        () => _loadTransfersUseCase(
           customerId: _customerId,
           limit: _defaultLimit,
           offset: _defaultLimit,

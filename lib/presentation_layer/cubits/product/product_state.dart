@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart' show immutable;
 
 import '../../../domain_layer/models.dart';
-import '../utils.dart';
+import '../../utils.dart';
 
 /// The available errors that might occur when fetching products.
 enum ProductStateError {

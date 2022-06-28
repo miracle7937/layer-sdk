@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../domain_layer/models.dart';
 import '../../presentation_layer/extensions.dart';
+import '../extensions.dart';
 
 /// Flutter Extension for [Branding]
 extension BrandingFlutterExtension on Branding {
@@ -73,10 +74,6 @@ extension BrandingFlutterExtension on Branding {
           colors?.surfaceNonary3?.toColor() ?? defaultDesign.surfaceNonary3,
       surfaceNonary4:
           colors?.surfaceNonary4?.toColor() ?? defaultDesign.surfaceNonary4,
-      darkAlphaBase: colors?.darkAlpha?.toColor() ??
-          defaultDesign.darkAlpha72.withOpacity(1.0),
-      whiteAlphaBase: colors?.whiteAlpha?.toColor() ??
-          defaultDesign.whiteAlpha72.withOpacity(1.0),
       successDarkPrimary: colors?.successDarkPrimary?.toColor() ??
           defaultDesign.successDarkPrimary,
       successPrimary:
@@ -126,6 +123,16 @@ extension BrandingFlutterExtension on Branding {
           colors?.infoTertiary?.toColor() ?? defaultDesign.infoTertiary,
       infoQuaternary:
           colors?.infoQuaternary?.toColor() ?? defaultDesign.infoQuaternary,
+      successQuinary: const Color(0xFFF9FFF7),
+      errorQuinary: const Color(0xFFFFF8F7),
+      warningQuinary: const Color(0xFFFFFAF7),
+      cautionQuinary: const Color(0xFFFFFCF7),
+      infoQuinary: const Color(0xFFF7F8FF),
+      successAlpha: const Color(0xFF06210B),
+      errorAlpha: const Color(0xFF2E0509),
+      warningAlpha: const Color(0xFF2D1605),
+      cautionAlpha: const Color(0xFF2C2102),
+      infoAlpha: const Color(0xFF09182A),
       baseTitleXXXL:
           fonts.baseTitleXXXL?.toTextStyle() ?? defaultDesign.titleXXXL(),
       baseTitleXXL:

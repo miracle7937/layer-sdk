@@ -1,14 +1,26 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
-import 'package:layer_sdk/domain_layer/models.dart';
+import 'package:layer_sdk/domain_layer/models/account/account.dart';
+import 'package:layer_sdk/domain_layer/models/customer/customer.dart';
+import 'package:layer_sdk/domain_layer/use_cases.dart';
+import 'package:layer_sdk/presentation_layer/cubits.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockCertificateRepository extends Mock implements CertificateRepository {}
+class MockRequestAccountCertificateUseCase extends Mock
+    implements RequestAccountCertificateUseCase {}
 
-late MockCertificateRepository _repo;
+class MockRequestBankStatementUseCase extends Mock
+    implements RequestBankStatementUseCase {}
+
+class MockRequestCertificateOfDepositUseCase extends Mock
+    implements RequestCertificateOfDepositUseCase {}
+
+late MockRequestAccountCertificateUseCase _requestAccountCertificateUseCase;
+late MockRequestBankStatementUseCase _requestBankStatementUseCase;
+late MockRequestCertificateOfDepositUseCase _requestCertificateOfDepositUseCase;
+
+late CertificateCubit _cubit;
 
 final _successId = '1';
 final _failureId = '2';
@@ -43,13 +55,22 @@ void main() {
     availableBalance: 999999999999,
   );
 
-  setUpAll(() {
-    _repo = MockCertificateRepository();
+  setUp(() {
+    _requestAccountCertificateUseCase = MockRequestAccountCertificateUseCase();
+    _requestBankStatementUseCase = MockRequestBankStatementUseCase();
+    _requestCertificateOfDepositUseCase =
+        MockRequestCertificateOfDepositUseCase();
+
+    _cubit = CertificateCubit(
+      requestAccountCertificateUseCase: _requestAccountCertificateUseCase,
+      requestBankStatementUseCase: _requestBankStatementUseCase,
+      requestCertificateOfDepositUseCase: _requestCertificateOfDepositUseCase,
+    );
 
     /// Test case that successfully emits a new
     /// certificate of deposit
     when(
-      () => _repo.requestCertificateOfDeposit(
+      () => _requestCertificateOfDepositUseCase(
         accountId: _successId,
         customerId: _successId,
       ),
@@ -57,7 +78,7 @@ void main() {
 
     /// Test case that fails to emit a new certificate of deposit
     when(
-      () => _repo.requestCertificateOfDeposit(
+      () => _requestCertificateOfDepositUseCase(
         accountId: _failureId,
         customerId: _failureId,
       ),
@@ -66,7 +87,7 @@ void main() {
     /// Test case that successfully emits a new
     /// account certificate
     when(
-      () => _repo.requestAccountCertificate(
+      () => _requestAccountCertificateUseCase(
         accountId: _successId,
         customerId: _successId,
       ),
@@ -74,7 +95,7 @@ void main() {
 
     /// Test case that fails to emit a account certificate
     when(
-      () => _repo.requestAccountCertificate(
+      () => _requestAccountCertificateUseCase(
         accountId: _failureId,
         customerId: _failureId,
       ),
@@ -83,7 +104,7 @@ void main() {
     /// Test case that successfully emits a new
     /// account certificate
     when(
-      () => _repo.requestBankStatement(
+      () => _requestBankStatementUseCase(
         accountId: _successId,
         customerId: _successId,
         fromDate: _mockDate,
@@ -93,7 +114,7 @@ void main() {
 
     /// Test case that fails to emit a account certificate
     when(
-      () => _repo.requestBankStatement(
+      () => _requestBankStatementUseCase(
         accountId: _failureId,
         customerId: _failureId,
         fromDate: _mockDate,
@@ -104,13 +125,13 @@ void main() {
 
   blocTest<CertificateCubit, CertificateStates>(
     'Starts with empty state',
-    build: () => CertificateCubit(repository: _repo),
+    build: () => _cubit,
     verify: (c) => expect(c.state, CertificateStates()),
   );
 
   blocTest<CertificateCubit, CertificateStates>(
     'Set customer emits a new state with the provided customer',
-    build: () => CertificateCubit(repository: _repo),
+    build: () => _cubit,
     act: (c) => c.setCustomer(successCustomer),
     verify: (c) => expect(
       c.state,
@@ -122,7 +143,7 @@ void main() {
 
   blocTest<CertificateCubit, CertificateStates>(
     'Set account emits a new state with the provided account',
-    build: () => CertificateCubit(repository: _repo),
+    build: () => _cubit,
     act: (c) => c.setAccount(successAccount),
     verify: (c) => expect(
       c.state,
@@ -132,7 +153,7 @@ void main() {
 
   blocTest<CertificateCubit, CertificateStates>(
     'Request account certificate emits a new state with the file list of bytes',
-    build: () => CertificateCubit(repository: _repo),
+    build: () => _cubit,
     seed: () => CertificateStates(
       account: successAccount,
       customer: successCustomer,
@@ -156,7 +177,7 @@ void main() {
 
   blocTest<CertificateCubit, CertificateStates>(
     'Request account certificate emits a new state with failure action',
-    build: () => CertificateCubit(repository: _repo),
+    build: () => _cubit,
     seed: () => CertificateStates(
       account: failureAccount,
       customer: failureCustomer,
@@ -179,7 +200,7 @@ void main() {
 
   blocTest<CertificateCubit, CertificateStates>(
     'Request certificate of deposit emits the file list of bytes',
-    build: () => CertificateCubit(repository: _repo),
+    build: () => _cubit,
     seed: () => CertificateStates(
       account: successAccount,
       customer: successCustomer,
@@ -203,7 +224,7 @@ void main() {
 
   blocTest<CertificateCubit, CertificateStates>(
     'Request certificate of deposit emits a new state with failure action',
-    build: () => CertificateCubit(repository: _repo),
+    build: () => _cubit,
     seed: () => CertificateStates(
       account: failureAccount,
       customer: failureCustomer,
@@ -226,7 +247,7 @@ void main() {
 
   blocTest<CertificateCubit, CertificateStates>(
     'Request bank statement emits the file list of bytes',
-    build: () => CertificateCubit(repository: _repo),
+    build: () => _cubit,
     seed: () => CertificateStates(
       account: successAccount,
       customer: successCustomer,
@@ -256,7 +277,7 @@ void main() {
 
   blocTest<CertificateCubit, CertificateStates>(
     'Request bank statement emits a new state with failure action',
-    build: () => CertificateCubit(repository: _repo),
+    build: () => _cubit,
     seed: () => CertificateStates(
       account: failureAccount,
       customer: failureCustomer,
@@ -285,7 +306,7 @@ void main() {
 
   blocTest<CertificateCubit, CertificateStates>(
     'Clear removes all previous state',
-    build: () => CertificateCubit(repository: _repo),
+    build: () => _cubit,
     seed: () => CertificateStates(
       account: failureAccount,
       customer: failureCustomer,

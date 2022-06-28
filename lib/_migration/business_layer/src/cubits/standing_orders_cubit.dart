@@ -1,9 +1,9 @@
 import 'package:bloc/bloc.dart';
 
 import '../../../../../../data_layer/network.dart';
+import '../../../../presentation_layer/utils.dart';
 import '../../../data_layer/data_layer.dart';
 import '../cubits.dart';
-import '../utils.dart';
 
 /// A cubit that keeps the list of customer standing orders.
 class StandingOrdersCubit extends Cubit<StandingOrdersState> {
