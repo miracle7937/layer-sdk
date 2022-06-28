@@ -1,21 +1,19 @@
 import 'package:bloc/bloc.dart';
 
-import '../../../../../../data_layer/network.dart';
-import '../../../../../domain_layer/abstract_repositories.dart';
-import '../../../../../domain_layer/models.dart';
-import '../../../../data_layer/data_layer.dart';
-import '../../../business_layer.dart';
+import '../../../data_layer/network.dart';
+import '../../../domain_layer/models.dart';
+import '../../../domain_layer/use_cases.dart';
+import '../../cubits.dart';
 
 ///A cubit that holds the user preferences from a [LoggedUser]
 class UserPreferencesCubit extends Cubit<UserPreferencesState> {
-  ///The repository
-  final UserRepositoryInterface _repository;
+  final ChangeOfferFavoriteStatusUseCase _changeOfferFavoriteStatusUseCase;
 
   ///Creates a new [UserPreferencesCubit]
   UserPreferencesCubit({
     required User user,
-    required UserRepositoryInterface repository,
-  })  : _repository = repository,
+    required ChangeOfferFavoriteStatusUseCase changeOfferFavoriteStatusUseCase,
+  })  : _changeOfferFavoriteStatusUseCase = changeOfferFavoriteStatusUseCase,
         super(
           UserPreferencesState(
             favoriteOffers: user.favoriteOffers.toList(),
@@ -47,8 +45,8 @@ class UserPreferencesCubit extends Cubit<UserPreferencesState> {
         action = UserPreferencesAction.favoriteAdded;
       }
 
-      final response = await _repository.patchUserPreference(
-        userPreference: FavoriteOffersPreference(value: newList),
+      final response = await _changeOfferFavoriteStatusUseCase(
+        offerIds: newList,
       );
 
       emit(
