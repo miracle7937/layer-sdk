@@ -1,16 +1,15 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
 import 'package:layer_sdk/data_layer/network.dart';
-import 'package:layer_sdk/domain_layer/abstract_repositories.dart';
 import 'package:layer_sdk/domain_layer/models.dart';
+import 'package:layer_sdk/features/user_preferences.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockUserRepository extends Mock implements UserRepositoryInterface {}
+class MockChangeOfferFavoriteStatusUseCase extends Mock
+    implements ChangeOfferFavoriteStatusUseCase {}
 
-late MockUserRepository _repo;
+late MockChangeOfferFavoriteStatusUseCase _useCase;
 
 final _exception = NetException(message: 'there was an exception');
 
@@ -42,27 +41,27 @@ void main() {
   );
 
   setUp(() {
-    _repo = MockUserRepository();
+    _useCase = MockChangeOfferFavoriteStatusUseCase();
 
     when(
-      () => _repo.patchUserPreference(
-        userPreference: FavoriteOffersPreference(value: addFavoriteList),
+      () => _useCase(
+        offerIds: addFavoriteList,
       ),
     ).thenAnswer(
       (_) async => mockedUser.copyWith(favoriteOffers: addFavoriteList),
     );
 
     when(
-      () => _repo.patchUserPreference(
-        userPreference: FavoriteOffersPreference(value: removeFavoriteList),
+      () => _useCase(
+        offerIds: removeFavoriteList,
       ),
     ).thenAnswer(
       (_) async => mockedUser.copyWith(favoriteOffers: removeFavoriteList),
     );
 
     when(
-      () => _repo.patchUserPreference(
-        userPreference: FavoriteOffersPreference(value: exceptionFavoriteList),
+      () => _useCase(
+        offerIds: exceptionFavoriteList,
       ),
     ).thenThrow(_exception);
   });
@@ -71,7 +70,7 @@ void main() {
     'Starts with empty state',
     build: () => UserPreferencesCubit(
       user: mockedUser,
-      repository: _repo,
+      changeOfferFavoriteStatusUseCase: _useCase,
     ),
     verify: (c) => expect(
       c.state,
@@ -83,7 +82,7 @@ void main() {
     'Handles NetException when changing the favorite offers',
     build: () => UserPreferencesCubit(
       user: exceptionMockedUser,
-      repository: _repo,
+      changeOfferFavoriteStatusUseCase: _useCase,
     ),
     act: (c) => c.changeOfferFavoriteStatus(offerId: 140),
     expect: () => [
@@ -99,11 +98,10 @@ void main() {
       ),
     ],
     verify: (c) {
-      verify(() => _repo.patchUserPreference(
-            userPreference:
-                FavoriteOffersPreference(value: exceptionFavoriteList),
+      verify(() => _useCase(
+            offerIds: exceptionFavoriteList,
           )).called(1);
-      verifyNoMoreInteractions(_repo);
+      verifyNoMoreInteractions(_useCase);
     },
   );
 
@@ -112,7 +110,7 @@ void main() {
     'and the favorite offer list is reseted to the initial status',
     build: () => UserPreferencesCubit(
       user: exceptionMockedUser,
-      repository: _repo,
+      changeOfferFavoriteStatusUseCase: _useCase,
     ),
     seed: () => UserPreferencesState(
       error: UserPreferencesError.network,
@@ -133,12 +131,11 @@ void main() {
       ),
     ],
     verify: (c) {
-      verify(() => _repo.patchUserPreference(
-            userPreference:
-                FavoriteOffersPreference(value: exceptionFavoriteList),
+      verify(() => _useCase(
+            offerIds: exceptionFavoriteList,
           )).called(1);
 
-      verifyNoMoreInteractions(_repo);
+      verifyNoMoreInteractions(_useCase);
     },
   );
 
@@ -146,7 +143,7 @@ void main() {
     'Adds one offer to the favorite offer list',
     build: () => UserPreferencesCubit(
       user: mockedUser,
-      repository: _repo,
+      changeOfferFavoriteStatusUseCase: _useCase,
     ),
     act: (c) => c.changeOfferFavoriteStatus(offerId: 130),
     expect: () => [
@@ -161,10 +158,10 @@ void main() {
       ),
     ],
     verify: (c) {
-      verify(() => _repo.patchUserPreference(
-            userPreference: FavoriteOffersPreference(value: addFavoriteList),
+      verify(() => _useCase(
+            offerIds: addFavoriteList,
           )).called(1);
-      verifyNoMoreInteractions(_repo);
+      verifyNoMoreInteractions(_useCase);
     },
   );
 
@@ -172,7 +169,7 @@ void main() {
     'Removes one offer from the favorite offer list',
     build: () => UserPreferencesCubit(
       user: mockedUser,
-      repository: _repo,
+      changeOfferFavoriteStatusUseCase: _useCase,
     ),
     act: (c) => c.changeOfferFavoriteStatus(offerId: 120),
     expect: () => [
@@ -187,10 +184,10 @@ void main() {
       ),
     ],
     verify: (c) {
-      verify(() => _repo.patchUserPreference(
-            userPreference: FavoriteOffersPreference(value: removeFavoriteList),
+      verify(() => _useCase(
+            offerIds: removeFavoriteList,
           )).called(1);
-      verifyNoMoreInteractions(_repo);
+      verifyNoMoreInteractions(_useCase);
     },
   );
 }
