@@ -46,6 +46,8 @@ class _DPAPhoneTextState extends State<DPAPhoneText> {
         text: widget.variable.value?.toString(),
       );
     }
+
+    _selectedDialCode = widget.variable.property.prefixValue ?? '';
   }
 
   @override
@@ -61,6 +63,7 @@ class _DPAPhoneTextState extends State<DPAPhoneText> {
     return Padding(
       padding: widget.padding,
       child: DKPhoneField(
+        initialSelection: _selectedDialCode,
         status: widget.readonly || widget.variable.constraints.readonly
             ? DKTextFieldStatus.disabled
             : DKTextFieldStatus.idle,
