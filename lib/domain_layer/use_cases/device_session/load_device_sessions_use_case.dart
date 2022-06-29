@@ -2,11 +2,11 @@ import '../../abstract_repositories.dart';
 import '../../models.dart';
 
 /// Use case for loading all device sessions.
-class LoadSessionsUseCase {
+class LoadDeviceSessionsUseCase {
   final DeviceSessionRepositoryInterface _repository;
 
   /// Creates a new [LoadSessionsUseCase] use case.
-  LoadSessionsUseCase({
+  LoadDeviceSessionsUseCase({
     required DeviceSessionRepositoryInterface repository,
   }) : _repository = repository;
 
@@ -30,6 +30,7 @@ class LoadSessionsUseCase {
     String? sortby,
     bool? desc,
     bool forceRefresh = false,
+    required String customerId,
   }) =>
       _repository.getDeviceSessions(
         deviceTypes: deviceTypes,
@@ -38,5 +39,6 @@ class LoadSessionsUseCase {
         sortby: sortby,
         desc: desc,
         forceRefresh: forceRefresh,
+        customerId: customerId,
       );
 }

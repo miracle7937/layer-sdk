@@ -1,4 +1,5 @@
 import '../../abstract_repositories.dart';
+import '../../models.dart';
 
 /// The use case that terminates the device session
 class DeviceSessionTerminateUseCase {
@@ -10,12 +11,14 @@ class DeviceSessionTerminateUseCase {
   }) : _repository = repository;
 
   /// Callable method to terminate id belonging device session
-  /// The [status] value is used for getting only the device sessions that
-  /// belong to session status.
+  /// The [customerType] value is used for sending the customer type that
+  /// belong to device session.
   Future<void> call({
-    required int deviceId,
+    required String deviceId,
+    required CustomerType customerType,
   }) =>
       _repository.terminateSession(
         deviceId: deviceId,
+        customerType: customerType,
       );
 }

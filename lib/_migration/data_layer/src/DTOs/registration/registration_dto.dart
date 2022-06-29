@@ -1,3 +1,4 @@
+import '../../../../../data_layer/dtos.dart';
 import '../../dtos.dart';
 
 /// Data transfer object representing the data needed for registration.

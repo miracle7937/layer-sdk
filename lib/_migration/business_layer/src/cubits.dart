@@ -16,8 +16,6 @@ export 'cubits/category_cubit.dart';
 export 'cubits/category_state.dart';
 export 'cubits/customers_cubit.dart';
 export 'cubits/customers_states.dart';
-export 'cubits/device_session_cubit.dart';
-export 'cubits/device_session_states.dart';
 export 'cubits/registration/registration_cubit.dart';
 export 'cubits/registration/registration_state.dart';
 export 'cubits/registration/steps/authentication_registration_step.dart';

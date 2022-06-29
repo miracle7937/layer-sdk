@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import '../../models.dart';
-import '../resolution.dart';
 
 /// The available status of a session
 enum SessionStatus {

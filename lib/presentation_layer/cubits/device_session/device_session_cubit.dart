@@ -1,20 +1,18 @@
 import 'package:bloc/bloc.dart';
-import '../../../_migration/data_layer/src/models/customer/customer.dart';
 import '../../../data_layer/network.dart';
 import '../../../domain_layer/models.dart';
-import '../../../domain_layer/use_cases/device_session/load_sessions_use_case.dart';
-import '../../../domain_layer/use_cases/device_session/session_terminate_use_case.dart';
+import '../../../domain_layer/use_cases.dart';
 import 'device_session_state.dart';
 
 /// A cubit that keeps a list of device sessions.
 class DeviceSessionCubit extends Cubit<DeviceSessionState> {
-  final LoadSessionsUseCase _loadSessionsUseCase;
+  final LoadDeviceSessionsUseCase _loadSessionsUseCase;
   final DeviceSessionTerminateUseCase _terminateUseCase;
 
   /// Creates a new cubit using the supplied [CustomerRepository] and
   /// customer id and type.
   DeviceSessionCubit({
-    required LoadSessionsUseCase loadSessionsUseCase,
+    required LoadDeviceSessionsUseCase loadSessionsUseCase,
     required DeviceSessionTerminateUseCase terminateUseCase,
     required String customerId,
     required CustomerType customerType,
@@ -56,6 +54,7 @@ class DeviceSessionCubit extends Cubit<DeviceSessionState> {
         secondStatus: secondStatus,
         sortby: sortby,
         desc: desc,
+        customerId: state.customerId,
       );
 
       emit(
@@ -71,7 +70,6 @@ class DeviceSessionCubit extends Cubit<DeviceSessionState> {
           errorStatus: e is NetException
               ? DeviceSessionErrorStatus.network
               : DeviceSessionErrorStatus.generic,
-          errorMessage: e is NetException ? e.message : null,
         ),
       );
 
@@ -87,7 +85,7 @@ class DeviceSessionCubit extends Cubit<DeviceSessionState> {
   ///
   /// The error status is similarly localized to the session.
   Future<void> terminateSession({
-    required int deviceId,
+    required String deviceId,
   }) async {
     // Emits a new state with the current session busy, and without errors.
     emit(
@@ -108,6 +106,7 @@ class DeviceSessionCubit extends Cubit<DeviceSessionState> {
     try {
       await _terminateUseCase(
         deviceId: deviceId,
+        customerType: state.customerType,
       );
 
       // Emits a new state with the returned session not busy anymore

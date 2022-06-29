@@ -1,17 +1,17 @@
 import '../../abstract_repositories.dart';
 
 /// The use case that activates the device session
-class DeviceSessionActivateUseCase {
+class ActivateDeviceSessionUseCase {
   final DeviceSessionRepositoryInterface _repository;
 
   /// Creates a new [DeviceSessionActivateUseCase] use case.
-  DeviceSessionActivateUseCase({
+  ActivateDeviceSessionUseCase({
     required DeviceSessionRepositoryInterface repository,
   }) : _repository = repository;
 
-  /// Callable method to send id on campaign action
+  /// Callable method to send device id when session activate
   Future<void> call({
-    required int deviceId,
+    required String deviceId,
   }) =>
       _repository.activateSession(
         deviceId: deviceId,

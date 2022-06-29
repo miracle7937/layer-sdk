@@ -10,6 +10,7 @@ abstract class DeviceSessionRepositoryInterface {
     ],
     SessionStatus status = SessionStatus.active,
     SessionStatus? secondStatus,
+    required String customerId,
     String? sortby,
     bool? desc,
     bool forceRefresh = false,
@@ -17,11 +18,12 @@ abstract class DeviceSessionRepositoryInterface {
 
   /// Activates the device session belonging to this id
   Future<void> activateSession({
-    required int deviceId,
+    required String deviceId,
   });
 
   /// Terminates the device session belonging to this id
-  Future<void> terminateSession({
-    required int deviceId,
+  Future<DeviceSession> terminateSession({
+    required String deviceId,
+    required CustomerType customerType,
   });
 }

@@ -1,12 +1,11 @@
 import '../../../../data_layer/network.dart';
-import '../../../_migration/data_layer/src/mappings.dart';
-import '../../../_migration/data_layer/src/models/customer/customer.dart';
+import '../../../domain_layer/abstract_repositories.dart';
 import '../../../domain_layer/models.dart';
 import '../../mappings.dart';
 import '../../providers.dart';
 
 /// Handles all the device sessions data
-class DeviceSessionRepository {
+class DeviceSessionRepository implements DeviceSessionRepositoryInterface{
   final DeviceSessionProvider _provider;
 
   /// Creates a new repository with the supplied [DeviceSessionProvider]

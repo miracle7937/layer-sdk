@@ -1,10 +1,8 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/_migration/data_layer/models.dart' as migration;
 import 'package:layer_sdk/data_layer/network.dart';
-import 'package:layer_sdk/domain_layer/abstract_repositories.dart';
 import 'package:layer_sdk/domain_layer/models.dart';
-import 'package:layer_sdk/domain_layer/use_cases/device_session/load_sessions_use_case.dart';
+import 'package:layer_sdk/domain_layer/use_cases/device_session/load_device_sessions_use_case.dart';
 import 'package:layer_sdk/domain_layer/use_cases/device_session/session_terminate_use_case.dart';
 import 'package:layer_sdk/presentation_layer/cubits/device_session/device_session_cubit.dart';
 import 'package:layer_sdk/presentation_layer/cubits/device_session/device_session_state.dart';
@@ -12,195 +10,355 @@ import 'package:layer_sdk/presentation_layer/cubits/device_session/device_sessio
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockDeviceSessionRepository extends Mock
-    implements DeviceSessionRepositoryInterface {}
+class MockLoadDeviceSessionsUseCase extends Mock
+    implements LoadDeviceSessionsUseCase {}
 
-final _repository = MockDeviceSessionRepository();
-final _loadSessions = LoadSessionsUseCase(repository: _repository);
-final _terminateSession =
-    DeviceSessionTerminateUseCase(repository: _repository);
-final deviceSession = DeviceSession();
+class MockDeviceSessionTerminateUseCase extends Mock
+    implements DeviceSessionTerminateUseCase {}
 
-final _limit = 2;
+final _sessionUseCase = MockLoadDeviceSessionsUseCase();
+final _terminateUseCase = MockDeviceSessionTerminateUseCase();
 
-final _successSessionTypes = [SessionType.android, SessionType.iOS];
-final _failureDeviceSessionType = [SessionType.other];
-
-final _netException = NetException(message: 'Server timed out');
-final _genericException = Exception();
-
-final _mockedDeviceSessions = List.generate(
-  4,
-  (index) => DeviceSession(
-      loginName: 'Session $index',
-      deviceName: "device name",
-      type: SessionType.android,
-      customerId: "customer"),
+final _customer1Id = '2819';
+final _customer1Type = CustomerType.personal;
+final _customer1Devices = <DeviceSession>[];
+final _customer1BaseState = DeviceSessionState(
+  customerId: _customer1Id,
+  customerType: _customer1Type,
+  sessions: <SessionData>[],
+  busy: false,
 );
-final _mockedSessionsData = List.generate(
-  2,
-  (index) => SessionData(
-      session: DeviceSession(
-          loginName: 'Session $index',
-          deviceName: "device name",
-          type: SessionType.android,
-          customerId: "customer")),
-);
+late DeviceSession _customer1TerminateSession;
+
+final _netErrorId = '1723';
+final _genericErrorId = '7721';
 
 void main() {
   EquatableConfig.stringify = true;
 
+  for (var i = 0; i < 5; ++i) {
+    _customer1Devices.add(
+      DeviceSession(
+        deviceId: 'id $i',
+        status: SessionStatus.active,
+        appVersion: 'version $i',
+        created: DateTime.now(),
+        type: i.isEven ? SessionType.android : SessionType.iOS,
+      ),
+    );
+  }
+
+  _customer1TerminateSession = _customer1Devices[2].copyWith(
+    status: SessionStatus.wiped,
+  );
+
   setUpAll(() {
     when(
-      () => _repository.getDeviceSessions(
-        deviceTypes: _successSessionTypes,
-        status: SessionStatus.active,
-        desc: any(named: 'desc'),
-        sortby: any(named: 'sortby'),
+      () => _sessionUseCase(
+        customerId: _customer1Id,
+        forceRefresh: false,
       ),
-    ).thenAnswer((_) async => _mockedDeviceSessions.take(_limit).toList());
+    ).thenAnswer(
+      (_) async => _customer1Devices,
+    );
 
     when(
-      () => _repository.getDeviceSessions(
-        deviceTypes: _successSessionTypes,
-        status: SessionStatus.inactive,
-        sortby: any(named: 'sortby'),
-        desc: any(named: 'desc'),
+      () => _sessionUseCase(
+        customerId: _customer1Id,
+        forceRefresh: true,
       ),
-    ).thenAnswer((_) async => _mockedDeviceSessions.take(_limit).toList());
+    ).thenAnswer(
+      (_) async => _customer1Devices,
+    );
 
     when(
-      () => _repository.getDeviceSessions(
-        deviceTypes: _failureDeviceSessionType,
-        status: SessionStatus.active,
-        sortby: any(named: 'sortby'),
-        desc: any(named: 'desc'),
+      () => _sessionUseCase(
+        customerId: _netErrorId,
+        forceRefresh: any(named: 'forceRefresh'),
       ),
-    ).thenThrow(_netException);
+    ).thenThrow(
+      NetException(message: 'Failed.'),
+    );
 
     when(
-      () => _repository.getDeviceSessions(
-        deviceTypes: _failureDeviceSessionType,
-        status: SessionStatus.active,
-        sortby: any(named: 'sortby'),
-        desc: any(named: 'desc'),
+      () => _sessionUseCase(
+        customerId: _genericErrorId,
+        forceRefresh: any(named: 'forceRefresh'),
       ),
-    ).thenThrow(_genericException);
+    ).thenThrow(
+      Exception('Failed generically.'),
+    );
+
+    when(
+      () => _terminateUseCase(
+        customerType: _customer1Type,
+        deviceId: _customer1TerminateSession.deviceId!,
+      ),
+    ).thenAnswer(
+      (_) async => _customer1TerminateSession,
+    );
+
+    when(
+      () => _terminateUseCase(
+        customerType: _customer1Type,
+        deviceId: _customer1Devices[0].deviceId!,
+      ),
+    ).thenThrow(
+      NetException(message: 'Failed.'),
+    );
   });
-
-  group(
-    'DeviceSessionCubit for All',
-    () => _testType(_loadSessions, _terminateSession),
-  );
-}
-
-void _testType(LoadSessionsUseCase userCase,
-    DeviceSessionTerminateUseCase terminateUseCase) {
-  final defaultState = DeviceSessionState(
-      customerId: 'customer', customerType: migration.CustomerType.joint);
 
   blocTest<DeviceSessionCubit, DeviceSessionState>(
     'starts on empty state',
     build: () => DeviceSessionCubit(
-        customerId: 'customer',
-        customerType: migration.CustomerType.joint,
-        loadSessionsUseCase: userCase,
-        terminateUseCase: terminateUseCase),
+      loadSessionsUseCase: _sessionUseCase,
+      terminateUseCase: _terminateUseCase,
+      customerId: _customer1Id,
+      customerType: _customer1Type,
+    ),
     verify: (c) => expect(
       c.state,
-      defaultState,
+      _customer1BaseState,
     ),
   ); // starts on empty state
 
+  group('Device Session Load', _testLoad);
+  group('Device Session Terminate', _testTerminate);
+}
+
+void _testLoad() {
   blocTest<DeviceSessionCubit, DeviceSessionState>(
-    'should load DeviceSessions',
+    'should load sessions',
     build: () => DeviceSessionCubit(
-      customerId: 'customer',
-      customerType: migration.CustomerType.joint,
-      loadSessionsUseCase: userCase,
-      terminateUseCase: terminateUseCase,
+      loadSessionsUseCase: _sessionUseCase,
+      terminateUseCase: _terminateUseCase,
+      customerId: _customer1Id,
+      customerType: _customer1Type,
     ),
     act: (c) => c.load(),
     expect: () => [
-      defaultState.copyWith(busy: true),
-      defaultState.copyWith(sessions: _mockedSessionsData),
+      _customer1BaseState.copyWith(busy: true),
+      _customer1BaseState.copyWith(
+        sessions: _customer1Devices
+            .map(
+              (e) => SessionData(session: e),
+            )
+            .toList(),
+      ),
     ],
     verify: (c) {
       verify(
-        () => _repository.getDeviceSessions(
-          deviceTypes: _successSessionTypes,
-          status: SessionStatus.active,
-          sortby: any(named: 'sortby'),
-          desc: any(named: 'desc'),
+        () => _sessionUseCase(
+          customerId: _customer1Id,
+          forceRefresh: false,
         ),
       ).called(1);
     },
-  ); // should load DeviceSessions
+  ); // should load sessions
 
   blocTest<DeviceSessionCubit, DeviceSessionState>(
-    'should load using all parameters',
+    'should force load sessions',
     build: () => DeviceSessionCubit(
-      customerId: 'customer',
-      customerType: migration.CustomerType.joint,
-      loadSessionsUseCase: userCase,
-      terminateUseCase: terminateUseCase,
+      loadSessionsUseCase: _sessionUseCase,
+      terminateUseCase: _terminateUseCase,
+      customerId: _customer1Id,
+      customerType: _customer1Type,
     ),
-    act: (c) => c.load(
-      deviceTypes: _successSessionTypes,
-      status: SessionStatus.active,
-      sortby: "last_activity",
-      desc: true,
-    ),
+    act: (c) => c.load(forceRefresh: true),
     expect: () => [
-      defaultState.copyWith(busy: true),
-      defaultState.copyWith(sessions: _mockedSessionsData),
+      _customer1BaseState.copyWith(busy: true),
+      _customer1BaseState.copyWith(
+        sessions: _customer1Devices
+            .map(
+              (e) => SessionData(session: e),
+            )
+            .toList(),
+      ),
     ],
     verify: (c) {
       verify(
-        () => _repository.getDeviceSessions(
-          deviceTypes: _successSessionTypes,
-          status: SessionStatus.active,
-          sortby: any(named: 'sortby'),
-          desc: any(named: 'desc'),
+        () => _sessionUseCase(
+          customerId: _customer1Id,
+          forceRefresh: true,
         ),
       ).called(1);
     },
-  ); // should load using all parameters
+  ); // should force load sessions
 
   blocTest<DeviceSessionCubit, DeviceSessionState>(
-    'should handle generic exceptions',
+    'should handle generic errors',
     build: () => DeviceSessionCubit(
-      customerId: 'customer',
-      customerType: migration.CustomerType.joint,
-      loadSessionsUseCase: userCase,
-      terminateUseCase: terminateUseCase,
+      loadSessionsUseCase: _sessionUseCase,
+      terminateUseCase: _terminateUseCase,
+      customerId: _genericErrorId,
+      customerType: _customer1Type,
     ),
-    seed: () => defaultState.copyWith(
-      sessions: _mockedSessionsData.take(_limit).toList(),
-    ),
-    act: (c) => c.load(
-      deviceTypes: _failureDeviceSessionType,
-    ),
+    act: (c) => c.load(),
     expect: () => [
-      defaultState.copyWith(
+      _customer1BaseState.copyWith(
+        customerId: _genericErrorId,
         busy: true,
-        sessions: _mockedSessionsData.take(_limit).toList(),
       ),
-      defaultState.copyWith(
-        sessions: _mockedSessionsData.take(_limit).toList(),
+      _customer1BaseState.copyWith(
+        customerId: _genericErrorId,
         errorStatus: DeviceSessionErrorStatus.generic,
-        customerType: migration.CustomerType.joint,
+      ),
+    ],
+    errors: () => [
+      isA<Exception>(),
+    ],
+    verify: (c) {
+      verify(
+        () => _sessionUseCase(
+          customerId: _genericErrorId,
+          forceRefresh: false,
+        ),
+      ).called(1);
+    },
+  ); // should handle generic errors
+
+  blocTest<DeviceSessionCubit, DeviceSessionState>(
+    'should handle net exceptions',
+    build: () => DeviceSessionCubit(
+      loadSessionsUseCase: _sessionUseCase,
+      terminateUseCase: _terminateUseCase,
+      customerId: _netErrorId,
+      customerType: _customer1Type,
+    ),
+    act: (c) => c.load(),
+    expect: () => [
+      _customer1BaseState.copyWith(
+        customerId: _netErrorId,
+        busy: true,
+      ),
+      _customer1BaseState.copyWith(
+        customerId: _netErrorId,
+        errorStatus: DeviceSessionErrorStatus.network,
+      ),
+    ],
+    errors: () => [
+      isA<NetException>(),
+    ],
+    verify: (c) {
+      verify(
+        () => _sessionUseCase(
+          customerId: _netErrorId,
+          forceRefresh: false,
+        ),
+      ).called(1);
+    },
+  ); // should handle net exceptions
+}
+
+void _testTerminate() {
+  blocTest<DeviceSessionCubit, DeviceSessionState>(
+    'should terminate session',
+    build: () => DeviceSessionCubit(
+      loadSessionsUseCase: _sessionUseCase,
+      terminateUseCase: _terminateUseCase,
+      customerId: _customer1Id,
+      customerType: _customer1Type,
+    ),
+    seed: () => _customer1BaseState.copyWith(
+      sessions: _customer1Devices
+          .map(
+            (e) => SessionData(session: e),
+          )
+          .toList(),
+      busy: false,
+    ),
+    act: (c) => c.terminateSession(
+      deviceId: _customer1TerminateSession.deviceId!,
+    ),
+    expect: () => [
+      _customer1BaseState.copyWith(
+        sessions: _customer1Devices
+            .map(
+              (e) => SessionData(
+                session: e,
+                // Only this device should have busy set
+                busy: e.deviceId == _customer1TerminateSession.deviceId,
+              ),
+            )
+            .toList(),
+        busy: false,
+      ),
+      _customer1BaseState.copyWith(
+        sessions: _customer1Devices
+            .map(
+              (e) => SessionData(
+                session: e.copyWith(
+                  status: e.status,
+                ),
+                busy: false,
+              ),
+            )
+            .toList(),
+        busy: false,
       ),
     ],
     verify: (c) {
       verify(
-        () => _repository.getDeviceSessions(
-          deviceTypes: _failureDeviceSessionType,
-          status: SessionStatus.active,
-          sortby: null,
-          desc: null,
+        () => _terminateUseCase(
+          deviceId: _customer1TerminateSession.deviceId!,
+          customerType: _customer1Type,
         ),
       ).called(1);
     },
-  ); // should handle generic exceptions
+  ); // should terminate session
+
+  blocTest<DeviceSessionCubit, DeviceSessionState>(
+    'should deal with exception',
+    build: () => DeviceSessionCubit(
+      loadSessionsUseCase: _sessionUseCase,
+      terminateUseCase: _terminateUseCase,
+      customerId: _customer1Id,
+      customerType: _customer1Type,
+    ),
+    seed: () => _customer1BaseState.copyWith(
+      sessions: _customer1Devices.map((e) => SessionData(session: e)).toList(),
+      busy: false,
+    ),
+    act: (c) => c.terminateSession(
+      deviceId: _customer1Devices[0].deviceId!,
+    ),
+    expect: () => [
+      _customer1BaseState.copyWith(
+        sessions: _customer1Devices
+            .map(
+              (e) => SessionData(
+                session: e,
+                busy: e.deviceId == _customer1Devices[0].deviceId,
+              ),
+            )
+            .toList(),
+        busy: false,
+      ),
+      _customer1BaseState.copyWith(
+        sessions: _customer1Devices
+            .map(
+              (e) => SessionData(
+                session: e,
+                busy: false,
+                errorStatus: e.deviceId == _customer1Devices[0].deviceId
+                    ? DeviceSessionErrorStatus.network
+                    : DeviceSessionErrorStatus.none,
+              ),
+            )
+            .toList(),
+        busy: false,
+      ),
+    ],
+    errors: () => [
+      isA<NetException>(),
+    ],
+    verify: (c) {
+      verify(
+        () => _terminateUseCase(
+          deviceId: _customer1Devices[0].deviceId!,
+          customerType: _customer1Type,
+        ),
+      ).called(1);
+    },
+  ); // should deal with exception
 }
