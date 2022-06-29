@@ -34,6 +34,7 @@ extension DPAVariablePropertyDTOMapping on DPAVariablePropertyDTO {
         allowedTypes: allowedTypes,
         image: image == null ? null : '${customData.fileBaseURL}$image',
         dialCodes: dialCodes?.map((e) => e.toDialCode()).toList() ?? [],
+        prefixValue: prefixValue,
       );
 }
 
