@@ -1,6 +1,6 @@
 name: layer_sdk
 description: A new Flutter package project.
-version: 0.0.1
+version: 0.0.2
 
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
@@ -23,7 +23,7 @@ dependencies:
   design_kit_layer:
     git:
       url: git@gitlab.ubanquity.com:dart-packages/design-kit-layer.git
-      ref: ccca617a15b81d02fff07f8ad243251e25c61ccf
+      ref: 18735fa17f68c58c323eb8bb3fe536a5a231f6e9
   device_info: ^2.0.2
   dio: ^4.0.4
   equatable: ^2.0.2
