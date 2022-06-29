@@ -47,7 +47,8 @@ class _DPAPhoneTextState extends State<DPAPhoneText> {
       );
     }
 
-    _selectedDialCode = widget.variable.property.prefixValue ?? '';
+    _selectedDialCode = widget.variable.property.prefixValue ??
+        widget.variable.property.dialCodes.first.dialCode;
   }
 
   @override
