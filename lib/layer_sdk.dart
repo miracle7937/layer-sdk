@@ -25,6 +25,7 @@ export 'features/financial_data.dart';
 export 'features/loyalty.dart';
 export 'features/message.dart';
 export 'features/otp.dart';
+export 'features/payments.dart';
 export 'features/queue.dart';
 export 'features/roles.dart';
 export 'features/transfer.dart';
