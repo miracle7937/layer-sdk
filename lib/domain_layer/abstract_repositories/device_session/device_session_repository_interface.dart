@@ -22,7 +22,7 @@ abstract class DeviceSessionRepositoryInterface {
   });
 
   /// Terminates the device session belonging to this id
-  Future<DeviceSession> terminateSession({
+  Future<void> terminateSession({
     required String deviceId,
     required CustomerType customerType,
   });
