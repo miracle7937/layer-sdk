@@ -98,6 +98,8 @@ export 'models/resolution/resolution.dart';
 export 'models/role/role.dart';
 export 'models/second_factor/second_factor_type.dart';
 export 'models/service/service.dart';
+export 'models/setting/application_settings.dart';
+export 'models/setting/authentication_settings.dart';
 export 'models/setting/global_setting.dart';
 export 'models/transfer/transfer.dart';
 export 'models/upcoming_payment/upcoming_payment.dart';

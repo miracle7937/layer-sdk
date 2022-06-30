@@ -80,6 +80,8 @@ export 'cubits/role/roles_cubit.dart';
 export 'cubits/role/roles_state.dart';
 export 'cubits/setting/global_setting_cubit.dart';
 export 'cubits/setting/global_setting_state.dart';
+export 'cubits/storage/storage_cubit.dart';
+export 'cubits/storage/storage_state.dart';
 export 'cubits/theme/app_theme_cubit.dart';
 export 'cubits/theme/app_theme_state.dart';
 export 'cubits/upcoming_payment/upcoming_payment_cubit.dart';

@@ -2,10 +2,9 @@ import 'package:bloc/bloc.dart';
 
 import '../../../../../data_layer/interfaces.dart';
 import '../../../../../domain_layer/models.dart';
-import '../../../../data_layer/data_layer.dart';
+import '../../../_migration/data_layer/src/mappings.dart';
 import '../../cubits.dart';
 import '../../resources.dart';
-import '../../settings.dart';
 
 /// A cubit that handles loading and saving data in storage.
 class StorageCubit extends Cubit<StorageState> {
@@ -33,7 +32,8 @@ class StorageCubit extends Cubit<StorageState> {
 
     User? user;
 
-    final savedUsers = await secureStorage.getJson(StorageKeys.loggedUsers);
+    final savedUsers =
+        await secureStorage.getJson(FlutterStorageKeys.loggedUsers);
 
     if (savedUsers != null && savedUsers['users'] != null) {
       final users = savedUsers['users'];
@@ -59,7 +59,8 @@ class StorageCubit extends Cubit<StorageState> {
   Future<void> saveUser(User user) async {
     emit(state.copyWith(busy: true));
 
-    var loggedUsers = await secureStorage.getJson(StorageKeys.loggedUsers);
+    var loggedUsers =
+        await secureStorage.getJson(FlutterStorageKeys.loggedUsers);
 
     loggedUsers ??= <String, dynamic>{
       'users': [],
@@ -71,7 +72,7 @@ class StorageCubit extends Cubit<StorageState> {
     loggedUsers['users'].add(user.toJson());
 
     await secureStorage.setJson(
-      StorageKeys.loggedUsers,
+      FlutterStorageKeys.loggedUsers,
       loggedUsers,
     );
 
@@ -89,7 +90,8 @@ class StorageCubit extends Cubit<StorageState> {
   Future<void> removeUser(String id) async {
     emit(state.copyWith(busy: true));
 
-    final savedUsers = await secureStorage.getJson(StorageKeys.loggedUsers);
+    final savedUsers =
+        await secureStorage.getJson(FlutterStorageKeys.loggedUsers);
 
     if (savedUsers != null && savedUsers['users'] != null) {
       final users = savedUsers['users'];
@@ -101,7 +103,7 @@ class StorageCubit extends Cubit<StorageState> {
           .toList();
 
       await secureStorage.setJson(
-        StorageKeys.loggedUsers,
+        FlutterStorageKeys.loggedUsers,
         <String, dynamic>{
           'users': filteredUsers,
         },
@@ -120,15 +122,15 @@ class StorageCubit extends Cubit<StorageState> {
     emit(state.copyWith(busy: true));
 
     final domain = await preferencesStorage.getString(
-      key: StorageKeys.authDomain,
+      key: FlutterStorageKeys.authDomain,
     );
 
     final defaultUsername = await preferencesStorage.getString(
-      key: StorageKeys.authDefaultUsername,
+      key: FlutterStorageKeys.authDefaultUsername,
     );
 
     final useBiometrics = await preferencesStorage.getBool(
-      key: StorageKeys.authUseBiometrics,
+      key: FlutterStorageKeys.authUseBiometrics,
     );
 
     emit(
@@ -155,7 +157,7 @@ class StorageCubit extends Cubit<StorageState> {
 
     final savedDomain = domain != null
         ? await preferencesStorage.setString(
-            key: StorageKeys.authDomain,
+            key: FlutterStorageKeys.authDomain,
             value: domain,
           )
         : false;
@@ -165,14 +167,14 @@ class StorageCubit extends Cubit<StorageState> {
 
     final savedUsername = defaultUsername != null
         ? await preferencesStorage.setString(
-            key: StorageKeys.authDefaultUsername,
+            key: FlutterStorageKeys.authDefaultUsername,
             value: defaultUsername,
           )
         : false;
 
     final savedBiometrics = useBiometrics != null
         ? await preferencesStorage.setBool(
-            key: StorageKeys.authUseBiometrics,
+            key: FlutterStorageKeys.authUseBiometrics,
             value: useBiometrics,
           )
         : false;
@@ -201,7 +203,7 @@ class StorageCubit extends Cubit<StorageState> {
 
     try {
       await preferencesStorage.setBool(
-        key: StorageKeys.authUseBiometrics,
+        key: FlutterStorageKeys.authUseBiometrics,
         value: isBiometricsActive,
       );
 
@@ -233,7 +235,7 @@ class StorageCubit extends Cubit<StorageState> {
 
     try {
       final brightnessIndex = await preferencesStorage.getInt(
-        key: StorageKeys.themeBrightness,
+        key: FlutterStorageKeys.themeBrightness,
       );
 
       emit(
@@ -267,7 +269,7 @@ class StorageCubit extends Cubit<StorageState> {
 
     try {
       final result = await preferencesStorage.setInt(
-        key: StorageKeys.themeBrightness,
+        key: FlutterStorageKeys.themeBrightness,
         value: themeBrightness.index,
       );
 
@@ -300,7 +302,7 @@ class StorageCubit extends Cubit<StorageState> {
 
     try {
       final result = await secureStorage.setString(
-        key: StorageKeys.ocraSecretKey,
+        key: FlutterStorageKeys.ocraSecretKey,
         value: key,
       );
 
@@ -329,7 +331,7 @@ class StorageCubit extends Cubit<StorageState> {
 
     try {
       final key = await secureStorage.getString(
-        key: StorageKeys.ocraSecretKey,
+        key: FlutterStorageKeys.ocraSecretKey,
       );
 
       emit(

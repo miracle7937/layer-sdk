@@ -28,8 +28,6 @@ export 'cubits/registration/steps/otp_registration_step.dart';
 export 'cubits/registration/steps/registration_step.dart';
 export 'cubits/standing_orders_cubit.dart';
 export 'cubits/standing_orders_state.dart';
-export 'cubits/storage/storage_cubit.dart';
-export 'cubits/storage/storage_state.dart';
 export 'cubits/transfer_cubit.dart';
 export 'cubits/transfer_state.dart';
 export 'cubits/user_cubit.dart';
