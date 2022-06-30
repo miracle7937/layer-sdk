@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:layer_sdk/data_layer/interfaces.dart';
 import 'package:layer_sdk/domain_layer/models.dart';
 import 'package:layer_sdk/presentation_layer/cubits.dart';
-import 'package:layer_sdk/presentation_layer/resources/storage_keys.dart';
+import 'package:layer_sdk/presentation_layer/resources.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
@@ -79,67 +79,69 @@ void main() {
 void _loadDataTests() {
   setUp(() {
     when(
-      () => _secureStorageMock.getJson(StorageKeys.loggedUsers),
+      () => _secureStorageMock.getJson(FlutterStorageKeys.loggedUsers),
     ).thenAnswer((_) async => _savedUsers);
 
     when(
-      () => _preferencesStorageMock.getString(key: StorageKeys.authDomain),
+      () =>
+          _preferencesStorageMock.getString(key: FlutterStorageKeys.authDomain),
     ).thenAnswer((_) async => _domainTest);
 
     when(
       () => _preferencesStorageMock.getString(
-          key: StorageKeys.authDefaultUsername),
+          key: FlutterStorageKeys.authDefaultUsername),
     ).thenAnswer((_) async => _defaultUsername);
 
     when(
-      () => _preferencesStorageMock.getBool(key: StorageKeys.authUseBiometrics),
+      () => _preferencesStorageMock.getBool(
+          key: FlutterStorageKeys.authUseBiometrics),
     ).thenAnswer((_) async => _useBiometrics);
 
     when(
       () => _preferencesStorageMock.setString(
-        key: StorageKeys.authDomain,
+        key: FlutterStorageKeys.authDomain,
         value: _domainOther,
       ),
     ).thenAnswer((_) async => true);
 
     when(
       () => _preferencesStorageMock.setString(
-        key: StorageKeys.authDomain,
+        key: FlutterStorageKeys.authDomain,
         value: _domainFail,
       ),
     ).thenAnswer((_) async => false);
 
     when(
       () => _preferencesStorageMock.setString(
-        key: StorageKeys.authDefaultUsername,
+        key: FlutterStorageKeys.authDefaultUsername,
         value: '',
       ),
     ).thenAnswer((_) async => true);
 
     when(
       () => _preferencesStorageMock.setBool(
-        key: StorageKeys.authUseBiometrics,
+        key: FlutterStorageKeys.authUseBiometrics,
         value: _useBiometrics,
       ),
     ).thenAnswer((_) async => true);
 
     when(
       () => _preferencesStorageMock.setBool(
-        key: StorageKeys.authUseBiometrics,
+        key: FlutterStorageKeys.authUseBiometrics,
         value: _failBiometrics,
       ),
     ).thenAnswer((_) async => false);
 
     when(
       () => _secureStorageMock.setInt(
-        key: StorageKeys.remainingPinAttempts,
+        key: FlutterStorageKeys.remainingPinAttempts,
         value: any(named: 'value'),
       ),
     ).thenAnswer((_) async => true);
 
     when(
       () => _secureStorageMock.getInt(
-        key: StorageKeys.remainingPinAttempts,
+        key: FlutterStorageKeys.remainingPinAttempts,
       ),
     ).thenAnswer((_) async => _mockedRemainingAttempts);
   });
@@ -156,7 +158,7 @@ void _loadDataTests() {
       StorageState(currentUser: _user),
     ],
     verify: (c) {
-      verify(() => _secureStorageMock.getJson(StorageKeys.loggedUsers))
+      verify(() => _secureStorageMock.getJson(FlutterStorageKeys.loggedUsers))
           .called(1);
       verifyZeroInteractions(_preferencesStorageMock);
     },
@@ -175,17 +177,18 @@ void _loadDataTests() {
     ],
     verify: (c) {
       verify(
-        () => _preferencesStorageMock.getString(key: StorageKeys.authDomain),
+        () => _preferencesStorageMock.getString(
+            key: FlutterStorageKeys.authDomain),
       ).called(1);
 
       verify(
         () => _preferencesStorageMock.getString(
-            key: StorageKeys.authDefaultUsername),
+            key: FlutterStorageKeys.authDefaultUsername),
       ).called(1);
 
       verify(
-        () =>
-            _preferencesStorageMock.getBool(key: StorageKeys.authUseBiometrics),
+        () => _preferencesStorageMock.getBool(
+            key: FlutterStorageKeys.authUseBiometrics),
       ).called(1);
     },
   ); // should load authentication settings
@@ -194,44 +197,44 @@ void _loadDataTests() {
 void _saveDataTests() {
   setUp(() {
     when(
-      () => _secureStorageMock.getJson(StorageKeys.loggedUsers),
+      () => _secureStorageMock.getJson(FlutterStorageKeys.loggedUsers),
     ).thenAnswer((_) async => _savedUsers);
 
     when(
-      () => _secureStorageMock.setJson(StorageKeys.loggedUsers, any()),
+      () => _secureStorageMock.setJson(FlutterStorageKeys.loggedUsers, any()),
     ).thenAnswer((_) async => true);
 
     when(
       () => _preferencesStorageMock.setString(
-        key: StorageKeys.authDomain,
+        key: FlutterStorageKeys.authDomain,
         value: _domainOther,
       ),
     ).thenAnswer((_) async => true);
 
     when(
       () => _preferencesStorageMock.setString(
-        key: StorageKeys.authDomain,
+        key: FlutterStorageKeys.authDomain,
         value: _domainFail,
       ),
     ).thenAnswer((_) async => false);
 
     when(
       () => _preferencesStorageMock.setString(
-        key: StorageKeys.authDefaultUsername,
+        key: FlutterStorageKeys.authDefaultUsername,
         value: '',
       ),
     ).thenAnswer((_) async => true);
 
     when(
       () => _preferencesStorageMock.setBool(
-        key: StorageKeys.authUseBiometrics,
+        key: FlutterStorageKeys.authUseBiometrics,
         value: _useBiometrics,
       ),
     ).thenAnswer((_) async => true);
 
     when(
       () => _preferencesStorageMock.setBool(
-        key: StorageKeys.authUseBiometrics,
+        key: FlutterStorageKeys.authUseBiometrics,
         value: _failBiometrics,
       ),
     ).thenAnswer((_) async => false);
@@ -258,10 +261,10 @@ void _saveDataTests() {
       ),
     ],
     verify: (c) {
-      verify(() => _secureStorageMock.getJson(StorageKeys.loggedUsers))
+      verify(() => _secureStorageMock.getJson(FlutterStorageKeys.loggedUsers))
           .called(1);
       verify(() => _secureStorageMock.setJson(
-            StorageKeys.loggedUsers,
+            FlutterStorageKeys.loggedUsers,
             _savedUsers,
           )).called(1);
     },
@@ -283,10 +286,10 @@ void _saveDataTests() {
       StorageState(),
     ],
     verify: (c) {
-      verify(() => _secureStorageMock.getJson(StorageKeys.loggedUsers))
+      verify(() => _secureStorageMock.getJson(FlutterStorageKeys.loggedUsers))
           .called(1);
       verify(() => _secureStorageMock.setJson(
-            StorageKeys.loggedUsers,
+            FlutterStorageKeys.loggedUsers,
             {'users': []},
           )).called(1);
     },
@@ -310,14 +313,14 @@ void _saveDataTests() {
     verify: (c) {
       verifyNever(
         () => _preferencesStorageMock.setString(
-          key: StorageKeys.authDefaultUsername,
+          key: FlutterStorageKeys.authDefaultUsername,
           value: any(named: 'value'),
         ),
       );
 
       verify(
         () => _preferencesStorageMock.setBool(
-          key: StorageKeys.authUseBiometrics,
+          key: FlutterStorageKeys.authUseBiometrics,
           value: _useBiometrics,
         ),
       ).called(1);
@@ -342,14 +345,14 @@ void _saveDataTests() {
     verify: (c) {
       verifyNever(
         () => _preferencesStorageMock.setString(
-          key: StorageKeys.authDefaultUsername,
+          key: FlutterStorageKeys.authDefaultUsername,
           value: any(named: 'value'),
         ),
       );
 
       verify(
         () => _preferencesStorageMock.setBool(
-          key: StorageKeys.authUseBiometrics,
+          key: FlutterStorageKeys.authUseBiometrics,
           value: _failBiometrics,
         ),
       ).called(1);
@@ -378,14 +381,14 @@ void _saveDataTests() {
     verify: (c) {
       verifyNever(
         () => _preferencesStorageMock.setString(
-          key: StorageKeys.authDefaultUsername,
+          key: FlutterStorageKeys.authDefaultUsername,
           value: any(named: 'value'),
         ),
       );
 
       verify(
         () => _preferencesStorageMock.setString(
-          key: StorageKeys.authDomain,
+          key: FlutterStorageKeys.authDomain,
           value: _domainOther,
         ),
       ).called(1);
@@ -410,14 +413,14 @@ void _saveDataTests() {
     verify: (c) {
       verifyNever(
         () => _preferencesStorageMock.setString(
-          key: StorageKeys.authDefaultUsername,
+          key: FlutterStorageKeys.authDefaultUsername,
           value: any(named: 'value'),
         ),
       );
 
       verify(
         () => _preferencesStorageMock.setString(
-          key: StorageKeys.authDomain,
+          key: FlutterStorageKeys.authDomain,
           value: _domainFail,
         ),
       ).called(1);
@@ -429,14 +432,14 @@ void _biometricsTests() {
   setUp(() {
     when(
       () => _preferencesStorageMock.setBool(
-        key: StorageKeys.authUseBiometrics,
+        key: FlutterStorageKeys.authUseBiometrics,
         value: _useBiometrics,
       ),
     ).thenAnswer((_) async => true);
 
     when(
       () => _preferencesStorageMock.setBool(
-        key: StorageKeys.authUseBiometrics,
+        key: FlutterStorageKeys.authUseBiometrics,
         value: _failBiometrics,
       ),
     ).thenThrow(Exception('Some error'));
@@ -470,7 +473,7 @@ void _biometricsTests() {
     verify: (c) {
       verify(
         () => _preferencesStorageMock.setBool(
-          key: StorageKeys.authUseBiometrics,
+          key: FlutterStorageKeys.authUseBiometrics,
           value: _useBiometrics,
         ),
       ).called(1);
@@ -504,7 +507,7 @@ void _biometricsTests() {
     verify: (c) {
       verify(
         () => _preferencesStorageMock.setBool(
-          key: StorageKeys.authUseBiometrics,
+          key: FlutterStorageKeys.authUseBiometrics,
           value: _failBiometrics,
         ),
       ).called(1);
@@ -521,20 +524,20 @@ void _applicationSettingsTests() {
 
     when(
       () => _preferencesStorageMock.getInt(
-        key: StorageKeys.themeBrightness,
+        key: FlutterStorageKeys.themeBrightness,
       ),
     ).thenAnswer((_) async => _savedBrightness.index);
 
     when(
       () => _preferencesStorageMock.setInt(
-        key: StorageKeys.themeBrightness,
+        key: FlutterStorageKeys.themeBrightness,
         value: _savedBrightness.index,
       ),
     ).thenAnswer((_) async => true);
 
     when(
       () => _preferencesStorageMock.setInt(
-        key: StorageKeys.themeBrightness,
+        key: FlutterStorageKeys.themeBrightness,
         value: _failedBrightness.index,
       ),
     ).thenAnswer((_) async => false);
@@ -560,7 +563,7 @@ void _applicationSettingsTests() {
     verify: (c) {
       verify(
         () => _preferencesStorageMock.getInt(
-          key: StorageKeys.themeBrightness,
+          key: FlutterStorageKeys.themeBrightness,
         ),
       ).called(1);
     },
@@ -588,7 +591,7 @@ void _applicationSettingsTests() {
     verify: (c) {
       verify(
         () => _preferencesStorageMock.setInt(
-          key: StorageKeys.themeBrightness,
+          key: FlutterStorageKeys.themeBrightness,
           value: _savedBrightness.index,
         ),
       ).called(1);
@@ -613,7 +616,7 @@ void _applicationSettingsTests() {
     verify: (c) {
       verify(
         () => _preferencesStorageMock.setInt(
-          key: StorageKeys.themeBrightness,
+          key: FlutterStorageKeys.themeBrightness,
           value: _failedBrightness.index,
         ),
       ).called(1);
@@ -626,13 +629,13 @@ void _applicationSettingsTests() {
 
       when(
         () => _preferencesStorageMock.getInt(
-          key: StorageKeys.themeBrightness,
+          key: FlutterStorageKeys.themeBrightness,
         ),
       ).thenThrow(Exception('Some error'));
 
       when(
         () => _preferencesStorageMock.setInt(
-          key: StorageKeys.themeBrightness,
+          key: FlutterStorageKeys.themeBrightness,
           value: _failedBrightness.index,
         ),
       ).thenThrow(Exception('Set error'));
@@ -657,7 +660,7 @@ void _applicationSettingsTests() {
       verify: (c) {
         verify(
           () => _preferencesStorageMock.getInt(
-            key: StorageKeys.themeBrightness,
+            key: FlutterStorageKeys.themeBrightness,
           ),
         ).called(1);
       },
@@ -684,7 +687,7 @@ void _applicationSettingsTests() {
       verify: (c) {
         verify(
           () => _preferencesStorageMock.setInt(
-            key: StorageKeys.themeBrightness,
+            key: FlutterStorageKeys.themeBrightness,
             value: _failedBrightness.index,
           ),
         ).called(1);
@@ -702,20 +705,20 @@ _ocraKeyTests() {
 
     when(
       () => _secureStorageMock.getString(
-        key: StorageKeys.ocraSecretKey,
+        key: FlutterStorageKeys.ocraSecretKey,
       ),
     ).thenAnswer((_) async => successfulOcraKey);
 
     when(
       () => _secureStorageMock.setString(
-        key: StorageKeys.ocraSecretKey,
+        key: FlutterStorageKeys.ocraSecretKey,
         value: successfulOcraKey,
       ),
     ).thenAnswer((_) async => true);
 
     when(
       () => _secureStorageMock.setString(
-        key: StorageKeys.ocraSecretKey,
+        key: FlutterStorageKeys.ocraSecretKey,
         value: failedOcraKey,
       ),
     ).thenThrow(Exception());
@@ -739,7 +742,7 @@ _ocraKeyTests() {
     verify: (c) {
       verify(
         () => _secureStorageMock.getString(
-          key: StorageKeys.ocraSecretKey,
+          key: FlutterStorageKeys.ocraSecretKey,
         ),
       ).called(1);
     },
@@ -763,7 +766,7 @@ _ocraKeyTests() {
     verify: (c) {
       verify(
         () => _secureStorageMock.setString(
-          key: StorageKeys.ocraSecretKey,
+          key: FlutterStorageKeys.ocraSecretKey,
           value: successfulOcraKey,
         ),
       ).called(1);
@@ -789,7 +792,7 @@ _ocraKeyTests() {
     verify: (c) {
       verify(
         () => _secureStorageMock.setString(
-          key: StorageKeys.ocraSecretKey,
+          key: FlutterStorageKeys.ocraSecretKey,
           value: failedOcraKey,
         ),
       ).called(1);
