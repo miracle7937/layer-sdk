@@ -1,6 +1,6 @@
+import '../../../../data_layer/mappings.dart';
+import '../../../../data_layer/providers.dart';
 import '../../models.dart';
-import '../../providers.dart';
-import '../mappings.dart';
 
 /// Handles all the standing orders data
 class StandingOrderRepository {

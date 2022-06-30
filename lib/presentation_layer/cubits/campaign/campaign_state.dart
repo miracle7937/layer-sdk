@@ -2,8 +2,8 @@ import 'dart:collection';
 
 import 'package:equatable/equatable.dart';
 
-import '../../../../presentation_layer/cubits/utils.dart';
 import '../../../domain_layer/models/campaign/customer_campaign.dart';
+import '../../utils.dart';
 
 /// The available errors.
 enum CampaignStateError {

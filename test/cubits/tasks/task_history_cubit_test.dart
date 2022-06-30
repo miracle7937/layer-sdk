@@ -1,22 +1,23 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
 import 'package:layer_sdk/data_layer/network.dart';
+import 'package:layer_sdk/domain_layer/models.dart';
+import 'package:layer_sdk/domain_layer/use_cases.dart';
+import 'package:layer_sdk/presentation_layer/cubits.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockDPARepository extends Mock implements DPARepository {}
+class MockLoadDPAHistoryUseCase extends Mock implements LoadDPAHistoryUseCase {}
 
-final _repositoryList = <DPATask>[];
+final _taskList = <DPATask>[];
 
-late MockDPARepository _repository;
+late MockLoadDPAHistoryUseCase _useCase;
 
 void main() {
   EquatableConfig.stringify = true;
 
   for (var i = 0; i < 23; ++i) {
-    _repositoryList.add(
+    _taskList.add(
       DPATask(
         id: '$i',
         name: 'Task $i',
@@ -35,19 +36,19 @@ void main() {
   }
 
   setUpAll(() {
-    _repository = MockDPARepository();
+    _useCase = MockLoadDPAHistoryUseCase();
 
     when(
-      () => _repository.listHistory(),
+      () => _useCase(),
     ).thenAnswer(
-      (_) async => _repositoryList.toList(),
+      (_) async => _taskList,
     );
   });
 
   blocTest<TaskHistoryCubit, TaskHistoryState>(
     'starts on empty state',
     build: () => TaskHistoryCubit(
-      repository: _repository,
+      dpaHistoryUseCase: _useCase,
     ),
     verify: (c) => expect(c.state, TaskHistoryState()),
   ); // starts on empty state
@@ -55,17 +56,17 @@ void main() {
   blocTest<TaskHistoryCubit, TaskHistoryState>(
     'should load tasks',
     build: () => TaskHistoryCubit(
-      repository: _repository,
+      dpaHistoryUseCase: _useCase,
     ),
     act: (c) => c.load(),
     expect: () => [
       TaskHistoryState(busy: true),
       TaskHistoryState(
-        tasks: _repositoryList,
+        tasks: _taskList,
       ),
     ],
     verify: (c) {
-      verify(() => _repository.listHistory(
+      verify(() => _useCase(
             fetchCustomersData: true,
             forceRefresh: false,
           )).called(1);
@@ -75,7 +76,7 @@ void main() {
   group('Error handling', () {
     setUp(() {
       when(
-        () => _repository.listHistory(),
+        () => _useCase(),
       ).thenThrow(
         NetException(message: 'Error'),
       );
@@ -84,7 +85,7 @@ void main() {
     blocTest<TaskHistoryCubit, TaskHistoryState>(
       'should deal with simple exceptions',
       build: () => TaskHistoryCubit(
-        repository: _repository,
+        dpaHistoryUseCase: _useCase,
       ),
       act: (c) => c.load(),
       expect: () => [
@@ -94,7 +95,7 @@ void main() {
         ),
       ],
       verify: (c) {
-        verify(() => _repository.listHistory()).called(1);
+        verify(() => _useCase()).called(1);
       },
     ); // should deal with simple exceptions
   });

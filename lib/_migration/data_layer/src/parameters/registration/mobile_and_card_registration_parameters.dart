@@ -1,4 +1,4 @@
-import '../../../models.dart';
+import '../../../../../domain_layer/models.dart';
 import '../../../parameters.dart';
 
 /// The parameters to be used in registration flows that require customer

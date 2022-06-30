@@ -1,4 +1,4 @@
-import '../../dtos.dart';
+import '../../../../../data_layer/dtos.dart';
 
 /// Data transfer object representing the response received from the API
 /// after registering the customer.
@@ -22,7 +22,7 @@ class RegistrationResponseDTO {
   String? maskedMobileNumber;
 
   /// The type of the 2FA to be used.
-  SecondFactorDTO? secondFactor;
+  SecondFactorTypeDTO? secondFactor;
 
   /// The first name of the customer.
   String? firstName;
@@ -59,7 +59,7 @@ class RegistrationResponseDTO {
     otpId = json['otp_id'];
     mobileNumber = json['mobile_number'];
     maskedMobileNumber = json['masked_mobile_number'];
-    secondFactor = SecondFactorDTO.fromRaw(json['second_factor']);
+    secondFactor = SecondFactorTypeDTO.fromRaw(json['second_factor']);
     firstName = json['first_name'];
     lastName = json['last_name'];
     firstTimeRegistration = json["first_time"] ?? false;

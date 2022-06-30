@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../models.dart';
+import '../../../../../domain_layer/models.dart';
+
 
 /// A class representing a set of base parameters for all
 /// registration parameter types.

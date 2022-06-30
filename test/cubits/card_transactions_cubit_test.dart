@@ -1,13 +1,16 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
+import 'package:layer_sdk/data_layer/repositories.dart';
+import 'package:layer_sdk/domain_layer/models.dart';
+import 'package:layer_sdk/domain_layer/use_cases/card/load_customer_card_transactions_use_case.dart';
+import 'package:layer_sdk/presentation_layer/cubits.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 class MockCardRepository extends Mock implements CardRepository {}
 
 late MockCardRepository _repo;
+late LoadCustomerCardTransactionsUseCase _getCustomerCardTransactionsUseCase;
 
 final _loadCardsTransactionsId = '1';
 final _throwsExceptionId = '2';
@@ -30,6 +33,9 @@ void main() {
 
   setUpAll(() {
     _repo = MockCardRepository();
+    _getCustomerCardTransactionsUseCase = LoadCustomerCardTransactionsUseCase(
+      repository: _repo,
+    );
 
     /// Test case that retrieves all mocked transactions
     when(
@@ -93,7 +99,7 @@ void main() {
     build: () => CardTransactionsCubit(
       cardId: _loadCardsTransactionsId,
       customerId: _loadCardsTransactionsId,
-      repository: _repo,
+      getCustomerCardTransactionsUseCase: _getCustomerCardTransactionsUseCase,
     ),
     verify: (c) => expect(
       c.state,
@@ -110,7 +116,7 @@ void main() {
     build: () => CardTransactionsCubit(
       cardId: _loadCardsTransactionsId,
       customerId: _loadCardsTransactionsId,
-      repository: _repo,
+      getCustomerCardTransactionsUseCase: _getCustomerCardTransactionsUseCase,
       limit: _defaultListData.limit,
     ),
     act: (c) => c.load(),
@@ -139,7 +145,7 @@ void main() {
     build: () => CardTransactionsCubit(
       cardId: _loadCardsTransactionsId,
       customerId: _loadCardsTransactionsId,
-      repository: _repo,
+      getCustomerCardTransactionsUseCase: _getCustomerCardTransactionsUseCase,
       limit: _defaultListData.limit,
     ),
     seed: () => CardTransactionsState(
@@ -192,7 +198,7 @@ void main() {
     build: () => CardTransactionsCubit(
       cardId: _loadCardsTransactionsId,
       customerId: _loadCardsTransactionsId,
-      repository: _repo,
+      getCustomerCardTransactionsUseCase: _getCustomerCardTransactionsUseCase,
       limit: _defaultListData.limit,
     ),
     seed: () => CardTransactionsState(
@@ -251,7 +257,7 @@ void main() {
     build: () => CardTransactionsCubit(
       cardId: _throwsExceptionId,
       customerId: _throwsExceptionId,
-      repository: _repo,
+      getCustomerCardTransactionsUseCase: _getCustomerCardTransactionsUseCase,
       limit: _defaultListData.limit,
     ),
     act: (c) => c.load(),

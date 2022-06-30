@@ -1,13 +1,43 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
+import 'package:layer_sdk/domain_layer/models.dart';
+import 'package:layer_sdk/features/user.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockUserRepository extends Mock implements UserRepository {}
+class MockLoadUserByCustomerIdUseCase extends Mock
+    implements LoadUserByCustomerIdUseCase {}
 
-final _repository = MockUserRepository();
+class MockRequestLockUseCase extends Mock implements RequestLockUseCase {}
+
+class MockRequestUnlockUseCase extends Mock implements RequestUnlockUseCase {}
+
+class MockRquestActivateUseCase extends Mock implements RequestActivateUseCase {
+}
+
+class MockRequestDeactivateUseCase extends Mock
+    implements RequestDeactivateUseCase {}
+
+class MockRequestPasswordResetUseCase extends Mock
+    implements RequestPasswordResetUseCase {}
+
+class MockRequestPINResetUseCase extends Mock
+    implements RequestPINResetUseCase {}
+
+class MockPatchUseRolesUseCase extends Mock implements PatchUserRolesUseCase {}
+
+class MockPathUserBlockedChannlesUseCase extends Mock
+    implements PatchUserBlockedChannelUseCase {}
+
+final _loadUserByCustomerIdUseCase = MockLoadUserByCustomerIdUseCase();
+final _requestLockUseCase = MockRequestLockUseCase();
+final _requestUnlockUseCase = MockRequestUnlockUseCase();
+final _requestActivateUseCase = MockRquestActivateUseCase();
+final _requestDeactivateUseCase = MockRequestDeactivateUseCase();
+final _requestPasswordResetUseCase = MockRequestPasswordResetUseCase();
+final _requestPINResetUseCase = MockRequestPINResetUseCase();
+final _patchUserRolesUseCase = MockPatchUseRolesUseCase();
+final _patchUserBlockedChannelUseCase = MockPathUserBlockedChannlesUseCase();
 
 final _successId = '1';
 final _failureId = '2';
@@ -18,13 +48,43 @@ final mockUser = User(
   lastName: 'User',
 );
 
+late UserCubit _successCubit;
+
+late UserCubit _failCubit;
+
 void main() {
   EquatableConfig.stringify = true;
 
-  setUpAll(() {
+  setUp(() {
+    _successCubit = UserCubit(
+      customerId: _successId,
+      loadUserByCustomerIdUseCase: _loadUserByCustomerIdUseCase,
+      requestLockUseCase: _requestLockUseCase,
+      requestUnlockUseCase: _requestUnlockUseCase,
+      requestActivateUseCase: _requestActivateUseCase,
+      requestDeactivateUseCase: _requestDeactivateUseCase,
+      requestPasswordResetUseCase: _requestPasswordResetUseCase,
+      requestPINResetUseCase: _requestPINResetUseCase,
+      patchUserRolesUseCase: _patchUserRolesUseCase,
+      patchUserBlockedChannelUseCase: _patchUserBlockedChannelUseCase,
+    );
+
+    _failCubit = UserCubit(
+      customerId: _failureId,
+      loadUserByCustomerIdUseCase: _loadUserByCustomerIdUseCase,
+      requestLockUseCase: _requestLockUseCase,
+      requestUnlockUseCase: _requestUnlockUseCase,
+      requestActivateUseCase: _requestActivateUseCase,
+      requestDeactivateUseCase: _requestDeactivateUseCase,
+      requestPasswordResetUseCase: _requestPasswordResetUseCase,
+      requestPINResetUseCase: _requestPINResetUseCase,
+      patchUserRolesUseCase: _patchUserRolesUseCase,
+      patchUserBlockedChannelUseCase: _patchUserBlockedChannelUseCase,
+    );
+
     /// getUser() success test case
     when(
-      () => _repository.getUser(
+      () => _loadUserByCustomerIdUseCase(
         customerID: _successId,
       ),
     ).thenAnswer(
@@ -32,7 +92,7 @@ void main() {
     );
 
     when(
-      () => _repository.getUser(
+      () => _loadUserByCustomerIdUseCase(
         customerID: _successId,
         forceRefresh: true,
       ),
@@ -42,7 +102,7 @@ void main() {
 
     /// getUser() failure test case
     when(
-      () => _repository.getUser(
+      () => _loadUserByCustomerIdUseCase(
         customerID: _failureId,
       ),
     ).thenAnswer(
@@ -52,10 +112,7 @@ void main() {
 
   blocTest<UserCubit, UserState>(
     'Starts with empty state',
-    build: () => UserCubit(
-      repository: _repository,
-      customerId: _successId,
-    ),
+    build: () => _successCubit,
     verify: (c) => expect(
       c.state,
       UserState(
@@ -66,10 +123,7 @@ void main() {
 
   blocTest<UserCubit, UserState>(
     'Load user emits user on success',
-    build: () => UserCubit(
-      repository: _repository,
-      customerId: _successId,
-    ),
+    build: () => _successCubit,
     act: (c) => c.loadUser(),
     expect: () => [
       UserState(
@@ -83,7 +137,7 @@ void main() {
     ],
     verify: (c) {
       verify(
-        () => _repository.getUser(
+        () => _loadUserByCustomerIdUseCase(
           customerID: _successId,
           forceRefresh: false,
         ),
@@ -93,10 +147,7 @@ void main() {
 
   blocTest<UserCubit, UserState>(
     'Force load user emits user on success',
-    build: () => UserCubit(
-      repository: _repository,
-      customerId: _successId,
-    ),
+    build: () => _successCubit,
     act: (c) => c.loadUser(forceRefresh: true),
     expect: () => [
       UserState(
@@ -110,7 +161,7 @@ void main() {
     ],
     verify: (c) {
       verify(
-        () => _repository.getUser(
+        () => _loadUserByCustomerIdUseCase(
           customerID: _successId,
           forceRefresh: true,
         ),
@@ -120,10 +171,7 @@ void main() {
 
   blocTest<UserCubit, UserState>(
     'Load user emits error on failure',
-    build: () => UserCubit(
-      repository: _repository,
-      customerId: _failureId,
-    ),
+    build: () => _failCubit,
     act: (c) => c.loadUser(),
     errors: () => [
       isA<Exception>(),
@@ -140,7 +188,7 @@ void main() {
     ],
     verify: (c) {
       verify(
-        () => _repository.getUser(
+        () => _loadUserByCustomerIdUseCase(
           customerID: _failureId,
           forceRefresh: false,
         ),
@@ -159,7 +207,7 @@ void main() {
 void _lockTests() {
   setUp(() {
     when(
-      () => _repository.requestLock(
+      () => _requestLockUseCase(
         userId: mockUser.id,
         customerType: CustomerType.personal,
       ),
@@ -168,10 +216,7 @@ void _lockTests() {
 
   blocTest<UserCubit, UserState>(
     'Request lock emits user on success',
-    build: () => UserCubit(
-      repository: _repository,
-      customerId: _successId,
-    ),
+    build: () => _successCubit,
     seed: () => UserState(
       customerId: _successId,
       user: mockUser,
@@ -192,7 +237,7 @@ void _lockTests() {
     ],
     verify: (c) {
       verify(
-        () => _repository.requestLock(
+        () => _requestLockUseCase(
           userId: mockUser.id,
           customerType: CustomerType.personal,
         ),
@@ -202,10 +247,7 @@ void _lockTests() {
 
   blocTest<UserCubit, UserState>(
     'Error correctly emitted if no user is loaded.',
-    build: () => UserCubit(
-      repository: _repository,
-      customerId: _successId,
-    ),
+    build: () => _successCubit,
     seed: () => UserState(
       customerId: _successId,
     ),
@@ -224,7 +266,7 @@ void _lockTests() {
     ],
     verify: (c) {
       verifyNever(
-        () => _repository.requestLock(
+        () => _requestLockUseCase(
           userId: mockUser.id,
           customerType: CustomerType.personal,
         ),
@@ -236,7 +278,7 @@ void _lockTests() {
 void _unlockTests() {
   setUp(() {
     when(
-      () => _repository.requestUnlock(
+      () => _requestUnlockUseCase(
         userId: mockUser.id,
         customerType: CustomerType.personal,
       ),
@@ -245,10 +287,7 @@ void _unlockTests() {
 
   blocTest<UserCubit, UserState>(
     'Request unlock emits user on success',
-    build: () => UserCubit(
-      repository: _repository,
-      customerId: _successId,
-    ),
+    build: () => _successCubit,
     seed: () => UserState(
       customerId: _successId,
       user: mockUser,
@@ -269,7 +308,7 @@ void _unlockTests() {
     ],
     verify: (c) {
       verify(
-        () => _repository.requestUnlock(
+        () => _requestUnlockUseCase(
           userId: mockUser.id,
           customerType: CustomerType.personal,
         ),
@@ -279,10 +318,7 @@ void _unlockTests() {
 
   blocTest<UserCubit, UserState>(
     'Error correctly emitted if no user is loaded.',
-    build: () => UserCubit(
-      repository: _repository,
-      customerId: _successId,
-    ),
+    build: () => _successCubit,
     seed: () => UserState(
       customerId: _successId,
     ),
@@ -301,7 +337,7 @@ void _unlockTests() {
     ],
     verify: (c) {
       verifyNever(
-        () => _repository.requestUnlock(
+        () => _requestUnlockUseCase(
           userId: mockUser.id,
           customerType: CustomerType.personal,
         ),
@@ -313,7 +349,7 @@ void _unlockTests() {
 void _activateTests() {
   setUp(() {
     when(
-      () => _repository.requestActivate(
+      () => _requestActivateUseCase(
         userId: mockUser.id,
         customerType: CustomerType.personal,
       ),
@@ -322,10 +358,7 @@ void _activateTests() {
 
   blocTest<UserCubit, UserState>(
     'Request activation emits user on success',
-    build: () => UserCubit(
-      repository: _repository,
-      customerId: _successId,
-    ),
+    build: () => _successCubit,
     seed: () => UserState(
       customerId: _successId,
       user: mockUser,
@@ -346,7 +379,7 @@ void _activateTests() {
     ],
     verify: (c) {
       verify(
-        () => _repository.requestActivate(
+        () => _requestActivateUseCase(
           userId: mockUser.id,
           customerType: CustomerType.personal,
         ),
@@ -356,10 +389,7 @@ void _activateTests() {
 
   blocTest<UserCubit, UserState>(
     'Error correctly emitted if no user is loaded.',
-    build: () => UserCubit(
-      repository: _repository,
-      customerId: _successId,
-    ),
+    build: () => _successCubit,
     seed: () => UserState(
       customerId: _successId,
     ),
@@ -378,7 +408,7 @@ void _activateTests() {
     ],
     verify: (c) {
       verifyNever(
-        () => _repository.requestActivate(
+        () => _requestActivateUseCase(
           userId: mockUser.id,
           customerType: CustomerType.personal,
         ),
@@ -390,7 +420,7 @@ void _activateTests() {
 void _deactivateTests() {
   setUp(() {
     when(
-      () => _repository.requestDeactivate(
+      () => _requestDeactivateUseCase(
         userId: mockUser.id,
         customerType: CustomerType.personal,
       ),
@@ -399,10 +429,7 @@ void _deactivateTests() {
 
   blocTest<UserCubit, UserState>(
     'Request deactivation emits user on success',
-    build: () => UserCubit(
-      repository: _repository,
-      customerId: _successId,
-    ),
+    build: () => _successCubit,
     seed: () => UserState(
       customerId: _successId,
       user: mockUser,
@@ -423,7 +450,7 @@ void _deactivateTests() {
     ],
     verify: (c) {
       verify(
-        () => _repository.requestDeactivate(
+        () => _requestDeactivateUseCase(
           userId: mockUser.id,
           customerType: CustomerType.personal,
         ),
@@ -433,10 +460,7 @@ void _deactivateTests() {
 
   blocTest<UserCubit, UserState>(
     'Error correctly emitted if no user is loaded.',
-    build: () => UserCubit(
-      repository: _repository,
-      customerId: _successId,
-    ),
+    build: () => _successCubit,
     seed: () => UserState(
       customerId: _successId,
     ),
@@ -455,7 +479,7 @@ void _deactivateTests() {
     ],
     verify: (c) {
       verifyNever(
-        () => _repository.requestDeactivate(
+        () => _requestDeactivateUseCase(
           userId: mockUser.id,
           customerType: CustomerType.personal,
         ),
@@ -467,7 +491,7 @@ void _deactivateTests() {
 void _requestPasswordTests() {
   setUp(() {
     when(
-      () => _repository.requestPasswordReset(
+      () => _requestPasswordResetUseCase(
         userId: mockUser.id,
         customerType: CustomerType.personal,
       ),
@@ -476,10 +500,7 @@ void _requestPasswordTests() {
 
   blocTest<UserCubit, UserState>(
     'Request password emits user on success',
-    build: () => UserCubit(
-      repository: _repository,
-      customerId: _successId,
-    ),
+    build: () => _successCubit,
     seed: () => UserState(
       customerId: _successId,
       user: mockUser,
@@ -500,7 +521,7 @@ void _requestPasswordTests() {
     ],
     verify: (c) {
       verify(
-        () => _repository.requestPasswordReset(
+        () => _requestPasswordResetUseCase(
           userId: mockUser.id,
           customerType: CustomerType.personal,
         ),
@@ -510,10 +531,7 @@ void _requestPasswordTests() {
 
   blocTest<UserCubit, UserState>(
     'Error correctly emitted if no user is loaded.',
-    build: () => UserCubit(
-      repository: _repository,
-      customerId: _successId,
-    ),
+    build: () => _successCubit,
     seed: () => UserState(
       customerId: _successId,
     ),
@@ -532,7 +550,7 @@ void _requestPasswordTests() {
     ],
     verify: (c) {
       verifyNever(
-        () => _repository.requestPasswordReset(
+        () => _requestPasswordResetUseCase(
           userId: mockUser.id,
           customerType: CustomerType.personal,
         ),
@@ -544,7 +562,7 @@ void _requestPasswordTests() {
 void _requestPINTests() {
   setUp(() {
     when(
-      () => _repository.requestPINReset(
+      () => _requestPINResetUseCase(
         userId: mockUser.id,
         customerType: CustomerType.personal,
       ),
@@ -553,10 +571,7 @@ void _requestPINTests() {
 
   blocTest<UserCubit, UserState>(
     'Request PIN reset emits user on success',
-    build: () => UserCubit(
-      repository: _repository,
-      customerId: _successId,
-    ),
+    build: () => _successCubit,
     seed: () => UserState(
       customerId: _successId,
       user: mockUser,
@@ -577,7 +592,7 @@ void _requestPINTests() {
     ],
     verify: (c) {
       verify(
-        () => _repository.requestPINReset(
+        () => _requestPINResetUseCase(
           userId: mockUser.id,
           customerType: CustomerType.personal,
         ),
@@ -587,10 +602,7 @@ void _requestPINTests() {
 
   blocTest<UserCubit, UserState>(
     'Error correctly emitted if no user is loaded.',
-    build: () => UserCubit(
-      repository: _repository,
-      customerId: _successId,
-    ),
+    build: () => _successCubit,
     seed: () => UserState(
       customerId: _successId,
     ),
@@ -609,7 +621,7 @@ void _requestPINTests() {
     ],
     verify: (c) {
       verifyNever(
-        () => _repository.requestPINReset(
+        () => _requestPINResetUseCase(
           userId: mockUser.id,
           customerType: CustomerType.personal,
         ),

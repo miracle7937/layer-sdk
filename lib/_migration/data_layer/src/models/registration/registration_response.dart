@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../models.dart';
+import '../../../../../domain_layer/models.dart';
 
 /// A model representing data returned after calling the registration endpoint.
 class RegistrationResponse extends Equatable {

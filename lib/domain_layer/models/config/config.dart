@@ -9,28 +9,35 @@ class Config extends Equatable {
   /// These URLs will be used when redirecting a request to the maker/checker flow
   final InternalServices internalServices;
 
+  /// Graphana URL
+  final String graphanaUrl;
+
   /// Creates a new [ConfigDTO].
   const Config({
     this.showCustomersTab = false,
     this.internalServices = const InternalServices(
       infobanking: '',
     ),
+    this.graphanaUrl = '',
   });
 
   @override
   List<Object> get props => [
         showCustomersTab,
         internalServices,
+        graphanaUrl,
       ];
 
   /// Creates a new [Config] based on this one.
   Config copyWith({
     bool? showCustomersTab,
     InternalServices? internalServices,
+    String? graphanaUrl,
   }) =>
       Config(
         showCustomersTab: showCustomersTab ?? this.showCustomersTab,
         internalServices: internalServices ?? this.internalServices,
+        graphanaUrl: graphanaUrl ?? this.graphanaUrl,
       );
 }
 

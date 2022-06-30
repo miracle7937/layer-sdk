@@ -4,10 +4,10 @@ import 'package:layer_sdk/data_layer/network.dart';
 import 'package:layer_sdk/domain_layer/abstract_repositories.dart';
 import 'package:layer_sdk/domain_layer/models/campaign/campaign_response.dart';
 import 'package:layer_sdk/domain_layer/models/campaign/customer_campaign.dart';
-import 'package:layer_sdk/domain_layer/use_cases/campaign/load_campaigns_use_case.dart';
+import 'package:layer_sdk/domain_layer/use_cases.dart';
 import 'package:layer_sdk/presentation_layer/cubits/campaign/campaign_cubit.dart';
 import 'package:layer_sdk/presentation_layer/cubits/campaign/campaign_state.dart';
-import 'package:layer_sdk/presentation_layer/cubits/utils.dart';
+import 'package:layer_sdk/presentation_layer/utils.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 

@@ -2,8 +2,8 @@ import 'package:bloc/bloc.dart';
 
 import '../../../../data_layer/network.dart';
 import '../../../domain_layer/models.dart';
-import '../../../domain_layer/use_cases/campaign/load_campaigns_use_case.dart';
-import '../utils.dart';
+import '../../../domain_layer/use_cases.dart';
+import '../../utils.dart';
 import 'campaign_state.dart';
 
 /// A cubit that retrievs campaigns data with types.

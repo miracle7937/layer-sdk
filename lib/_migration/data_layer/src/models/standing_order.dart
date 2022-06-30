@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../models.dart';
+import '../../../../domain_layer/models.dart';
 
 ///The recurrence of the standing order
 enum StandingOrderRecurrence {

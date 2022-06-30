@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
-import 'package:layer_sdk/_migration/data_layer/src/dtos.dart';
 import 'package:layer_sdk/_migration/data_layer/src/mappings.dart';
+import 'package:layer_sdk/data_layer/dtos.dart';
+import 'package:layer_sdk/domain_layer/models.dart';
 import 'package:test/test.dart';
 
 void main() {
