@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 
 import '../../../../data_layer/dtos.dart';
-import '../../../_migration/data_layer/src/dtos.dart';
 import '../../helpers.dart';
 
 ///Data transfer object that represents an upcoming payment

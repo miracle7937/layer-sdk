@@ -76,6 +76,9 @@ class DPAVariablePropertyDTO {
   /// The list of dial codes.
   final List<DPADialCodeDTO>? dialCodes;
 
+  /// The prefix value.
+  final String? prefixValue;
+
   /// Creates a new [DPAVariablePropertyDTO].
   DPAVariablePropertyDTO({
     this.propertyType,
@@ -101,6 +104,7 @@ class DPAVariablePropertyDTO {
     this.allowedTypes,
     this.image,
     this.dialCodes,
+    this.prefixValue,
   });
 
   /// Creates a new [DPAVariablePropertyDTO] from the given JSON.
@@ -141,6 +145,7 @@ class DPAVariablePropertyDTO {
             : DPADialCodeDTO.fromStringList(
                 json['prefix_list'],
               ),
+        prefixValue: json['prefix_value'],
       );
 
   @override
@@ -170,6 +175,7 @@ class DPAVariablePropertyDTO {
       '${allowedTypes != null ? 'allowedTypes: $allowedTypes ' : ''}'
       '${image != null ? 'image: $image ' : ''}'
       '${dialCodes != null ? 'dialCodes: $dialCodes ' : ''}'
+      '${prefixValue != null ? 'prefixValue: $prefixValue ' : ''}'
       '}';
 }
 

@@ -1,14 +1,13 @@
-import '../../../_migration/data_layer/repositories.dart';
+import '../../abstract_repositories.dart';
 import '../../models.dart';
 
 /// Use case for setting an access pin for a user.
 class SetAccessPinForUserUseCase {
-  /// TODO: Replace this with the abstract repository when available.
-  final UserRepository _repository;
+  final UserRepositoryInterface _repository;
 
   /// Creates a new [SetAccessPinForUserUseCase].
   const SetAccessPinForUserUseCase({
-    required UserRepository repository,
+    required UserRepositoryInterface repository,
   }) : _repository = repository;
 
   /// Sets passed the access pin to the user related to the passed token.

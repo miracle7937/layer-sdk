@@ -1,4 +1,4 @@
-import '../../../models.dart';
+import '../../../../../domain_layer/models.dart';
 import '../../../parameters.dart';
 
 /// A class representing parameters for finalizing

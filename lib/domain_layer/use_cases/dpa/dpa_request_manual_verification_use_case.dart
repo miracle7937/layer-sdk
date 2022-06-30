@@ -20,8 +20,20 @@ class DPARequestManualVerificationUseCase
         ...process.variables,
         DPAVariable(
           id: 'enter_code',
-          type: DPAVariableType.text,
+          type: DPAVariableType.boolean,
           value: true,
+          property: DPAVariableProperty(),
+        ),
+        DPAVariable(
+          id: 'rectify_email_address',
+          type: DPAVariableType.boolean,
+          value: false,
+          property: DPAVariableProperty(),
+        ),
+        DPAVariable(
+          id: 'timeout',
+          type: DPAVariableType.boolean,
+          value: false,
           property: DPAVariableProperty(),
         ),
       ],

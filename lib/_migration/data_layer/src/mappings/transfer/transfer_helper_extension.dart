@@ -1,4 +1,4 @@
-import '../../../models.dart';
+import '../../../../../domain_layer/models.dart';
 
 /// Helper extension for [Transfer].
 extension TransferHelperExtension on Transfer {

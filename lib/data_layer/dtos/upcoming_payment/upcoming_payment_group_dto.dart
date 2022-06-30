@@ -1,5 +1,4 @@
 import '../../../../data_layer/dtos.dart';
-import '../../../_migration/data_layer/src/dtos.dart';
 import '../../helpers.dart';
 
 /// The DTO that parses the response of the upcoming payments
