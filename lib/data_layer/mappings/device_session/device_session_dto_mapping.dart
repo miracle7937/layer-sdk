@@ -1,11 +1,10 @@
+import '../../../domain_layer/models.dart';
+import '../../dtos.dart';
 import '../../errors.dart';
-import '../../models.dart';
-import '../dtos.dart';
-import '../mappings.dart';
-
+import '../../extensions.dart';
 /// Extension that provides mappings for [DeviceSessionDTO]
 extension DeviceSessionDTOMapping on DeviceSessionDTO {
-  /// Maps into a [DeviceSession]
+  ///Maps a [DeviceSessionDTO] into a [DeviceSession]
   DeviceSession toDeviceSession() => DeviceSession(
         status: status?.toSessionStatus() ?? SessionStatus.other,
         deviceId: deviceId?.toString(),
@@ -14,7 +13,7 @@ extension DeviceSessionDTOMapping on DeviceSessionDTO {
         model: model,
         resolution: resolution?.toResolution(),
         carrier: carrier,
-        login: loginName,
+        loginName: loginName,
         appVersion: appVersion,
         appBuildNumber: appBuildNumber,
         osFamily: osFamily,
@@ -42,6 +41,7 @@ extension DeviceSessionMapping on DeviceSession {
         osVersion: osVersion,
       );
 }
+
 
 /// Extension that provides mappings for [SessionStatusDTO]
 extension SessionStatusDTOMapping on SessionStatusDTO {

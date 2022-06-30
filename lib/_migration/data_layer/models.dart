@@ -4,7 +4,6 @@ library models;
 export 'src/models/appointment.dart';
 export 'src/models/branch_freetime.dart';
 export 'src/models/branch_timeslot.dart';
-export 'src/models/device_session.dart';
 export 'src/models/document/passport.dart';
 export 'src/models/location.dart';
 export 'src/models/message_response.dart';

@@ -21,6 +21,7 @@ export 'dtos/config/config_dto.dart';
 export 'dtos/country/country_dto.dart';
 export 'dtos/currency/currency_dto.dart';
 export 'dtos/customer/customer_dto.dart';
+export 'dtos/device_session/device_session_dto.dart';
 export 'dtos/dpa/dpa_constraint_dto.dart';
 export 'dtos/dpa/dpa_dial_code_dto.dart';
 export 'dtos/dpa/dpa_process_definition_dto.dart';

@@ -1,7 +1,6 @@
 export 'mappings/appointment_mapping.dart';
 export 'mappings/branch_freetime_mapping.dart';
 export 'mappings/category_dto_mapping.dart';
-export 'mappings/device_session_dto_mapping.dart';
 export 'mappings/permissions/permission_dto_mapping.dart';
 export 'mappings/permissions/permission_module_dto_mapping.dart';
 export 'mappings/permissions/permission_module_object_dto_mapping.dart';

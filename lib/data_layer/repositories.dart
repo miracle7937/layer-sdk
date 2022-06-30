@@ -17,6 +17,7 @@ export 'repositories/checkbook/checkbook_repository.dart';
 export 'repositories/config/config_repository.dart';
 export 'repositories/country/country_repository.dart';
 export 'repositories/currency/currency_repository.dart';
+export 'repositories/device_session/device_session_repository.dart';
 export 'repositories/dpa/dpa_repository.dart';
 export 'repositories/experience/experience_repository.dart';
 export 'repositories/experience_preferences/experience_preferences_repository.dart';

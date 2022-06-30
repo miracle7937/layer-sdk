@@ -1,4 +1,4 @@
-import '../helpers.dart';
+import '../../helpers.dart';
 
 /// Holds the provider data for the Device Sessions of a customer
 ///
@@ -76,6 +76,9 @@ class DeviceSessionDTO {
   /// The status of this session.
   SessionStatusDTO? status;
 
+  /// This session second status if logged out devices are include
+  SessionStatusDTO? secondStatus;
+
   /// The token used for notifications on this device.
   String? notificationToken;
 
@@ -114,6 +117,7 @@ class DeviceSessionDTO {
     this.resolution,
     this.type,
     this.status,
+    this.secondStatus,
     this.notificationToken,
   });
 
@@ -148,6 +152,9 @@ class DeviceSessionDTO {
     status = json['status'] != null
         ? SessionStatusDTO(json['status'])
         : SessionStatusDTO.other;
+    secondStatus = json['status2'] != null
+        ? SessionStatusDTO(json['status2'])
+        : SessionStatusDTO.other;
   }
 
   /// Encodes to a JSON.
@@ -179,6 +186,7 @@ class DeviceSessionDTO {
     if (isNotEmpty(resolution)) body['resolution'] = resolution;
     if (type != null) body['type'] = type!.value;
     if (status != null) body['status'] = status!.value;
+    if (secondStatus != null) body['status2'] = secondStatus!.value;
 
     return body;
   }

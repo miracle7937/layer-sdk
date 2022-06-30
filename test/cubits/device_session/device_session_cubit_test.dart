@@ -1,16 +1,23 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
 import 'package:layer_sdk/data_layer/network.dart';
 import 'package:layer_sdk/domain_layer/models.dart';
+import 'package:layer_sdk/domain_layer/use_cases/device_session/load_device_sessions_use_case.dart';
+import 'package:layer_sdk/domain_layer/use_cases/device_session/session_terminate_use_case.dart';
+import 'package:layer_sdk/presentation_layer/cubits/device_session/device_session_cubit.dart';
+import 'package:layer_sdk/presentation_layer/cubits/device_session/device_session_state.dart';
+
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockDeviceSessionRepository extends Mock
-    implements DeviceSessionRepository {}
+class MockLoadDeviceSessionsUseCase extends Mock
+    implements LoadDeviceSessionsUseCase {}
 
-final _repository = MockDeviceSessionRepository();
+class MockDeviceSessionTerminateUseCase extends Mock
+    implements DeviceSessionTerminateUseCase {}
+
+final _sessionUseCase = MockLoadDeviceSessionsUseCase();
+final _terminateUseCase = MockDeviceSessionTerminateUseCase();
 
 final _customer1Id = '2819';
 final _customer1Type = CustomerType.personal;
@@ -47,7 +54,7 @@ void main() {
 
   setUpAll(() {
     when(
-      () => _repository.list(
+      () => _sessionUseCase(
         customerId: _customer1Id,
         forceRefresh: false,
       ),
@@ -56,7 +63,7 @@ void main() {
     );
 
     when(
-      () => _repository.list(
+      () => _sessionUseCase(
         customerId: _customer1Id,
         forceRefresh: true,
       ),
@@ -65,7 +72,7 @@ void main() {
     );
 
     when(
-      () => _repository.list(
+      () => _sessionUseCase(
         customerId: _netErrorId,
         forceRefresh: any(named: 'forceRefresh'),
       ),
@@ -74,7 +81,7 @@ void main() {
     );
 
     when(
-      () => _repository.list(
+      () => _sessionUseCase(
         customerId: _genericErrorId,
         forceRefresh: any(named: 'forceRefresh'),
       ),
@@ -83,7 +90,7 @@ void main() {
     );
 
     when(
-      () => _repository.terminateSession(
+      () => _terminateUseCase(
         customerType: _customer1Type,
         deviceId: _customer1TerminateSession.deviceId!,
       ),
@@ -92,7 +99,7 @@ void main() {
     );
 
     when(
-      () => _repository.terminateSession(
+      () => _terminateUseCase(
         customerType: _customer1Type,
         deviceId: _customer1Devices[0].deviceId!,
       ),
@@ -104,7 +111,8 @@ void main() {
   blocTest<DeviceSessionCubit, DeviceSessionState>(
     'starts on empty state',
     build: () => DeviceSessionCubit(
-      repository: _repository,
+      loadSessionsUseCase: _sessionUseCase,
+      terminateUseCase: _terminateUseCase,
       customerId: _customer1Id,
       customerType: _customer1Type,
     ),
@@ -122,7 +130,8 @@ void _testLoad() {
   blocTest<DeviceSessionCubit, DeviceSessionState>(
     'should load sessions',
     build: () => DeviceSessionCubit(
-      repository: _repository,
+      loadSessionsUseCase: _sessionUseCase,
+      terminateUseCase: _terminateUseCase,
       customerId: _customer1Id,
       customerType: _customer1Type,
     ),
@@ -139,7 +148,7 @@ void _testLoad() {
     ],
     verify: (c) {
       verify(
-        () => _repository.list(
+        () => _sessionUseCase(
           customerId: _customer1Id,
           forceRefresh: false,
         ),
@@ -150,7 +159,8 @@ void _testLoad() {
   blocTest<DeviceSessionCubit, DeviceSessionState>(
     'should force load sessions',
     build: () => DeviceSessionCubit(
-      repository: _repository,
+      loadSessionsUseCase: _sessionUseCase,
+      terminateUseCase: _terminateUseCase,
       customerId: _customer1Id,
       customerType: _customer1Type,
     ),
@@ -167,7 +177,7 @@ void _testLoad() {
     ],
     verify: (c) {
       verify(
-        () => _repository.list(
+        () => _sessionUseCase(
           customerId: _customer1Id,
           forceRefresh: true,
         ),
@@ -178,7 +188,8 @@ void _testLoad() {
   blocTest<DeviceSessionCubit, DeviceSessionState>(
     'should handle generic errors',
     build: () => DeviceSessionCubit(
-      repository: _repository,
+      loadSessionsUseCase: _sessionUseCase,
+      terminateUseCase: _terminateUseCase,
       customerId: _genericErrorId,
       customerType: _customer1Type,
     ),
@@ -198,7 +209,7 @@ void _testLoad() {
     ],
     verify: (c) {
       verify(
-        () => _repository.list(
+        () => _sessionUseCase(
           customerId: _genericErrorId,
           forceRefresh: false,
         ),
@@ -209,7 +220,8 @@ void _testLoad() {
   blocTest<DeviceSessionCubit, DeviceSessionState>(
     'should handle net exceptions',
     build: () => DeviceSessionCubit(
-      repository: _repository,
+      loadSessionsUseCase: _sessionUseCase,
+      terminateUseCase: _terminateUseCase,
       customerId: _netErrorId,
       customerType: _customer1Type,
     ),
@@ -229,7 +241,7 @@ void _testLoad() {
     ],
     verify: (c) {
       verify(
-        () => _repository.list(
+        () => _sessionUseCase(
           customerId: _netErrorId,
           forceRefresh: false,
         ),
@@ -242,7 +254,8 @@ void _testTerminate() {
   blocTest<DeviceSessionCubit, DeviceSessionState>(
     'should terminate session',
     build: () => DeviceSessionCubit(
-      repository: _repository,
+      loadSessionsUseCase: _sessionUseCase,
+      terminateUseCase: _terminateUseCase,
       customerId: _customer1Id,
       customerType: _customer1Type,
     ),
@@ -275,9 +288,7 @@ void _testTerminate() {
             .map(
               (e) => SessionData(
                 session: e.copyWith(
-                  status: e.deviceId == _customer1TerminateSession.deviceId
-                      ? SessionStatus.wiped
-                      : null,
+                  status: e.status,
                 ),
                 busy: false,
               ),
@@ -288,7 +299,7 @@ void _testTerminate() {
     ],
     verify: (c) {
       verify(
-        () => _repository.terminateSession(
+        () => _terminateUseCase(
           deviceId: _customer1TerminateSession.deviceId!,
           customerType: _customer1Type,
         ),
@@ -299,7 +310,8 @@ void _testTerminate() {
   blocTest<DeviceSessionCubit, DeviceSessionState>(
     'should deal with exception',
     build: () => DeviceSessionCubit(
-      repository: _repository,
+      loadSessionsUseCase: _sessionUseCase,
+      terminateUseCase: _terminateUseCase,
       customerId: _customer1Id,
       customerType: _customer1Type,
     ),
@@ -342,7 +354,7 @@ void _testTerminate() {
     ],
     verify: (c) {
       verify(
-        () => _repository.terminateSession(
+        () => _terminateUseCase(
           deviceId: _customer1Devices[0].deviceId!,
           customerType: _customer1Type,
         ),

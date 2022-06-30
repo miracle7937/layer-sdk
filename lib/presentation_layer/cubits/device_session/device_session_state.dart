@@ -1,8 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../../../domain_layer/models.dart';
-import '../../../data_layer/data_layer.dart';
+import '../../../domain_layer/models.dart';
 
 /// The available error status
 enum DeviceSessionErrorStatus {

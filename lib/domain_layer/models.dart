@@ -33,6 +33,8 @@ export 'models/customer/employment_details.dart';
 export 'models/customer/iqama.dart';
 export 'models/customer/kyc.dart';
 export 'models/customer/next_of_kin.dart';
+export 'models/device_session/device_session.dart';
+export 'models/device_session/location.dart';
 export 'models/document/passport.dart';
 export 'models/dpa/dpa_constraint.dart';
 export 'models/dpa/dpa_dial_code.dart';

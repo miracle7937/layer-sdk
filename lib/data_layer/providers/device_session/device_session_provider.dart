@@ -1,5 +1,6 @@
-import '../../../../data_layer/network.dart';
-import '../dtos.dart';
+import '../../../domain_layer/models.dart';
+import '../../dtos.dart';
+import '../../network.dart';
 
 /// Provides data about the Devices Sessions
 class DeviceSessionProvider {
@@ -12,8 +13,13 @@ class DeviceSessionProvider {
   });
 
   /// Returns the sessions/devices for a customer.
-  Future<List<DeviceSessionDTO>> list({
+  Future<List<DeviceSessionDTO>> getDeviceSessions({
     required String customerId,
+    List<SessionType>? deviceTypes,
+    SessionStatus? status,
+    SessionStatus? secondStatus,
+    String? sortby,
+    bool? desc,
     bool forceRefresh = false,
   }) async {
     final response = await netClient.request(
@@ -22,6 +28,12 @@ class DeviceSessionProvider {
       forceRefresh: forceRefresh,
       queryParameters: {
         'customer_id': customerId,
+        if (deviceTypes != null && deviceTypes.isNotEmpty)
+          'device_types': deviceTypes.join(','),
+        if (status != null) 'status': status,
+        if (secondStatus != null) 'status2': secondStatus,
+        if (sortby != null) 'sortby': sortby,
+        if (desc != null) 'desc': desc,
       },
     );
 
@@ -30,11 +42,11 @@ class DeviceSessionProvider {
     );
   }
 
-  /// Wipes a device.
+  /// Terminates and wipes a device.
   ///
   /// Returns the new device data if succeeded.
   /// Returns null or throws exception on failure.
-  Future<DeviceSessionDTO?> wipe({
+  Future<DeviceSessionDTO?> terminate({
     required String customerType,
     required String deviceId,
   }) async {
@@ -59,5 +71,21 @@ class DeviceSessionProvider {
     if (!response.success || (list.isEmpty)) return null;
 
     return DeviceSessionDTO.fromJson(list.first);
+  }
+  /// Activates a device.
+
+  Future<void> activate({
+    required String deviceId,
+  }) async {
+   await netClient.request(
+      netClient.netEndpoints.customerDevice,
+      method: NetRequestMethods.patch,
+      data: [
+        {
+          'device_id': int.tryParse(deviceId),
+        }
+      ],
+    );
+
   }
 }

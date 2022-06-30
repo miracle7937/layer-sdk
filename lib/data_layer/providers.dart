@@ -18,6 +18,7 @@ export 'providers/config/config_provider.dart';
 export 'providers/country/country_provider.dart';
 export 'providers/currency/currency_provider.dart';
 export 'providers/customer/customer_provider.dart';
+export 'providers/device_session/device_session_provider.dart';
 export 'providers/dpa/dpa_provider.dart';
 export 'providers/experience/experience_provider.dart';
 export 'providers/experience_preferences/experience_preferences_provider.dart';
