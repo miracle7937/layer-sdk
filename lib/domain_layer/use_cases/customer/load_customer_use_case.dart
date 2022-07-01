@@ -1,19 +1,19 @@
 import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
 
-import '../../../../data_layer/mappings.dart';
 import '../../../../data_layer/network.dart';
-import '../../../../data_layer/providers.dart';
 import '../../../../domain_layer/models.dart';
+import '../../abstract_repositories.dart';
 
-/// Handles all the customers data
-class CustomerRepository {
+/// Use case to load customers
+class LoadCustomerUseCase {
+  final CustomerRepositoryInterface _repository;
   final _log = Logger('CustomerRepository');
 
-  final CustomerProvider _provider;
-
-  /// Creates a new repository with the supplied [CustomerProvider]
-  CustomerRepository(CustomerProvider provider) : _provider = provider;
+  /// Creates a new [LoadCustomerUseCase]
+  LoadCustomerUseCase({
+    required CustomerRepositoryInterface repository,
+  }) : _repository = repository;
 
   /// Lists the customers, optionally filtering them using [filters].
   ///
@@ -21,7 +21,7 @@ class CustomerRepository {
   ///
   /// The order is given by [sortBy] (which defaults to
   /// [CustomerSort.registered] and [descendingOrder], which defaults to `true`.
-  Future<List<Customer>> list({
+  Future<List<Customer>> call({
     CustomerType customerType = CustomerType.personal,
     CustomerFilters? filters,
     CustomerSort sortBy = CustomerSort.registered,
@@ -39,14 +39,14 @@ class CustomerRepository {
       [
         effectiveFilters.accountId.isEmpty
             ? Future.value(null)
-            : _provider.fetchIdFromAccountId(
+            : _repository.fetchIdFromAccountId(
                 accountId: effectiveFilters.accountId,
                 forceRefresh: forceRefresh,
                 requestCanceller: requestCanceller,
               ),
         effectiveFilters.username.isEmpty
             ? Future.value(null)
-            : _provider.fetchIdFromUsername(
+            : _repository.fetchIdFromUsername(
                 username: effectiveFilters.username,
                 forceRefresh: forceRefresh,
                 requestCanceller: requestCanceller,
@@ -79,57 +79,16 @@ class CustomerRepository {
     }
 
     // If we got here, we're ready to list the customers
-    final customerDTOs = await _provider.list(
-      customerType: customerType.toCustomerDTOType(),
-      id: ids.isNotEmpty ? ids.first : '',
-      name: effectiveFilters.name,
-      kycExpired: effectiveFilters.kycExpired.toBoolean(),
-      branchId: effectiveFilters.branchIds.join(','),
-      createdStart: effectiveFilters.createdStart,
-      createdEnd: effectiveFilters.createdEnd,
-      sortBy: sortBy.toFieldName(),
+    return _repository.list(
+      customerType: customerType,
+      filters: filters,
+      sortBy: sortBy,
       descendingOrder: descendingOrder,
       limit: limit,
       offset: offset,
       forceRefresh: forceRefresh,
       requestCanceller: requestCanceller,
+      id: ids.isNotEmpty ? ids.first : null,
     );
-
-    return customerDTOs
-        .map((e) => e.toCustomer(_customerCustomData))
-        .toList(growable: false);
   }
-
-  /// Updates the customer KYC grace period based on the provided
-  /// parameters.
-  ///
-  /// Used by the DBO app only.
-  Future<bool> updateCustomerGracePeriod({
-    required String customerId,
-    required KYCGracePeriodType type,
-    int? value,
-  }) =>
-      _provider.updateCustomerGracePeriod(
-        customerId: customerId,
-        type: type,
-        value: value,
-      );
-
-  /// Updates the customer KYC grace period based on the provided
-  /// parameters.
-  ///
-  /// Used by the DBO app only.
-  Future<bool> updateCustomerEStatement({
-    required String customerId,
-    required bool value,
-  }) =>
-      _provider.updateCustomerEStatement(
-        customerId: customerId,
-        value: value,
-      );
-
-  DPAMappingCustomData get _customerCustomData => DPAMappingCustomData(
-        token: _provider.netClient.currentToken() ?? '',
-        fileBaseURL: _provider.customerDocumentsURLPrefix,
-      );
 }

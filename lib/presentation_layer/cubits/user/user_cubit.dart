@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 
 import '../../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
-import 'user_state.dart';
+import '../../cubits.dart';
 
 /// A cubit that manages the state of the [User]s.
 class UserCubit extends Cubit<UserState> {

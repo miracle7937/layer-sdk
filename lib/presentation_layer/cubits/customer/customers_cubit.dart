@@ -3,11 +3,14 @@ import 'package:bloc/bloc.dart';
 import '../../../../../../data_layer/network.dart';
 import '../../../../domain_layer/models.dart';
 import '../../../data_layer/repositories.dart';
-import 'customers_states.dart';
+import '../../../domain_layer/use_cases.dart';
+import '../../cubits.dart';
 
 /// A cubit that keeps the list of customers.
 class CustomersCubit extends Cubit<CustomersState> {
-  final CustomerRepository _repository;
+  final LoadCustomerUseCase _getCustomerUseCase;
+  final UpdateCustomerGracePeriodUseCase _updateCustomerGracePeriodUseCase;
+  final UpdateCustomerEStatementUseCase _updateCustomerEStatmentUseCase;
 
   /// Maximum number of customers to load at a time.
   final int limit;
@@ -17,9 +20,13 @@ class CustomersCubit extends Cubit<CustomersState> {
 
   /// Creates a new cubit using the supplied [CustomerRepository].
   CustomersCubit({
-    required CustomerRepository repository,
+    required LoadCustomerUseCase getCustomerUseCase,
+    required UpdateCustomerGracePeriodUseCase updateCustomerGracePeriodUseCase,
+    required UpdateCustomerEStatementUseCase updateCustomerEStatmentUseCase,
     this.limit = 50,
-  })  : _repository = repository,
+  })  : _getCustomerUseCase = getCustomerUseCase,
+        _updateCustomerGracePeriodUseCase = updateCustomerGracePeriodUseCase,
+        _updateCustomerEStatmentUseCase = updateCustomerEStatmentUseCase,
         super(CustomersState());
 
   @override
@@ -87,7 +94,7 @@ class CustomersCubit extends Cubit<CustomersState> {
 
       final offset = isLoadingMore ? state.listData.offset + limit : 0;
 
-      final customers = await _repository.list(
+      final customers = await _getCustomerUseCase(
         customerType: effectiveType,
         filters: effectiveFilters,
         sortBy: sortBy,
@@ -156,7 +163,7 @@ class CustomersCubit extends Cubit<CustomersState> {
     );
 
     try {
-      final result = await _repository.updateCustomerGracePeriod(
+      final result = await _updateCustomerGracePeriodUseCase(
         customerId: customerId,
         type: type,
         value: value,
@@ -200,7 +207,7 @@ class CustomersCubit extends Cubit<CustomersState> {
     );
 
     try {
-      final result = await _repository.updateCustomerEStatement(
+      final result = await _updateCustomerEStatmentUseCase(
         customerId: customerId,
         value: value,
       );
