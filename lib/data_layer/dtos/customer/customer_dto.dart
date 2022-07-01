@@ -455,18 +455,25 @@ class CustomerInformationDTO {
         isResident: json['is_resident'],
         addresses: json['address_details'] == null
             ? null
-            : AddressDTO.fromJsonList(json['address_details']),
+            : AddressDTO.fromJsonList(
+                List<Map<String, dynamic>>.from(json['address_details']),
+              ),
         governmentPosition: json['pep'],
         thirdParty: json['representation'],
         ultimateBeneficiary: json['ultimate_beneficiary'],
         otherNames: json['other_names']?.split(','),
         taxes: json['tax_information'] == null
             ? null
-            : TaxDTO.fromJsonList(json['tax_information']),
+            : TaxDTO.fromJsonList(
+                List<Map<String, dynamic>>.from(json['tax_information']),
+              ),
         otherNationalities: json['other_nationalities'] == null
             ? null
             : json['other_nationalities'] is List
-                ? NationalityDTO.fromJsonList(json['other_nationalities'])
+                ? NationalityDTO.fromJsonList(
+                    List<Map<String, dynamic>>.from(
+                        json['other_nationalities']),
+                  )
                 : null,
         fatcaStatus: json['fatca_status'],
         salary: json['salary'],
