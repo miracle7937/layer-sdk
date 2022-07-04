@@ -45,6 +45,11 @@ class DPAProcessStepProperties extends Equatable {
   /// Defines the screen type that should be blocked (Automatically finished)
   final DPAScreenBlock block;
 
+  /// Whether or not the [DPAHeader] should be hidden.
+  ///
+  /// Defaults to `false`.
+  final bool hideAppBar;
+
   /// Creates a new [DPAProcessStepProperties].
   DPAProcessStepProperties({
     required this.format,
@@ -61,6 +66,7 @@ class DPAProcessStepProperties extends Equatable {
     this.jumioConfig,
     this.delay,
     this.block = DPAScreenBlock.none,
+    this.hideAppBar = false,
   });
 
   @override
@@ -79,6 +85,7 @@ class DPAProcessStepProperties extends Equatable {
         jumioConfig,
         delay,
         block,
+        hideAppBar,
       ];
 
   /// Creates a new [DPAProcessStepProperties] using another as a base.
@@ -97,6 +104,7 @@ class DPAProcessStepProperties extends Equatable {
     DPAJumioConfig? jumioConfig,
     int? delay,
     DPAScreenBlock? block,
+    bool? hideAppBar,
   }) =>
       DPAProcessStepProperties(
         format: format ?? this.format,
@@ -113,6 +121,7 @@ class DPAProcessStepProperties extends Equatable {
         jumioConfig: jumioConfig ?? this.jumioConfig,
         delay: delay ?? this.delay,
         block: block ?? this.block,
+        hideAppBar: hideAppBar ?? this.hideAppBar,
       );
 }
 

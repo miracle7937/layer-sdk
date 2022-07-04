@@ -21,6 +21,7 @@ export 'widgets/dpa/headers/dpa_header.dart';
 export 'widgets/dpa/headers/dpa_popup_header.dart';
 export 'widgets/dpa/images/dpa_step_image.dart';
 export 'widgets/dpa/otp/dpa_otp_screen.dart';
+export 'widgets/dpa/search/dpa_search_list.dart';
 export 'widgets/dpa/steps/dpa_line_step.dart';
 export 'widgets/dpa/steps/dpa_numbered_steps.dart';
 export 'widgets/dpa/switches/dpa_switch.dart';
