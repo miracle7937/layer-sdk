@@ -13,6 +13,8 @@ class DPAResendCodeUseCase extends DPAStepOrFinishProcessUseCase {
     required DPAProcess process,
     bool chosenValue = false,
   }) async {
+    final isPhoneOTP = process.stepProperties?.maskedNumber != null;
+
     final effectiveProcess = process.copyWith(
       variables: [
         ...process.variables,
@@ -20,6 +22,18 @@ class DPAResendCodeUseCase extends DPAStepOrFinishProcessUseCase {
           id: 'timeout',
           type: DPAVariableType.boolean,
           value: true,
+          property: DPAVariableProperty(),
+        ),
+        DPAVariable(
+          id: isPhoneOTP ? 'rectify_mobile_number' : 'rectify_email_address',
+          type: DPAVariableType.boolean,
+          value: false,
+          property: DPAVariableProperty(),
+        ),
+        DPAVariable(
+          id: 'enter_code',
+          type: DPAVariableType.boolean,
+          value: false,
           property: DPAVariableProperty(),
         ),
       ],

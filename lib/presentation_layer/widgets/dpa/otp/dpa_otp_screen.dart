@@ -280,53 +280,59 @@ class _PinWidgetRowState extends State<_PinWidgetRow>
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: _PinWidget(
-            controller: firstPin,
-            onFill: () => _onPinUpdated(
-              next: secondNode,
-              self: firstNode,
-            ),
-            node: firstNode,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: _PinWidget(
-            controller: secondPin,
-            onFill: () => _onPinUpdated(
-              next: thirdNode,
-              self: secondNode,
-            ),
-            node: secondNode,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: _PinWidget(
-            controller: thirdPin,
-            onFill: () => _onPinUpdated(
-              next: fourthNode,
-              self: thirdNode,
-            ),
-            node: thirdNode,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: _PinWidget(
-            controller: fourthPin,
-            node: fourthNode,
-            onFill: () => _onPinUpdated(
-              self: fourthNode,
+    return BlocListener<DPAProcessCubit, DPAProcessState>(
+      listenWhen: (previous, current) =>
+          previous.actions.contains(DPAProcessBusyAction.steppingForward) &&
+          !current.actions.contains(DPAProcessBusyAction.steppingForward),
+      listener: (context, state) => _clearPins(),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: _PinWidget(
+              controller: firstPin,
+              onFill: () => _onPinUpdated(
+                next: secondNode,
+                self: firstNode,
+              ),
+              node: firstNode,
             ),
           ),
-        ),
-      ],
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: _PinWidget(
+              controller: secondPin,
+              onFill: () => _onPinUpdated(
+                next: thirdNode,
+                self: secondNode,
+              ),
+              node: secondNode,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: _PinWidget(
+              controller: thirdPin,
+              onFill: () => _onPinUpdated(
+                next: fourthNode,
+                self: thirdNode,
+              ),
+              node: thirdNode,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: _PinWidget(
+              controller: fourthPin,
+              node: fourthNode,
+              onFill: () => _onPinUpdated(
+                self: fourthNode,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -347,6 +353,19 @@ class _PinWidgetRowState extends State<_PinWidgetRow>
     if (otp.length == 4) {
       self.unfocus();
       widget.onPinSet(otp);
+    }
+  }
+
+  void _clearPins() {
+    final pins = [
+      firstPin,
+      secondPin,
+      thirdPin,
+      fourthPin,
+    ];
+
+    for (final pin in pins) {
+      pin.text = '';
     }
   }
 }

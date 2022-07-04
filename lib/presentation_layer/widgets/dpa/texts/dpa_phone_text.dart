@@ -35,6 +35,8 @@ class DPAPhoneText extends StatefulWidget {
 class _DPAPhoneTextState extends State<DPAPhoneText> {
   TextEditingController? _controller;
 
+  late String _selectedDialCode;
+
   @override
   void initState() {
     super.initState();
@@ -44,6 +46,9 @@ class _DPAPhoneTextState extends State<DPAPhoneText> {
         text: widget.variable.value?.toString(),
       );
     }
+
+    _selectedDialCode = widget.variable.property.prefixValue ??
+        widget.variable.property.dialCodes.first.dialCode;
   }
 
   @override
@@ -59,6 +64,7 @@ class _DPAPhoneTextState extends State<DPAPhoneText> {
     return Padding(
       padding: widget.padding,
       child: DKPhoneField(
+        initialSelection: _selectedDialCode,
         status: widget.readonly || widget.variable.constraints.readonly
             ? DKTextFieldStatus.disabled
             : DKTextFieldStatus.idle,
@@ -68,7 +74,18 @@ class _DPAPhoneTextState extends State<DPAPhoneText> {
             ? DKTextFieldSize.multiline
             : DKTextFieldSize.large,
         warning: widget.variable.translateValidationError(translation),
-        onCountryCodeChanged: print,
+        onCountryCodeChanged: (value) {
+          _selectedDialCode = value;
+
+          final phone = _controller?.text ?? '';
+
+          if (phone.isNotEmpty) {
+            context.read<DPAProcessCubit>().updateValue(
+                  variable: widget.variable,
+                  newValue: '$_selectedDialCode$phone',
+                );
+          }
+        },
         countries: widget.variable.property.dialCodes
             .map(
               (dialCode) => DKPickerItem(
@@ -83,7 +100,7 @@ class _DPAPhoneTextState extends State<DPAPhoneText> {
             .toSet(),
         onChanged: (value) => context.read<DPAProcessCubit>().updateValue(
               variable: widget.variable,
-              newValue: value,
+              newValue: value.isEmpty ? '' : '$_selectedDialCode$value',
             ),
       ),
     );

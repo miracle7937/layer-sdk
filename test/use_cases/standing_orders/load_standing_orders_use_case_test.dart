@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:layer_sdk/layer_sdk.dart';
+import 'package:layer_sdk/features/standing_orders.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockStandingOrdersRepository extends Mock

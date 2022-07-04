@@ -1,6 +1,6 @@
-import '../../../_migration/data_layer/src/mappings.dart';
 import '../../../domain_layer/abstract_repositories.dart';
 import '../../../domain_layer/models.dart';
+import '../../mappings.dart';
 import '../../providers.dart';
 
 /// Handles all the standing orders data

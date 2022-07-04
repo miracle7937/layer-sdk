@@ -1,8 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:layer_sdk/domain_layer/abstract_repositories.dart';
 import 'package:layer_sdk/features/branch_activation.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockUserRepository extends Mock implements UserRepository {}
+class MockUserRepository extends Mock implements UserRepositoryInterface {}
 
 class MockUser extends Mock implements User {}
 

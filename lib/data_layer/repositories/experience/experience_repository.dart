@@ -1,4 +1,3 @@
-import '../../../_migration/data_layer/providers.dart' show UserProvider;
 import '../../../domain_layer/abstract_repositories.dart';
 import '../../../domain_layer/models.dart';
 import '../../mappings.dart';

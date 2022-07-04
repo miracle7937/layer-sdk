@@ -64,4 +64,10 @@ enum ExperienceSettingType {
 
   /// Type representing a setting with value of type multichoice.
   multiChoice,
+
+  /// Type representing a setting with value of type currency multichoice.
+  currencyMultiChoice,
+
+  /// Type representing a setting which value a currency
+  currencyChoice,
 }

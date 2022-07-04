@@ -23,6 +23,18 @@ class DPAChangePhoneNumberUseCase extends DPAStepOrFinishProcessUseCase {
           value: true,
           property: DPAVariableProperty(),
         ),
+        DPAVariable(
+          id: 'timeout',
+          type: DPAVariableType.boolean,
+          value: false,
+          property: DPAVariableProperty(),
+        ),
+        DPAVariable(
+          id: 'enter_code',
+          type: DPAVariableType.boolean,
+          value: false,
+          property: DPAVariableProperty(),
+        ),
       ],
     );
 

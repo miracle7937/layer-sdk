@@ -1,4 +1,4 @@
-import '../../../_migration/data_layer/src/dtos.dart';
+import '../../dtos.dart';
 import '../../network.dart';
 
 /// Provides data about the Standing orders

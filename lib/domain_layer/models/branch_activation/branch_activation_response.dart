@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../_migration/data_layer/models.dart';
+import '../../models.dart';
 
 /// A model representing data returned after calling the
 /// branch activation endpoint.

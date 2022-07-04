@@ -1,4 +1,4 @@
-import '../../../features/audit.dart';
+import '../../models.dart';
 
 /// The abstract repository for the audits.
 abstract class AuditRepositoryInterface {

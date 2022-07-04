@@ -21,6 +21,13 @@ import '../design.dart';
 import '../utils.dart';
 import '../widgets.dart';
 
+/// The builder invoked in the [MaterialApp.builder] callback.
+typedef NavigatorBuilder = Widget Function(
+  BuildContext context,
+  Widget child,
+  GlobalKey<NavigatorState> navigatorKey,
+);
+
 /// The main application widget.
 ///
 /// The application widget provides basic functionality
@@ -66,7 +73,7 @@ class BankApp extends StatefulWidget {
   final NetClient netClient;
 
   /// An optional builder to be passed to the [MaterialApp].
-  final TransitionBuilder? builder;
+  final NavigatorBuilder? builder;
 
   /// The home widget to be passed to the `MaterialApp`, added for x-app
   /// compatibility.
@@ -308,7 +315,7 @@ class BankAppState extends State<BankApp> {
                 appSSLConfiguration: widget.appSSLConfiguration,
                 navigatorKey: _navigatorKey,
                 child: widget.builder != null
-                    ? widget.builder!(context, app)
+                    ? widget.builder!(context, app, _navigatorKey)
                     : app,
               );
             },

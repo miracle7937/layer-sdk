@@ -1,4 +1,4 @@
-import '../../dtos.dart';
+import '../../../../../data_layer/dtos.dart';
 
 /// Data transfer object representing the data needed for registration.
 class RegistrationDTO {
