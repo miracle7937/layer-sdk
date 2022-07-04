@@ -16,6 +16,8 @@ export 'models/branding/branding.dart';
 export 'models/branding/branding_colors.dart';
 export 'models/branding/branding_fonts.dart';
 export 'models/branding/layer_branding.dart';
+export 'models/campaign/campaign_response.dart';
+export 'models/campaign/customer_campaign.dart';
 export 'models/card/banking_card.dart';
 export 'models/card/card_preferences.dart';
 export 'models/card/card_transaction.dart';
