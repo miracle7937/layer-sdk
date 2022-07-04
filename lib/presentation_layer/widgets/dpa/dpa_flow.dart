@@ -233,6 +233,27 @@ class DPAFlow extends StatelessWidget {
 
     final isDelayTask = process.stepProperties?.delay != null;
 
+    final effectiveContinueButton = process.variables.length == 1 &&
+            process.variables.first.property.searchBar
+        ? null
+        : customContinueButton ??
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                16.0,
+                0.0,
+                16.0,
+                42.0,
+              ),
+              child: DPAContinueButton(
+                process: process,
+                enabled: !hasPopup,
+              ),
+            );
+
+    final effectiveHeader = (process.stepProperties?.hideAppBar ?? false)
+        ? null
+        : customHeader ?? DPAHeader(process: process);
+
     return MultiBlocListener(
       listeners: [
         BlocListener<DPAProcessCubit, DPAProcessState>(
@@ -276,7 +297,7 @@ class DPAFlow extends StatelessWidget {
               // TODO: update to handle the different pages
               Column(
                 children: [
-                  customHeader ?? DPAHeader(process: process),
+                  if (effectiveHeader != null) effectiveHeader,
                   Expanded(
                     child: SingleChildScrollView(
                       child: Column(
@@ -284,6 +305,7 @@ class DPAFlow extends StatelessWidget {
                           if (showTaskDescription)
                             DPATaskDescription(
                               process: process,
+                              showTitle: effectiveHeader == null,
                             ),
                           Padding(
                             padding: const EdgeInsets.symmetric(
@@ -299,19 +321,7 @@ class DPAFlow extends StatelessWidget {
                       ),
                     ),
                   ),
-                  customContinueButton ??
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(
-                          16.0,
-                          0.0,
-                          16.0,
-                          42.0,
-                        ),
-                        child: DPAContinueButton(
-                          process: process,
-                          enabled: !hasPopup,
-                        ),
-                      ),
+                  if (effectiveContinueButton != null) effectiveContinueButton,
                 ],
               ),
           if (isDelayTask) DPAFullscreenLoader(),

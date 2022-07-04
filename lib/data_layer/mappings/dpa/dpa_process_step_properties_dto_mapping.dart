@@ -28,6 +28,7 @@ extension DPAProcessStepPropertiesDTOMapping on DPAProcessStepPropertiesDTO {
         jumioConfig: jumioConfig?.toJumioConfig(),
         delay: delay,
         block: block?.toDPAScreenBlock() ?? DPAScreenBlock.none,
+        hideAppBar: hideAppBar ?? false,
       );
 
   /// Checks if this [DPAProcessStepPropertiesDTO] has a valid URL and appends
