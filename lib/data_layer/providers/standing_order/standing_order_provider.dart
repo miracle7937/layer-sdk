@@ -1,13 +1,13 @@
 import '../../dtos.dart';
 import '../../network.dart';
 
-/// Provides data about the Transfers
-class TransferProvider {
+/// Provides data about the Standing orders
+class StandingOrderProvider {
   /// The NetClient to use for the network requests
   final NetClient netClient;
 
-  /// Creates a new [TransferProvider] with the supplied netClient.
-  TransferProvider(
+  /// Creates a new [StandingOrderProvider] with the supplied netClient.
+  StandingOrderProvider(
     this.netClient,
   );
 

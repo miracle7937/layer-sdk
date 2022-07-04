@@ -7,4 +7,3 @@ export 'src/repositories/category_repository.dart';
 export 'src/repositories/file_repository.dart';
 export 'src/repositories/permission_module_repository.dart';
 export 'src/repositories/registration_repository.dart';
-export 'src/repositories/standing_order_repository.dart';

@@ -2,19 +2,19 @@ import 'package:bloc/bloc.dart';
 
 import '../../../../../../data_layer/network.dart';
 import '../../../../presentation_layer/utils.dart';
-import '../../../data_layer/data_layer.dart';
-import '../cubits.dart';
+import '../../../domain_layer/use_cases.dart';
+import '../../cubits.dart';
 
 /// A cubit that keeps the list of customer standing orders.
 class StandingOrdersCubit extends Cubit<StandingOrdersState> {
-  final StandingOrderRepository _repository;
+  final LoadStandingOrdersUseCase _loadStandingOrdersUseCase;
 
   /// Creates a new cubit using the supplied [StandingOrderRepository].
   StandingOrdersCubit({
-    required StandingOrderRepository repository,
     required String customerId,
+    required LoadStandingOrdersUseCase loadStandingOrdersUseCase,
     int limit = 50,
-  })  : _repository = repository,
+  })  : _loadStandingOrdersUseCase = loadStandingOrdersUseCase,
         super(
           StandingOrdersState(
             customerId: customerId,
@@ -40,7 +40,7 @@ class StandingOrdersCubit extends Cubit<StandingOrdersState> {
     try {
       final newPage = state.pagination.paginate(loadMore: loadMore);
 
-      final list = await _repository.list(
+      final list = await _loadStandingOrdersUseCase(
         customerId: state.customerId,
         offset: newPage.offset,
         limit: newPage.limit,

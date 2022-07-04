@@ -11,5 +11,4 @@ export 'src/models/permissions/module_permission_definition.dart';
 export 'src/models/permissions/permission_module.dart';
 export 'src/models/registration/registration_response.dart';
 export 'src/models/resolution.dart';
-export 'src/models/standing_order.dart';
 export 'src/models/verify_pin_response.dart';

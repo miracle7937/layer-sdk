@@ -1,4 +1,4 @@
-import '../../models.dart';
+import '../../../features/branch_activation.dart';
 
 /// Abstract repository for the branch activation.
 abstract class BranchActivationRepositoryInterface {

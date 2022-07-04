@@ -1,4 +1,4 @@
-import '../../models.dart';
+import '../../../features/upcoming_payment.dart';
 
 /// Abstract repository for the upcoming payments.
 abstract class UpcomingPaymentRepositoryInterface {

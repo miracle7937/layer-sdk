@@ -39,6 +39,7 @@ export 'providers/product/product_provider.dart';
 export 'providers/queue/queue_request_provider.dart';
 export 'providers/role/roles_provider.dart';
 export 'providers/setting/global_setting_provider.dart';
+export 'providers/standing_order/standing_order_provider.dart';
 export 'providers/transfer/transfer_provider.dart';
 export 'providers/upcoming_payment/upcoming_payment_provider.dart';
 export 'providers/user/user_provider.dart';

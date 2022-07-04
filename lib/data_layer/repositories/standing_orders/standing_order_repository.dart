@@ -1,26 +1,30 @@
-import '../../../../data_layer/mappings.dart';
-import '../../../../data_layer/providers.dart';
-import '../../models.dart';
+import '../../../domain_layer/abstract_repositories.dart';
+import '../../../domain_layer/models.dart';
+import '../../mappings.dart';
+import '../../providers.dart';
 
 /// Handles all the standing orders data
-class StandingOrderRepository {
-  final TransferProvider _provider;
+class StandingOrderRepository implements StandingOrdersRepositoryInterface {
+  final StandingOrderProvider _provider;
 
-  /// Creates a new repository with the supplied [TransferProvider]
+  /// Creates a new repository with the supplied [StandingOrderProvider]
   ///
-  /// Uses the [TransferProvider], but takes the data using the recurring
+  /// Uses the [StandingOrderProvider], but takes the data using the recurring
   /// property set to true.
   StandingOrderRepository(
-    TransferProvider provider,
+    StandingOrderProvider provider,
   ) : _provider = provider;
 
   /// Lists the standing orders from a customer.
   ///
   /// Use [limit] and [offset] to paginate.
+  /// If [includeDetails] parameter is true the data will contain
+  /// customer details
+  @override
   Future<List<StandingOrder>> list({
     required String customerId,
-    int limit = 50,
-    int offset = 0,
+    int? limit,
+    int? offset,
     bool includeDetails = true,
     bool forceRefresh = false,
   }) async {
