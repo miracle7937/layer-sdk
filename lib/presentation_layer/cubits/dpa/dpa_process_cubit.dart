@@ -214,6 +214,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
   /// Proceeds to next step, or finishes the process if at the last one.
   Future<void> stepOrFinish({
     bool chosenValue = false,
+    List<DPAVariable>? extraVariables,
   }) async {
     assert(state.runStatus == DPAProcessRunStatus.running);
 
@@ -238,6 +239,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
         process = await _stepOrFinishProcessUseCase(
           process: process,
           chosenValue: chosenValue,
+          extraVariables: extraVariables,
         );
       }
 

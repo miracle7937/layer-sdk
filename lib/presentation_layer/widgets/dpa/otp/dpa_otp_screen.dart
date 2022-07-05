@@ -220,7 +220,30 @@ class _DPAOTPScreenState extends State<DPAOTPScreen>
       newValue: pin,
     );
 
-    cubit.stepOrFinish();
+    final isPhoneOTP = cubit.state.process.stepProperties?.maskedNumber != null;
+
+    cubit.stepOrFinish(
+      extraVariables: [
+        DPAVariable(
+          id: 'timeout',
+          type: DPAVariableType.boolean,
+          value: false,
+          property: DPAVariableProperty(),
+        ),
+        DPAVariable(
+          id: isPhoneOTP ? 'rectify_mobile_number' : 'rectify_email_address',
+          type: DPAVariableType.boolean,
+          value: false,
+          property: DPAVariableProperty(),
+        ),
+        DPAVariable(
+          id: 'enter_code',
+          type: DPAVariableType.boolean,
+          value: false,
+          property: DPAVariableProperty(),
+        ),
+      ],
+    );
   }
 }
 

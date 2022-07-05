@@ -12,36 +12,35 @@ class DPAResendCodeUseCase extends DPAStepOrFinishProcessUseCase {
   Future<DPAProcess> call({
     required DPAProcess process,
     bool chosenValue = false,
+    List<DPAVariable>? extraVariables,
   }) async {
     final isPhoneOTP = process.stepProperties?.maskedNumber != null;
 
-    final effectiveProcess = process.copyWith(
-      variables: [
-        ...process.variables,
-        DPAVariable(
-          id: 'timeout',
-          type: DPAVariableType.boolean,
-          value: true,
-          property: DPAVariableProperty(),
-        ),
-        DPAVariable(
-          id: isPhoneOTP ? 'rectify_mobile_number' : 'rectify_email_address',
-          type: DPAVariableType.boolean,
-          value: false,
-          property: DPAVariableProperty(),
-        ),
-        DPAVariable(
-          id: 'enter_code',
-          type: DPAVariableType.boolean,
-          value: false,
-          property: DPAVariableProperty(),
-        ),
-      ],
-    );
+    extraVariables = [
+      DPAVariable(
+        id: 'timeout',
+        type: DPAVariableType.boolean,
+        value: true,
+        property: DPAVariableProperty(),
+      ),
+      DPAVariable(
+        id: isPhoneOTP ? 'rectify_mobile_number' : 'rectify_email_address',
+        type: DPAVariableType.boolean,
+        value: false,
+        property: DPAVariableProperty(),
+      ),
+      DPAVariable(
+        id: 'enter_code',
+        type: DPAVariableType.boolean,
+        value: false,
+        property: DPAVariableProperty(),
+      ),
+    ];
 
     return super.call(
-      process: effectiveProcess,
+      process: process,
       chosenValue: chosenValue,
+      extraVariables: extraVariables,
     );
   }
 }
