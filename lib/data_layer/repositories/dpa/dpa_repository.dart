@@ -318,8 +318,6 @@ class DPARepository implements DPARepositoryInterface {
   /// Advances the given [DPAProcess] to the next step, or, in case it's already
   /// on the final step, finish it.
   ///
-  /// Use the `extraVariables` parameter for adding extra variables.
-  ///
   /// Returns another [DPAProcess] detailing the step the process is now.
   @override
   Future<DPAProcess> stepOrFinishProcess({
