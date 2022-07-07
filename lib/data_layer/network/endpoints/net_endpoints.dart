@@ -12,6 +12,7 @@ class NetEndpoints {
   static const String _loyalty = '/loyalty';
   static const String _integration = '/integration';
   static const String _loyaltyEngine = '/loyalty-engine';
+  static const String _engagement = '/engagement';
 
   /// The login endpoint
   String get login => '$_customer/v1/login';
@@ -256,6 +257,9 @@ class NetEndpoints {
 
   /// Endpoint for verifying the device on login
   String get verifyDeviceLogin => '$_customer/v1/verify_device_login';
+
+  /// The campaigns endpoint
+  String get campaign => '$_engagement/v1/customer_campaign';
 
   /// Endpoint for getting customer audits
   String get customerAudits => '$_customer/v1/audit';

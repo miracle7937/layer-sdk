@@ -1,4 +1,4 @@
-import '../../models.dart';
+import '../../../features/queue.dart';
 
 /// An abstract repository for the Queues
 abstract class QueueRepositoryInterface {

@@ -1,4 +1,4 @@
-import '../../models.dart';
+import '../../../features/checkbook.dart';
 
 /// Abstract repository for the checkbooks.
 abstract class CheckbookRepositoryInterface {

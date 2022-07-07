@@ -2,21 +2,20 @@ import 'dart:math';
 
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
 import 'package:layer_sdk/data_layer/network.dart';
+import 'package:layer_sdk/features/standing_orders.dart';
 import 'package:layer_sdk/presentation_layer/utils.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockStandingOrderRepository extends Mock
-    implements StandingOrderRepository {}
+class MockLoadStandingOrdersUseCase extends Mock
+    implements LoadStandingOrdersUseCase {}
 
-final _repositoryList = <StandingOrder>[];
+final _mockedStandingOrders = <StandingOrder>[];
 final _defaultLimit = 10;
 final _customerId = '200001';
 
-late MockStandingOrderRepository _repository;
+late MockLoadStandingOrdersUseCase _loadStandingOrdersUseCase;
 late StandingOrdersCubit _cubit;
 
 final _defaultState = StandingOrdersState(
@@ -30,7 +29,7 @@ void main() {
   final random = Random();
 
   for (var i = 0; i < 20; ++i) {
-    _repositoryList.add(
+    _mockedStandingOrders.add(
       StandingOrder(
         id: i,
         created: DateTime.now(),
@@ -44,11 +43,15 @@ void main() {
     );
   }
 
-  setUpAll(() {
-    _repository = MockStandingOrderRepository();
-
+  setUp(() {
+    _loadStandingOrdersUseCase = MockLoadStandingOrdersUseCase();
+    _cubit = StandingOrdersCubit(
+      customerId: _customerId,
+      loadStandingOrdersUseCase: _loadStandingOrdersUseCase,
+      limit: _defaultLimit,
+    );
     when(
-      () => _repository.list(
+      () => _loadStandingOrdersUseCase(
         customerId: _customerId,
         limit: _defaultLimit,
         offset: 0,
@@ -56,11 +59,11 @@ void main() {
         forceRefresh: any(named: 'forceRefresh'),
       ),
     ).thenAnswer(
-      (_) async => _repositoryList.take(_defaultLimit).toList(),
+      (_) async => _mockedStandingOrders.take(_defaultLimit).toList(),
     );
 
     when(
-      () => _repository.list(
+      () => _loadStandingOrdersUseCase(
         customerId: _customerId,
         limit: _defaultLimit,
         offset: _defaultLimit,
@@ -68,12 +71,14 @@ void main() {
         forceRefresh: any(named: 'forceRefresh'),
       ),
     ).thenAnswer(
-      (_) async =>
-          _repositoryList.skip(_defaultLimit).take(_defaultLimit).toList(),
+      (_) async => _mockedStandingOrders
+          .skip(_defaultLimit)
+          .take(_defaultLimit)
+          .toList(),
     );
 
     when(
-      () => _repository.list(
+      () => _loadStandingOrdersUseCase(
         customerId: _customerId,
         limit: _defaultLimit,
         offset: _defaultLimit * 2,
@@ -81,15 +86,7 @@ void main() {
         forceRefresh: any(named: 'forceRefresh'),
       ),
     ).thenAnswer(
-      (_) async => _repositoryList.skip(_defaultLimit * 2).toList(),
-    );
-  });
-
-  setUp(() {
-    _cubit = StandingOrdersCubit(
-      customerId: _customerId,
-      repository: _repository,
-      limit: _defaultLimit,
+      (_) async => _mockedStandingOrders.skip(_defaultLimit * 2).toList(),
     );
   });
 
@@ -118,13 +115,13 @@ void _baseTests() {
         busy: true,
       ),
       _defaultState.copyWith(
-        orders: _repositoryList.take(_defaultLimit).toList(),
+        orders: _mockedStandingOrders.take(_defaultLimit).toList(),
         pagination: _defaultState.pagination.copyWith(canLoadMore: true),
       ),
     ],
     verify: (c) {
       verify(
-        () => _repository.list(
+        () => _loadStandingOrdersUseCase(
           customerId: _customerId,
           limit: _defaultLimit,
           offset: 0,
@@ -139,18 +136,18 @@ void _baseTests() {
     'should load more standing orders',
     build: () => _cubit,
     seed: () => _defaultState.copyWith(
-      orders: _repositoryList.take(_defaultLimit).toList(),
+      orders: _mockedStandingOrders.take(_defaultLimit).toList(),
       pagination: _defaultState.pagination.copyWith(canLoadMore: true),
     ),
     act: (c) => c.load(loadMore: true),
     expect: () => [
       _defaultState.copyWith(
         busy: true,
-        orders: _repositoryList.take(_defaultLimit).toList(),
+        orders: _mockedStandingOrders.take(_defaultLimit).toList(),
         pagination: _defaultState.pagination.copyWith(canLoadMore: true),
       ),
       _defaultState.copyWith(
-        orders: _repositoryList.take(_defaultLimit * 2).toList(),
+        orders: _mockedStandingOrders.take(_defaultLimit * 2).toList(),
         pagination: _defaultState.pagination.copyWith(
           canLoadMore: true,
           offset: _defaultLimit,
@@ -159,7 +156,7 @@ void _baseTests() {
     ],
     verify: (c) {
       verify(
-        () => _repository.list(
+        () => _loadStandingOrdersUseCase(
           customerId: _customerId,
           limit: _defaultLimit,
           offset: _defaultLimit,
@@ -174,7 +171,7 @@ void _baseTests() {
     'should return load more = false on list end',
     build: () => _cubit,
     seed: () => _defaultState.copyWith(
-      orders: _repositoryList.take(_defaultLimit * 2).toList(),
+      orders: _mockedStandingOrders.take(_defaultLimit * 2).toList(),
       pagination: _defaultState.pagination.copyWith(
         canLoadMore: true,
         offset: _defaultLimit,
@@ -184,14 +181,14 @@ void _baseTests() {
     expect: () => [
       _defaultState.copyWith(
         busy: true,
-        orders: _repositoryList.take(_defaultLimit * 2).toList(),
+        orders: _mockedStandingOrders.take(_defaultLimit * 2).toList(),
         pagination: _defaultState.pagination.copyWith(
           canLoadMore: true,
           offset: _defaultLimit,
         ),
       ),
       _defaultState.copyWith(
-        orders: _repositoryList,
+        orders: _mockedStandingOrders,
         pagination: _defaultState.pagination.copyWith(
           canLoadMore: false,
           offset: _defaultLimit * 2,
@@ -200,7 +197,7 @@ void _baseTests() {
     ],
     verify: (c) {
       verify(
-        () => _repository.list(
+        () => _loadStandingOrdersUseCase(
           customerId: _customerId,
           limit: _defaultLimit,
           offset: _defaultLimit * 2,
@@ -222,13 +219,13 @@ void _includeDetails() {
         busy: true,
       ),
       _defaultState.copyWith(
-        orders: _repositoryList.take(_defaultLimit).toList(),
+        orders: _mockedStandingOrders.take(_defaultLimit).toList(),
         pagination: _defaultState.pagination.copyWith(canLoadMore: true),
       ),
     ],
     verify: (c) {
       verify(
-        () => _repository.list(
+        () => _loadStandingOrdersUseCase(
           customerId: _customerId,
           limit: _defaultLimit,
           offset: 0,
@@ -248,13 +245,13 @@ void _includeDetails() {
         busy: true,
       ),
       _defaultState.copyWith(
-        orders: _repositoryList.take(_defaultLimit).toList(),
+        orders: _mockedStandingOrders.take(_defaultLimit).toList(),
         pagination: _defaultState.pagination.copyWith(canLoadMore: true),
       ),
     ],
     verify: (c) {
       verify(
-        () => _repository.list(
+        () => _loadStandingOrdersUseCase(
           customerId: _customerId,
           limit: _defaultLimit,
           offset: 0,
@@ -276,13 +273,13 @@ void _forceRefresh() {
         busy: true,
       ),
       _defaultState.copyWith(
-        orders: _repositoryList.take(_defaultLimit).toList(),
+        orders: _mockedStandingOrders.take(_defaultLimit).toList(),
         pagination: _defaultState.pagination.copyWith(canLoadMore: true),
       ),
     ],
     verify: (c) {
       verify(
-        () => _repository.list(
+        () => _loadStandingOrdersUseCase(
           customerId: _customerId,
           limit: _defaultLimit,
           offset: 0,
@@ -302,13 +299,13 @@ void _forceRefresh() {
         busy: true,
       ),
       _defaultState.copyWith(
-        orders: _repositoryList.take(_defaultLimit).toList(),
+        orders: _mockedStandingOrders.take(_defaultLimit).toList(),
         pagination: _defaultState.pagination.copyWith(canLoadMore: true),
       ),
     ],
     verify: (c) {
       verify(
-        () => _repository.list(
+        () => _loadStandingOrdersUseCase(
           customerId: _customerId,
           limit: _defaultLimit,
           offset: 0,
@@ -323,7 +320,7 @@ void _forceRefresh() {
 void _exceptions() {
   setUp(() {
     when(
-      () => _repository.list(
+      () => _loadStandingOrdersUseCase(
         customerId: _customerId,
         limit: _defaultLimit,
         offset: 0,
@@ -335,7 +332,7 @@ void _exceptions() {
     );
 
     when(
-      () => _repository.list(
+      () => _loadStandingOrdersUseCase(
         customerId: _customerId,
         limit: _defaultLimit,
         offset: _defaultLimit,
@@ -364,7 +361,7 @@ void _exceptions() {
     ],
     verify: (c) {
       verify(
-        () => _repository.list(
+        () => _loadStandingOrdersUseCase(
           customerId: _customerId,
           limit: _defaultLimit,
           offset: 0,
@@ -379,18 +376,18 @@ void _exceptions() {
     'should handle generic errors',
     build: () => _cubit,
     seed: () => _defaultState.copyWith(
-      orders: _repositoryList.take(_defaultLimit).toList(),
+      orders: _mockedStandingOrders.take(_defaultLimit).toList(),
       pagination: _defaultState.pagination.copyWith(canLoadMore: true),
     ),
     act: (c) => c.load(loadMore: true),
     expect: () => [
       _defaultState.copyWith(
         busy: true,
-        orders: _repositoryList.take(_defaultLimit).toList(),
+        orders: _mockedStandingOrders.take(_defaultLimit).toList(),
         pagination: _defaultState.pagination.copyWith(canLoadMore: true),
       ),
       _defaultState.copyWith(
-        orders: _repositoryList.take(_defaultLimit).toList(),
+        orders: _mockedStandingOrders.take(_defaultLimit).toList(),
         pagination: _defaultState.pagination.copyWith(canLoadMore: true),
         error: StandingOrdersError.generic,
       ),
@@ -400,7 +397,7 @@ void _exceptions() {
     ],
     verify: (c) {
       verify(
-        () => _repository.list(
+        () => _loadStandingOrdersUseCase(
           customerId: _customerId,
           limit: _defaultLimit,
           offset: _defaultLimit,

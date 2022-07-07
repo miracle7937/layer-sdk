@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import '../../../data_layer/network.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
-import 'device_session_state.dart';
+import '../../cubits.dart';
 
 /// A cubit that keeps a list of device sessions.
 class DeviceSessionCubit extends Cubit<DeviceSessionState> {

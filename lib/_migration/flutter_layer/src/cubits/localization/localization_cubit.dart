@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../presentation_layer/resources.dart';
 import '../../../../business_layer/business_layer.dart';
-import '../../resources/flutter_storage_keys.dart';
 import 'localization_state.dart';
 
 /// A cubit that manages [Locale] selected by the user.
@@ -34,7 +34,7 @@ class LocalizationCubit extends Cubit<LocalizationState> {
 
     try {
       final savedLanguageCode = await _storage.getString(
-        key: FlutterStorageKeys.userSelectedLanguageCode,
+        key: StorageKeys.userSelectedLanguageCode,
       );
 
       emit(
@@ -66,7 +66,7 @@ class LocalizationCubit extends Cubit<LocalizationState> {
 
     try {
       await _storage.setString(
-        key: FlutterStorageKeys.userSelectedLanguageCode,
+        key: StorageKeys.userSelectedLanguageCode,
         value: locale.languageCode,
       );
 

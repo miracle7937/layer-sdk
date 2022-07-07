@@ -1,8 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
-import 'package:layer_sdk/domain_layer/models.dart';
+import 'package:layer_sdk/features/customer.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
@@ -19,6 +17,9 @@ final _customerIdFilter = '31';
 final _branchesFilter = {'7'};
 
 late MockCustomerRepository _repository;
+late LoadCustomerUseCase _getCustomerUseCase;
+late UpdateCustomerGracePeriodUseCase _updateCustomerGracePeriodUseCase;
+late UpdateCustomerEStatementUseCase _updateCustomerEStatementUseCase;
 
 late CustomersCubit _customersCubit;
 
@@ -69,8 +70,15 @@ void main() {
 
   setUp(() {
     _repository = MockCustomerRepository();
+    _getCustomerUseCase = LoadCustomerUseCase(repository: _repository);
+    _updateCustomerGracePeriodUseCase =
+        UpdateCustomerGracePeriodUseCase(repository: _repository);
+    _updateCustomerEStatementUseCase =
+        UpdateCustomerEStatementUseCase(repository: _repository);
     _customersCubit = CustomersCubit(
-      repository: _repository,
+      getCustomerUseCase: _getCustomerUseCase,
+      updateCustomerGracePeriodUseCase: _updateCustomerGracePeriodUseCase,
+      updateCustomerEStatmentUseCase: _updateCustomerEStatementUseCase,
       limit: _defaultLimit,
     );
 
@@ -102,7 +110,10 @@ void main() {
   blocTest<CustomersCubit, CustomersState>(
     'starts on empty state',
     build: () => CustomersCubit(
-      repository: _repository,
+      getCustomerUseCase: _getCustomerUseCase,
+      updateCustomerGracePeriodUseCase: _updateCustomerGracePeriodUseCase,
+      updateCustomerEStatmentUseCase: _updateCustomerEStatementUseCase,
+      limit: _defaultLimit,
     ),
     verify: (c) => expect(c.state, CustomersState()),
   ); // starts on empty state
@@ -110,8 +121,10 @@ void main() {
   blocTest<CustomersCubit, CustomersState>(
     'resets cubit to an empty state',
     build: () => CustomersCubit(
-      repository: _repository,
-    ),
+        getCustomerUseCase: _getCustomerUseCase,
+        updateCustomerGracePeriodUseCase: _updateCustomerGracePeriodUseCase,
+        updateCustomerEStatmentUseCase: _updateCustomerEStatementUseCase,
+        limit: _defaultLimit),
     seed: () => CustomersState(
       customers: _dataCreatedDesc.take(_defaultLimit).toList(),
       listData: CustomerListData(canLoadMore: true),
@@ -260,7 +273,7 @@ void _setupRepository({
     () => _repository.list(
       limit: _defaultLimit,
       offset: 0,
-      filters: CustomerFilters(),
+      filters: any(named: 'filters'),
       sortBy: sortBy,
       descendingOrder: descendingOrder,
       requestCanceller: _customersCubit.listCanceller,
@@ -277,7 +290,7 @@ void _setupRepository({
       limit: _defaultLimit,
       offset: 0,
       customerType: CustomerType.corporate,
-      filters: CustomerFilters(),
+      filters: any(named: 'filters'),
       sortBy: sortBy,
       descendingOrder: descendingOrder,
       requestCanceller: _customersCubit.listCanceller,
@@ -293,7 +306,7 @@ void _setupRepository({
     () => _repository.list(
       limit: _defaultLimit,
       offset: _defaultLimit,
-      filters: CustomerFilters(),
+      filters: any(named: 'filters'),
       sortBy: sortBy,
       descendingOrder: descendingOrder,
       requestCanceller: _customersCubit.listCanceller,
@@ -310,7 +323,7 @@ void _setupRepository({
     () => _repository.list(
       limit: _defaultLimit,
       offset: _defaultLimit * 2,
-      filters: CustomerFilters(),
+      filters: any(named: 'filters'),
       sortBy: sortBy,
       descendingOrder: descendingOrder,
       requestCanceller: _customersCubit.listCanceller,
@@ -319,6 +332,7 @@ void _setupRepository({
     (_) async => data
         .where((e) => e.type == CustomerType.personal)
         .skip(_defaultLimit * 2)
+        .take(_defaultLimit)
         .toList(),
   );
 
@@ -347,6 +361,7 @@ void _setupRepository({
       sortBy: sortBy,
       descendingOrder: descendingOrder,
       requestCanceller: _customersCubit.listCanceller,
+      id: _customerIdFilter,
     ),
   ).thenAnswer(
     (_) async => data
@@ -436,6 +451,7 @@ void _filterTests() {
           limit: _defaultLimit,
           filters: CustomerFilters(id: _customerIdFilter),
           requestCanceller: _customersCubit.listCanceller,
+          id: _customerIdFilter,
         ),
       ).called(1);
     },
@@ -850,6 +866,7 @@ void _testAutoReset() {
           requestCanceller: _customersCubit.listCanceller,
           sortBy: CustomerSort.id,
           descendingOrder: false,
+          id: _customerIdFilter,
         ),
       ).called(1);
     },
