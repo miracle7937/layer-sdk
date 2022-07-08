@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
+import '../../../../../presentation_layer/resources.dart';
 import '../../../../../presentation_layer/utils.dart';
-import '../../../flutter_layer.dart';
 
 /// View that appears when the keyboard is shown and
 /// that shows a button that will close the keyboard when pressed

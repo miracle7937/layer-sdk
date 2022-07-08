@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -209,28 +210,6 @@ class DPAFlow extends StatelessWidget {
       (cubit) => cubit.state.hasPopup,
     );
 
-    final isCarouselScreen = process.variables.isNotEmpty &&
-        process.variables.every(
-          (e) => e.type == DPAVariableType.swipe,
-        );
-
-    final isOTPScreen = process.stepProperties?.screenType == DPAScreenType.otp;
-
-    final isEmailValidationScreen =
-        process.stepProperties?.screenType == DPAScreenType.email;
-
-    final effectiveCustomChild = isCarouselScreen
-        ? DPACarouselScreen()
-        : isOTPScreen
-            ? DPAOTPScreen(
-                customDPAHeader: customHeader,
-              )
-            : isEmailValidationScreen
-                ? DPAEmailScreen(
-                    customDPAHeader: customHeader,
-                  )
-                : customChild;
-
     final isDelayTask = process.stepProperties?.delay != null;
 
     final effectiveContinueButton = process.variables.length == 1 &&
@@ -292,7 +271,7 @@ class DPAFlow extends StatelessWidget {
       ],
       child: Stack(
         children: [
-          effectiveCustomChild ??
+          _getEffectiveCustomChild(context) ??
               // TODO: update to use the correct Layer Design Kit design.
               // TODO: update to handle the different pages
               Column(
@@ -328,6 +307,56 @@ class DPAFlow extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Widget? _getEffectiveCustomChild(BuildContext context) {
+    final process = context.select<DPAProcessCubit, DPAProcess>(
+      (cubit) => cubit.state.process,
+    );
+
+    final effectiveHeader = (process.stepProperties?.hideAppBar ?? false)
+        ? null
+        : customHeader ?? DPAHeader(process: process);
+
+    final isCarouselScreen = process.variables.isNotEmpty &&
+        process.variables.every(
+          (e) => e.type == DPAVariableType.swipe,
+        );
+
+    final isOTPScreen = process.stepProperties?.screenType == DPAScreenType.otp;
+
+    final isEmailValidationScreen =
+        process.stepProperties?.screenType == DPAScreenType.email;
+
+    final pinVariable = process.variables
+        .singleWhereOrNull((variable) => variable.type == DPAVariableType.pin);
+
+    return isCarouselScreen
+        ? DPACarouselScreen()
+        : isOTPScreen
+            ? DPAOTPScreen(
+                customDPAHeader: customHeader,
+              )
+            : isEmailValidationScreen
+                ? DPAEmailScreen(
+                    customDPAHeader: customHeader,
+                  )
+                : pinVariable != null
+                    ? DPASetAccessPin(
+                        header: effectiveHeader,
+                        dpaVariable: pinVariable.copyWith(
+                          label: process.task?.description,
+                        ),
+                        onAccessPinSet: (pin) {
+                          final cubit = context.read<DPAProcessCubit>();
+                          cubit.updateValue(
+                            variable: pinVariable,
+                            newValue: pin,
+                          );
+                          cubit.stepOrFinish();
+                        },
+                      )
+                    : customChild;
   }
 
   void _hidePopUp(BuildContext context, DPAProcessState state) {

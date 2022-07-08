@@ -82,6 +82,8 @@ export 'cubits/queue/queue_request_cubit.dart';
 export 'cubits/queue/queue_request_states.dart';
 export 'cubits/role/roles_cubit.dart';
 export 'cubits/role/roles_state.dart';
+export 'cubits/set_pin_screen/set_pin_screen_cubit.dart';
+export 'cubits/set_pin_screen/set_pin_screen_state.dart';
 export 'cubits/setting/global_setting_cubit.dart';
 export 'cubits/setting/global_setting_state.dart';
 export 'cubits/standing_orders/standing_orders_cubit.dart';
