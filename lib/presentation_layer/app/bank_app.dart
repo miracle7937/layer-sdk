@@ -157,10 +157,6 @@ class BankAppState extends State<BankApp> {
   List<BlocProvider> _blocProviders({
     required AppThemeConfiguration themeConfiguration,
   }) {
-    final userProvider = UserProvider(
-      netClient: widget.netClient,
-    );
-
     return [
       BlocProvider<AppThemeCubit>(
         create: (context) => AppThemeCubit(

@@ -8,4 +8,3 @@ export 'mappings/preferences_dto_mapping.dart';
 export 'mappings/registration/registration_response_dto_mapping.dart';
 export 'mappings/string_converters.dart';
 export 'mappings/user_json_mapping.dart';
-export '../../../data_layer/mappings/authentication/verify_pin_response_dto_mapping.dart';
