@@ -10,6 +10,8 @@ export 'cubits/alerts/unread_alerts_count_cubit.dart';
 export 'cubits/alerts/unread_alerts_count_state.dart';
 export 'cubits/audit/customer_audits_cubit.dart';
 export 'cubits/audit/customer_audits_state.dart';
+export 'cubits/authentication/authentication_cubit.dart';
+export 'cubits/authentication/authentication_states.dart';
 export 'cubits/authentication/second_factor_cubit.dart';
 export 'cubits/authentication/second_factor_states.dart';
 export 'cubits/beneficiary/beneficiaries_cubit.dart';

@@ -7,4 +7,4 @@ export 'DTOs/registration/authentication_dto.dart';
 export 'DTOs/registration/authentication_response_dto.dart';
 export 'DTOs/registration/registration_dto.dart';
 export 'DTOs/registration/registration_response_dto.dart';
-export 'DTOs/verify_pin_response_dto.dart';
+export '../../../data_layer/dtos/authentication/verify_pin_response_dto.dart';

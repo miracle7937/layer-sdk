@@ -2,9 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../_migration/business_layer/src/cubits.dart';
-import '../../cubits/setting/global_setting_cubit.dart';
+import '../../cubits.dart';
 
 /// A widget that manages the user interaction inactivity.
 ///

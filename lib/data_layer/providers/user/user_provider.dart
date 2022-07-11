@@ -38,21 +38,7 @@ class UserProvider {
     throw Exception('User not found');
   }
 
-  /// Changes the password using the given data.
-  Future<ChangeUserPasswordResponseDTO> changeUsersPassword(
-    ChangeUserPasswordDTO data,
-  ) async {
-    final response = await netClient.request(
-      netClient.netEndpoints.changePassword,
-      method: NetRequestMethods.patch,
-      data: data,
-      forceRefresh: true,
-      throwAllErrors: false,
-    );
-
-    return ChangeUserPasswordResponseDTO.fromJson(response.data);
-  }
-
+  
   /// Patches an user with different data
   /// A [User] is needed with the new data to be patched
   ///

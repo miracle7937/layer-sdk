@@ -1,5 +1,6 @@
-import '../../models.dart';
-import '../dtos.dart';
+
+import '../../../domain_layer/models.dart';
+import '../../dtos.dart';
 
 /// Extension that provides mappings for [VerifyPinResponseDTO]
 extension VerifyPinResponseDTOMapping on VerifyPinResponseDTO {
