@@ -1,6 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/data_layer/dtos/dpa/dpa_process_step_properties_dto.dart';
 import 'package:layer_sdk/data_layer/network.dart';
 import 'package:layer_sdk/features/dpa.dart';
 import 'package:mocktail/mocktail.dart';
