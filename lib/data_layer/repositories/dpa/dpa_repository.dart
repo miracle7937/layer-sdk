@@ -322,13 +322,11 @@ class DPARepository implements DPARepositoryInterface {
   @override
   Future<DPAProcess> stepOrFinishProcess({
     required DPAProcess process,
-    bool chosenValue = false,
   }) async {
     _log.finest('Stepping/Finishing process with task id ${process.task?.id}');
 
     final dto = await _provider.stepOrFinishProcess(
       process: process.toDPAProcessDTO(),
-      chosenValue: chosenValue,
     );
 
     return dto.toDPAProcess(

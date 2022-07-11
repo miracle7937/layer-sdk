@@ -12,7 +12,6 @@ class DPAChangeEmailAddressUseCase extends DPAStepOrFinishProcessUseCase {
   /// necessary [DPAVariable].
   Future<DPAProcess> call({
     required DPAProcess process,
-    bool chosenValue = false,
     List<DPAVariable>? extraVariables,
   }) async {
     extraVariables = [
@@ -38,7 +37,6 @@ class DPAChangeEmailAddressUseCase extends DPAStepOrFinishProcessUseCase {
 
     return super.call(
       process: process,
-      chosenValue: chosenValue,
       extraVariables: extraVariables,
     );
   }

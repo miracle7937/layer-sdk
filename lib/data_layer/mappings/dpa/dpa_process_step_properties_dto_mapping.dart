@@ -29,6 +29,7 @@ extension DPAProcessStepPropertiesDTOMapping on DPAProcessStepPropertiesDTO {
         delay: delay,
         block: block?.toDPAScreenBlock() ?? DPAScreenBlock.none,
         hideAppBar: hideAppBar ?? false,
+        skipLabel: skipLabel,
       );
 
   /// Checks if this [DPAProcessStepPropertiesDTO] has a valid URL and appends
