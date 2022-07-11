@@ -567,7 +567,7 @@ void _stepOrFinishTests() {
   blocTest<DPAProcessCubit, DPAProcessState>(
     'Emits correct action after successfully skipping the step',
     build: create,
-    act: (c) => c.stepOrFinish(),
+    act: (c) => c.skipOrFinish(),
     seed: () => DPAProcessState(
       process: _mockedSkipStepProcess,
       runStatus: DPAProcessRunStatus.running,
