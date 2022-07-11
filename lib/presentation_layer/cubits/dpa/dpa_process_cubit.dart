@@ -236,16 +236,67 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
     try {
       var process = state.activeProcess.validate();
 
-      if (state.activeProcess.stepProperties?.skipLabel != null) {
-        process = await _skipStepUseCase(
-          process: process,
-        );
-      } else if (process.canProceed) {
+      if (process.canProceed) {
         process = await _stepOrFinishProcessUseCase(
           process: process,
           extraVariables: extraVariables,
         );
       }
+
+      final delay = process.stepProperties?.delay;
+
+      emit(
+        state.copyWith(
+          process: process.isPopUp() ? null : process,
+          popUp: process.isPopUp() ? process : null,
+          clearPopUp: !process.isPopUp(),
+          actions: state.actions.difference({
+            DPAProcessBusyAction.steppingForward,
+          }).union({
+            if (delay != null) DPAProcessBusyAction.steppingForward,
+          }),
+          runStatus: process.finished ? DPAProcessRunStatus.finished : null,
+          clearProcessingFiles: true,
+        ),
+      );
+
+      if (delay != null) {
+        await Future.delayed(Duration(seconds: delay));
+        stepOrFinish();
+      }
+    } on NetException {
+      emit(
+        state.copyWith(
+          actions: state.actions.difference({
+            DPAProcessBusyAction.steppingForward,
+          }),
+          errorStatus: DPAProcessErrorStatus.network,
+        ),
+      );
+    }
+  }
+
+  /// Skips this step and goes to next step, or finishes the process
+  /// if at the last one.
+  Future<void> skipOrFinish() async {
+    assert(state.runStatus == DPAProcessRunStatus.running);
+    assert(state.activeProcess.stepProperties?.skipLabel != null);
+
+    emit(
+      state.copyWith(
+        actions: state.actions.union({
+          DPAProcessBusyAction.steppingForward,
+        }),
+        errorStatus: DPAProcessErrorStatus.none,
+      ),
+    );
+
+    try {
+      var process = state.activeProcess;
+
+      process = await _skipStepUseCase(
+        process: process,
+      );
 
       final delay = process.stepProperties?.delay;
 

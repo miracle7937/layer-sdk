@@ -36,7 +36,7 @@ class DPASkipButton extends StatelessWidget {
       title: processLabel ?? translation.translate('skip'),
       type: DKButtonType.baseSecondary,
       status: busy ? DKButtonStatus.loading : DKButtonStatus.idle,
-      onPressed: cubit.stepOrFinish,
+      onPressed: cubit.skipOrFinish,
     );
   }
 }
