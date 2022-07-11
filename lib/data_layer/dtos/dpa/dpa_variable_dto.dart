@@ -189,15 +189,9 @@ class DPAVariableDTO {
 
   /// Creates a new JSON from the given map of DPA variables.
   static dynamic toJsonListFromMap(
-    Map<String, DPAVariableDTO>? variables, {
-    bool chosenValue = false,
-  }) {
+    Map<String, DPAVariableDTO>? variables,
+  ) {
     if (variables == null) return null;
-
-    variables['option_chosen'] = DPAVariableDTO(
-      type: DPATypeDTO.boolean,
-      value: chosenValue,
-    );
 
     final filteredMap = Map<String, DPAVariableDTO>.of(variables)
       ..removeWhere(
