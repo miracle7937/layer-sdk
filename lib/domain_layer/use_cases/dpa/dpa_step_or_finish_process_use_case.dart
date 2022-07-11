@@ -16,13 +16,21 @@ class DPAStepOrFinishProcessUseCase {
   /// Use the `chosenValue` parameter to define whether or not a DPA value was
   /// selected by the user in the current [DPAProcess].
   ///
+  /// Use the `extraVariables` parameter for adding extra variables.
+  ///
   /// Returns another [DPAProcess] detailing the step the process is now.
   Future<DPAProcess> call({
     required DPAProcess process,
     bool chosenValue = false,
+    List<DPAVariable>? extraVariables,
   }) =>
       _repository.stepOrFinishProcess(
-        process: process,
+        process: process.copyWith(
+          variables: [
+            ...process.variables,
+            ...extraVariables ?? [],
+          ],
+        ),
         chosenValue: chosenValue,
       );
 }

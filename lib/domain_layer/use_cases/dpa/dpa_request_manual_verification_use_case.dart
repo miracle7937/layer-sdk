@@ -14,34 +14,33 @@ class DPARequestManualVerificationUseCase
   Future<DPAProcess> call({
     required DPAProcess process,
     bool chosenValue = false,
+    List<DPAVariable>? extraVariables,
   }) async {
-    final effectiveProcess = process.copyWith(
-      variables: [
-        ...process.variables,
-        DPAVariable(
-          id: 'enter_code',
-          type: DPAVariableType.boolean,
-          value: true,
-          property: DPAVariableProperty(),
-        ),
-        DPAVariable(
-          id: 'rectify_email_address',
-          type: DPAVariableType.boolean,
-          value: false,
-          property: DPAVariableProperty(),
-        ),
-        DPAVariable(
-          id: 'timeout',
-          type: DPAVariableType.boolean,
-          value: false,
-          property: DPAVariableProperty(),
-        ),
-      ],
-    );
+    extraVariables = [
+      DPAVariable(
+        id: 'enter_code',
+        type: DPAVariableType.boolean,
+        value: true,
+        property: DPAVariableProperty(),
+      ),
+      DPAVariable(
+        id: 'rectify_email_address',
+        type: DPAVariableType.boolean,
+        value: false,
+        property: DPAVariableProperty(),
+      ),
+      DPAVariable(
+        id: 'timeout',
+        type: DPAVariableType.boolean,
+        value: false,
+        property: DPAVariableProperty(),
+      ),
+    ];
 
     return super.call(
-      process: effectiveProcess,
+      process: process,
       chosenValue: chosenValue,
+      extraVariables: extraVariables,
     );
   }
 }

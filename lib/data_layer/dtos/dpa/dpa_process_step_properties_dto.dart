@@ -55,6 +55,9 @@ class DPAProcessStepPropertiesDTO {
   /// The screen alignment.
   final DPAScreenAlignmentDTO? alignment;
 
+  /// Whether or not the DPAHeader should be hidden.
+  final bool? hideAppBar;
+
   /// Creates a new [DPAProcessStepPropertiesDTO].
   DPAProcessStepPropertiesDTO({
     this.image,
@@ -74,6 +77,7 @@ class DPAProcessStepPropertiesDTO {
     this.bgImagePath,
     this.delay,
     this.alignment,
+    this.hideAppBar,
   });
 
   /// Creates a new [DPAProcessStepPropertiesDTO] from a JSON.
@@ -103,6 +107,7 @@ class DPAProcessStepPropertiesDTO {
         alignment: json['alignment'] != null
             ? DPAScreenAlignmentDTO(json['alignment'])
             : null,
+        hideAppBar: json['hide_app_bar'],
       );
 }
 

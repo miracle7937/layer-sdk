@@ -106,7 +106,7 @@ class DPAVariablesList extends StatelessWidget {
   Widget _defaultVariableBuilder(
     BuildContext context,
     DPAVariable variable,
-    bool readonly,
+    bool busy,
     DPAVariable? previousVariable,
     DPAVariable? nextVariable,
   ) {
@@ -114,30 +114,62 @@ class DPAVariablesList extends StatelessWidget {
     switch (variable.type) {
       case DPAVariableType.image:
         return DPAFileUpload(
+          key: ValueKey(variable.id),
           variable: variable,
-          readonly: readonly,
-          padding: (previousVariable != null &&
-                  previousVariable.type != variable.type)
-              ? EdgeInsets.only(top: 29.0)
-              : EdgeInsets.zero,
+          readonly: variable.constraints.readonly,
+          padding: const EdgeInsets.symmetric(
+            vertical: 12.0,
+          ),
+          shouldAppendAdd: false,
         );
 
       case DPAVariableType.text:
         if (variable.property.dialCodes.isNotEmpty) {
           return DPAPhoneText(
+            key: ValueKey(variable.id),
             variable: variable,
-            readonly: readonly,
+            readonly: variable.constraints.readonly,
             padding: const EdgeInsets.symmetric(
               vertical: 12.0,
             ),
           );
         }
         return DPAText(
+          key: ValueKey(variable.id),
           variable: variable,
-          readonly: readonly,
+          readonly: variable.constraints.readonly,
           padding: const EdgeInsets.symmetric(
             vertical: 12.0,
           ),
+        );
+
+      case DPAVariableType.dropdown:
+        final isMultipicker = variable.property.multipleValues;
+        final hasSearchBar = variable.property.searchBar;
+
+        if (hasSearchBar) {
+          return DPASearchList(
+            key: ValueKey(variable.id),
+            variable: variable,
+            filter: (item, query) =>
+                item.id.toLowerCase().contains(query.toLowerCase()) ||
+                item.name.toLowerCase().contains(query.toLowerCase()),
+          );
+        }
+
+        return DPADropdown(
+          key: ValueKey(variable.id),
+          isMultipicker: isMultipicker,
+          onChanged: (value) => context.read<DPAProcessCubit>().updateValue(
+                variable: variable,
+                newValue: value.toList(),
+              ),
+          onClear: () => context.read<DPAProcessCubit>().updateValue(
+                variable: variable,
+                newValue: null,
+              ),
+          variable: variable,
+          readonly: variable.constraints.readonly,
         );
 
       default:

@@ -54,30 +54,51 @@ class _DPATextState extends State<DPAText> {
 
   @override
   Widget build(BuildContext context) {
+    final design = DesignSystem.of(context);
     final translation = Translation.of(context);
 
     return Padding(
       padding: widget.padding,
-      child: DKTextField(
-        status: widget.readonly || widget.variable.constraints.readonly
-            ? DKTextFieldStatus.disabled
-            : DKTextFieldStatus.idle,
-        controller: _controller,
-        label: widget.variable.label,
-        obscureText: widget.variable.property.isPassword,
-        maxLength: widget.variable.constraints.maxLength,
-        keyboardType: widget.variable.toTextInputType(),
-        size: widget.variable.property.multiline
-            ? DKTextFieldSize.multiline
-            : DKTextFieldSize.large,
-        warning: widget.variable.translateValidationError(translation),
-        keepWarningSize: true,
-        inputFormatters: widget.variable.toTextInputFormatters(),
-        onChanged: (v) => context.read<DPAProcessCubit>().updateValue(
-              variable: widget.variable,
-              newValue: v,
+      child: widget.readonly || widget.variable.constraints.readonly
+          ? _buildReadOnlyWidget(design)
+          : DKTextField(
+              status: DKTextFieldStatus.idle,
+              controller: _controller,
+              label: widget.variable.label,
+              obscureText: widget.variable.property.isPassword,
+              maxLength: widget.variable.constraints.maxLength,
+              keyboardType: widget.variable.toTextInputType(),
+              size: widget.variable.property.multiline
+                  ? DKTextFieldSize.multiline
+                  : DKTextFieldSize.large,
+              warning: widget.variable.translateValidationError(translation),
+              keepWarningSize: true,
+              inputFormatters: widget.variable.toTextInputFormatters(),
+              onChanged: (v) => context.read<DPAProcessCubit>().updateValue(
+                    variable: widget.variable,
+                    newValue: v,
+                  ),
             ),
-      ),
     );
   }
+
+  Widget _buildReadOnlyWidget(LayerDesign layerDesign) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if ((widget.variable.label ?? '').isNotEmpty) ...[
+            Text(
+              widget.variable.label!,
+              style: layerDesign.bodyS(
+                color: layerDesign.baseQuaternary,
+              ),
+            ),
+            const SizedBox(height: 2.0),
+          ],
+          if (widget.variable.value != null)
+            Text(
+              widget.variable.value!.toString(),
+              style: layerDesign.bodyM(),
+            ),
+        ],
+      );
 }

@@ -43,6 +43,7 @@ class DPARepository implements DPARepositoryInterface {
   /// When [onlyLatestVersions] is `true`, we will remove all processes that
   /// have the same key, leaving only the one with the highest version number.
   /// Defaults to `true`.
+  @override
   Future<List<DPAProcessDefinition>> listProcessDefinitions({
     bool filterSuspended = true,
     bool onlyLatestVersions = true,
@@ -94,6 +95,7 @@ class DPARepository implements DPARepositoryInterface {
   ///
   /// If [forceRefresh] is set to true, the cache will be skipped only
   /// when fetching the list.
+  @override
   Future<List<DPATask>> listUnassignedTasks({
     bool fetchCustomersData = true,
     bool forceRefresh = false,
@@ -114,6 +116,7 @@ class DPARepository implements DPARepositoryInterface {
   }
 
   /// Returns the current task of the process matching provided id.
+  @override
   Future<DPATask?> getTask({
     required String processInstanceId,
     bool forceRefresh = false,
@@ -140,6 +143,7 @@ class DPARepository implements DPARepositoryInterface {
   ///
   /// If [forceRefresh] is set to true, the cache will be skipped only
   /// when fetching the list.
+  @override
   Future<List<DPATask>> listUserTasks({
     String? customerId,
     DPAStatus? status,
@@ -168,6 +172,7 @@ class DPARepository implements DPARepositoryInterface {
   ///
   /// If force refresh is set to true, the cache will be skipped only
   /// when fetching the list.
+  @override
   Future<List<DPATask>> listHistory({
     bool fetchCustomersData = true,
     bool forceRefresh = false,
@@ -233,6 +238,7 @@ class DPARepository implements DPARepositoryInterface {
   /// Claims a task for the current user.
   ///
   /// Returns true if succeeded.
+  @override
   Future<bool> claimTask({
     required String taskId,
   }) {
@@ -244,6 +250,7 @@ class DPARepository implements DPARepositoryInterface {
   /// Pass the task to finish it.
   ///
   /// Returns `true` if successful.
+  @override
   Future<bool> finishTask({
     required DPATask task,
   }) {
@@ -258,6 +265,7 @@ class DPARepository implements DPARepositoryInterface {
   /// variables.
   ///
   /// Returns a [DPAProcess] with the first step of this process.
+  @override
   Future<DPAProcess> startProcess({
     required String key,
     List<DPAVariable> variables = const [],
@@ -275,6 +283,7 @@ class DPARepository implements DPARepositoryInterface {
   /// Resumes an ongoing DPA process using the given id.
   ///
   /// Returns a [DPAProcess] with the current step of the process.
+  @override
   Future<DPAProcess> resumeProcess({
     required String id,
   }) async {
@@ -290,6 +299,7 @@ class DPARepository implements DPARepositoryInterface {
   /// Returns to the previous step of  the given [DPAProcess].
   ///
   /// Returns another [DPAProcess] detailing the step the process is now.
+  @override
   Future<DPAProcess> stepBack({
     required DPAProcess process,
   }) async {
@@ -309,6 +319,7 @@ class DPARepository implements DPARepositoryInterface {
   /// on the final step, finish it.
   ///
   /// Returns another [DPAProcess] detailing the step the process is now.
+  @override
   Future<DPAProcess> stepOrFinishProcess({
     required DPAProcess process,
     bool chosenValue = false,
@@ -329,6 +340,7 @@ class DPARepository implements DPARepositoryInterface {
   /// Cancels the given [DPAProcess].
   ///
   /// Returns `true` if succeeded.
+  @override
   Future<bool> cancelProcess({
     required DPAProcess process,
   }) {
@@ -349,6 +361,7 @@ class DPARepository implements DPARepositoryInterface {
   /// uploaded to the server for variables.
   ///
   /// The optional [onProgress] can be used to track the upload progress.
+  @override
   Future<DPAVariable> uploadImage({
     required DPAProcess process,
     required DPAVariable variable,
@@ -404,6 +417,7 @@ class DPARepository implements DPARepositoryInterface {
   /// Downloads a base64 encoded file from the server.
   ///
   /// Returns null if the download fails.
+  @override
   Future<String?> downloadFile({
     required DPAProcess process,
     required DPAVariable variable,
@@ -430,6 +444,7 @@ class DPARepository implements DPARepositoryInterface {
   ///
   /// Returns an updated [DPAVariable], or throws a [NetException] if could
   /// not delete the file.
+  @override
   Future<DPAVariable> deleteFile({
     required DPAProcess process,
     required DPAVariable variable,

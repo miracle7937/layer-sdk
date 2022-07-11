@@ -65,7 +65,11 @@ class AccountTransactionDTO {
               )
             : 0.0,
         location: map['location'],
-        balance: map['balance'] is num ? map['balance'] : 0.0,
+        balance: map['balance'] is num
+            ? JsonParser.parseDouble(
+                map['balance'],
+              )
+            : 0.0,
         balanceVisible: !(map['amount'] is String &&
                 map['amount'].toLowerCase().contains('x')) &&
             !(map['balance'] is String &&

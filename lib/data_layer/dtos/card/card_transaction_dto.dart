@@ -59,10 +59,17 @@ class CardTransactionDTO {
       reference: map['reference'],
       valueDate: JsonParser.parseDate(map['value_date']),
       postingDate: JsonParser.parseDate(map['posting_date']),
-      amount:
-          map['amount'] is num ? JsonParser.parseDouble(map['amount']) : 0.0,
+      amount: map['amount'] is num
+          ? JsonParser.parseDouble(
+              map['amount'],
+            )
+          : 0.0,
       location: map['location'],
-      balance: map['balance'] is num ? map['balance'] : 0.0,
+      balance: map['balance'] is num
+          ? JsonParser.parseDouble(
+              map['balance'],
+            )
+          : 0.0,
       balanceVisible: !(map['amount'] is String &&
               map['amount'].toLowerCase().contains('x')) &&
           !(map['balance'] is String &&
