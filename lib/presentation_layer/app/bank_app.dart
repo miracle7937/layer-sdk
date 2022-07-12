@@ -207,9 +207,11 @@ class BankAppState extends State<BankApp> {
       ),
       BlocProvider<AuthenticationCubit>(
         create: (context) => AuthenticationCubit(
-          repository: AuthenticationRepository(
-            AuthenticationProvider(
-              netClient: widget.netClient,
+          updateUserTokenUseCase: UpdateUserTokenUseCase(
+            repository: AuthenticationRepository(
+              AuthenticationProvider(
+                netClient: widget.netClient,
+              ),
             ),
           ),
           loginUseCase: LoginUseCase(

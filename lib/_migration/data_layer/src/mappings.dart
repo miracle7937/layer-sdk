@@ -6,5 +6,4 @@ export 'mappings/permissions/permission_module_dto_mapping.dart';
 export 'mappings/permissions/permission_module_object_dto_mapping.dart';
 export 'mappings/preferences_dto_mapping.dart';
 export 'mappings/registration/registration_response_dto_mapping.dart';
-export 'mappings/string_converters.dart';
 export 'mappings/user_json_mapping.dart';

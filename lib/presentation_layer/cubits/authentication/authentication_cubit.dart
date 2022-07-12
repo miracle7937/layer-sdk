@@ -15,33 +15,32 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   final ResetPasswordUseCase _resetPasswordUseCase;
   final ChangePasswordUseCase _changePasswordUseCase;
   final VerifyAccessPinUseCase _verifyAccessPinUseCase;
-
-  final AuthenticationRepository _repository;
+  final UpdateUserTokenUseCase _updateUserTokenUseCase;
 
   /// Creates a new cubit with an empty [AuthenticationState] and calls
   /// load settings
   AuthenticationCubit({
-    required AuthenticationRepository repository,
     required LoginUseCase loginUseCase,
     required LogoutUseCase logoutUseCase,
     required RecoverPasswordUseCase recoverPasswordUseCase,
     required ResetPasswordUseCase resetPasswordUseCase,
     required ChangePasswordUseCase changePasswordUseCase,
     required VerifyAccessPinUseCase verifyAccessPinUseCase,
+    required UpdateUserTokenUseCase updateUserTokenUseCase,
   })  : _loginUseCase = loginUseCase,
         _logoutUseCase = logoutUseCase,
         _recoverPasswordUseCase = recoverPasswordUseCase,
         _resetPasswordUseCase = resetPasswordUseCase,
         _changePasswordUseCase = changePasswordUseCase,
         _verifyAccessPinUseCase = verifyAccessPinUseCase,
-        _repository = repository,
+        _updateUserTokenUseCase = updateUserTokenUseCase,
         super(AuthenticationState());
 
   /// Sets the provided user as the current logged user and emits updated state.
   ///
   /// Configures the [NetClient] token with the user token.
   void setLoggedUser(User user) {
-    _repository.token = user.token;
+    _updateUserTokenUseCase(token: user.token);
     emit(state.copyWith(user: user));
   }
 
@@ -433,7 +432,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   /// Method to be called after the user authenticates
   /// using biometrics successfully
   void unlock(User user) {
-    _repository.token = user.token;
+    _updateUserTokenUseCase(token: user.token);
 
     emit(
       state.copyWith(
@@ -451,7 +450,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   void setSecondFactorStatus({
     bool validated = false,
   }) {
-    if (!validated) _repository.token = null;
+    if (!validated) _updateUserTokenUseCase(token: null);
 
     emit(
       state.copyWith(
