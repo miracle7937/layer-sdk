@@ -11,9 +11,7 @@ class LoadLastLoggedUserUseCase {
   }) : _secureStorage = secureStorage;
 
   /// Returns `savedUsers` from storage using [GenericStorage] .
-  Future<Map<String, dynamic>?> call({
-    required String customerId,
-  }) async {
+  Future<Map<String, dynamic>?> call() async {
     final savedUsers = await _secureStorage.getJson(StorageKeys.loggedUsers);
     return savedUsers;
   }

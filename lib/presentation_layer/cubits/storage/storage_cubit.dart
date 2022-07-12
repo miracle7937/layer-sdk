@@ -46,9 +46,7 @@ class StorageCubit extends Cubit<StorageState> {
   /// Loads the last logged user from storage.
   ///
   /// Emits a busy state while loading.
-  Future<void> loadLastLoggedUser({
-    required String customerId,
-  }) async {
+  Future<void> loadLastLoggedUser() async {
     emit(
       state.copyWith(
         busy: true,
@@ -57,9 +55,7 @@ class StorageCubit extends Cubit<StorageState> {
     try {
       User? user;
 
-      final savedUsers = await _lastLoggedUserUseCase(
-        customerId: customerId,
-      );
+      final savedUsers = await _lastLoggedUserUseCase();
       if (savedUsers != null && savedUsers['users'] != null) {
         final users = savedUsers['users'];
 
@@ -305,7 +301,7 @@ class StorageCubit extends Cubit<StorageState> {
     );
 
     try {
-      final result = await _saveOcraSecretKeyUseCase(key: key);
+      final result = await _saveOcraSecretKeyUseCase(value: key);
 
       emit(
         state.copyWith(

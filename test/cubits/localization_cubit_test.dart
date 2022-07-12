@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
 import 'package:layer_sdk/_migration/flutter_layer/flutter_layer.dart';
+import 'package:layer_sdk/presentation_layer/resources.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockGenericStorage extends Mock implements GenericStorage {}

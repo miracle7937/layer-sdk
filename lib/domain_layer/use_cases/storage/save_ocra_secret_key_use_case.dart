@@ -11,10 +11,10 @@ class SaveOcraSecretKeyUseCase {
   }) : _secureStorage = secureStorage;
 
   /// Returns `true` if ocra secret key is saved
-  Future<bool> call({required String key}) async {
+  Future<bool> call({required String value}) async {
     return await _secureStorage.setString(
       key: StorageKeys.ocraSecretKey,
-      value: key,
+      value: value,
     );
   }
 }
