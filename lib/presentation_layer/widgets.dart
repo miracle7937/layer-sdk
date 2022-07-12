@@ -10,6 +10,7 @@ export 'widgets/creators/multi_creator_provider.dart';
 export 'widgets/dpa/buttons/dpa_back_button.dart';
 export 'widgets/dpa/buttons/dpa_cancel_button.dart';
 export 'widgets/dpa/buttons/dpa_continue_button.dart';
+export 'widgets/dpa/buttons/dpa_skip_button.dart';
 export 'widgets/dpa/carousel/dpa_carousel_screen.dart';
 export 'widgets/dpa/description/dpa_task_description.dart';
 export 'widgets/dpa/dpa_flow.dart';

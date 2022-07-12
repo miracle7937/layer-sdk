@@ -58,6 +58,9 @@ class DPAProcessStepPropertiesDTO {
   /// Whether or not the DPAHeader should be hidden.
   final bool? hideAppBar;
 
+  /// The label for the skip button.
+  final String? skipLabel;
+
   /// Creates a new [DPAProcessStepPropertiesDTO].
   DPAProcessStepPropertiesDTO({
     this.image,
@@ -78,6 +81,7 @@ class DPAProcessStepPropertiesDTO {
     this.delay,
     this.alignment,
     this.hideAppBar,
+    this.skipLabel,
   });
 
   /// Creates a new [DPAProcessStepPropertiesDTO] from a JSON.
@@ -108,6 +112,7 @@ class DPAProcessStepPropertiesDTO {
             ? DPAScreenAlignmentDTO(json['alignment'])
             : null,
         hideAppBar: json['hide_app_bar'],
+        skipLabel: json['button_skip'],
       );
 }
 

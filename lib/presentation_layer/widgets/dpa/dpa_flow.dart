@@ -216,22 +216,17 @@ class DPAFlow extends StatelessWidget {
             process.variables.first.property.searchBar
         ? null
         : customContinueButton ??
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                16.0,
-                0.0,
-                16.0,
-                42.0,
-              ),
-              child: DPAContinueButton(
-                process: process,
-                enabled: !hasPopup,
-              ),
+            DPAContinueButton(
+              process: process,
+              enabled: !hasPopup,
             );
 
     final effectiveHeader = (process.stepProperties?.hideAppBar ?? false)
         ? null
         : customHeader ?? DPAHeader(process: process);
+
+    final shouldShowSkipButton =
+        process.stepProperties?.skipLabel?.isNotEmpty ?? false;
 
     return MultiBlocListener(
       listeners: [
@@ -300,7 +295,26 @@ class DPAFlow extends StatelessWidget {
                       ),
                     ),
                   ),
-                  if (effectiveContinueButton != null) effectiveContinueButton,
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                      16.0,
+                      0.0,
+                      16.0,
+                      42.0,
+                    ),
+                    child: Column(
+                      children: [
+                        if (effectiveContinueButton != null)
+                          effectiveContinueButton,
+                        if (shouldShowSkipButton) ...[
+                          const SizedBox(height: 12.0),
+                          DPASkipButton(
+                            process: process,
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
                 ],
               ),
           if (isDelayTask) DPAFullscreenLoader(),
@@ -416,6 +430,9 @@ class _PopUpContents extends StatelessWidget {
       (c) => c.state.popUp,
     );
 
+    final shouldShowSkipButton =
+        popUp?.stepProperties?.skipLabel?.isNotEmpty ?? false;
+
     if (popUp == null) return const SizedBox.shrink();
 
     // TODO: update to use the correct Layer Design Kit design.
@@ -434,6 +451,12 @@ class _PopUpContents extends StatelessWidget {
             DPAContinueButton(
               process: popUp,
             ),
+        if (shouldShowSkipButton) ...[
+          const SizedBox(height: 12.0),
+          DPASkipButton(
+            process: popUp,
+          ),
+        ],
       ],
     );
   }

@@ -24,6 +24,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
   final DPAChangePhoneNumberUseCase _changePhoneNumberUseCase;
   final DPAChangeEmailAddressUseCase _changeEmailAddressUseCase;
   final DPARequestManualVerificationUseCase _manualVerificationUseCase;
+  final DPASkipStepUseCase _skipStepUseCase;
 
   /// Creates a new cubit using the necessary use cases.
   DPAProcessCubit({
@@ -40,6 +41,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
     required DPAChangePhoneNumberUseCase changePhoneNumberUseCase,
     required DPAChangeEmailAddressUseCase changeEmailAddressUseCase,
     required DPARequestManualVerificationUseCase manualVerificationUseCase,
+    required DPASkipStepUseCase skipStepUseCase,
   })  : _startDPAProcessUseCase = startDPAProcessUseCase,
         _resumeDPAProcessUsecase = resumeDPAProcessUsecase,
         _loadTaskByIdUseCase = loadTaskByIdUseCase,
@@ -53,6 +55,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
         _changePhoneNumberUseCase = changePhoneNumberUseCase,
         _changeEmailAddressUseCase = changeEmailAddressUseCase,
         _manualVerificationUseCase = manualVerificationUseCase,
+        _skipStepUseCase = skipStepUseCase,
         super(DPAProcessState());
 
   /// Starts a DPA process, either by starting a new one (if [instanceId] is
@@ -213,7 +216,6 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
 
   /// Proceeds to next step, or finishes the process if at the last one.
   Future<void> stepOrFinish({
-    bool chosenValue = false,
     List<DPAVariable>? extraVariables,
   }) async {
     assert(state.runStatus == DPAProcessRunStatus.running);
@@ -228,7 +230,6 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
           DPAProcessBusyAction.steppingForward,
         }),
         errorStatus: DPAProcessErrorStatus.none,
-        chosenValue: chosenValue,
       ),
     );
 
@@ -238,7 +239,6 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
       if (process.canProceed) {
         process = await _stepOrFinishProcessUseCase(
           process: process,
-          chosenValue: chosenValue,
           extraVariables: extraVariables,
         );
       }
@@ -262,7 +262,62 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
 
       if (delay != null) {
         await Future.delayed(Duration(seconds: delay));
-        stepOrFinish(chosenValue: false);
+        stepOrFinish();
+      }
+    } on NetException {
+      emit(
+        state.copyWith(
+          actions: state.actions.difference({
+            DPAProcessBusyAction.steppingForward,
+          }),
+          errorStatus: DPAProcessErrorStatus.network,
+        ),
+      );
+    }
+  }
+
+  /// Skips this step and goes to next step, or finishes the process
+  /// if at the last one.
+  Future<void> skipOrFinish() async {
+    assert(state.runStatus == DPAProcessRunStatus.running);
+    assert(state.activeProcess.stepProperties?.skipLabel != null);
+
+    emit(
+      state.copyWith(
+        actions: state.actions.union({
+          DPAProcessBusyAction.steppingForward,
+        }),
+        errorStatus: DPAProcessErrorStatus.none,
+      ),
+    );
+
+    try {
+      var process = state.activeProcess;
+
+      process = await _skipStepUseCase(
+        process: process,
+      );
+
+      final delay = process.stepProperties?.delay;
+
+      emit(
+        state.copyWith(
+          process: process.isPopUp() ? null : process,
+          popUp: process.isPopUp() ? process : null,
+          clearPopUp: !process.isPopUp(),
+          actions: state.actions.difference({
+            DPAProcessBusyAction.steppingForward,
+          }).union({
+            if (delay != null) DPAProcessBusyAction.steppingForward,
+          }),
+          runStatus: process.finished ? DPAProcessRunStatus.finished : null,
+          clearProcessingFiles: true,
+        ),
+      );
+
+      if (delay != null) {
+        await Future.delayed(Duration(seconds: delay));
+        stepOrFinish();
       }
     } on NetException {
       emit(

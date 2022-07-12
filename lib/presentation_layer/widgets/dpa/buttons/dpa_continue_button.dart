@@ -85,7 +85,8 @@ class DPAContinueButton extends StatelessWidget {
     final busy = canEnterLoadingState &&
         cubit.state.busy &&
         cubit.state.activeProcess == process &&
-        cubit.state.actions.contains(DPAProcessBusyAction.steppingForward);
+        cubit.state.actions.contains(DPAProcessBusyAction.steppingForward) &&
+        (cubit.state.activeProcess.stepProperties?.skipLabel?.isEmpty ?? true);
 
     return builder?.call(
           context,

@@ -39,6 +39,8 @@ class MockChangeEmailAddressUseCase extends Mock
 class MockDPARequestManualVerificationUseCase extends Mock
     implements DPARequestManualVerificationUseCase {}
 
+class MockDPASkipStepUseCase extends Mock implements DPASkipStepUseCase {}
+
 final _startUseCase = MockStartDPAProcessUseCase();
 final _resumeUseCase = MockResumeDPAProcessUsecase();
 final _loadTaskUseCase = MockLoadTaskByIdUseCase();
@@ -53,6 +55,7 @@ final _changePhoneNumberUseCase = MockChangePhoneNumberUseCase();
 final _changeEmailAddressuseCase = MockChangeEmailAddressUseCase();
 final _requestManualVerificationUseCase =
     MockDPARequestManualVerificationUseCase();
+final _skipStepUseCase = MockDPASkipStepUseCase();
 
 final _successId = '1';
 final _successKey = 'success';
@@ -78,6 +81,23 @@ final _mockedSuccessProcess = DPAProcess(
     status: DPAStatus.active,
   ),
   variables: [_mockedVariable],
+);
+
+final _mockedSkipStepProcess = DPAProcess(
+  task: DPATask(
+    id: _successId,
+    name: 'Success',
+    previousTasksIds: _mockedProcessIds,
+    status: DPAStatus.active,
+  ),
+  stepProperties: DPAProcessStepProperties(
+    format: DPAStepFormat.display,
+    screenType: DPAScreenType.pin,
+    alignment: DPAScreenAlignment.imageDescription,
+    showSave: true,
+    skipLabel: 'Skip',
+  ),
+  variables: [],
 );
 
 final _mockedFinishedProcess = _mockedSuccessProcess.copyWith(
@@ -108,6 +128,7 @@ DPAProcessCubit create() => DPAProcessCubit(
       resendCodeUseCase: _resendCodeUseCase,
       changeEmailAddressUseCase: _changeEmailAddressuseCase,
       manualVerificationUseCase: _requestManualVerificationUseCase,
+      skipStepUseCase: _skipStepUseCase,
     );
 
 void main() {
@@ -451,6 +472,12 @@ void _stepOrFinishTests() {
     ).thenAnswer(
       (_) async => throw NetException(message: 'Some error'),
     );
+
+    when(
+      () => _skipStepUseCase(process: _mockedSkipStepProcess),
+    ).thenAnswer(
+      (_) async => _mockedSuccessProcess,
+    );
   });
 
   blocTest<DPAProcessCubit, DPAProcessState>(
@@ -533,6 +560,34 @@ void _stepOrFinishTests() {
     verify: (c) => verify(
       () => _stepOrFinishUseCase(
         process: _mockedFailureProcess,
+      ),
+    ).called(1),
+  );
+
+  blocTest<DPAProcessCubit, DPAProcessState>(
+    'Emits correct action after successfully skipping the step',
+    build: create,
+    act: (c) => c.skipOrFinish(),
+    seed: () => DPAProcessState(
+      process: _mockedSkipStepProcess,
+      runStatus: DPAProcessRunStatus.running,
+    ),
+    expect: () => [
+      DPAProcessState(
+        process: _mockedSkipStepProcess,
+        actions: {DPAProcessBusyAction.steppingForward},
+        runStatus: DPAProcessRunStatus.running,
+        errorStatus: DPAProcessErrorStatus.none,
+      ),
+      DPAProcessState(
+        process: _mockedSuccessProcess,
+        runStatus: DPAProcessRunStatus.running,
+        errorStatus: DPAProcessErrorStatus.none,
+      ),
+    ],
+    verify: (c) => verify(
+      () => _skipStepUseCase(
+        process: _mockedSkipStepProcess,
       ),
     ).called(1),
   );
