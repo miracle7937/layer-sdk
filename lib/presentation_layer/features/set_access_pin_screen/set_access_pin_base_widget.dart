@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 abstract class SetAccessPinBaseWidget extends StatefulWidget {
   /// The pin length.
   /// Default is 6.
-  final int pinLenght;
+  final int pinLength;
 
   /// Creates a new [SetAccessPinBaseWidget].
   const SetAccessPinBaseWidget({
     Key? key,
-    this.pinLenght = 6,
+    this.pinLength = 6,
   }) : super(key: key);
 }
 
@@ -24,7 +24,7 @@ abstract class SetAccessPinBaseWidgetState<W extends SetAccessPinBaseWidget>
 
   /// The setter for the current pin.
   set currentPin(String pin) {
-    if (pin.length <= widget.pinLenght) {
+    if (pin.length <= widget.pinLength) {
       setState(() => _currentPin = pin);
     }
     if (currentPin.isNotEmpty && warning != null) {

@@ -20,16 +20,13 @@ class SetAccessPinScreen extends SetAccessPinBaseWidget {
 
   /// Creates a new [SetAccessPinScreen].
   const SetAccessPinScreen({
-    Key? key,
-    int pinLenght = 6,
+    super.key,
+    super.pinLength = 6,
     this.setPinAppBar,
     this.repeatPinAppBar,
     required this.setPinTitle,
     required this.repeatPinTitle,
-  }) : super(
-          key: key,
-          pinLenght: pinLenght,
-        );
+  });
 
   /// The static page route for the set acces pin screen.
   static MaterialPageRoute pageRoute({
@@ -39,7 +36,6 @@ class SetAccessPinScreen extends SetAccessPinBaseWidget {
     PreferredSizeWidget? repeatPinAppBar,
     required String setPinTitle,
     required String repeatPinTitle,
-    required ValueSetter<User> onAccesPinSet,
   }) =>
       MaterialPageRoute(
         builder: (context) => BlocProvider<SetPinScreenCubit>(
@@ -47,7 +43,7 @@ class SetAccessPinScreen extends SetAccessPinBaseWidget {
                 userToken: userToken,
               ),
           child: SetAccessPinScreen(
-            pinLenght: pinLength,
+            pinLength: pinLength,
             setPinAppBar: setPinAppBar,
             repeatPinAppBar: repeatPinAppBar,
             setPinTitle: setPinTitle,
@@ -70,14 +66,14 @@ class _SetAccessPinScreenState
       backgroundColor: layerDesign.surfaceOctonary1,
       appBar: widget.setPinAppBar,
       body: PinPadView(
-        pinLenght: widget.pinLenght,
+        pinLenght: widget.pinLength,
         pin: currentPin,
         title: widget.setPinTitle,
         disabled: disabled,
         warning: warning,
         onChanged: (pin) {
           currentPin = pin;
-          if (pin.length == widget.pinLenght) {
+          if (pin.length == widget.pinLength) {
             _navigateToRepeatPinScreen();
           }
         },
@@ -98,7 +94,7 @@ class _SetAccessPinScreenState
           value: setPinScreenCubit,
           child: Builder(
             builder: (context) => _RepeatAccessPinScreen(
-              pinLenght: widget.pinLenght,
+              pinLength: widget.pinLength,
               pin: currentPin,
               appBar: widget.repeatPinAppBar,
               title: widget.repeatPinTitle,
@@ -133,15 +129,12 @@ class _RepeatAccessPinScreen extends SetAccessPinBaseWidget {
   /// Creates a new [_RepeatAccessPinScreen].
   // ignore_for_file: unused_element
   const _RepeatAccessPinScreen({
-    Key? key,
-    int pinLenght = 6,
+    super.key,
+    super.pinLength = 6,
     required this.pin,
     this.appBar,
     required this.title,
-  }) : super(
-          key: key,
-          pinLenght: pinLenght,
-        );
+  });
 
   @override
   State<_RepeatAccessPinScreen> createState() => __RepeatAccessPinScreenState();
@@ -165,14 +158,14 @@ class __RepeatAccessPinScreenState
             body: WillPopScope(
               onWillPop: () async => !state.busy && state.user == null,
               child: PinPadView(
-                pinLenght: widget.pinLenght,
+                pinLenght: widget.pinLength,
                 pin: currentPin,
                 title: widget.title,
                 disabled: !state.busy && disabled,
                 warning: state.errorMessage ?? warning,
                 onChanged: (pin) {
                   currentPin = pin;
-                  if (pin.length == widget.pinLenght) {
+                  if (pin.length == widget.pinLength) {
                     if (pin != widget.pin) {
                       currentPin = '';
                       warning = Translation.of(context).translate(

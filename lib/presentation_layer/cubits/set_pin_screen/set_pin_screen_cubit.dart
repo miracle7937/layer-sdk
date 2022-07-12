@@ -6,7 +6,6 @@ import '../../cubits.dart';
 
 /// Cubit for the set pin screen. Handles the states of creating
 /// a pin for the passed user token.
-/// TODO: implement unit test.
 class SetPinScreenCubit extends Cubit<SetPinScreenState> {
   /// The user token that we are going to create the pin for.
   final String userToken;

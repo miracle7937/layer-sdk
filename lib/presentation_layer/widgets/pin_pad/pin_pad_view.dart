@@ -13,7 +13,7 @@ class PinPadView extends StatelessWidget {
   /// The current entered pin.
   final String pin;
 
-  /// The callback called when the pin is introduced.
+  /// The callback called when the pin changes.
   final ValueChanged<String> onChanged;
 
   /// The warning message.
@@ -231,11 +231,12 @@ class PinPadView extends StatelessWidget {
         },
       );
 
-  /// Calculates the alignment of the pin buttons in the wrap
+  /// Calculates the [MainAxisAlignment] of the pin buttons in the wrap.
   ///
-  /// If the button is first in the row the alignemnt will be center right,
-  /// if it's las in the row, the alignment will be center left, otherwise
-  /// the alignment will be center.
+  /// If the button is first in the row the alignemnt will be
+  /// [MainAxisAlignment.end], if it's las in the row, the alignment will be
+  /// [MainAxisAlignment.start], otherwise the alignment will be
+  /// [MainAxisAlignment.center].
   MainAxisAlignment _calculateButtonAlignment(PinButton button) {
     final firstInRowItems = [0, 3, 6, 9];
     final lastInRowItems = [2, 5, 8, 11];

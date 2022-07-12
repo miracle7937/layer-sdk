@@ -324,53 +324,61 @@ class DPAFlow extends StatelessWidget {
   }
 
   Widget? _getEffectiveCustomChild(BuildContext context) {
+    if (customChild != null) {
+      return customChild;
+    }
+
     final process = context.select<DPAProcessCubit, DPAProcess>(
       (cubit) => cubit.state.process,
     );
-
-    final effectiveHeader = (process.stepProperties?.hideAppBar ?? false)
-        ? null
-        : customHeader ?? DPAHeader(process: process);
 
     final isCarouselScreen = process.variables.isNotEmpty &&
         process.variables.every(
           (e) => e.type == DPAVariableType.swipe,
         );
+    if (isCarouselScreen) {
+      return DPACarouselScreen();
+    }
 
     final isOTPScreen = process.stepProperties?.screenType == DPAScreenType.otp;
+    if (isOTPScreen) {
+      return DPAOTPScreen(
+        customDPAHeader: customHeader,
+      );
+    }
 
     final isEmailValidationScreen =
         process.stepProperties?.screenType == DPAScreenType.email;
+    if (isEmailValidationScreen) {
+      return DPAEmailScreen(
+        customDPAHeader: customHeader,
+      );
+    }
 
     final pinVariable = process.variables
         .singleWhereOrNull((variable) => variable.type == DPAVariableType.pin);
+    final effectiveHeader = (process.stepProperties?.hideAppBar ?? false)
+        ? null
+        : customHeader ?? DPAHeader(process: process);
 
-    return isCarouselScreen
-        ? DPACarouselScreen()
-        : isOTPScreen
-            ? DPAOTPScreen(
-                customDPAHeader: customHeader,
-              )
-            : isEmailValidationScreen
-                ? DPAEmailScreen(
-                    customDPAHeader: customHeader,
-                  )
-                : pinVariable != null
-                    ? DPASetAccessPin(
-                        header: effectiveHeader,
-                        dpaVariable: pinVariable.copyWith(
-                          label: process.task?.description,
-                        ),
-                        onAccessPinSet: (pin) {
-                          final cubit = context.read<DPAProcessCubit>();
-                          cubit.updateValue(
-                            variable: pinVariable,
-                            newValue: pin,
-                          );
-                          cubit.stepOrFinish();
-                        },
-                      )
-                    : customChild;
+    if (pinVariable != null) {
+      return DPASetAccessPin(
+        header: effectiveHeader,
+        dpaVariable: pinVariable.copyWith(
+          label: process.task?.description,
+        ),
+        onAccessPinSet: (pin) {
+          final cubit = context.read<DPAProcessCubit>();
+          cubit.updateValue(
+            variable: pinVariable,
+            newValue: pin,
+          );
+          cubit.stepOrFinish();
+        },
+      );
+    }
+
+    return null;
   }
 
   void _hidePopUp(BuildContext context, DPAProcessState state) {

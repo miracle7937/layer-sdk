@@ -17,15 +17,12 @@ class DPASetAccessPin extends SetAccessPinBaseWidget {
 
   /// Creates a new [DPASetAccessPin].
   const DPASetAccessPin({
-    Key? key,
+    super.key,
     required this.dpaVariable,
     this.header,
     required this.onAccessPinSet,
-    int pinLenght = 6,
-  }) : super(
-          key: key,
-          pinLenght: pinLenght,
-        );
+    super.pinLength = 6,
+  });
 
   @override
   State<DPASetAccessPin> createState() => _DPASetAccessPinState();
@@ -54,7 +51,7 @@ class _DPASetAccessPinState
               warning: warning,
               onChanged: (pin) {
                 currentPin = pin;
-                if (pin.length == widget.pinLenght) {
+                if (pin.length == widget.pinLength) {
                   widget.onAccessPinSet(pin);
                 }
               },
