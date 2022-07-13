@@ -53,6 +53,10 @@ extension DPAVariableDTOMapping on DPAVariableDTO {
   DPAVariableType toDPAVariableType() {
     switch (type) {
       case DPATypeDTO.string:
+        if (property?.format == DPAFormatDTO.pin) {
+          return DPAVariableType.pin;
+        }
+
         if (property?.link != null) {
           return DPAVariableType.link;
         }
@@ -266,6 +270,7 @@ extension DPAVariableTypeMapping on DPAVariableType {
       case DPAVariableType.signature:
       case DPAVariableType.link:
       case DPAVariableType.swipe:
+      case DPAVariableType.pin:
         return DPATypeDTO.string;
 
       case DPAVariableType.number:
