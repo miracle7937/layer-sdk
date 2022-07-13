@@ -111,7 +111,9 @@ class _DPAFileUploadState extends State<DPAFileUpload> {
       widget.variable.property.allowedTypes
           .every((type) => _imageTypes.contains(type));
 
-  String get _description => widget.variable.property.allowedTypes.join(', ');
+  String get _description =>
+      widget.variable.property.description ??
+      widget.variable.property.allowedTypes.join(', ');
 
   String? get fileName => _fileName;
   set fileName(String? value) => setState(() => _fileName = value);
@@ -137,6 +139,16 @@ class _DPAFileUploadState extends State<DPAFileUpload> {
         status == DKUploadStatus.idle &&
         widget.variable.label != null;
 
+    final title = (widget.variable.value as DPAFileData?)?.name ??
+        data?.fileName ??
+        (effectiveAppendAdd
+            ? translation.translate('add_document').replaceFirst(
+                  '{document}',
+                  widget.variable.label!.toLowerCase(),
+                )
+            : widget.variable.label?.capitalize) ??
+        translation.translate('upload');
+
     // Only show the take a photo button if:
     // - Only handling image types
     // - Picker is idle
@@ -153,15 +165,9 @@ class _DPAFileUploadState extends State<DPAFileUpload> {
         children: [
           DKUpload(
             status: status,
-            title: (effectiveAppendAdd
-                    ? translation.translate('add_document').replaceFirst(
-                          '{document}',
-                          widget.variable.label!.toLowerCase(),
-                        )
-                    : widget.variable.label?.capitalize) ??
-                translation.translate('upload'),
+            title: title,
             useTitleWherePossible: true,
-            description: _description,
+            description: _description.replaceAll(r'\n', '\n'),
             onPick: status != DKUploadStatus.idle
                 ? null
                 : _useImagePicker

@@ -219,6 +219,9 @@ class DPAFlow extends StatelessWidget {
     final isEmailValidationScreen =
         process.stepProperties?.screenType == DPAScreenType.email;
 
+    final isStepWaitingForEmail =
+        process.stepProperties?.screenType == DPAScreenType.waitingEmail;
+
     final effectiveCustomChild = isCarouselScreen
         ? DPACarouselScreen()
         : isOTPScreen
@@ -226,10 +229,14 @@ class DPAFlow extends StatelessWidget {
                 customDPAHeader: customHeader,
               )
             : isEmailValidationScreen
-                ? DPAEmailScreen(
+                ? DPAEmailVerificationScreen(
                     customDPAHeader: customHeader,
                   )
-                : customChild;
+                : isStepWaitingForEmail
+                    ? DPAWaitingEmailScreen(
+                        process: process,
+                      )
+                    : customChild;
 
     final isDelayTask = process.stepProperties?.delay != null;
 

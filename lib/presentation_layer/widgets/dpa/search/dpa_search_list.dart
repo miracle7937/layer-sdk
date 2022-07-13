@@ -1,6 +1,7 @@
 import 'package:design_kit_layer/design_kit_layer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../../../../features/dpa.dart';
 import '../../../utils.dart';
@@ -43,6 +44,9 @@ class _DPASearchListState extends State<DPASearchList> {
   Widget build(BuildContext context) {
     final translation = Translation.of(context);
 
+    final isCountryPicker =
+        widget.variable.property.type == DPAVariablePropertyType.countryPicker;
+
     return Column(
       children: [
         const SizedBox(height: 16.0),
@@ -57,17 +61,26 @@ class _DPASearchListState extends State<DPASearchList> {
           shrinkWrap: true,
           separatorBuilder: (_, __) => Divider(),
           itemCount: options.length,
-          itemBuilder: (context, index) => _DPASearchListItem(
-            dpaValue: options[index],
-            onSelected: (value) async {
-              final cubit = context.read<DPAProcessCubit>();
-              await cubit.updateValue(
-                variable: widget.variable,
-                newValue: value,
-              );
-              cubit.stepOrFinish();
-            },
-          ),
+          itemBuilder: (context, index) {
+            final value = options[index];
+            var flagSvg;
+            if (isCountryPicker) {
+              flagSvg = DKFlags.path(countryCode: value.id);
+            }
+
+            return _DPASearchListItem(
+              svgPath: flagSvg,
+              dpaValue: options[index],
+              onSelected: (value) async {
+                final cubit = context.read<DPAProcessCubit>();
+                await cubit.updateValue(
+                  variable: widget.variable,
+                  newValue: value,
+                );
+                cubit.stepOrFinish();
+              },
+            );
+          },
         ),
       ],
     );
@@ -96,12 +109,21 @@ class _DPASearchListState extends State<DPASearchList> {
   }
 }
 
+/// The widget for displaying an item from the search list.
 class _DPASearchListItem extends StatelessWidget {
+  /// The optional svg path.
+  final String? svgPath;
+
+  /// The dpa value.
   final DPAValue dpaValue;
+
+  /// Callback called when selected.
   final ValueChanged<String> onSelected;
 
+  /// Creates a new [_DPASearchListItem].
   const _DPASearchListItem({
     Key? key,
+    this.svgPath,
     required this.dpaValue,
     required this.onSelected,
   }) : super(key: key);
@@ -114,9 +136,25 @@ class _DPASearchListItem extends StatelessWidget {
       onTap: () => onSelected(dpaValue.id),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 20.0),
-        child: Text(
-          dpaValue.name,
-          style: design.bodyM(),
+        child: Row(
+          children: [
+            if (svgPath != null) ...[
+              SizedBox(
+                height: 24.0,
+                width: 24.0,
+                child: SvgPicture.asset(
+                  svgPath!,
+                ),
+              ),
+              const SizedBox(width: 12.0),
+            ],
+            Expanded(
+              child: Text(
+                dpaValue.name,
+                style: design.bodyM(),
+              ),
+            ),
+          ],
         ),
       ),
     );

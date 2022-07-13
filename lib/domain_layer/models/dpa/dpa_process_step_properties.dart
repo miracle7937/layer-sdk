@@ -173,7 +173,7 @@ enum DPAScreenType {
   /// PIN
   pin,
 
-  /// E-mail
+  /// E-mail verification
   email,
 
   /// Other
@@ -184,6 +184,9 @@ enum DPAScreenType {
 
   /// Two columns
   twoColumns,
+
+  /// Screen that is waiting an email to continue.
+  waitingEmail,
 }
 
 /// How to show this step.

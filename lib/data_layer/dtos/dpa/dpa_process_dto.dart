@@ -39,18 +39,23 @@ class DPAProcessDTO {
   });
 
   /// Creates a new [DPAProcessDTO] from a JSON.
-  factory DPAProcessDTO.fromJson(Map<String, dynamic> json) => DPAProcessDTO(
-        message: json['message'],
-        finished: json['message'] == 'process_finished',
-        action: json['action'] ?? false,
-        status: DPAStatusDTO.fromRaw(json['status']),
-        processProperties: json['process_properties'],
-        properties: json['properties'] == null
-            ? null
-            : DPAProcessStepPropertiesDTO.fromJson(json['properties']),
-        task: json['task'] == null ? null : DPATaskDTO.fromJson(json['task']),
-        variables: json['variables'] == null
-            ? null
-            : DPAVariableDTO.fromJsonMap(json['variables']),
-      );
+  factory DPAProcessDTO.fromJson(Map<String, dynamic> json) {
+    print('dpa process:');
+    print('properties -> ${json['process_properties']}');
+    print('step properties -> ${json['properties']}');
+    return DPAProcessDTO(
+      message: json['message'],
+      finished: json['message'] == 'process_finished',
+      action: json['action'] ?? false,
+      status: DPAStatusDTO.fromRaw(json['status']),
+      processProperties: json['process_properties'],
+      properties: json['properties'] == null
+          ? null
+          : DPAProcessStepPropertiesDTO.fromJson(json['properties']),
+      task: json['task'] == null ? null : DPATaskDTO.fromJson(json['task']),
+      variables: json['variables'] == null
+          ? null
+          : DPAVariableDTO.fromJsonMap(json['variables']),
+    );
+  }
 }

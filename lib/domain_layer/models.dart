@@ -52,6 +52,7 @@ export 'models/dpa/dpa_value.dart';
 export 'models/dpa/dpa_value_field.dart';
 export 'models/dpa/dpa_variable.dart';
 export 'models/dpa/dpa_variable_property.dart';
+export 'models/dpa/dpa_variable_text_properties.dart';
 export 'models/experience/experience.dart';
 export 'models/experience/experience_container.dart';
 export 'models/experience/experience_page.dart';

@@ -95,6 +95,12 @@ class DPAVariableProperty extends Equatable {
   /// The prefix value.
   final String? prefixValue;
 
+  /// An optional description for this variable.
+  final String? description;
+
+  /// The text properties for this variable.
+  final DPAVariableTextProperties? textProperties;
+
   /// Creates a new [DPAVariableProperty].
   DPAVariableProperty({
     this.step,
@@ -118,6 +124,8 @@ class DPAVariableProperty extends Equatable {
     Iterable<String>? allowedTypes,
     Iterable<DPADialCode>? dialCodes,
     this.prefixValue,
+    this.description,
+    this.textProperties,
   })  : allowedTypes = UnmodifiableSetView(allowedTypes?.toSet() ?? <String>{}),
         dialCodes = UnmodifiableListView(dialCodes ?? []);
 
@@ -144,6 +152,8 @@ class DPAVariableProperty extends Equatable {
         image,
         dialCodes,
         prefixValue,
+        description,
+        textProperties,
       ];
 
   /// Creates a new [DPAVariableProperty] using another as a base.
@@ -169,6 +179,8 @@ class DPAVariableProperty extends Equatable {
     String? image,
     Iterable<DPADialCode>? dialCodes,
     String? prefixValue,
+    String? description,
+    DPAVariableTextProperties? textProperties,
   }) =>
       DPAVariableProperty(
         step: step ?? this.step,
@@ -192,5 +204,7 @@ class DPAVariableProperty extends Equatable {
         image: image ?? this.image,
         dialCodes: dialCodes ?? this.dialCodes,
         prefixValue: prefixValue ?? this.prefixValue,
+        description: description ?? this.description,
+        textProperties: textProperties ?? this.textProperties,
       );
 }

@@ -87,24 +87,28 @@ class DPAVariableDTO {
   factory DPAVariableDTO.fromJson(
     Map<String, dynamic> json, {
     String? key,
-  }) =>
-      DPAVariableDTO(
-        id: json['Id'],
-        key: key,
-        label: json['label'] as String,
-        type: DPATypeDTO.fromRaw(json['type']),
-        submitType: json['type'],
-        order: json['order'],
-        value: json['value'],
-        taskId: json['taskId'],
-        property: DPAVariablePropertyDTO.fromJson(json['properties']),
-        constraints: DPAConstraintDTO.fromJson(json['constraints']),
-        values: json['values'] == null
-            ? null
-            : DPAValueDTO.fromJsonList(
-                List<Map<String, dynamic>>.from(json['values'])),
-        valueInfo: json['valueInfo'] is String ? json['valueInfo'] : null,
-      );
+  }) {
+    print('variable -> $json');
+    print('variable properties -> ${json['properties']}');
+    print('variable constraints -> ${json['constraints']}');
+    return DPAVariableDTO(
+      id: json['Id'],
+      key: key,
+      label: json['label'] as String,
+      type: DPATypeDTO.fromRaw(json['type']),
+      submitType: json['type'],
+      order: json['order'],
+      value: json['value'],
+      taskId: json['taskId'],
+      property: DPAVariablePropertyDTO.fromJson(json['properties']),
+      constraints: DPAConstraintDTO.fromJson(json['constraints']),
+      values: json['values'] == null
+          ? null
+          : DPAValueDTO.fromJsonList(
+              List<Map<String, dynamic>>.from(json['values'])),
+      valueInfo: json['valueInfo'] is String ? json['valueInfo'] : null,
+    );
+  }
 
   /// Returns an ordered list of [DPAVariableDTO] based on the given list of
   /// JSONs.

@@ -21,9 +21,10 @@ dependencies:
   country_pickers: ^2.0.0
   currency_icons: ^0.3.0
   design_kit_layer:
-    git:
-      url: git@gitlab.ubanquity.com:dart-packages/design-kit-layer.git
-      ref: faa6e871806035e29bef79d4fc519186ce4047dd
+    #git:
+    #url: git@gitlab.ubanquity.com:dart-packages/design-kit-layer.git
+    #ref: faa6e871806035e29bef79d4fc519186ce4047dd
+    path: "/Users/josejet/Projects/ui_layer"
   device_info: ^2.0.2
   dio: ^4.0.4
   equatable: ^2.0.2

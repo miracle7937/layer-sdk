@@ -79,6 +79,12 @@ class DPAVariablePropertyDTO {
   /// The prefix value.
   final String? prefixValue;
 
+  /// An optional description for this variable.
+  final String? description;
+
+  /// The text properties for this variable.
+  final DPAVariableTextPropertiesDTO? textProperties;
+
   /// Creates a new [DPAVariablePropertyDTO].
   DPAVariablePropertyDTO({
     this.propertyType,
@@ -105,6 +111,8 @@ class DPAVariablePropertyDTO {
     this.image,
     this.dialCodes,
     this.prefixValue,
+    this.description,
+    this.textProperties,
   });
 
   /// Creates a new [DPAVariablePropertyDTO] from the given JSON.
@@ -146,6 +154,10 @@ class DPAVariablePropertyDTO {
                 json['prefix_list'],
               ),
         prefixValue: json['prefix_value'],
+        description: json['description'],
+        textProperties: json['color'] == null && json['font_style'] == null
+            ? null
+            : DPAVariableTextPropertiesDTO.fromJson(json),
       );
 
   @override
@@ -176,6 +188,8 @@ class DPAVariablePropertyDTO {
       '${image != null ? 'image: $image ' : ''}'
       '${dialCodes != null ? 'dialCodes: $dialCodes ' : ''}'
       '${prefixValue != null ? 'prefixValue: $prefixValue ' : ''}'
+      '${description != null ? 'description: $description ' : ''}'
+      '${textProperties != null ? 'textProperties: $textProperties ' : ''}'
       '}';
 }
 

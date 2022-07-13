@@ -454,6 +454,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
       state.copyWith(
         processingFiles: state.processingFiles.union({
           DPAProcessingFileData(
+            fileName: filename,
             action: DPAProcessingFileAction.uploading,
             variableKey: variable.key,
           ),
@@ -545,6 +546,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
       state.copyWith(
         processingFiles: state.processingFiles.union({
           DPAProcessingFileData(
+            fileName: (variable.value as DPAFileData?)?.name ?? '',
             action: DPAProcessingFileAction.deleting,
             variableKey: variable.key,
           ),

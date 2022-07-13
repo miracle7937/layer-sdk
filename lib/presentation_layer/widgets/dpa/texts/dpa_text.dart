@@ -35,13 +35,20 @@ class DPAText extends StatefulWidget {
 class _DPATextState extends State<DPAText> {
   TextEditingController? _controller;
 
+  /// The dpa variable.
+  late DPAVariable _variable;
+  DPAVariable get variable => _variable;
+  set variable(DPAVariable variable) => setState(() => _variable = variable);
+
   @override
   void initState() {
     super.initState();
 
-    if (!widget.variable.constraints.readonly) {
+    _variable = widget.variable;
+
+    if (!variable.constraints.readonly) {
       _controller = TextEditingController(
-        text: widget.variable.value?.toString(),
+        text: variable.value?.toString(),
       );
     }
   }
@@ -59,23 +66,23 @@ class _DPATextState extends State<DPAText> {
 
     return Padding(
       padding: widget.padding,
-      child: widget.readonly || widget.variable.constraints.readonly
+      child: widget.readonly || variable.constraints.readonly
           ? _buildReadOnlyWidget(design)
           : DKTextField(
               status: DKTextFieldStatus.idle,
               controller: _controller,
-              label: widget.variable.label,
-              obscureText: widget.variable.property.isPassword,
-              maxLength: widget.variable.constraints.maxLength,
-              keyboardType: widget.variable.toTextInputType(),
-              size: widget.variable.property.multiline
+              label: variable.label,
+              obscureText: variable.property.isPassword,
+              maxLength: variable.constraints.maxLength,
+              keyboardType: variable.toTextInputType(),
+              size: variable.property.multiline
                   ? DKTextFieldSize.multiline
                   : DKTextFieldSize.large,
-              warning: widget.variable.translateValidationError(translation),
+              warning: variable.translateValidationError(translation),
               keepWarningSize: true,
-              inputFormatters: widget.variable.toTextInputFormatters(),
+              inputFormatters: variable.toTextInputFormatters(),
               onChanged: (v) => context.read<DPAProcessCubit>().updateValue(
-                    variable: widget.variable,
+                    variable: variable,
                     newValue: v,
                   ),
             ),
@@ -85,18 +92,21 @@ class _DPATextState extends State<DPAText> {
   Widget _buildReadOnlyWidget(LayerDesign layerDesign) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if ((widget.variable.label ?? '').isNotEmpty) ...[
+          if ((variable.label ?? '').isNotEmpty) ...[
             Text(
-              widget.variable.label!,
-              style: layerDesign.bodyS(
-                color: layerDesign.baseQuaternary,
-              ),
+              variable.label!,
+              style: variable.property.textProperties?.toTextStyle(
+                    layerDesign,
+                  ) ??
+                  layerDesign.bodyS(
+                    color: layerDesign.baseQuaternary,
+                  ),
             ),
             const SizedBox(height: 2.0),
           ],
-          if (widget.variable.value != null)
+          if (variable.value != null)
             Text(
-              widget.variable.value!.toString(),
+              variable.value!.toString(),
               style: layerDesign.bodyM(),
             ),
         ],

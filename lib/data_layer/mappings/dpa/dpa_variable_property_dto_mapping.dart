@@ -1,6 +1,7 @@
 import '../../../domain_layer/models.dart';
 import '../../dtos.dart';
 import '../../errors.dart';
+import '../../mappings.dart';
 
 /// Extension that provides mappings for [DPAVariablePropertyDTO]
 extension DPAVariablePropertyDTOMapping on DPAVariablePropertyDTO {
@@ -35,6 +36,8 @@ extension DPAVariablePropertyDTOMapping on DPAVariablePropertyDTO {
         image: image == null ? null : '${customData.fileBaseURL}$image',
         dialCodes: dialCodes?.map((e) => e.toDialCode()).toList() ?? [],
         prefixValue: prefixValue,
+        description: description,
+        textProperties: textProperties?.toTextProperties(),
       );
 }
 

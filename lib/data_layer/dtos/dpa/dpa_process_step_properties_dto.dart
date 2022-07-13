@@ -173,7 +173,7 @@ class DPAScreenTypeDTO extends EnumDTO {
   /// PIN
   static const pin = DPAScreenTypeDTO._internal('pin');
 
-  /// E-mail
+  /// E-mail verification ()
   static const email = DPAScreenTypeDTO._internal('email');
 
   /// Entity search
@@ -182,6 +182,10 @@ class DPAScreenTypeDTO extends EnumDTO {
   /// Two columns
   static const twoColumns = DPAScreenTypeDTO._internal('two_column');
 
+  /// Screen that is waiting an email to be completed.
+  /// Don't confuse it with the email verification one.
+  static const waitingEmail = DPAScreenTypeDTO._internal('waitingEmail');
+
   /// The available values.
   static const List<DPAScreenTypeDTO> values = [
     otp,
@@ -189,6 +193,7 @@ class DPAScreenTypeDTO extends EnumDTO {
     email,
     entitySearch,
     twoColumns,
+    waitingEmail,
   ];
 
   const DPAScreenTypeDTO._internal(String value) : super.internal(value);
