@@ -18,7 +18,7 @@ dependencies:
   design_kit_layer:
     git:
       url: git@gitlab.ubanquity.com:dart-packages/design-kit-layer.git
-      ref: 6395d733ad3561d22b018ed6abe562394bf3882d
+      ref: 4258b05c14a3c923a0ea9f850a865a49e01bed3a
   device_info: ^2.0.2
   dio: ^4.0.4
   equatable: ^2.0.2
