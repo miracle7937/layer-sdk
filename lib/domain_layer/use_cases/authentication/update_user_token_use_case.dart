@@ -1,18 +1,16 @@
-import '../../abstract_repositories.dart';
-import '../../models.dart';
+import '../../../data_layer/repositories.dart';
 
-/// Use case that verifies a access pin
+/// Use case that sets token
 class UpdateUserTokenUseCase {
-  final AuthenticationRepositoryInterface _repository;
+  final AuthenticationRepository _repository;
 
   /// Creates a new [UpdateUserTokenUseCase] instance.
   UpdateUserTokenUseCase({
-    required AuthenticationRepositoryInterface repository,
+    required AuthenticationRepository repository,
   }) : _repository = repository;
 
-  /// Verifies access pin with the `pin` value.
-  ///
-  /// Returns [VerifyPinResponse] depends on verify process status.
-  Future<void> call({String? token}) =>
-      _repository.updateUserToken(updateToken: token);
+  /// Sets token with the `token` value.
+  Future<void> call({String? token}) async {
+    _repository.token = token;
+  }
 }

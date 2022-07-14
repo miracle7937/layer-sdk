@@ -47,9 +47,4 @@ abstract class AuthenticationRepositoryInterface {
   Future<VerifyPinResponse> verifyAccessPin({
     required String pin,
   });
-
-  /// Verifies user access pin.
-  Future<void> updateUserToken({
-    String? updateToken,
-  });
 }
