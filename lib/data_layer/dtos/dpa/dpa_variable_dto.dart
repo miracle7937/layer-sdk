@@ -189,15 +189,9 @@ class DPAVariableDTO {
 
   /// Creates a new JSON from the given map of DPA variables.
   static dynamic toJsonListFromMap(
-    Map<String, DPAVariableDTO>? variables, {
-    bool chosenValue = false,
-  }) {
+    Map<String, DPAVariableDTO>? variables,
+  ) {
     if (variables == null) return null;
-
-    variables['option_chosen'] = DPAVariableDTO(
-      type: DPATypeDTO.boolean,
-      value: chosenValue,
-    );
 
     final filteredMap = Map<String, DPAVariableDTO>.of(variables)
       ..removeWhere(
@@ -233,6 +227,9 @@ class DPATypeDTO extends EnumDTO {
   /// Search results
   static const searchResults = DPATypeDTO._('search_results');
 
+  /// Pin pad view.
+  static const pin = DPATypeDTO._('pin');
+
   /// Returns all the values available.
   static const List<DPATypeDTO> values = [
     string,
@@ -242,6 +239,7 @@ class DPATypeDTO extends EnumDTO {
     enumType,
     object,
     searchResults,
+    pin,
   ];
 
   const DPATypeDTO._(String value) : super.internal(value);

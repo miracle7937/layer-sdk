@@ -113,7 +113,6 @@ abstract class DPARepositoryInterface {
   /// Returns another [DPAProcess] detailing the step the process is now.
   Future<DPAProcess> stepOrFinishProcess({
     required DPAProcess process,
-    bool chosenValue = false,
   });
 
   /// Cancels the given [DPAProcess].

@@ -25,6 +25,7 @@ export '../domain_layer/use_cases/dpa/dpa_change_email_address_use_case.dart';
 export '../domain_layer/use_cases/dpa/dpa_change_phone_number_use_case.dart';
 export '../domain_layer/use_cases/dpa/dpa_request_manual_verification_use_case.dart';
 export '../domain_layer/use_cases/dpa/dpa_resend_code_use_case.dart';
+export '../domain_layer/use_cases/dpa/dpa_skip_step_use_case.dart';
 export '../domain_layer/use_cases/dpa/dpa_step_back_use_case.dart';
 export '../domain_layer/use_cases/dpa/dpa_step_or_finish_process_use_case.dart';
 export '../domain_layer/use_cases/dpa/finish_task_use_case.dart';

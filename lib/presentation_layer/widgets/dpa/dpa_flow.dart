@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -209,50 +210,23 @@ class DPAFlow extends StatelessWidget {
       (cubit) => cubit.state.hasPopup,
     );
 
-    final isCarouselScreen = process.variables.isNotEmpty &&
-        process.variables.every(
-          (e) => e.type == DPAVariableType.swipe,
-        );
-
-    final isOTPScreen = process.stepProperties?.screenType == DPAScreenType.otp;
-
-    final isEmailValidationScreen =
-        process.stepProperties?.screenType == DPAScreenType.email;
-
-    final effectiveCustomChild = isCarouselScreen
-        ? DPACarouselScreen()
-        : isOTPScreen
-            ? DPAOTPScreen(
-                customDPAHeader: customHeader,
-              )
-            : isEmailValidationScreen
-                ? DPAEmailScreen(
-                    customDPAHeader: customHeader,
-                  )
-                : customChild;
-
     final isDelayTask = process.stepProperties?.delay != null;
 
     final effectiveContinueButton = process.variables.length == 1 &&
             process.variables.first.property.searchBar
         ? null
         : customContinueButton ??
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                16.0,
-                0.0,
-                16.0,
-                42.0,
-              ),
-              child: DPAContinueButton(
-                process: process,
-                enabled: !hasPopup,
-              ),
+            DPAContinueButton(
+              process: process,
+              enabled: !hasPopup,
             );
 
     final effectiveHeader = (process.stepProperties?.hideAppBar ?? false)
         ? null
         : customHeader ?? DPAHeader(process: process);
+
+    final shouldShowSkipButton =
+        process.stepProperties?.skipLabel?.isNotEmpty ?? false;
 
     return MultiBlocListener(
       listeners: [
@@ -292,7 +266,7 @@ class DPAFlow extends StatelessWidget {
       ],
       child: Stack(
         children: [
-          effectiveCustomChild ??
+          _getEffectiveCustomChild(context) ??
               // TODO: update to use the correct Layer Design Kit design.
               // TODO: update to handle the different pages
               Column(
@@ -321,13 +295,90 @@ class DPAFlow extends StatelessWidget {
                       ),
                     ),
                   ),
-                  if (effectiveContinueButton != null) effectiveContinueButton,
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                      16.0,
+                      0.0,
+                      16.0,
+                      42.0,
+                    ),
+                    child: Column(
+                      children: [
+                        if (effectiveContinueButton != null)
+                          effectiveContinueButton,
+                        if (shouldShowSkipButton) ...[
+                          const SizedBox(height: 12.0),
+                          DPASkipButton(
+                            process: process,
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
                 ],
               ),
           if (isDelayTask) DPAFullscreenLoader(),
         ],
       ),
     );
+  }
+
+  Widget? _getEffectiveCustomChild(BuildContext context) {
+    if (customChild != null) {
+      return customChild;
+    }
+
+    final process = context.select<DPAProcessCubit, DPAProcess>(
+      (cubit) => cubit.state.process,
+    );
+
+    final isCarouselScreen = process.variables.isNotEmpty &&
+        process.variables.every(
+          (e) => e.type == DPAVariableType.swipe,
+        );
+    if (isCarouselScreen) {
+      return DPACarouselScreen();
+    }
+
+    final isOTPScreen = process.stepProperties?.screenType == DPAScreenType.otp;
+    if (isOTPScreen) {
+      return DPAOTPScreen(
+        customDPAHeader: customHeader,
+      );
+    }
+
+    final isEmailValidationScreen =
+        process.stepProperties?.screenType == DPAScreenType.email;
+    if (isEmailValidationScreen) {
+      return DPAEmailScreen(
+        customDPAHeader: customHeader,
+      );
+    }
+
+    final pinVariable = process.variables
+        .singleWhereOrNull((variable) => variable.type == DPAVariableType.pin);
+    final effectiveHeader = (process.stepProperties?.hideAppBar ?? false)
+        ? null
+        : customHeader ?? DPAHeader(process: process);
+
+    if (pinVariable != null) {
+      return DPASetAccessPin(
+        header: effectiveHeader,
+        dpaVariable: pinVariable.copyWith(
+          label: process.task?.description,
+        ),
+        onAccessPinSet: (pin) {
+          final cubit = context.read<DPAProcessCubit>();
+          cubit.updateValue(
+            variable: pinVariable,
+            newValue: pin,
+          );
+          cubit.stepOrFinish();
+        },
+      );
+    }
+
+    return null;
   }
 
   void _hidePopUp(BuildContext context, DPAProcessState state) {
@@ -387,6 +438,9 @@ class _PopUpContents extends StatelessWidget {
       (c) => c.state.popUp,
     );
 
+    final shouldShowSkipButton =
+        popUp?.stepProperties?.skipLabel?.isNotEmpty ?? false;
+
     if (popUp == null) return const SizedBox.shrink();
 
     // TODO: update to use the correct Layer Design Kit design.
@@ -405,6 +459,12 @@ class _PopUpContents extends StatelessWidget {
             DPAContinueButton(
               process: popUp,
             ),
+        if (shouldShowSkipButton) ...[
+          const SizedBox(height: 12.0),
+          DPASkipButton(
+            process: popUp,
+          ),
+        ],
       ],
     );
   }

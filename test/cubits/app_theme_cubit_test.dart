@@ -1,7 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:layer_sdk/_migration/flutter_layer/src/resources.dart';
 import 'package:layer_sdk/data_layer/interfaces.dart';
 import 'package:layer_sdk/presentation_layer/cubits.dart';
 import 'package:layer_sdk/presentation_layer/resources.dart';

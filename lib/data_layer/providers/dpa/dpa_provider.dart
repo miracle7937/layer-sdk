@@ -226,7 +226,6 @@ class DPAProvider {
   /// step.
   Future<DPAProcessDTO> stepOrFinishProcess({
     required DPAProcessDTO process,
-    bool chosenValue = false,
   }) async {
     final id = process.task?.id;
     final executionId =
@@ -242,7 +241,6 @@ class DPAProvider {
       data: {
         'variables': DPAVariableDTO.toJsonListFromMap(
           process.variables,
-          chosenValue: chosenValue,
         ),
       },
     );
