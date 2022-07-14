@@ -95,9 +95,4 @@ class AuthenticationRepository implements AuthenticationRepositoryInterface {
       message: dto.message ?? '',
     );
   }
-
-  @override
-  Future<void> updateUserToken({String? updateToken}) async {
-    token = updateToken;
-  }
 }
