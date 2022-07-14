@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 
 import '../../../../../domain_layer/models.dart';
-import '../../../_migration/data_layer/src/mappings.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
 
@@ -53,18 +52,7 @@ class StorageCubit extends Cubit<StorageState> {
       ),
     );
     try {
-      User? user;
-
-      final savedUsers = await _lastLoggedUserUseCase();
-      if (savedUsers != null && savedUsers['users'] != null) {
-        final users = savedUsers['users'];
-
-        if (users.isNotEmpty) {
-          // TODO: decrypt user fields
-          // TODO: check which user was logged in the most recently
-          user = UserJsonMapping.fromJson(users[0]);
-        }
-      }
+      final user = await _lastLoggedUserUseCase();
 
       emit(
         state.copyWith(
