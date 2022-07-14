@@ -71,18 +71,6 @@ final _authenticationTestSetting = AuthenticationSettings(
     defaultUsername: _defaultUsername,
     useBiometrics: _useBiometrics);
 
-final _savedUsers = {
-  'users': [
-    <String, dynamic>{
-      'id': 'id',
-      'username': 'username',
-      'first_name': 'firstName',
-      'last_name': 'lastName',
-      'status': 'UserStatus.active',
-      'accessPin': 'accessPin',
-    },
-  ],
-};
 final _user = User(
   id: 'id',
   username: 'username',
@@ -94,25 +82,10 @@ final _user = User(
 );
 
 final _mockedBrightnessIndex = 5;
-late StorageCubit _successCubit;
 
 void main() {
   EquatableConfig.stringify = true;
 
-  setUpAll(() {
-    _successCubit = StorageCubit(
-      lastLoggedUserUseCase: _loadLastLoggedUserUseCase,
-      loadAuthenticationSettingUseCase: _loadAuthenticationSettingsUseCase,
-      loadBrightnessUseCase: _loadBrightnessUseCase,
-      loadOcraSecretKeyUseCase: _loadOcraSecretKeyUseCase,
-      removeUserUseCase: _removeUserUseCase,
-      saveAuthenticationSettingUseCase: _saveAuthenticationSettingUseCase,
-      saveOcraSecretKeyUseCase: _saveOcraSecretKeyUseCase,
-      saveUserUseCase: _saveUserUseCase,
-      setBrightnessUseCase: _setBrightnessUseCase,
-      toggleBiometricsUseCase: _toggleBiometricsUseCase,
-    );
-  });
 
   blocTest<StorageCubit, StorageState>(
     'Should start on an empty state',
