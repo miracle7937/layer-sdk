@@ -37,7 +37,8 @@ extension DPAVariablePropertyDTOMapping on DPAVariablePropertyDTO {
         dialCodes: dialCodes?.map((e) => e.toDialCode()).toList() ?? [],
         prefixValue: prefixValue,
         description: description,
-        textProperties: textProperties?.toTextProperties(),
+        labelTextProperties: labelTextProperties?.toTextProperties(),
+        valueTextProperties: valueTextProperties?.toTextProperties(),
       );
 }
 

@@ -12,7 +12,6 @@ export 'src/cubits.dart';
 export 'src/extensions.dart';
 export 'src/features.dart';
 export 'src/mixins.dart';
-export 'src/resources.dart';
 export 'src/ui.dart';
 export 'src/utils.dart';
 export 'src/widgets.dart';

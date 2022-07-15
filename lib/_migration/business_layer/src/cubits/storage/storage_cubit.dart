@@ -53,11 +53,45 @@ class StorageCubit extends Cubit<StorageState> {
     );
   }
 
+  /// Loads all the logged in users.
+  Future<void> loadLoggedInUsers() async {
+    emit(
+      state.copyWith(
+        busy: true,
+      ),
+    );
+
+    List<User>? loggedInUsers;
+
+    final savedUsers = await secureStorage.getJson(StorageKeys.loggedUsers);
+
+    if (savedUsers != null && savedUsers['users'] != null) {
+      final users = List<Map<String, dynamic>>.from(savedUsers['users']);
+
+      if (users.isNotEmpty) {
+        loggedInUsers = users.map(UserJsonMapping.fromJson).toList();
+      }
+    }
+
+    emit(
+      state.copyWith(
+        busy: false,
+        loggedInUsers: loggedInUsers,
+      ),
+    );
+  }
+
   /// Saves the provided user in storage and sets him as current user.
   ///
   /// Emits a busy state while saving.
-  Future<void> saveUser(User user) async {
-    emit(state.copyWith(busy: true));
+  Future<void> saveUser(
+    User user,
+  ) async {
+    emit(
+      state.copyWith(
+        busy: true,
+      ),
+    );
 
     var loggedUsers = await secureStorage.getJson(StorageKeys.loggedUsers);
 
@@ -86,8 +120,14 @@ class StorageCubit extends Cubit<StorageState> {
   /// Removes user data from storage for the provided id.
   ///
   /// Emits a busy state while saving.
-  Future<void> removeUser(String id) async {
-    emit(state.copyWith(busy: true));
+  Future<void> removeUser(
+    String id,
+  ) async {
+    emit(
+      state.copyWith(
+        busy: true,
+      ),
+    );
 
     final savedUsers = await secureStorage.getJson(StorageKeys.loggedUsers);
 
@@ -108,16 +148,22 @@ class StorageCubit extends Cubit<StorageState> {
       );
     }
 
-    emit(state.copyWith(
-      busy: false,
-      clearCurrentUser: state.currentUser?.id == id,
-    ));
+    emit(
+      state.copyWith(
+        busy: false,
+        clearCurrentUser: state.currentUser?.id == id,
+      ),
+    );
   }
 
   /// Loads the authentication related settings from the storage.
   /// Emits a busy state at the start, and the loaded settings on completion.
   Future<void> loadAuthenticationSettings() async {
-    emit(state.copyWith(busy: true));
+    emit(
+      state.copyWith(
+        busy: true,
+      ),
+    );
 
     final domain = await preferencesStorage.getString(
       key: StorageKeys.authDomain,
@@ -151,7 +197,11 @@ class StorageCubit extends Cubit<StorageState> {
     String? domain,
     bool? useBiometrics,
   }) async {
-    emit(state.copyWith(busy: true));
+    emit(
+      state.copyWith(
+        busy: true,
+      ),
+    );
 
     final savedDomain = domain != null
         ? await preferencesStorage.setString(
@@ -228,7 +278,9 @@ class StorageCubit extends Cubit<StorageState> {
   /// Emits a busy state at the start, and the loaded settings on completion.
   Future<void> loadApplicationSettings() async {
     emit(
-      state.copyWith(busy: true),
+      state.copyWith(
+        busy: true,
+      ),
     );
 
     try {
@@ -324,7 +376,9 @@ class StorageCubit extends Cubit<StorageState> {
   /// Loads the secret key for OCRA mutual authentication flow.
   Future<void> loadOcraSecretKey() async {
     emit(
-      state.copyWith(busy: true),
+      state.copyWith(
+        busy: true,
+      ),
     );
 
     try {

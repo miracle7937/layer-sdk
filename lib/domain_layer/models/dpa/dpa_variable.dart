@@ -56,6 +56,9 @@ enum DPAVariableType {
 
   /// The swipe (Carousel) variable type.
   swipe,
+
+  /// Pin pad view.
+  pin,
 }
 
 /// Helper extension for [DPAVariableType]

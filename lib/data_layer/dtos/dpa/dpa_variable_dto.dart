@@ -87,28 +87,24 @@ class DPAVariableDTO {
   factory DPAVariableDTO.fromJson(
     Map<String, dynamic> json, {
     String? key,
-  }) {
-    print('variable -> $json');
-    print('variable properties -> ${json['properties']}');
-    print('variable constraints -> ${json['constraints']}');
-    return DPAVariableDTO(
-      id: json['Id'],
-      key: key,
-      label: json['label'] as String,
-      type: DPATypeDTO.fromRaw(json['type']),
-      submitType: json['type'],
-      order: json['order'],
-      value: json['value'],
-      taskId: json['taskId'],
-      property: DPAVariablePropertyDTO.fromJson(json['properties']),
-      constraints: DPAConstraintDTO.fromJson(json['constraints']),
-      values: json['values'] == null
-          ? null
-          : DPAValueDTO.fromJsonList(
-              List<Map<String, dynamic>>.from(json['values'])),
-      valueInfo: json['valueInfo'] is String ? json['valueInfo'] : null,
-    );
-  }
+  }) =>
+      DPAVariableDTO(
+        id: json['Id'],
+        key: key,
+        label: json['label'] as String,
+        type: DPATypeDTO.fromRaw(json['type']),
+        submitType: json['type'],
+        order: json['order'],
+        value: json['value'],
+        taskId: json['taskId'],
+        property: DPAVariablePropertyDTO.fromJson(json['properties']),
+        constraints: DPAConstraintDTO.fromJson(json['constraints']),
+        values: json['values'] == null
+            ? null
+            : DPAValueDTO.fromJsonList(
+                List<Map<String, dynamic>>.from(json['values'])),
+        valueInfo: json['valueInfo'] is String ? json['valueInfo'] : null,
+      );
 
   /// Returns an ordered list of [DPAVariableDTO] based on the given list of
   /// JSONs.
@@ -231,6 +227,9 @@ class DPATypeDTO extends EnumDTO {
   /// Search results
   static const searchResults = DPATypeDTO._('search_results');
 
+  /// Pin pad view.
+  static const pin = DPATypeDTO._('pin');
+
   /// Returns all the values available.
   static const List<DPATypeDTO> values = [
     string,
@@ -240,6 +239,7 @@ class DPATypeDTO extends EnumDTO {
     enumType,
     object,
     searchResults,
+    pin,
   ];
 
   const DPATypeDTO._(String value) : super.internal(value);

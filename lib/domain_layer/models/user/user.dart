@@ -97,6 +97,9 @@ class User extends Equatable {
   /// The branch this user belongs to.
   final String? branch;
 
+  /// Whether if this user has the biometrics enabled or not.
+  final bool useBiometrics;
+
   /// Returns the full name of the customer.
   String get fullName => [firstName, lastName]
       .where((element) => element != null && element.isNotEmpty)
@@ -123,6 +126,7 @@ class User extends Equatable {
     this.permissions = const UserPermissions(),
     this.verifyDevice = false,
     this.branch,
+    this.useBiometrics = false,
   })  : favoriteOffers = UnmodifiableListView(favoriteOffers ?? []),
         roles = UnmodifiableListView(roles ?? <String>[]);
 
@@ -147,6 +151,7 @@ class User extends Equatable {
     bool? isUSSDActive,
     bool? verifyDevice,
     String? branch,
+    bool? useBiometrics,
   }) =>
       User(
         id: id ?? this.id,
@@ -168,6 +173,7 @@ class User extends Equatable {
         isUSSDActive: isUSSDActive ?? this.isUSSDActive,
         verifyDevice: verifyDevice ?? this.verifyDevice,
         branch: branch ?? this.branch,
+        useBiometrics: useBiometrics ?? this.useBiometrics,
       );
 
   @override
@@ -190,5 +196,6 @@ class User extends Equatable {
         permissions,
         verifyDevice,
         branch,
+        useBiometrics,
       ];
 }

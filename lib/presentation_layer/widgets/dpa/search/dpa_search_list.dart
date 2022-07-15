@@ -20,11 +20,19 @@ class DPASearchList extends StatefulWidget {
   /// The [DPAValueFilter] callback.
   final DPAValueFilter filter;
 
+  /// The custom empty search builder that will show when a search field
+  /// input returned no results.
+  ///
+  /// If not indicated, a default one will show showing the translation
+  /// assigned to the key `no_results_found`.
+  final WidgetBuilder? customEmptySearchBuilder;
+
   /// Creates a new [DPASearchList] instance.
   const DPASearchList({
     Key? key,
     required this.variable,
     required this.filter,
+    this.customEmptySearchBuilder,
   }) : super(key: key);
 
   @override
@@ -43,6 +51,7 @@ class _DPASearchListState extends State<DPASearchList> {
   @override
   Widget build(BuildContext context) {
     final translation = Translation.of(context);
+    final layerDesign = DesignSystem.of(context);
 
     final isCountryPicker =
         widget.variable.property.type == DPAVariablePropertyType.countryPicker;
@@ -57,34 +66,62 @@ class _DPASearchListState extends State<DPASearchList> {
           hint: translation.translate('search'),
         ),
         const SizedBox(height: 16.0),
-        ListView.separated(
-          shrinkWrap: true,
-          separatorBuilder: (_, __) => Divider(),
-          itemCount: options.length,
-          itemBuilder: (context, index) {
-            final value = options[index];
-            var flagSvg;
-            if (isCountryPicker) {
-              flagSvg = DKFlags.path(countryCode: value.id);
-            }
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 200),
+          transitionBuilder: (child, animation) => FadeTransition(
+            opacity: animation,
+            child: child,
+          ),
+          child: options.isEmpty
+              ? _buildEmptySearchView(
+                  context,
+                  layerDesign,
+                )
+              : ListView.separated(
+                  shrinkWrap: true,
+                  separatorBuilder: (_, __) => Divider(),
+                  itemCount: options.length,
+                  itemBuilder: (context, index) {
+                    final value = options[index];
+                    var flagSvg;
+                    if (isCountryPicker) {
+                      flagSvg = DKFlags.path(countryCode: value.id);
+                    }
 
-            return _DPASearchListItem(
-              svgPath: flagSvg,
-              dpaValue: options[index],
-              onSelected: (value) async {
-                final cubit = context.read<DPAProcessCubit>();
-                await cubit.updateValue(
-                  variable: widget.variable,
-                  newValue: value,
-                );
-                cubit.stepOrFinish();
-              },
-            );
-          },
+                    return _DPASearchListItem(
+                      svgPath: flagSvg,
+                      dpaValue: options[index],
+                      onSelected: (value) async {
+                        final cubit = context.read<DPAProcessCubit>();
+                        await cubit.updateValue(
+                          variable: widget.variable,
+                          newValue: value,
+                        );
+                        cubit.stepOrFinish();
+                      },
+                    );
+                  },
+                ),
         ),
       ],
     );
   }
+
+  /// The empty search view builder.
+  Widget _buildEmptySearchView(
+    BuildContext context,
+    LayerDesign layerDesign,
+  ) =>
+      Padding(
+        padding: const EdgeInsets.only(top: 80.0),
+        child: widget.customEmptySearchBuilder != null
+            ? widget.customEmptySearchBuilder!(context)
+            : Text(
+                Translation.of(context).translate('no_results_found'),
+                style: layerDesign.titleL(),
+                textAlign: TextAlign.center,
+              ),
+      );
 
   List<DPAValue> _filter({
     required List<DPAValue> items,

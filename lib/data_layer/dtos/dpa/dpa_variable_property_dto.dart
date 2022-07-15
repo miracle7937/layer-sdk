@@ -82,8 +82,11 @@ class DPAVariablePropertyDTO {
   /// An optional description for this variable.
   final String? description;
 
-  /// The text properties for this variable.
-  final DPAVariableTextPropertiesDTO? textProperties;
+  /// The text properties for this variable's label.
+  final DPAVariableTextPropertiesDTO? labelTextProperties;
+
+  /// The text properties for this variable's value.
+  final DPAVariableTextPropertiesDTO? valueTextProperties;
 
   /// Creates a new [DPAVariablePropertyDTO].
   DPAVariablePropertyDTO({
@@ -112,7 +115,8 @@ class DPAVariablePropertyDTO {
     this.dialCodes,
     this.prefixValue,
     this.description,
-    this.textProperties,
+    this.labelTextProperties,
+    this.valueTextProperties,
   });
 
   /// Creates a new [DPAVariablePropertyDTO] from the given JSON.
@@ -155,9 +159,20 @@ class DPAVariablePropertyDTO {
               ),
         prefixValue: json['prefix_value'],
         description: json['description'],
-        textProperties: json['color'] == null && json['font_style'] == null
-            ? null
-            : DPAVariableTextPropertiesDTO.fromJson(json),
+        labelTextProperties:
+            json['label_color'] == null && json['label_font_style'] == null
+                ? null
+                : DPAVariableTextPropertiesDTO.fromProperties(
+                    color: json['label_color'],
+                    fontStyle: json['label_font_style'],
+                  ),
+        valueTextProperties:
+            json['value_color'] == null && json['value_font_style'] == null
+                ? null
+                : DPAVariableTextPropertiesDTO.fromProperties(
+                    color: json['value_color'],
+                    fontStyle: json['value_font_style'],
+                  ),
       );
 
   @override
@@ -189,7 +204,10 @@ class DPAVariablePropertyDTO {
       '${dialCodes != null ? 'dialCodes: $dialCodes ' : ''}'
       '${prefixValue != null ? 'prefixValue: $prefixValue ' : ''}'
       '${description != null ? 'description: $description ' : ''}'
-      '${textProperties != null ? 'textProperties: $textProperties ' : ''}'
+      '${labelTextProperties != null ? 'labelTextProperties: '
+          '$labelTextProperties ' : ''}'
+      '${valueTextProperties != null ? 'valueTextProperties: '
+          '$valueTextProperties ' : ''}'
       '}';
 }
 

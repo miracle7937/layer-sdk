@@ -98,8 +98,11 @@ class DPAVariableProperty extends Equatable {
   /// An optional description for this variable.
   final String? description;
 
-  /// The text properties for this variable.
-  final DPAVariableTextProperties? textProperties;
+  /// The text properties for this variable's label.
+  final DPAVariableTextProperties? labelTextProperties;
+
+  /// The text properties for this variable's value.
+  final DPAVariableTextProperties? valueTextProperties;
 
   /// Creates a new [DPAVariableProperty].
   DPAVariableProperty({
@@ -125,7 +128,8 @@ class DPAVariableProperty extends Equatable {
     Iterable<DPADialCode>? dialCodes,
     this.prefixValue,
     this.description,
-    this.textProperties,
+    this.labelTextProperties,
+    this.valueTextProperties,
   })  : allowedTypes = UnmodifiableSetView(allowedTypes?.toSet() ?? <String>{}),
         dialCodes = UnmodifiableListView(dialCodes ?? []);
 
@@ -153,7 +157,8 @@ class DPAVariableProperty extends Equatable {
         dialCodes,
         prefixValue,
         description,
-        textProperties,
+        labelTextProperties,
+        valueTextProperties,
       ];
 
   /// Creates a new [DPAVariableProperty] using another as a base.
@@ -180,7 +185,8 @@ class DPAVariableProperty extends Equatable {
     Iterable<DPADialCode>? dialCodes,
     String? prefixValue,
     String? description,
-    DPAVariableTextProperties? textProperties,
+    DPAVariableTextProperties? labelTextProperties,
+    DPAVariableTextProperties? valueTextProperties,
   }) =>
       DPAVariableProperty(
         step: step ?? this.step,
@@ -205,6 +211,7 @@ class DPAVariableProperty extends Equatable {
         dialCodes: dialCodes ?? this.dialCodes,
         prefixValue: prefixValue ?? this.prefixValue,
         description: description ?? this.description,
-        textProperties: textProperties ?? this.textProperties,
+        labelTextProperties: labelTextProperties ?? this.labelTextProperties,
+        valueTextProperties: valueTextProperties ?? this.valueTextProperties,
       );
 }

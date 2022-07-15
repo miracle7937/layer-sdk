@@ -9,22 +9,16 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
-  flutter:
-    sdk: flutter
-  flutter_localizations:
-    sdk: flutter
-
-  # Keep this section alphabetized
   asn1lib: ^1.0.1
+  auto_size_text: ^3.0.0
   cached_network_image: ^3.1.0
   collection: ^1.15.0
   country_pickers: ^2.0.0
   currency_icons: ^0.3.0
   design_kit_layer:
-    #git:
-    #url: git@gitlab.ubanquity.com:dart-packages/design-kit-layer.git
-    #ref: faa6e871806035e29bef79d4fc519186ce4047dd
-    path: "/Users/josejet/Projects/ui_layer"
+    git:
+      url: git@gitlab.ubanquity.com:dart-packages/design-kit-layer.git
+      ref: 37e5882ad3227c5d5d726fba89127541f081a0b7
   device_info: ^2.0.2
   dio: ^4.0.4
   equatable: ^2.0.2
@@ -33,43 +27,46 @@ dependencies:
   firebase_core: ^1.10.0
   firebase_messaging: ^11.1.0
   firebase_messaging_platform_interface: 3.1.6
+  flutter:
+    sdk: flutter
   flutter_bloc: ^7.0.1
   flutter_jailbreak_detection: ^1.8.0
   flutter_keyboard_visibility: ^5.0.3
   flutter_local_notifications: ^8.0.0
+  flutter_localizations:
+    sdk: flutter
   flutter_secure_storage: ^4.2.0
   flutter_svg: ^1.1.0
   google_fonts: 2.2.0
-  intl: ^0.17.0
   image: ^3.1.3
+  image_cropper: ^2.0.3
   image_picker: ^0.8.4+6
+  intl: ^0.17.0
   location: ^4.2.2
   logging: ^1.0.1
+  mime: ^1.0.2
   ocra_authentication:
     git:
       url: git@gitlab.ubanquity.com:dart-packages/ocra_authentication.git
       ref: 3994518ffff10e0dfb9b1864e4d18a3802a8758f
   open_file: ^3.2.1
+  open_mail_app: ^0.2.0
   package_info: ^2.0.2
   path_provider: ^2.0.5
-  #  TODO: note the breaking change for the iOS permissions - they need to be defined in the podfile:
-  #  https://github.com/Baseflow/flutter-permission-handler/blob/master/permission_handler/example/ios/Podfile#L45
   permission_handler: ^8.2.5
   pointycastle: ^3.0.1
   shared_preferences: ^2.0.6
   uni_links: ^0.5.1
   url_launcher: ^6.1.0
   validators: ^3.0.0
-  open_mail_app: ^0.2.0
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^2.0.0
-
   # Keep this section alphabetized
   bloc_test: ^8.0.2
   effective_dart: ^1.3.1
+  flutter_lints: ^2.0.0
+  flutter_test:
+    sdk: flutter
   mocktail: ^0.1.4
   test: ^1.17.5
 
@@ -77,9 +74,4 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/svgs/back.svg
-    - assets/svgs/camera.svg
-    - assets/svgs/close.svg
-    - assets/svgs/error.svg
-    - assets/svgs/success.svg
-    - assets/svgs/warning.svg
+    - assets/svgs/

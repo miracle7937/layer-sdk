@@ -17,11 +17,14 @@ class DPAVariableTextPropertiesDTO {
     this.textStyle,
   });
 
-  /// Creates a new [DPAVariableTextPropertiesDTO] from the given JSON.
-  factory DPAVariableTextPropertiesDTO.fromJson(Map<String, dynamic> json) =>
+  /// Creates a new [DPAVariableTextPropertiesDTO] from the given properties.
+  factory DPAVariableTextPropertiesDTO.fromProperties({
+    String? color,
+    String? fontStyle,
+  }) =>
       DPAVariableTextPropertiesDTO(
-        color: json['color'],
-        textStyle: DPAVariableTextStyleDTO.fromRaw(json['font_style']),
+        color: color,
+        textStyle: DPAVariableTextStyleDTO.fromRaw(fontStyle),
       );
 }
 
