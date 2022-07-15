@@ -20,7 +20,6 @@ import '../creators.dart';
 import '../cubits.dart';
 import '../design.dart';
 import '../utils.dart';
-import '../utils/platform/secure_storage_mobile.dart';
 import '../widgets.dart';
 
 /// The builder invoked in the [MaterialApp.builder] callback.

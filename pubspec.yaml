@@ -44,7 +44,6 @@ dependencies:
   intl: ^0.17.0
   location: ^4.2.2
   logging: ^1.0.1
-  mime: ^1.0.2
   ocra_authentication:
     git:
       url: git@gitlab.ubanquity.com:dart-packages/ocra_authentication.git
