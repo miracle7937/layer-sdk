@@ -2,7 +2,8 @@ import 'package:design_kit_layer/design_kit_layer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../_migration/business_layer/business_layer.dart';
+import '../../../domain_layer/models.dart';
+import '../../cubits.dart';
 import 'branding_listener.dart';
 
 /// A widget that loads the theme settings to set the branding, and wraps on

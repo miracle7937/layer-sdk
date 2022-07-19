@@ -52,14 +52,14 @@ void _successTests() {
   setUp(() {
     when(
       () => _storageMock.getString(
-        key: FlutterStorageKeys.userSelectedLanguageCode,
+        key: StorageKeys.userSelectedLanguageCode,
       ),
     ).thenAnswer(
       (_) async => _baseLocale.languageCode,
     );
     when(
       () => _storageMock.setString(
-        key: FlutterStorageKeys.userSelectedLanguageCode,
+        key: StorageKeys.userSelectedLanguageCode,
         value: any(named: 'value'),
       ),
     ).thenAnswer((_) async => true);
@@ -78,7 +78,7 @@ void _successTests() {
     verify: (c) {
       verify(
         () => _storageMock.getString(
-          key: FlutterStorageKeys.userSelectedLanguageCode,
+          key: StorageKeys.userSelectedLanguageCode,
         ),
       ).called(1);
 
@@ -99,7 +99,7 @@ void _successTests() {
     verify: (c) {
       verify(
         () => _storageMock.setString(
-          key: FlutterStorageKeys.userSelectedLanguageCode,
+          key: StorageKeys.userSelectedLanguageCode,
           value: _newLocale.languageCode,
         ),
       ).called(1);
@@ -113,7 +113,7 @@ void _errorHandling() {
   setUp(() {
     when(
       () => _storageMock.getString(
-        key: FlutterStorageKeys.userSelectedLanguageCode,
+        key: StorageKeys.userSelectedLanguageCode,
       ),
     ).thenThrow(
       Exception('Error'),
@@ -121,7 +121,7 @@ void _errorHandling() {
 
     when(
       () => _storageMock.setString(
-        key: FlutterStorageKeys.userSelectedLanguageCode,
+        key: StorageKeys.userSelectedLanguageCode,
         value: _newLocale.languageCode,
       ),
     ).thenThrow(
@@ -145,7 +145,7 @@ void _errorHandling() {
     verify: (c) {
       verify(
         () => _storageMock.getString(
-          key: FlutterStorageKeys.userSelectedLanguageCode,
+          key: StorageKeys.userSelectedLanguageCode,
         ),
       ).called(1);
 
@@ -169,7 +169,7 @@ void _errorHandling() {
     verify: (c) {
       verify(
         () => _storageMock.setString(
-          key: FlutterStorageKeys.userSelectedLanguageCode,
+          key: StorageKeys.userSelectedLanguageCode,
           value: _newLocale.languageCode,
         ),
       ).called(1);

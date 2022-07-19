@@ -7,6 +7,5 @@ export '../../data_layer/interfaces.dart';
 export 'src/cubits.dart';
 export 'src/errors.dart';
 export 'src/resources.dart';
-export 'src/settings.dart';
 export 'src/strategies.dart';
 export 'src/utils.dart';
