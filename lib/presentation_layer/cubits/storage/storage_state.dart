@@ -2,7 +2,6 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../../../domain_layer/models.dart';
-import '../../settings.dart';
 
 /// A state representing storage values.
 class StorageState extends Equatable {

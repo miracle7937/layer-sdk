@@ -34,7 +34,7 @@ class LocalizationCubit extends Cubit<LocalizationState> {
 
     try {
       final savedLanguageCode = await _storage.getString(
-        key: FlutterStorageKeys.userSelectedLanguageCode,
+        key: StorageKeys.userSelectedLanguageCode,
       );
 
       emit(
@@ -66,7 +66,7 @@ class LocalizationCubit extends Cubit<LocalizationState> {
 
     try {
       await _storage.setString(
-        key: FlutterStorageKeys.userSelectedLanguageCode,
+        key: StorageKeys.userSelectedLanguageCode,
         value: locale.languageCode,
       );
 
