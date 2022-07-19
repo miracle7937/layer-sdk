@@ -151,6 +151,12 @@ class BankAppState extends State<BankApp> {
             ),
           ),
         ),
+        CreatorProvider<StorageCreator>(
+          create: (_) => StorageCreator(
+            secureStorage: widget.secureStorage,
+            preferencesStorage: widget.preferencesStorage,
+          ),
+        ),
       ];
 
   @override
