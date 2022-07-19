@@ -173,7 +173,7 @@ enum DPAScreenType {
   /// PIN
   pin,
 
-  /// E-mail verification
+  /// Task for validating the email entered by the user.
   email,
 
   /// Other
@@ -185,7 +185,8 @@ enum DPAScreenType {
   /// Two columns
   twoColumns,
 
-  /// Screen that is waiting an email to continue.
+  /// Task that should be fullscreen and that can only be finished by pressing
+  /// a link sent to the email
   waitingEmail,
 }
 
