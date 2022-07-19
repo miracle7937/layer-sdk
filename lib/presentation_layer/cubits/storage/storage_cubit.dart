@@ -7,10 +7,11 @@ import '../../cubits.dart';
 /// A cubit that handles loading and saving data in storage.
 class StorageCubit extends Cubit<StorageState> {
   /// The storage solution to be used for sensitive data.
+  final LoadLoggedInUsersUseCase _loadLoggedInUsersUseCase;
   final LoadLastLoggedUserUseCase _lastLoggedUserUseCase;
   final SaveUserUseCase _saveUserUseCase;
   final RemoveUserUseCase _removeUserUseCase;
-  final LoadAuthenticationSettingsUseCase _loadAuthenticationSettingUseCase;
+  final LoadAuthenticationSettingsUseCase _loadAuthenticationSettingsUseCase;
   final SaveAuthenticationSettingUseCase _saveAuthenticationSettingUseCase;
   final LoadOcraSecretKeyUseCase _loadOcraSecretKeyUseCase;
   final SaveOcraSecretKeyUseCase _saveOcraSecretKeyUseCase;
@@ -20,20 +21,23 @@ class StorageCubit extends Cubit<StorageState> {
 
   /// Creates [StorageCubit].
   StorageCubit({
+    required LoadLoggedInUsersUseCase loadLoggedInUsersUseCase,
     required LoadLastLoggedUserUseCase lastLoggedUserUseCase,
     required SaveUserUseCase saveUserUseCase,
     required RemoveUserUseCase removeUserUseCase,
-    required LoadAuthenticationSettingsUseCase loadAuthenticationSettingUseCase,
+    required LoadAuthenticationSettingsUseCase
+        loadAuthenticationSettingsUseCase,
     required SaveAuthenticationSettingUseCase saveAuthenticationSettingUseCase,
     required LoadOcraSecretKeyUseCase loadOcraSecretKeyUseCase,
     required SaveOcraSecretKeyUseCase saveOcraSecretKeyUseCase,
     required SetBrightnessUseCase setBrightnessUseCase,
     required LoadBrightnessUseCase loadBrightnessUseCase,
     required ToggleBiometricsUseCase toggleBiometricsUseCase,
-  })  : _lastLoggedUserUseCase = lastLoggedUserUseCase,
+  })  : _loadLoggedInUsersUseCase = loadLoggedInUsersUseCase,
+        _lastLoggedUserUseCase = lastLoggedUserUseCase,
         _saveUserUseCase = saveUserUseCase,
         _removeUserUseCase = removeUserUseCase,
-        _loadAuthenticationSettingUseCase = loadAuthenticationSettingUseCase,
+        _loadAuthenticationSettingsUseCase = loadAuthenticationSettingsUseCase,
         _saveAuthenticationSettingUseCase = saveAuthenticationSettingUseCase,
         _loadOcraSecretKeyUseCase = loadOcraSecretKeyUseCase,
         _saveOcraSecretKeyUseCase = saveOcraSecretKeyUseCase,
@@ -41,6 +45,24 @@ class StorageCubit extends Cubit<StorageState> {
         _loadBrightnessUseCase = loadBrightnessUseCase,
         _toggleBiometricsUseCase = toggleBiometricsUseCase,
         super(StorageState());
+
+  /// Loads all the logged in users.
+  Future<void> loadLoggedInUsers() async {
+    emit(
+      state.copyWith(
+        busy: true,
+      ),
+    );
+
+    final loggedInUsers = await _loadLoggedInUsersUseCase();
+
+    emit(
+      state.copyWith(
+        busy: false,
+        loggedInUsers: loggedInUsers,
+      ),
+    );
+  }
 
   /// Loads the last logged user from storage.
   ///
@@ -128,7 +150,7 @@ class StorageCubit extends Cubit<StorageState> {
   Future<void> loadAuthenticationSettings() async {
     emit(state.copyWith(busy: true));
     try {
-      final authenticationSettings = await _loadAuthenticationSettingUseCase();
+      final authenticationSettings = await _loadAuthenticationSettingsUseCase();
 
       emit(
         state.copyWith(

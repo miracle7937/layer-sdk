@@ -93,6 +93,7 @@ export 'use_cases/standing_orders/load_standing_orders_use_case.dart';
 export 'use_cases/storage/load_authentication_settings_use_case.dart';
 export 'use_cases/storage/load_brightness_use_case.dart';
 export 'use_cases/storage/load_last_logged_user_use_case.dart';
+export 'use_cases/storage/load_logged_in_users_use_case.dart';
 export 'use_cases/storage/load_ocra_secret_key_use_case.dart';
 export 'use_cases/storage/remove_user_use_case.dart';
 export 'use_cases/storage/save_authentication_setting_use_case.dart';

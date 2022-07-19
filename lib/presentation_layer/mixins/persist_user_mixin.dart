@@ -2,9 +2,9 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../_migration/business_layer/business_layer.dart';
 import '../../features/user.dart';
 import '../creators.dart';
+import '../cubits.dart';
 import '../widgets.dart';
 
 /// A mixin that exposes a method for persisting the returned user from a
@@ -36,7 +36,7 @@ mixin PersistUserMixin {
         titleKey: 'user_already_registered',
       );
     } else {
-      await storageCubit.saveUser(user);
+      await storageCubit.saveUser(user: user);
     }
   }
 
