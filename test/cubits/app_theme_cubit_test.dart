@@ -36,13 +36,13 @@ void main() {
   setUp(() {
     storageMock = MockGenericStorage();
     when(() => storageMock.getString(
-          key: FlutterStorageKeys.userSelectedLightTheme,
+          key: StorageKeys.userSelectedLightTheme,
         )).thenAnswer((_) async => 'custom');
     when(() => storageMock.getString(
-          key: FlutterStorageKeys.userSelectedDarkTheme,
+          key: StorageKeys.userSelectedDarkTheme,
         )).thenAnswer((_) async => 'custom');
     when(() => storageMock.getString(
-          key: FlutterStorageKeys.userSelectedThemeMode,
+          key: StorageKeys.userSelectedThemeMode,
         )).thenAnswer((_) async => ThemeMode.light.toString());
   });
 
@@ -73,13 +73,13 @@ void main() {
     ],
     verify: (c) {
       verify(() => storageMock.getString(
-            key: FlutterStorageKeys.userSelectedLightTheme,
+            key: StorageKeys.userSelectedLightTheme,
           )).called(1);
       verify(() => storageMock.getString(
-            key: FlutterStorageKeys.userSelectedDarkTheme,
+            key: StorageKeys.userSelectedDarkTheme,
           )).called(1);
       verify(() => storageMock.getString(
-            key: FlutterStorageKeys.userSelectedThemeMode,
+            key: StorageKeys.userSelectedThemeMode,
           )).called(1);
       verifyNoMoreInteractions(storageMock);
     },
@@ -103,7 +103,7 @@ void main() {
     ],
     verify: (c) {
       verify(() => storageMock.setString(
-            key: FlutterStorageKeys.userSelectedLightTheme,
+            key: StorageKeys.userSelectedLightTheme,
             value: 'custom',
           ));
       verifyNoMoreInteractions(storageMock);
@@ -128,7 +128,7 @@ void main() {
     ],
     verify: (c) {
       verify(() => storageMock.setString(
-            key: FlutterStorageKeys.userSelectedDarkTheme,
+            key: StorageKeys.userSelectedDarkTheme,
             value: 'custom',
           ));
       verifyNoMoreInteractions(storageMock);
@@ -153,7 +153,7 @@ void main() {
     ],
     verify: (c) {
       verify(() => storageMock.setString(
-            key: FlutterStorageKeys.userSelectedThemeMode,
+            key: StorageKeys.userSelectedThemeMode,
             value: ThemeMode.dark.toString(),
           ));
       verifyNoMoreInteractions(storageMock);
