@@ -10,6 +10,7 @@ import '../../widgets.dart';
 typedef DPAErrorCallback = void Function(
   BuildContext context,
   DPAProcessErrorStatus errorStatus,
+  String? errorMessage,
 );
 
 /// Signature for [DPAFlow.onFinished].
@@ -246,7 +247,11 @@ class DPAFlow extends StatelessWidget {
               oldState.errorStatus != newState.errorStatus &&
               newState.errorStatus != DPAProcessErrorStatus.none,
           // TODO: see if we can have a default LDK error.
-          listener: (context, state) => onError(context, state.errorStatus),
+          listener: (context, state) => onError(
+            context,
+            state.errorStatus,
+            state.errorMessage,
+          ),
         ),
         BlocListener<DPAProcessCubit, DPAProcessState>(
           listenWhen: (oldState, newState) =>

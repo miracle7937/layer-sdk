@@ -42,7 +42,7 @@ class DPACarouselScreen extends StatelessWidget {
                   const SizedBox(height: 24.0),
                 ],
                 Text(
-                  variable.label?.capitalize ?? '',
+                  variable.label ?? '',
                   textAlign: TextAlign.center,
                   style: design.titleM(),
                 ),
