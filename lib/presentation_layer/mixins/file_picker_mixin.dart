@@ -10,7 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import '../utils.dart';
 import '../widgets.dart';
 
-/// A mixin that expose methos for picking files.
+/// A mixin that exposes methods for picking files.
 mixin FilePickerMixin {
   /// Opens a bottom sheet that shows the available options for picking
   /// files and returns a file if picked.

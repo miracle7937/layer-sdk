@@ -173,7 +173,7 @@ class DPAScreenTypeDTO extends EnumDTO {
   /// PIN
   static const pin = DPAScreenTypeDTO._internal('pin');
 
-  /// E-mail verification ()
+  /// Task for validating the email entered by the user.
   static const email = DPAScreenTypeDTO._internal('email');
 
   /// Entity search
@@ -182,8 +182,8 @@ class DPAScreenTypeDTO extends EnumDTO {
   /// Two columns
   static const twoColumns = DPAScreenTypeDTO._internal('two_column');
 
-  /// Screen that is waiting an email to be completed.
-  /// Don't confuse it with the email verification one.
+  /// Task that should be fullscreen and that can only be finished by pressing
+  /// a link sent to the email
   static const waitingEmail = DPAScreenTypeDTO._internal('waitingEmail');
 
   /// The available values.

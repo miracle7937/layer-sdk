@@ -53,6 +53,9 @@ enum DPAProcessErrorStatus {
   /// No errors
   none,
 
+  /// Generic error.
+  generic,
+
   /// Network error
   network,
 }

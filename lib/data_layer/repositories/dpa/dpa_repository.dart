@@ -377,39 +377,33 @@ class DPARepository implements DPARepositoryInterface {
       ' on process with task id ${process.task?.id}',
     );
 
-    try {
-      final processDTO = process.toDPAProcessDTO();
+    final processDTO = process.toDPAProcessDTO();
 
-      final result = await _provider.uploadImage(
+    final result = await _provider.uploadImage(
+      process: processDTO,
+      key: variable.key,
+      imageName: imageName,
+      imageBase64Data: imageBase64Data,
+      onProgress: onProgress,
+    );
+
+    if (!result) return variable;
+
+    _log.finest(
+      'Finished uploading for variable ${variable.id}'
+      ' with key ${variable.key}'
+      ': ${_provider.imageDownloadURL(
         process: processDTO,
         key: variable.key,
-        imageName: imageName,
-        imageBase64Data: imageBase64Data,
-        onProgress: onProgress,
-      );
+      )}',
+    );
 
-      if (!result) return variable;
-
-      _log.finest(
-        'Finished uploading for variable ${variable.id}'
-        ' with key ${variable.key}'
-        ': ${_provider.imageDownloadURL(
-          process: processDTO,
-          key: variable.key,
-        )}',
-      );
-
-      return variable.validateAndCopyWith(
-        value: DPAFileData(
-          name: imageName,
-          size: imageFileSizeBytes,
-        ),
-      );
-    } on Exception catch (e) {
-      _log.severe('Error uploading image: $e');
-
-      return variable;
-    }
+    return variable.validateAndCopyWith(
+      value: DPAFileData(
+        name: imageName,
+        size: imageFileSizeBytes,
+      ),
+    );
   }
 
   /// Downloads a base64 encoded file from the server.

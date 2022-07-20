@@ -141,7 +141,7 @@ class _DPAFileUploadState extends State<DPAFileUpload> with FilePickerMixin {
                   '{document}',
                   widget.variable.label!.toLowerCase(),
                 )
-            : widget.variable.label?.capitalize) ??
+            : widget.variable.label) ??
         translation.translate('upload');
 
     return Padding(
