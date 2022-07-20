@@ -836,6 +836,7 @@ void _uploadImagesTests() {
         process: _mockedFailureProcess,
         runStatus: DPAProcessRunStatus.running,
         errorStatus: DPAProcessErrorStatus.network,
+        errorMessage: 'Some error',
       ),
     ],
     verify: (c) => verify(
