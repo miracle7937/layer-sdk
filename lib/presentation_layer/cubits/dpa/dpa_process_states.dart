@@ -53,6 +53,9 @@ enum DPAProcessErrorStatus {
   /// No errors
   none,
 
+  /// Generic error.
+  generic,
+
   /// Network error
   network,
 }
@@ -216,6 +219,9 @@ enum DPAProcessingFileAction {
 
 /// Holds the data for uploading/downloading/deleting files for a variable.
 class DPAProcessingFileData extends Equatable {
+  /// The file name.
+  final String fileName;
+
   /// The key for the variable that is processing the file.
   final String variableKey;
 
@@ -234,6 +240,7 @@ class DPAProcessingFileData extends Equatable {
 
   /// Creates a new [DPAProcessingFileData].
   const DPAProcessingFileData({
+    required this.fileName,
     required this.variableKey,
     required this.action,
     this.count = 0,
@@ -242,6 +249,7 @@ class DPAProcessingFileData extends Equatable {
 
   @override
   List<Object?> get props => [
+        fileName,
         variableKey,
         action,
         count,
@@ -250,12 +258,14 @@ class DPAProcessingFileData extends Equatable {
 
   /// Creates a [DPAProcessingFileData] based on this one.
   DPAProcessingFileData copyWith({
+    String? fileName,
     String? variableKey,
     DPAProcessingFileAction? action,
     int? count,
     int? total,
   }) =>
       DPAProcessingFileData(
+        fileName: fileName ?? this.fileName,
         variableKey: variableKey ?? this.variableKey,
         action: action ?? this.action,
         count: count ?? this.count,

@@ -32,6 +32,7 @@ export 'mappings/dpa/dpa_task_dto_mapping.dart';
 export 'mappings/dpa/dpa_value_dto_mapping.dart';
 export 'mappings/dpa/dpa_variable_dto_mapping.dart';
 export 'mappings/dpa/dpa_variable_property_dto_mapping.dart';
+export 'mappings/dpa/dpa_variable_text_properties_dto_mapping.dart';
 export 'mappings/experience/experience_container_dto_mapping.dart';
 export 'mappings/experience/experience_dto_mapping.dart';
 export 'mappings/experience/experience_page_dto_mapping.dart';

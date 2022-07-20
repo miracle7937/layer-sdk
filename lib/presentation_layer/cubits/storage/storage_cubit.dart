@@ -222,7 +222,9 @@ class StorageCubit extends Cubit<StorageState> {
   /// Emits a busy state at the start, and the loaded settings on completion.
   Future<void> loadApplicationSettings() async {
     emit(
-      state.copyWith(busy: true),
+      state.copyWith(
+        busy: true,
+      ),
     );
 
     try {
@@ -311,7 +313,9 @@ class StorageCubit extends Cubit<StorageState> {
   /// Loads the secret key for OCRA mutual authentication flow.
   Future<void> loadOcraSecretKey() async {
     emit(
-      state.copyWith(busy: true),
+      state.copyWith(
+        busy: true,
+      ),
     );
 
     try {

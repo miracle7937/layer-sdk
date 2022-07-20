@@ -35,6 +35,7 @@ export 'dtos/dpa/dpa_value_dto.dart';
 export 'dtos/dpa/dpa_value_field_dto.dart';
 export 'dtos/dpa/dpa_variable_dto.dart';
 export 'dtos/dpa/dpa_variable_property_dto.dart';
+export 'dtos/dpa/dpa_variable_text_properties_dto.dart';
 export 'dtos/experience/experience_container_dto.dart';
 export 'dtos/experience/experience_dto.dart';
 export 'dtos/experience/experience_page_dto.dart';

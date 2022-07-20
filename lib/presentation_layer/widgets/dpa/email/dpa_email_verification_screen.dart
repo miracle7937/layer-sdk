@@ -5,12 +5,16 @@ import 'package:open_mail_app/open_mail_app.dart';
 import '../../../../layer_sdk.dart';
 
 /// DPA Email screen to handle the [DPAScreenType.email]
-class DPAEmailScreen extends StatelessWidget {
+/// Used for verifying the email.
+class DPAEmailVerificationScreen extends StatelessWidget {
   /// Custom `DPAHeader` widget
   final Widget? customDPAHeader;
 
-  /// Creates a new [DPAEmailScreen] instance
-  const DPAEmailScreen({Key? key, this.customDPAHeader}) : super(key: key);
+  /// Creates a new [DPAEmailVerificationScreen] instance
+  const DPAEmailVerificationScreen({
+    Key? key,
+    this.customDPAHeader,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

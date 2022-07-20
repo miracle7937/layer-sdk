@@ -1,4 +1,4 @@
-import '../../features/dpa.dart';
+import '../../../features/dpa.dart';
 
 /// Extension that provides helper methods to [DPAScreenBlock].
 extension DPAScreenBlockUIExtension on DPAScreenBlock {
@@ -12,7 +12,10 @@ extension DPAScreenBlockUIExtension on DPAScreenBlock {
         return false;
 
       case DPAScreenBlock.email:
-        return type == DPAScreenType.email;
+        return [
+          DPAScreenType.waitingEmail,
+          DPAScreenType.email,
+        ].contains(type);
     }
   }
 }

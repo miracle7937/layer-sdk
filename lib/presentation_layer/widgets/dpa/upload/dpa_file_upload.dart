@@ -1,18 +1,16 @@
 import 'dart:typed_data';
 
 import 'package:design_kit_layer/design_kit_layer.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
 import 'package:open_file/open_file.dart';
 
 import '../../../../domain_layer/models.dart';
 import '../../../cubits.dart';
 import '../../../extensions.dart';
-import '../../../resources.dart';
+import '../../../mixins.dart';
 import '../../../utils.dart';
 
 /// The file upload widget for the DPA flows.
@@ -93,11 +91,7 @@ class DPAFileUpload extends StatefulWidget {
   State<DPAFileUpload> createState() => _DPAFileUploadState();
 }
 
-class _DPAFileUploadState extends State<DPAFileUpload> {
-  /// The types used to decide whether it's safe to use the `image_picker` or if
-  /// it's needed to use the `file_picker`.
-  static const _imageTypes = ['jpg', 'jpeg', 'png'];
-
+class _DPAFileUploadState extends State<DPAFileUpload> with FilePickerMixin {
   final _logger = Logger('DPAFileUpload');
 
   /// This field holds the file name while it's being uploaded only.
@@ -106,15 +100,18 @@ class _DPAFileUploadState extends State<DPAFileUpload> {
   /// variable value.
   String? _fileName;
 
-  bool get _useImagePicker =>
-      widget.variable.property.allowedTypes.isEmpty ||
-      widget.variable.property.allowedTypes
-          .every((type) => _imageTypes.contains(type));
-
-  String get _description => widget.variable.property.allowedTypes.join(', ');
+  String get _description =>
+      widget.variable.property.description ??
+      widget.variable.property.allowedTypes.join(', ');
 
   String? get fileName => _fileName;
   set fileName(String? value) => setState(() => _fileName = value);
+
+  /// Holds any error that ocurred internally in the widget and that
+  /// are not related to the dpa flow.
+  String? _error;
+  String? get error => _error;
+  set error(String? error) => setState(() => _error = error);
 
   @override
   Widget build(BuildContext context) {
@@ -137,15 +134,15 @@ class _DPAFileUploadState extends State<DPAFileUpload> {
         status == DKUploadStatus.idle &&
         widget.variable.label != null;
 
-    // Only show the take a photo button if:
-    // - Only handling image types
-    // - Picker is idle
-    // - Not on the web
-    // - Picking from the gallery is allowed
-    final showTakePhotoButton = _useImagePicker &&
-        status == DKUploadStatus.idle &&
-        !kIsWeb &&
-        widget.allowPickingImageFromGallery;
+    final title = (widget.variable.value as DPAFileData?)?.name ??
+        data?.fileName ??
+        (effectiveAppendAdd
+            ? translation.translate('add_document').replaceFirst(
+                  '{document}',
+                  widget.variable.label!.toLowerCase(),
+                )
+            : widget.variable.label) ??
+        translation.translate('upload');
 
     return Padding(
       padding: widget.padding,
@@ -153,24 +150,10 @@ class _DPAFileUploadState extends State<DPAFileUpload> {
         children: [
           DKUpload(
             status: status,
-            title: (effectiveAppendAdd
-                    ? translation.translate('add_document').replaceFirst(
-                          '{document}',
-                          widget.variable.label!.toLowerCase(),
-                        )
-                    : widget.variable.label?.capitalize) ??
-                translation.translate('upload'),
+            title: title,
             useTitleWherePossible: true,
-            description: _description,
-            onPick: status != DKUploadStatus.idle
-                ? null
-                : _useImagePicker
-                    ? () => _uploadImage(
-                          source: widget.allowPickingImageFromGallery
-                              ? ImageSource.gallery
-                              : ImageSource.camera,
-                        )
-                    : _uploadFile,
+            description: _description.replaceAll(r'\n', '\n'),
+            onPick: status != DKUploadStatus.idle ? null : _pickFile,
             onDelete: widget.readonly
                 ? null
                 : (_) => context.read<DPAProcessCubit>().deleteFile(
@@ -187,117 +170,79 @@ class _DPAFileUploadState extends State<DPAFileUpload> {
                   )
                 : null,
             error: (status == DKUploadStatus.idle
-                    ? widget.variable.translateValidationError(
-                        translation,
-                        uploadValidationKey: widget.emptyStateMessageKey,
-                      )
+                    ? error ??
+                        widget.variable.translateValidationError(
+                          translation,
+                          uploadValidationKey: widget.emptyStateMessageKey,
+                        )
                     : null) ??
                 '',
             onDownload:
                 widget.variable.constraints.readonly ? _downloadFile : null,
           ),
-          if (showTakePhotoButton)
-            DKButton(
-              iconPath: FLImages.camera,
-              title: widget.customTakePhotoLabel ??
-                  translation.translate(
-                    'take_a_photo',
-                  ),
-              type: DKButtonType.baseTertiary,
-              onPressed: () => _uploadImage(
-                source: ImageSource.camera,
-              ),
-            ),
         ],
       ),
     );
   }
 
-  Future<void> _uploadImage({
-    ImageSource source = ImageSource.gallery,
-  }) async {
+  /// Opens a bottom sheet and shows the options for picking a file. If picked,
+  /// starts uploading the file using the [DPAProcessCubit].
+  Future<void> _pickFile() async {
+    error = null;
     widget.onPauseAutoLock?.call();
 
-    final file = await ImagePicker().pickImage(
-      source: source,
-      maxWidth: widget.maxSize.width,
-      maxHeight: widget.maxSize.height,
-    );
+    final pickedFile = kIsWeb
+        ? await pickFile(
+            widget.allowPickingImageFromGallery
+                ? FilePickerSource.galleryImage
+                : FilePickerSource.cameraImage,
+          )
+        : await startPickFileFlow(
+            context,
+            title: Translation.of(context).translate('uploading_options'),
+            allowedExtensions: widget.variable.property.allowedTypes.toSet(),
+          );
 
     widget.onInitializeAutoLock?.call();
 
-    if (file == null) return;
-    final extension =
-        file.mimeType?.split('/').last ?? file.name.split('.').last;
-    final allowedTypes = widget.variable.property.allowedTypes.join(', ');
+    if (pickedFile == null) return;
 
-    if (!widget.variable.property.allowedTypes.contains(extension)) {
-      widget.onFilePickError?.call(
-        Translation.translateOf(context, 'unsupported_document_type')
-            .replaceAll('{extensions}', allowedTypes),
+    /// TOD0: Check with Grzeg how to handle the error form automation, cause
+    /// right now it's not being handled on the repository. Should we?
+    ///
+    /// The mime type is not being handled when the document is custom (file).
+    final extension = pickedFile.mimeType?.split('/').last ??
+        pickedFile.file.path.split('.').last;
+    final allowedTypes = widget.variable.property.allowedTypes.join(', ');
+    if (!allowedTypes.contains(extension)) {
+      final errorMessage = Translation.translateOf(
+        context,
+        'unsupported_document_type',
       );
+
+      if (widget.onFilePickError != null) {
+        widget.onFilePickError!.call(errorMessage);
+      } else {
+        error = errorMessage;
+      }
+
       return;
     }
 
     final fileData = await Future.wait([
-      file.length(),
-      file.readAsBytes(),
+      pickedFile.file.length(),
+      pickedFile.file.readAsBytes(),
     ]);
 
-    fileName = file.name;
+    fileName = pickedFile.file.path.split('/').last;
 
     await context.read<DPAProcessCubit>().uploadImage(
           variable: widget.variable,
-          filename: file.name,
+          filename: fileName!,
           fileSizeBytes: fileData[0] as int,
           fileBase64Data: CodecUtils().encodeBase64Image(
             fileData[1] as Uint8List,
           ),
-        );
-
-    fileName = null;
-  }
-
-  Future<void> _uploadFile() async {
-    widget.onPauseAutoLock?.call();
-
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: widget.variable.property.allowedTypes.toList(),
-      withData: true,
-    );
-
-    widget.onInitializeAutoLock?.call();
-
-    if (result == null || result.files.isEmpty) return;
-
-    final file = result.files.first;
-    final allowedTypes = widget.variable.property.allowedTypes.join(', ');
-
-    if (!widget.variable.property.allowedTypes.contains(file.extension)) {
-      widget.onFilePickError?.call(
-        Translation.translateOf(context, 'unsupported_document_type')
-            .replaceAll('{extensions}', allowedTypes),
-      );
-      return;
-    }
-
-    // Force unwrapping is safe because we are picking `withData` above.
-    var data = file.bytes!;
-    final fileSize = file.size;
-
-    fileName = file.name;
-
-    await context.read<DPAProcessCubit>().uploadImage(
-          variable: widget.variable,
-          filename: file.name,
-          fileSizeBytes: fileSize,
-          fileBase64Data: file.extension == 'pdf'
-              ? CodecUtils().encodeBase64PDF(data)
-              : CodecUtils().encodeBase64Image(
-                  data,
-                  format: file.extension ?? 'jpeg',
-                ),
         );
 
     fileName = null;

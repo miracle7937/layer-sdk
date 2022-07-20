@@ -52,6 +52,13 @@ class DPAVariablesList extends StatelessWidget {
   /// Defaults to `false`.
   final bool debugLog;
 
+  /// The custom empty search builder that will show when a search field
+  /// input returned no results.
+  ///
+  /// If not indicated, a default one will show showing the translation
+  /// assigned to the key `no_results_found`.
+  final WidgetBuilder? customEmptySearchBuilder;
+
   /// Creates a new [DPAVariablesList].
   const DPAVariablesList({
     Key? key,
@@ -59,6 +66,7 @@ class DPAVariablesList extends StatelessWidget {
     this.builder,
     this.crossAxisAlignment = CrossAxisAlignment.start,
     this.debugLog = false,
+    this.customEmptySearchBuilder,
   }) : super(key: key);
 
   @override
@@ -154,6 +162,7 @@ class DPAVariablesList extends StatelessWidget {
             filter: (item, query) =>
                 item.id.toLowerCase().contains(query.toLowerCase()) ||
                 item.name.toLowerCase().contains(query.toLowerCase()),
+            customEmptySearchBuilder: customEmptySearchBuilder,
           );
         }
 

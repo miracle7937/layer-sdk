@@ -454,6 +454,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
       state.copyWith(
         processingFiles: state.processingFiles.union({
           DPAProcessingFileData(
+            fileName: filename,
             action: DPAProcessingFileAction.uploading,
             variableKey: variable.key,
           ),
@@ -493,13 +494,16 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
               .toSet(),
         ),
       );
-    } on NetException {
+    } on Exception catch (e) {
       emit(
         state.copyWith(
           processingFiles: state.processingFiles
               .where((d) => d.variableKey != variable.key)
               .toSet(),
-          errorStatus: DPAProcessErrorStatus.network,
+          errorStatus: e is NetException
+              ? DPAProcessErrorStatus.network
+              : DPAProcessErrorStatus.generic,
+          errorMessage: e is NetException ? e.message : null,
         ),
       );
     }
@@ -545,6 +549,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
       state.copyWith(
         processingFiles: state.processingFiles.union({
           DPAProcessingFileData(
+            fileName: (variable.value as DPAFileData?)?.name ?? '',
             action: DPAProcessingFileAction.deleting,
             variableKey: variable.key,
           ),
