@@ -40,11 +40,16 @@ class AuthenticationRepository implements AuthenticationRepositoryInterface {
   }
 
   /// Recovers the user's password
-  Future<ForgotPasswordRequestStatus> recoverPassword(
-          {required String username}) =>
-      _provider.recoverPassword(username);
+  @override
+  Future<ForgotPasswordRequestStatus> recoverPassword({
+    required String username,
+  }) =>
+      _provider.recoverPassword(
+        username,
+      );
 
   /// Resets the user's password
+  @override
   Future<bool> resetPassword({
     required String username,
     required String oldPassword,
@@ -59,10 +64,19 @@ class AuthenticationRepository implements AuthenticationRepositoryInterface {
   /// Logs the user out.
   ///
   /// Returns true if the cache was cleared.
-  Future<bool> logout({int? deviceId}) => _provider.logout(deviceId: deviceId);
+  @override
+  Future<bool> logout({
+    int? deviceId,
+  }) =>
+      _provider.logout(
+        deviceId: deviceId,
+      );
 
   /// Returns true if the provided pin is valid.
-  Future<VerifyPinResponse> verifyAccessPin({required String pin}) async {
+  @override
+  Future<VerifyPinResponse> verifyAccessPin({
+    required String pin,
+  }) async {
     final verifyPinResponseDTO = await _provider.verifyAccessPin(
       pin,
     );
@@ -71,6 +85,7 @@ class AuthenticationRepository implements AuthenticationRepositoryInterface {
   }
 
   /// Changes the password of an user.
+  @override
   Future<MessageResponse> changePassword({
     int? userId,
     String? username,
