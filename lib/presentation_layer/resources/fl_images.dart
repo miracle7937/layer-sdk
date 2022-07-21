@@ -11,4 +11,7 @@ class FLImages {
   static const String success = '$_path/success.svg';
   static const String warning = '$_path/warning.svg';
   static const String error = '$_path/error.svg';
+  static const String successWithBackground = '$_path/ic_success.svg';
+  static const String warningWithBackground = '$_path/ic_warning.svg';
+  static const String errorWithBackground = '$_path/ic_error.svg';
 }
