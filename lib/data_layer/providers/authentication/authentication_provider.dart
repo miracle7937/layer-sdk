@@ -1,6 +1,5 @@
 import '../../../../data_layer/dtos.dart';
 import '../../../../data_layer/network.dart';
-import '../dtos.dart';
 
 /// The available error status
 enum ForgotPasswordRequestStatus {
@@ -180,5 +179,20 @@ class AuthenticationProvider {
     );
 
     return VerifyPinResponseDTO.fromJson(response);
+  }
+
+  /// Changes the password using the given data.
+  Future<ChangeUserPasswordResponseDTO> changeUsersPassword(
+    ChangeUserPasswordDTO data,
+  ) async {
+    final response = await netClient.request(
+      netClient.netEndpoints.changePassword,
+      method: NetRequestMethods.patch,
+      data: data,
+      forceRefresh: true,
+      throwAllErrors: false,
+    );
+
+    return ChangeUserPasswordResponseDTO.fromJson(response.data);
   }
 }

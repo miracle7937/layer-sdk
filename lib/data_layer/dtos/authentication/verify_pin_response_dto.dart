@@ -1,5 +1,5 @@
-import '../../../../data_layer/network.dart';
-import '../helpers.dart';
+import '../../helpers.dart';
+import '../../network.dart';
 
 /// A data transfer object representing the verify pin response
 class VerifyPinResponseDTO {

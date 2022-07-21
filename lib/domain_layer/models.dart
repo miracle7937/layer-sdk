@@ -8,6 +8,8 @@ export 'models/account_loan/account_loan.dart';
 export 'models/account_loan/account_loan_payment.dart';
 export 'models/account_transaction/account_transaction.dart';
 export 'models/audit/audit.dart';
+export 'models/authentication/message_response.dart';
+export 'models/authentication/verify_pin_response.dart';
 export 'models/beneficiary/beneficiary.dart';
 export 'models/bill/bill.dart';
 export 'models/branch/branch.dart';

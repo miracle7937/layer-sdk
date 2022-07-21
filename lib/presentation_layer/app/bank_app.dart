@@ -5,9 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:location/location.dart' as loc;
 
-import '../../_migration/business_layer/src/cubits.dart';
-import '../../_migration/data_layer/providers.dart';
-import '../../_migration/data_layer/repositories.dart';
 import '../../_migration/flutter_layer/src/cubits.dart';
 import '../../_migration/flutter_layer/src/widgets/text_fields/auto_padding_keyboard_view.dart';
 import '../../data_layer/interfaces.dart';
@@ -229,10 +226,6 @@ class BankAppState extends State<BankApp> {
   List<BlocProvider> _blocProviders({
     required AppThemeConfiguration themeConfiguration,
   }) {
-    final userProvider = UserProvider(
-      netClient: widget.netClient,
-    );
-
     return [
       BlocProvider<AppThemeCubit>(
         create: (context) => AppThemeCubit(
@@ -283,12 +276,51 @@ class BankAppState extends State<BankApp> {
       ),
       BlocProvider<AuthenticationCubit>(
         create: (context) => AuthenticationCubit(
-          repository: AuthenticationRepository(
+          updateUserTokenUseCase: UpdateUserTokenUseCase(
+            repository: AuthenticationRepository(
+              AuthenticationProvider(
+                netClient: widget.netClient,
+              ),
+            ),
+          ),
+          loginUseCase: LoginUseCase(
+            repository: AuthenticationRepository(
+              AuthenticationProvider(
+                netClient: widget.netClient,
+              ),
+            ),
+          ),
+          logoutUseCase: LogoutUseCase(
+            repository: AuthenticationRepository(
+              AuthenticationProvider(
+                netClient: widget.netClient,
+              ),
+            ),
+          ),
+          recoverPasswordUseCase: RecoverPasswordUseCase(
+              repository: AuthenticationRepository(
             AuthenticationProvider(
               netClient: widget.netClient,
             ),
-            userProvider,
-          ),
+          )),
+          resetPasswordUseCase: ResetPasswordUseCase(
+              repository: AuthenticationRepository(
+            AuthenticationProvider(
+              netClient: widget.netClient,
+            ),
+          )),
+          changePasswordUseCase: ChangePasswordUseCase(
+              repository: AuthenticationRepository(
+            AuthenticationProvider(
+              netClient: widget.netClient,
+            ),
+          )),
+          verifyAccessPinUseCase: VerifyAccessPinUseCase(
+              repository: AuthenticationRepository(
+            AuthenticationProvider(
+              netClient: widget.netClient,
+            ),
+          )),
         ),
       ),
       BlocProvider<CurrencyCubit>(
