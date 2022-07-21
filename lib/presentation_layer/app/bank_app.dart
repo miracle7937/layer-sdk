@@ -15,7 +15,6 @@ import '../../data_layer/network.dart';
 import '../../data_layer/providers.dart';
 import '../../data_layer/repositories.dart';
 import '../../domain_layer/use_cases.dart';
-import '../../domain_layer/use_cases/biometrics/get_biometrics_enabled_use_case.dart';
 import '../app.dart';
 import '../creators.dart';
 import '../cubits.dart';
