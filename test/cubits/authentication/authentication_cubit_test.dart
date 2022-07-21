@@ -1,35 +1,57 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
-import 'package:layer_sdk/_migration/data_layer/data_layer.dart';
 import 'package:layer_sdk/data_layer/network.dart';
+import 'package:layer_sdk/data_layer/providers.dart';
 import 'package:layer_sdk/domain_layer/models.dart';
+import 'package:layer_sdk/domain_layer/use_cases.dart';
+import 'package:layer_sdk/presentation_layer/cubits.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockAuthenticationRepository extends Mock
-    implements AuthenticationRepository {}
+class MockChangePasswordUseCase extends Mock implements ChangePasswordUseCase {}
 
-late MockAuthenticationRepository _repository;
+class MockLoginUseCase extends Mock implements LoginUseCase {}
+
+class MockLogoutUseCase extends Mock implements LogoutUseCase {}
+
+class MockRecoverPasswordUseCase extends Mock
+    implements RecoverPasswordUseCase {}
+
+class MockResetPasswordUseCase extends Mock implements ResetPasswordUseCase {}
+
+class MockVerifyAccessPinUseCase extends Mock
+    implements VerifyAccessPinUseCase {}
+
+class MockUpdateUserTokenUseCase extends Mock
+    implements UpdateUserTokenUseCase {}
+
+final _changePasswordUseCase = MockChangePasswordUseCase();
+final _loginUseCase = MockLoginUseCase();
+final _logoutUseCase = MockLogoutUseCase();
+final _recoverPasswordUseCase = MockRecoverPasswordUseCase();
+final _resetPasswordUseCase = MockResetPasswordUseCase();
+final _verifyAccessPinUseCase = MockVerifyAccessPinUseCase();
+final _updateUserTokenUseCase = MockUpdateUserTokenUseCase();
 
 void main() {
   EquatableConfig.stringify = true;
 
-  setUpAll(() {
-    _repository = MockAuthenticationRepository();
-  });
-
   blocTest<AuthenticationCubit, AuthenticationState>(
     'starts on empty state',
     build: () => AuthenticationCubit(
-      repository: _repository,
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
     ),
     verify: (c) => expect(c.state, AuthenticationState()),
   ); // starts on empty state
 
   group('Login/Logout flows', _loginFlowTests);
   group('Access PIN', _accessPinTests);
-  group('Password change', _passwordChange);
   group('Recover password', _recoverPassword);
   group('Reset password', _resetPassword);
   group('Lock/Unlock mechanism', _unlock);
@@ -82,70 +104,100 @@ void _loginFlowTests() {
 
   setUp(() {
     when(
-      () => _repository.login(usernameActive, passwordActive, ''),
+      () => _loginUseCase(
+          username: usernameActive,
+          password: passwordActive,
+          notificationToken: ''),
     ).thenAnswer((_) async => _activeUser);
 
     when(
-      () => _repository.login(usernameSuspended, passwordSuspended, ''),
+      () => _loginUseCase(
+          username: usernameSuspended,
+          password: passwordSuspended,
+          notificationToken: ''),
     ).thenAnswer((_) async => _suspendedUser);
 
     when(
-      () => _repository.login(usernameExpired, passwordExpired, ''),
+      () => _loginUseCase(
+          username: usernameExpired,
+          password: passwordExpired,
+          notificationToken: ''),
     ).thenAnswer((_) async => _expiredUser);
 
     when(
-      () => _repository.login(usernameActive, passwordExpired, ''),
+      () => _loginUseCase(
+          username: usernameActive,
+          password: passwordExpired,
+          notificationToken: ''),
     ).thenAnswer((_) async => null);
 
     when(
-      () => _repository.logout(
+      () => _logoutUseCase(
         deviceId: logoutSuccessId,
       ),
     ).thenAnswer((_) async => true);
 
     when(
-      () => _repository.login(
-        usernameException,
-        passwordException,
-        '',
+      () => _loginUseCase(
+        username: usernameException,
+        password: passwordException,
+        notificationToken: '',
       ),
     ).thenAnswer((_) async => throw Exception());
 
     when(
-      () => _repository.login(
-        usernameNetException,
-        passwordNetException,
-        '',
+      () => _loginUseCase(
+        username: usernameNetException,
+        password: passwordNetException,
+        notificationToken: '',
       ),
     ).thenAnswer((_) async => throw NetException());
 
     when(
-      () => _repository.logout(deviceId: logoutExceptionId),
+      () => _logoutUseCase(deviceId: logoutExceptionId),
     ).thenAnswer((_) async => throw Exception());
 
     when(
-      () => _repository.logout(deviceId: logoutNetExceptionId),
+      () => _logoutUseCase(deviceId: logoutNetExceptionId),
     ).thenAnswer((_) async => throw NetException());
+
+    when(
+      () => _updateUserTokenUseCase(
+        token: 'Token',
+      ),
+    ).thenAnswer((_) async => null);
   });
 
   blocTest<AuthenticationCubit, AuthenticationState>(
     'should set user',
     build: () => AuthenticationCubit(
-      repository: _repository,
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
     ),
     act: (c) => c.setLoggedUser(_activeUser),
     expect: () => [
       AuthenticationState(user: _activeUser),
     ],
     verify: (c) {
-      verify(() => _repository.token = 'Token').called(1);
+      verify(() => _updateUserTokenUseCase(token: 'Token')).called(1);
     },
   );
 
   blocTest<AuthenticationCubit, AuthenticationState>(
     'should logout',
     build: () => AuthenticationCubit(
-      repository: _repository,
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
     ),
     seed: () => AuthenticationState(
       user: _activeUser,
@@ -159,16 +211,24 @@ void _loginFlowTests() {
       AuthenticationState(),
     ],
     verify: (c) {
-      verify(() => _repository.logout(deviceId: logoutSuccessId)).called(1);
-      verifyNever(
-          () => _repository.login(usernameSuspended, passwordSuspended, ''));
+      verify(() => _logoutUseCase(deviceId: logoutSuccessId)).called(1);
+      verifyNever(() => _loginUseCase(
+          username: usernameSuspended,
+          password: passwordSuspended,
+          notificationToken: ''));
     },
   ); // logout on empty state should return an empty state
 
   blocTest<AuthenticationCubit, AuthenticationState>(
     'should log-in',
     build: () => AuthenticationCubit(
-      repository: _repository,
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
     ),
     seed: AuthenticationState.new,
     act: (c) => c.login(
@@ -184,8 +244,10 @@ void _loginFlowTests() {
       ),
     ],
     verify: (c) {
-      verify(() => _repository.login(usernameActive, passwordActive, ''))
-          .called(1);
+      verify(() => _loginUseCase(
+          username: usernameActive,
+          password: passwordActive,
+          notificationToken: '')).called(1);
     },
   ); // should login
 
@@ -194,7 +256,13 @@ void _loginFlowTests() {
   blocTest<AuthenticationCubit, AuthenticationState>(
     'should emit wrong credentials error',
     build: () => AuthenticationCubit(
-      repository: _repository,
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
     ),
     act: (c) => c.login(
       username: usernameActive,
@@ -208,15 +276,22 @@ void _loginFlowTests() {
       ),
     ],
     verify: (c) {
-      verify(() => _repository.login(usernameActive, passwordExpired, ''))
-          .called(1);
+      verify(() => _loginUseCase(
+          username: usernameActive,
+          password: passwordExpired,
+          notificationToken: '')).called(1);
     },
   ); // should emit wrong credentials error
-
   blocTest<AuthenticationCubit, AuthenticationState>(
     'should emit suspended error',
     build: () => AuthenticationCubit(
-      repository: _repository,
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
     ),
     act: (c) => c.login(
       username: usernameSuspended,
@@ -230,15 +305,23 @@ void _loginFlowTests() {
       ),
     ],
     verify: (c) {
-      verify(() => _repository.login(usernameSuspended, passwordSuspended, ''))
-          .called(1);
+      verify(() => _loginUseCase(
+          username: usernameSuspended,
+          password: passwordSuspended,
+          notificationToken: '')).called(1);
     },
   ); // should emit suspended error
 
   blocTest<AuthenticationCubit, AuthenticationState>(
     'should emit expired error',
     build: () => AuthenticationCubit(
-      repository: _repository,
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
     ),
     act: (c) => c.login(
       username: usernameExpired,
@@ -252,15 +335,23 @@ void _loginFlowTests() {
       ),
     ],
     verify: (c) {
-      verify(() => _repository.login(usernameExpired, passwordExpired, ''))
-          .called(1);
+      verify(() => _loginUseCase(
+          username: usernameExpired,
+          password: passwordExpired,
+          notificationToken: '')).called(1);
     },
   ); // should emit expired error
 
   blocTest<AuthenticationCubit, AuthenticationState>(
     'login should handle general exceptions gracefully',
     build: () => AuthenticationCubit(
-      repository: _repository,
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
     ),
     act: (c) => c.login(
       username: usernameException,
@@ -275,7 +366,10 @@ void _loginFlowTests() {
     ],
     verify: (c) {
       verify(
-        () => _repository.login(usernameException, passwordException, ''),
+        () => _loginUseCase(
+            username: usernameException,
+            password: passwordException,
+            notificationToken: ''),
       ).called(1);
     },
     errors: () => [
@@ -286,7 +380,13 @@ void _loginFlowTests() {
   blocTest<AuthenticationCubit, AuthenticationState>(
     'login should handle network exceptions gracefully',
     build: () => AuthenticationCubit(
-      repository: _repository,
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
     ),
     act: (c) => c.login(
       username: usernameNetException,
@@ -301,7 +401,10 @@ void _loginFlowTests() {
     ],
     verify: (c) {
       verify(
-        () => _repository.login(usernameNetException, passwordNetException, ''),
+        () => _loginUseCase(
+            username: usernameNetException,
+            password: passwordNetException,
+            notificationToken: ''),
       ).called(1);
     },
     errors: () => [
@@ -312,7 +415,13 @@ void _loginFlowTests() {
   blocTest<AuthenticationCubit, AuthenticationState>(
     'logout should handle general exceptions gracefully',
     build: () => AuthenticationCubit(
-      repository: _repository,
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
     ),
     seed: () => AuthenticationState(
       user: _exceptionUser,
@@ -334,7 +443,7 @@ void _loginFlowTests() {
     ],
     verify: (c) {
       verify(
-        () => _repository.logout(deviceId: logoutExceptionId),
+        () => _logoutUseCase(deviceId: logoutExceptionId),
       ).called(1);
     },
   );
@@ -342,7 +451,13 @@ void _loginFlowTests() {
   blocTest<AuthenticationCubit, AuthenticationState>(
     'logout should handle network exceptions gracefully',
     build: () => AuthenticationCubit(
-      repository: _repository,
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
     ),
     seed: () => AuthenticationState(
       user: _netExceptionUser,
@@ -364,7 +479,7 @@ void _loginFlowTests() {
     ],
     verify: (c) {
       verify(
-        () => _repository.logout(deviceId: logoutNetExceptionId),
+        () => _logoutUseCase(deviceId: logoutNetExceptionId),
       ).called(1);
     },
   );
@@ -379,7 +494,7 @@ void _accessPinTests() {
 
   setUp(() {
     when(
-      () => _repository.verifyAccessPin(correctPin),
+      () => _verifyAccessPinUseCase(pin: correctPin),
     ).thenAnswer(
       (_) async => VerifyPinResponse(
         isVerified: true,
@@ -387,7 +502,7 @@ void _accessPinTests() {
     );
 
     when(
-      () => _repository.verifyAccessPin(incorrectPin),
+      () => _verifyAccessPinUseCase(pin: incorrectPin),
     ).thenAnswer(
       (_) async => VerifyPinResponse(
         isVerified: false,
@@ -395,13 +510,13 @@ void _accessPinTests() {
     );
 
     when(
-      () => _repository.verifyAccessPin(exceptionPin),
+      () => _verifyAccessPinUseCase(pin: exceptionPin),
     ).thenAnswer(
       (_) async => throw Exception(),
     );
 
     when(
-      () => _repository.verifyAccessPin(netExceptionPin),
+      () => _verifyAccessPinUseCase(pin: netExceptionPin),
     ).thenAnswer(
       (_) async => throw NetException(),
     );
@@ -410,7 +525,13 @@ void _accessPinTests() {
   blocTest<AuthenticationCubit, AuthenticationState>(
     'should verify access PIN',
     build: () => AuthenticationCubit(
-      repository: _repository,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
     ),
     act: (c) => c.verifyAccessPin(correctPin),
     expect: () => [
@@ -422,13 +543,19 @@ void _accessPinTests() {
       ),
     ],
     verify: (c) {
-      verify(() => _repository.verifyAccessPin(correctPin)).called(1);
+      verify(() => _verifyAccessPinUseCase(pin: correctPin)).called(1);
     },
   );
   blocTest<AuthenticationCubit, AuthenticationState>(
     'should set wrong credentials error',
     build: () => AuthenticationCubit(
-      repository: _repository,
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
     ),
     act: (c) => c.verifyAccessPin(incorrectPin),
     expect: () => [
@@ -438,14 +565,20 @@ void _accessPinTests() {
       ),
     ],
     verify: (c) {
-      verify(() => _repository.verifyAccessPin(incorrectPin)).called(1);
+      verify(() => _verifyAccessPinUseCase(pin: incorrectPin)).called(1);
     },
   );
 
   blocTest<AuthenticationCubit, AuthenticationState>(
     'should set PIN needs verification',
     build: () => AuthenticationCubit(
-      repository: _repository,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
     ),
     seed: () => AuthenticationState(
       verifyPinResponse: VerifyPinResponse(
@@ -465,7 +598,13 @@ void _accessPinTests() {
   blocTest<AuthenticationCubit, AuthenticationState>(
     'should set access PIN',
     build: () => AuthenticationCubit(
-      repository: _repository,
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
     ),
     seed: () => AuthenticationState(user: user),
     act: (c) => c.setAccessPin(correctPin),
@@ -477,7 +616,13 @@ void _accessPinTests() {
   blocTest<AuthenticationCubit, AuthenticationState>(
     'Should not lock a user that is not logged in',
     build: () => AuthenticationCubit(
-      repository: _repository,
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
     ),
     seed: AuthenticationState.new,
     act: (c) => c.lock(),
@@ -487,7 +632,13 @@ void _accessPinTests() {
   blocTest<AuthenticationCubit, AuthenticationState>(
     'Should lock the user out',
     build: () => AuthenticationCubit(
-      repository: _repository,
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
     ),
     seed: () => AuthenticationState(
       user: user,
@@ -506,7 +657,13 @@ void _accessPinTests() {
   blocTest<AuthenticationCubit, AuthenticationState>(
     'verify access pin should handle generic exceptions gracefully',
     build: () => AuthenticationCubit(
-      repository: _repository,
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
     ),
     act: (c) => c.verifyAccessPin(exceptionPin),
     expect: () => [
@@ -520,14 +677,20 @@ void _accessPinTests() {
       isA<Exception>(),
     ],
     verify: (c) {
-      verify(() => _repository.verifyAccessPin(exceptionPin)).called(1);
+      verify(() => _verifyAccessPinUseCase(pin: exceptionPin)).called(1);
     },
   );
 
   blocTest<AuthenticationCubit, AuthenticationState>(
     'verify access pin should handle network exceptions gracefully',
     build: () => AuthenticationCubit(
-      repository: _repository,
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
     ),
     act: (c) => c.verifyAccessPin(netExceptionPin),
     expect: () => [
@@ -541,7 +704,7 @@ void _accessPinTests() {
       isA<NetException>(),
     ],
     verify: (c) {
-      verify(() => _repository.verifyAccessPin(netExceptionPin)).called(1);
+      verify(() => _verifyAccessPinUseCase(pin: netExceptionPin)).called(1);
     },
   );
 }
@@ -550,7 +713,13 @@ void _emptyFieldsTests() {
   blocTest<AuthenticationCubit, AuthenticationState>(
     'should emit empty fields error if all fields are empty',
     build: () => AuthenticationCubit(
-      repository: _repository,
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
     ),
     act: (c) => c.login(
       username: '',
@@ -564,35 +733,21 @@ void _emptyFieldsTests() {
       ),
     ],
     verify: (c) {
-      verifyNever(() => _repository.login('', '', ''));
+      verifyNever(() =>
+          _loginUseCase(username: '', password: '', notificationToken: ''));
     },
   ); // should emit empty fields error if all fields are empty
 
   blocTest<AuthenticationCubit, AuthenticationState>(
-    'should emit empty fields error if all fields are null',
-    build: () => AuthenticationCubit(
-      repository: _repository,
-    ),
-    act: (c) => c.login(
-      username: '',
-      password: '',
-      notificationToken: '',
-    ),
-    expect: () => [
-      AuthenticationState(busy: true),
-      AuthenticationState(
-        errorStatus: AuthenticationErrorStatus.emptyFields,
-      ),
-    ],
-    verify: (c) {
-      verifyNever(() => _repository.login(any(), any(), any()));
-    },
-  ); // should emit empty fields error if all fields are null
-
-  blocTest<AuthenticationCubit, AuthenticationState>(
     'should emit empty fields error if username is empty',
     build: () => AuthenticationCubit(
-      repository: _repository,
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
     ),
     act: (c) => c.login(
       username: '',
@@ -606,14 +761,21 @@ void _emptyFieldsTests() {
       ),
     ],
     verify: (c) {
-      verifyNever(() => _repository.login('', '123', ''));
+      verifyNever(() =>
+          _loginUseCase(username: '', password: '123', notificationToken: ''));
     },
   ); // should emit empty fields error if username is empty
 
   blocTest<AuthenticationCubit, AuthenticationState>(
     'should emit empty fields error if password is empty',
     build: () => AuthenticationCubit(
-      repository: _repository,
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
     ),
     act: (c) => c.login(
       username: 'superadmin',
@@ -627,158 +789,10 @@ void _emptyFieldsTests() {
       ),
     ],
     verify: (c) {
-      verifyNever(() => _repository.login('superadmin', '', ''));
+      verifyNever(() => _loginUseCase(
+          username: 'superadmin', password: '', notificationToken: ''));
     },
   ); // should emit empty fields error if password is empty
-}
-
-void _passwordChange() {
-  final _successId = 1;
-  final _failureId = 2;
-  final _exceptionId = 3;
-
-  final _failMessage = 'Request Failed';
-
-  setUpAll(() {
-    when(
-      () => _repository.changePassword(
-        userId: _successId,
-        username: any(named: 'username'),
-        oldPassword: any(named: 'oldPassword'),
-        newPassword: any(named: 'newPassword'),
-        confirmPassword: any(named: 'confirmPassword'),
-      ),
-    ).thenAnswer(
-      (_) async => MessageResponse(success: true),
-    );
-
-    when(
-      () => _repository.changePassword(
-        userId: _failureId,
-        username: any(named: 'username'),
-        oldPassword: any(named: 'oldPassword'),
-        newPassword: any(named: 'newPassword'),
-        confirmPassword: any(named: 'confirmPassword'),
-      ),
-    ).thenAnswer(
-      (_) async => MessageResponse(success: false, message: _failMessage),
-    );
-
-    when(
-      () => _repository.changePassword(
-        userId: _exceptionId,
-        username: any(named: 'username'),
-        oldPassword: any(named: 'oldPassword'),
-        newPassword: any(named: 'newPassword'),
-        confirmPassword: any(named: 'confirmPassword'),
-      ),
-    ).thenAnswer(
-      (_) async => throw Exception('Some error'),
-    );
-  });
-
-  blocTest<AuthenticationCubit, AuthenticationState>(
-    'Emits success action when successfully changing password',
-    build: () => AuthenticationCubit(
-      repository: _repository,
-    ),
-    act: (c) => c.changePassword(
-      user: User(
-        id: _successId.toString(),
-        username: 'User Success',
-      ),
-      oldPassword: 'old_password',
-      newPassword: 'any_password',
-      confirmPassword: 'any_password',
-    ),
-    expect: () => [
-      AuthenticationState(busy: true),
-      AuthenticationState(
-        busy: false,
-        authenticationAction: AuthenticationAction.passwordChanged,
-        errorStatus: AuthenticationErrorStatus.none,
-      ),
-    ],
-    verify: (c) => verify(
-      () => _repository.changePassword(
-        userId: _successId,
-        username: any(named: 'username'),
-        oldPassword: any(named: 'oldPassword'),
-        newPassword: any(named: 'newPassword'),
-        confirmPassword: any(named: 'confirmPassword'),
-      ),
-    ).called(1),
-  ); // Emits success action when successfully changing password
-
-  blocTest<AuthenticationCubit, AuthenticationState>(
-    'Emits error when failing to change password',
-    build: () => AuthenticationCubit(
-      repository: _repository,
-    ),
-    act: (c) => c.changePassword(
-      user: User(
-        id: _failureId.toString(),
-        username: 'User Fail',
-      ),
-      oldPassword: 'old_password',
-      newPassword: 'any_password',
-      confirmPassword: 'any_password',
-    ),
-    expect: () => [
-      AuthenticationState(busy: true),
-      AuthenticationState(
-        busy: false,
-        authenticationAction: AuthenticationAction.none,
-        errorMessage: _failMessage,
-        errorStatus: AuthenticationErrorStatus.changePasswordFailed,
-      ),
-    ],
-    verify: (c) => verify(
-      () => _repository.changePassword(
-        userId: _failureId,
-        username: any(named: 'username'),
-        oldPassword: any(named: 'oldPassword'),
-        newPassword: any(named: 'newPassword'),
-        confirmPassword: any(named: 'confirmPassword'),
-      ),
-    ).called(1),
-  ); // Emits error when failing to change password
-
-  blocTest<AuthenticationCubit, AuthenticationState>(
-    'Emits error when exception happens on password change',
-    build: () => AuthenticationCubit(
-      repository: _repository,
-    ),
-    act: (c) => c.changePassword(
-      user: User(
-        id: _exceptionId.toString(),
-        username: 'User Exception',
-      ),
-      oldPassword: 'old_password',
-      newPassword: 'any_password',
-      confirmPassword: 'any_password',
-    ),
-    expect: () => [
-      AuthenticationState(busy: true),
-      AuthenticationState(
-        busy: false,
-        authenticationAction: AuthenticationAction.none,
-        errorStatus: AuthenticationErrorStatus.generic,
-      ),
-    ],
-    errors: () => [
-      isA<Exception>(),
-    ],
-    verify: (c) => verify(
-      () => _repository.changePassword(
-        userId: _exceptionId,
-        username: any(named: 'username'),
-        oldPassword: any(named: 'oldPassword'),
-        newPassword: any(named: 'newPassword'),
-        confirmPassword: any(named: 'confirmPassword'),
-      ),
-    ).called(1),
-  ); // Emits error when exception happens on password change
 }
 
 void _recoverPassword() {
@@ -790,31 +804,31 @@ void _recoverPassword() {
 
   setUpAll(() {
     when(
-      () => _repository.recoverPassword(_successUsername),
+      () => _recoverPasswordUseCase(username: _successUsername),
     ).thenAnswer(
       (_) async => ForgotPasswordRequestStatus.success,
     );
 
     when(
-      () => _repository.recoverPassword(_invalidUsername),
+      () => _recoverPasswordUseCase(username: _invalidUsername),
     ).thenAnswer(
       (_) async => ForgotPasswordRequestStatus.invalidUser,
     );
 
     when(
-      () => _repository.recoverPassword(_suspendedUsername),
+      () => _recoverPasswordUseCase(username: _suspendedUsername),
     ).thenAnswer(
       (_) async => ForgotPasswordRequestStatus.suspendedUser,
     );
 
     when(
-      () => _repository.recoverPassword(_notAllowedUsername),
+      () => _recoverPasswordUseCase(username: _notAllowedUsername),
     ).thenAnswer(
       (_) async => ForgotPasswordRequestStatus.notAllowed,
     );
 
     when(
-      () => _repository.recoverPassword(_exceptionUsername),
+      () => _recoverPasswordUseCase(username: _exceptionUsername),
     ).thenAnswer(
       (_) async => throw Exception('Some error'),
     );
@@ -822,7 +836,15 @@ void _recoverPassword() {
 
   blocTest<AuthenticationCubit, AuthenticationState>(
     'Handles success',
-    build: () => AuthenticationCubit(repository: _repository),
+    build: () => AuthenticationCubit(
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
+    ),
     act: (c) => c.recoverPassword(username: _successUsername),
     expect: () => [
       AuthenticationState(busy: true),
@@ -833,13 +855,21 @@ void _recoverPassword() {
       ),
     ],
     verify: (c) => verify(
-      () => _repository.recoverPassword(_successUsername),
+      () => _recoverPasswordUseCase(username: _successUsername),
     ).called(1),
   ); // Handles success
 
   blocTest<AuthenticationCubit, AuthenticationState>(
     'Handles invalid user',
-    build: () => AuthenticationCubit(repository: _repository),
+    build: () => AuthenticationCubit(
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
+    ),
     act: (c) => c.recoverPassword(username: _invalidUsername),
     expect: () => [
       AuthenticationState(busy: true),
@@ -850,13 +880,21 @@ void _recoverPassword() {
       ),
     ],
     verify: (c) => verify(
-      () => _repository.recoverPassword(_invalidUsername),
+      () => _recoverPasswordUseCase(username: _invalidUsername),
     ).called(1),
   ); // Handles invalid user
 
   blocTest<AuthenticationCubit, AuthenticationState>(
     'Handles suspended user',
-    build: () => AuthenticationCubit(repository: _repository),
+    build: () => AuthenticationCubit(
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
+    ),
     act: (c) => c.recoverPassword(username: _suspendedUsername),
     expect: () => [
       AuthenticationState(busy: true),
@@ -867,13 +905,21 @@ void _recoverPassword() {
       ),
     ],
     verify: (c) => verify(
-      () => _repository.recoverPassword(_suspendedUsername),
+      () => _recoverPasswordUseCase(username: _suspendedUsername),
     ).called(1),
   ); // Handles suspended user
 
   blocTest<AuthenticationCubit, AuthenticationState>(
     'Handles recover not allowed',
-    build: () => AuthenticationCubit(repository: _repository),
+    build: () => AuthenticationCubit(
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
+    ),
     act: (c) => c.recoverPassword(username: _notAllowedUsername),
     expect: () => [
       AuthenticationState(busy: true),
@@ -884,13 +930,21 @@ void _recoverPassword() {
       ),
     ],
     verify: (c) => verify(
-      () => _repository.recoverPassword(_notAllowedUsername),
+      () => _recoverPasswordUseCase(username: _notAllowedUsername),
     ).called(1),
   ); // Handles recover not allowed
 
   blocTest<AuthenticationCubit, AuthenticationState>(
     'Emits error when exception thrown',
-    build: () => AuthenticationCubit(repository: _repository),
+    build: () => AuthenticationCubit(
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
+    ),
     act: (c) => c.recoverPassword(username: _exceptionUsername),
     expect: () => [
       AuthenticationState(busy: true),
@@ -904,7 +958,7 @@ void _recoverPassword() {
       isA<Exception>(),
     ],
     verify: (c) => verify(
-      () => _repository.recoverPassword(_exceptionUsername),
+      () => _recoverPasswordUseCase(username: _exceptionUsername),
     ).called(1),
   ); // Emits error when exception thrown
 }
@@ -928,40 +982,40 @@ void _resetPassword() {
 
   setUp(() {
     when(
-      () => _repository.resetPassword(
-        successUsername,
-        successOldPassword,
-        successNewPassword,
+      () => _resetPasswordUseCase(
+        username: successUsername,
+        oldPassword: successOldPassword,
+        newPassword: successNewPassword,
       ),
     ).thenAnswer(
       (_) async => true,
     );
 
     when(
-      () => _repository.resetPassword(
-        failureUsername,
-        failureOldPassword,
-        failureNewPassword,
+      () => _resetPasswordUseCase(
+        username: failureUsername,
+        oldPassword: failureOldPassword,
+        newPassword: failureNewPassword,
       ),
     ).thenAnswer(
       (_) async => false,
     );
 
     when(
-      () => _repository.resetPassword(
-        exceptionUsername,
-        exceptionOldPassword,
-        exceptionNewPassword,
+      () => _resetPasswordUseCase(
+        username: exceptionUsername,
+        oldPassword: exceptionOldPassword,
+        newPassword: exceptionNewPassword,
       ),
     ).thenAnswer(
       (_) async => throw Exception(),
     );
 
     when(
-      () => _repository.resetPassword(
-        netExceptionUsername,
-        netExceptionOldPassword,
-        netExceptionNewPassword,
+      () => _resetPasswordUseCase(
+        username: netExceptionUsername,
+        oldPassword: netExceptionOldPassword,
+        newPassword: netExceptionNewPassword,
       ),
     ).thenAnswer(
       (_) async => throw NetException(),
@@ -970,7 +1024,15 @@ void _resetPassword() {
 
   blocTest<AuthenticationCubit, AuthenticationState>(
     'should reset password successfully',
-    build: () => AuthenticationCubit(repository: _repository),
+    build: () => AuthenticationCubit(
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
+    ),
     act: (c) => c.resetPassword(
       username: successUsername,
       newPassword: successNewPassword,
@@ -985,17 +1047,25 @@ void _resetPassword() {
       ),
     ],
     verify: (c) => verify(
-      () => _repository.resetPassword(
-        successUsername,
-        successOldPassword,
-        successNewPassword,
+      () => _resetPasswordUseCase(
+        username: successUsername,
+        oldPassword: successOldPassword,
+        newPassword: successNewPassword,
       ),
     ).called(1),
   );
 
   blocTest<AuthenticationCubit, AuthenticationState>(
     'should handle reset password failure gracefully',
-    build: () => AuthenticationCubit(repository: _repository),
+    build: () => AuthenticationCubit(
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
+    ),
     act: (c) => c.resetPassword(
       username: failureUsername,
       newPassword: failureNewPassword,
@@ -1010,17 +1080,25 @@ void _resetPassword() {
       ),
     ],
     verify: (c) => verify(
-      () => _repository.resetPassword(
-        failureUsername,
-        failureOldPassword,
-        failureNewPassword,
+      () => _resetPasswordUseCase(
+        username: failureUsername,
+        oldPassword: failureOldPassword,
+        newPassword: failureNewPassword,
       ),
     ).called(1),
   );
 
   blocTest<AuthenticationCubit, AuthenticationState>(
     'should handle general exceptions gracefully',
-    build: () => AuthenticationCubit(repository: _repository),
+    build: () => AuthenticationCubit(
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
+    ),
     act: (c) => c.resetPassword(
       username: exceptionUsername,
       newPassword: exceptionNewPassword,
@@ -1034,10 +1112,10 @@ void _resetPassword() {
       ),
     ],
     verify: (c) => verify(
-      () => _repository.resetPassword(
-        exceptionUsername,
-        exceptionOldPassword,
-        exceptionNewPassword,
+      () => _resetPasswordUseCase(
+        username: exceptionUsername,
+        oldPassword: exceptionOldPassword,
+        newPassword: exceptionNewPassword,
       ),
     ).called(1),
     errors: () => [
@@ -1047,7 +1125,15 @@ void _resetPassword() {
 
   blocTest<AuthenticationCubit, AuthenticationState>(
     'should handle network exceptions gracefully',
-    build: () => AuthenticationCubit(repository: _repository),
+    build: () => AuthenticationCubit(
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
+    ),
     act: (c) => c.resetPassword(
       username: netExceptionUsername,
       newPassword: netExceptionNewPassword,
@@ -1061,10 +1147,10 @@ void _resetPassword() {
       ),
     ],
     verify: (c) => verify(
-      () => _repository.resetPassword(
-        netExceptionUsername,
-        netExceptionOldPassword,
-        netExceptionNewPassword,
+      () => _resetPasswordUseCase(
+        username: netExceptionUsername,
+        oldPassword: netExceptionOldPassword,
+        newPassword: netExceptionNewPassword,
       ),
     ).called(1),
     errors: () => [
@@ -1079,9 +1165,24 @@ void _unlock() {
     token: 'bearer lmao',
   );
 
+  setUpAll(() {
+    when(
+      () => _updateUserTokenUseCase(token: 'bearer lmao'),
+    ).thenAnswer(
+      (_) async => null,
+    );
+  });
   blocTest<AuthenticationCubit, AuthenticationState>(
     'should emit unlocked state with provided user',
-    build: () => AuthenticationCubit(repository: _repository),
+    build: () => AuthenticationCubit(
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
+    ),
     act: (c) => c.unlock(user),
     expect: () => [
       AuthenticationState(
@@ -1089,11 +1190,24 @@ void _unlock() {
         user: user,
       ),
     ],
+    verify: (c) => verify(
+      () => _updateUserTokenUseCase(
+        token: 'bearer lmao',
+      ),
+    ).called(1),
   );
 
   blocTest<AuthenticationCubit, AuthenticationState>(
     'should do nothing when locking without authentication',
-    build: () => AuthenticationCubit(repository: _repository),
+    build: () => AuthenticationCubit(
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
+    ),
     act: (c) => c.lock(),
     expect: () => [],
   );

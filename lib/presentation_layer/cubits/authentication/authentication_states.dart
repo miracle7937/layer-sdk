@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import '../../../../../domain_layer/models.dart';
-import '../../../../data_layer/data_layer.dart';
 
 /// The available error status
 enum AuthenticationErrorStatus {

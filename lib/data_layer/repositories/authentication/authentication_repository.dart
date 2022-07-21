@@ -1,22 +1,18 @@
 import '../../../../data_layer/dtos.dart';
-import '../../../../data_layer/mappings.dart';
 import '../../../../data_layer/providers.dart';
 import '../../../../domain_layer/models.dart';
-import '../../models.dart';
+import '../../../domain_layer/abstract_repositories.dart';
+import '../../mappings.dart';
 import '../../providers.dart';
-import '../mappings.dart';
 
 /// Handles authentication data
-class AuthenticationRepository {
+class AuthenticationRepository implements AuthenticationRepositoryInterface {
   final AuthenticationProvider _provider;
-  final UserProvider _userProvider;
 
   /// Creates a new repository with the supplied [AuthenticationProvider]
   const AuthenticationRepository(
     AuthenticationProvider provider,
-    UserProvider userProvider,
-  )   : _provider = provider,
-        _userProvider = userProvider;
+  ) : _provider = provider;
 
   /// Set the token to use for request authentication.
   // ignore: avoid_setters_without_getters
@@ -25,11 +21,12 @@ class AuthenticationRepository {
   /// Logs the user in.
   ///
   /// Returns a [User] or null if couldn't log in.
-  Future<User?> login(
-    String username,
-    String password,
+  @override
+  Future<User?> login({
+    required String username,
+    required String password,
     String? notificationToken,
-  ) async {
+  }) async {
     final userDTO = await _provider.login(
       username,
       password,
@@ -43,15 +40,21 @@ class AuthenticationRepository {
   }
 
   /// Recovers the user's password
-  Future<ForgotPasswordRequestStatus> recoverPassword(String username) =>
-      _provider.recoverPassword(username);
+  @override
+  Future<ForgotPasswordRequestStatus> recoverPassword({
+    required String username,
+  }) =>
+      _provider.recoverPassword(
+        username,
+      );
 
   /// Resets the user's password
-  Future<bool> resetPassword(
-    String username,
-    String oldPassword,
-    String newPassword,
-  ) =>
+  @override
+  Future<bool> resetPassword({
+    required String username,
+    required String oldPassword,
+    required String newPassword,
+  }) =>
       _provider.resetPassword(
         username,
         oldPassword,
@@ -61,10 +64,19 @@ class AuthenticationRepository {
   /// Logs the user out.
   ///
   /// Returns true if the cache was cleared.
-  Future<bool> logout({int? deviceId}) => _provider.logout(deviceId: deviceId);
+  @override
+  Future<bool> logout({
+    int? deviceId,
+  }) =>
+      _provider.logout(
+        deviceId: deviceId,
+      );
 
   /// Returns true if the provided pin is valid.
-  Future<VerifyPinResponse> verifyAccessPin(String pin) async {
+  @override
+  Future<VerifyPinResponse> verifyAccessPin({
+    required String pin,
+  }) async {
     final verifyPinResponseDTO = await _provider.verifyAccessPin(
       pin,
     );
@@ -73,14 +85,16 @@ class AuthenticationRepository {
   }
 
   /// Changes the password of an user.
+  @override
   Future<MessageResponse> changePassword({
     int? userId,
     String? username,
-    String? oldPassword,
-    String? newPassword,
-    String? confirmPassword,
+    User? user,
+    required String oldPassword,
+    required String newPassword,
+    required String confirmPassword,
   }) async {
-    final dto = await _userProvider.changeUsersPassword(
+    final dto = await _provider.changeUsersPassword(
       ChangeUserPasswordDTO(
         type: ChangeUserPasswordDTOType.user,
         userId: userId,

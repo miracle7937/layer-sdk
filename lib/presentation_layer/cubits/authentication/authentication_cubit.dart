@@ -2,25 +2,45 @@ import 'package:bloc/bloc.dart';
 
 import '../../../../../data_layer/network.dart';
 import '../../../../../domain_layer/models.dart';
-import '../../../../data_layer/data_layer.dart';
+import '../../../data_layer/providers.dart';
+import '../../../data_layer/repositories.dart';
+import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
 
 /// Maintains the states of authentication on the app
 class AuthenticationCubit extends Cubit<AuthenticationState> {
-  final AuthenticationRepository _repository;
+  final LoginUseCase _loginUseCase;
+  final LogoutUseCase _logoutUseCase;
+  final RecoverPasswordUseCase _recoverPasswordUseCase;
+  final ResetPasswordUseCase _resetPasswordUseCase;
+  final ChangePasswordUseCase _changePasswordUseCase;
+  final VerifyAccessPinUseCase _verifyAccessPinUseCase;
+  final UpdateUserTokenUseCase _updateUserTokenUseCase;
 
   /// Creates a new cubit with an empty [AuthenticationState] and calls
   /// load settings
   AuthenticationCubit({
-    required AuthenticationRepository repository,
-  })  : _repository = repository,
+    required LoginUseCase loginUseCase,
+    required LogoutUseCase logoutUseCase,
+    required RecoverPasswordUseCase recoverPasswordUseCase,
+    required ResetPasswordUseCase resetPasswordUseCase,
+    required ChangePasswordUseCase changePasswordUseCase,
+    required VerifyAccessPinUseCase verifyAccessPinUseCase,
+    required UpdateUserTokenUseCase updateUserTokenUseCase,
+  })  : _loginUseCase = loginUseCase,
+        _logoutUseCase = logoutUseCase,
+        _recoverPasswordUseCase = recoverPasswordUseCase,
+        _resetPasswordUseCase = resetPasswordUseCase,
+        _changePasswordUseCase = changePasswordUseCase,
+        _verifyAccessPinUseCase = verifyAccessPinUseCase,
+        _updateUserTokenUseCase = updateUserTokenUseCase,
         super(AuthenticationState());
 
   /// Sets the provided user as the current logged user and emits updated state.
   ///
   /// Configures the [NetClient] token with the user token.
   void setLoggedUser(User user) {
-    _repository.token = user.token;
+    _updateUserTokenUseCase(token: user.token);
     emit(state.copyWith(user: user));
   }
 
@@ -38,7 +58,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         ),
       );
 
-      await _repository.logout(
+      await _logoutUseCase(
         deviceId: deactivateDevice ? state.user?.deviceId : null,
       );
 
@@ -92,10 +112,10 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         return;
       }
 
-      final user = await _repository.login(
-        username,
-        password,
-        notificationToken,
+      final user = await _loginUseCase(
+        username: username,
+        password: password,
+        notificationToken: notificationToken,
       );
 
       var errorStatus =
@@ -169,7 +189,9 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     );
 
     try {
-      final returnedStatus = await _repository.recoverPassword(username);
+      final returnedStatus = await _recoverPasswordUseCase(
+        username: username,
+      );
 
       var errorStatus;
 
@@ -238,10 +260,10 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     );
 
     try {
-      final didResetPassword = await _repository.resetPassword(
-        username,
-        oldPassword,
-        newPassword,
+      final didResetPassword = await _resetPasswordUseCase(
+        username: username,
+        oldPassword: oldPassword,
+        newPassword: newPassword,
       );
 
       emit(
@@ -286,8 +308,9 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     );
 
     try {
-      final response = await _repository.changePassword(
+      final response = await _changePasswordUseCase(
         userId: int.tryParse(user.id),
+        user: user,
         username: user.username,
         oldPassword: oldPassword,
         newPassword: newPassword,
@@ -296,7 +319,6 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
 
       emit(
         state.copyWith(
-          busy: false,
           authenticationAction: response.success
               ? AuthenticationAction.passwordChanged
               : AuthenticationAction.none,
@@ -304,6 +326,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
               ? AuthenticationErrorStatus.none
               : AuthenticationErrorStatus.changePasswordFailed,
           errorMessage: response.message,
+          busy: false,
         ),
       );
     } on Exception catch (e) {
@@ -334,7 +357,9 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     );
 
     try {
-      final verifyPinResponse = await _repository.verifyAccessPin(pin);
+      final verifyPinResponse = await _verifyAccessPinUseCase(
+        pin: pin,
+      );
 
       emit(
         state.copyWith(
@@ -407,7 +432,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   /// Method to be called after the user authenticates
   /// using biometrics successfully
   void unlock(User user) {
-    _repository.token = user.token;
+    _updateUserTokenUseCase(token: user.token);
 
     emit(
       state.copyWith(
@@ -425,7 +450,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   void setSecondFactorStatus({
     bool validated = false,
   }) {
-    if (!validated) _repository.token = null;
+    if (!validated) _updateUserTokenUseCase(token: null);
 
     emit(
       state.copyWith(
