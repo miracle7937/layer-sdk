@@ -15,6 +15,7 @@ import '../../data_layer/network.dart';
 import '../../data_layer/providers.dart';
 import '../../data_layer/repositories.dart';
 import '../../domain_layer/use_cases.dart';
+import '../../domain_layer/use_cases/biometrics/get_biometrics_enabled_use_case.dart';
 import '../app.dart';
 import '../creators.dart';
 import '../cubits.dart';
@@ -142,11 +143,27 @@ class BankAppState extends State<BankApp> {
 
   /// The creators that are injected by the layer SDK.
   List<CreatorSingleChildWidget> get layerSDKCreators => [
+        CreatorProvider<BiometricsCreator>(
+          create: (_) => BiometricsCreator(
+            getBiometricsEnabledUseCase: GetBiometricsEnabledUseCase(
+              loadGlobalSettingsUseCase: LoadGlobalSettingsUseCase(
+                repository: GlobalSettingRepository(
+                  provider: GlobalSettingProvider(
+                    netClient: widget.netClient,
+                  ),
+                ),
+              ),
+              getDeviceModelUseCase: GetDeviceModelUseCase(),
+            ),
+          ),
+        ),
         CreatorProvider<SetPinScreenCreator>(
           create: (_) => SetPinScreenCreator(
-            userRepository: UserRepository(
-              userProvider: UserProvider(
-                netClient: widget.netClient,
+            setAccessPinForUserUseCase: SetAccessPinForUserUseCase(
+              repository: UserRepository(
+                userProvider: UserProvider(
+                  netClient: widget.netClient,
+                ),
               ),
             ),
           ),
