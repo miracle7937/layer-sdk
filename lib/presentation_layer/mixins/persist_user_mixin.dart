@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../features/user.dart';
+import '../app.dart';
 import '../creators.dart';
 import '../cubits.dart';
 import '../features/enable_biometrics_screen/enable_biometrics_screen.dart';
@@ -55,11 +56,12 @@ mixin PersistUserMixin {
   Future<void> persistsUser(
     BuildContext context, {
     required User user,
-    required String pin,
-    String? ocraSecret,
+    required String accessPin,
+    required String ocraSecret,
     bool useBiometrics = false,
   }) async {
-    assert(pin.isNotEmpty, 'The pin cannot be empty');
+    assert(accessPin.isNotEmpty, 'The access pin cannot be empty');
+    assert(ocraSecret.isNotEmpty, 'The ocra secet cannot be empty');
 
     final storageCubit = context.read<StorageCreator>().create();
 
@@ -68,18 +70,26 @@ mixin PersistUserMixin {
       user,
     );
     if (alreadyLoggedIn) {
-      BottomSheetHelper.showError(
+      return BottomSheetHelper.showError(
         context: context,
         titleKey: 'user_already_registered',
       );
     } else {
-      if (ocraSecret != null) {
-        await storageCubit.saveOcraSecretKey(ocraSecret);
-      }
+      await storageCubit.saveOcraSecretKey(ocraSecret);
 
       storageCubit.toggleBiometric(isBiometricsActive: useBiometrics);
 
-      await storageCubit.saveUser(user: user);
+      await storageCubit.saveUser(
+        user: user.copyWith(
+          accessPin: accessPin,
+        ),
+      );
+
+      await storageCubit.saveAuthenticationSettings(
+        useBiometrics: useBiometrics,
+      );
+
+      BankApp.restart(context);
     }
   }
 

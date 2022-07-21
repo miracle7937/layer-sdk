@@ -265,12 +265,6 @@ class DPAFlow<T> extends StatelessWidget {
         ),
         BlocListener<DPAProcessCubit, DPAProcessState>(
           listenWhen: (oldState, newState) =>
-              oldState.runStatus != newState.runStatus &&
-              newState.runStatus == DPAProcessRunStatus.finished,
-          listener: onFinished,
-        ),
-        BlocListener<DPAProcessCubit, DPAProcessState>(
-          listenWhen: (oldState, newState) =>
               oldState.popUp != null && newState.popUp == null,
           listener: _hidePopUp,
         ),
@@ -278,6 +272,12 @@ class DPAFlow<T> extends StatelessWidget {
           listenWhen: (oldState, newState) =>
               oldState.popUp == null && newState.popUp != null,
           listener: _showPopUp,
+        ),
+        BlocListener<DPAProcessCubit, DPAProcessState>(
+          listenWhen: (oldState, newState) =>
+              oldState.runStatus != newState.runStatus &&
+              newState.runStatus == DPAProcessRunStatus.finished,
+          listener: onFinished,
         ),
       ],
       child: Stack(
