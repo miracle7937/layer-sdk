@@ -79,6 +79,15 @@ class DPAVariablePropertyDTO {
   /// The prefix value.
   final String? prefixValue;
 
+  /// An optional description for this variable.
+  final String? description;
+
+  /// The text properties for this variable's label.
+  final DPAVariableTextPropertiesDTO? labelTextProperties;
+
+  /// The text properties for this variable's value.
+  final DPAVariableTextPropertiesDTO? valueTextProperties;
+
   /// Creates a new [DPAVariablePropertyDTO].
   DPAVariablePropertyDTO({
     this.propertyType,
@@ -105,6 +114,9 @@ class DPAVariablePropertyDTO {
     this.image,
     this.dialCodes,
     this.prefixValue,
+    this.description,
+    this.labelTextProperties,
+    this.valueTextProperties,
   });
 
   /// Creates a new [DPAVariablePropertyDTO] from the given JSON.
@@ -146,6 +158,21 @@ class DPAVariablePropertyDTO {
                 json['prefix_list'],
               ),
         prefixValue: json['prefix_value'],
+        description: json['description'],
+        labelTextProperties:
+            json['label_color'] == null && json['label_font_style'] == null
+                ? null
+                : DPAVariableTextPropertiesDTO.fromProperties(
+                    color: json['label_color'],
+                    fontStyle: json['label_font_style'],
+                  ),
+        valueTextProperties:
+            json['value_color'] == null && json['value_font_style'] == null
+                ? null
+                : DPAVariableTextPropertiesDTO.fromProperties(
+                    color: json['value_color'],
+                    fontStyle: json['value_font_style'],
+                  ),
       );
 
   @override
@@ -176,6 +203,11 @@ class DPAVariablePropertyDTO {
       '${image != null ? 'image: $image ' : ''}'
       '${dialCodes != null ? 'dialCodes: $dialCodes ' : ''}'
       '${prefixValue != null ? 'prefixValue: $prefixValue ' : ''}'
+      '${description != null ? 'description: $description ' : ''}'
+      '${labelTextProperties != null ? 'labelTextProperties: '
+          '$labelTextProperties ' : ''}'
+      '${valueTextProperties != null ? 'valueTextProperties: '
+          '$valueTextProperties ' : ''}'
       '}';
 }
 

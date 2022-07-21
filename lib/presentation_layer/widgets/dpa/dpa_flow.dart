@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -9,6 +10,7 @@ import '../../widgets.dart';
 typedef DPAErrorCallback = void Function(
   BuildContext context,
   DPAProcessErrorStatus errorStatus,
+  String? errorMessage,
 );
 
 /// Signature for [DPAFlow.onFinished].
@@ -184,6 +186,16 @@ class DPAFlow extends StatelessWidget {
   /// The callback called when the dpa step needs to launch an sdk.
   final DPAStartSDKCallback sdkCallback;
 
+  /// The custom empty search builder that will show when a search field
+  /// input returned no results.
+  ///
+  /// If not indicated, a default one will show showing the translation
+  /// assigned to the key `no_results_found`.
+  ///
+  /// This will only work if the [customChild] and [customVariableListBuilder]
+  /// were not indicated. In that case, this should be handled there.
+  final WidgetBuilder? customEmptySearchBuilder;
+
   /// Creates a new [DPAFlow].
   const DPAFlow({
     Key? key,
@@ -196,6 +208,7 @@ class DPAFlow extends StatelessWidget {
     this.customShowPopUp,
     this.customHidePopUp,
     this.showTaskDescription = true,
+    this.customEmptySearchBuilder,
     required this.sdkCallback,
   }) : super(key: key);
 
@@ -208,28 +221,6 @@ class DPAFlow extends StatelessWidget {
     final hasPopup = context.select<DPAProcessCubit, bool>(
       (cubit) => cubit.state.hasPopup,
     );
-
-    final isCarouselScreen = process.variables.isNotEmpty &&
-        process.variables.every(
-          (e) => e.type == DPAVariableType.swipe,
-        );
-
-    final isOTPScreen = process.stepProperties?.screenType == DPAScreenType.otp;
-
-    final isEmailValidationScreen =
-        process.stepProperties?.screenType == DPAScreenType.email;
-
-    final effectiveCustomChild = isCarouselScreen
-        ? DPACarouselScreen()
-        : isOTPScreen
-            ? DPAOTPScreen(
-                customDPAHeader: customHeader,
-              )
-            : isEmailValidationScreen
-                ? DPAEmailScreen(
-                    customDPAHeader: customHeader,
-                  )
-                : customChild;
 
     final isDelayTask = process.stepProperties?.delay != null;
 
@@ -256,7 +247,11 @@ class DPAFlow extends StatelessWidget {
               oldState.errorStatus != newState.errorStatus &&
               newState.errorStatus != DPAProcessErrorStatus.none,
           // TODO: see if we can have a default LDK error.
-          listener: (context, state) => onError(context, state.errorStatus),
+          listener: (context, state) => onError(
+            context,
+            state.errorStatus,
+            state.errorMessage,
+          ),
         ),
         BlocListener<DPAProcessCubit, DPAProcessState>(
           listenWhen: (oldState, newState) =>
@@ -287,7 +282,7 @@ class DPAFlow extends StatelessWidget {
       ],
       child: Stack(
         children: [
-          effectiveCustomChild ??
+          _getEffectiveCustomChild(context) ??
               // TODO: update to use the correct Layer Design Kit design.
               // TODO: update to handle the different pages
               Column(
@@ -310,7 +305,11 @@ class DPAFlow extends StatelessWidget {
                                   context,
                                   process,
                                 ) ??
-                                DPAVariablesList(process: process),
+                                DPAVariablesList(
+                                  process: process,
+                                  customEmptySearchBuilder:
+                                      customEmptySearchBuilder,
+                                ),
                           ),
                         ],
                       ),
@@ -342,6 +341,73 @@ class DPAFlow extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Widget? _getEffectiveCustomChild(BuildContext context) {
+    if (customChild != null) {
+      return customChild;
+    }
+
+    final process = context.select<DPAProcessCubit, DPAProcess>(
+      (cubit) => cubit.state.process,
+    );
+
+    final isCarouselScreen = process.variables.isNotEmpty &&
+        process.variables.every(
+          (e) => e.type == DPAVariableType.swipe,
+        );
+    if (isCarouselScreen) {
+      return DPACarouselScreen();
+    }
+
+    final isOTPScreen = process.stepProperties?.screenType == DPAScreenType.otp;
+    if (isOTPScreen) {
+      return DPAOTPScreen(
+        customDPAHeader: customHeader,
+      );
+    }
+
+    final isEmailValidationScreen =
+        process.stepProperties?.screenType == DPAScreenType.email;
+    if (isEmailValidationScreen) {
+      return DPAEmailVerificationScreen(
+        customDPAHeader: customHeader,
+      );
+    }
+
+    final pinVariable = process.variables
+        .singleWhereOrNull((variable) => variable.type == DPAVariableType.pin);
+    final effectiveHeader = (process.stepProperties?.hideAppBar ?? false)
+        ? null
+        : customHeader ?? DPAHeader(process: process);
+
+    if (pinVariable != null) {
+      return DPASetAccessPin(
+        header: effectiveHeader,
+        dpaVariable: pinVariable.copyWith(
+          label: process.task?.description,
+        ),
+        onAccessPinSet: (pin) {
+          final cubit = context.read<DPAProcessCubit>();
+          cubit.updateValue(
+            variable: pinVariable,
+            newValue: pin,
+          );
+          cubit.stepOrFinish();
+        },
+      );
+    }
+
+    final isStepWaitingForEmail =
+        process.stepProperties?.screenType == DPAScreenType.waitingEmail;
+
+    if (isStepWaitingForEmail) {
+      return DPAWaitingEmailScreen(
+        process: process,
+      );
+    }
+
+    return null;
   }
 
   void _hidePopUp(BuildContext context, DPAProcessState state) {

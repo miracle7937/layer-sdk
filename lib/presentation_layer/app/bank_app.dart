@@ -13,6 +13,7 @@ import '../../data_layer/providers.dart';
 import '../../data_layer/repositories.dart';
 import '../../domain_layer/use_cases.dart';
 import '../app.dart';
+import '../creators.dart';
 import '../cubits.dart';
 import '../design.dart';
 import '../utils.dart';
@@ -136,6 +137,19 @@ class BankAppState extends State<BankApp> {
     });
   }
 
+  /// The creators that are injected by the layer SDK.
+  List<CreatorSingleChildWidget> get layerSDKCreators => [
+        CreatorProvider<SetPinScreenCreator>(
+          create: (_) => SetPinScreenCreator(
+            userRepository: UserRepository(
+              userProvider: UserProvider(
+                netClient: widget.netClient,
+              ),
+            ),
+          ),
+        ),
+      ];
+
   @override
   Widget build(BuildContext context) {
     final app = MultiBlocProvider(
@@ -145,12 +159,13 @@ class BankAppState extends State<BankApp> {
       child: _appBuilder(),
     );
 
-    return widget.appConfiguration.creators.isNotEmpty
-        ? MultiCreatorProvider(
-            creators: widget.appConfiguration.creators,
-            child: app,
-          )
-        : app;
+    return MultiCreatorProvider(
+      creators: [
+        ...layerSDKCreators,
+        ...widget.appConfiguration.creators,
+      ],
+      child: app,
+    );
   }
 
   /// Returns a list of bloc providers for the scope of an entire application.

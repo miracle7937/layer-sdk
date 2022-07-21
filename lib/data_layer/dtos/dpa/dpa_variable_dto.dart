@@ -227,6 +227,9 @@ class DPATypeDTO extends EnumDTO {
   /// Search results
   static const searchResults = DPATypeDTO._('search_results');
 
+  /// Pin pad view.
+  static const pin = DPATypeDTO._('pin');
+
   /// Returns all the values available.
   static const List<DPATypeDTO> values = [
     string,
@@ -236,6 +239,7 @@ class DPATypeDTO extends EnumDTO {
     enumType,
     object,
     searchResults,
+    pin,
   ];
 
   const DPATypeDTO._(String value) : super.internal(value);

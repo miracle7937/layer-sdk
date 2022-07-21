@@ -98,6 +98,9 @@ extension DPAScreenTypeDTOMapping on DPAScreenTypeDTO {
       case DPAScreenTypeDTO.twoColumns:
         return DPAScreenType.twoColumns;
 
+      case DPAScreenTypeDTO.waitingEmail:
+        return DPAScreenType.waitingEmail;
+
       default:
         return DPAScreenType.other;
     }

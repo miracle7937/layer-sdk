@@ -20,13 +20,13 @@ class AppThemeCubit extends Cubit<AppThemeState> {
   /// Loads selected [AppTheme] and [ThemeMode].
   Future<void> loadSelectedThemes() async {
     final lightThemeName = await storage.getString(
-      key: FlutterStorageKeys.userSelectedLightTheme,
+      key: StorageKeys.userSelectedLightTheme,
     );
     final darkThemeName = await storage.getString(
-      key: FlutterStorageKeys.userSelectedDarkTheme,
+      key: StorageKeys.userSelectedDarkTheme,
     );
     final modeName = await storage.getString(
-      key: FlutterStorageKeys.userSelectedThemeMode,
+      key: StorageKeys.userSelectedThemeMode,
     );
     emit(state.copyWith(
       selectedLightTheme: state.availableLightThemes[lightThemeName],
@@ -49,7 +49,7 @@ class AppThemeCubit extends Cubit<AppThemeState> {
 
     if (name != null) {
       await storage.setString(
-        key: FlutterStorageKeys.userSelectedLightTheme,
+        key: StorageKeys.userSelectedLightTheme,
         value: name,
       );
     }
@@ -67,7 +67,7 @@ class AppThemeCubit extends Cubit<AppThemeState> {
 
     if (name != null) {
       await storage.setString(
-        key: FlutterStorageKeys.userSelectedDarkTheme,
+        key: StorageKeys.userSelectedDarkTheme,
         value: name,
       );
     }
@@ -77,7 +77,7 @@ class AppThemeCubit extends Cubit<AppThemeState> {
   Future<void> setThemeMode(ThemeMode mode) async {
     emit(state.copyWith(mode: mode));
     await storage.setString(
-      key: FlutterStorageKeys.userSelectedThemeMode,
+      key: StorageKeys.userSelectedThemeMode,
       value: mode.toString(),
     );
   }

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:layer_sdk/_migration/business_layer/business_layer.dart';
 import 'package:layer_sdk/_migration/flutter_layer/flutter_layer.dart';
+import 'package:layer_sdk/presentation_layer/resources.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockGenericStorage extends Mock implements GenericStorage {}
@@ -51,14 +52,14 @@ void _successTests() {
   setUp(() {
     when(
       () => _storageMock.getString(
-        key: FlutterStorageKeys.userSelectedLanguageCode,
+        key: StorageKeys.userSelectedLanguageCode,
       ),
     ).thenAnswer(
       (_) async => _baseLocale.languageCode,
     );
     when(
       () => _storageMock.setString(
-        key: FlutterStorageKeys.userSelectedLanguageCode,
+        key: StorageKeys.userSelectedLanguageCode,
         value: any(named: 'value'),
       ),
     ).thenAnswer((_) async => true);
@@ -77,7 +78,7 @@ void _successTests() {
     verify: (c) {
       verify(
         () => _storageMock.getString(
-          key: FlutterStorageKeys.userSelectedLanguageCode,
+          key: StorageKeys.userSelectedLanguageCode,
         ),
       ).called(1);
 
@@ -98,7 +99,7 @@ void _successTests() {
     verify: (c) {
       verify(
         () => _storageMock.setString(
-          key: FlutterStorageKeys.userSelectedLanguageCode,
+          key: StorageKeys.userSelectedLanguageCode,
           value: _newLocale.languageCode,
         ),
       ).called(1);
@@ -112,7 +113,7 @@ void _errorHandling() {
   setUp(() {
     when(
       () => _storageMock.getString(
-        key: FlutterStorageKeys.userSelectedLanguageCode,
+        key: StorageKeys.userSelectedLanguageCode,
       ),
     ).thenThrow(
       Exception('Error'),
@@ -120,7 +121,7 @@ void _errorHandling() {
 
     when(
       () => _storageMock.setString(
-        key: FlutterStorageKeys.userSelectedLanguageCode,
+        key: StorageKeys.userSelectedLanguageCode,
         value: _newLocale.languageCode,
       ),
     ).thenThrow(
@@ -144,7 +145,7 @@ void _errorHandling() {
     verify: (c) {
       verify(
         () => _storageMock.getString(
-          key: FlutterStorageKeys.userSelectedLanguageCode,
+          key: StorageKeys.userSelectedLanguageCode,
         ),
       ).called(1);
 
@@ -168,7 +169,7 @@ void _errorHandling() {
     verify: (c) {
       verify(
         () => _storageMock.setString(
-          key: FlutterStorageKeys.userSelectedLanguageCode,
+          key: StorageKeys.userSelectedLanguageCode,
           value: _newLocale.languageCode,
         ),
       ).called(1);

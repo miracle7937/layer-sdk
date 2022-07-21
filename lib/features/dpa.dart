@@ -17,6 +17,7 @@ export '../domain_layer/models/dpa/dpa_value.dart';
 export '../domain_layer/models/dpa/dpa_value_field.dart';
 export '../domain_layer/models/dpa/dpa_variable.dart';
 export '../domain_layer/models/dpa/dpa_variable_property.dart';
+export '../domain_layer/models/dpa/dpa_variable_text_properties.dart';
 export '../domain_layer/use_cases/dpa/cancel_dpa_process_use_case.dart';
 export '../domain_layer/use_cases/dpa/claim_dpa_task_use_case.dart';
 export '../domain_layer/use_cases/dpa/delete_dpa_file_use_case.dart';

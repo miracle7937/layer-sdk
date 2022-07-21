@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../data_layer/environment.dart';
 import '../../../../features/dpa.dart';
-import '../../../extensions.dart';
 import '../../../resources.dart';
 import '../../../widgets.dart';
 
@@ -42,7 +41,7 @@ class DPACarouselScreen extends StatelessWidget {
                   const SizedBox(height: 24.0),
                 ],
                 Text(
-                  variable.label?.capitalize ?? '',
+                  variable.label ?? '',
                   textAlign: TextAlign.center,
                   style: design.titleM(),
                 ),

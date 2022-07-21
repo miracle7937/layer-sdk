@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 
-import '../../domain_layer/models.dart';
-import '../utils.dart';
+import '../../../domain_layer/models.dart';
+import '../../utils.dart';
 
 /// UI Extension for [DPAVariable]
 extension DPAVariableUIExtension on DPAVariable {

@@ -716,6 +716,7 @@ void _uploadImagesTests() {
   );
 
   final _existingUploadData = DPAProcessingFileData(
+    fileName: _imageName,
     action: DPAProcessingFileAction.uploading,
     variableKey: 'other',
     count: 10,
@@ -772,6 +773,7 @@ void _uploadImagesTests() {
         processingFiles: {
           _existingUploadData,
           DPAProcessingFileData(
+            fileName: _imageName,
             action: DPAProcessingFileAction.uploading,
             variableKey: _mockedVariable.key,
           ),
@@ -822,6 +824,7 @@ void _uploadImagesTests() {
         process: _mockedFailureProcess,
         processingFiles: {
           DPAProcessingFileData(
+            fileName: _imageName,
             action: DPAProcessingFileAction.uploading,
             variableKey: _mockedVariable.key,
           ),
@@ -833,6 +836,7 @@ void _uploadImagesTests() {
         process: _mockedFailureProcess,
         runStatus: DPAProcessRunStatus.running,
         errorStatus: DPAProcessErrorStatus.network,
+        errorMessage: 'Some error',
       ),
     ],
     verify: (c) => verify(
@@ -921,6 +925,7 @@ void _deleteFileTests() {
         process: _initialSuccessProcess,
         processingFiles: {
           DPAProcessingFileData(
+            fileName: _deleteFileName,
             action: DPAProcessingFileAction.deleting,
             variableKey: _mockedVariable.key,
           ),
@@ -958,6 +963,7 @@ void _deleteFileTests() {
         process: _initialErrorProcess,
         processingFiles: {
           DPAProcessingFileData(
+            fileName: _deleteFileName,
             action: DPAProcessingFileAction.deleting,
             variableKey: _variableToThrow.key,
           ),

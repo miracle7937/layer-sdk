@@ -82,23 +82,43 @@ class _DPATextState extends State<DPAText> {
     );
   }
 
-  Widget _buildReadOnlyWidget(LayerDesign layerDesign) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if ((widget.variable.label ?? '').isNotEmpty) ...[
-            Text(
-              widget.variable.label!,
-              style: layerDesign.bodyS(
-                color: layerDesign.baseQuaternary,
-              ),
-            ),
-            const SizedBox(height: 2.0),
-          ],
-          if (widget.variable.value != null)
-            Text(
-              widget.variable.value!.toString(),
-              style: layerDesign.bodyM(),
-            ),
+  /// Builds the variant where the [DPAVariable] is a plain text.
+  Widget _buildReadOnlyWidget(
+    LayerDesign layerDesign,
+  ) {
+    final label = widget.variable.label;
+    final labelTextProperties = widget.variable.property.labelTextProperties;
+
+    final value = widget.variable.value;
+    final valueTextProperties = widget.variable.property.valueTextProperties;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (label?.isNotEmpty ?? false) ...[
+          Text(
+            label!,
+            style: labelTextProperties?.toTextStyle(
+                  layerDesign,
+                ) ??
+                layerDesign.bodyS(
+                  color: labelTextProperties?.flutterColor ??
+                      layerDesign.baseQuaternary,
+                ),
+          ),
+          const SizedBox(height: 2.0),
         ],
-      );
+        if (value?.isNotEmpty ?? false)
+          Text(
+            value!.toString(),
+            style: valueTextProperties?.toTextStyle(
+                  layerDesign,
+                ) ??
+                layerDesign.bodyM(
+                  color: valueTextProperties?.flutterColor,
+                ),
+          ),
+      ],
+    );
+  }
 }
