@@ -62,7 +62,6 @@ class BottomSheetHelper {
     String? descriptionKey,
     String dismissKey = 'ok',
     bool isScrollControlled = true,
-    bool iconWithBackground = false,
   }) async =>
       showModalBottomSheet(
         context: context,
@@ -82,7 +81,6 @@ class BottomSheetHelper {
           dismissKey: dismissKey,
           descriptionKey: descriptionKey,
           type: BottomSheetType.error,
-          iconWithBackground: iconWithBackground,
         ),
       );
 
@@ -93,7 +91,6 @@ class BottomSheetHelper {
     required BuildContext context,
     required String titleKey,
     required BottomSheetType type,
-    bool iconWithBackground = false,
     String? descriptionKey,
     String confirmKey = 'yes',
     String denyKey = 'no',
@@ -118,7 +115,6 @@ class BottomSheetHelper {
         dismissKey: denyKey,
         type: type,
         descriptionKey: descriptionKey,
-        iconWithBackground: iconWithBackground,
       ),
     );
 
@@ -131,14 +127,12 @@ class _ErrorBottomSheet extends StatelessWidget {
   final String? descriptionKey;
   final String dismissKey;
   final BottomSheetType type;
-  final bool? iconWithBackground;
   const _ErrorBottomSheet({
     Key? key,
     required this.titleKey,
     required this.dismissKey,
     required this.type,
     this.descriptionKey,
-    this.iconWithBackground = false,
   }) : super(key: key);
 
   @override
@@ -156,7 +150,7 @@ class _ErrorBottomSheet extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SvgPicture.asset(
-            type.toAsset(iconWithBackground: iconWithBackground),
+            type.toAsset(),
           ),
           const SizedBox(
             height: 20.0,
@@ -195,14 +189,12 @@ class _ConfirmationBottomSheet extends StatelessWidget {
   final String confirmKey;
   final String dismissKey;
   final BottomSheetType type;
-  final bool iconWithBackground;
   const _ConfirmationBottomSheet({
     Key? key,
     required this.titleKey,
     required this.confirmKey,
     required this.dismissKey,
     required this.type,
-    required this.iconWithBackground,
     this.descriptionKey,
   }) : super(key: key);
 
@@ -263,22 +255,16 @@ class _ConfirmationBottomSheet extends StatelessWidget {
 /// Extension that provides mapping for [BottomSheetType].
 extension BottomSheetTypeUIExtension on BottomSheetType {
   /// Maps into a asset path.
-  String toAsset({bool? iconWithBackground}) {
+  String toAsset() {
     switch (this) {
       case BottomSheetType.error:
-        return (iconWithBackground ?? false)
-            ? FLImages.errorWithBackground
-            : FLImages.error;
+        return  FLImages.error;
 
       case BottomSheetType.warning:
-        return (iconWithBackground ?? false)
-            ? FLImages.warningWithBackground
-            : FLImages.warning;
+        return FLImages.warning;
 
       case BottomSheetType.success:
-        return (iconWithBackground ?? false)
-            ? FLImages.successWithBackground
-            : FLImages.success;
+        return  FLImages.success;
     }
   }
 }
