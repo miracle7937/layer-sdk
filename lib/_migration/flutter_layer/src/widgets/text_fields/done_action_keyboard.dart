@@ -65,7 +65,7 @@ class _DoneActionKeyboardState extends State<DoneActionKeyboard> {
             InputDoneView.doneViewHeight,
         right: 0.0,
         left: 0.0,
-        child: InputDoneView(),
+        child: InputDoneView(customButtonTitle: widget.customButtonTitle),
       ),
     );
 

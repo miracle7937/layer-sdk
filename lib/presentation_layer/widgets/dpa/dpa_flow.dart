@@ -196,6 +196,9 @@ class DPAFlow extends StatelessWidget {
   /// were not indicated. In that case, this should be handled there.
   final WidgetBuilder? customEmptySearchBuilder;
 
+  /// Provide a custom padding for the continue button
+  final EdgeInsets customContinueButtonPadding;
+
   /// Creates a new [DPAFlow].
   const DPAFlow({
     Key? key,
@@ -210,6 +213,12 @@ class DPAFlow extends StatelessWidget {
     this.showTaskDescription = true,
     this.customEmptySearchBuilder,
     required this.sdkCallback,
+    this.customContinueButtonPadding = const EdgeInsets.fromLTRB(
+      16.0,
+      0.0,
+      16.0,
+      42.0,
+    ),
   }) : super(key: key);
 
   @override
@@ -316,12 +325,7 @@ class DPAFlow extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(
-                      16.0,
-                      0.0,
-                      16.0,
-                      42.0,
-                    ),
+                    padding: customContinueButtonPadding,
                     child: Column(
                       children: [
                         if (effectiveContinueButton != null)
