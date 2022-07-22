@@ -127,6 +127,7 @@ class _ErrorBottomSheet extends StatelessWidget {
   final String? descriptionKey;
   final String dismissKey;
   final BottomSheetType type;
+
   const _ErrorBottomSheet({
     Key? key,
     required this.titleKey,
@@ -189,6 +190,7 @@ class _ConfirmationBottomSheet extends StatelessWidget {
   final String confirmKey;
   final String dismissKey;
   final BottomSheetType type;
+
   const _ConfirmationBottomSheet({
     Key? key,
     required this.titleKey,
@@ -258,13 +260,13 @@ extension BottomSheetTypeUIExtension on BottomSheetType {
   String toAsset() {
     switch (this) {
       case BottomSheetType.error:
-        return  FLImages.error;
+        return FLImages.error;
 
       case BottomSheetType.warning:
         return FLImages.warning;
 
       case BottomSheetType.success:
-        return  FLImages.success;
+        return FLImages.success;
     }
   }
 }
