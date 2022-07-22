@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:location/location.dart' as loc;
+import 'package:ocra_authentication/ocra_authentication.dart';
 
 import '../../_migration/flutter_layer/src/cubits.dart';
 import '../../_migration/flutter_layer/src/widgets/text_fields/auto_padding_keyboard_view.dart';
+import '../../data_layer/environment.dart';
 import '../../data_layer/interfaces.dart';
 import '../../data_layer/network.dart';
 import '../../data_layer/providers.dart';
@@ -150,6 +152,25 @@ class BankAppState extends State<BankApp> {
                 ),
               ),
               getDeviceModelUseCase: GetDeviceModelUseCase(),
+            ),
+          ),
+        ),
+        CreatorProvider<OcraAuthenticationCreator>(
+          create: (_) => OcraAuthenticationCreator(
+            ocraSuite: EnvironmentConfiguration.current.ocraSuite ?? '',
+            clientChallengeOcraUseCase: ClientOcraChallengeUseCase(
+              ocraRepository: OcraRepository(
+                provider: OcraProvider(
+                  netClient: widget.netClient,
+                ),
+              ),
+            ),
+            verifyOcraResultUseCase: VerifyOcraResultUseCase(
+              ocraRepository: OcraRepository(
+                provider: OcraProvider(
+                  netClient: widget.netClient,
+                ),
+              ),
             ),
           ),
         ),

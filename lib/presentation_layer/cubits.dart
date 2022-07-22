@@ -12,8 +12,6 @@ export 'cubits/audit/customer_audits_cubit.dart';
 export 'cubits/audit/customer_audits_state.dart';
 export 'cubits/authentication/authentication_cubit.dart';
 export 'cubits/authentication/authentication_states.dart';
-export 'cubits/authentication/lock_screen_cubit.dart';
-export 'cubits/authentication/lock_screen_state.dart';
 export 'cubits/beneficiary/beneficiaries_cubit.dart';
 export 'cubits/beneficiary/beneficiaries_states.dart';
 export 'cubits/bill/bill_cubit.dart';
