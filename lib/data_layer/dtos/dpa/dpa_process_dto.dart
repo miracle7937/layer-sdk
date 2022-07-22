@@ -26,6 +26,9 @@ class DPAProcessDTO {
   /// Variables available on this step of the process
   final Map<String, DPAVariableDTO>? variables;
 
+  /// The variables returned when the process is finished.
+  final List<Map<String, dynamic>>? returnVariables;
+
   /// Creates a new [DPAProcessDTO].
   DPAProcessDTO({
     this.message,
@@ -36,6 +39,7 @@ class DPAProcessDTO {
     this.properties,
     this.task,
     this.variables,
+    this.returnVariables,
   });
 
   /// Creates a new [DPAProcessDTO] from a JSON.
@@ -52,5 +56,10 @@ class DPAProcessDTO {
         variables: json['variables'] == null
             ? null
             : DPAVariableDTO.fromJsonMap(json['variables']),
+        returnVariables: json['return_variables'] == null
+            ? null
+            : List<Map<String, dynamic>>.from(
+                json['return_variables'],
+              ),
       );
 }

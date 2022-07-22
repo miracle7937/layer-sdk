@@ -7,12 +7,17 @@ import 'package:layer_sdk/presentation_layer/cubits.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
+class MockUser extends Mock implements User {}
+
 class MockGenericStorage extends Mock implements GenericStorage {}
 
 class MockLoadAuthenticationSettingsUseCase extends Mock
     implements LoadAuthenticationSettingsUseCase {}
 
 class MockLoadBrightnessUseCase extends Mock implements LoadBrightnessUseCase {}
+
+class MockLoadLoggedInUsersUseCase extends Mock
+    implements LoadLoggedInUsersUseCase {}
 
 class MockLoadLastLoggedUserUseCase extends Mock
     implements LoadLastLoggedUserUseCase {}
@@ -38,6 +43,7 @@ class MockToggleBiometricsUseCase extends Mock
 final _loadAuthenticationSettingsUseCase =
     MockLoadAuthenticationSettingsUseCase();
 final _loadBrightnessUseCase = MockLoadBrightnessUseCase();
+final _loadLoggedInUsersUseCase = MockLoadLoggedInUsersUseCase();
 final _loadLastLoggedUserUseCase = MockLoadLastLoggedUserUseCase();
 final _loadOcraSecretKeyUseCase = MockLoadOcraSecretKeyUseCase();
 final _removeUserUseCase = MockRemoveUserUseCase();
@@ -71,6 +77,11 @@ final _authenticationTestSetting = AuthenticationSettings(
     defaultUsername: _defaultUsername,
     useBiometrics: _useBiometrics);
 
+final _loggedInUsers = List.generate(
+  5,
+  (index) => MockUser(),
+);
+
 final _user = User(
   id: 'id',
   username: 'username',
@@ -83,15 +94,10 @@ final _user = User(
 
 final _mockedBrightnessIndex = 5;
 
-void main() {
-  EquatableConfig.stringify = true;
-
-
-  blocTest<StorageCubit, StorageState>(
-    'Should start on an empty state',
-    build: () => StorageCubit(
+StorageCubit createStorageCubit() => StorageCubit(
+      loadLoggedInUsersUseCase: _loadLoggedInUsersUseCase,
       lastLoggedUserUseCase: _loadLastLoggedUserUseCase,
-      loadAuthenticationSettingUseCase: _loadAuthenticationSettingsUseCase,
+      loadAuthenticationSettingsUseCase: _loadAuthenticationSettingsUseCase,
       loadBrightnessUseCase: _loadBrightnessUseCase,
       loadOcraSecretKeyUseCase: _loadOcraSecretKeyUseCase,
       removeUserUseCase: _removeUserUseCase,
@@ -100,7 +106,14 @@ void main() {
       saveUserUseCase: _saveUserUseCase,
       setBrightnessUseCase: _setBrightnessUseCase,
       toggleBiometricsUseCase: _toggleBiometricsUseCase,
-    ),
+    );
+
+void main() {
+  EquatableConfig.stringify = true;
+
+  blocTest<StorageCubit, StorageState>(
+    'Should start on an empty state',
+    build: createStorageCubit,
     verify: (c) {
       expect(c.state, StorageState());
     },
@@ -115,6 +128,10 @@ void main() {
 
 void _loadDataTests() {
   setUp(() {
+    when(
+      _loadLoggedInUsersUseCase,
+    ).thenAnswer((_) async => _loggedInUsers);
+
     when(
       _loadLastLoggedUserUseCase,
     ).thenAnswer((_) async => _user);
@@ -153,19 +170,21 @@ void _loadDataTests() {
   });
 
   blocTest<StorageCubit, StorageState>(
+    'Should load the logged in users list',
+    build: createStorageCubit,
+    act: (c) => c.loadLoggedInUsers(),
+    expect: () => [
+      StorageState(busy: true),
+      StorageState(loggedInUsers: _loggedInUsers),
+    ],
+    verify: (c) {
+      verify(_loadLoggedInUsersUseCase).called(1);
+    },
+  ); // Should load the logged in users list
+
+  blocTest<StorageCubit, StorageState>(
     'Should load last logged user',
-    build: () => StorageCubit(
-      lastLoggedUserUseCase: _loadLastLoggedUserUseCase,
-      loadAuthenticationSettingUseCase: _loadAuthenticationSettingsUseCase,
-      loadBrightnessUseCase: _loadBrightnessUseCase,
-      loadOcraSecretKeyUseCase: _loadOcraSecretKeyUseCase,
-      removeUserUseCase: _removeUserUseCase,
-      saveAuthenticationSettingUseCase: _saveAuthenticationSettingUseCase,
-      saveOcraSecretKeyUseCase: _saveOcraSecretKeyUseCase,
-      saveUserUseCase: _saveUserUseCase,
-      setBrightnessUseCase: _setBrightnessUseCase,
-      toggleBiometricsUseCase: _toggleBiometricsUseCase,
-    ),
+    build: createStorageCubit,
     act: (c) => c.loadLastLoggedUser(),
     expect: () => [
       StorageState(busy: true),
@@ -178,18 +197,7 @@ void _loadDataTests() {
 
   blocTest<StorageCubit, StorageState>(
     'should load authentication settings',
-    build: () => StorageCubit(
-      lastLoggedUserUseCase: _loadLastLoggedUserUseCase,
-      loadAuthenticationSettingUseCase: _loadAuthenticationSettingsUseCase,
-      loadBrightnessUseCase: _loadBrightnessUseCase,
-      loadOcraSecretKeyUseCase: _loadOcraSecretKeyUseCase,
-      removeUserUseCase: _removeUserUseCase,
-      saveAuthenticationSettingUseCase: _saveAuthenticationSettingUseCase,
-      saveOcraSecretKeyUseCase: _saveOcraSecretKeyUseCase,
-      saveUserUseCase: _saveUserUseCase,
-      setBrightnessUseCase: _setBrightnessUseCase,
-      toggleBiometricsUseCase: _toggleBiometricsUseCase,
-    ),
+    build: createStorageCubit,
     act: (c) => c.loadAuthenticationSettings(),
     expect: () => [
       StorageState(busy: true),
@@ -269,18 +277,7 @@ void _saveDataTests() {
 
   blocTest<StorageCubit, StorageState>(
     'Should save user',
-    build: () => StorageCubit(
-      lastLoggedUserUseCase: _loadLastLoggedUserUseCase,
-      loadAuthenticationSettingUseCase: _loadAuthenticationSettingsUseCase,
-      loadBrightnessUseCase: _loadBrightnessUseCase,
-      loadOcraSecretKeyUseCase: _loadOcraSecretKeyUseCase,
-      removeUserUseCase: _removeUserUseCase,
-      saveAuthenticationSettingUseCase: _saveAuthenticationSettingUseCase,
-      saveOcraSecretKeyUseCase: _saveOcraSecretKeyUseCase,
-      saveUserUseCase: _saveUserUseCase,
-      setBrightnessUseCase: _setBrightnessUseCase,
-      toggleBiometricsUseCase: _toggleBiometricsUseCase,
-    ),
+    build: createStorageCubit,
     act: (c) => c.saveUser(user: _user),
     expect: () => [
       StorageState(busy: true),
@@ -295,8 +292,9 @@ void _saveDataTests() {
   blocTest<StorageCubit, StorageState>(
     'Should remove user',
     build: () => StorageCubit(
+      loadLoggedInUsersUseCase: _loadLoggedInUsersUseCase,
       lastLoggedUserUseCase: _loadLastLoggedUserUseCase,
-      loadAuthenticationSettingUseCase: _loadAuthenticationSettingsUseCase,
+      loadAuthenticationSettingsUseCase: _loadAuthenticationSettingsUseCase,
       loadBrightnessUseCase: _loadBrightnessUseCase,
       loadOcraSecretKeyUseCase: _loadOcraSecretKeyUseCase,
       removeUserUseCase: _removeUserUseCase,
@@ -322,18 +320,7 @@ void _saveDataTests() {
 
   blocTest<StorageCubit, StorageState>(
     'should save settings',
-    build: () => StorageCubit(
-      lastLoggedUserUseCase: _loadLastLoggedUserUseCase,
-      loadAuthenticationSettingUseCase: _loadAuthenticationSettingsUseCase,
-      loadBrightnessUseCase: _loadBrightnessUseCase,
-      loadOcraSecretKeyUseCase: _loadOcraSecretKeyUseCase,
-      removeUserUseCase: _removeUserUseCase,
-      saveAuthenticationSettingUseCase: _saveAuthenticationSettingUseCase,
-      saveOcraSecretKeyUseCase: _saveOcraSecretKeyUseCase,
-      saveUserUseCase: _saveUserUseCase,
-      setBrightnessUseCase: _setBrightnessUseCase,
-      toggleBiometricsUseCase: _toggleBiometricsUseCase,
-    ),
+    build: createStorageCubit,
     seed: () => StorageState(authenticationSettings: _defaultSettings),
     act: (c) => c.saveAuthenticationSettings(useBiometrics: _useBiometrics),
     expect: () => [
@@ -358,18 +345,7 @@ void _saveDataTests() {
   ); // should save settings
   blocTest<StorageCubit, StorageState>(
     'should return old biometrics settings when fails to save it',
-    build: () => StorageCubit(
-      lastLoggedUserUseCase: _loadLastLoggedUserUseCase,
-      loadAuthenticationSettingUseCase: _loadAuthenticationSettingsUseCase,
-      loadBrightnessUseCase: _loadBrightnessUseCase,
-      loadOcraSecretKeyUseCase: _loadOcraSecretKeyUseCase,
-      removeUserUseCase: _removeUserUseCase,
-      saveAuthenticationSettingUseCase: _saveAuthenticationSettingUseCase,
-      saveOcraSecretKeyUseCase: _saveOcraSecretKeyUseCase,
-      saveUserUseCase: _saveUserUseCase,
-      setBrightnessUseCase: _setBrightnessUseCase,
-      toggleBiometricsUseCase: _toggleBiometricsUseCase,
-    ),
+    build: createStorageCubit,
     act: (c) => c.saveAuthenticationSettings(useBiometrics: _failBiometrics),
     seed: () => StorageState(authenticationSettings: _defaultSettings),
     expect: () => [
@@ -396,18 +372,7 @@ void _saveDataTests() {
 
   blocTest<StorageCubit, StorageState>(
     'should save domain',
-    build: () => StorageCubit(
-      lastLoggedUserUseCase: _loadLastLoggedUserUseCase,
-      loadAuthenticationSettingUseCase: _loadAuthenticationSettingsUseCase,
-      loadBrightnessUseCase: _loadBrightnessUseCase,
-      loadOcraSecretKeyUseCase: _loadOcraSecretKeyUseCase,
-      removeUserUseCase: _removeUserUseCase,
-      saveAuthenticationSettingUseCase: _saveAuthenticationSettingUseCase,
-      saveOcraSecretKeyUseCase: _saveOcraSecretKeyUseCase,
-      saveUserUseCase: _saveUserUseCase,
-      setBrightnessUseCase: _setBrightnessUseCase,
-      toggleBiometricsUseCase: _toggleBiometricsUseCase,
-    ),
+    build: createStorageCubit,
     seed: () => StorageState(authenticationSettings: _defaultSettings),
     act: (c) => c.saveAuthenticationSettings(
         domain: _domainOther, useBiometrics: _useBiometrics),
@@ -439,18 +404,7 @@ void _saveDataTests() {
   ); // should save domain
   blocTest<StorageCubit, StorageState>(
     'should return old domain if could not save',
-    build: () => StorageCubit(
-      lastLoggedUserUseCase: _loadLastLoggedUserUseCase,
-      loadAuthenticationSettingUseCase: _loadAuthenticationSettingsUseCase,
-      loadBrightnessUseCase: _loadBrightnessUseCase,
-      loadOcraSecretKeyUseCase: _loadOcraSecretKeyUseCase,
-      removeUserUseCase: _removeUserUseCase,
-      saveAuthenticationSettingUseCase: _saveAuthenticationSettingUseCase,
-      saveOcraSecretKeyUseCase: _saveOcraSecretKeyUseCase,
-      saveUserUseCase: _saveUserUseCase,
-      setBrightnessUseCase: _setBrightnessUseCase,
-      toggleBiometricsUseCase: _toggleBiometricsUseCase,
-    ),
+    build: createStorageCubit,
     seed: () => StorageState(authenticationSettings: _defaultSettings),
     act: (c) => c.saveAuthenticationSettings(
       domain: _domainFail,
@@ -500,18 +454,7 @@ void _biometricsTests() {
 
   blocTest<StorageCubit, StorageState>(
     'should toggle biometrics',
-    build: () => StorageCubit(
-      lastLoggedUserUseCase: _loadLastLoggedUserUseCase,
-      loadAuthenticationSettingUseCase: _loadAuthenticationSettingsUseCase,
-      loadBrightnessUseCase: _loadBrightnessUseCase,
-      loadOcraSecretKeyUseCase: _loadOcraSecretKeyUseCase,
-      removeUserUseCase: _removeUserUseCase,
-      saveAuthenticationSettingUseCase: _saveAuthenticationSettingUseCase,
-      saveOcraSecretKeyUseCase: _saveOcraSecretKeyUseCase,
-      saveUserUseCase: _saveUserUseCase,
-      setBrightnessUseCase: _setBrightnessUseCase,
-      toggleBiometricsUseCase: _toggleBiometricsUseCase,
-    ),
+    build: createStorageCubit,
     seed: () => StorageState(
       authenticationSettings: _defaultSettings.copyWith(
         useBiometrics: !_useBiometrics,
@@ -542,18 +485,7 @@ void _biometricsTests() {
 
   blocTest<StorageCubit, StorageState>(
     'should handle exceptions',
-    build: () => StorageCubit(
-      lastLoggedUserUseCase: _loadLastLoggedUserUseCase,
-      loadAuthenticationSettingUseCase: _loadAuthenticationSettingsUseCase,
-      loadBrightnessUseCase: _loadBrightnessUseCase,
-      loadOcraSecretKeyUseCase: _loadOcraSecretKeyUseCase,
-      removeUserUseCase: _removeUserUseCase,
-      saveAuthenticationSettingUseCase: _saveAuthenticationSettingUseCase,
-      saveOcraSecretKeyUseCase: _saveOcraSecretKeyUseCase,
-      saveUserUseCase: _saveUserUseCase,
-      setBrightnessUseCase: _setBrightnessUseCase,
-      toggleBiometricsUseCase: _toggleBiometricsUseCase,
-    ),
+    build: createStorageCubit,
     seed: () => StorageState(
       authenticationSettings: _defaultSettings,
     ),
@@ -606,18 +538,7 @@ void _applicationSettingsTests() {
 
   blocTest<StorageCubit, StorageState>(
     'should load settings',
-    build: () => StorageCubit(
-      lastLoggedUserUseCase: _loadLastLoggedUserUseCase,
-      loadAuthenticationSettingUseCase: _loadAuthenticationSettingsUseCase,
-      loadBrightnessUseCase: _loadBrightnessUseCase,
-      loadOcraSecretKeyUseCase: _loadOcraSecretKeyUseCase,
-      removeUserUseCase: _removeUserUseCase,
-      saveAuthenticationSettingUseCase: _saveAuthenticationSettingUseCase,
-      saveOcraSecretKeyUseCase: _saveOcraSecretKeyUseCase,
-      saveUserUseCase: _saveUserUseCase,
-      setBrightnessUseCase: _setBrightnessUseCase,
-      toggleBiometricsUseCase: _toggleBiometricsUseCase,
-    ),
+    build: createStorageCubit,
     act: (c) => c.loadApplicationSettings(),
     expect: () => [
       StorageState(
@@ -638,18 +559,7 @@ void _applicationSettingsTests() {
 
   blocTest<StorageCubit, StorageState>(
     'should set brightness',
-    build: () => StorageCubit(
-      lastLoggedUserUseCase: _loadLastLoggedUserUseCase,
-      loadAuthenticationSettingUseCase: _loadAuthenticationSettingsUseCase,
-      loadBrightnessUseCase: _loadBrightnessUseCase,
-      loadOcraSecretKeyUseCase: _loadOcraSecretKeyUseCase,
-      removeUserUseCase: _removeUserUseCase,
-      saveAuthenticationSettingUseCase: _saveAuthenticationSettingUseCase,
-      saveOcraSecretKeyUseCase: _saveOcraSecretKeyUseCase,
-      saveUserUseCase: _saveUserUseCase,
-      setBrightnessUseCase: _setBrightnessUseCase,
-      toggleBiometricsUseCase: _toggleBiometricsUseCase,
-    ),
+    build: createStorageCubit,
     act: (c) => c.setThemeBrightness(
       themeBrightness: _savedBrightness,
     ),
@@ -674,18 +584,7 @@ void _applicationSettingsTests() {
 
   blocTest<StorageCubit, StorageState>(
     'should keep brightness if set brightness fails',
-    build: () => StorageCubit(
-      lastLoggedUserUseCase: _loadLastLoggedUserUseCase,
-      loadAuthenticationSettingUseCase: _loadAuthenticationSettingsUseCase,
-      loadBrightnessUseCase: _loadBrightnessUseCase,
-      loadOcraSecretKeyUseCase: _loadOcraSecretKeyUseCase,
-      removeUserUseCase: _removeUserUseCase,
-      saveAuthenticationSettingUseCase: _saveAuthenticationSettingUseCase,
-      saveOcraSecretKeyUseCase: _saveOcraSecretKeyUseCase,
-      saveUserUseCase: _saveUserUseCase,
-      setBrightnessUseCase: _setBrightnessUseCase,
-      toggleBiometricsUseCase: _toggleBiometricsUseCase,
-    ),
+    build: createStorageCubit,
     act: (c) => c.setThemeBrightness(
       themeBrightness: _failedBrightness,
     ),
@@ -706,7 +605,6 @@ void _applicationSettingsTests() {
 
   group('Exceptions', () {
     setUp(() {
-
       when(
         _loadBrightnessUseCase,
       ).thenThrow(Exception('Some error'));
@@ -720,18 +618,7 @@ void _applicationSettingsTests() {
 
     blocTest<StorageCubit, StorageState>(
       'should handle exceptions when loading',
-      build: () => StorageCubit(
-        lastLoggedUserUseCase: _loadLastLoggedUserUseCase,
-        loadAuthenticationSettingUseCase: _loadAuthenticationSettingsUseCase,
-        loadBrightnessUseCase: _loadBrightnessUseCase,
-        loadOcraSecretKeyUseCase: _loadOcraSecretKeyUseCase,
-        removeUserUseCase: _removeUserUseCase,
-        saveAuthenticationSettingUseCase: _saveAuthenticationSettingUseCase,
-        saveOcraSecretKeyUseCase: _saveOcraSecretKeyUseCase,
-        saveUserUseCase: _saveUserUseCase,
-        setBrightnessUseCase: _setBrightnessUseCase,
-        toggleBiometricsUseCase: _toggleBiometricsUseCase,
-      ),
+      build: createStorageCubit,
       act: (c) => c.loadApplicationSettings(),
       expect: () => [
         StorageState(
@@ -751,18 +638,7 @@ void _applicationSettingsTests() {
 
     blocTest<StorageCubit, StorageState>(
       'should handle exceptions',
-      build: () => StorageCubit(
-        lastLoggedUserUseCase: _loadLastLoggedUserUseCase,
-        loadAuthenticationSettingUseCase: _loadAuthenticationSettingsUseCase,
-        loadBrightnessUseCase: _loadBrightnessUseCase,
-        loadOcraSecretKeyUseCase: _loadOcraSecretKeyUseCase,
-        removeUserUseCase: _removeUserUseCase,
-        saveAuthenticationSettingUseCase: _saveAuthenticationSettingUseCase,
-        saveOcraSecretKeyUseCase: _saveOcraSecretKeyUseCase,
-        saveUserUseCase: _saveUserUseCase,
-        setBrightnessUseCase: _setBrightnessUseCase,
-        toggleBiometricsUseCase: _toggleBiometricsUseCase,
-      ),
+      build: createStorageCubit,
       act: (c) => c.setThemeBrightness(
         themeBrightness: _failedBrightness,
       ),
@@ -810,18 +686,7 @@ _ocraKeyTests() {
 
   blocTest<StorageCubit, StorageState>(
     'should load ocra key',
-    build: () => StorageCubit(
-      lastLoggedUserUseCase: _loadLastLoggedUserUseCase,
-      loadAuthenticationSettingUseCase: _loadAuthenticationSettingsUseCase,
-      loadBrightnessUseCase: _loadBrightnessUseCase,
-      loadOcraSecretKeyUseCase: _loadOcraSecretKeyUseCase,
-      removeUserUseCase: _removeUserUseCase,
-      saveAuthenticationSettingUseCase: _saveAuthenticationSettingUseCase,
-      saveOcraSecretKeyUseCase: _saveOcraSecretKeyUseCase,
-      saveUserUseCase: _saveUserUseCase,
-      setBrightnessUseCase: _setBrightnessUseCase,
-      toggleBiometricsUseCase: _toggleBiometricsUseCase,
-    ),
+    build: createStorageCubit,
     act: (c) => c.loadOcraSecretKey(),
     expect: () => [
       StorageState(
@@ -840,18 +705,7 @@ _ocraKeyTests() {
 
   blocTest<StorageCubit, StorageState>(
     'should save ocra key',
-    build: () => StorageCubit(
-      lastLoggedUserUseCase: _loadLastLoggedUserUseCase,
-      loadAuthenticationSettingUseCase: _loadAuthenticationSettingsUseCase,
-      loadBrightnessUseCase: _loadBrightnessUseCase,
-      loadOcraSecretKeyUseCase: _loadOcraSecretKeyUseCase,
-      removeUserUseCase: _removeUserUseCase,
-      saveAuthenticationSettingUseCase: _saveAuthenticationSettingUseCase,
-      saveOcraSecretKeyUseCase: _saveOcraSecretKeyUseCase,
-      saveUserUseCase: _saveUserUseCase,
-      setBrightnessUseCase: _setBrightnessUseCase,
-      toggleBiometricsUseCase: _toggleBiometricsUseCase,
-    ),
+    build: createStorageCubit,
     act: (c) => c.saveOcraSecretKey(successfulOcraKey),
     expect: () => [
       StorageState(
@@ -872,18 +726,7 @@ _ocraKeyTests() {
 
   blocTest<StorageCubit, StorageState>(
     'should handle exceptions when saving ocra key',
-    build: () => StorageCubit(
-      lastLoggedUserUseCase: _loadLastLoggedUserUseCase,
-      loadAuthenticationSettingUseCase: _loadAuthenticationSettingsUseCase,
-      loadBrightnessUseCase: _loadBrightnessUseCase,
-      loadOcraSecretKeyUseCase: _loadOcraSecretKeyUseCase,
-      removeUserUseCase: _removeUserUseCase,
-      saveAuthenticationSettingUseCase: _saveAuthenticationSettingUseCase,
-      saveOcraSecretKeyUseCase: _saveOcraSecretKeyUseCase,
-      saveUserUseCase: _saveUserUseCase,
-      setBrightnessUseCase: _setBrightnessUseCase,
-      toggleBiometricsUseCase: _toggleBiometricsUseCase,
-    ),
+    build: createStorageCubit,
     act: (c) => c.saveOcraSecretKey(failedOcraKey),
     expect: () => [
       StorageState(

@@ -14,7 +14,7 @@ typedef DPAErrorCallback = void Function(
 );
 
 /// Signature for [DPAFlow.onFinished].
-typedef DPAFinishedCallback = void Function(
+typedef DPAFinishedCallback<T> = void Function(
   BuildContext context,
   DPAProcessState state,
 );
@@ -120,7 +120,7 @@ typedef DPAHidePopUpCallback = void Function(
 /// );
 /// ```
 /// {@end-tool}
-class DPAFlow extends StatelessWidget {
+class DPAFlow<T> extends StatelessWidget {
   /// A required method to be called when an error occurs.
   ///
   /// This is not the same as errors on a variable (mostly from validations).
@@ -135,7 +135,7 @@ class DPAFlow extends StatelessWidget {
   ///
   /// Use this to close the DPA window or do any other processing your app
   /// requires.
-  final DPAFinishedCallback onFinished;
+  final DPAFinishedCallback<T> onFinished;
 
   /// A custom widget to be used as the header.
   ///
@@ -274,12 +274,6 @@ class DPAFlow extends StatelessWidget {
         ),
         BlocListener<DPAProcessCubit, DPAProcessState>(
           listenWhen: (oldState, newState) =>
-              oldState.runStatus != newState.runStatus &&
-              newState.runStatus == DPAProcessRunStatus.finished,
-          listener: onFinished,
-        ),
-        BlocListener<DPAProcessCubit, DPAProcessState>(
-          listenWhen: (oldState, newState) =>
               oldState.popUp != null && newState.popUp == null,
           listener: _hidePopUp,
         ),
@@ -287,6 +281,12 @@ class DPAFlow extends StatelessWidget {
           listenWhen: (oldState, newState) =>
               oldState.popUp == null && newState.popUp != null,
           listener: _showPopUp,
+        ),
+        BlocListener<DPAProcessCubit, DPAProcessState>(
+          listenWhen: (oldState, newState) =>
+              oldState.runStatus != newState.runStatus &&
+              newState.runStatus == DPAProcessRunStatus.finished,
+          listener: onFinished,
         ),
       ],
       child: Stack(
