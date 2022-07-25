@@ -60,6 +60,8 @@ export 'dtos/loyalty/offer/offer_rule/rule_reward_dto.dart';
 export 'dtos/loyalty/offer_transaction/offer_transaction_dto.dart';
 export 'dtos/loyalty/offer_transaction/offer_transaction_group_dto.dart';
 export 'dtos/loyalty/offer_transaction/offer_transaction_response_dto.dart';
+export 'dtos/mandates/mandate_dto.dart';
+export 'dtos/mandates/mandate_status_dto.dart';
 export 'dtos/message/message_dto.dart';
 export 'dtos/ocra/ocra_challenge_dto.dart';
 export 'dtos/ocra/ocra_challenge_response_dto.dart';
