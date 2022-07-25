@@ -47,7 +47,7 @@ class TransferRepository implements TransferRepositoryInterface {
     TransferStatus? status,
     List<TransferType>? types,
   }) async {
-    final recentTransfersDTOs = await _provider.loadFrequentTransfers(
+    final frequentTransfersDTOs = await _provider.loadFrequentTransfers(
       limit: limit,
       offset: offset,
       includeDetails: includeDetails,
@@ -55,6 +55,6 @@ class TransferRepository implements TransferRepositoryInterface {
       types: types,
     );
 
-    return recentTransfersDTOs.map((e) => e.toTransfer()).toList();
+    return frequentTransfersDTOs.map((e) => e.toTransfer()).toList();
   }
 }

@@ -24,7 +24,7 @@ class LandingTransferCubit extends Cubit<LandingTransferState> {
     try {
       final newPage = state.pagination.paginate(loadMore: loadMore);
 
-      final recentTransfers = await _loadFrequentTransfersUseCase(
+      final frequentTransfers = await _loadFrequentTransfersUseCase(
         offset: newPage.offset,
         limit: newPage.limit,
         status: TransferStatus.completed,
@@ -36,7 +36,7 @@ class LandingTransferCubit extends Cubit<LandingTransferState> {
         ],
       );
 
-      emit(state.copyWith(recentTransfers: recentTransfers, busy: false));
+      emit(state.copyWith(frequentTransfers: frequentTransfers, busy: false));
     } on Exception catch (e) {
       emit(
         state.copyWith(

@@ -61,7 +61,7 @@ class TransferProvider {
     }
 
     final response = await netClient.request(
-      netClient.netEndpoints.recentTransfers,
+      netClient.netEndpoints.frequentTransfers,
       method: NetRequestMethods.get,
       queryParameters: params,
     );

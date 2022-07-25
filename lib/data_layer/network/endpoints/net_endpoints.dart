@@ -123,8 +123,8 @@ class NetEndpoints {
   ///The transfer endpoint
   String get transfer => '$_txnBanking/v1/transfer';
 
-  /// The recent transfers endpoint
-  String get recentTransfers => '$_txnBanking/v1/frequent_transfer';
+  /// The frequent transfers endpoint
+  String get frequentTransfers => '$_txnBanking/v1/frequent_transfer';
 
   /// The accounts endpoint
   String get account => '$_infoBanking/v1/account';

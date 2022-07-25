@@ -28,15 +28,15 @@ class LandingTransferState extends Equatable {
   final Pagination pagination;
 
   /// A list of frequent transfers
-  final UnmodifiableListView<Transfer> recentTransfers;
+  final UnmodifiableListView<Transfer> frequentTransfers;
 
   /// Creates a new [LandingTransferState] instance
   LandingTransferState({
-    Iterable<Transfer> recentTransfers = const <Transfer>[],
+    Iterable<Transfer> frequentTransfers = const <Transfer>[],
     this.busy = false,
     this.error = LandingTransferErrorStatus.none,
     this.pagination = const Pagination(),
-  }) : recentTransfers = UnmodifiableListView(recentTransfers);
+  }) : frequentTransfers = UnmodifiableListView(frequentTransfers);
 
   /// Creates a new state based on this one.
   LandingTransferState copyWith({
@@ -44,16 +44,16 @@ class LandingTransferState extends Equatable {
     LandingTransferErrorStatus? error,
     int? limit,
     Pagination? pagination,
-    Iterable<Transfer>? recentTransfers,
+    Iterable<Transfer>? frequentTransfers,
   }) {
     return LandingTransferState(
       busy: busy ?? this.busy,
       error: error ?? this.error,
       pagination: pagination ?? this.pagination,
-      recentTransfers: recentTransfers ?? this.recentTransfers,
+      frequentTransfers: frequentTransfers ?? this.frequentTransfers,
     );
   }
 
   @override
-  List<Object?> get props => [busy, error, pagination, recentTransfers];
+  List<Object?> get props => [busy, error, pagination, frequentTransfers];
 }
