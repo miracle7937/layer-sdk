@@ -36,7 +36,7 @@ class TransferRepository implements TransferRepositoryInterface {
     return transferDTOs.map((e) => e.toTransfer()).toList(growable: false);
   }
 
-  /// Lists the frequent tranfers from [User].
+  /// Lists the frequent transfers from [User].
   ///
   /// Use [limit] and [offset] to paginate.
   @override
