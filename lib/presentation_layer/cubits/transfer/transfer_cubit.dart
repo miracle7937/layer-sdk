@@ -9,7 +9,7 @@ import '../../cubits.dart';
 class TransferCubit extends Cubit<TransferState> {
   final LoadTransfersUseCase _loadTransfersUseCase;
 
-  /// Creates a new cubit using the supplied [TransferRepository].
+  /// Creates a new cubit using the supplied [LoadTransfersUseCase].
   TransferCubit({
     required String customerId,
     required LoadTransfersUseCase loadTransfersUseCase,

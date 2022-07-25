@@ -281,3 +281,16 @@ extension TransferTypeDTOMapping on TransferTypeDTO {
     }
   }
 }
+
+// TODO: Check other status strings
+extension TransferStatusExtension on TransferStatus {
+  String get toJSONString {
+    switch (this) {
+      case TransferStatus.completed:
+        return 'C';
+
+      default:
+        return '';
+    }
+  }
+}

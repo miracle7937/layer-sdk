@@ -35,4 +35,26 @@ class TransferRepository implements TransferRepositoryInterface {
 
     return transferDTOs.map((e) => e.toTransfer()).toList(growable: false);
   }
+
+  /// Lists the frequent tranfers from [User].
+  ///
+  /// Use [limit] and [offset] to paginate.
+  @override
+  Future<List<Transfer>> loadFrequentTransfers({
+    int? limit,
+    int? offset,
+    bool includeDetails = true,
+    TransferStatus? status,
+    List<TransferType>? types,
+  }) async {
+    final recentTransfersDTOs = await _provider.loadFrequentTransfers(
+      limit: limit,
+      offset: offset,
+      includeDetails: includeDetails,
+      status: status,
+      types: types,
+    );
+
+    return recentTransfersDTOs.map((e) => e.toTransfer()).toList();
+  }
 }
