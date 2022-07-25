@@ -76,7 +76,7 @@ class NetEndpoints {
   /// Tasks - Lists all unassigned tasks.
   String get tasksUnassigned => '$_automation/v1/unassigned_tasks';
 
-  /// Tasks - Current task by process id.
+  /// Tasks - Current task by process id._txnBanking
   String get task => '$_automation/v2/user_task/process_instance_id';
 
   /// Tasks - Lists tasks of a user.
@@ -273,4 +273,7 @@ class NetEndpoints {
 
   ///Endpoint for getting html/image/pdf rendered on server
   String get moreInfo => '$_renderingEngine/v1/render/more_info';
+
+  /// Endpoint for getting Mandates
+  String get mandates => '$_txnBanking/v1/mandates';
 }

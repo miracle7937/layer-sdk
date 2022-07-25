@@ -77,6 +77,8 @@ export 'models/loyalty/offer/offer_rule/rule_activity.dart';
 export 'models/loyalty/offer/offer_rule/rule_decision.dart';
 export 'models/loyalty/offer/offer_rule/rule_reward.dart';
 export 'models/loyalty/offer/offer_transaction.dart';
+export 'models/mandates/mandate.dart';
+export 'models/mandates/mandate_status.dart';
 export 'models/message/message.dart';
 export 'models/more_info/more_info_field.dart';
 export 'models/ocra/ocra_challenge.dart';
