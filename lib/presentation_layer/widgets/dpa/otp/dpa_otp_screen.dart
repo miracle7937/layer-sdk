@@ -265,6 +265,11 @@ class _PinWidgetRow extends StatefulWidget {
 
 class _PinWidgetRowState extends State<_PinWidgetRow>
     with FullScreenLoaderMixin {
+  // In order to allow for deleting the pin digits without manually switching
+  // focus to another field we're populating each text field initially with
+  // an empty, zero-width character.
+  static const String emptyChar = '\u200b';
+
   /// TODO: This widget should handle multiple OTP lengths
   /// TODO: This widget should be using the design kit.
   late final TextEditingController firstPin;
@@ -280,15 +285,17 @@ class _PinWidgetRowState extends State<_PinWidgetRow>
   @override
   void initState() {
     super.initState();
-    firstPin = TextEditingController();
-    secondPin = TextEditingController();
-    thirdPin = TextEditingController();
-    fourthPin = TextEditingController();
+    firstPin = TextEditingController(text: emptyChar);
+    secondPin = TextEditingController(text: emptyChar);
+    thirdPin = TextEditingController(text: emptyChar);
+    fourthPin = TextEditingController(text: emptyChar);
 
     firstNode = FocusNode();
     secondNode = FocusNode();
     thirdNode = FocusNode();
     fourthNode = FocusNode();
+
+    firstNode.requestFocus();
   }
 
   @override
@@ -323,6 +330,10 @@ class _PinWidgetRowState extends State<_PinWidgetRow>
                 next: secondNode,
                 self: firstNode,
               ),
+              onDelete: (clearPrevious) => _onDelete(
+                controller: firstPin,
+                clearPrevious: clearPrevious,
+              ),
               node: firstNode,
             ),
           ),
@@ -333,6 +344,12 @@ class _PinWidgetRowState extends State<_PinWidgetRow>
               onFill: () => _onPinUpdated(
                 next: thirdNode,
                 self: secondNode,
+              ),
+              onDelete: (clearPrevious) => _onDelete(
+                controller: secondPin,
+                previousController: firstPin,
+                previousNode: firstNode,
+                clearPrevious: clearPrevious,
               ),
               node: secondNode,
             ),
@@ -345,6 +362,12 @@ class _PinWidgetRowState extends State<_PinWidgetRow>
                 next: fourthNode,
                 self: thirdNode,
               ),
+              onDelete: (clearPrevious) => _onDelete(
+                controller: thirdPin,
+                previousController: secondPin,
+                previousNode: secondNode,
+                clearPrevious: clearPrevious,
+              ),
               node: thirdNode,
             ),
           ),
@@ -355,6 +378,12 @@ class _PinWidgetRowState extends State<_PinWidgetRow>
               node: fourthNode,
               onFill: () => _onPinUpdated(
                 self: fourthNode,
+              ),
+              onDelete: (clearPrevious) => _onDelete(
+                controller: fourthPin,
+                previousController: thirdPin,
+                previousNode: thirdNode,
+                clearPrevious: clearPrevious,
               ),
             ),
           ),
@@ -372,7 +401,7 @@ class _PinWidgetRowState extends State<_PinWidgetRow>
       secondPin.text,
       thirdPin.text,
       fourthPin.text,
-    ].where((e) => e.isNotEmpty).join();
+    ].join().replaceAll(emptyChar, '');
 
     next?.requestFocus();
 
@@ -381,6 +410,20 @@ class _PinWidgetRowState extends State<_PinWidgetRow>
       self.unfocus();
       widget.onPinSet(otp);
     }
+  }
+
+  void _onDelete({
+    required TextEditingController controller,
+    required bool clearPrevious,
+    TextEditingController? previousController,
+    FocusNode? previousNode,
+  }) {
+    if (clearPrevious) {
+      previousController?.text = emptyChar;
+    }
+    controller.text = emptyChar;
+
+    previousNode?.requestFocus();
   }
 
   void _clearPins() {
@@ -392,7 +435,7 @@ class _PinWidgetRowState extends State<_PinWidgetRow>
     ];
 
     for (final pin in pins) {
-      pin.text = '';
+      pin.text = emptyChar;
     }
   }
 }
@@ -402,10 +445,12 @@ class _PinWidget extends StatelessWidget {
   final FocusNode? node;
 
   final VoidCallback onFill;
+  final void Function(bool clearPrevious) onDelete;
 
   const _PinWidget({
     Key? key,
     required this.onFill,
+    required this.onDelete,
     required this.controller,
     this.node,
   }) : super(key: key);
@@ -436,12 +481,14 @@ class _PinWidget extends StatelessWidget {
           border: InputBorder.none,
         ),
         onChanged: (v) {
-          if (v.isNotEmpty) {
+          if (v.replaceAll(_PinWidgetRowState.emptyChar, '').isNotEmpty) {
             onFill();
+          } else {
+            onDelete(v.isEmpty);
           }
         },
         inputFormatters: [
-          LengthLimitingTextInputFormatter(1),
+          LengthLimitingTextInputFormatter(2),
         ],
       ),
     );
