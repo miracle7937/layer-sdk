@@ -4,7 +4,7 @@ import 'package:flutter_svg/svg.dart';
 
 /// A header widget that shows a title and prefix and
 /// suffix icons if indicated.
-class SDKHeader extends StatelessWidget {
+class SDKHeader extends StatelessWidget implements PreferredSizeWidget {
   /// The title for the header.
   final String title;
 
@@ -26,6 +26,7 @@ class SDKHeader extends StatelessWidget {
   const SDKHeader({
     Key? key,
     required this.title,
+    this.preferredSize = const Size.fromHeight(kToolbarHeight),
     this.prefixSvgIcon,
     this.onPrefixIconPressed,
     this.suffixSvgIcon,
@@ -98,4 +99,7 @@ class SDKHeader extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  final Size preferredSize;
 }

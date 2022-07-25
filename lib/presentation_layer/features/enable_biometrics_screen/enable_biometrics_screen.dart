@@ -49,13 +49,13 @@ class EnableBiometricsScreen extends StatelessWidget {
       child: WillPopScope(
         onWillPop: () async => false,
         child: Scaffold(
+          appBar: SDKHeader(
+            title: translation.translate('enable_biometrics'),
+            prefixSvgIcon: DKImages.arrowLeft,
+            onPrefixIconPressed: () => Navigator.pop(context, false),
+          ),
           body: Column(
             children: [
-              SDKHeader(
-                title: translation.translate('enable_biometrics'),
-                prefixSvgIcon: DKImages.arrowLeft,
-                onPrefixIconPressed: () => Navigator.pop(context, false),
-              ),
               if (stepInfo != null)
                 Padding(
                   padding: const EdgeInsets.symmetric(
