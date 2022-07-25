@@ -18,6 +18,7 @@ extension BeneficiaryDTOMapping on BeneficiaryDTO {
         bankName: bankName ?? '',
         bankCountryCode: bankCountryCode,
         currency: currency,
+        extra: extra,
       );
 }
 

@@ -23,4 +23,18 @@ class MessageRepository implements MessageRepositoryInterface {
 
     return messagesDTO.map<Message>((dto) => dto.toMessage()).toList();
   }
+
+  /// Fetches the [Message] list related to the passed module.
+  @override
+  Future<List<Message>> get({
+    String? module,
+    bool forceRefresh = false,
+  }) async {
+    final messagesDTO = await _messageProvider.get(
+      module: module,
+      forceRefresh: forceRefresh,
+    );
+
+    return messagesDTO.map<Message>((dto) => dto.toMessage()).toList();
+  }
 }

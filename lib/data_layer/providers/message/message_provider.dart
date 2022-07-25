@@ -26,4 +26,24 @@ class MessageProvider {
           )
         : [];
   }
+
+  /// Returns the global messages.
+  Future<List<MessageDTO>> get({
+    bool forceRefresh = false,
+    String? module,
+  }) async {
+    final response = await netClient.request(
+      netClient.netEndpoints.message,
+      queryParameters: {
+        if (module != null) 'module': module,
+      },
+      forceRefresh: forceRefresh,
+    );
+
+    return response.data is List<Map<String, dynamic>>
+        ? MessageDTO.fromJsonList(
+            List<Map<String, dynamic>>.from(response.data),
+          )
+        : [];
+  }
 }

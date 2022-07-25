@@ -266,4 +266,10 @@ class NetEndpoints {
 
   /// Endpoint for getting customer checkbooks
   String get checkbooks => '$_infoBanking/v1/checkbook';
+
+  /// Endpoint for evaluating a transfer.
+  String get evaluateTransfer => '$_txnBanking/v1/transfer/evaluate';
+
+  /// Endpoint for submitting a transfer.
+  String get submitTransfer => '$_txnBanking/v2/transfer';
 }

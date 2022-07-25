@@ -10,13 +10,17 @@ class BeneficiaryRepository implements BeneficiaryRepositoryInterface {
   /// Creates a new repository with the supplied [BeneficiaryProvider]
   BeneficiaryRepository(BeneficiaryProvider provider) : _provider = provider;
 
-  /// Lists the beneficiaries of the provided `customerId`,
-  /// optionally filtering by searchText.
+  /// Lists the beneficiaries.
+  ///
+  /// Use the [customerId] parameter for loading the beneficiaries related
+  /// to that customer.
+  ///
+  /// The [searchText] field can be used for filtering the beneficiaries.
   ///
   /// Use [limit] and [offset] to paginate.
   @override
   Future<List<Beneficiary>> list({
-    required String customerId,
+    String? customerId,
     String? searchText,
     int limit = 50,
     int offset = 0,

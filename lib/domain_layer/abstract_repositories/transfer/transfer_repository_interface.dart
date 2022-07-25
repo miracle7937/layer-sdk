@@ -1,3 +1,4 @@
+import '../../../data_layer/dtos.dart';
 import '../../models.dart';
 
 /// An abstract repository for the [Transfer]
@@ -12,5 +13,15 @@ abstract class TransferRepositoryInterface {
     bool includeDetails = true,
     bool recurring = false,
     bool forceRefresh = false,
+  });
+
+  /// Evaluates a transfer.
+  Future<TransferEvaluation> evaluate({
+    required NewTransferPayloadDTO newTransferPayloadDTO,
+  });
+
+  /// Submits a transfer.
+  Future<Transfer> submit({
+    required NewTransfer transfer,
   });
 }

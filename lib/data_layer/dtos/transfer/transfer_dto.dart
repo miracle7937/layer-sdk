@@ -111,6 +111,9 @@ class TransferDTO {
   ///Whether the transfer is locked or not
   bool? cbsLocked;
 
+  /// The transfer processing type.
+  TransferProcessingTypeDTO? processingType;
+
   ///Creates a new [TransferDTO]
   TransferDTO({
     this.id,
@@ -149,6 +152,7 @@ class TransferDTO {
     this.ribCode,
     this.extra,
     this.cbsLocked,
+    this.processingType,
   });
 
   /// Creates a [TransferDTO] from a JSON
@@ -206,6 +210,9 @@ class TransferDTO {
         ribCode: json['rib_code'],
         extra: json['extra'] as Map<String, dynamic>,
         cbsLocked: json['locked'] ?? false,
+        processingType: TransferProcessingTypeDTO.fromRaw(
+          json['processing_type'],
+        ),
       );
 
   /// Returns a list of [TransferDTO] from a JSON

@@ -1,5 +1,6 @@
 import '../../../domain_layer/abstract_repositories.dart';
 import '../../../domain_layer/models.dart';
+import '../../dtos.dart';
 import '../../mappings.dart';
 import '../../providers.dart';
 
@@ -34,5 +35,29 @@ class TransferRepository implements TransferRepositoryInterface {
     );
 
     return transferDTOs.map((e) => e.toTransfer()).toList(growable: false);
+  }
+
+  /// Evaluates a transfer.
+  @override
+  Future<TransferEvaluation> evaluate({
+    required NewTransferPayloadDTO newTransferPayloadDTO,
+  }) async {
+    final transferEvaluationDTO = await _provider.evaluate(
+      newTransferPayloadDTO: newTransferPayloadDTO,
+    );
+
+    return transferEvaluationDTO.toTransferEvaluation();
+  }
+
+  /// Submits a transfer.
+  @override
+  Future<Transfer> submit({
+    required NewTransfer transfer,
+  }) async {
+    final transferDTO = await _provider.submit(
+      newTransferPayloadDTO: transfer.toNewTransferPayloadDTO(),
+    );
+
+    return transferDTO.toTransfer();
   }
 }
