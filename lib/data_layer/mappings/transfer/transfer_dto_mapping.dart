@@ -282,8 +282,10 @@ extension TransferTypeDTOMapping on TransferTypeDTO {
   }
 }
 
+/// Extension that provides mappings for [TransferStatus]
 // TODO: Check other status strings
 extension TransferStatusExtension on TransferStatus {
+  /// Maps into String that represents the [TransferStatus]
   String get toJSONString {
     switch (this) {
       case TransferStatus.completed:
