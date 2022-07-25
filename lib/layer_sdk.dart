@@ -6,6 +6,7 @@ export 'package:design_kit_layer/design_kit_layer.dart';
 export '_migration/business_layer/business_layer.dart';
 export '_migration/data_layer/data_layer.dart';
 export '_migration/flutter_layer/flutter_layer.dart';
+export 'data_layer/interfaces.dart';
 export 'features/accounts.dart';
 export 'features/alert.dart';
 export 'features/beneficiaries.dart';
