@@ -93,21 +93,22 @@ class DPAVariablesList extends StatelessWidget {
                   : null;
 
           return Align(
-              alignment: Alignment.centerLeft,
-              child: builder?.call(
-                    context,
-                    variable,
-                    busy,
-                    previousVariable,
-                    nextVariable,
-                  ) ??
-                  _defaultVariableBuilder(
-                    context,
-                    variable,
-                    busy,
-                    previousVariable,
-                    nextVariable,
-                  ));
+            alignment: AlignmentDirectional.centerStart,
+            child: builder?.call(
+                  context,
+                  variable,
+                  busy,
+                  previousVariable,
+                  nextVariable,
+                ) ??
+                _defaultVariableBuilder(
+                  context,
+                  variable,
+                  busy,
+                  previousVariable,
+                  nextVariable,
+                ),
+          );
         },
       ).toList(growable: false),
     );
