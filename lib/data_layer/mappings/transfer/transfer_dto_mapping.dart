@@ -296,3 +296,25 @@ extension TransferStatusExtension on TransferStatus {
     }
   }
 }
+
+/// Extension that provides mappings for [TransferType]
+extension TransferTypeExtension on TransferType {
+  /// Maps into String that represents the [TransferType]
+  String get toJSONString {
+    switch (this) {
+      case TransferType.own:
+        return 'O';
+
+      case TransferType.domestic:
+        return 'D';
+
+      case TransferType.international:
+        return 'I';
+
+      case TransferType.bank:
+        return 'B';
+      default:
+        return '';
+    }
+  }
+}

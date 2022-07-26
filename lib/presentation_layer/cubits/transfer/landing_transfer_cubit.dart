@@ -4,15 +4,18 @@ import '../../../data_layer/network.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../../layer_sdk.dart';
 
-/// A cubit that handles the User transfers
+/// A cubit that handles the [User] transfers
 class LandingTransferCubit extends Cubit<LandingTransferState> {
   final LoadFrequentTransfersUseCase _loadFrequentTransfersUseCase;
+  final LoadAllCurrenciesUseCase _loadAllCurrenciesUseCase;
 
   /// Creates a new cubit using the supplied [LoadFrequentTransfersUseCase].
   LandingTransferCubit({
     required LoadFrequentTransfersUseCase loadFrequentTransfersUseCase,
+    required LoadAllCurrenciesUseCase loadAllCurrenciesUseCase,
     int limit = 10,
   })  : _loadFrequentTransfersUseCase = loadFrequentTransfersUseCase,
+        _loadAllCurrenciesUseCase = loadAllCurrenciesUseCase,
         super(LandingTransferState(pagination: Pagination(limit: limit)));
 
   /// Loads the list of frequent transfers
@@ -36,7 +39,15 @@ class LandingTransferCubit extends Cubit<LandingTransferState> {
         ],
       );
 
-      emit(state.copyWith(frequentTransfers: frequentTransfers, busy: false));
+      final currencies = await _loadAllCurrenciesUseCase();
+
+      emit(
+        state.copyWith(
+          frequentTransfers: frequentTransfers,
+          currencies: currencies,
+          busy: false,
+        ),
+      );
     } on Exception catch (e) {
       emit(
         state.copyWith(

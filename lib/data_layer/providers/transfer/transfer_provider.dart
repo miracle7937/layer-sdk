@@ -57,7 +57,7 @@ class TransferProvider {
     if (offset != null) params['offset'] = offset;
     if (status != null) params['status'] = status.toJSONString;
     if (types != null && types.isNotEmpty) {
-      params['trf_type'] = types.map((t) => t.name).join(',');
+      params['trf_type'] = types.map((t) => t.toJSONString).join(',');
     }
 
     final response = await netClient.request(
