@@ -4,7 +4,7 @@ import '../../../data_layer/network.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
 
-/// A cubit that keeps a list of payments.
+/// A cubit that keeps a list of frequently made payments.
 class FrequentPaymentsCubit extends Cubit<FrequentPaymentsState> {
   final LoadFrequentPaymentsUseCase _loadFrequentPaymentsUseCase;
 
@@ -22,7 +22,6 @@ class FrequentPaymentsCubit extends Cubit<FrequentPaymentsState> {
   /// Loads the customer's list of frequent payments
   Future<void> load({
     bool loadMore = false,
-    bool forceRefresh = false,
   }) async {
     emit(
       state.copyWith(
