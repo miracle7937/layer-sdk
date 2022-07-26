@@ -58,7 +58,6 @@ class FrequentPaymentsState extends Equatable {
 
   /// Creates a new state based on this one.
   FrequentPaymentsState copyWith({
-    String? customerId,
     Iterable<Payment>? payments,
     bool? busy,
     FrequentPaymentsErrorStatus? errorStatus,

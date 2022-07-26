@@ -8,8 +8,7 @@ import '../../cubits.dart';
 class FrequentPaymentsCubit extends Cubit<FrequentPaymentsState> {
   final LoadFrequentPaymentsUseCase _loadFrequentPaymentsUseCase;
 
-  /// Creates a new cubit using the supplied [LoadFrequentPaymentsUseCase] and
-  /// customer id.
+  /// Creates a new cubit using the supplied [LoadFrequentPaymentsUseCase]
   FrequentPaymentsCubit({
     required LoadFrequentPaymentsUseCase loadFrequentPaymentsUseCase,
     int limit = 50,
