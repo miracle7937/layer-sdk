@@ -66,5 +66,6 @@ class ActivityState extends Equatable {
         errorStatus,
         pagination,
         activities,
+        offSet,
       ];
 }
