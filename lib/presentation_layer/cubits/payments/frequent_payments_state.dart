@@ -16,6 +16,15 @@ enum FrequentPaymentsErrorStatus {
   network,
 }
 
+/// Which loading action the cubit is doing
+enum FrequentPaymentsBusyAction {
+  /// if loading the first time
+  loading,
+
+  /// If is loading more data
+  loadingMore,
+}
+
 /// The state of the [FrequentPayment] cubit
 class FrequentPaymentsState extends Equatable {
   /// A list of [Payment].
@@ -23,6 +32,9 @@ class FrequentPaymentsState extends Equatable {
 
   /// True if the cubit is processing something.
   final bool busy;
+
+  /// Which busy action is the cubit doing
+  final FrequentPaymentsBusyAction busyAction;
 
   /// The current error status.
   final FrequentPaymentsErrorStatus errorStatus;
@@ -44,6 +56,7 @@ class FrequentPaymentsState extends Equatable {
     this.canLoadMore = true,
     this.offset = 0,
     this.limit = 50,
+    this.busyAction = FrequentPaymentsBusyAction.loading,
   }) : payments = UnmodifiableListView(payments);
 
   @override
@@ -54,6 +67,7 @@ class FrequentPaymentsState extends Equatable {
         canLoadMore,
         offset,
         limit,
+        busyAction,
       ];
 
   /// Creates a new state based on this one.
@@ -64,6 +78,7 @@ class FrequentPaymentsState extends Equatable {
     bool? canLoadMore,
     int? offset,
     int? limit,
+    FrequentPaymentsBusyAction? busyAction,
   }) =>
       FrequentPaymentsState(
         payments: payments ?? this.payments,
@@ -72,5 +87,6 @@ class FrequentPaymentsState extends Equatable {
         canLoadMore: canLoadMore ?? this.canLoadMore,
         offset: offset ?? this.offset,
         limit: limit ?? this.limit,
+        busyAction: busyAction ?? this.busyAction,
       );
 }

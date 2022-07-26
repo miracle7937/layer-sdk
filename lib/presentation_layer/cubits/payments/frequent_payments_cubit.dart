@@ -27,6 +27,9 @@ class FrequentPaymentsCubit extends Cubit<FrequentPaymentsState> {
       state.copyWith(
         busy: true,
         errorStatus: FrequentPaymentsErrorStatus.none,
+        busyAction: loadMore
+            ? FrequentPaymentsBusyAction.loadingMore
+            : FrequentPaymentsBusyAction.loading,
       ),
     );
 
@@ -38,16 +41,14 @@ class FrequentPaymentsCubit extends Cubit<FrequentPaymentsState> {
         limit: state.limit,
       );
 
-      final list = offset > 0
-          ? [...state.payments.take(offset).toList(), ...payments]
-          : payments;
+      final list = offset > 0 ? [...state.payments, ...payments] : payments;
 
       emit(
         state.copyWith(
           payments: list,
           busy: false,
           offset: offset,
-          canLoadMore: state.payments.length != list.length,
+          canLoadMore: payments.length != state.limit,
         ),
       );
     } on Exception catch (e) {
