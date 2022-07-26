@@ -3,24 +3,34 @@ import '../../helpers.dart';
 
 ///Data transfer object representing Activity
 class ActivityDTO {
+  /// The id of the [Activity]
   String? id;
 
+  /// The status of the [Activity]
   String? status;
 
+  /// The message of the [Activity]
   String? message;
 
+  /// The [ActivityTypeDTO] of the [Activity]
   ActivityTypeDTO? type;
 
+  /// The [ActivityActionTypeDTO] of the [Activity]
   List<ActivityActionTypeDTO>? actions;
 
+  /// The updated time of the [Activity]
   DateTime? tsUpdated;
 
+  /// The alertID of the [Activity]
   int? alertID;
 
+  ///
   bool? read;
 
+  /// The itemId of the [Activity]
   dynamic itemId;
 
+  /// The item of the [Activity]
   dynamic item;
 
   ///Creates a new [ActivityDTO]
@@ -37,6 +47,7 @@ class ActivityDTO {
     this.item,
   });
 
+  /// Creates a [ActivityDTO] from a JSON
   factory ActivityDTO.fromJson(Map<String, dynamic> json) {
     final type = json['type'] == null
         ? null

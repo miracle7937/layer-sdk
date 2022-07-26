@@ -3,9 +3,11 @@ import '../../../domain_layer/models.dart';
 import '../../mappings.dart';
 import '../../providers.dart';
 
+/// Handles all the activities data
 class ActivityRepository implements ActivityRepositoryInterface {
   final ActivityProvider _provider;
 
+  /// Creates a new [ActivityRepository] instance
   ActivityRepository({
     required ActivityProvider provider,
   }) : _provider = provider;

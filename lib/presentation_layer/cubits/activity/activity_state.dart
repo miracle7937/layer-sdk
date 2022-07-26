@@ -28,6 +28,7 @@ class ActivityState extends Equatable {
   /// Has all the data needed to handle the list of activities.
   final Pagination pagination;
 
+  /// Use to paginate the activities
   final int offSet;
 
   /// A list of activities
@@ -42,6 +43,7 @@ class ActivityState extends Equatable {
     this.offSet = 0,
   }) : activities = UnmodifiableListView(activities);
 
+  /// Copies the object with new values
   ActivityState copyWith({
     bool? busy,
     ActivityErrorStatus? errorStatus,

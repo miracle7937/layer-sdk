@@ -2,7 +2,9 @@ import '../../../domain_layer/models.dart';
 import '../../dtos.dart';
 import '../../errors.dart';
 
+/// Extension that provides mappings for [ActivityDTO]
 extension ActivityDTOMapping on ActivityDTO {
+  /// Maps into a [Activity]
   Activity toActivity() => Activity(
         id: id ?? '',
         itemId: itemId,
@@ -17,7 +19,9 @@ extension ActivityDTOMapping on ActivityDTO {
       );
 }
 
+/// Extension that provides mappings for [ActivityTypeDTO]
 extension ActivityTypeDTOMapping on ActivityTypeDTO {
+  /// Maps into a [ActivityType]
   ActivityType toType() {
     switch (this) {
       case ActivityTypeDTO.appointmentReminder:
@@ -154,7 +158,9 @@ extension ActivityTypeDTOMapping on ActivityTypeDTO {
   }
 }
 
+/// Extension that provides mappings for [ActivityActionTypeDTO]
 extension ActivityActionTypeDTOMapping on ActivityActionTypeDTO {
+  /// Maps into a [ActivityActionType]
   ActivityActionType toActivityActionType() {
     switch (this) {
       case ActivityActionTypeDTO.addToShortcut:
@@ -204,7 +210,9 @@ extension ActivityActionTypeDTOMapping on ActivityActionTypeDTO {
   }
 }
 
+/// Extension that provides mappings for [ActivityType]
 extension ActivityTypeMapping on ActivityType {
+  /// Maps into String that represents the [ActivityType]
   String get toJSONString {
     switch (this) {
       case ActivityType.appointmentReminder:
@@ -341,7 +349,9 @@ extension ActivityTypeMapping on ActivityType {
   }
 }
 
+/// Extension that provides mappings for [ActivityTag]
 extension ActivityTagsMapping on ActivityTag {
+  /// Maps into String that represents the [ActivityTag]
   String get toJSONString {
     switch (this) {
       case ActivityTag.unknown:

@@ -13,6 +13,7 @@ class ActivityProvider {
     this.netClient,
   );
 
+  /// Returns a list of activites.
   Future<List<ActivityDTO>> list({
     DateTime? fromTS,
     DateTime? toTS,

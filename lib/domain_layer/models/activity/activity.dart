@@ -284,12 +284,19 @@ class Activity extends Equatable {
   /// The [Activity] actions
   final List<ActivityActionType>? actions;
 
+  /// The [Activity] updated time
   final DateTime tsUpdated;
 
   /// The [Activity] alert id
   final int alertID;
+
+  ///
   final bool read;
+
+  /// The [Activity] itemId
   final dynamic itemId;
+
+  /// The [Activity] item
   final dynamic item;
 
   ///Creates a new immutable [Activity]
