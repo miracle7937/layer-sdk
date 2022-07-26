@@ -287,7 +287,6 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
   /// if at the last one.
   Future<void> skipOrFinish() async {
     assert(state.runStatus == DPAProcessRunStatus.running);
-    assert(state.activeProcess.stepProperties?.skipLabel != null);
 
     emit(
       state.copyWith(
