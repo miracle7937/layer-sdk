@@ -36,6 +36,7 @@ export 'abstract_repositories/ocra/ocra_repository_interface.dart';
 export 'abstract_repositories/otp/otp_repository_interface.dart';
 export 'abstract_repositories/otp/second_factor_repository_interface.dart';
 export 'abstract_repositories/payments/payments_repository_interface.dart';
+export 'abstract_repositories/payments/frequent_payments_repository_interface.dart';
 export 'abstract_repositories/product/product_repository_interface.dart';
 export 'abstract_repositories/queue/queue_repository_interface.dart';
 export 'abstract_repositories/role/roles_repository_interface.dart';
