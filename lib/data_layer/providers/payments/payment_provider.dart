@@ -42,7 +42,7 @@ class PaymentProvider {
     int offset = 0,
   }) async {
     final response = await netClient.request(
-      netClient.netEndpoints.payment,
+      netClient.netEndpoints.frequentPayment,
       method: NetRequestMethods.get,
       queryParameters: {
         'limit': limit,
