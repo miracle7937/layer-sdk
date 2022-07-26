@@ -7,6 +7,7 @@ export 'models/account/account_preferences.dart';
 export 'models/account_loan/account_loan.dart';
 export 'models/account_loan/account_loan_payment.dart';
 export 'models/account_transaction/account_transaction.dart';
+export 'models/activity/activity.dart';
 export 'models/audit/audit.dart';
 export 'models/authentication/message_response.dart';
 export 'models/authentication/verify_pin_response.dart';
