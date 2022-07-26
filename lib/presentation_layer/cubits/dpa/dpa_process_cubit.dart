@@ -235,11 +235,17 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
 
     try {
       var process = state.activeProcess.validate();
-
+      final variables = extraVariables ?? [];
+      variables.add(DPAVariable(
+        id: 'skip',
+        type: DPAVariableType.boolean,
+        property: DPAVariableProperty(),
+        value: false,
+      ));
       if (process.canProceed) {
         process = await _stepOrFinishProcessUseCase(
           process: process,
-          extraVariables: extraVariables,
+          extraVariables: variables,
         );
       }
 
