@@ -15,7 +15,7 @@ class BeneficiaryProvider {
   ///
   /// If the search text is supplied, will filter the results.
   Future<List<BeneficiaryDTO>> list({
-    required String customerID,
+    String? customerID,
     String? searchText,
     bool ascendingOrder = true,
     int limit = 50,
@@ -26,7 +26,8 @@ class BeneficiaryProvider {
       netClient.netEndpoints.beneficiary,
       method: NetRequestMethods.get,
       queryParameters: {
-        'beneficiary.customer_id': customerID,
+        if (customerID?.isNotEmpty ?? false)
+          'beneficiary.customer_id': customerID,
         'asc': ascendingOrder,
         'limit': limit,
         'offset': offset,
