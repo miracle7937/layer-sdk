@@ -38,6 +38,9 @@ class User extends Equatable {
   /// The user's id
   final String id;
 
+  /// The customer id associated to this user.
+  final String? customerId;
+
   /// The user's username
   /// Can be null if the application does not use usernames.
   final String? username;
@@ -105,6 +108,7 @@ class User extends Equatable {
   /// Creates a new [User]
   User({
     required this.id,
+    this.customerId,
     this.username,
     this.imageURL,
     this.status,
@@ -129,6 +133,7 @@ class User extends Equatable {
   /// Returns a copy of the user modified by the provided data.
   User copyWith({
     String? id,
+    String? customerId,
     String? username,
     String? mobileNumber,
     String? firstName,
@@ -150,6 +155,7 @@ class User extends Equatable {
   }) =>
       User(
         id: id ?? this.id,
+        customerId: customerId ?? this.customerId,
         username: username ?? this.username,
         mobileNumber: mobileNumber ?? this.mobileNumber,
         firstName: firstName ?? this.firstName,
@@ -173,6 +179,7 @@ class User extends Equatable {
   @override
   List<Object?> get props => [
         id,
+        customerId,
         username,
         imageURL,
         mobileNumber,

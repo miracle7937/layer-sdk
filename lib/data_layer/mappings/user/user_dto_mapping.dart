@@ -7,6 +7,7 @@ extension UserDTOMapping on UserDTO {
   /// Maps into a [User]
   User toUser() => User(
         id: id.toString(),
+        customerId: customerId,
         username: username,
         imageURL: imageUrl,
         mobileNumber: mobileNumber,
