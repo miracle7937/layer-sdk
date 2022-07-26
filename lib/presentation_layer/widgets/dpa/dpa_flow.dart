@@ -131,6 +131,9 @@ class DPAFlow<T> extends StatelessWidget {
   /// trying to update the DPA process.
   final DPAErrorCallback onError;
 
+  /// If it's during onboarding
+  final bool isOnboarding;
+
   /// A required method to be called when the DPA process finishes.
   ///
   /// Use this to close the DPA window or do any other processing your app
@@ -213,6 +216,7 @@ class DPAFlow<T> extends StatelessWidget {
     this.showTaskDescription = true,
     this.customEmptySearchBuilder,
     required this.sdkCallback,
+    this.isOnboarding = false,
     this.customContinueButtonPadding = const EdgeInsets.fromLTRB(
       16.0,
       0.0,
@@ -367,6 +371,7 @@ class DPAFlow<T> extends StatelessWidget {
     final isOTPScreen = process.stepProperties?.screenType == DPAScreenType.otp;
     if (isOTPScreen) {
       return DPAOTPScreen(
+        isOnboarding: isOnboarding,
         customDPAHeader: customHeader,
       );
     }
