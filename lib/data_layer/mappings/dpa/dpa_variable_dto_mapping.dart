@@ -143,7 +143,8 @@ extension DPAVariableDTOMapping on DPAVariableDTO {
 
     return variable.copyWith(
       value: DPALinkData(
-        beforeLink: text.substring(0, startIndex),
+        beforeLink: text.substring(
+            0, startIndex - text.substring(startIndex + 3, endIndex).length),
         link: text.substring(startIndex + 3, endIndex),
         afterLink: text.substring(endIndex + 4),
         originalText: text,

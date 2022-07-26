@@ -17,6 +17,9 @@ class DPAOTPScreen extends StatefulWidget {
   /// Optional custom DPAHeader widget.
   final Widget? customDPAHeader;
 
+  /// If the screen is onboarding
+  final bool isOnboarding;
+
   /// The amount of time in seconds the user has to wait to request
   /// a new OTP code.
   ///
@@ -28,6 +31,7 @@ class DPAOTPScreen extends StatefulWidget {
     Key? key,
     this.customDPAHeader,
     this.resendInterval = 120,
+    this.isOnboarding = false,
   }) : super(key: key);
 
   @override
@@ -166,7 +170,7 @@ class _DPAOTPScreenState extends State<DPAOTPScreen>
                           context.read<DPAProcessCubit>().resendCode();
                         },
                       ),
-                      if (isPhoneOTP)
+                      if (isPhoneOTP && widget.isOnboarding)
                         DKButton(
                           title: translation.translate('change_phone_number'),
                           type: DKButtonType.basePlain,
