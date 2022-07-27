@@ -7,6 +7,7 @@ export 'providers/account_transaction/account_transaction_provider.dart';
 export 'providers/alert/alert_provider.dart';
 export 'providers/audit/audit_provider.dart';
 export 'providers/authentication/authentication_provider.dart';
+export 'providers/bank/bank_provider.dart';
 export 'providers/beneficiary/beneficiary_provider.dart';
 export 'providers/bill/bill_provider.dart';
 export 'providers/branch/branch_provider.dart';

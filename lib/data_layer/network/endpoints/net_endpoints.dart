@@ -150,6 +150,9 @@ class NetEndpoints {
   /// The services endpoint
   String get services => '$_payment/v1/services';
 
+  ///The frequent payment endpoint
+  String get frequentPayment => '$_payment/v1/frequent_payment';
+
   /// The forgot password endpoint
   String get forgotPassword => '$_customer/v1/password_forgot_by_txn_pin';
 
@@ -275,4 +278,7 @@ class NetEndpoints {
 
   /// Endpoint for getting customer checkbooks
   String get checkbooks => '$_infoBanking/v1/checkbook';
+
+  /// Endpoint for getting the banks.
+  String get bank => '$_infoBanking/v1/bank';
 }
