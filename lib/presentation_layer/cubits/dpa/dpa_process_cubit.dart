@@ -235,14 +235,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
 
     try {
       var process = state.activeProcess.validate();
-      if (extraVariables != null) {
-        extraVariables.add(DPAVariable(
-          id: 'skip',
-          type: DPAVariableType.boolean,
-          property: DPAVariableProperty(),
-          value: false,
-        ));
-      }
+
       if (process.canProceed) {
         process = await _stepOrFinishProcessUseCase(
           process: process,
@@ -285,7 +278,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
 
   /// Skips this step and goes to next step, or finishes the process
   /// if at the last one.
-  Future<void> skipOrFinish() async {
+  Future<void> skipOrFinish({List<DPAVariable>? extraVariables}) async {
     assert(state.runStatus == DPAProcessRunStatus.running);
 
     emit(
@@ -302,6 +295,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
 
       process = await _skipStepUseCase(
         process: process,
+        extraVariables: extraVariables ?? [],
       );
 
       final delay = process.stepProperties?.delay;
@@ -323,7 +317,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
 
       if (delay != null) {
         await Future.delayed(Duration(seconds: delay));
-        stepOrFinish();
+        stepOrFinish(extraVariables: extraVariables);
       }
     } on NetException {
       emit(

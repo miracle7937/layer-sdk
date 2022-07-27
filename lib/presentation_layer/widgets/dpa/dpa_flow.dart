@@ -243,6 +243,14 @@ class DPAFlow<T> extends StatelessWidget {
             DPAContinueButton(
               process: process,
               enabled: !hasPopup,
+              customOnTap: () => cubit.skipOrFinish(extraVariables: [
+                DPAVariable(
+                  id: 'skip',
+                  type: DPAVariableType.boolean,
+                  property: DPAVariableProperty(),
+                  value: false,
+                )
+              ]),
             );
 
     final effectiveHeader = (process.stepProperties?.hideAppBar ?? false)
@@ -348,7 +356,15 @@ class DPAFlow<T> extends StatelessWidget {
                                     title: process
                                             .stepProperties?.skipButtonLabel ??
                                         translation.translate('cancel'),
-                                    onPressed: cubit.skipOrFinish,
+                                    onPressed: () =>
+                                        cubit.skipOrFinish(extraVariables: [
+                                      DPAVariable(
+                                        id: 'skip',
+                                        type: DPAVariableType.boolean,
+                                        property: DPAVariableProperty(),
+                                        value: true,
+                                      )
+                                    ]),
                                     status: busy
                                         ? DKButtonStatus.loading
                                         : DKButtonStatus.idle,
