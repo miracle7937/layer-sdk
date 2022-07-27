@@ -109,9 +109,9 @@ class _DPATextState extends State<DPAText> {
           ),
           const SizedBox(height: 2.0),
         ],
-        if (value?.isNotEmpty ?? false || currency != null)
+        if (value?.isNotEmpty ?? false || (currency?.isNotEmpty ?? false))
           Row(children: [
-            if (currency?.isNotEmpty ?? false)
+            if (currency?.isNotEmpty ?? false) ...[
               Image.asset(
                 'icons/currency/${currency!.toLowerCase()}.png',
                 width: 24,
@@ -120,16 +120,18 @@ class _DPATextState extends State<DPAText> {
                 errorBuilder: (context, object, stackTrace) =>
                     Container(width: 24),
               ),
-            SizedBox(width: 8),
-            Text(
-              value!.toString(),
-              style: valueTextProperties?.toTextStyle(
-                    layerDesign,
-                  ) ??
-                  layerDesign.bodyM(
-                    color: valueTextProperties?.flutterColor,
-                  ),
-            ),
+              SizedBox(width: 8)
+            ],
+            if (value?.isNotEmpty ?? false)
+              Text(
+                value!.toString(),
+                style: valueTextProperties?.toTextStyle(
+                      layerDesign,
+                    ) ??
+                    layerDesign.bodyM(
+                      color: valueTextProperties?.flutterColor,
+                    ),
+              ),
           ])
       ],
     );
