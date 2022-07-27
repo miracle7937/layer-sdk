@@ -104,6 +104,9 @@ class DPAVariableProperty extends Equatable {
   /// The text properties for this variable's value.
   final DPAVariableTextProperties? valueTextProperties;
 
+  /// For prefilling a code on a pin screen
+  final bool? characterSplit;
+
   /// Creates a new [DPAVariableProperty].
   DPAVariableProperty({
     this.step,
@@ -130,6 +133,7 @@ class DPAVariableProperty extends Equatable {
     this.description,
     this.labelTextProperties,
     this.valueTextProperties,
+    this.characterSplit,
   })  : allowedTypes = UnmodifiableSetView(allowedTypes?.toSet() ?? <String>{}),
         dialCodes = UnmodifiableListView(dialCodes ?? []);
 
@@ -159,6 +163,7 @@ class DPAVariableProperty extends Equatable {
         description,
         labelTextProperties,
         valueTextProperties,
+        characterSplit,
       ];
 
   /// Creates a new [DPAVariableProperty] using another as a base.
@@ -187,6 +192,7 @@ class DPAVariableProperty extends Equatable {
     String? description,
     DPAVariableTextProperties? labelTextProperties,
     DPAVariableTextProperties? valueTextProperties,
+    bool? characterSplit,
   }) =>
       DPAVariableProperty(
         step: step ?? this.step,
@@ -213,5 +219,6 @@ class DPAVariableProperty extends Equatable {
         description: description ?? this.description,
         labelTextProperties: labelTextProperties ?? this.labelTextProperties,
         valueTextProperties: valueTextProperties ?? this.valueTextProperties,
+        characterSplit: characterSplit ?? this.characterSplit,
       );
 }

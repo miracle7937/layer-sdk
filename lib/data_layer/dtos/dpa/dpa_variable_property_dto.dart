@@ -88,6 +88,9 @@ class DPAVariablePropertyDTO {
   /// The text properties for this variable's value.
   final DPAVariableTextPropertiesDTO? valueTextProperties;
 
+  /// For prefilling a code on a pin screen
+  final bool? characterSplit;
+
   /// Creates a new [DPAVariablePropertyDTO].
   DPAVariablePropertyDTO({
     this.propertyType,
@@ -117,6 +120,7 @@ class DPAVariablePropertyDTO {
     this.description,
     this.labelTextProperties,
     this.valueTextProperties,
+    this.characterSplit,
   });
 
   /// Creates a new [DPAVariablePropertyDTO] from the given JSON.
@@ -173,6 +177,7 @@ class DPAVariablePropertyDTO {
                     color: json['value_color'],
                     fontStyle: json['value_font_style'],
                   ),
+        characterSplit: json['character_split'],
       );
 
   @override
@@ -204,6 +209,7 @@ class DPAVariablePropertyDTO {
       '${dialCodes != null ? 'dialCodes: $dialCodes ' : ''}'
       '${prefixValue != null ? 'prefixValue: $prefixValue ' : ''}'
       '${description != null ? 'description: $description ' : ''}'
+      '${characterSplit != null ? 'characterSplit: $characterSplit ' : ''}'
       '${labelTextProperties != null ? 'labelTextProperties: '
           '$labelTextProperties ' : ''}'
       '${valueTextProperties != null ? 'valueTextProperties: '

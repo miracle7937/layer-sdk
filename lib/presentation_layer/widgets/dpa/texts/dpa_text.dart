@@ -1,6 +1,7 @@
 import 'package:design_kit_layer/design_kit_layer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
 
 import '../../../../domain_layer/models.dart';
 import '../../../cubits.dart';
@@ -56,29 +57,79 @@ class _DPATextState extends State<DPAText> {
   Widget build(BuildContext context) {
     final design = DesignSystem.of(context);
     final translation = Translation.of(context);
+    final listofLetters = (widget.variable.value ?? '').trim().split("");
+    final length = listofLetters.length;
+    final layerDesign = DesignSystem.of(context);
 
+    final _textController =
+        TextEditingController(text: widget.variable.value ?? '');
     return Padding(
       padding: widget.padding,
       child: widget.readonly || widget.variable.constraints.readonly
           ? _buildReadOnlyWidget(design)
-          : DKTextField(
-              status: DKTextFieldStatus.idle,
-              controller: _controller,
-              label: widget.variable.label,
-              obscureText: widget.variable.property.isPassword,
-              maxLength: widget.variable.constraints.maxLength,
-              keyboardType: widget.variable.toTextInputType(),
-              size: widget.variable.property.multiline
-                  ? DKTextFieldSize.multiline
-                  : DKTextFieldSize.large,
-              warning: widget.variable.translateValidationError(translation),
-              keepWarningSize: true,
-              inputFormatters: widget.variable.toTextInputFormatters(),
-              onChanged: (v) => context.read<DPAProcessCubit>().updateValue(
-                    variable: widget.variable,
-                    newValue: v,
+          : (widget.variable.property.characterSplit ?? false
+              ? PinCodeTextField(
+                  appContext: context,
+                  length: length,
+                  boxShadows: [
+                    BoxShadow(
+                      color: Color(0x08000000),
+                      offset: Offset(0, 3),
+                      blurRadius: 3,
+                    ),
+                    BoxShadow(
+                      color: Color(0x0F000000),
+                      offset: Offset(0, 5),
+                      blurRadius: 10,
+                    ),
+                  ],
+                  onChanged: (v) => {},
+                  controller: _textController,
+                  backgroundColor: Colors.transparent,
+                  enableActiveFill: true,
+                  animationType: AnimationType.fade,
+                  keyboardType: TextInputType.number,
+                  autoDisposeControllers: false,
+                  enablePinAutofill: true,
+                  onCompleted: (v) =>
+                      context.read<DPAProcessCubit>().updateValue(
+                            variable: widget.variable,
+                            newValue: v,
+                          ),
+                  pinTheme: PinTheme(
+                    fieldWidth: length == 4 || length == 5 ? 52 : 40,
+                    fieldHeight: length == 4 || length == 5 ? 52 : 40,
+                    borderRadius: BorderRadius.circular(12),
+                    borderWidth: 1,
+                    disabledColor: layerDesign.baseQuinary,
+                    activeColor: layerDesign.brandPrimary,
+                    activeFillColor: layerDesign.basePrimaryWhite,
+                    inactiveColor: layerDesign.basePrimaryWhite,
+                    selectedColor: layerDesign.brandPrimary,
+                    inactiveFillColor: layerDesign.basePrimaryWhite,
+                    selectedFillColor: layerDesign.basePrimaryWhite,
+                    shape: PinCodeFieldShape.box,
                   ),
-            ),
+                )
+              : DKTextField(
+                  status: DKTextFieldStatus.idle,
+                  controller: _controller,
+                  label: widget.variable.label,
+                  obscureText: widget.variable.property.isPassword,
+                  maxLength: widget.variable.constraints.maxLength,
+                  keyboardType: widget.variable.toTextInputType(),
+                  size: widget.variable.property.multiline
+                      ? DKTextFieldSize.multiline
+                      : DKTextFieldSize.large,
+                  warning:
+                      widget.variable.translateValidationError(translation),
+                  keepWarningSize: true,
+                  inputFormatters: widget.variable.toTextInputFormatters(),
+                  onChanged: (v) => context.read<DPAProcessCubit>().updateValue(
+                        variable: widget.variable,
+                        newValue: v,
+                      ),
+                )),
     );
   }
 
