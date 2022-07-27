@@ -30,7 +30,7 @@ class ActivityCubit extends Cubit<ActivityState> {
     List<ActivityTag>? activityTags,
     List<TransferType>? transferTypes,
   }) async {
-    emit(state.copyWith(busy: false, errorStatus: ActivityErrorStatus.none));
+    emit(state.copyWith(busy: true, errorStatus: ActivityErrorStatus.none));
 
     try {
       final newPage = state.pagination.paginate(loadMore: loadMore);
