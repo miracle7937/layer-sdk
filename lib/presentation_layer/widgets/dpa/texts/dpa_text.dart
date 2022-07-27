@@ -65,52 +65,55 @@ class _DPATextState extends State<DPAText> {
         TextEditingController(text: widget.variable.value ?? '');
     return Padding(
       padding: widget.padding,
-      child: widget.readonly || widget.variable.constraints.readonly
-          ? _buildReadOnlyWidget(design)
-          : (widget.variable.property.characterSplit ?? false
-              ? PinCodeTextField(
-                  appContext: context,
-                  length: length,
-                  boxShadows: [
-                    BoxShadow(
-                      color: Color(0x08000000),
-                      offset: Offset(0, 3),
-                      blurRadius: 3,
-                    ),
-                    BoxShadow(
-                      color: Color(0x0F000000),
-                      offset: Offset(0, 5),
-                      blurRadius: 10,
-                    ),
-                  ],
-                  onChanged: (v) => {},
-                  controller: _textController,
-                  backgroundColor: Colors.transparent,
-                  enableActiveFill: true,
-                  animationType: AnimationType.fade,
-                  keyboardType: TextInputType.number,
-                  autoDisposeControllers: false,
-                  enablePinAutofill: true,
-                  onCompleted: (v) =>
-                      context.read<DPAProcessCubit>().updateValue(
-                            variable: widget.variable,
-                            newValue: v,
-                          ),
-                  pinTheme: PinTheme(
-                    fieldWidth: length == 4 || length == 5 ? 52 : 40,
-                    fieldHeight: length == 4 || length == 5 ? 52 : 40,
-                    borderRadius: BorderRadius.circular(12),
-                    borderWidth: 1,
-                    disabledColor: layerDesign.baseQuinary,
-                    activeColor: layerDesign.brandPrimary,
-                    activeFillColor: layerDesign.basePrimaryWhite,
-                    inactiveColor: layerDesign.basePrimaryWhite,
-                    selectedColor: layerDesign.brandPrimary,
-                    inactiveFillColor: layerDesign.basePrimaryWhite,
-                    selectedFillColor: layerDesign.basePrimaryWhite,
-                    shape: PinCodeFieldShape.box,
+      child: widget.variable.property.characterSplit ?? false
+          ? PinCodeTextField(
+              enabled:
+                  !(widget.readonly || widget.variable.constraints.readonly),
+              appContext: context,
+              length: length,
+              boxShadows: [
+                BoxShadow(
+                  color: layerDesign.surfaceSeptenary4,
+                  offset: Offset(0, 1),
+                  blurRadius: 3,
+                ),
+                BoxShadow(
+                  color: layerDesign.surfaceSeptenary4,
+                  offset: Offset(0, 1),
+                  blurRadius: 3,
+                ),
+              ],
+              onChanged: (v) {},
+              textStyle: layerDesign.bodyXXL(),
+              controller: _textController,
+              backgroundColor: Colors.transparent,
+              enableActiveFill: true,
+              animationType: AnimationType.fade,
+              keyboardType: TextInputType.number,
+              autoDisposeControllers: false,
+              enablePinAutofill: true,
+              onCompleted: (v) => context.read<DPAProcessCubit>().updateValue(
+                    variable: widget.variable,
+                    newValue: v,
                   ),
-                )
+              pinTheme: PinTheme(
+                fieldWidth: length == 4 || length == 5 ? 52 : 38,
+                fieldHeight: length == 4 || length == 5 ? 52 : 38,
+                borderRadius: BorderRadius.circular(12),
+                borderWidth: 1,
+                disabledColor: layerDesign.basePrimaryWhite,
+                activeColor: layerDesign.basePrimaryWhite,
+                activeFillColor: layerDesign.basePrimaryWhite,
+                fieldOuterPadding: EdgeInsets.symmetric(horizontal: 3),
+                inactiveColor: layerDesign.basePrimaryWhite,
+                selectedColor: layerDesign.brandPrimary,
+                inactiveFillColor: layerDesign.basePrimaryWhite,
+                selectedFillColor: layerDesign.basePrimaryWhite,
+                shape: PinCodeFieldShape.box,
+              ),
+            )
+          : (widget.readonly || widget.variable.constraints.readonly
+              ? _buildReadOnlyWidget(design)
               : DKTextField(
                   status: DKTextFieldStatus.idle,
                   controller: _controller,
