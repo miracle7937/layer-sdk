@@ -275,5 +275,5 @@ class NetEndpoints {
   String get moreInfo => '$_renderingEngine/v1/render/more_info';
 
   /// Endpoint for getting Mandates
-  String get mandates => '$_txnBanking/v1/mandates';
+  String get mandates => '$_txnBanking/v1/mandate';
 }
