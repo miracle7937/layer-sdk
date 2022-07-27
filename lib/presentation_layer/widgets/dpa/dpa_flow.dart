@@ -26,6 +26,7 @@ typedef DPAVariableListBuilder = Widget? Function(
 typedef DPAShowPopUpCallback = void Function(
   BuildContext context,
   DPAProcessCubit cubit,
+  LinkCubit linkCubit,
   DPAProcess popUp,
 );
 
@@ -450,11 +451,13 @@ class DPAFlow<T> extends StatelessWidget {
 
   void _showPopUp(BuildContext context, DPAProcessState state) {
     final processCubit = context.read<DPAProcessCubit>();
+    final linkCubit = context.read<LinkCubit>();
 
     if (customShowPopUp != null) {
       customShowPopUp!.call(
         context,
         processCubit,
+        linkCubit,
         processCubit.state.popUp!,
       );
 

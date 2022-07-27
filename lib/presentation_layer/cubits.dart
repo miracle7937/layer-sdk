@@ -74,6 +74,8 @@ export 'cubits/message/message_cubit.dart';
 export 'cubits/message/message_state.dart';
 export 'cubits/ocra/ocra_authentication_cubit.dart';
 export 'cubits/ocra/ocra_authentication_state.dart';
+export 'cubits/payments/frequent_payments_cubit.dart';
+export 'cubits/payments/frequent_payments_state.dart';
 export 'cubits/payments/payment_cubit.dart';
 export 'cubits/payments/payment_state.dart';
 export 'cubits/payments/recurring_payments_cubit.dart';
