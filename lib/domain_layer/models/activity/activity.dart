@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
 /// The type of the [Activity]
@@ -282,7 +283,7 @@ class Activity extends Equatable {
   final ActivityType? type;
 
   /// The [Activity] actions
-  final List<ActivityActionType>? actions;
+  final UnmodifiableListView<ActivityActionType>? actions;
 
   /// The [Activity] updated time
   final DateTime tsUpdated;
@@ -310,8 +311,8 @@ class Activity extends Equatable {
     required this.tsUpdated,
     required this.read,
     required this.type,
-    required this.actions,
-  });
+    Iterable<ActivityActionType>? actions,
+  }) : actions = UnmodifiableListView(actions ?? []);
 
   @override
   List<Object?> get props => [
