@@ -207,7 +207,7 @@ class DPAVariablePropertyDTO {
       '${allowedTypes != null ? 'allowedTypes: $allowedTypes ' : ''}'
       '${image != null ? 'image: $image ' : ''}'
       '${dialCodes != null ? 'dialCodes: $dialCodes ' : ''}'
-      '${currencyFlagCode != null ? 'currencyFlagCode: $currencyFlagCode ' : ''}'
+      '${currencyFlagCode != null ? 'currencyFlagCode:$currencyFlagCode ' : ''}'
       '${prefixValue != null ? 'prefixValue: $prefixValue ' : ''}'
       '${description != null ? 'description: $description ' : ''}'
       '${labelTextProperties != null ? 'labelTextProperties: '
