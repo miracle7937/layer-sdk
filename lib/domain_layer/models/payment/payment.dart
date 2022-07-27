@@ -76,6 +76,9 @@ class Payment extends Equatable {
   ///When the payment was created
   final DateTime? created;
 
+  ///When the payment was updated
+  final DateTime? updated;
+
   ///When the payment was scheduled
   final DateTime? scheduled;
 
@@ -109,10 +112,26 @@ class Payment extends Equatable {
   /// Defaults to [Recurrence.none].
   final Recurrence recurrence;
 
+  /// The recurrence start date of the payment
+  final DateTime? recurrenceStart;
+
+  /// The recurrence end date of the payment
+  final DateTime? recurrenceEnd;
+
+  /// The if of the one time password
+  final int? otpId;
+
+  /// A unique identifier of the payment
+  final String? deviceUID;
+
+  /// The second factor type of the payment
+  final SecondFactorType? secondFactor;
+
   ///Creates a new [Payment] object
   const Payment({
     this.id,
     this.created,
+    this.updated,
     this.scheduled,
     this.bill,
     this.fromAccount,
@@ -122,6 +141,11 @@ class Payment extends Equatable {
     this.amountVisible = true,
     this.status = PaymentStatus.unknown,
     this.recurrence = Recurrence.none,
+    this.recurrenceStart,
+    this.recurrenceEnd,
+    this.otpId,
+    this.deviceUID,
+    this.secondFactor,
   });
 
   ///Payment id toString()
@@ -136,6 +160,7 @@ class Payment extends Equatable {
   List<Object?> get props => [
         id,
         created,
+        updated,
         scheduled,
         bill,
         fromAccount,
@@ -145,5 +170,10 @@ class Payment extends Equatable {
         amountVisible,
         status,
         recurrence,
+        recurrenceStart,
+        recurrenceEnd,
+        otpId,
+        deviceUID,
+        secondFactor,
       ];
 }

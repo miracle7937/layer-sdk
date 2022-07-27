@@ -141,6 +141,15 @@ class NetEndpoints {
   ///The payment endpoint
   String get payment => '$_payment/v1/payment';
 
+  ///The payment V2 endpoint
+  String get paymentV2 => '$_payment/v2/payment';
+
+  /// The biller endpoint
+  String get biller => '$_payment/v1/biller';
+
+  /// The services endpoint
+  String get services => '$_payment/v1/services';
+
   /// The forgot password endpoint
   String get forgotPassword => '$_customer/v1/password_forgot_by_txn_pin';
 

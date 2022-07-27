@@ -35,4 +35,19 @@ class PaymentProvider {
       List.from(response.data),
     );
   }
+
+  /// Excutes the payment
+  Future<PaymentDTO> payBill({
+    required PaymentDTO payment,
+  }) async {
+    final response = await netClient.request(
+      netClient.netEndpoints.paymentV2,
+      method: NetRequestMethods.post,
+      // TODO: convert to json
+      data: payment,
+      forceRefresh: true,
+    );
+
+    return PaymentDTO.fromJson(response.data);
+  }
 }

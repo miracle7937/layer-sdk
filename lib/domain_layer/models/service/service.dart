@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+import 'service_field.dart';
+
 /// Keeps the data of a service
 class Service extends Equatable {
   /// The service unique identifier
@@ -26,6 +28,9 @@ class Service extends Equatable {
   /// Date this service was last updated.
   final DateTime? updated;
 
+  /// The list of service fields for this service
+  final List<ServiceField> serviceFields;
+
   /// Creates a new [Bill]
   Service({
     this.serviceId,
@@ -36,6 +41,7 @@ class Service extends Equatable {
     this.billingIdDesc,
     this.created,
     this.updated,
+    this.serviceFields = const [],
   });
 
   @override
@@ -48,6 +54,7 @@ class Service extends Equatable {
         billingIdDesc,
         created,
         updated,
+        serviceFields,
       ];
 
   /// Creates a copy of this service with different values
@@ -60,6 +67,7 @@ class Service extends Equatable {
     String? billingIdDesc,
     DateTime? created,
     DateTime? updated,
+    List<ServiceField>? serviceFields,
   }) =>
       Service(
         serviceId: serviceId ?? this.serviceId,
@@ -70,5 +78,6 @@ class Service extends Equatable {
         billingIdDesc: billingIdDesc ?? this.billingIdDesc,
         created: created ?? this.created,
         updated: updated ?? this.updated,
+        serviceFields: serviceFields ?? this.serviceFields,
       );
 }

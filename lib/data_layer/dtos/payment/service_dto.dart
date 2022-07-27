@@ -70,6 +70,11 @@ class ServiceDTO {
           : null,
     );
   }
+
+  /// Creates a list of [ServiceDTO]s from the given JSON list.
+  static List<ServiceDTO> fromJsonList(List<Map<String, dynamic>> json) {
+    return json.map(ServiceDTO.fromJson).toList(growable: false);
+  }
 }
 
 /// This class represents the fields that come
