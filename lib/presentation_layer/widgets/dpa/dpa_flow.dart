@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../_migration/flutter_layer/src/cubits/link/link_cubit.dart';
 import '../../../domain_layer/models.dart';
 import '../../cubits.dart';
 import '../../widgets.dart';
@@ -29,6 +30,7 @@ typedef DPAVariableListBuilder = Widget? Function(
 typedef DPAShowPopUpCallback = void Function(
   BuildContext context,
   DPAProcessCubit cubit,
+  LinkCubit linkCubit,
   DPAProcess popUp,
 );
 
@@ -131,6 +133,9 @@ class DPAFlow<T> extends StatelessWidget {
   /// trying to update the DPA process.
   final DPAErrorCallback onError;
 
+  /// If it's during onboarding
+  final bool isOnboarding;
+
   /// A required method to be called when the DPA process finishes.
   ///
   /// Use this to close the DPA window or do any other processing your app
@@ -213,6 +218,7 @@ class DPAFlow<T> extends StatelessWidget {
     this.showTaskDescription = true,
     this.customEmptySearchBuilder,
     required this.sdkCallback,
+    this.isOnboarding = false,
     this.customContinueButtonPadding = const EdgeInsets.fromLTRB(
       16.0,
       0.0,
@@ -367,6 +373,7 @@ class DPAFlow<T> extends StatelessWidget {
     final isOTPScreen = process.stepProperties?.screenType == DPAScreenType.otp;
     if (isOTPScreen) {
       return DPAOTPScreen(
+        isOnboarding: isOnboarding,
         customDPAHeader: customHeader,
       );
     }
@@ -429,11 +436,13 @@ class DPAFlow<T> extends StatelessWidget {
 
   void _showPopUp(BuildContext context, DPAProcessState state) {
     final processCubit = context.read<DPAProcessCubit>();
+    final linkCubit = context.read<LinkCubit>();
 
     if (customShowPopUp != null) {
       customShowPopUp!.call(
         context,
         processCubit,
+        linkCubit,
         processCubit.state.popUp!,
       );
 
