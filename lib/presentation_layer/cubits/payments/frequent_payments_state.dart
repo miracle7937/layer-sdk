@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:equatable/equatable.dart';
 
 import '../../../domain_layer/models.dart';
+import '../../utils/pagination.dart';
 
 /// The available error status
 enum FrequentPaymentsErrorStatus {
@@ -42,11 +43,8 @@ class FrequentPaymentsState extends Equatable {
   /// True if there is more payments to load
   final bool canLoadMore;
 
-  /// The current offset
-  final int offset;
-
-  /// The number of items to load at a time.
-  final int limit;
+  /// Handles transaction pagination
+  final Pagination pagination;
 
   /// Creates a new state.
   FrequentPaymentsState({
@@ -54,9 +52,8 @@ class FrequentPaymentsState extends Equatable {
     this.busy = false,
     this.errorStatus = FrequentPaymentsErrorStatus.none,
     this.canLoadMore = true,
-    this.offset = 0,
-    this.limit = 50,
     this.busyAction = FrequentPaymentsBusyAction.loading,
+    this.pagination = const Pagination(limit: 5),
   }) : payments = UnmodifiableListView(payments);
 
   @override
@@ -65,9 +62,8 @@ class FrequentPaymentsState extends Equatable {
         busy,
         errorStatus,
         canLoadMore,
-        offset,
-        limit,
         busyAction,
+        pagination,
       ];
 
   /// Creates a new state based on this one.
@@ -78,6 +74,7 @@ class FrequentPaymentsState extends Equatable {
     bool? canLoadMore,
     int? offset,
     int? limit,
+    Pagination? pagination,
     FrequentPaymentsBusyAction? busyAction,
   }) =>
       FrequentPaymentsState(
@@ -85,8 +82,7 @@ class FrequentPaymentsState extends Equatable {
         busy: busy ?? this.busy,
         errorStatus: errorStatus ?? this.errorStatus,
         canLoadMore: canLoadMore ?? this.canLoadMore,
-        offset: offset ?? this.offset,
-        limit: limit ?? this.limit,
+        pagination: pagination ?? this.pagination,
         busyAction: busyAction ?? this.busyAction,
       );
 }
