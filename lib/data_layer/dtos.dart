@@ -11,6 +11,7 @@ export 'dtos/activity/activity_dto.dart';
 export 'dtos/activity/activity_type_dto.dart';
 export 'dtos/audit/audit_dto.dart';
 export 'dtos/authentication/verify_pin_response_dto.dart';
+export 'dtos/bank/bank_dto.dart';
 export 'dtos/beneficiary/beneficiary_dto.dart';
 export 'dtos/branch/branch_dto.dart';
 export 'dtos/branch_activation/branch_activation_response_dto.dart';

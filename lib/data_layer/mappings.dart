@@ -8,6 +8,7 @@ export 'mappings/account_transfaction/account_transaction_dto_mapping.dart';
 export 'mappings/activity/activity_dto_mapping.dart';
 export 'mappings/audit/audit_dto_mapping.dart';
 export 'mappings/authentication/verify_pin_response_dto_mapping.dart';
+export 'mappings/bank/bank_dto_mapping.dart';
 export 'mappings/beneficiary/beneficiary_dto_mapping.dart';
 export 'mappings/bill/bill_dto_mapping.dart';
 export 'mappings/branch/branch_dto_mapping.dart';

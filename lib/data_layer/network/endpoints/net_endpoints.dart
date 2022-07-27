@@ -272,4 +272,7 @@ class NetEndpoints {
 
   /// Endpoint for the activities
   String get activity => '$_infoBanking/v1/activity';
+
+  /// Endpoint for getting the banks.
+  String get bank => '$_infoBanking/v1/bank';
 }
