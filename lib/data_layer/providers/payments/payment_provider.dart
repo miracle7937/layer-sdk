@@ -35,4 +35,24 @@ class PaymentProvider {
       List.from(response.data),
     );
   }
+
+  /// Returns the frequent payments of a customer.
+  Future<List<PaymentDTO>> getFrequentPayments({
+    int limit = 50,
+    int offset = 0,
+  }) async {
+    final response = await netClient.request(
+      netClient.netEndpoints.frequentPayment,
+      method: NetRequestMethods.get,
+      queryParameters: {
+        'limit': limit,
+        'offset': offset,
+        'type': 'payment',
+      },
+    );
+
+    return PaymentDTO.fromJsonList(
+      List.from(response.data),
+    );
+  }
 }

@@ -93,6 +93,7 @@ export 'use_cases/otp/resend_otp_use_case.dart';
 export 'use_cases/otp/resend_otp_use_case.dart';
 export 'use_cases/otp/verify_console_user_otp_use_case.dart';
 export 'use_cases/payments/load_customer_payments_use_case.dart';
+export 'use_cases/payments/load_frequent_payments_use_case.dart';
 export 'use_cases/product/load_product_by_product_id_use_case.dart';
 export 'use_cases/product/load_products_use_case.dart';
 export 'use_cases/queue/accept_queue_use_case.dart';
