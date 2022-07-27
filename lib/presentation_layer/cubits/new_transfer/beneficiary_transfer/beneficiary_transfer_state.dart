@@ -26,6 +26,9 @@ class BeneficiaryTransferError extends Equatable {
 
 /// The available actions for the cubit.
 enum BeneficiaryTransferAction {
+  /// Loading the beneficiary settings.
+  beneficiarySettings,
+
   /// Loading the currencies.
   currencies,
 
@@ -61,6 +64,9 @@ enum BeneficiaryTransferErrorStatus {
 
   /// Insuficient balance.
   insufficientBalance,
+
+  /// Invalid IBAN.
+  invalidIBAN,
 }
 
 /// The state for the [BeneficiaryTransferCubit].
@@ -73,6 +79,9 @@ class BeneficiaryTransferState extends Equatable {
 
   /// The errors.
   final UnmodifiableSetView<BeneficiaryTransferError> errors;
+
+  /// The beneficiary settings.
+  final UnmodifiableListView<GlobalSetting> beneficiarySettings;
 
   /// All the countries.
   final UnmodifiableListView<Country> countries;
@@ -104,6 +113,7 @@ class BeneficiaryTransferState extends Equatable {
     Set<BeneficiaryTransferAction> actions =
         const <BeneficiaryTransferAction>{},
     Set<BeneficiaryTransferError> errors = const <BeneficiaryTransferError>{},
+    Iterable<GlobalSetting> beneficiarySettings = const <GlobalSetting>{},
     Iterable<Country> countries = const <Country>{},
     Iterable<Currency> currencies = const <Currency>{},
     Iterable<Account> accounts = const <Account>[],
@@ -114,6 +124,7 @@ class BeneficiaryTransferState extends Equatable {
     this.transferResult,
   })  : actions = UnmodifiableSetView(actions),
         errors = UnmodifiableSetView(errors),
+        beneficiarySettings = UnmodifiableListView(beneficiarySettings),
         countries = UnmodifiableListView(countries),
         currencies = UnmodifiableListView(currencies),
         accounts = UnmodifiableListView(accounts),
@@ -128,6 +139,7 @@ class BeneficiaryTransferState extends Equatable {
   bool get initializing => actions
       .where(
         (action) => [
+          BeneficiaryTransferAction.beneficiarySettings,
           BeneficiaryTransferAction.accounts,
           BeneficiaryTransferAction.beneficiaries,
           BeneficiaryTransferAction.currencies,
@@ -142,6 +154,7 @@ class BeneficiaryTransferState extends Equatable {
     BeneficiaryTransfer? transfer,
     Set<BeneficiaryTransferAction>? actions,
     Set<BeneficiaryTransferError>? errors,
+    Iterable<GlobalSetting>? beneficiarySettings,
     Iterable<Country>? countries,
     Iterable<Currency>? currencies,
     Iterable<Account>? accounts,
@@ -155,6 +168,7 @@ class BeneficiaryTransferState extends Equatable {
         transfer: transfer ?? this.transfer,
         actions: actions ?? this.actions,
         errors: errors ?? this.errors,
+        beneficiarySettings: beneficiarySettings ?? this.beneficiarySettings,
         countries: countries ?? this.countries,
         currencies: currencies ?? this.currencies,
         accounts: accounts ?? this.accounts,
@@ -170,6 +184,7 @@ class BeneficiaryTransferState extends Equatable {
         transfer,
         actions,
         errors,
+        beneficiarySettings,
         countries,
         currencies,
         accounts,

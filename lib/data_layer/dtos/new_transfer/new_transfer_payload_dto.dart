@@ -101,7 +101,6 @@ class NewTransferPayloadDTO {
   });
 
   /// Returns a json map with the provided values.
-  /// TODO: add missing values.
   Map<String, dynamic> toJson() {
     var extra = this.extra;
 
@@ -123,7 +122,7 @@ class NewTransferPayloadDTO {
       if (toAccountId != null) 'to_account_id': toAccountId,
       if (toCardId != null) 'to_card_id': toCardId,
       if (toBeneficiaryId != null) 'beneficiary_id': toBeneficiaryId,
-      //if(newBeneficiary != null) 'beneficiary': newBeneficiary.toJson(),
+      if (newBeneficiary != null) 'beneficiary': newBeneficiary!.toJson(),
       if (recurrence != null && startDate != null) ...{
         if (recurrence == TransferRecurrenceDTO.once) ...{
           'ts_scheduled': startDate!.millisecondsSinceEpoch,

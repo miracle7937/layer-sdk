@@ -8,6 +8,7 @@ import '../../../cubits.dart';
 
 /// A Cubit that handles the state for the beneficiary transfer flow.
 class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
+  final LoadGlobalSettingsUseCase _loadGlobalSettingsUseCase;
   final GetSourceAccountsForBeneficiaryTransferUseCase
       _getSourceAccountsForBeneficiaryTransferUseCase;
   final GetDestinationBeneficiariesForBeneficiariesTransferUseCase
@@ -16,11 +17,13 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
   final LoadAllCurrenciesUseCase _loadAllCurrenciesUseCase;
   final LoadMessagesByModuleUseCase _loadMessagesByModuleUseCase;
   final LoadBanksByCountryCodeUseCase _loadBanksByCountryCodeUseCase;
+  final ValidateIBANUseCase _validateIBANUseCase;
   final EvaluateTransferUseCase _evaluateTransferUseCase;
   final SubmitTransferUseCase _submitTransferUseCase;
 
   /// Creates a new [BeneficiaryTransferCubit].
   BeneficiaryTransferCubit({
+    required LoadGlobalSettingsUseCase loadGlobalSettingsUseCase,
     required BeneficiaryTransfer transfer,
     required GetSourceAccountsForBeneficiaryTransferUseCase
         getSourceAccountsForBeneficiaryTransferUseCase,
@@ -30,9 +33,11 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     required LoadAllCurrenciesUseCase loadAllCurrenciesUseCase,
     required LoadMessagesByModuleUseCase loadMessagesByModuleUseCase,
     required LoadBanksByCountryCodeUseCase loadBanksByCountryCodeUseCase,
+    required ValidateIBANUseCase validateIBANUseCase,
     required EvaluateTransferUseCase evaluateTransferUseCase,
     required SubmitTransferUseCase submitTransferUseCase,
-  })  : _getSourceAccountsForBeneficiaryTransferUseCase =
+  })  : _loadGlobalSettingsUseCase = loadGlobalSettingsUseCase,
+        _getSourceAccountsForBeneficiaryTransferUseCase =
             getSourceAccountsForBeneficiaryTransferUseCase,
         _getDestinationBeneficiariesForBeneficiariesTransferUseCase =
             getDestinationBeneficiariesForBeneficiariesTransferUseCase,
@@ -40,6 +45,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         _loadAllCurrenciesUseCase = loadAllCurrenciesUseCase,
         _loadMessagesByModuleUseCase = loadMessagesByModuleUseCase,
         _loadBanksByCountryCodeUseCase = loadBanksByCountryCodeUseCase,
+        _validateIBANUseCase = validateIBANUseCase,
         _evaluateTransferUseCase = evaluateTransferUseCase,
         _submitTransferUseCase = submitTransferUseCase,
         super(
@@ -51,6 +57,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
   /// Initializes the [BeneficiaryTransferCubit].
   Future<void> initialize() async {
     await Future.wait([
+      _loadBeneficiarySettings(),
       _loadAccounts(),
       _loadCurrencies(),
       _loadCountries(),
@@ -92,6 +99,46 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     BeneficiaryTransferAction action,
   ) =>
       state.errors.where((error) => error.action != action).toSet();
+
+  /// Loads the beneficiary settings.
+  Future<void> _loadBeneficiarySettings() async {
+    if (state.beneficiarySettings.isEmpty ||
+        state.errors.contains(BeneficiaryTransferAction.beneficiarySettings)) {
+      emit(
+        state.copyWith(
+          actions: _addAction(BeneficiaryTransferAction.beneficiarySettings),
+          errors: _removeError(BeneficiaryTransferAction.beneficiarySettings),
+        ),
+      );
+
+      try {
+        final beneficiarySettings = await _loadGlobalSettingsUseCase(
+          codes: ['benef_iban_allowed_characters'],
+        );
+
+        emit(
+          state.copyWith(
+            actions:
+                _removeAction(BeneficiaryTransferAction.beneficiarySettings),
+            beneficiarySettings: beneficiarySettings,
+          ),
+        );
+      } on Exception catch (e) {
+        emit(
+          state.copyWith(
+            actions:
+                _removeAction(BeneficiaryTransferAction.beneficiarySettings),
+            errors: _addError(
+              action: BeneficiaryTransferAction.beneficiarySettings,
+              errorStatus: e is NetException
+                  ? BeneficiaryTransferErrorStatus.network
+                  : BeneficiaryTransferErrorStatus.generic,
+            ),
+          ),
+        );
+      }
+    }
+  }
 
   /// Loads all the currencies.
   Future<void> _loadCurrencies() async {
@@ -296,6 +343,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
       state.copyWith(
         actions: _addAction(BeneficiaryTransferAction.banks),
         errors: _removeError(BeneficiaryTransferAction.banks),
+        banks: {},
       ),
     );
 
@@ -333,6 +381,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     double? amount,
     Currency? currency,
     Message? reason,
+    DestinationBeneficiaryType? beneficiaryType,
     NewBeneficiary? newBeneficiary,
   }) async {
     final sourceCurrency = state.currencies.firstWhereOrNull(
@@ -361,6 +410,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
           amount: amount,
           currency: sourceCurrency,
           reason: reason,
+          beneficiaryType: beneficiaryType,
           newBeneficiary: newBeneficiary,
         ),
       ),
@@ -376,6 +426,35 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         evaluation: TransferEvaluation(),
       ),
     );
+
+    final beneficiaryType = state.transfer.beneficiaryType;
+    final shouldValidateIBAN =
+        beneficiaryType == DestinationBeneficiaryType.newBeneficiary &&
+            state.transfer.newBeneficiary?.sortCode == null;
+    if (shouldValidateIBAN) {
+      final isValid = _validateIBANUseCase(
+        iban: state.transfer.newBeneficiary?.ibanOrAccountNO ?? '',
+        allowedCharacters: state.beneficiarySettings
+            .singleWhereOrNull(
+                (element) => element.code == 'benef_iban_allowed_characters')
+            ?.value
+            ?.split(''),
+      );
+
+      if (!isValid) {
+        emit(
+          state.copyWith(
+            actions: _removeAction(BeneficiaryTransferAction.evaluate),
+            errors: _addError(
+              action: BeneficiaryTransferAction.evaluate,
+              errorStatus: BeneficiaryTransferErrorStatus.invalidIBAN,
+            ),
+          ),
+        );
+
+        return;
+      }
+    }
 
     try {
       final evaluation = await _evaluateTransferUseCase(

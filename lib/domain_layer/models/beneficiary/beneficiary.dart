@@ -61,6 +61,9 @@ class Beneficiary extends Equatable {
   /// Extra data for this beneficiary.
   final String? extra;
 
+  /// The beneficiary's routing code.
+  String? routingCode;
+
   /// Creates a new immutable [Beneficiary]
   Beneficiary({
     this.id,
@@ -75,6 +78,7 @@ class Beneficiary extends Equatable {
     this.status,
     this.type,
     this.extra,
+    this.routingCode,
   });
 
   /// Returns the full name of this beneficiary
@@ -95,6 +99,7 @@ class Beneficiary extends Equatable {
         status,
         type,
         extra,
+        routingCode,
       ];
 
   /// Returns beneficiary display name

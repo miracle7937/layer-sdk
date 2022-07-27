@@ -4,10 +4,23 @@ import '../../../../data_layer/dtos.dart';
 import '../../../../data_layer/mappings.dart';
 import '../../../models.dart';
 
+/// The available destination beneficiary types.
+enum DestinationBeneficiaryType {
+  /// The beneficiary is new.
+  newBeneficiary,
+
+  /// The beneficiary is a current one.
+  currentBeneficiary,
+}
+
 /// The new beneficiary transfer flow.
 class BeneficiaryTransfer extends NewSchedulableTransfer {
   /// The transfer reason.
   final Message? reason;
+
+  /// The destination beneficiary type.
+  /// Default is [DestinationBeneficiaryType.newBeneficiary].
+  final DestinationBeneficiaryType beneficiaryType;
 
   /// A beneficiary that was created during the beneficiary transfer flow.
   final NewBeneficiary? newBeneficiary;
@@ -23,6 +36,7 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
     super.recurrence = TransferRecurrence.none,
     super.starts,
     super.ends,
+    this.beneficiaryType = DestinationBeneficiaryType.newBeneficiary,
     this.newBeneficiary,
   }) : super();
 
@@ -50,6 +64,7 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
     TransferRecurrence? recurrence,
     DateTime? starts,
     DateTime? ends,
+    DestinationBeneficiaryType? beneficiaryType,
     NewBeneficiary? newBeneficiary,
   }) =>
       BeneficiaryTransfer(
@@ -62,6 +77,7 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
         recurrence: recurrence ?? super.recurrence,
         starts: starts ?? super.starts,
         ends: ends ?? super.ends,
+        beneficiaryType: beneficiaryType ?? this.beneficiaryType,
         newBeneficiary: newBeneficiary ?? this.newBeneficiary,
       );
 
@@ -76,9 +92,16 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
       fromAccountId: source?.account?.id,
       amount: amount!,
       currencyCode: currency!.code!,
-      toBeneficiaryId: destination?.beneficiary?.id,
+      toBeneficiaryId:
+          beneficiaryType == DestinationBeneficiaryType.newBeneficiary
+              ? null
+              : destination?.beneficiary?.id,
+      newBeneficiary:
+          beneficiaryType == DestinationBeneficiaryType.currentBeneficiary
+              ? null
+              : newBeneficiary?.toBeneficiaryDTO(),
       reason: reason?.id,
-      extra: jsonDecode(destination?.beneficiary?.extra ?? ''),
+      extra: jsonDecode(destination?.beneficiary?.extra ?? '{}'),
       recurrence: recurrence.toTransferRecurrenceDTO(),
       startDate: starts,
       endDate: ends,
@@ -96,6 +119,7 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
         recurrence,
         starts,
         ends,
+        beneficiaryType,
         newBeneficiary,
       ];
 }

@@ -118,6 +118,7 @@ export 'use_cases/storage/toggle_biometric_use_case.dart';
 export 'use_cases/transfer/evaluate_transfer_use_case.dart';
 export 'use_cases/transfer/load_transfers_use_case.dart';
 export 'use_cases/transfer/submit_transfer_use_case.dart';
+export 'use_cases/transfer/validate_iban_use_case.dart';
 export 'use_cases/upcoming_payment/load_customer_upcoming_payments_use_case.dart';
 export 'use_cases/upcoming_payment/load_upcoming_payments_use_case.dart';
 export 'use_cases/user/change_offer_favorite_status_use_case.dart';
