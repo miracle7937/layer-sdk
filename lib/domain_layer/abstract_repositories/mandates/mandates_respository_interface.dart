@@ -8,4 +8,8 @@ abstract class MandateRepositoryInterface {
     int? limit,
     int? offset,
   });
+
+  /// DELETE a Mandate
+  /// TODO - change the return type if the response is not just a 200
+  Future<void> cancelMandate({required int mandateId});
 }

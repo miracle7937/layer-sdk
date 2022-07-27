@@ -39,4 +39,15 @@ class MadatesProvider {
 
     return MandateDTO.fromJsonList(response.data);
   }
+
+  /// Cancels a mandate
+  /// TODO - change the Future<void> if the return type is not just a 200
+  Future<void> cancelMandate(int mandateId) async {
+    final response = await netClient.request(
+      "${netClient.netEndpoints.mandates}/$mandateId",
+      method: NetRequestMethods.delete,
+    );
+
+    return response.data;
+  }
 }
