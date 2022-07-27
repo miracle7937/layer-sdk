@@ -8,6 +8,7 @@ export 'dtos/account_loan/account_loan_payment_dto.dart';
 export 'dtos/account_transfaction/account_transaction_dto.dart';
 export 'dtos/audit/audit_dto.dart';
 export 'dtos/authentication/verify_pin_response_dto.dart';
+export 'dtos/bank/bank_dto.dart';
 export 'dtos/beneficiary/beneficiary_dto.dart';
 export 'dtos/branch/branch_dto.dart';
 export 'dtos/branch_activation/branch_activation_response_dto.dart';

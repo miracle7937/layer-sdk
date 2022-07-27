@@ -41,6 +41,9 @@ enum BeneficiaryTransferAction {
   /// Loading the reasons.
   reasons,
 
+  /// Loading the banks for the new beneficiary.
+  banks,
+
   /// Transfer being evaluated.
   evaluate,
 
@@ -86,6 +89,9 @@ class BeneficiaryTransferState extends Equatable {
   /// List of reasons.
   final UnmodifiableListView<Message> reasons;
 
+  /// List of banks for the new beneficiary.
+  final UnmodifiableListView<Bank> banks;
+
   /// The transfer evaluation.
   final TransferEvaluation? evaluation;
 
@@ -103,6 +109,7 @@ class BeneficiaryTransferState extends Equatable {
     Iterable<Account> accounts = const <Account>[],
     Iterable<Beneficiary> beneficiaries = const <Beneficiary>[],
     Iterable<Message> reasons = const <Message>[],
+    Iterable<Bank> banks = const <Bank>[],
     this.evaluation,
     this.transferResult,
   })  : actions = UnmodifiableSetView(actions),
@@ -111,7 +118,8 @@ class BeneficiaryTransferState extends Equatable {
         currencies = UnmodifiableListView(currencies),
         accounts = UnmodifiableListView(accounts),
         beneficiaries = UnmodifiableListView(beneficiaries),
-        reasons = UnmodifiableListView(reasons);
+        reasons = UnmodifiableListView(reasons),
+        banks = UnmodifiableListView(banks);
 
   /// Whether if the cubit is loading something.
   bool get busy => actions.isNotEmpty;
@@ -139,6 +147,7 @@ class BeneficiaryTransferState extends Equatable {
     Iterable<Account>? accounts,
     Iterable<Beneficiary>? beneficiaries,
     Iterable<Message>? reasons,
+    Iterable<Bank>? banks,
     TransferEvaluation? evaluation,
     Transfer? transferResult,
   }) =>
@@ -151,6 +160,7 @@ class BeneficiaryTransferState extends Equatable {
         accounts: accounts ?? this.accounts,
         beneficiaries: beneficiaries ?? this.beneficiaries,
         reasons: reasons ?? this.reasons,
+        banks: banks ?? this.banks,
         evaluation: evaluation ?? this.evaluation,
         transferResult: transferResult ?? this.transferResult,
       );
@@ -165,6 +175,7 @@ class BeneficiaryTransferState extends Equatable {
         accounts,
         beneficiaries,
         reasons,
+        banks,
         evaluation,
         transferResult,
       ];

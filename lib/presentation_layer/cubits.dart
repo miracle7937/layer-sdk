@@ -76,6 +76,8 @@ export 'cubits/new_transfer/beneficiary_transfer/beneficiary_transfer_cubit.dart
 export 'cubits/new_transfer/beneficiary_transfer/beneficiary_transfer_state.dart';
 export 'cubits/ocra/ocra_authentication_cubit.dart';
 export 'cubits/ocra/ocra_authentication_state.dart';
+export 'cubits/payments/frequent_payments_cubit.dart';
+export 'cubits/payments/frequent_payments_state.dart';
 export 'cubits/payments/payment_cubit.dart';
 export 'cubits/payments/payment_state.dart';
 export 'cubits/payments/recurring_payments_cubit.dart';

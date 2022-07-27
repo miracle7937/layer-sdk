@@ -15,8 +15,9 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
   final LoadCountriesUseCase _loadCountriesUseCase;
   final LoadAllCurrenciesUseCase _loadAllCurrenciesUseCase;
   final LoadMessagesByModuleUseCase _loadMessagesByModuleUseCase;
+  final LoadBanksByCountryCodeUseCase _loadBanksByCountryCodeUseCase;
   final EvaluateTransferUseCase _evaluateTransferUseCase;
-  final _submitTransferUseCase;
+  final SubmitTransferUseCase _submitTransferUseCase;
 
   /// Creates a new [BeneficiaryTransferCubit].
   BeneficiaryTransferCubit({
@@ -28,6 +29,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     required LoadCountriesUseCase loadCountriesUseCase,
     required LoadAllCurrenciesUseCase loadAllCurrenciesUseCase,
     required LoadMessagesByModuleUseCase loadMessagesByModuleUseCase,
+    required LoadBanksByCountryCodeUseCase loadBanksByCountryCodeUseCase,
     required EvaluateTransferUseCase evaluateTransferUseCase,
     required SubmitTransferUseCase submitTransferUseCase,
   })  : _getSourceAccountsForBeneficiaryTransferUseCase =
@@ -37,6 +39,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         _loadCountriesUseCase = loadCountriesUseCase,
         _loadAllCurrenciesUseCase = loadAllCurrenciesUseCase,
         _loadMessagesByModuleUseCase = loadMessagesByModuleUseCase,
+        _loadBanksByCountryCodeUseCase = loadBanksByCountryCodeUseCase,
         _evaluateTransferUseCase = evaluateTransferUseCase,
         _submitTransferUseCase = submitTransferUseCase,
         super(
@@ -285,6 +288,43 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     }
   }
 
+  /// Loads the banks for the passed country code.
+  Future<void> loadBanks({
+    required String countryCode,
+  }) async {
+    emit(
+      state.copyWith(
+        actions: _addAction(BeneficiaryTransferAction.banks),
+        errors: _removeError(BeneficiaryTransferAction.banks),
+      ),
+    );
+
+    try {
+      final banks = await _loadBanksByCountryCodeUseCase(
+        countryCode: countryCode,
+      );
+
+      emit(
+        state.copyWith(
+          actions: _removeAction(BeneficiaryTransferAction.banks),
+          banks: banks,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          actions: _removeAction(BeneficiaryTransferAction.banks),
+          errors: _addError(
+            action: BeneficiaryTransferAction.banks,
+            errorStatus: e is NetException
+                ? BeneficiaryTransferErrorStatus.network
+                : BeneficiaryTransferErrorStatus.generic,
+          ),
+        ),
+      );
+    }
+  }
+
   /// Updates the transfer object.
   Future<void> onChanged({
     TransferType? type,
@@ -298,6 +338,11 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     final sourceCurrency = state.currencies.firstWhereOrNull(
       (currency) => currency.code == state.transfer.source?.account?.currency,
     );
+
+    if (newBeneficiary?.country != null &&
+        newBeneficiary?.country != state.transfer.newBeneficiary?.country) {
+      loadBanks(countryCode: newBeneficiary!.country!.countryCode ?? '');
+    }
 
     emit(
       state.copyWith(
