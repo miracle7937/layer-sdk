@@ -268,5 +268,5 @@ class NetEndpoints {
   String get checkbooks => '$_infoBanking/v1/checkbook';
 
   /// Endpoint for getting Mandates
-  String get mandates => '$_txnBanking/v1/mandates';
+  String get mandates => '$_txnBanking/v1/mandate';
 }
