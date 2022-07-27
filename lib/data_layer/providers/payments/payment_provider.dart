@@ -43,8 +43,7 @@ class PaymentProvider {
     final response = await netClient.request(
       netClient.netEndpoints.paymentV2,
       method: NetRequestMethods.post,
-      // TODO: convert to json
-      data: payment,
+      data: payment.toJson(),
       forceRefresh: true,
     );
 
