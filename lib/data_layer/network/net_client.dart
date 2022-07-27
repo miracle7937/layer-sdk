@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:path/path.dart' as path_utils;
@@ -304,12 +305,17 @@ class NetClient {
       NetException? exception;
 
       if (e.response?.data != null) {
-        final dynamic json = await jsonHandler.decode(e.response?.data);
-
-        exception = NetException.fromJson(
-          json,
-          statusCode: e.response?.statusCode,
-        );
+        try {
+          final dynamic json = await jsonHandler.decode(e.response?.data);
+          exception = NetException.fromJson(
+            json,
+            statusCode: e.response?.statusCode,
+          );
+        } on FormatException {
+          _log.severe(
+            "Ops! Response is not a valid json encoding: ${e.response!.data}",
+          );
+        }
       }
 
       exception ??= NetException(
