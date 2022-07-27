@@ -113,6 +113,7 @@ export 'use_cases/storage/save_ocra_secret_key_use_case.dart';
 export 'use_cases/storage/save_user_use_case.dart';
 export 'use_cases/storage/set_brightness_use_case.dart';
 export 'use_cases/storage/toggle_biometric_use_case.dart';
+export 'use_cases/transfer/load_frequent_transfers_use_case.dart';
 export 'use_cases/transfer/load_transfers_use_case.dart';
 export 'use_cases/upcoming_payment/load_customer_upcoming_payments_use_case.dart';
 export 'use_cases/upcoming_payment/load_upcoming_payments_use_case.dart';
