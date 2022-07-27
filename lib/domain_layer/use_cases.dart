@@ -80,6 +80,7 @@ export 'use_cases/loyalty/offers/load_offer_by_id_use_case.dart';
 export 'use_cases/loyalty/offers/load_offers_for_me_use_case.dart';
 export 'use_cases/loyalty/offers/load_offers_use_case.dart';
 export 'use_cases/message/load_messages_use_case.dart';
+export 'use_cases/more_info/load_info_rendered_file.dart';
 export 'use_cases/ocra/client_ocra_challenge_use_case.dart';
 export 'use_cases/ocra/generate_ocra_challenge_use_case.dart';
 export 'use_cases/ocra/generate_ocra_timestamp_use_case.dart';

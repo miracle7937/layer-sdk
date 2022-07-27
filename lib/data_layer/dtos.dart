@@ -61,6 +61,7 @@ export 'dtos/loyalty/offer_transaction/offer_transaction_dto.dart';
 export 'dtos/loyalty/offer_transaction/offer_transaction_group_dto.dart';
 export 'dtos/loyalty/offer_transaction/offer_transaction_response_dto.dart';
 export 'dtos/message/message_dto.dart';
+export 'dtos/more_info/more_info_field_dto.dart';
 export 'dtos/ocra/ocra_challenge_dto.dart';
 export 'dtos/ocra/ocra_challenge_response_dto.dart';
 export 'dtos/ocra/ocra_challenge_result_dto.dart';

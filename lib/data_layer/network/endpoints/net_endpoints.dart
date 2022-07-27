@@ -13,6 +13,7 @@ class NetEndpoints {
   static const String _integration = '/integration';
   static const String _loyaltyEngine = '/loyalty-engine';
   static const String _engagement = '/engagement';
+  static const String _renderingEngine = '/rendering-engine';
 
   /// The login endpoint
   String get login => '$_customer/v1/login';
@@ -269,4 +270,7 @@ class NetEndpoints {
 
   /// Endpoint for getting customer checkbooks
   String get checkbooks => '$_infoBanking/v1/checkbook';
+
+  ///Endpoint for getting html/image/pdf rendered on server
+  String get moreInfo => '$_renderingEngine/v1/render/more_info';
 }
