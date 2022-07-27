@@ -208,7 +208,9 @@ class TransferDTO {
                 List<Map<String, dynamic>>.from(json['bulk_transfer_details']),
               ),
         ribCode: json['rib_code'],
-        extra: json['extra'] as Map<String, dynamic>,
+        extra: json['extra'] == null
+            ? null
+            : json['extra'] as Map<String, dynamic>,
         cbsLocked: json['locked'] ?? false,
         processingType: TransferProcessingTypeDTO.fromRaw(
           json['processing_type'],

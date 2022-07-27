@@ -26,7 +26,8 @@ class BeneficiaryProvider {
       netClient.netEndpoints.beneficiary,
       method: NetRequestMethods.get,
       queryParameters: {
-        if (customerID != null) 'beneficiary.customer_id': customerID,
+        if (customerID?.isNotEmpty ?? false)
+          'beneficiary.customer_id': customerID,
         'asc': ascendingOrder,
         if (limit != null) 'limit': limit,
         if (offset != null) 'offset': offset,
@@ -35,6 +36,10 @@ class BeneficiaryProvider {
       forceRefresh: forceRefresh,
     );
 
-    return BeneficiaryDTO.fromJsonList(response.data);
+    return BeneficiaryDTO.fromJsonList(
+      List<Map<String, dynamic>>.from(
+        response.data,
+      ),
+    );
   }
 }
