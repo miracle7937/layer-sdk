@@ -90,6 +90,8 @@ class DPAVariablePropertyDTO {
 
   /// The currency string for the flag of the variable
   final String? currencyFlagCode;
+  /// For prefilling a code on a pin screen
+  final bool? characterSplit;
 
   /// Creates a new [DPAVariablePropertyDTO].
   DPAVariablePropertyDTO({
@@ -121,6 +123,7 @@ class DPAVariablePropertyDTO {
     this.labelTextProperties,
     this.valueTextProperties,
     this.currencyFlagCode,
+    this.characterSplit,
   });
 
   /// Creates a new [DPAVariablePropertyDTO] from the given JSON.
@@ -178,6 +181,7 @@ class DPAVariablePropertyDTO {
                     fontStyle: json['value_font_style'],
                   ),
         currencyFlagCode: json['currency_flag_code'],
+        characterSplit: json['character_split'],
       );
 
   @override
@@ -210,6 +214,7 @@ class DPAVariablePropertyDTO {
       '${currencyFlagCode != null ? 'currencyFlagCode:$currencyFlagCode ' : ''}'
       '${prefixValue != null ? 'prefixValue: $prefixValue ' : ''}'
       '${description != null ? 'description: $description ' : ''}'
+      '${characterSplit != null ? 'characterSplit: $characterSplit ' : ''}'
       '${labelTextProperties != null ? 'labelTextProperties: '
           '$labelTextProperties ' : ''}'
       '${valueTextProperties != null ? 'valueTextProperties: '

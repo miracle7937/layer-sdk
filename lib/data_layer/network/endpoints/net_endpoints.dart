@@ -13,6 +13,7 @@ class NetEndpoints {
   static const String _integration = '/integration';
   static const String _loyaltyEngine = '/loyalty-engine';
   static const String _engagement = '/engagement';
+  static const String _stripe = '/stripe-gateway';
 
   /// The login endpoint
   String get login => '$_customer/v1/login';
@@ -272,6 +273,9 @@ class NetEndpoints {
 
   /// Endpoint for getting customer checkbooks
   String get checkbooks => '$_infoBanking/v1/checkbook';
+
+  /// Endpoint for both account and card top ups.
+  String get topUp => '$_stripe/v1/topup';
 
   /// Endpoint for the activities
   String get activity => '$_infoBanking/v1/activity';
