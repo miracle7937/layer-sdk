@@ -1,5 +1,6 @@
 library use_cases;
 
+export 'use_cases/account/get_account_top_up_secret_use_case.dart';
 export 'use_cases/account/get_accounts_by_status_use_case.dart';
 export 'use_cases/account/get_customer_accounts_use_case.dart';
 export 'use_cases/account_loan/get_account_loan_by_id_use_case.dart';
