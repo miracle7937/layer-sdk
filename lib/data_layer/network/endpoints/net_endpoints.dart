@@ -123,6 +123,9 @@ class NetEndpoints {
   ///The transfer endpoint
   String get transfer => '$_txnBanking/v1/transfer';
 
+  /// The frequent transfers endpoint
+  String get frequentTransfers => '$_txnBanking/v1/frequent_transfer';
+
   /// The accounts endpoint
   String get account => '$_infoBanking/v1/account';
 
@@ -269,4 +272,10 @@ class NetEndpoints {
 
   /// Endpoint for getting customer checkbooks
   String get checkbooks => '$_infoBanking/v1/checkbook';
+
+  /// Endpoint for the activities
+  String get activity => '$_infoBanking/v1/activity';
+
+  /// Endpoint for getting the banks.
+  String get bank => '$_infoBanking/v1/bank';
 }
