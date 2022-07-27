@@ -25,7 +25,10 @@ class BankProvider {
       },
       forceRefresh: forceRefresh,
     );
-
-    return BankDTO.fromJsonList(response.data);
+    return response.data is List
+        ? BankDTO.fromJsonList(
+            List<Map<String, dynamic>>.from(response.data),
+          )
+        : <BankDTO>[];
   }
 }
