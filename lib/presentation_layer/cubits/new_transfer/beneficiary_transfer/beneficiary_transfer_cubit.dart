@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../data_layer/network.dart';
 import '../../../../domain_layer/models.dart';
 import '../../../../domain_layer/use_cases.dart';
 import '../../../cubits.dart';
@@ -11,6 +12,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
       _getSourceAccountsForBeneficiaryTransferUseCase;
   final GetDestinationBeneficiariesForBeneficiariesTransferUseCase
       _getDestinationBeneficiariesForBeneficiariesTransferUseCase;
+  final LoadCountriesUseCase _loadCountriesUseCase;
   final LoadAllCurrenciesUseCase _loadAllCurrenciesUseCase;
   final LoadMessagesByModuleUseCase _loadMessagesByModuleUseCase;
   final EvaluateTransferUseCase _evaluateTransferUseCase;
@@ -23,6 +25,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         getSourceAccountsForBeneficiaryTransferUseCase,
     required GetDestinationBeneficiariesForBeneficiariesTransferUseCase
         getDestinationBeneficiariesForBeneficiariesTransferUseCase,
+    required LoadCountriesUseCase loadCountriesUseCase,
     required LoadAllCurrenciesUseCase loadAllCurrenciesUseCase,
     required LoadMessagesByModuleUseCase loadMessagesByModuleUseCase,
     required EvaluateTransferUseCase evaluateTransferUseCase,
@@ -31,6 +34,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
             getSourceAccountsForBeneficiaryTransferUseCase,
         _getDestinationBeneficiariesForBeneficiariesTransferUseCase =
             getDestinationBeneficiariesForBeneficiariesTransferUseCase,
+        _loadCountriesUseCase = loadCountriesUseCase,
         _loadAllCurrenciesUseCase = loadAllCurrenciesUseCase,
         _loadMessagesByModuleUseCase = loadMessagesByModuleUseCase,
         _evaluateTransferUseCase = evaluateTransferUseCase,
@@ -42,12 +46,49 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         );
 
   /// Initializes the [BeneficiaryTransferCubit].
-  Future<void> initialize() => Future.wait([
-        _loadCurrencies(),
-        _loadAccounts(),
-        _loadBeneficiaries(),
-        _loadReasons(),
-      ]);
+  Future<void> initialize() async {
+    await Future.wait([
+      _loadAccounts(),
+      _loadCurrencies(),
+      _loadCountries(),
+      _loadBeneficiaries(),
+      _loadReasons(),
+    ]);
+
+    onChanged();
+  }
+
+  /// Returns an action list that includes the passed action.
+  Set<BeneficiaryTransferAction> _addAction(
+    BeneficiaryTransferAction action,
+  ) =>
+      state.actions.union({action});
+
+  /// Returns an error list that includes the passed action and error status.
+  Set<BeneficiaryTransferError> _addError({
+    required BeneficiaryTransferAction action,
+    required BeneficiaryTransferErrorStatus errorStatus,
+  }) =>
+      state.errors.union({
+        BeneficiaryTransferError(
+          action: action,
+          errorStatus: errorStatus,
+        )
+      });
+
+  /// Returns an action list containing all the actions but the one that
+  /// coindides with the passed action.
+  Set<BeneficiaryTransferAction> _removeAction(
+    BeneficiaryTransferAction action,
+  ) =>
+      state.actions.difference({action});
+
+  /// Returns an error list containing all the errors but the one that
+  /// coincides with the passed action.
+  Set<BeneficiaryTransferError> _removeError(
+    BeneficiaryTransferAction action,
+  ) =>
+      state.errors.where((error) => error.action != action).toSet();
 
   /// Loads all the currencies.
   Future<void> _loadCurrencies() async {
@@ -55,12 +96,8 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         state.errors.contains(BeneficiaryTransferAction.currencies)) {
       emit(
         state.copyWith(
-          actions: state.actions.union(
-            {BeneficiaryTransferAction.currencies},
-          ),
-          errors: state.errors.difference(
-            {BeneficiaryTransferAction.currencies},
-          ),
+          actions: _addAction(BeneficiaryTransferAction.currencies),
+          errors: _removeError(BeneficiaryTransferAction.currencies),
         ),
       );
 
@@ -69,20 +106,55 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
         emit(
           state.copyWith(
-            actions: state.actions.difference(
-              {BeneficiaryTransferAction.currencies},
-            ),
+            actions: _removeAction(BeneficiaryTransferAction.currencies),
             currencies: currencies,
           ),
         );
-      } on Exception {
+      } on Exception catch (e) {
         emit(
           state.copyWith(
-            actions: state.actions.difference(
-              {BeneficiaryTransferAction.currencies},
+            actions: _removeAction(BeneficiaryTransferAction.currencies),
+            errors: _addError(
+              action: BeneficiaryTransferAction.currencies,
+              errorStatus: e is NetException
+                  ? BeneficiaryTransferErrorStatus.network
+                  : BeneficiaryTransferErrorStatus.generic,
             ),
-            errors: state.errors.union(
-              {BeneficiaryTransferAction.currencies},
+          ),
+        );
+      }
+    }
+  }
+
+  /// Loads all the countries.
+  Future<void> _loadCountries() async {
+    if (state.countries.isEmpty ||
+        state.errors.contains(BeneficiaryTransferAction.countries)) {
+      emit(
+        state.copyWith(
+          actions: _addAction(BeneficiaryTransferAction.countries),
+          errors: _removeError(BeneficiaryTransferAction.countries),
+        ),
+      );
+
+      try {
+        final countries = await _loadCountriesUseCase();
+
+        emit(
+          state.copyWith(
+            actions: _removeAction(BeneficiaryTransferAction.countries),
+            countries: countries,
+          ),
+        );
+      } on Exception catch (e) {
+        emit(
+          state.copyWith(
+            actions: _removeAction(BeneficiaryTransferAction.countries),
+            errors: _addError(
+              action: BeneficiaryTransferAction.countries,
+              errorStatus: e is NetException
+                  ? BeneficiaryTransferErrorStatus.network
+                  : BeneficiaryTransferErrorStatus.generic,
             ),
           ),
         );
@@ -96,12 +168,8 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         state.errors.contains(BeneficiaryTransferAction.accounts)) {
       emit(
         state.copyWith(
-          actions: state.actions.union(
-            {BeneficiaryTransferAction.accounts},
-          ),
-          errors: state.errors.difference(
-            {BeneficiaryTransferAction.accounts},
-          ),
+          actions: _addAction(BeneficiaryTransferAction.accounts),
+          errors: _removeError(BeneficiaryTransferAction.accounts),
         ),
       );
 
@@ -120,20 +188,19 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
         emit(
           state.copyWith(
-            actions: state.actions.difference(
-              {BeneficiaryTransferAction.accounts},
-            ),
+            actions: _removeAction(BeneficiaryTransferAction.accounts),
             accounts: accounts,
           ),
         );
-      } on Exception {
+      } on Exception catch (e) {
         emit(
           state.copyWith(
-            actions: state.actions.difference(
-              {BeneficiaryTransferAction.accounts},
-            ),
-            errors: state.errors.union(
-              {BeneficiaryTransferAction.accounts},
+            actions: _removeAction(BeneficiaryTransferAction.accounts),
+            errors: _addError(
+              action: BeneficiaryTransferAction.accounts,
+              errorStatus: e is NetException
+                  ? BeneficiaryTransferErrorStatus.network
+                  : BeneficiaryTransferErrorStatus.generic,
             ),
           ),
         );
@@ -147,12 +214,8 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         state.errors.contains(BeneficiaryTransferAction.beneficiaries)) {
       emit(
         state.copyWith(
-          actions: state.actions.union(
-            {BeneficiaryTransferAction.beneficiaries},
-          ),
-          errors: state.errors.difference(
-            {BeneficiaryTransferAction.beneficiaries},
-          ),
+          actions: _addAction(BeneficiaryTransferAction.beneficiaries),
+          errors: _removeError(BeneficiaryTransferAction.beneficiaries),
         ),
       );
 
@@ -162,20 +225,19 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
         emit(
           state.copyWith(
-            actions: state.actions.difference(
-              {BeneficiaryTransferAction.beneficiaries},
-            ),
+            actions: _removeAction(BeneficiaryTransferAction.beneficiaries),
             beneficiaries: beneficiaries,
           ),
         );
-      } on Exception {
+      } on Exception catch (e) {
         emit(
           state.copyWith(
-            actions: state.actions.difference(
-              {BeneficiaryTransferAction.beneficiaries},
-            ),
-            errors: state.errors.union(
-              {BeneficiaryTransferAction.beneficiaries},
+            actions: _removeAction(BeneficiaryTransferAction.beneficiaries),
+            errors: _addError(
+              action: BeneficiaryTransferAction.beneficiaries,
+              errorStatus: e is NetException
+                  ? BeneficiaryTransferErrorStatus.network
+                  : BeneficiaryTransferErrorStatus.generic,
             ),
           ),
         );
@@ -189,12 +251,8 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         state.errors.contains(BeneficiaryTransferAction.reasons)) {
       emit(
         state.copyWith(
-          actions: state.actions.union(
-            {BeneficiaryTransferAction.reasons},
-          ),
-          errors: state.errors.difference(
-            {BeneficiaryTransferAction.reasons},
-          ),
+          actions: _addAction(BeneficiaryTransferAction.reasons),
+          errors: _removeError(BeneficiaryTransferAction.reasons),
         ),
       );
 
@@ -207,20 +265,19 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
         emit(
           state.copyWith(
-            actions: state.actions.difference(
-              {BeneficiaryTransferAction.reasons},
-            ),
+            actions: _removeAction(BeneficiaryTransferAction.reasons),
             reasons: reasons,
           ),
         );
-      } on Exception {
+      } on Exception catch (e) {
         emit(
           state.copyWith(
-            actions: state.actions.difference(
-              {BeneficiaryTransferAction.reasons},
-            ),
-            errors: state.errors.union(
-              {BeneficiaryTransferAction.reasons},
+            actions: _removeAction(BeneficiaryTransferAction.reasons),
+            errors: _addError(
+              action: BeneficiaryTransferAction.reasons,
+              errorStatus: e is NetException
+                  ? BeneficiaryTransferErrorStatus.network
+                  : BeneficiaryTransferErrorStatus.generic,
             ),
           ),
         );
@@ -236,58 +293,42 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     double? amount,
     Currency? currency,
     Message? reason,
+    NewBeneficiary? newBeneficiary,
   }) async {
-    _updateAvailableCurrencies();
+    final sourceCurrency = state.currencies.firstWhereOrNull(
+      (currency) => currency.code == state.transfer.source?.account?.currency,
+    );
 
     emit(
       state.copyWith(
         transfer: state.transfer.copyWith(
           type: type,
-          source: source == null ? null : NewTransferSource(account: source),
+          source: source == null
+              ? null
+              : NewTransferSource(
+                  account: source,
+                ),
           destination: destination == null
               ? null
-              : NewTransferDestination(beneficiary: destination),
+              : NewTransferDestination(
+                  beneficiary: destination,
+                ),
           amount: amount,
-          currency: currency,
+          currency: sourceCurrency,
           reason: reason,
+          newBeneficiary: newBeneficiary,
         ),
-      ),
-    );
-  }
-
-  /// Updates the available currencies.
-  Future<void> _updateAvailableCurrencies() async {
-    final sourceCurrency = state.currencies.firstWhereOrNull(
-      (currency) => currency.code == state.transfer.source?.account?.currency,
-    );
-
-    final destinationCurrency = state.currencies.firstWhereOrNull(
-      (currency) =>
-          currency.code == state.transfer.destination?.beneficiary?.currency,
-    );
-
-    emit(
-      state.copyWith(
-        availableCurrencies: {
-          if (sourceCurrency != null) sourceCurrency,
-          if (destinationCurrency != null) destinationCurrency,
-        },
       ),
     );
   }
 
   /// Evaluates the transfer.
-  Future<void> evaluate({
-    required NewTransfer transfer,
-  }) async {
+  Future<void> evaluate() async {
     emit(
       state.copyWith(
-        actions: state.actions.union(
-          {BeneficiaryTransferAction.evaluate},
-        ),
-        errors: state.errors.difference(
-          {BeneficiaryTransferAction.evaluate},
-        ),
+        actions: _addAction(BeneficiaryTransferAction.evaluate),
+        errors: {},
+        evaluation: TransferEvaluation(),
       ),
     );
 
@@ -298,20 +339,19 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
       emit(
         state.copyWith(
-          actions: state.actions.difference(
-            {BeneficiaryTransferAction.evaluate},
-          ),
+          actions: _removeAction(BeneficiaryTransferAction.evaluate),
           evaluation: evaluation,
         ),
       );
-    } on Exception {
+    } on Exception catch (e) {
       emit(
         state.copyWith(
-          actions: state.actions.difference(
-            {BeneficiaryTransferAction.evaluate},
-          ),
-          errors: state.errors.union(
-            {BeneficiaryTransferAction.evaluate},
+          actions: _removeAction(BeneficiaryTransferAction.evaluate),
+          errors: _addError(
+            action: BeneficiaryTransferAction.evaluate,
+            errorStatus: e is NetException
+                ? BeneficiaryTransferErrorStatus.network
+                : BeneficiaryTransferErrorStatus.generic,
           ),
         ),
       );
@@ -319,17 +359,11 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
   }
 
   /// Submits the transfer.
-  Future<void> submit({
-    required NewTransfer transfer,
-  }) async {
+  Future<void> submit() async {
     emit(
       state.copyWith(
-        actions: state.actions.union(
-          {BeneficiaryTransferAction.submit},
-        ),
-        errors: state.errors.difference(
-          {BeneficiaryTransferAction.submit},
-        ),
+        actions: _addAction(BeneficiaryTransferAction.submit),
+        errors: _removeError(BeneficiaryTransferAction.submit),
       ),
     );
 
@@ -340,20 +374,21 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
       emit(
         state.copyWith(
-          actions: state.actions.difference(
-            {BeneficiaryTransferAction.submit},
-          ),
+          actions: _removeAction(BeneficiaryTransferAction.submit),
           transferResult: transferResult,
         ),
       );
-    } on Exception {
+    } on Exception catch (e) {
       emit(
         state.copyWith(
-          actions: state.actions.difference(
-            {BeneficiaryTransferAction.submit},
-          ),
-          errors: state.errors.union(
-            {BeneficiaryTransferAction.submit},
+          actions: _removeAction(BeneficiaryTransferAction.submit),
+          errors: _addError(
+            action: BeneficiaryTransferAction.submit,
+            errorStatus: e is NetException
+                ? e.code == 'insufficient_balance'
+                    ? BeneficiaryTransferErrorStatus.insufficientBalance
+                    : BeneficiaryTransferErrorStatus.network
+                : BeneficiaryTransferErrorStatus.generic,
           ),
         ),
       );

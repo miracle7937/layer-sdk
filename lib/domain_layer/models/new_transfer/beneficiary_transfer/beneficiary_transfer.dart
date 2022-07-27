@@ -1,35 +1,30 @@
 import 'dart:convert';
 
-import '../../../data_layer/dtos.dart';
-import '../../../data_layer/mappings.dart';
-import '../../models.dart';
+import '../../../../data_layer/dtos.dart';
+import '../../../../data_layer/mappings.dart';
+import '../../../models.dart';
 
 /// The new beneficiary transfer flow.
 class BeneficiaryTransfer extends NewSchedulableTransfer {
   /// The transfer reason.
   final Message? reason;
 
+  /// A beneficiary that was created during the beneficiary transfer flow.
+  final NewBeneficiary? newBeneficiary;
+
   /// Creates a new [BeneficiaryTransfer].
   BeneficiaryTransfer({
-    TransferType? type,
-    NewTransferSource? source,
-    double? amount,
-    Currency? currency,
-    NewTransferDestination? destination,
+    super.type,
+    super.source,
+    super.amount,
+    super.currency,
+    super.destination,
     this.reason,
-    TransferRecurrence recurrence = TransferRecurrence.none,
-    DateTime? starts,
-    DateTime? ends,
-  }) : super(
-          type: type,
-          source: source,
-          amount: amount,
-          currency: currency,
-          destination: destination,
-          recurrence: recurrence,
-          starts: starts,
-          ends: ends,
-        );
+    super.recurrence = TransferRecurrence.none,
+    super.starts,
+    super.ends,
+    this.newBeneficiary,
+  }) : super();
 
   @override
   bool canBeSubmitted() =>
@@ -39,7 +34,9 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
       amount! > 0 &&
       currency != null &&
       currency?.code != null &&
-      destination?.beneficiary != null &&
+      (destination?.beneficiary != null ||
+          (newBeneficiary != null &&
+              (newBeneficiary?.canBeSubmitted ?? false))) &&
       (recurrence == TransferRecurrence.none || starts != null);
 
   @override
@@ -53,6 +50,7 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
     TransferRecurrence? recurrence,
     DateTime? starts,
     DateTime? ends,
+    NewBeneficiary? newBeneficiary,
   }) =>
       BeneficiaryTransfer(
         type: type ?? super.type,
@@ -64,6 +62,7 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
         recurrence: recurrence ?? super.recurrence,
         starts: starts ?? super.starts,
         ends: ends ?? super.ends,
+        newBeneficiary: newBeneficiary ?? this.newBeneficiary,
       );
 
   @override
@@ -97,5 +96,6 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
         recurrence,
         starts,
         ends,
+        newBeneficiary,
       ];
 }
