@@ -90,6 +90,7 @@ class _DPATextState extends State<DPAText> {
     final labelTextProperties = widget.variable.property.labelTextProperties;
 
     final value = widget.variable.value;
+    final currency = widget.variable.property.currencyFlagCode;
     final valueTextProperties = widget.variable.property.valueTextProperties;
 
     return Column(
@@ -108,16 +109,28 @@ class _DPATextState extends State<DPAText> {
           ),
           const SizedBox(height: 2.0),
         ],
-        if (value?.isNotEmpty ?? false)
-          Text(
-            value!.toString(),
-            style: valueTextProperties?.toTextStyle(
-                  layerDesign,
-                ) ??
-                layerDesign.bodyM(
-                  color: valueTextProperties?.flutterColor,
-                ),
-          ),
+        if (value?.isNotEmpty ?? false || currency != null)
+          Row(children: [
+            if (currency?.isNotEmpty ?? false)
+              Image.asset(
+                'icons/currency/${currency!.toLowerCase()}.png',
+                width: 24,
+                height: 18,
+                package: 'currency_icons',
+                errorBuilder: (context, object, stackTrace) =>
+                    Container(width: 24),
+              ),
+            SizedBox(width: 8),
+            Text(
+              value!.toString(),
+              style: valueTextProperties?.toTextStyle(
+                    layerDesign,
+                  ) ??
+                  layerDesign.bodyM(
+                    color: valueTextProperties?.flutterColor,
+                  ),
+            ),
+          ])
       ],
     );
   }

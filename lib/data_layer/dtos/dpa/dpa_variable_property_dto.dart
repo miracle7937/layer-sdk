@@ -88,6 +88,9 @@ class DPAVariablePropertyDTO {
   /// The text properties for this variable's value.
   final DPAVariableTextPropertiesDTO? valueTextProperties;
 
+  /// The currency string for the flag of the variable
+  final String? currencyFlagCode;
+
   /// Creates a new [DPAVariablePropertyDTO].
   DPAVariablePropertyDTO({
     this.propertyType,
@@ -117,6 +120,7 @@ class DPAVariablePropertyDTO {
     this.description,
     this.labelTextProperties,
     this.valueTextProperties,
+    this.currencyFlagCode,
   });
 
   /// Creates a new [DPAVariablePropertyDTO] from the given JSON.
@@ -173,6 +177,7 @@ class DPAVariablePropertyDTO {
                     color: json['value_color'],
                     fontStyle: json['value_font_style'],
                   ),
+        currencyFlagCode: json['currency_flag_code'],
       );
 
   @override
@@ -202,6 +207,7 @@ class DPAVariablePropertyDTO {
       '${allowedTypes != null ? 'allowedTypes: $allowedTypes ' : ''}'
       '${image != null ? 'image: $image ' : ''}'
       '${dialCodes != null ? 'dialCodes: $dialCodes ' : ''}'
+      '${currencyFlagCode != null ? 'currencyFlagCode: $currencyFlagCode ' : ''}'
       '${prefixValue != null ? 'prefixValue: $prefixValue ' : ''}'
       '${description != null ? 'description: $description ' : ''}'
       '${labelTextProperties != null ? 'labelTextProperties: '
