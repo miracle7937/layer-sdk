@@ -36,11 +36,14 @@ class DPAText extends StatefulWidget {
 class _DPATextState extends State<DPAText> {
   TextEditingController? _controller;
 
+  bool get _characterSplit =>
+      (widget.variable.property.characterSplit ?? false);
+
   @override
   void initState() {
     super.initState();
 
-    if (!widget.variable.constraints.readonly) {
+    if (_characterSplit || !widget.variable.constraints.readonly) {
       _controller = TextEditingController(
         text: widget.variable.value?.toString(),
       );
@@ -57,15 +60,24 @@ class _DPATextState extends State<DPAText> {
   Widget build(BuildContext context) {
     final design = DesignSystem.of(context);
     final translation = Translation.of(context);
-    final listofLetters = (widget.variable.value ?? '').trim().split("");
-    final length = listofLetters.length;
     final layerDesign = DesignSystem.of(context);
 
-    final _textController =
-        TextEditingController(text: widget.variable.value ?? '');
+    final List<String> listOfLetters =
+        (widget.variable.value ?? '').trim().split("");
+    final length = widget.variable.constraints.readonly
+        ? listOfLetters.isEmpty
+            ? (widget.variable.constraints.maxLength ?? 0)
+            : listOfLetters.length
+        : (widget.variable.constraints.maxLength ?? 0);
+
+    if (_characterSplit && length == 0) {
+      //Invalid response from automation
+      return SizedBox.shrink();
+    }
+
     return Padding(
       padding: widget.padding,
-      child: widget.variable.property.characterSplit ?? false
+      child: _characterSplit
           ? PinCodeTextField(
               enabled:
                   !(widget.readonly || widget.variable.constraints.readonly),
@@ -83,22 +95,21 @@ class _DPATextState extends State<DPAText> {
                   blurRadius: 3,
                 ),
               ],
-              onChanged: (v) {},
+              onChanged: (v) => context.read<DPAProcessCubit>().updateValue(
+                    variable: widget.variable,
+                    newValue: v,
+                  ),
               textStyle: layerDesign.bodyXXL(),
-              controller: _textController,
+              controller: _controller,
               backgroundColor: Colors.transparent,
               enableActiveFill: true,
               animationType: AnimationType.fade,
               keyboardType: TextInputType.number,
               autoDisposeControllers: false,
               enablePinAutofill: true,
-              onCompleted: (v) => context.read<DPAProcessCubit>().updateValue(
-                    variable: widget.variable,
-                    newValue: v,
-                  ),
               pinTheme: PinTheme(
-                fieldWidth: length == 4 || length == 5 ? 52 : 38,
-                fieldHeight: length == 4 || length == 5 ? 52 : 38,
+                fieldWidth: length <= 6 ? 52 : 38,
+                fieldHeight: length <= 6 ? 52 : 38,
                 borderRadius: BorderRadius.circular(12),
                 borderWidth: 1,
                 disabledColor: layerDesign.basePrimaryWhite,
@@ -112,7 +123,7 @@ class _DPATextState extends State<DPAText> {
                 shape: PinCodeFieldShape.box,
               ),
             )
-          : (widget.readonly || widget.variable.constraints.readonly
+          : widget.readonly || widget.variable.constraints.readonly
               ? _buildReadOnlyWidget(design)
               : DKTextField(
                   status: DKTextFieldStatus.idle,
@@ -132,7 +143,7 @@ class _DPATextState extends State<DPAText> {
                         variable: widget.variable,
                         newValue: v,
                       ),
-                )),
+                ),
     );
   }
 
