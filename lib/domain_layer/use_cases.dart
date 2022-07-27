@@ -6,6 +6,7 @@ export 'use_cases/account_loan/get_account_loan_by_id_use_case.dart';
 export 'use_cases/account_loan/get_account_loans_use_case.dart';
 export 'use_cases/account_loan/get_customer_account_loans_use_case.dart';
 export 'use_cases/account_transaction/get_customer_account_transactions_use_case.dart';
+export 'use_cases/activity/load_activities_use_case.dart';
 export 'use_cases/alert/load_unread_alerts_count_use_case.dart';
 export 'use_cases/audit/load_customer_audits_use_case.dart';
 export 'use_cases/authentication/change_password_use_case.dart';

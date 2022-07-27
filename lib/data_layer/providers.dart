@@ -4,6 +4,7 @@ library providers;
 export 'providers/account/account_provider.dart';
 export 'providers/account_loan/account_loan_provider.dart';
 export 'providers/account_transaction/account_transaction_provider.dart';
+export 'providers/activity/activity_provider.dart';
 export 'providers/alert/alert_provider.dart';
 export 'providers/audit/audit_provider.dart';
 export 'providers/authentication/authentication_provider.dart';

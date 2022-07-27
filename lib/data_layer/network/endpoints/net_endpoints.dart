@@ -270,6 +270,9 @@ class NetEndpoints {
   /// Endpoint for getting customer checkbooks
   String get checkbooks => '$_infoBanking/v1/checkbook';
 
+  /// Endpoint for the activities
+  String get activity => '$_infoBanking/v1/activity';
+
   /// Endpoint for getting the banks.
   String get bank => '$_infoBanking/v1/bank';
 }
