@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../_migration/flutter_layer/src/cubits/link/link_cubit.dart';
 import '../../../domain_layer/models.dart';
 import '../../cubits.dart';
 import '../../widgets.dart';
@@ -29,6 +30,7 @@ typedef DPAVariableListBuilder = Widget? Function(
 typedef DPAShowPopUpCallback = void Function(
   BuildContext context,
   DPAProcessCubit cubit,
+  LinkCubit linkCubit,
   DPAProcess popUp,
 );
 
@@ -434,11 +436,13 @@ class DPAFlow<T> extends StatelessWidget {
 
   void _showPopUp(BuildContext context, DPAProcessState state) {
     final processCubit = context.read<DPAProcessCubit>();
+    final linkCubit = context.read<LinkCubit>();
 
     if (customShowPopUp != null) {
       customShowPopUp!.call(
         context,
         processCubit,
+        linkCubit,
         processCubit.state.popUp!,
       );
 
