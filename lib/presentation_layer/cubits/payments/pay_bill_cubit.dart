@@ -145,7 +145,7 @@ class PayBillCubit extends Cubit<PayBillState> {
   }
 
   /// Sets the selected biller service
-  void setService(String? serviceId) {
+  void setService(int? serviceId) {
     final service = state.services
         .firstWhereOrNull((element) => element.serviceId == serviceId);
 
