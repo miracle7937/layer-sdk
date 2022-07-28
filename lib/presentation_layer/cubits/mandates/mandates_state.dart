@@ -50,7 +50,7 @@ class MandatesState extends Equatable {
     this.busy = false,
     this.errorStatus = MandatesErrorStatus.none,
     this.errorMessage = '',
-    this.pagination = const Pagination(),
+    this.pagination = const Pagination(limit: 25),
     Iterable<Mandate> mandates = const <Mandate>[],
     this.busyAction = MandatesBusyAction.loading,
   }) : mandates = UnmodifiableListView(mandates);
