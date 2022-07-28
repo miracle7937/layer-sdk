@@ -19,6 +19,7 @@ class LoyaltyPointsProvider {
     );
 
     return LoyaltyPointsDTO.fromJsonList(
-        List<Map<String, dynamic>>.from(response.data));
+      List<Map<String, dynamic>>.from(response.data),
+    );
   }
 }

@@ -7,6 +7,7 @@ export 'repositories/account_transaction/account_transaction_repository.dart';
 export 'repositories/alert/alert_repository.dart';
 export 'repositories/audit/audit_repository.dart';
 export 'repositories/authentication/authentication_repository.dart';
+export 'repositories/bank/bank_repository.dart';
 export 'repositories/beneficiary/beneficiary_repository.dart';
 export 'repositories/bill/bill_repository.dart';
 export 'repositories/branch/branch_repository.dart';
@@ -32,6 +33,8 @@ export 'repositories/loyalty/loyalty_points_expiration/loyalty_points_expiration
 export 'repositories/loyalty/loyalty_points_rate/loyalty_points_rate_repository.dart';
 export 'repositories/loyalty/loyalty_points_transaction/loyalty_points_transaction_repository.dart';
 export 'repositories/loyalty/offers/offer_repository.dart';
+export 'repositories/mandates/mandate_payment_repository.dart';
+export 'repositories/mandates/mandates_repository.dart';
 export 'repositories/message/message_repository.dart';
 export 'repositories/ocra/ocra_repository.dart';
 export 'repositories/otp/otp_repository.dart';

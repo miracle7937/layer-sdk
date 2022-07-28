@@ -12,16 +12,14 @@ class BeneficiariesCubit extends Cubit<BeneficiariesState> {
   final int limit;
 
   /// Creates a new cubit using the supplied [LoadCustomerBeneficiariesUseCase]
-  /// and `customerId`.
+  /// and optional `customerId`.
   BeneficiariesCubit({
     required LoadCustomerBeneficiariesUseCase loadCustomerBeneficiariesUseCase,
-    required String customerID,
+    String? customerID,
     this.limit = 50,
   })  : _loadCustomerBeneficiariesUseCase = loadCustomerBeneficiariesUseCase,
         super(
-          BeneficiariesState(
-            customerID: customerID,
-          ),
+          BeneficiariesState(customerID: customerID),
         );
 
   /// Loads a list of beneficiaries, optionally using
