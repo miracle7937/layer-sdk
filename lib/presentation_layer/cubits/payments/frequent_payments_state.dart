@@ -49,7 +49,7 @@ class FrequentPaymentsState extends Equatable {
     this.busy = false,
     this.errorStatus = FrequentPaymentsErrorStatus.none,
     this.busyAction = FrequentPaymentsBusyAction.loading,
-    this.pagination = const Pagination(limit: 5),
+    this.pagination = const Pagination(limit: 25),
   }) : payments = UnmodifiableListView(payments);
 
   @override
