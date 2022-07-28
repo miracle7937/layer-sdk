@@ -21,11 +21,15 @@ class DPAText extends StatefulWidget {
   /// Default is [EdgeInsets.zero].
   final EdgeInsets padding;
 
+  /// Whether the widget is used on the popup task. Defaults to false.
+  final bool forPopup;
+
   /// Creates a new [DPAText]
   const DPAText({
     Key? key,
     required this.variable,
     this.readonly = false,
+    this.forPopup = false,
     this.padding = EdgeInsets.zero,
   }) : super(key: key);
 
@@ -78,49 +82,54 @@ class _DPATextState extends State<DPAText> {
     return Padding(
       padding: widget.padding,
       child: _characterSplit
-          ? PinCodeTextField(
-              enabled:
-                  !(widget.readonly || widget.variable.constraints.readonly),
-              appContext: context,
-              length: length,
-              boxShadows: [
-                BoxShadow(
-                  color: layerDesign.surfaceSeptenary4,
-                  offset: Offset(0, 1),
-                  blurRadius: 3,
-                ),
-                BoxShadow(
-                  color: layerDesign.surfaceSeptenary4,
-                  offset: Offset(0, 1),
-                  blurRadius: 3,
-                ),
-              ],
-              onChanged: (v) => context.read<DPAProcessCubit>().updateValue(
-                    variable: widget.variable,
-                    newValue: v,
+          ? SizedBox(
+              width: widget.forPopup && length <= 4 ? 230 : null,
+              child: PinCodeTextField(
+                enabled:
+                    !(widget.readonly || widget.variable.constraints.readonly),
+                appContext: context,
+                length: length,
+                boxShadows: [
+                  BoxShadow(
+                    color: layerDesign.surfaceSeptenary4,
+                    offset: Offset(0, 1),
+                    blurRadius: 3,
                   ),
-              textStyle: layerDesign.bodyXXL(),
-              controller: _controller,
-              backgroundColor: Colors.transparent,
-              enableActiveFill: true,
-              animationType: AnimationType.fade,
-              keyboardType: TextInputType.number,
-              autoDisposeControllers: false,
-              enablePinAutofill: true,
-              pinTheme: PinTheme(
-                fieldWidth: length <= 6 ? 52 : 38,
-                fieldHeight: length <= 6 ? 52 : 38,
-                borderRadius: BorderRadius.circular(12),
-                borderWidth: 1,
-                disabledColor: layerDesign.basePrimaryWhite,
-                activeColor: layerDesign.basePrimaryWhite,
-                activeFillColor: layerDesign.basePrimaryWhite,
-                fieldOuterPadding: EdgeInsets.symmetric(horizontal: 3),
-                inactiveColor: layerDesign.basePrimaryWhite,
-                selectedColor: layerDesign.brandPrimary,
-                inactiveFillColor: layerDesign.basePrimaryWhite,
-                selectedFillColor: layerDesign.basePrimaryWhite,
-                shape: PinCodeFieldShape.box,
+                  BoxShadow(
+                    color: layerDesign.surfaceSeptenary4,
+                    offset: Offset(0, 1),
+                    blurRadius: 3,
+                  ),
+                ],
+                onChanged: (v) => context.read<DPAProcessCubit>().updateValue(
+                      variable: widget.variable,
+                      newValue: v,
+                    ),
+                textStyle: layerDesign.bodyXXL(),
+                controller: _controller,
+                backgroundColor: Colors.transparent,
+                enableActiveFill: true,
+                animationType: AnimationType.fade,
+                keyboardType: TextInputType.number,
+                autoDisposeControllers: false,
+                enablePinAutofill: true,
+                pinTheme: PinTheme(
+                  fieldWidth: length <= 6 ? 52 : 38,
+                  fieldHeight: length <= 6 ? 52 : 38,
+                  borderRadius: BorderRadius.circular(12),
+                  borderWidth: 1,
+                  disabledColor: layerDesign.basePrimaryWhite,
+                  activeColor: layerDesign.basePrimaryWhite,
+                  activeFillColor: layerDesign.basePrimaryWhite,
+                  fieldOuterPadding: widget.forPopup
+                      ? EdgeInsets.zero
+                      : EdgeInsets.symmetric(horizontal: 3),
+                  inactiveColor: layerDesign.basePrimaryWhite,
+                  selectedColor: layerDesign.brandPrimary,
+                  inactiveFillColor: layerDesign.basePrimaryWhite,
+                  selectedFillColor: layerDesign.basePrimaryWhite,
+                  shape: PinCodeFieldShape.box,
+                ),
               ),
             )
           : widget.readonly || widget.variable.constraints.readonly
