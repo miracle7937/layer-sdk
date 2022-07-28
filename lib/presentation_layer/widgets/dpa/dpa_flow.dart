@@ -1,10 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../domain_layer/models.dart';
-import '../../cubits.dart';
-import '../../widgets.dart';
+import '../../../layer_sdk.dart';
 
 /// Signature for [DPAFlow.onError].
 typedef DPAErrorCallback = void Function(
@@ -29,6 +26,7 @@ typedef DPAVariableListBuilder = Widget? Function(
 typedef DPAShowPopUpCallback = void Function(
   BuildContext context,
   DPAProcessCubit cubit,
+  LinkCubit linkCubit,
   DPAProcess popUp,
 );
 
@@ -234,7 +232,8 @@ class DPAFlow<T> extends StatelessWidget {
     final hasPopup = context.select<DPAProcessCubit, bool>(
       (cubit) => cubit.state.hasPopup,
     );
-
+    final translation = Translation.of(context);
+    final cubit = context.read<DPAProcessCubit>();
     final isDelayTask = process.stepProperties?.delay != null;
 
     final effectiveContinueButton = process.variables.length == 1 &&
@@ -244,6 +243,14 @@ class DPAFlow<T> extends StatelessWidget {
             DPAContinueButton(
               process: process,
               enabled: !hasPopup,
+              customOnTap: () => cubit.skipOrFinish(extraVariables: [
+                DPAVariable(
+                  id: 'skip',
+                  type: DPAVariableType.boolean,
+                  property: DPAVariableProperty(),
+                  value: false,
+                )
+              ]),
             );
 
     final effectiveHeader = (process.stepProperties?.hideAppBar ?? false)
@@ -340,6 +347,32 @@ class DPAFlow<T> extends StatelessWidget {
                             process: process,
                           ),
                         ],
+                        if (process.stepProperties?.skipButton ?? false) ...[
+                          const SizedBox(
+                            height: 12.0,
+                          ),
+                          DPACancelButton(
+                              builder: (context, busy, onTap) => DKButton(
+                                    title: process
+                                            .stepProperties?.skipButtonLabel ??
+                                        translation.translate('cancel'),
+                                    onPressed: () =>
+                                        cubit.skipOrFinish(extraVariables: [
+                                      DPAVariable(
+                                        id: 'skip',
+                                        type: DPAVariableType.boolean,
+                                        property: DPAVariableProperty(),
+                                        value: true,
+                                      )
+                                    ]),
+                                    status: busy
+                                        ? DKButtonStatus.loading
+                                        : DKButtonStatus.idle,
+                                    type: DKButtonType.brandPlain,
+                                    padding: EdgeInsets.zero,
+                                    expands: false,
+                                  ))
+                        ],
                       ],
                     ),
                   ),
@@ -434,11 +467,13 @@ class DPAFlow<T> extends StatelessWidget {
 
   void _showPopUp(BuildContext context, DPAProcessState state) {
     final processCubit = context.read<DPAProcessCubit>();
+    final linkCubit = context.read<LinkCubit>();
 
     if (customShowPopUp != null) {
       customShowPopUp!.call(
         context,
         processCubit,
+        linkCubit,
         processCubit.state.popUp!,
       );
 

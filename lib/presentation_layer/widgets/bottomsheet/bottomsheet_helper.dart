@@ -35,12 +35,14 @@ class BottomSheetHelper {
     bool dismissible = true,
     bool enableDrag = true,
     bool isScrollControlled = true,
+    Color? backgroundColor,
   }) =>
       showModalBottomSheet<T>(
         context: context,
         isDismissible: dismissible,
         enableDrag: enableDrag,
         isScrollControlled: isScrollControlled,
+        backgroundColor: backgroundColor,
         shape: customShape ??
             const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
@@ -62,10 +64,13 @@ class BottomSheetHelper {
     String? descriptionKey,
     String dismissKey = 'ok',
     bool isScrollControlled = true,
+    Color? backgroundColor,
+    BottomSheetType type = BottomSheetType.error,
   }) async =>
       showModalBottomSheet(
         context: context,
         isScrollControlled: isScrollControlled,
+        backgroundColor: backgroundColor,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(
@@ -80,7 +85,7 @@ class BottomSheetHelper {
           titleKey: titleKey,
           dismissKey: dismissKey,
           descriptionKey: descriptionKey,
-          type: BottomSheetType.error,
+          type: type,
         ),
       );
 
@@ -95,9 +100,11 @@ class BottomSheetHelper {
     String confirmKey = 'yes',
     String denyKey = 'no',
     bool isScrollControlled = true,
+    Color? backgroundColor,
   }) async {
     final result = await showModalBottomSheet(
       context: context,
+      backgroundColor: backgroundColor,
       isScrollControlled: isScrollControlled,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(

@@ -13,4 +13,15 @@ abstract class TransferRepositoryInterface {
     bool recurring = false,
     bool forceRefresh = false,
   });
+
+  /// List the frequent transfers from [User]
+  ///
+  /// Use [limit] and [offset] to paginate.
+  Future<List<Transfer>> loadFrequentTransfers({
+    int? limit,
+    int? offset,
+    bool includeDetails = true,
+    TransferStatus? status,
+    List<TransferType>? types,
+  });
 }

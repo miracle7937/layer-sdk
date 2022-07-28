@@ -281,3 +281,40 @@ extension TransferTypeDTOMapping on TransferTypeDTO {
     }
   }
 }
+
+/// Extension that provides mappings for [TransferStatus]
+// TODO: Check other status strings
+extension TransferStatusExtension on TransferStatus {
+  /// Maps into String that represents the [TransferStatus]
+  String get toJSONString {
+    switch (this) {
+      case TransferStatus.completed:
+        return 'C';
+
+      default:
+        return '';
+    }
+  }
+}
+
+/// Extension that provides mappings for [TransferType]
+extension TransferTypeExtension on TransferType {
+  /// Maps into String that represents the [TransferType]
+  String get toJSONString {
+    switch (this) {
+      case TransferType.own:
+        return 'O';
+
+      case TransferType.domestic:
+        return 'D';
+
+      case TransferType.international:
+        return 'I';
+
+      case TransferType.bank:
+        return 'B';
+      default:
+        return '';
+    }
+  }
+}
