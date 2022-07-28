@@ -82,6 +82,15 @@ class PayBillState extends Equatable {
   /// The service that the user has selected to pay.
   final Service? selectedService;
 
+  /// Wether the user can subit the form or not
+  bool get canSubmit =>
+      !busy &&
+      selectedAccount != null &&
+      selectedCategory != null &&
+      selectedBiller != null &&
+      selectedService != null &&
+      payment.amount != null;
+
   /// Creates a new state.
   PayBillState({
     this.payment = const Payment(),

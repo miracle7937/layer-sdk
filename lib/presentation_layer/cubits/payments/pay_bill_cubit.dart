@@ -5,6 +5,7 @@ import '../../../data_layer/mappings/payment/biller_dto_mapping.dart';
 import '../../../data_layer/network/net_exceptions.dart';
 import '../../../domain_layer/models/account/account.dart';
 import '../../../domain_layer/models/payment/biller.dart';
+import '../../../domain_layer/models/payment/payment.dart';
 import '../../../domain_layer/use_cases/account/get_accounts_by_status_use_case.dart';
 import '../../../domain_layer/use_cases/payments/load_billers_use_case.dart';
 import '../../../domain_layer/use_cases/payments/load_services_use_case.dart';
@@ -120,5 +121,27 @@ class PayBillCubit extends Cubit<PayBillState> {
         ),
       );
     }
+  }
+
+  /// Sets the selected account to the one matching the provided account id.
+  void setFromAccount(String accountId) {
+    final selectedAccount = state.fromAccounts.firstWhereOrNull(
+      (e) => e.id == accountId,
+    );
+    emit(
+      state.copyWith(
+        selectedAccount: selectedAccount,
+      ),
+    );
+  }
+
+  /// Sets the amount of the payment
+  void setAmount(double amount) {
+    emit(
+      state.copyWith(
+          payment: state.payment.copyWith(
+        amount: amount,
+      )),
+    );
   }
 }

@@ -176,4 +176,44 @@ class Payment extends Equatable {
         deviceUID,
         secondFactor,
       ];
+
+  Payment copyWith({
+    int? id,
+    DateTime? created,
+    DateTime? updated,
+    DateTime? scheduled,
+    Bill? bill,
+    Account? fromAccount,
+    BankingCard? fromCard,
+    String? currency,
+    double? amount,
+    bool? amountVisible,
+    PaymentStatus? status,
+    Recurrence? recurrence,
+    DateTime? recurrenceStart,
+    DateTime? recurrenceEnd,
+    int? otpId,
+    String? deviceUID,
+    SecondFactorType? secondFactor,
+  }) {
+    return Payment(
+      id: id ?? this.id,
+      created: created ?? this.created,
+      updated: updated ?? this.updated,
+      scheduled: scheduled ?? this.scheduled,
+      bill: bill ?? this.bill,
+      fromAccount: fromAccount ?? this.fromAccount,
+      fromCard: fromCard ?? this.fromCard,
+      currency: currency ?? this.currency,
+      amount: amount ?? this.amount,
+      amountVisible: amountVisible ?? this.amountVisible,
+      status: status ?? this.status,
+      recurrence: recurrence ?? this.recurrence,
+      recurrenceStart: recurrenceStart ?? this.recurrenceStart,
+      recurrenceEnd: recurrenceEnd ?? this.recurrenceEnd,
+      otpId: otpId ?? this.otpId,
+      deviceUID: deviceUID ?? this.deviceUID,
+      secondFactor: secondFactor ?? this.secondFactor,
+    );
+  }
 }
