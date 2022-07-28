@@ -348,20 +348,20 @@ class DPAFlow<T> extends StatelessWidget {
                               size: DKButtonSize.large,
                               title: process.stepProperties?.skipButtonLabel ??
                                   translation.translate('cancel'),
-                              onPressed: () =>
-                                  cubit.skipOrFinish(extraVariables: [
-                                DPAVariable(
-                                  id: 'skip',
-                                  type: DPAVariableType.boolean,
-                                  property: DPAVariableProperty(),
-                                  value: true,
-                                )
-                              ]),
+                              onPressed: () => cubit.skipOrFinish(
+                                extraVariables: [
+                                  DPAVariable(
+                                    id: 'skip',
+                                    type: DPAVariableType.boolean,
+                                    property: DPAVariableProperty(),
+                                    value: true,
+                                  )
+                                ],
+                              ),
                               status: busy
                                   ? DKButtonStatus.loading
                                   : DKButtonStatus.idle,
                               type: DKButtonType.baseSecondary,
-                              // padding: EdgeInsets.zero,
                               expands: true,
                             ),
                           )
