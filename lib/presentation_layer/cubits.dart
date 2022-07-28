@@ -80,6 +80,8 @@ export 'cubits/message/message_cubit.dart';
 export 'cubits/message/message_state.dart';
 export 'cubits/new_transfer/beneficiary_transfer/beneficiary_transfer_cubit.dart';
 export 'cubits/new_transfer/beneficiary_transfer/beneficiary_transfer_state.dart';
+export 'cubits/new_transfer/own_transfer/own_transfer_cubit.dart';
+export 'cubits/new_transfer/own_transfer/own_transfer_state.dart';
 export 'cubits/ocra/ocra_authentication_cubit.dart';
 export 'cubits/ocra/ocra_authentication_state.dart';
 export 'cubits/payments/frequent_payments_cubit.dart';
