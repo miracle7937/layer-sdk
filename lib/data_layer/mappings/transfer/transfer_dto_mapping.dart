@@ -18,8 +18,7 @@ extension TransferDTOMapping on TransferDTO {
         fromMobile: fromMobile,
         toMobile: toMobile,
         toBeneficiary: toBeneficiary?.toBeneficiary(),
-        recurrence:
-            recurrence?.toTransferRecurrence() ?? TransferRecurrence.none,
+        recurrence: recurrence?.toRecurrence() ?? Recurrence.none,
         created: created,
         status: status?.toTransferStatus(),
         type: type?.toTransferType(),
@@ -39,86 +38,12 @@ extension TransferDTOMapping on TransferDTO {
         fromMobile: fromMobile,
         toMobile: toMobile,
         toBeneficiary: toBeneficiary?.toBeneficiary(),
-        recurrence: recurrence?.toStandingOrderRecurrence() ??
-            StandingOrderRecurrence.none,
+        recurrence: recurrence?.toRecurrence() ?? Recurrence.none,
         created: created,
         status: status?.toStandingOrderStatus(),
         type: type?.toStandingOrderType(),
         scheduledDate: scheduled,
       );
-}
-
-/// Extension that provides mappings for [TransferRecurrenceDTO]
-extension TransferRecurrenceDTOMapping on TransferRecurrenceDTO {
-  /// Maps into a [TransferRecurrence]
-  TransferRecurrence toTransferRecurrence() {
-    switch (this) {
-      case TransferRecurrenceDTO.once:
-        return TransferRecurrence.once;
-
-      case TransferRecurrenceDTO.daily:
-        return TransferRecurrence.daily;
-
-      case TransferRecurrenceDTO.weekly:
-        return TransferRecurrence.weekly;
-
-      case TransferRecurrenceDTO.biweekly:
-        return TransferRecurrence.biweekly;
-
-      case TransferRecurrenceDTO.monthly:
-        return TransferRecurrence.monthly;
-
-      case TransferRecurrenceDTO.bimonthly:
-        return TransferRecurrence.bimonthly;
-
-      case TransferRecurrenceDTO.quarterly:
-        return TransferRecurrence.quarterly;
-
-      case TransferRecurrenceDTO.yearly:
-        return TransferRecurrence.yearly;
-
-      case TransferRecurrenceDTO.endOfEachMonth:
-        return TransferRecurrence.endOfEachMonth;
-
-      default:
-        return TransferRecurrence.none;
-    }
-  }
-
-  /// Maps into a [StandingOrderRecurrence]
-  StandingOrderRecurrence toStandingOrderRecurrence() {
-    switch (this) {
-      case TransferRecurrenceDTO.once:
-        return StandingOrderRecurrence.once;
-
-      case TransferRecurrenceDTO.daily:
-        return StandingOrderRecurrence.daily;
-
-      case TransferRecurrenceDTO.weekly:
-        return StandingOrderRecurrence.weekly;
-
-      case TransferRecurrenceDTO.biweekly:
-        return StandingOrderRecurrence.biweekly;
-
-      case TransferRecurrenceDTO.monthly:
-        return StandingOrderRecurrence.monthly;
-
-      case TransferRecurrenceDTO.bimonthly:
-        return StandingOrderRecurrence.bimonthly;
-
-      case TransferRecurrenceDTO.quarterly:
-        return StandingOrderRecurrence.quarterly;
-
-      case TransferRecurrenceDTO.yearly:
-        return StandingOrderRecurrence.yearly;
-
-      case TransferRecurrenceDTO.endOfEachMonth:
-        return StandingOrderRecurrence.endOfEachMonth;
-
-      default:
-        return StandingOrderRecurrence.none;
-    }
-  }
 }
 
 /// Extension that provides mappings for [TransferStatusDTO]

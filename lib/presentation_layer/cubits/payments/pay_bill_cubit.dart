@@ -3,6 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../data_layer/mappings/payment/biller_dto_mapping.dart';
 import '../../../data_layer/network/net_exceptions.dart';
+import '../../../domain_layer/models/account/account.dart';
+import '../../../domain_layer/models/payment/biller.dart';
+import '../../../domain_layer/use_cases/account/get_accounts_by_status_use_case.dart';
 import '../../../domain_layer/use_cases/payments/load_billers_use_case.dart';
 import '../../../domain_layer/use_cases/payments/load_services_use_case.dart';
 import 'pay_bill_state.dart';
@@ -11,13 +14,16 @@ import 'pay_bill_state.dart';
 class PayBillCubit extends Cubit<PayBillState> {
   final LoadBillersUseCase _loadBillersUseCase;
   final LoadServicesUseCase _loadServicesUseCase;
+  final GetAccountsByStatusUseCase _getCustomerAccountsUseCase;
 
   /// Creates a new cubit
   PayBillCubit({
     required LoadBillersUseCase loadBillersUseCase,
     required LoadServicesUseCase loadServicesUseCase,
+    required GetAccountsByStatusUseCase getCustomerAccountsUseCase,
   })  : _loadBillersUseCase = loadBillersUseCase,
         _loadServicesUseCase = loadServicesUseCase,
+        _getCustomerAccountsUseCase = getCustomerAccountsUseCase,
         super(PayBillState());
 
   /// Loads all the required data, must be called at lease once before anything
@@ -29,12 +35,26 @@ class PayBillCubit extends Cubit<PayBillState> {
       ),
     );
     try {
-      final billers = await _loadBillersUseCase();
+      final responses = await Future.wait([
+        _loadBillersUseCase(),
+        _getCustomerAccountsUseCase(
+          statuses: [
+            AccountStatus.active,
+          ],
+          includeDetails: false,
+        ),
+      ]);
+
+      final billers = responses[0] as List<Biller>;
+      final accounts = responses[1] as List<Account>;
 
       emit(
         state.copyWith(
           busy: false,
           billers: billers,
+          fromAccounts: accounts
+              .where((element) => element.canPay)
+              .toList(growable: false),
           billerCategories: billers.toBillerCategories(),
           errorStatus: PayBillErrorStatus.none,
         ),

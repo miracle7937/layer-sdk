@@ -2,39 +2,6 @@ import 'package:equatable/equatable.dart';
 
 import '../../models.dart';
 
-///The recurrence of the standing order
-enum StandingOrderRecurrence {
-  ///once
-  once,
-
-  ///daily
-  daily,
-
-  ///weekly
-  weekly,
-
-  ///biweekly
-  biweekly,
-
-  ///monthly
-  monthly,
-
-  ///bimonthly
-  bimonthly,
-
-  ///quarterly
-  quarterly,
-
-  ///yearly
-  yearly,
-
-  ///endOfEachMonth
-  endOfEachMonth,
-
-  ///none
-  none,
-}
-
 ///The status of the standing order
 enum StandingOrderStatus {
   ///Completed
@@ -137,7 +104,7 @@ class StandingOrder extends Equatable {
   final Beneficiary? toBeneficiary;
 
   /// The standing order recurrence.
-  final StandingOrderRecurrence recurrence;
+  final Recurrence recurrence;
 
   /// The standing order creation date.
   final DateTime? created;
@@ -164,7 +131,7 @@ class StandingOrder extends Equatable {
     this.fromMobile,
     this.toMobile,
     this.toBeneficiary,
-    this.recurrence = StandingOrderRecurrence.none,
+    this.recurrence = Recurrence.none,
     this.created,
     this.status,
     this.type,

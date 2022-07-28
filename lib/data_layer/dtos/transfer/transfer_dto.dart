@@ -60,8 +60,8 @@ class TransferDTO {
   ///Whether the transfer is recurring or not
   bool? recurring;
 
-  ///The [TransferRecurrenceDTO] recurrence of the transfer
-  TransferRecurrenceDTO? recurrence;
+  ///The recurrence of the transfer
+  RecurrenceDTO? recurrence;
 
   ///When does the recurring transfer starts on
   DateTime? starts;
@@ -185,7 +185,7 @@ class TransferDTO {
         updated: JsonParser.parseDate(json['ts_updated']),
         scheduled: JsonParser.parseDate(json['ts_scheduled']),
         recurring: json['recurring'] ?? false,
-        recurrence: TransferRecurrenceDTO.fromRaw(json['recurrence']),
+        recurrence: RecurrenceDTO.fromRaw(json['recurrence']),
         starts: JsonParser.parseDate(json['recurrence_start']),
         ends: JsonParser.parseDate(json['recurrence_end']),
         charge: JsonParser.parseDouble(json['charge']),
