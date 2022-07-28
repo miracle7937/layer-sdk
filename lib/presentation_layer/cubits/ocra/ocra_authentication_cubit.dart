@@ -61,7 +61,10 @@ class OcraAuthenticationCubit extends Cubit<OcraAuthenticationState> {
   ///
   /// The [password] parameter is optional, it needs to be provided only if it's
   /// used in the flow on the server side.
-  Future<void> generateToken({String? password}) async {
+  Future<void> generateToken({
+    String? password,
+    bool shouldRethrow = false,
+  }) async {
     emit(
       OcraAuthenticationState(
         busy: true,
@@ -124,7 +127,9 @@ class OcraAuthenticationCubit extends Cubit<OcraAuthenticationState> {
         ),
       );
 
-      rethrow;
+      if (shouldRethrow) {
+        rethrow;
+      }
     }
   }
 }

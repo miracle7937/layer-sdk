@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../data_layer/interfaces.dart';
 import '../../../../../presentation_layer/resources.dart';
-import '../../../../business_layer/business_layer.dart';
 import 'localization_state.dart';
 
 /// A cubit that manages [Locale] selected by the user.

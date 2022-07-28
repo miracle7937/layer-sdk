@@ -28,6 +28,7 @@ extension DPAProcessDTOMapping on DPAProcessDTO {
       variables: variables?.toDPAVariableList(customData),
       processName:
           task?.processDefinitionName ?? currentProcess?.processName ?? '',
+      returnVariables: returnVariables,
     );
   }
 }

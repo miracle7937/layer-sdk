@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../../domain_layer/models.dart';
-import '../../../../../presentation_layer/cubits.dart';
-import '../../extensions/home_screen_ui_extension.dart';
+import '../../../domain_layer/models.dart';
+import '../../cubits.dart';
+import '../../extensions.dart';
 
 /// Custom type created for building an [ExperiencePage].
 ///
@@ -143,9 +143,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  /// Wether if the widget has been initialized or not.
-  bool _initialized = false;
-
   /// The current page widget.
   Widget? _pageWidget;
   Widget? get pageWidget => _pageWidget;
@@ -156,10 +153,10 @@ class _HomeScreenState extends State<HomeScreen> {
   late ExperiencePage _initialPage;
 
   @override
-  void didChangeDependencies() async {
-    if (!_initialized) {
-      _initialized = true;
+  void initState() {
+    super.initState();
 
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       await context.read<ExperienceCubit>().load(public: false);
 
       _initialPage = widget.initialPageCallback != null
@@ -172,9 +169,7 @@ class _HomeScreenState extends State<HomeScreen> {
         context,
         _initialPage,
       );
-    }
-
-    super.didChangeDependencies();
+    });
   }
 
   @override
@@ -187,36 +182,43 @@ class _HomeScreenState extends State<HomeScreen> {
       (cubit) => cubit.state.experience,
     );
 
-    return Scaffold(
-      drawer: experience?.sideDrawerMenu,
-      appBar: experience?.topBarMenu,
-      body: Stack(
-        children: [
-          Column(
-            children: [
-              if (experience != null && pageWidget != null) ...[
-                Expanded(
-                  child: pageWidget!,
-                ),
-                experience.bottomBarMenu(
-                  context,
-                  initialPage: _initialPage,
-                  visiblePages:
-                      context.watch<ExperienceCubit>().state.visiblePages,
-                  moreMenuItemTitle: widget.moreMenuItemTitle,
-                  onSinglePageChanged: (page) =>
-                      pageWidget = widget.pageBuilder(context, page),
-                  onMorePageChanged: (morePages) =>
-                      pageWidget = widget.morePageBuilder(context, morePages),
-                ),
-              ],
-            ],
-          ),
-          if (busy)
-            Positioned.fill(
-              child: widget.fullscreenLoader,
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        drawer: experience?.sideDrawerMenu,
+        appBar: experience?.topBarMenu,
+        body: Stack(
+          children: [
+            SizedBox(
+              height: double.maxFinite,
+              width: double.maxFinite,
+              child: Column(
+                children: [
+                  if (experience != null && pageWidget != null) ...[
+                    Expanded(
+                      child: pageWidget!,
+                    ),
+                    experience.bottomBarMenu(
+                      context,
+                      initialPage: _initialPage,
+                      visiblePages:
+                          context.watch<ExperienceCubit>().state.visiblePages,
+                      moreMenuItemTitle: widget.moreMenuItemTitle,
+                      onSinglePageChanged: (page) =>
+                          pageWidget = widget.pageBuilder(context, page),
+                      onMorePageChanged: (morePages) => pageWidget =
+                          widget.morePageBuilder(context, morePages),
+                    ),
+                  ],
+                ],
+              ),
             ),
-        ],
+            if (busy)
+              Positioned.fill(
+                child: widget.fullscreenLoader,
+              ),
+          ],
+        ),
       ),
     );
   }

@@ -1,3 +1,5 @@
+import 'package:collection/collection.dart';
+
 import '../../../../domain_layer/models.dart';
 
 /// Extension that provides json mapping for [User].
@@ -28,7 +30,7 @@ extension UserJsonMapping on User {
         mobileNumber: json['mobile_number'],
         firstName: json['first_name'],
         lastName: json['last_name'],
-        status: UserStatus.values.firstWhere(
+        status: UserStatus.values.firstWhereOrNull(
           (status) => status.toString() == json['status'],
         ),
         token: json['token'],

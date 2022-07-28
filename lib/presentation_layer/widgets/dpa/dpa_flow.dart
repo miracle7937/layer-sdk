@@ -1,10 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../domain_layer/models.dart';
-import '../../cubits.dart';
-import '../../widgets.dart';
+import '../../../layer_sdk.dart';
 
 /// Signature for [DPAFlow.onError].
 typedef DPAErrorCallback = void Function(
@@ -14,7 +11,7 @@ typedef DPAErrorCallback = void Function(
 );
 
 /// Signature for [DPAFlow.onFinished].
-typedef DPAFinishedCallback = void Function(
+typedef DPAFinishedCallback<T> = void Function(
   BuildContext context,
   DPAProcessState state,
 );
@@ -29,6 +26,7 @@ typedef DPAVariableListBuilder = Widget? Function(
 typedef DPAShowPopUpCallback = void Function(
   BuildContext context,
   DPAProcessCubit cubit,
+  LinkCubit linkCubit,
   DPAProcess popUp,
 );
 
@@ -120,7 +118,7 @@ typedef DPAHidePopUpCallback = void Function(
 /// );
 /// ```
 /// {@end-tool}
-class DPAFlow extends StatelessWidget {
+class DPAFlow<T> extends StatelessWidget {
   /// A required method to be called when an error occurs.
   ///
   /// This is not the same as errors on a variable (mostly from validations).
@@ -131,11 +129,14 @@ class DPAFlow extends StatelessWidget {
   /// trying to update the DPA process.
   final DPAErrorCallback onError;
 
+  /// If it's during onboarding
+  final bool isOnboarding;
+
   /// A required method to be called when the DPA process finishes.
   ///
   /// Use this to close the DPA window or do any other processing your app
   /// requires.
-  final DPAFinishedCallback onFinished;
+  final DPAFinishedCallback<T> onFinished;
 
   /// A custom widget to be used as the header.
   ///
@@ -213,6 +214,7 @@ class DPAFlow extends StatelessWidget {
     this.showTaskDescription = true,
     this.customEmptySearchBuilder,
     required this.sdkCallback,
+    this.isOnboarding = false,
     this.customContinueButtonPadding = const EdgeInsets.fromLTRB(
       16.0,
       0.0,
@@ -230,7 +232,8 @@ class DPAFlow extends StatelessWidget {
     final hasPopup = context.select<DPAProcessCubit, bool>(
       (cubit) => cubit.state.hasPopup,
     );
-
+    final translation = Translation.of(context);
+    final cubit = context.read<DPAProcessCubit>();
     final isDelayTask = process.stepProperties?.delay != null;
 
     final effectiveContinueButton = process.variables.length == 1 &&
@@ -240,6 +243,14 @@ class DPAFlow extends StatelessWidget {
             DPAContinueButton(
               process: process,
               enabled: !hasPopup,
+              customOnTap: () => cubit.skipOrFinish(extraVariables: [
+                DPAVariable(
+                  id: 'skip',
+                  type: DPAVariableType.boolean,
+                  property: DPAVariableProperty(),
+                  value: false,
+                )
+              ]),
             );
 
     final effectiveHeader = (process.stepProperties?.hideAppBar ?? false)
@@ -274,12 +285,6 @@ class DPAFlow extends StatelessWidget {
         ),
         BlocListener<DPAProcessCubit, DPAProcessState>(
           listenWhen: (oldState, newState) =>
-              oldState.runStatus != newState.runStatus &&
-              newState.runStatus == DPAProcessRunStatus.finished,
-          listener: onFinished,
-        ),
-        BlocListener<DPAProcessCubit, DPAProcessState>(
-          listenWhen: (oldState, newState) =>
               oldState.popUp != null && newState.popUp == null,
           listener: _hidePopUp,
         ),
@@ -287,6 +292,12 @@ class DPAFlow extends StatelessWidget {
           listenWhen: (oldState, newState) =>
               oldState.popUp == null && newState.popUp != null,
           listener: _showPopUp,
+        ),
+        BlocListener<DPAProcessCubit, DPAProcessState>(
+          listenWhen: (oldState, newState) =>
+              oldState.runStatus != newState.runStatus &&
+              newState.runStatus == DPAProcessRunStatus.finished,
+          listener: onFinished,
         ),
       ],
       child: Stack(
@@ -336,6 +347,32 @@ class DPAFlow extends StatelessWidget {
                             process: process,
                           ),
                         ],
+                        if (process.stepProperties?.skipButton ?? false) ...[
+                          const SizedBox(
+                            height: 12.0,
+                          ),
+                          DPACancelButton(
+                              builder: (context, busy, onTap) => DKButton(
+                                    title: process
+                                            .stepProperties?.skipButtonLabel ??
+                                        translation.translate('cancel'),
+                                    onPressed: () =>
+                                        cubit.skipOrFinish(extraVariables: [
+                                      DPAVariable(
+                                        id: 'skip',
+                                        type: DPAVariableType.boolean,
+                                        property: DPAVariableProperty(),
+                                        value: true,
+                                      )
+                                    ]),
+                                    status: busy
+                                        ? DKButtonStatus.loading
+                                        : DKButtonStatus.idle,
+                                    type: DKButtonType.brandPlain,
+                                    padding: EdgeInsets.zero,
+                                    expands: false,
+                                  ))
+                        ],
                       ],
                     ),
                   ),
@@ -367,6 +404,7 @@ class DPAFlow extends StatelessWidget {
     final isOTPScreen = process.stepProperties?.screenType == DPAScreenType.otp;
     if (isOTPScreen) {
       return DPAOTPScreen(
+        isOnboarding: isOnboarding,
         customDPAHeader: customHeader,
       );
     }
@@ -429,11 +467,13 @@ class DPAFlow extends StatelessWidget {
 
   void _showPopUp(BuildContext context, DPAProcessState state) {
     final processCubit = context.read<DPAProcessCubit>();
+    final linkCubit = context.read<LinkCubit>();
 
     if (customShowPopUp != null) {
       customShowPopUp!.call(
         context,
         processCubit,
+        linkCubit,
         processCubit.state.popUp!,
       );
 

@@ -6,6 +6,7 @@ class FLImages {
   /// Keep this section ascendant alphabetized.
   static const String back = '$_path/back.svg';
   static const String backspace = '$_path/backspace.svg';
+  static const String biometrics = '$_path/biometrics.svg';
   static const String camera = '$_path/camera.svg';
   static const String close = '$_path/close.svg';
   static const String success = '$_path/success.svg';

@@ -7,6 +7,7 @@ import 'package:location/location.dart' as loc;
 
 import '../../_migration/flutter_layer/src/cubits.dart';
 import '../../_migration/flutter_layer/src/widgets/text_fields/auto_padding_keyboard_view.dart';
+import '../../data_layer/environment.dart';
 import '../../data_layer/interfaces.dart';
 import '../../data_layer/network.dart';
 import '../../data_layer/providers.dart';
@@ -139,15 +140,88 @@ class BankAppState extends State<BankApp> {
 
   /// The creators that are injected by the layer SDK.
   List<CreatorSingleChildWidget> get layerSDKCreators => [
-        CreatorProvider<SetPinScreenCreator>(
-          create: (_) => SetPinScreenCreator(
-            userRepository: UserRepository(
-              userProvider: UserProvider(
-                netClient: widget.netClient,
+        CreatorProvider<BiometricsCreator>(
+          create: (_) => BiometricsCreator(
+            getBiometricsEnabledUseCase: GetBiometricsEnabledUseCase(
+              loadGlobalSettingsUseCase: LoadGlobalSettingsUseCase(
+                repository: GlobalSettingRepository(
+                  provider: GlobalSettingProvider(
+                    netClient: widget.netClient,
+                  ),
+                ),
+              ),
+              getDeviceModelUseCase: GetDeviceModelUseCase(),
+            ),
+          ),
+        ),
+        CreatorProvider<OcraAuthenticationCreator>(
+          create: (_) => OcraAuthenticationCreator(
+            ocraSuite: EnvironmentConfiguration.current.ocraSuite ?? '',
+            clientChallengeOcraUseCase: ClientOcraChallengeUseCase(
+              ocraRepository: OcraRepository(
+                provider: OcraProvider(
+                  netClient: widget.netClient,
+                ),
+              ),
+            ),
+            verifyOcraResultUseCase: VerifyOcraResultUseCase(
+              ocraRepository: OcraRepository(
+                provider: OcraProvider(
+                  netClient: widget.netClient,
+                ),
               ),
             ),
           ),
         ),
+        CreatorProvider<SetPinScreenCreator>(
+          create: (_) => SetPinScreenCreator(
+            setAccessPinForUserUseCase: SetAccessPinForUserUseCase(
+              repository: UserRepository(
+                userProvider: UserProvider(
+                  netClient: widget.netClient,
+                ),
+              ),
+            ),
+          ),
+        ),
+        CreatorProvider<StorageCreator>(
+            create: (_) => StorageCreator(
+                  loadLoggedInUsersUseCase: LoadLoggedInUsersUseCase(
+                    secureStorage: widget.secureStorage,
+                  ),
+                  loadLastLoggedUserUseCase: LoadLastLoggedUserUseCase(
+                    secureStorage: widget.secureStorage,
+                  ),
+                  saveUserUseCase: SaveUserUseCase(
+                    secureStorage: widget.secureStorage,
+                  ),
+                  removeUserUseCase: RemoveUserUseCase(
+                    secureStorage: widget.secureStorage,
+                  ),
+                  loadAuthenticationSettingsUseCase:
+                      LoadAuthenticationSettingsUseCase(
+                    secureStorage: widget.secureStorage,
+                  ),
+                  saveAuthenticationSettingUseCase:
+                      SaveAuthenticationSettingUseCase(
+                    secureStorage: widget.secureStorage,
+                  ),
+                  loadOcraSecretKeyUseCase: LoadOcraSecretKeyUseCase(
+                    secureStorage: widget.secureStorage,
+                  ),
+                  saveOcraSecretKeyUseCase: SaveOcraSecretKeyUseCase(
+                    secureStorage: widget.secureStorage,
+                  ),
+                  setBrightnessUseCase: SetBrightnessUseCase(
+                    secureStorage: widget.secureStorage,
+                  ),
+                  loadBrightnessUseCase: LoadBrightnessUseCase(
+                    secureStorage: widget.secureStorage,
+                  ),
+                  toggleBiometricsUseCase: ToggleBiometricsUseCase(
+                    secureStorage: widget.secureStorage,
+                  ),
+                )),
       ];
 
   @override

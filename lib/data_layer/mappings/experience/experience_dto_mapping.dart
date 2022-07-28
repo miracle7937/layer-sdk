@@ -20,6 +20,7 @@ extension ExperienceDTOMapping on ExperienceDTO {
         details: '`experienceId` cannot be null',
       );
     }
+
     return Experience(
       id: experienceId!,
       menuType: menu?.toExperienceMenuType() ?? ExperienceMenuType.sideDrawer,
@@ -28,9 +29,9 @@ extension ExperienceDTOMapping on ExperienceDTO {
                 experienceImageURL: experienceImageURL)) ??
             [],
       ),
-      colors: Map<String, String>.from(colors ?? {}),
-      fonts: Map<String, String>.from(fonts ?? {}),
-      fontSizes: Map<String, int>.from(fontSizes ?? {}),
+      colors: colors,
+      fonts: fonts,
+      fontSizes: fontSizes,
       backgroundImageUrl: imageUrl,
       mainLogoUrl: mainLogoUrl,
       symbolLogoUrl: symbolLogoUrl,

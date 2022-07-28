@@ -46,6 +46,9 @@ abstract class EnvironmentConfiguration {
   /// https://datatracker.ietf.org/doc/html/rfc6287#section-6
   final String? ocraSuite;
 
+  /// The key used by the Stripe SDK.
+  final String? stripePublishableKey;
+
   /// Getter for retrieving the whole url
   String get fullUrl =>
       baseUrl + (port.isNotEmpty ? ':$port' : '') + pathPrefix;
@@ -61,5 +64,6 @@ abstract class EnvironmentConfiguration {
     required this.defaultToken,
     this.pathPrefix = '',
     this.ocraSuite,
+    this.stripePublishableKey,
   });
 }

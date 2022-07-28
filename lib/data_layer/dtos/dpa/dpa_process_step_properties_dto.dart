@@ -61,6 +61,12 @@ class DPAProcessStepPropertiesDTO {
   /// The label for the skip button.
   final String? skipLabel;
 
+  /// The value for the cancel button.
+  final bool? skipButton;
+
+  /// The label for the cancel button.
+  final String? skipButtonLabel;
+
   /// Creates a new [DPAProcessStepPropertiesDTO].
   DPAProcessStepPropertiesDTO({
     this.image,
@@ -82,6 +88,8 @@ class DPAProcessStepPropertiesDTO {
     this.alignment,
     this.hideAppBar,
     this.skipLabel,
+    this.skipButton,
+    this.skipButtonLabel,
   });
 
   /// Creates a new [DPAProcessStepPropertiesDTO] from a JSON.
@@ -113,6 +121,8 @@ class DPAProcessStepPropertiesDTO {
             : null,
         hideAppBar: json['hide_app_bar'],
         skipLabel: json['button_skip'],
+        skipButton: json['skip_button'],
+        skipButtonLabel: json['skip_label'],
       );
 }
 

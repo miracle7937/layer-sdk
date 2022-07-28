@@ -2,12 +2,13 @@ import '../../models.dart';
 
 /// Repository responsible for handling all the beneficiaries data.
 abstract class BeneficiaryRepositoryInterface {
-  /// Lists the beneficiaries of the provided `customerId`,
-  /// optionally filtering by searchText.
+  /// Lists the beneficiaries.
+  /// Of the provided `customerId`, if passed.
+  /// Optionally filtering by searchText.
   ///
   /// Use [limit] and [offset] to paginate.
   Future<List<Beneficiary>> list({
-    required String customerId,
+    String? customerId,
     String? searchText,
     int limit = 50,
     int offset = 0,

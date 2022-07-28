@@ -1,8 +1,13 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:design_kit_layer/design_kit_layer.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../layer_sdk.dart';
+import '../../creators.dart';
+import '../../cubits.dart';
+import '../../resources.dart';
+import '../../utils.dart';
 
 /// A view for inputing a pin with a pin pad.
 class PinPadView extends StatelessWidget {
@@ -31,6 +36,10 @@ class PinPadView extends StatelessWidget {
   /// pad.
   final bool showBiometrics;
 
+  /// Callback called when the user has entered the biometrics successfully.
+  /// Must be indicated if the [showBiometrics] is `true`.
+  final VoidCallback? onBiometrics;
+
   /// Creates a new [PinPadView].
   const PinPadView({
     Key? key,
@@ -41,72 +50,92 @@ class PinPadView extends StatelessWidget {
     this.disabled = false,
     required this.title,
     this.showBiometrics = false,
-  }) : super(key: key);
+    this.onBiometrics,
+  }) : assert(!showBiometrics || onBiometrics != null);
 
   /// The buttons that will appear on the pin pad.
-  List<PinButton> get pinButtons => [
-        ...List.generate(
-          9,
-          (index) {
-            final number = (index + 1).toString();
+  List<PinButton> pinButtons(BuildContext context) {
+    final translation = Translation.of(context);
 
-            return PinButton(
-              title: number,
-              onPressed: () => onChanged('$pin$number'),
-              enabled: pin.length < pinLenght,
-            );
-          },
+    return [
+      ...List.generate(
+        9,
+        (index) {
+          final number = (index + 1).toString();
+
+          return PinButton(
+            title: number,
+            onPressed: () => onChanged('$pin$number'),
+            enabled: pin.length < pinLenght,
+          );
+        },
+      ),
+      PinButton(
+        svgPath: FLImages.biometrics,
+        onPressed: () async {
+          final biometricsCubit = context.read<BiometricsCubit>();
+          await biometricsCubit.authenticate(
+            localizedReason: translation.translate(
+              'biometric_dialog_description',
+            ),
+          );
+
+          if (biometricsCubit.state.authenticated ?? false) {
+            onBiometrics!();
+          }
+        },
+        enabled: showBiometrics,
+        visible: showBiometrics,
+      ),
+      PinButton(
+        title: '0',
+        onPressed: () => onChanged('${pin}0'),
+        enabled: pin.length < pinLenght,
+      ),
+      PinButton(
+        svgPath: FLImages.backspace,
+        onPressed: () => onChanged(
+          pin.substring(0, pin.length - 1),
         ),
-        PinButton(
-          /// TODO: replace with correct asset and implement functionality.
-          title: 'biometrics',
-          onPressed: () {},
-          enabled: showBiometrics,
-          visible: showBiometrics,
-        ),
-        PinButton(
-          title: '0',
-          onPressed: () => onChanged('${pin}0'),
-          enabled: pin.length < pinLenght,
-        ),
-        PinButton(
-          svgPath: FLImages.backspace,
-          onPressed: () => onChanged(
-            pin.substring(0, pin.length - 1),
-          ),
-          enabled: pin.isNotEmpty,
-        ),
-      ];
+        enabled: pin.isNotEmpty,
+      ),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
     final layerDesign = DesignSystem.of(context);
 
-    return IgnorePointer(
-      ignoring: disabled,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          vertical: 32.0,
-          horizontal: 16.0,
-        ),
-        child: Column(
-          children: [
-            Container(
-              child: AutoSizeText(
-                title,
-                textAlign: TextAlign.center,
-                style: layerDesign.bodyM(),
-                maxLines: 3,
-                presetFontSizes: [16.0, 13.0, 10.0],
-              ),
+    return BlocProvider<BiometricsCubit>(
+      create: (context) => context.read<BiometricsCreator>().create(),
+      child: Builder(
+        builder: (context) => IgnorePointer(
+          ignoring: disabled,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 32.0,
+              horizontal: 16.0,
             ),
-            const SizedBox(height: 90.0),
-            _buildPinDotsIndicator(layerDesign),
-            const SizedBox(height: 70.0),
-            Expanded(
-              child: _buildPinPad(layerDesign),
+            child: Column(
+              children: [
+                Container(
+                  child: AutoSizeText(
+                    title,
+                    textAlign: TextAlign.center,
+                    style: layerDesign.bodyM(),
+                    maxLines: 3,
+                    presetFontSizes: [16.0, 13.0, 10.0],
+                  ),
+                ),
+                const SizedBox(height: 90.0),
+                _buildPinDotsIndicator(layerDesign),
+                const SizedBox(height: 70.0),
+                Expanded(
+                  child: _buildPinPad(layerDesign),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -168,7 +197,7 @@ class PinPadView extends StatelessWidget {
           final boxHeight = constraints.maxHeight / 4;
 
           return Wrap(
-            children: pinButtons
+            children: pinButtons(context)
                 .map(
                   (button) => Container(
                     width: boxWidth,
@@ -178,7 +207,10 @@ class PinPadView extends StatelessWidget {
                       horizontal: 14.0,
                     ),
                     child: Row(
-                      mainAxisAlignment: _calculateButtonAlignment(button),
+                      mainAxisAlignment: _calculateButtonAlignment(
+                        context,
+                        button,
+                      ),
                       children: [
                         LayoutBuilder(
                           builder: (context, constraints) {
@@ -237,18 +269,21 @@ class PinPadView extends StatelessWidget {
   /// [MainAxisAlignment.end], if it's las in the row, the alignment will be
   /// [MainAxisAlignment.start], otherwise the alignment will be
   /// [MainAxisAlignment.center].
-  MainAxisAlignment _calculateButtonAlignment(PinButton button) {
+  MainAxisAlignment _calculateButtonAlignment(
+    BuildContext context,
+    PinButton button,
+  ) {
     final firstInRowItems = [0, 3, 6, 9];
     final lastInRowItems = [2, 5, 8, 11];
 
     for (final item in firstInRowItems) {
-      if (pinButtons.elementAt(item) == button) {
+      if (pinButtons(context).elementAt(item) == button) {
         return MainAxisAlignment.end;
       }
     }
 
     for (final item in lastInRowItems) {
-      if (pinButtons.elementAt(item) == button) {
+      if (pinButtons(context).elementAt(item) == button) {
         return MainAxisAlignment.start;
       }
     }
