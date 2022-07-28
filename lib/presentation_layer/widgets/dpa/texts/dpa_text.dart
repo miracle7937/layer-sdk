@@ -197,14 +197,14 @@ class _DPATextState extends State<DPAText> {
               SizedBox(width: 8)
             ],
             if (value?.isNotEmpty ?? false)
-              Text(
-                value!.toString(),
-                style: valueTextProperties?.toTextStyle(
-                      layerDesign,
-                    ) ??
-                    layerDesign.bodyM(
-                      color: valueTextProperties?.flutterColor,
-                    ),
+              Expanded(
+                child: Text(value!.toString(),
+                    style: valueTextProperties?.toTextStyle(
+                          layerDesign,
+                        ) ??
+                        layerDesign.bodyM(
+                          color: valueTextProperties?.flutterColor,
+                        )),
               ),
           ])
       ],
