@@ -109,6 +109,7 @@ class PayBillCubit extends Cubit<PayBillState> {
           amount: state.payment.amount,
           billStatus: BillStatus.active,
         ),
+        status: PaymentStatus.completed,
       );
       final res = await _postPaymentUseCase.pay(_payment);
 
