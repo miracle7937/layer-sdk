@@ -4,13 +4,12 @@ import '../../../dtos.dart';
 /// Mapper for [MandatePaymentDTO] class
 extension MandatePaymentMapper on MandatePaymentDTO {
   /// Maps [MandatePaymentDTO] to [MandatePayment]
-  MandatePayment toMandatePaymentDTO() {
+  MandatePayment toMandatePayment() {
     return MandatePayment(
       paymentId: paymentId ?? 0,
       mandateId: mandateId ?? 0,
       bankPaymentId: bankPaymentId ?? '',
-      status:
-          status?.toMandatePaymentStatusDTO() ?? MandatePaymentStatus.unknown,
+      status: status?.toMandatePaymentStatus() ?? MandatePaymentStatus.unknown,
       amount: amount ?? 0.0,
       reference: reference ?? '',
       currency: currency ?? '',
@@ -23,7 +22,7 @@ extension MandatePaymentMapper on MandatePaymentDTO {
 /// Mapper for [MandatePaymentStatusDTO] class
 extension MandatePaymentStatusDTOMapper on MandatePaymentStatusDTO {
   /// Maps [MandateStatusDTO] to [MandatePaymentStatus]
-  MandatePaymentStatus toMandatePaymentStatusDTO() {
+  MandatePaymentStatus toMandatePaymentStatus() {
     switch (this) {
       case MandatePaymentStatusDTO.active:
         return MandatePaymentStatus.active;

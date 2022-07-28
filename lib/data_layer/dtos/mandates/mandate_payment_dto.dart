@@ -46,8 +46,8 @@ class MandatePaymentDTO {
   /// Creates a [MandatePaymentDTO] from a json map
   factory MandatePaymentDTO.fromJson(Map<String, dynamic> json) {
     return MandatePaymentDTO(
-      paymentId: json['payment_id'],
-      mandateId: json['mandate_id'],
+      paymentId: JsonParser.parseInt(json['payment_id']),
+      mandateId: JsonParser.parseInt(json['mandate_id']),
       status: MandatePaymentStatusDTO.fromRaw(json['status']),
       currency: json['currency'],
       amount: JsonParser.parseDouble(json['amount']),

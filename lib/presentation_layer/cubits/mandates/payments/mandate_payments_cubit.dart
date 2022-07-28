@@ -16,6 +16,7 @@ class MandatePaymentsCubit extends Cubit<MandatePaymentsState> {
 
   /// Loads [MandatePayments] data
   Future<void> load({
+    // TODO: this should be an enum
     String? sortBy,
 
     /// If the sort is descending or not
@@ -25,6 +26,9 @@ class MandatePaymentsCubit extends Cubit<MandatePaymentsState> {
     emit(
       state.copyWith(
         busy: false,
+        busyAction: loadMore
+            ? MandatePaymentsBusyAction.loadingMore
+            : MandatePaymentsBusyAction.loading,
         errorMessage: '',
         errorStatus: MandatePaymentsErrorStatus.none,
       ),
@@ -67,8 +71,6 @@ class MandatePaymentsCubit extends Cubit<MandatePaymentsState> {
           busy: false,
         ),
       );
-
-      rethrow;
     }
   }
 }

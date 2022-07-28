@@ -29,7 +29,7 @@ class MandatePaymentRepository implements MandatePaymentRepositoryInterface {
     );
 
     return mandatePaymentsDTO
-        .map((it) => it.toMandatePaymentDTO())
+        .map((it) => it.toMandatePayment())
         .toList(growable: false);
   }
 }

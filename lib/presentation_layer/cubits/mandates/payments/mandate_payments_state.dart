@@ -16,10 +16,22 @@ enum MandatePaymentsErrorStatus {
   network,
 }
 
+/// Which loading action the cubit is doing
+enum MandatePaymentsBusyAction {
+  /// if loading the first time
+  loading,
+
+  /// If is loading more data
+  loadingMore,
+}
+
 /// Class that contains the state for [MandatePaymentsCubit]
 class MandatePaymentsState extends Equatable {
   /// If the cubit is busy
   final bool busy;
+
+  /// Which busy action is the cubit doing
+  final MandatePaymentsBusyAction busyAction;
 
   /// The possible error message
   final String errorMessage;
@@ -38,8 +50,9 @@ class MandatePaymentsState extends Equatable {
     this.busy = false,
     this.errorMessage = '',
     this.errorStatus = MandatePaymentsErrorStatus.none,
-    this.pagination = const Pagination(limit: 20),
+    this.pagination = const Pagination(limit: 25),
     Iterable<MandatePayment> payments = const <MandatePayment>[],
+    this.busyAction = MandatePaymentsBusyAction.loading,
   }) : payments = UnmodifiableListView(payments);
 
   @override
@@ -50,6 +63,7 @@ class MandatePaymentsState extends Equatable {
       errorStatus,
       payments,
       pagination,
+      busyAction,
     ];
   }
 
@@ -60,6 +74,7 @@ class MandatePaymentsState extends Equatable {
     MandatePaymentsErrorStatus? errorStatus,
     Iterable<MandatePayment>? payments,
     Pagination? pagination,
+    MandatePaymentsBusyAction? busyAction,
   }) {
     return MandatePaymentsState(
       busy: busy ?? this.busy,
@@ -67,6 +82,7 @@ class MandatePaymentsState extends Equatable {
       errorStatus: errorStatus ?? this.errorStatus,
       payments: payments ?? this.payments,
       pagination: pagination ?? this.pagination,
+      busyAction: busyAction ?? this.busyAction,
     );
   }
 }

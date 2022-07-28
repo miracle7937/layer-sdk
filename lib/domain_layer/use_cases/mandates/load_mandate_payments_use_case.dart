@@ -19,5 +19,10 @@ class LoadMandatePaymentUseCase {
     /// If the sort is descending or not
     bool desc = false,
   }) =>
-      _repository.fetchMandatePayments();
+      _repository.fetchMandatePayments(
+        limit: limit,
+        offset: offset,
+        sortBy: sortBy,
+        desc: desc,
+      );
 }
