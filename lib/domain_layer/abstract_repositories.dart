@@ -45,6 +45,7 @@ export 'abstract_repositories/product/product_repository_interface.dart';
 export 'abstract_repositories/queue/queue_repository_interface.dart';
 export 'abstract_repositories/role/roles_repository_interface.dart';
 export 'abstract_repositories/setting/global_setting_repository_interface.dart';
+export 'abstract_repositories/shortcut/shortcut_repository_interface.dart';
 export 'abstract_repositories/standing_orders/standing_orders_repository_interface.dart';
 export 'abstract_repositories/transfer/transfer_repository_interface.dart';
 export 'abstract_repositories/upcoming_payment/upcoming_payment_repository_interface.dart';

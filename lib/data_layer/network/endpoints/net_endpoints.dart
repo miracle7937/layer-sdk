@@ -288,4 +288,7 @@ class NetEndpoints {
 
   /// Endpoint for getting the banks.
   String get bank => '$_infoBanking/v1/bank';
+
+  /// Endpoint for creating a shortcut.
+  String get shortcut => '$customer/v1/shortcut';
 }
