@@ -26,7 +26,7 @@ class ServiceProvider {
       method: NetRequestMethods.get,
       queryParameters: {
         if (billerId?.isNotEmpty ?? false) 'biller_id': billerId,
-        if (sortByName) 'sort_by': 'name',
+        if (sortByName) 'sortby': 'name',
       },
       forceRefresh: forceRefresh,
     );
