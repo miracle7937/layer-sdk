@@ -177,6 +177,7 @@ class Payment extends Equatable {
         secondFactor,
       ];
 
+  ///Clone and return a new [Payment] object
   Payment copyWith({
     int? id,
     DateTime? created,
