@@ -23,6 +23,7 @@ class FlutterEnvironmentConfiguration extends EnvironmentConfiguration {
     required String defaultToken,
     String pathPrefix = '',
     String? ocraSuite,
+    String? stripePublishableKey,
   }) : super(
           experienceAppId: experienceAppId,
           baseUrl: baseUrl,
@@ -30,5 +31,6 @@ class FlutterEnvironmentConfiguration extends EnvironmentConfiguration {
           defaultToken: defaultToken,
           pathPrefix: pathPrefix,
           ocraSuite: ocraSuite,
+          stripePublishableKey: stripePublishableKey,
         );
 }

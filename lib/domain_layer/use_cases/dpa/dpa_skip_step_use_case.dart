@@ -16,10 +16,11 @@ class DPASkipStepUseCase {
   /// Returns another [DPAProcess] detailing the step the process is now.
   Future<DPAProcess> call({
     required DPAProcess process,
+    List<DPAVariable>? extraVariables,
   }) =>
       _repository.stepOrFinishProcess(
         process: process.copyWith(
-          variables: {},
+          variables: extraVariables,
         ),
       );
 }

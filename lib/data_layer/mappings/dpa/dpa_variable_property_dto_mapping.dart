@@ -39,6 +39,8 @@ extension DPAVariablePropertyDTOMapping on DPAVariablePropertyDTO {
         description: description,
         labelTextProperties: labelTextProperties?.toTextProperties(),
         valueTextProperties: valueTextProperties?.toTextProperties(),
+        currencyFlagCode: currencyFlagCode,
+        characterSplit: characterSplit,
       );
 }
 

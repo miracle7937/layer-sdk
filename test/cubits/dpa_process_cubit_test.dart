@@ -474,7 +474,14 @@ void _stepOrFinishTests() {
     );
 
     when(
-      () => _skipStepUseCase(process: _mockedSkipStepProcess),
+      () => _skipStepUseCase(process: _mockedSkipStepProcess, extraVariables: [
+        DPAVariable(
+          id: 'skip',
+          type: DPAVariableType.boolean,
+          property: DPAVariableProperty(),
+          value: true,
+        )
+      ]),
     ).thenAnswer(
       (_) async => _mockedSuccessProcess,
     );
@@ -567,7 +574,14 @@ void _stepOrFinishTests() {
   blocTest<DPAProcessCubit, DPAProcessState>(
     'Emits correct action after successfully skipping the step',
     build: create,
-    act: (c) => c.skipOrFinish(),
+    act: (c) => c.skipOrFinish(extraVariables: [
+      DPAVariable(
+        id: 'skip',
+        type: DPAVariableType.boolean,
+        property: DPAVariableProperty(),
+        value: true,
+      )
+    ]),
     seed: () => DPAProcessState(
       process: _mockedSkipStepProcess,
       runStatus: DPAProcessRunStatus.running,
@@ -586,9 +600,14 @@ void _stepOrFinishTests() {
       ),
     ],
     verify: (c) => verify(
-      () => _skipStepUseCase(
-        process: _mockedSkipStepProcess,
-      ),
+      () => _skipStepUseCase(process: _mockedSkipStepProcess, extraVariables: [
+        DPAVariable(
+          id: 'skip',
+          type: DPAVariableType.boolean,
+          property: DPAVariableProperty(),
+          value: true,
+        )
+      ]),
     ).called(1),
   );
 }

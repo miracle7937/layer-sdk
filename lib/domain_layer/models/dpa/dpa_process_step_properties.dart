@@ -53,6 +53,12 @@ class DPAProcessStepProperties extends Equatable {
   /// The label for the skp button.
   final String? skipLabel;
 
+  /// The value for the cancel button.
+  final bool? skipButton;
+
+  /// The label for the cancel button.
+  final String? skipButtonLabel;
+
   /// Creates a new [DPAProcessStepProperties].
   DPAProcessStepProperties({
     required this.format,
@@ -71,6 +77,8 @@ class DPAProcessStepProperties extends Equatable {
     this.block = DPAScreenBlock.none,
     this.hideAppBar = false,
     this.skipLabel,
+    this.skipButton = false,
+    this.skipButtonLabel,
   });
 
   @override
@@ -91,6 +99,8 @@ class DPAProcessStepProperties extends Equatable {
         block,
         hideAppBar,
         skipLabel,
+        skipButton,
+        skipButtonLabel,
       ];
 
   /// Creates a new [DPAProcessStepProperties] using another as a base.
@@ -111,6 +121,8 @@ class DPAProcessStepProperties extends Equatable {
     DPAScreenBlock? block,
     bool? hideAppBar,
     String? skipLabel,
+    bool? skipButton,
+    String? skipButtonLabel,
   }) =>
       DPAProcessStepProperties(
         format: format ?? this.format,
@@ -129,6 +141,8 @@ class DPAProcessStepProperties extends Equatable {
         block: block ?? this.block,
         hideAppBar: hideAppBar ?? this.hideAppBar,
         skipLabel: skipLabel ?? this.skipLabel,
+        skipButton: skipButton ?? this.skipButton,
+        skipButtonLabel: skipButtonLabel ?? this.skipButtonLabel,
       );
 }
 
