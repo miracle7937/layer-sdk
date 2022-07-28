@@ -344,26 +344,27 @@ class DPAFlow<T> extends StatelessWidget {
                             height: 12.0,
                           ),
                           DPACancelButton(
-                              builder: (context, busy, onTap) => DKButton(
-                                    title: process
-                                            .stepProperties?.skipButtonLabel ??
-                                        translation.translate('cancel'),
-                                    onPressed: () =>
-                                        cubit.skipOrFinish(extraVariables: [
-                                      DPAVariable(
-                                        id: 'skip',
-                                        type: DPAVariableType.boolean,
-                                        property: DPAVariableProperty(),
-                                        value: true,
-                                      )
-                                    ]),
-                                    status: busy
-                                        ? DKButtonStatus.loading
-                                        : DKButtonStatus.idle,
-                                    type: DKButtonType.brandPlain,
-                                    padding: EdgeInsets.zero,
-                                    expands: false,
-                                  ))
+                            builder: (context, busy, onTap) => DKButton(
+                              size: DKButtonSize.large,
+                              title: process.stepProperties?.skipButtonLabel ??
+                                  translation.translate('cancel'),
+                              onPressed: () =>
+                                  cubit.skipOrFinish(extraVariables: [
+                                DPAVariable(
+                                  id: 'skip',
+                                  type: DPAVariableType.boolean,
+                                  property: DPAVariableProperty(),
+                                  value: true,
+                                )
+                              ]),
+                              status: busy
+                                  ? DKButtonStatus.loading
+                                  : DKButtonStatus.idle,
+                              type: DKButtonType.baseSecondary,
+                              // padding: EdgeInsets.zero,
+                              expands: true,
+                            ),
+                          )
                         ],
                       ],
                     ),
