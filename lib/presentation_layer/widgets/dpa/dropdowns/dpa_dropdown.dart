@@ -95,7 +95,8 @@ class _DPADropdownState extends State<DPADropdown> {
 
   bool get isCountryPicker =>
       widget.variable.property.type == DPAVariablePropertyType.countryPicker;
-
+  bool get isCurrencyPicker =>
+      widget.variable.property.picker == DPAVariablePicker.currency;
   @override
   void initState() {
     items = widget.variable.availableValues
@@ -103,7 +104,9 @@ class _DPADropdownState extends State<DPADropdown> {
           (e) => DKPickerItem<String>(
             title: e.name,
             value: e.id,
-            iconPath: e.imageUrl ?? e.icon,
+            iconPath: isCurrencyPicker
+                ? 'icons/currency/${e.id.toLowerCase()}.png'
+                : e.imageUrl ?? e.icon,
           ),
         )
         .toList();
@@ -136,7 +139,9 @@ class _DPADropdownState extends State<DPADropdown> {
         warning: widget.variable.translateValidationError(translation),
         bottomSheetPickerTitle: widget.variable.label ?? '',
         pickerType: widget.dropdownType.toPickerType(),
-        initialItems: items.where((e) => values.contains(e.value)).toSet(),
+        initialItems: isCurrencyPicker
+            ? items.toSet()
+            : items.where((e) => values.contains(e.value)).toSet(),
         isMultipicker: widget.isMultipicker,
         selectionButtonTitle: widget.selectionButtonTitle,
         customIconBuilder: (_, item) => _buildImage(item),
@@ -182,7 +187,7 @@ class _DPADropdownState extends State<DPADropdown> {
           ),
         ),
         const SizedBox(width: 8.0),
-        if (widget.showDropdownIndicator)
+        if (!isCurrencyPicker && widget.showDropdownIndicator)
           DKButton.icon(
             type: DKButtonType.basePlain,
             iconPath: DKImages.dropdown,
@@ -195,9 +200,9 @@ class _DPADropdownState extends State<DPADropdown> {
 
   /// Builds the image from the dpa value.
   Widget _buildImage(
-    DKPickerItem<String> item,
+    DKPickerItem item,
   ) {
-    if (isCountryPicker) {
+    if (isCountryPicker || isCurrencyPicker) {
       try {
         final country = CountryPickerUtils.getCountryByIsoCode(item.value);
 
