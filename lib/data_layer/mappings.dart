@@ -52,6 +52,8 @@ export 'mappings/loyalty/offer/offer_response_dto_mapping.dart';
 export 'mappings/loyalty/offer/offer_rule_dto_mapping.dart';
 export 'mappings/loyalty/offer_transaction/offer_transaction_dto_mapping.dart';
 export 'mappings/loyalty/offer_transaction/offer_transaction_response_dto_mapping.dart';
+export 'mappings/mandates/mandates_mapping.dart';
+export 'mappings/mandates/mandates_payment/mandate_payment_mapping.dart';
 export 'mappings/message/message_dto_mapping.dart';
 export 'mappings/ocra/ocra_challenge_dto_mapping.dart';
 export 'mappings/ocra/ocra_challenge_response_dto_mapping.dart';
