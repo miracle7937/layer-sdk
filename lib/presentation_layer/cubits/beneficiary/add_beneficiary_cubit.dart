@@ -199,6 +199,9 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
 
       emit(
         state.copyWith(
+          beneficiary: state.beneficiary?.copyWith(
+            bank: null,
+          ),
           banks: banks,
           busy: false,
           action: AddBeneficiaryAction.none,
@@ -240,8 +243,14 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
       ),
     );
     try {
+      final accountRequired = state.accountRequired;
+      final beneficiary = state.beneficiary!.copyWith(
+        accountNumber: accountRequired ? state.beneficiary!.accountNumber! : '',
+        sortCode: accountRequired ? state.beneficiary!.sortCode! : '',
+        iban: accountRequired ? '' : state.beneficiary!.iban!,
+      );
       final newBeneficiary = await _addNewBeneficiaryUseCase(
-        beneficiary: state.beneficiary!,
+        beneficiary: beneficiary,
       );
 
       emit(

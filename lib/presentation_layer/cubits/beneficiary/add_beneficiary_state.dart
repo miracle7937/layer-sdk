@@ -45,8 +45,10 @@ class AddBeneficiaryState extends Equatable {
   /// Current action.
   final AddBeneficiaryAction action;
 
-  /// Sorted code is required in case if user selected GBP currency.
-  bool get sortCodeRequired =>
+  /// Depending on selected currency we force user to enter:
+  /// - for `GBP` - account and sorting code
+  /// - for `EUR` - iban
+  bool get accountRequired =>
       (selectedCurrency?.code?.toLowerCase() ?? '') == 'gbp';
 
   /// Adding of new beneficiary is allowed when all required fields are filled.
@@ -55,9 +57,10 @@ class AddBeneficiaryState extends Equatable {
       (beneficiary?.lastName.isNotEmpty ?? false) &&
       (beneficiary?.nickname.isNotEmpty ?? false) &&
       (beneficiary?.currency?.isNotEmpty != null) &&
-      ((beneficiary?.accountNumber?.isNotEmpty != null) &&
+      (accountRequired &&
+              (beneficiary?.accountNumber?.isNotEmpty != null) &&
               (beneficiary?.sortCode?.isNotEmpty != null) ||
-          (beneficiary?.iban?.isNotEmpty != null)) &&
+          !accountRequired && (beneficiary?.iban?.isNotEmpty != null)) &&
       (beneficiary?.bank != null);
 
   /// Creates a new [AddBeneficiaryState].
