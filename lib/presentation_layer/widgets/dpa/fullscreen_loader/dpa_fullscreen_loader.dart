@@ -16,8 +16,6 @@ class DPAFullscreenLoader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final design = DesignSystem.of(context);
-
     final translation = Translation.of(context);
     return Scaffold(
       body: Container(
