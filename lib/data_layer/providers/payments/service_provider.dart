@@ -22,7 +22,7 @@ class ServiceProvider {
     bool forceRefresh = false,
   }) async {
     final response = await netClient.request(
-      netClient.netEndpoints.services,
+      netClient.netEndpoints.service,
       method: NetRequestMethods.get,
       queryParameters: {
         if (billerId?.isNotEmpty ?? false) 'biller_id': billerId,
