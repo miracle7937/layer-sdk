@@ -84,6 +84,7 @@ export 'use_cases/loyalty/offers/load_favorite_offers_use_case.dart';
 export 'use_cases/loyalty/offers/load_offer_by_id_use_case.dart';
 export 'use_cases/loyalty/offers/load_offers_for_me_use_case.dart';
 export 'use_cases/loyalty/offers/load_offers_use_case.dart';
+export 'use_cases/mandates/load_mandate_payments_use_case.dart';
 export 'use_cases/message/load_messages_by_module_use_case.dart';
 export 'use_cases/message/load_messages_use_case.dart';
 export 'use_cases/ocra/client_ocra_challenge_use_case.dart';

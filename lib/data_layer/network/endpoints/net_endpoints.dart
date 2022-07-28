@@ -274,6 +274,12 @@ class NetEndpoints {
   /// Endpoint for getting customer checkbooks
   String get checkbooks => '$_infoBanking/v1/checkbook';
 
+  /// Endpoint for getting Mandate payments
+  String get mandatePayments => '$_txnBanking/v1/mandate_payment';
+
+  /// Endpoint for getting Mandates
+  String get mandates => '$_txnBanking/v1/mandate';
+
   /// Endpoint for both account and card top ups.
   String get topUp => '$_stripe/v1/topup';
 
