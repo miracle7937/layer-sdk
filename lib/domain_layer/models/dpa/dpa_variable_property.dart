@@ -21,6 +21,12 @@ enum DPAVariableLabelType {
   bold,
 }
 
+/// How to display the picker
+enum DPAVariablePicker {
+  /// Currency
+  currency,
+}
+
 /// The type of this DPA Variable property
 enum DPAVariablePropertyType {
   /// Search results type.
@@ -110,6 +116,9 @@ class DPAVariableProperty extends Equatable {
   /// For prefilling a code on a pin screen
   final bool? characterSplit;
 
+  /// Picker Type
+  final DPAVariablePicker? picker;
+
   /// Creates a new [DPAVariableProperty].
   DPAVariableProperty({
     this.step,
@@ -138,6 +147,7 @@ class DPAVariableProperty extends Equatable {
     this.valueTextProperties,
     this.currencyFlagCode,
     this.characterSplit,
+    this.picker,
   })  : allowedTypes = UnmodifiableSetView(allowedTypes?.toSet() ?? <String>{}),
         dialCodes = UnmodifiableListView(dialCodes ?? []);
 
@@ -168,6 +178,7 @@ class DPAVariableProperty extends Equatable {
         labelTextProperties,
         valueTextProperties,
         currencyFlagCode,
+        picker,
       ];
 
   /// Creates a new [DPAVariableProperty] using another as a base.
@@ -198,6 +209,7 @@ class DPAVariableProperty extends Equatable {
     DPAVariableTextProperties? valueTextProperties,
     String? currencyFlagCode,
     bool? characterSplit,
+    DPAVariablePicker? picker,
   }) =>
       DPAVariableProperty(
         step: step ?? this.step,
@@ -226,5 +238,6 @@ class DPAVariableProperty extends Equatable {
         valueTextProperties: valueTextProperties ?? this.valueTextProperties,
         currencyFlagCode: currencyFlagCode ?? this.currencyFlagCode,
         characterSplit: characterSplit ?? this.characterSplit,
+        picker: picker ?? this.picker,
       );
 }
