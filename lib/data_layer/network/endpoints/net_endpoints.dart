@@ -75,7 +75,7 @@ class NetEndpoints {
   /// Tasks - Lists all unassigned tasks.
   String get tasksUnassigned => '$_automation/v1/unassigned_tasks';
 
-  /// Tasks - Current task by process id._txnBanking
+  /// Tasks - Current task by process id.
   String get task => '$_automation/v2/user_task/process_instance_id';
 
   /// Tasks - Lists tasks of a user.
