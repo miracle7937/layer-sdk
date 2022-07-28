@@ -4,10 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../data_layer/mappings/payment/biller_dto_mapping.dart';
 import '../../../data_layer/network/net_exceptions.dart';
 import '../../../domain_layer/models/account/account.dart';
+import '../../../domain_layer/models/bill/bill.dart';
 import '../../../domain_layer/models/payment/biller.dart';
+import '../../../domain_layer/models/payment/payment.dart';
 import '../../../domain_layer/use_cases/account/get_accounts_by_status_use_case.dart';
 import '../../../domain_layer/use_cases/payments/load_billers_use_case.dart';
 import '../../../domain_layer/use_cases/payments/load_services_use_case.dart';
+import '../../../domain_layer/use_cases/payments/post_payment_use_case.dart';
 import 'pay_bill_state.dart';
 
 /// A cubit for paying customer bills.
@@ -15,6 +18,7 @@ class PayBillCubit extends Cubit<PayBillState> {
   final LoadBillersUseCase _loadBillersUseCase;
   final LoadServicesUseCase _loadServicesUseCase;
   final GetAccountsByStatusUseCase _getCustomerAccountsUseCase;
+  final PostPaymentUseCase _postPaymentUseCase;
 
   /// The biller id to pay for, if provided the biller will be pre-selected
   /// when the cubit loads.
@@ -25,10 +29,12 @@ class PayBillCubit extends Cubit<PayBillState> {
     required LoadBillersUseCase loadBillersUseCase,
     required LoadServicesUseCase loadServicesUseCase,
     required GetAccountsByStatusUseCase getCustomerAccountsUseCase,
+    required PostPaymentUseCase postPaymentUseCase,
     this.billerId,
   })  : _loadBillersUseCase = loadBillersUseCase,
         _loadServicesUseCase = loadServicesUseCase,
         _getCustomerAccountsUseCase = getCustomerAccountsUseCase,
+        _postPaymentUseCase = postPaymentUseCase,
         super(PayBillState());
 
   /// Loads all the required data, must be called at lease once before anything
@@ -82,6 +88,44 @@ class PayBillCubit extends Cubit<PayBillState> {
               : PayBillErrorStatus.generic,
         ),
       );
+    }
+  }
+
+  /// Submits the payment
+  Future<Payment> submit() async {
+    try {
+      emit(
+        state.copyWith(
+          busy: true,
+          busyAction: PayBillBusyAction.submitting,
+        ),
+      );
+
+      final _payment = state.payment.copyWith(
+        fromAccount: state.selectedAccount,
+        bill: Bill(
+          nickname: state.selectedBiller!.name,
+          service: state.selectedService,
+          amount: state.payment.amount,
+        ),
+      );
+      final res = await _postPaymentUseCase.pay(_payment);
+
+      emit(
+        state.copyWith(
+          payment: res,
+          busy: false,
+        ),
+      );
+
+      return res;
+    } on Exception catch (_) {
+      emit(
+        state.copyWith(
+          busy: false,
+        ),
+      );
+      rethrow;
     }
   }
 

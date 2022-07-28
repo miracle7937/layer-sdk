@@ -13,6 +13,9 @@ enum PayBillBusyAction {
 
   /// Loading the list of services
   loadingServices,
+
+  /// Submitting the payment
+  submitting,
 }
 
 /// The available error status
