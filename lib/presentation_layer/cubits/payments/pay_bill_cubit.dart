@@ -124,7 +124,7 @@ class PayBillCubit extends Cubit<PayBillState> {
   }
 
   /// Sets the selected account to the one matching the provided account id.
-  void setFromAccount(String accountId) {
+  void setFromAccount(String? accountId) {
     final selectedAccount = state.fromAccounts.firstWhereOrNull(
       (e) => e.id == accountId,
     );
