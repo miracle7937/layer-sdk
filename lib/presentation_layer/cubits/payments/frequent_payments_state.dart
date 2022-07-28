@@ -40,9 +40,6 @@ class FrequentPaymentsState extends Equatable {
   /// The current error status.
   final FrequentPaymentsErrorStatus errorStatus;
 
-  /// True if there is more payments to load
-  final bool canLoadMore;
-
   /// Handles transaction pagination
   final Pagination pagination;
 
@@ -51,7 +48,6 @@ class FrequentPaymentsState extends Equatable {
     Iterable<Payment> payments = const <Payment>[],
     this.busy = false,
     this.errorStatus = FrequentPaymentsErrorStatus.none,
-    this.canLoadMore = true,
     this.busyAction = FrequentPaymentsBusyAction.loading,
     this.pagination = const Pagination(limit: 5),
   }) : payments = UnmodifiableListView(payments);
@@ -61,7 +57,6 @@ class FrequentPaymentsState extends Equatable {
         payments,
         busy,
         errorStatus,
-        canLoadMore,
         busyAction,
         pagination,
       ];
@@ -71,9 +66,6 @@ class FrequentPaymentsState extends Equatable {
     Iterable<Payment>? payments,
     bool? busy,
     FrequentPaymentsErrorStatus? errorStatus,
-    bool? canLoadMore,
-    int? offset,
-    int? limit,
     Pagination? pagination,
     FrequentPaymentsBusyAction? busyAction,
   }) =>
@@ -81,7 +73,6 @@ class FrequentPaymentsState extends Equatable {
         payments: payments ?? this.payments,
         busy: busy ?? this.busy,
         errorStatus: errorStatus ?? this.errorStatus,
-        canLoadMore: canLoadMore ?? this.canLoadMore,
         pagination: pagination ?? this.pagination,
         busyAction: busyAction ?? this.busyAction,
       );

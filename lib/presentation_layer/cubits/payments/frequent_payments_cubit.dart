@@ -11,7 +11,6 @@ class FrequentPaymentsCubit extends Cubit<FrequentPaymentsState> {
   /// Creates a new cubit using the supplied [LoadFrequentPaymentsUseCase]
   FrequentPaymentsCubit({
     required LoadFrequentPaymentsUseCase loadFrequentPaymentsUseCase,
-    int limit = 5,
   })  : _loadFrequentPaymentsUseCase = loadFrequentPaymentsUseCase,
         super(
           FrequentPaymentsState(),
@@ -50,7 +49,6 @@ class FrequentPaymentsCubit extends Cubit<FrequentPaymentsState> {
         state.copyWith(
           payments: list,
           busy: false,
-          canLoadMore: payments.length != pagination.limit,
           pagination: pagination.refreshCanLoadMore(
             loadedCount: payments.length,
           ),
