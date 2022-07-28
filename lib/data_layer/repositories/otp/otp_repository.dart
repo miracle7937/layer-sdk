@@ -1,9 +1,10 @@
+import '../../../domain_layer/abstract_repositories.dart';
 import '../../dtos.dart';
 import '../../network.dart';
 import '../../providers.dart';
 
 /// Handles OTP methods.
-class OTPRepository {
+class OTPRepository implements OTPRepositoryInterface {
   /// The NetClient to use for the network requests.
   final OTPProvider otpProvider;
 

@@ -23,6 +23,9 @@ class MandatesCubit extends Cubit<MandatesState> {
     emit(
       state.copyWith(
         busy: false,
+        busyAction: loadMore
+            ? MandatesBusyAction.loadingMore
+            : MandatesBusyAction.loading,
         errorMessage: '',
         errorStatus: MandatesErrorStatus.none,
       ),

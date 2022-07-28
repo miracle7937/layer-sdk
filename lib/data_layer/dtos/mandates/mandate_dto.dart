@@ -1,4 +1,5 @@
 import '../../dtos.dart';
+import '../../helpers/json_parser.dart';
 
 /// Class that holds data for Mandates
 class MandateDTO {
@@ -41,18 +42,14 @@ class MandateDTO {
   /// Returns a [MandateDTO] object from json map
   factory MandateDTO.fromJson(Map<String, dynamic> json) {
     return MandateDTO(
-      mandateId: json['mandate_id']?.toInt(),
+      mandateId: JsonParser.parseInt(json['mandate_id']),
       fromAccount: json['from_account'],
       fromCard: json['from_card'],
       mandateStatus: MandateStatusDTO(json['status'] ?? ''),
       reference: json['reference'],
-      bankMandateId: json['bank_mandate_id']?.toInt(),
-      createdAt: json['ts_created'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(json['ts_created'])
-          : null,
-      updatedAt: json['ts_updated'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(json['ts_updated'])
-          : null,
+      bankMandateId: JsonParser.parseInt(json['bank_mandate_id']),
+      createdAt: JsonParser.parseDate(json['ts_created']),
+      updatedAt: JsonParser.parseDate(json['ts_updated']),
     );
   }
 

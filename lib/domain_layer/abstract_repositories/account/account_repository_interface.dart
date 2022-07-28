@@ -10,4 +10,11 @@ abstract class AccountRepositoryInterface {
     bool forceRefresh = false,
     List<AccountStatus> statuses = const [],
   });
+
+  /// Requests a new Stripe secret key for account top ups.
+  Future<String> getAccountTopUpSecret({
+    required String accountId,
+    required String currency,
+    required double amount,
+  });
 }

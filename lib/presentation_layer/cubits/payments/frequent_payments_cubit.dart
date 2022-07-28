@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 
-import '../../../data_layer/network.dart';
+import '../../../data_layer/network/net_exceptions.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
 
@@ -11,12 +11,9 @@ class FrequentPaymentsCubit extends Cubit<FrequentPaymentsState> {
   /// Creates a new cubit using the supplied [LoadFrequentPaymentsUseCase]
   FrequentPaymentsCubit({
     required LoadFrequentPaymentsUseCase loadFrequentPaymentsUseCase,
-    int limit = 50,
   })  : _loadFrequentPaymentsUseCase = loadFrequentPaymentsUseCase,
         super(
-          FrequentPaymentsState(
-            limit: limit,
-          ),
+          FrequentPaymentsState(),
         );
 
   /// Loads the customer's list of frequent payments
@@ -33,22 +30,28 @@ class FrequentPaymentsCubit extends Cubit<FrequentPaymentsState> {
       ),
     );
 
-    final offset = loadMore ? state.offset + state.limit : 0;
-
     try {
+      final pagination = state.pagination.paginate(loadMore: loadMore);
+
+      emit(state.copyWith(
+        pagination: pagination,
+      ));
+
       final payments = await _loadFrequentPaymentsUseCase(
-        offset: offset,
-        limit: state.limit,
+        limit: pagination.limit,
+        offset: pagination.offset,
       );
 
-      final list = offset > 0 ? [...state.payments, ...payments] : payments;
+      final list =
+          pagination.firstPage ? payments : [...state.payments, ...payments];
 
       emit(
         state.copyWith(
           payments: list,
           busy: false,
-          offset: offset,
-          canLoadMore: payments.length != state.limit,
+          pagination: pagination.refreshCanLoadMore(
+            loadedCount: payments.length,
+          ),
         ),
       );
     } on Exception catch (e) {
