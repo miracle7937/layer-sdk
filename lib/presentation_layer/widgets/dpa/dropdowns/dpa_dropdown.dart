@@ -140,7 +140,7 @@ class _DPADropdownState extends State<DPADropdown> {
         bottomSheetPickerTitle: widget.variable.label ?? '',
         pickerType: widget.dropdownType.toPickerType(),
         initialItems: isCurrencyPicker
-            ? items.toSet()
+            ? {items.first}
             : items.where((e) => values.contains(e.value)).toSet(),
         isMultipicker: widget.isMultipicker,
         selectionButtonTitle: widget.selectionButtonTitle,
