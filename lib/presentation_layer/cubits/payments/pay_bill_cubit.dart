@@ -16,11 +16,16 @@ class PayBillCubit extends Cubit<PayBillState> {
   final LoadServicesUseCase _loadServicesUseCase;
   final GetAccountsByStatusUseCase _getCustomerAccountsUseCase;
 
+  /// The biller id to pay for, if provided the biller will be pre-selected
+  /// when the cubit loads.
+  final String? billerId;
+
   /// Creates a new cubit
   PayBillCubit({
     required LoadBillersUseCase loadBillersUseCase,
     required LoadServicesUseCase loadServicesUseCase,
     required GetAccountsByStatusUseCase getCustomerAccountsUseCase,
+    this.billerId,
   })  : _loadBillersUseCase = loadBillersUseCase,
         _loadServicesUseCase = loadServicesUseCase,
         _getCustomerAccountsUseCase = getCustomerAccountsUseCase,
@@ -59,6 +64,15 @@ class PayBillCubit extends Cubit<PayBillState> {
           errorStatus: PayBillErrorStatus.none,
         ),
       );
+
+      if (billerId?.isNotEmpty ?? false) {
+        final biller =
+            billers.firstWhereOrNull((element) => element.id == billerId);
+        if (biller != null) {
+          setCatogery(biller.category.categoryCode);
+          setBiller(biller.id);
+        }
+      }
     } on Exception catch (e) {
       emit(
         state.copyWith(
