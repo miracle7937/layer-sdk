@@ -33,6 +33,7 @@ export 'abstract_repositories/loyalty/loyalty_points_expiration/loyalty_points_e
 export 'abstract_repositories/loyalty/loyalty_points_rate/loyalty_points_rate_repository_interface.dart';
 export 'abstract_repositories/loyalty/loyalty_points_transaction/loyalty_points_transaction_repository_interface.dart';
 export 'abstract_repositories/loyalty/offers/offers_repository_interface.dart';
+export 'abstract_repositories/mandates/mandates_respository_interface.dart';
 export 'abstract_repositories/message/message_repository_interface.dart';
 export 'abstract_repositories/ocra/ocra_repository_interface.dart';
 export 'abstract_repositories/otp/otp_repository_interface.dart';

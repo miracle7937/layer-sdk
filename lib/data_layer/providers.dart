@@ -34,6 +34,7 @@ export 'providers/loyalty/loyalty_points_rate/loyalty_points_rate_provider.dart'
 export 'providers/loyalty/loyalty_points_transaction/loyalty_points_transaction_provider.dart';
 export 'providers/loyalty/offer_transaction/offer_transaction_provider.dart';
 export 'providers/loyalty/offers/offer_provider.dart';
+export 'providers/mandates/mandates_provider.dart';
 export 'providers/message/message_provider.dart';
 export 'providers/ocra/ocra_provider.dart';
 export 'providers/otp/otp_provider.dart';
