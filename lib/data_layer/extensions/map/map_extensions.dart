@@ -24,3 +24,13 @@ extension MapExtensions<R, K> on Map? {
     return value as R;
   }
 }
+
+/// Extension that helps creating Request params
+extension QueryParamsHelper on Map<String, dynamic> {
+  /// Only adds a value to the map if the value is not null
+  void addIfNotNull(String key, Object? value) {
+    if (value != null) {
+      this[key] = value;
+    }
+  }
+}
