@@ -41,11 +41,19 @@ class MadatesProvider {
   }
 
   /// Cancels a mandate
-  /// TODO - change the Future<void> if the return type is not just a 200
-  Future<void> cancelMandate(int mandateId) async {
+  Future<Map<String, dynamic>> cancelMandate({
+    required int mandateId,
+    String? otpValue,
+    String? otpType,
+  }) async {
     final response = await netClient.request(
       "${netClient.netEndpoints.mandates}/$mandateId",
       method: NetRequestMethods.delete,
+      data: otpValue == null
+          ? null
+          : {
+              otpType: otpValue,
+            },
     );
 
     return response.data;

@@ -10,6 +10,9 @@ abstract class MandateRepositoryInterface {
   });
 
   /// DELETE a Mandate
-  /// TODO - change the return type if the response is not just a 200
-  Future<void> cancelMandate({required int mandateId});
+  Future<Map<String, dynamic>> cancelMandate({
+    required int mandateId,
+    String? otpValue,
+    String? otpType,
+  });
 }

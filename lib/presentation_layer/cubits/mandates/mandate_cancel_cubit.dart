@@ -14,7 +14,7 @@ class MandateCancelCubit extends Cubit<MandateCancelState> {
         super(MandateCancelState());
 
   /// Cancels a Mandate based on its id
-  Future<void> cancelMandate({required int mandateId}) async {
+  Future<void> cancelMandate({required int mandateId, String? otpValue}) async {
     emit(
       state.copyWith(
         busy: true,
@@ -24,15 +24,18 @@ class MandateCancelCubit extends Cubit<MandateCancelState> {
     );
 
     try {
-      /// TODO - check what is the result when canceling a Mandate
-      /// Server was throwing a 500 so couldn't get the result from this call
-      await _cancelUseCase(mandateId: mandateId);
+      final result = await _cancelUseCase(
+        mandateId: mandateId,
+        otpValue: otpValue,
+        otpType: state.secondFactor,
+      );
 
       emit(
         state.copyWith(
           busy: false,
           errorMessage: '',
           errorStatus: MandateCancelErrorStatus.none,
+          secondFactor: result['second_factor'] ?? '',
         ),
       );
     } on Exception catch (e) {
@@ -49,6 +52,4 @@ class MandateCancelCubit extends Cubit<MandateCancelState> {
       rethrow;
     }
   }
-
-  /// TODO - implement OTP call
 }

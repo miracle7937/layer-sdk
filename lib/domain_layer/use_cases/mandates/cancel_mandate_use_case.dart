@@ -10,7 +10,15 @@ class CancelMandateUseCase {
   }) : _repo = repository;
 
   /// Callable that cancels a Mandate
-  Future<void> call({required int mandateId}) {
-    return _repo.cancelMandate(mandateId: mandateId);
+  Future<Map<String, dynamic>> call({
+    required int mandateId,
+    String? otpValue,
+    String? otpType,
+  }) {
+    return _repo.cancelMandate(
+      mandateId: mandateId,
+      otpValue: otpValue,
+      otpType: otpType,
+    );
   }
 }

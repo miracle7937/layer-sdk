@@ -26,11 +26,17 @@ class MandatesRepository implements MandateRepositoryInterface {
     return mandates.map((m) => m.toMandate()).toList(growable: false);
   }
 
-  /// TODO - change the Future<void> if the return type is not just a 200
   @override
-  Future<void> cancelMandate({required int mandateId}) async {
-    final result = await _provider.cancelMandate(mandateId);
-
+  Future<Map<String, dynamic>> cancelMandate({
+    required int mandateId,
+    String? otpValue,
+    String? otpType,
+  }) async {
+    final result = await _provider.cancelMandate(
+      mandateId: mandateId,
+      otpValue: otpValue,
+      otpType: otpType,
+    );
     return result;
   }
 }
