@@ -100,6 +100,9 @@ class AccountDTO {
   /// generic account number
   String? accountNumber;
 
+  /// The account number provided in the `extra`
+  String? extraAccountNumber;
+
   /// account number formatted
   String? displayAccountNumber;
 
@@ -145,6 +148,7 @@ class AccountDTO {
     this.canRequestCertificateOfAccount = true,
     this.canRequestCertificateOfDeposit = true,
     this.accountNumber,
+    this.extraAccountNumber,
     this.displayAccountNumber,
     this.branchId,
     this.extraBranchId,
@@ -195,6 +199,8 @@ class AccountDTO {
       canRequestCertificateOfDeposit: json['can_request_cert_deposit'] ?? true,
       accountNumber: json['account_no'],
       displayAccountNumber: json['account_no_displayed'],
+      extraAccountNumber:
+          json['extra'] != null ? json['extra']['account_number'] : null,
       branchId: json['branch_id'],
       extraBranchId: (json['branch'] as Map?)
           ?.lookup<dynamic, String>(['location_id'])?.toString(),

@@ -13,6 +13,7 @@ extension AccountDTOMapping on AccountDTO {
         currentBalance: currentBalance,
         balanceVisible: balanceVisible,
         formattedAccountNumber: displayAccountNumber,
+        extraAccountNumber: extraAccountNumber,
         id: accountId,
         reference: reference,
         branchId: branchId,
