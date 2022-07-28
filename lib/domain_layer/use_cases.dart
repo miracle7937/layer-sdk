@@ -18,6 +18,7 @@ export 'use_cases/authentication/reset_password_use_case.dart';
 export 'use_cases/authentication/update_user_token_use_case.dart';
 export 'use_cases/authentication/verify_access_pin_use_case.dart';
 export 'use_cases/bank/load_banks_by_country_code_use_case.dart';
+export 'use_cases/beneficiary/add_new_beneficiary_use_case.dart';
 export 'use_cases/beneficiary/load_available_currencies_use_case.dart';
 export 'use_cases/beneficiary/load_customer_beneficiaries_use_case.dart';
 export 'use_cases/bill/load_customer_bills_use_case.dart';

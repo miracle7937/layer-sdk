@@ -14,4 +14,10 @@ abstract class BeneficiaryRepositoryInterface {
     int offset = 0,
     bool forceRefresh = false,
   });
+
+  /// Add a new beneficiary.
+  Future<Beneficiary> add({
+    required Beneficiary beneficiary,
+    bool forceRefresh = false,
+  });
 }

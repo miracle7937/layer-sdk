@@ -33,4 +33,18 @@ class BeneficiaryRepository implements BeneficiaryRepositoryInterface {
 
     return beneficiaryDTO.map((e) => e.toBeneficiary()).toList(growable: false);
   }
+
+  /// Add a new beneficiary.
+  @override
+  Future<Beneficiary> add({
+    required Beneficiary beneficiary,
+    bool forceRefresh = false,
+  }) async {
+    final beneficiaryDTO = await _provider.add(
+      beneficiaryDTO: beneficiary.toBeneficiaryDTO(),
+      forceRefresh: forceRefresh,
+    );
+
+    return beneficiaryDTO.toBeneficiary();
+  }
 }

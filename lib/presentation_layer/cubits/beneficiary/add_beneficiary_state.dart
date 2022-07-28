@@ -18,6 +18,9 @@ enum AddBeneficiaryErrorStatus {
 
 /// The state of the AddBeneficiary cubit
 class AddBeneficiaryState extends Equatable {
+  /// New beneficiary.
+  final Beneficiary? beneficiary;
+
   /// A list of countries
   final UnmodifiableListView<Country> countries;
 
@@ -42,12 +45,24 @@ class AddBeneficiaryState extends Equatable {
   /// Current action.
   final AddBeneficiaryAction action;
 
-  ///
+  /// Sorted code is required in case if user selected GBP currency.
   bool get sortCodeRequired =>
       (selectedCurrency?.code?.toLowerCase() ?? '') == 'gbp';
 
+  /// Adding of new beneficiary is allowed when all required fields are filled.
+  bool get addAvailable =>
+      (beneficiary?.firstName.isNotEmpty ?? false) &&
+      (beneficiary?.lastName.isNotEmpty ?? false) &&
+      (beneficiary?.nickname.isNotEmpty ?? false) &&
+      (beneficiary?.currency?.isNotEmpty != null) &&
+      ((beneficiary?.accountNumber?.isNotEmpty != null) &&
+              (beneficiary?.sortCode?.isNotEmpty != null) ||
+          (beneficiary?.iban?.isNotEmpty != null)) &&
+      (beneficiary?.bank != null);
+
   /// Creates a new [AddBeneficiaryState].
   AddBeneficiaryState({
+    this.beneficiary,
     Iterable<Country> countries = const <Country>[],
     Iterable<Currency> availableCurrencies = const <Currency>[],
     Iterable<Bank> banks = const <Bank>[],
@@ -62,6 +77,7 @@ class AddBeneficiaryState extends Equatable {
 
   @override
   List<Object?> get props => [
+        beneficiary,
         countries,
         availableCurrencies,
         banks,
@@ -74,6 +90,7 @@ class AddBeneficiaryState extends Equatable {
 
   /// Creates a new state based on this one.
   AddBeneficiaryState copyWith({
+    Beneficiary? beneficiary,
     Iterable<Country>? countries,
     Iterable<Currency>? availableCurrencies,
     Iterable<Bank>? banks,
@@ -84,6 +101,7 @@ class AddBeneficiaryState extends Equatable {
     AddBeneficiaryAction? action,
   }) =>
       AddBeneficiaryState(
+        beneficiary: beneficiary ?? this.beneficiary,
         countries: countries ?? this.countries,
         availableCurrencies: availableCurrencies ?? this.availableCurrencies,
         banks: banks ?? this.banks,
@@ -105,6 +123,9 @@ enum AddBeneficiaryAction {
 
   /// Completion of process action.
   confirmCompletionAction,
+
+  /// Adding new beneficiary action.
+  add,
 
   /// No action.
   none,

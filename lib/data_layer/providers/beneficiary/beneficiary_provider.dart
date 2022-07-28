@@ -42,4 +42,30 @@ class BeneficiaryProvider {
       ),
     );
   }
+
+  /// Add a new beneficiary.
+  Future<BeneficiaryDTO> add({
+    required BeneficiaryDTO beneficiaryDTO,
+    bool forceRefresh = false,
+  }) async {
+    // static String txnbanking2 = '$host/txnbanking/v2';
+    // static String beneficiary2 = '$txnbanking2/beneficiary';
+    // return HttpRequest.post(API.beneficiary2, beneficiary.toJson())
+    //     .then((dynamic res) {
+    //   return Beneficiary.fromJson(res);
+    // });
+    final params = beneficiaryDTO.toJson();
+    final response = await netClient.request(
+      netClient.netEndpoints.beneficiary2,
+      method: NetRequestMethods.post,
+      queryParameters: beneficiaryDTO.toJson(),
+      forceRefresh: forceRefresh,
+    );
+
+    return BeneficiaryDTO.fromJson(
+      Map<String, dynamic>.from(
+        response.data,
+      ),
+    );
+  }
 }

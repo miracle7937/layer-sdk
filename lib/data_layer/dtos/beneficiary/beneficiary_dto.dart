@@ -142,6 +142,70 @@ class BeneficiaryDTO {
   /// Returns a list of [BeneficiaryDTO] from a JSON
   static List<BeneficiaryDTO> fromJsonList(List<Map<String, dynamic>> json) =>
       json.map(BeneficiaryDTO.fromJson).toList();
+
+  // {
+  // bool verifyOTP = false,
+  // isPatch = false,
+  // isShortcut = false,
+  // bool includeBeneficiaryID = false,
+  // }
+  /// Creates a new JSON from this [BeneficiaryDTO].
+  Map<String, dynamic> toJson() {
+    var json = <String, dynamic>{
+      'nickname': nickname,
+      'rcpt_first_name': firstName,
+      'rcpt_middle_name': middleName,
+      'rcpt_last_name': lastName,
+      'account_number': accountNumber,
+      'rcpt_address_1': rcptAddress1,
+      'rcpt_address_2': rcptAddress2,
+      'rcpt_address_3': rcptAddress3,
+      'rcpt_country_code': rcptCountryCode,
+      'bank_address_1': bankAddress1,
+      'bank_address_2': bankAddress2,
+      'bank_country_code': bankCountryCode,
+      'bank_name': bankName,
+      'bank_swift': bankSwift,
+      'routing_code': routingCode,
+      'currency': currency,
+      // 'beneficiary_id': (verifyOTP || isPatch) ? beneficiaryID : null,
+      'type': type?.value,
+      // 'otp_id': verifyOTP ? otpID : null,
+      // 'image': _base64Image,
+      // 'image_url': isShortcut ? imageUrl : null,
+      // 'rcpt_id_number': cprNumber,
+      // 'extra': extra,
+      // 'provider': qrProvider?.value,
+      // 'additional_info': additionalInfo,
+      'visible': true,
+    };
+    // if (visible != null && !visible!) {
+    //   json['visible'] = false;
+    // } else {
+    //   json['visible'] = isShortcut ? false : true;
+    // }
+
+    // //TODO(MO): it is becoming messy with too much configs, consider refactoring
+    // //Added this config separately, so we know exactly what it is doing
+    // if (includeBeneficiaryID) {
+    //   json['account_number'] = null;
+    //   json['beneficiary_id'] = beneficiaryID;
+    //   if (isNotEmpty(extra)) {
+    //     try {
+    //       var decodedExtra = jsonDecode(extra!);
+    //       if (decodedExtra is Map) {
+    //         decodedExtra['masked_card_number'] = accountNumber;
+    //         final String encodedExtra = jsonEncode(decodedExtra);
+    //         json['extra'] = encodedExtra;
+    //       }
+    //     } catch (error) {}
+    //   } else {
+    //     json['extra'] = jsonEncode({'masked_card_number': accountNumber});
+    //   }
+    // }
+
+    return json;
+  }
 }
 
 /// The beneficiary status
