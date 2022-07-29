@@ -70,4 +70,30 @@ class TransferProvider {
       List<Map<String, dynamic>>.from(response.data),
     );
   }
+
+  /// Returns the evaluation from a transfer.
+  Future<TransferEvaluationDTO> evaluate({
+    required NewTransferPayloadDTO newTransferPayloadDTO,
+  }) async {
+    final response = await netClient.request(
+      netClient.netEndpoints.evaluateTransfer,
+      method: NetRequestMethods.post,
+      data: newTransferPayloadDTO.toJson(),
+    );
+
+    return TransferEvaluationDTO.fromJson(response.data);
+  }
+
+  /// Returns the transfer from submiting a new transfer.
+  Future<TransferDTO> submit({
+    required NewTransferPayloadDTO newTransferPayloadDTO,
+  }) async {
+    final response = await netClient.request(
+      netClient.netEndpoints.submitTransfer,
+      method: NetRequestMethods.post,
+      data: newTransferPayloadDTO.toJson(),
+    );
+
+    return TransferDTO.fromJson(response.data);
+  }
 }

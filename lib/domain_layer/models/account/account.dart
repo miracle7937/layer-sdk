@@ -40,6 +40,12 @@ class Account extends Equatable {
   /// The formatted account number
   final String? formattedAccountNumber;
 
+  /// The account number provided in the extra data.
+  ///
+  /// In cases of some integrations it should be displayed instead of the
+  /// [accountNumber].
+  final String? extraAccountNumber;
+
   /// Generic bank defined reference for account
   final String? reference;
 
@@ -115,6 +121,7 @@ class Account extends Equatable {
     this.balanceVisible = true,
     this.accountNumber,
     this.formattedAccountNumber,
+    this.extraAccountNumber,
     this.reference,
     this.status,
     this.accountInfo,
@@ -148,6 +155,7 @@ class Account extends Equatable {
         balanceVisible,
         accountNumber,
         formattedAccountNumber,
+        extraAccountNumber,
         reference,
         status,
         accountInfo,

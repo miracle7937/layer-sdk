@@ -58,6 +58,9 @@ class Beneficiary extends Equatable {
   /// The beneficiary's type.
   final TransferType? type;
 
+  /// Extra data for this beneficiary.
+  final String? extra;
+
   /// Creates a new immutable [Beneficiary]
   Beneficiary({
     this.id,
@@ -71,6 +74,7 @@ class Beneficiary extends Equatable {
     this.currency,
     this.status,
     this.type,
+    this.extra,
   });
 
   /// Returns the full name of this beneficiary
@@ -90,6 +94,7 @@ class Beneficiary extends Equatable {
         currency,
         status,
         type,
+        extra,
       ];
 
   /// Returns beneficiary display name

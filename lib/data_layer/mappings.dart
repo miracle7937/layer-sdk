@@ -69,6 +69,7 @@ export 'mappings/second_factor/second_factor_type_dto_mapping.dart';
 export 'mappings/service/service_dto_mapping.dart';
 export 'mappings/setting/global_setting_dto_mapping.dart';
 export 'mappings/transfer/transfer_dto_mapping.dart';
+export 'mappings/transfer/transfer_evaluation_dto_mapping.dart';
 export 'mappings/upcoming_payment/upcoming_payment_dto_mapping.dart';
 export 'mappings/upcoming_payment/upcoming_payment_group_dto_mapping.dart';
 export 'mappings/user/user_dto_mapping.dart';

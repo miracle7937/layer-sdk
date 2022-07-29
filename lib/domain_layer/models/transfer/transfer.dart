@@ -101,6 +101,15 @@ enum TransferType {
   merchantTransfer,
 }
 
+///The transfer processing type.
+enum TransferProcessingType {
+  ///Instant.
+  instant,
+
+  ///Next day.
+  nextDay,
+}
+
 ///The transfer data used by the application
 class Transfer extends Equatable {
   /// The transfer id.
@@ -151,6 +160,9 @@ class Transfer extends Equatable {
   ///The future date when the transfer should happen
   final DateTime? scheduledDate;
 
+  /// The processing type.
+  final TransferProcessingType? processingType;
+
   ///Creates a new immutable [Transfer]
   Transfer({
     this.id,
@@ -169,6 +181,7 @@ class Transfer extends Equatable {
     this.status,
     this.type,
     this.scheduledDate,
+    this.processingType,
   });
 
   /// Returns the transfer id as `String`.
@@ -192,5 +205,6 @@ class Transfer extends Equatable {
         status,
         type,
         scheduledDate,
+        processingType,
       ];
 }
