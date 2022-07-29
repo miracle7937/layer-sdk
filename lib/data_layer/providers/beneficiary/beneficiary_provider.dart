@@ -47,11 +47,32 @@ class BeneficiaryProvider {
   Future<BeneficiaryDTO> add({
     required BeneficiaryDTO beneficiaryDTO,
     bool forceRefresh = false,
+  }) =>
+      _changeBeneficiary(
+        beneficiaryDTO: beneficiaryDTO,
+        forceRefresh: forceRefresh,
+      );
+
+  /// Edit the beneficiary.
+  Future<BeneficiaryDTO> edit({
+    required BeneficiaryDTO beneficiaryDTO,
+    bool forceRefresh = false,
+  }) =>
+      _changeBeneficiary(
+        beneficiaryDTO: beneficiaryDTO,
+        forceRefresh: forceRefresh,
+        isEditing: true,
+      );
+
+  Future<BeneficiaryDTO> _changeBeneficiary({
+    required BeneficiaryDTO beneficiaryDTO,
+    bool isEditing = false,
+    bool forceRefresh = false,
   }) async {
     final response = await netClient.request(
       netClient.netEndpoints.beneficiary2,
-      method: NetRequestMethods.post,
-      data: beneficiaryDTO.toJson(),
+      method: isEditing ? NetRequestMethods.patch : NetRequestMethods.post,
+      data: beneficiaryDTO.toJson(isEditing: isEditing),
       forceRefresh: forceRefresh,
     );
 

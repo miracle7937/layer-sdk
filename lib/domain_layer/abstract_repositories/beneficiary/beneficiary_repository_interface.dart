@@ -20,4 +20,10 @@ abstract class BeneficiaryRepositoryInterface {
     required Beneficiary beneficiary,
     bool forceRefresh = false,
   });
+
+  /// Edit the beneficiary.
+  Future<Beneficiary> edit({
+    required Beneficiary beneficiary,
+    bool forceRefresh = false,
+  });
 }

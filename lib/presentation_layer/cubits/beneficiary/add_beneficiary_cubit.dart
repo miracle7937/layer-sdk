@@ -6,7 +6,7 @@ import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
 
-/// A cubit that keeps the list of beneficiary.
+/// A cubit that handles adding a new beneficiary.
 class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
   final LoadCountriesUseCase _loadCountriesUseCase;
   final GetCustomerAccountsUseCase _getCustomerAccountsUseCase;

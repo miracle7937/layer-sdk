@@ -47,4 +47,18 @@ class BeneficiaryRepository implements BeneficiaryRepositoryInterface {
 
     return beneficiaryDTO.toBeneficiary();
   }
+
+  /// Edit the beneficiary.
+  @override
+  Future<Beneficiary> edit({
+    required Beneficiary beneficiary,
+    bool forceRefresh = false,
+  }) async {
+    final beneficiaryDTO = await _provider.edit(
+      beneficiaryDTO: beneficiary.toBeneficiaryDTO(),
+      forceRefresh: forceRefresh,
+    );
+
+    return beneficiaryDTO.toBeneficiary();
+  }
 }

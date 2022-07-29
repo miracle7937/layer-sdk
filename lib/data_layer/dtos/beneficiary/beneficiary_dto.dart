@@ -150,7 +150,10 @@ class BeneficiaryDTO {
   // bool includeBeneficiaryID = false,
   // }
   /// Creates a new JSON from this [BeneficiaryDTO].
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson({
+    bool isEditing = false,
+    bool isVerifyOtp = false,
+  }) {
     var json = <String, dynamic>{
       'nickname': nickname,
       'rcpt_first_name': firstName,
@@ -168,7 +171,7 @@ class BeneficiaryDTO {
       'bank_swift': bankSwift,
       'routing_code': routingCode,
       'currency': currency,
-      // 'beneficiary_id': (verifyOTP || isPatch) ? beneficiaryID : null,
+      if (isEditing || isVerifyOtp) 'beneficiary_id': beneficiaryId,
       'type': type?.value,
       // 'otp_id': verifyOTP ? otpID : null,
       // 'image': _base64Image,
