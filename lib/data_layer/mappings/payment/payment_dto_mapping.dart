@@ -3,7 +3,6 @@ import '../../../domain_layer/models/recurrence/recurrence.dart';
 import '../../dtos.dart';
 import '../../errors.dart';
 import '../../mappings.dart';
-import '../recurrence/recurrence_dto_mapping.dart';
 
 /// Extension that provides mappings for [PaymentDTO]
 extension PaymentDTOMapping on PaymentDTO {
