@@ -6,7 +6,7 @@ extension ServiceFieldsDTOMapping on ServiceFieldDTO {
   /// Maps into a [ServiceField]
   ServiceField toServiceField() {
     return ServiceField(
-      fieldId: fieldId ?? '',
+      fieldId: fieldId ?? 0,
       serviceId: serviceId,
       code: code ?? '',
       name: name ?? '',

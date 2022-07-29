@@ -4,7 +4,7 @@ import '../../helpers.dart';
 /// retrieved from the payment service.
 class ServiceFieldDTO {
   /// A unique identifier for a field
-  String? fieldId;
+  int? fieldId;
 
   /// The id of the service this field belongs to
   int? serviceId;
@@ -60,7 +60,7 @@ class ServiceFieldDTO {
   /// Creates a [ServiceFieldDTO] from a JSON
   factory ServiceFieldDTO.fromJson(Map<String, dynamic> json) {
     return ServiceFieldDTO(
-      fieldId: json['field_id']?.toString(),
+      fieldId: json['field_id'],
       serviceId: json['service_id'],
       code: json['code'],
       name: json['name'],

@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 /// Keeps the data of a service field
 class ServiceField extends Equatable {
   /// A unique identifier for a field
-  final String fieldId;
+  final int fieldId;
 
   /// The id of the service this field belongs to
   final int? serviceId;
@@ -74,7 +74,7 @@ class ServiceField extends Equatable {
 
   /// Creates a copy of this service field with different values
   ServiceField copyWith({
-    String? fieldId,
+    int? fieldId,
     int? serviceId,
     String? code,
     String? name,
