@@ -32,4 +32,15 @@ class PaymentRepository implements PaymentsRepositoryInterface {
 
     return paymentDTOs.map((e) => e.toPayment()).toList(growable: false);
   }
+
+  @override
+  Future<Payment> payBill({
+    required Payment payment,
+  }) async {
+    final paymentDTO = await _provider.payBill(
+      payment: payment.toPaymentDTO(),
+    );
+
+    return paymentDTO.toPayment();
+  }
 }

@@ -1,9 +1,10 @@
 import '../../models.dart';
+import '../recurrence/recurrence.dart';
 
 /// An interface that provides new transfers to be scheduled.
 abstract class NewSchedulableTransfer extends NewTransfer {
   /// The recurrence for the transfer.
-  final TransferRecurrence recurrence;
+  final Recurrence recurrence;
 
   /// The start date for the scheduled transfer.
   final DateTime? starts;
@@ -18,13 +19,12 @@ abstract class NewSchedulableTransfer extends NewTransfer {
     super.amount,
     super.currency,
     super.destination,
-    this.recurrence = TransferRecurrence.none,
+    this.recurrence = Recurrence.none,
     this.starts,
     this.ends,
   });
 
   /// Whether if this transfer is recurring or not.
   bool get isRecurring =>
-      recurrence != TransferRecurrence.none ||
-      recurrence != TransferRecurrence.once;
+      recurrence != Recurrence.none || recurrence != Recurrence.once;
 }

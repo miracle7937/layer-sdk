@@ -62,7 +62,7 @@ class NewTransferPayloadDTO {
   String? toProvider;
 
   /// The ransfer recurrence.
-  TransferRecurrenceDTO? recurrence;
+  RecurrenceDTO? recurrence;
 
   /// The start date.
   DateTime? startDate;
@@ -128,7 +128,7 @@ class NewTransferPayloadDTO {
       if (toBeneficiaryId != null) 'beneficiary_id': toBeneficiaryId,
       if (newBeneficiary != null) 'beneficiary': newBeneficiary!.toJson(),
       if (recurrence != null && startDate != null) ...{
-        if (recurrence == TransferRecurrenceDTO.once) ...{
+        if (recurrence == RecurrenceDTO.once) ...{
           'ts_scheduled': startDate!.millisecondsSinceEpoch,
         } else ...{
           'recurring': true,

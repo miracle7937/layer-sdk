@@ -33,7 +33,7 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
     super.currency,
     super.destination,
     this.reason,
-    super.recurrence = TransferRecurrence.none,
+    super.recurrence = Recurrence.none,
     super.starts,
     super.ends,
     this.beneficiaryType = DestinationBeneficiaryType.newBeneficiary,
@@ -51,7 +51,7 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
       (destination?.beneficiary != null ||
           (newBeneficiary != null &&
               (newBeneficiary?.canBeSubmitted ?? false))) &&
-      (recurrence == TransferRecurrence.none || starts != null);
+      (recurrence == Recurrence.none || starts != null);
 
   @override
   BeneficiaryTransfer copyWith({
@@ -61,7 +61,7 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
     Currency? currency,
     NewTransferDestination? destination,
     Message? reason,
-    TransferRecurrence? recurrence,
+    Recurrence? recurrence,
     DateTime? starts,
     DateTime? ends,
     DestinationBeneficiaryType? beneficiaryType,
@@ -101,8 +101,8 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
               ? null
               : newBeneficiary?.toBeneficiaryDTO(),
       reason: reason?.id,
-      extra: jsonDecode(destination?.beneficiary?.extra ?? '{}'),
-      recurrence: recurrence.toTransferRecurrenceDTO(),
+      extra: jsonDecode(destination?.beneficiary?.extra ?? ''),
+      recurrence: recurrence.toRecurrenceDTO(),
       startDate: starts,
       endDate: ends,
     );

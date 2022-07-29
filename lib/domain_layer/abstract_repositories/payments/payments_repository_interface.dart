@@ -12,4 +12,9 @@ abstract class PaymentsRepositoryInterface {
     bool forceRefresh = false,
     bool recurring = false,
   });
+
+  /// Submits the provided payment
+  Future<Payment> payBill({
+    required Payment payment,
+  });
 }
