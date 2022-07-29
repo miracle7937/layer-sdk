@@ -88,6 +88,7 @@ export 'models/new_transfer/new_schedulable_transfer.dart';
 export 'models/new_transfer/new_transfer.dart';
 export 'models/new_transfer/new_transfer_destination.dart';
 export 'models/new_transfer/new_transfer_source.dart';
+export 'models/new_transfer/own_transfer.dart';
 export 'models/ocra/ocra_challenge.dart';
 export 'models/ocra/ocra_challenge_response.dart';
 export 'models/ocra/ocra_challenge_result.dart';

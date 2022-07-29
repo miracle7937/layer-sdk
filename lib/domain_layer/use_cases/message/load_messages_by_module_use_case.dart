@@ -13,7 +13,7 @@ class LoadMessagesByModuleUseCase {
   Future<List<Message>> call({
     required String module,
   }) =>
-      _messageRepository.get(
+      _messageRepository.getMessages(
         module: module,
       );
 }

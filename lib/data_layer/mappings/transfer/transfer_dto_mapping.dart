@@ -154,7 +154,7 @@ extension TransferRecurrenceMapping on TransferRecurrence {
       case TransferRecurrence.endOfEachMonth:
         return TransferRecurrenceDTO.endOfEachMonth;
 
-      default:
+      case TransferRecurrence.none:
         return null;
     }
   }

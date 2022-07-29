@@ -15,22 +15,10 @@ class MessageRepository implements MessageRepositoryInterface {
   /// Fetches the list of [Message]
   @override
   Future<List<Message>> getMessages({
-    bool forceRefresh = false,
-  }) async {
-    final messagesDTO = await _messageProvider.getMessages(
-      forceRefresh: forceRefresh,
-    );
-
-    return messagesDTO.map<Message>((dto) => dto.toMessage()).toList();
-  }
-
-  /// Fetches the [Message] list related to the passed module.
-  @override
-  Future<List<Message>> get({
     String? module,
     bool forceRefresh = false,
   }) async {
-    final messagesDTO = await _messageProvider.get(
+    final messagesDTO = await _messageProvider.getMessages(
       module: module,
       forceRefresh: forceRefresh,
     );

@@ -3,7 +3,6 @@ import 'dart:collection';
 import 'package:equatable/equatable.dart';
 
 import '../../../../domain_layer/models.dart';
-import '../../../../domain_layer/models/new_transfer/own_transfer.dart';
 
 /// The actions that the cubit can perform.
 enum OwnTransferAction {

@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../data_layer/network.dart';
 import '../../../../domain_layer/models.dart';
-import '../../../../domain_layer/models/new_transfer/own_transfer.dart';
 import '../../../../domain_layer/use_cases.dart';
 import '../../../cubits.dart';
 
