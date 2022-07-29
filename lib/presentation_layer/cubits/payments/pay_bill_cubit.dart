@@ -114,6 +114,7 @@ class PayBillCubit extends Cubit<PayBillState> {
           amount: state.payment.amount,
           billStatus: BillStatus.active,
         ),
+        currency: state.selectedAccount?.currency,
         status: PaymentStatus.completed,
         deviceUID: state.deviceUID,
       );
