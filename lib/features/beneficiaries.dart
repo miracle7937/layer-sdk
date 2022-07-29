@@ -9,3 +9,5 @@ export '../domain_layer/use_cases/beneficiary/delete_beneficiary_use_case.dart';
 export '../domain_layer/use_cases/beneficiary/load_customer_beneficiaries_use_case.dart';
 export '../presentation_layer/cubits/beneficiary/beneficiaries_cubit.dart';
 export '../presentation_layer/cubits/beneficiary/beneficiaries_states.dart';
+export '../presentation_layer/cubits/beneficiary/beneficiary_details_cubit.dart';
+export '../presentation_layer/cubits/beneficiary/beneficiary_details_state.dart';
