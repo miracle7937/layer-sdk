@@ -74,6 +74,23 @@ class ServiceFieldDTO {
     );
   }
 
+  /// Creates a JSON map from the model data
+  Map<String, dynamic> toJson() {
+    return {
+      'field_id': fieldId,
+      'service_id': serviceId,
+      'code': code,
+      'name': name,
+      'type': serviceFieldType?.value,
+      'description': description,
+      'options': options,
+      'required': required,
+      'default_value': defaultValue,
+      'ts_created': created?.millisecondsSinceEpoch,
+      'ts_Updated': updated?.millisecondsSinceEpoch,
+    };
+  }
+
   /// Creates a list of [ServiceFieldDTO] from a list of json objects.
   static List<ServiceFieldDTO> fromJsonList(List<Map<String, dynamic>> json) =>
       json.map(ServiceFieldDTO.fromJson).toList();

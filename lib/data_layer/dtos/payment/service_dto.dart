@@ -75,6 +75,21 @@ class ServiceDTO {
   static List<ServiceDTO> fromJsonList(List<Map<String, dynamic>> json) {
     return json.map(ServiceDTO.fromJson).toList(growable: false);
   }
+
+  /// Creates a JSON map from the model data
+  Map<String, dynamic> toJson() {
+    return {
+      'service_id': serviceId,
+      'biller_id': billerId,
+      'name': name,
+      'billing_id_tag': billingIdTag,
+      'billing_id_tag_help': billingIdTagHelp,
+      'billing_id_desc': billingIdDesc,
+      'ts_created': created?.millisecondsSinceEpoch,
+      'ts_updated': updated?.millisecondsSinceEpoch,
+      'extra': extra?.toJson(),
+    };
+  }
 }
 
 /// This class represents the fields that come
@@ -111,8 +126,18 @@ class ServiceExtraDTO {
       maxAmount: json['max_amount'],
       minAmount: json['min_amount'],
       isStatic: json['static_fields'],
-      validateFields: json['validate_fields'],
+      validateFields: json['static_fields'],
       amount: json['amount'],
     );
+  }
+
+  /// Creates a JSON map from the model data
+  Map<String, dynamic> toJson() {
+    return {
+      'max_amount': maxAmount,
+      'min_amount': minAmount,
+      'static_fields': isStatic,
+      'amount': amount,
+    };
   }
 }

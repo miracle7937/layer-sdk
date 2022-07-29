@@ -137,6 +137,7 @@ class PaymentDTO {
       'payment_id': paymentId,
       'payment_ts': paymentTs?.millisecondsSinceEpoch,
       'bill_id': billId,
+      'bill': bill?.toJson(),
       'from_account_id': fromAccountId,
       'from_card_id': fromCardId,
       'amount': amount,
