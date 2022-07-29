@@ -37,6 +37,9 @@ class ServiceField extends Equatable {
   /// Date this service field was updated.
   final DateTime? updated;
 
+  /// The value selected for the service field
+  final String? value;
+
   /// Creates a new [ServiceField]
   ServiceField({
     required this.fieldId,
@@ -50,6 +53,7 @@ class ServiceField extends Equatable {
     this.defaultValue,
     this.created,
     this.updated,
+    this.value,
   });
 
   @override
@@ -65,6 +69,7 @@ class ServiceField extends Equatable {
         defaultValue,
         created,
         updated,
+        value,
       ];
 
   /// Creates a copy of this service field with different values
@@ -80,6 +85,7 @@ class ServiceField extends Equatable {
     dynamic defaultValue,
     DateTime? created,
     DateTime? updated,
+    String? value,
   }) {
     return ServiceField(
       fieldId: fieldId ?? this.fieldId,
@@ -93,6 +99,7 @@ class ServiceField extends Equatable {
       defaultValue: defaultValue ?? this.defaultValue,
       created: created ?? this.created,
       updated: updated ?? this.updated,
+      value: value ?? this.value,
     );
   }
 }

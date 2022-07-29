@@ -38,6 +38,9 @@ class ServiceFieldDTO {
   /// Date this service field was updated.
   DateTime? updated;
 
+  /// The value selected for the service field
+  String? value;
+
   /// Creates a new [ServiceFieldDTO]
   ServiceFieldDTO({
     this.fieldId,
@@ -51,6 +54,7 @@ class ServiceFieldDTO {
     this.defaultValue,
     this.created,
     this.updated,
+    this.value,
   });
 
   /// Creates a [ServiceFieldDTO] from a JSON
@@ -71,6 +75,7 @@ class ServiceFieldDTO {
       defaultValue: json['default_value'],
       created: JsonParser.parseDate(json['ts_created']),
       updated: JsonParser.parseDate(json['ts_Updated']),
+      value: json['value'],
     );
   }
 
@@ -88,6 +93,7 @@ class ServiceFieldDTO {
       'default_value': defaultValue,
       'ts_created': created?.millisecondsSinceEpoch,
       'ts_Updated': updated?.millisecondsSinceEpoch,
+      'value': value,
     };
   }
 

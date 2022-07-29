@@ -95,6 +95,8 @@ class ServiceDTO {
       'ts_created': created?.millisecondsSinceEpoch,
       'ts_updated': updated?.millisecondsSinceEpoch,
       'extra': extra?.toJson(),
+      'service_fields':
+          serviceFields?.map((e) => e.toJson()).toList(growable: false),
     };
   }
 }

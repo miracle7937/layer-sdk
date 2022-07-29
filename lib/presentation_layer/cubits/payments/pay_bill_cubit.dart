@@ -7,6 +7,7 @@ import '../../../domain_layer/models/account/account.dart';
 import '../../../domain_layer/models/bill/bill.dart';
 import '../../../domain_layer/models/payment/biller.dart';
 import '../../../domain_layer/models/payment/payment.dart';
+import '../../../domain_layer/models/service/service_field.dart';
 import '../../../domain_layer/use_cases/account/get_accounts_by_status_use_case.dart';
 import '../../../domain_layer/use_cases/payments/generate_device_uid_use_case.dart';
 import '../../../domain_layer/use_cases/payments/load_billers_use_case.dart';
@@ -110,7 +111,9 @@ class PayBillCubit extends Cubit<PayBillState> {
         fromAccount: state.selectedAccount,
         bill: Bill(
           nickname: state.selectedBiller!.name,
-          service: state.selectedService,
+          service: state.selectedService?.copyWith(
+            serviceFields: state.serviceFields,
+          ),
           amount: state.payment.amount,
           billStatus: BillStatus.active,
         ),
@@ -219,7 +222,27 @@ class PayBillCubit extends Cubit<PayBillState> {
     emit(
       state.copyWith(
         selectedService: service,
+        serviceFields: service?.serviceFields ?? [],
       ),
+    );
+  }
+
+  /// Sets the provided value for the service field matching the provided id
+  void setServiceFieldValue({
+    required String id,
+    required String value,
+  }) {
+    final newFields = <ServiceField>[];
+    for (var i = 0; i < state.serviceFields.length; i++) {
+      final field = state.serviceFields[i];
+      if (field.fieldId == id) {
+        newFields.add(field.copyWith(value: value));
+      } else {
+        newFields.add(field);
+      }
+    }
+    emit(
+      state.copyWith(serviceFields: newFields),
     );
   }
 }

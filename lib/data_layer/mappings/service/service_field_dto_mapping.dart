@@ -18,6 +18,7 @@ extension ServiceFieldsDTOMapping on ServiceFieldDTO {
       defaultValue: defaultValue,
       created: created,
       updated: updated,
+      value: value,
     );
   }
 }
@@ -59,6 +60,7 @@ extension ServiceFieldsToDTOMapping on ServiceField {
       defaultValue: defaultValue,
       created: created,
       updated: updated,
+      value: value,
     );
   }
 }

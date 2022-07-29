@@ -5,6 +5,7 @@ import '../../../domain_layer/models/payment/biller.dart';
 import '../../../domain_layer/models/payment/biller_category.dart';
 import '../../../domain_layer/models/payment/payment.dart';
 import '../../../domain_layer/models/service/service.dart';
+import '../../../domain_layer/models/service/service_field.dart';
 
 /// Which loading action the cubit is doing
 enum PayBillBusyAction {
@@ -85,6 +86,9 @@ class PayBillState extends Equatable {
   /// The service that the user has selected to pay.
   final Service? selectedService;
 
+  /// The service fields to display and input
+  final List<ServiceField> serviceFields;
+
   /// Wether the user can subit the form or not
   bool get canSubmit =>
       !busy &&
@@ -92,7 +96,18 @@ class PayBillState extends Equatable {
       selectedCategory != null &&
       selectedBiller != null &&
       selectedService != null &&
-      payment.amount != null;
+      payment.amount != null &&
+      _serviceFieldsValid;
+
+  bool get _serviceFieldsValid {
+    for (var i = 0; i < serviceFields.length; i++) {
+      final field = serviceFields[i];
+      if (field.required && (field.value?.isEmpty ?? true)) {
+        return false;
+      }
+    }
+    return true;
+  }
 
   /// Creates a new state.
   PayBillState({
@@ -109,6 +124,7 @@ class PayBillState extends Equatable {
     List<Biller> billers = const [],
     this.services = const [],
     this.selectedService,
+    this.serviceFields = const [],
   }) : _billers = billers;
 
   @override
@@ -126,6 +142,7 @@ class PayBillState extends Equatable {
         _billers,
         services,
         selectedService,
+        serviceFields,
       ];
 
   /// Creates a new state based on this one.
@@ -143,6 +160,7 @@ class PayBillState extends Equatable {
     List<Biller>? billers,
     List<Service>? services,
     Service? selectedService,
+    List<ServiceField>? serviceFields,
   }) {
     return PayBillState(
       payment: payment ?? this.payment,
@@ -158,6 +176,7 @@ class PayBillState extends Equatable {
       billers: billers ?? _billers,
       services: services ?? this.services,
       selectedService: selectedService ?? this.selectedService,
+      serviceFields: serviceFields ?? this.serviceFields,
     );
   }
 }
