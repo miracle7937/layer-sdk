@@ -1,5 +1,4 @@
 import '../../../domain_layer/models.dart';
-import '../../../domain_layer/models/recurrence/recurrence.dart';
 import '../../dtos.dart';
 import '../../errors.dart';
 import '../../mappings.dart';
