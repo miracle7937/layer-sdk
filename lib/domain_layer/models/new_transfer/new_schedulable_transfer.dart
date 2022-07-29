@@ -13,21 +13,15 @@ abstract class NewSchedulableTransfer extends NewTransfer {
 
   /// Creates a new [NewSchedulableTransfer].
   NewSchedulableTransfer({
-    TransferType? type,
-    NewTransferSource? source,
-    double? amount,
-    Currency? currency,
-    NewTransferDestination? destination,
+    super.type,
+    super.source,
+    super.amount,
+    super.currency,
+    super.destination,
     this.recurrence = TransferRecurrence.none,
     this.starts,
     this.ends,
-  }) : super(
-          type: type,
-          source: source,
-          amount: amount,
-          currency: currency,
-          destination: destination,
-        );
+  });
 
   /// Whether if this transfer is recurring or not.
   bool get isRecurring =>

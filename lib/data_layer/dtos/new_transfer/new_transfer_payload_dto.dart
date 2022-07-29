@@ -73,6 +73,9 @@ class NewTransferPayloadDTO {
   /// The transfer processing type.
   TransferProcessingTypeDTO? processingType;
 
+  /// The OTP id for this transfer.
+  int? otpId;
+
   /// Creates a new [NewTransferPayloadDTO].
   NewTransferPayloadDTO({
     required this.type,
@@ -98,6 +101,7 @@ class NewTransferPayloadDTO {
     this.startDate,
     this.endDate,
     this.processingType,
+    this.otpId,
   });
 
   /// Returns a json map with the provided values.
@@ -135,6 +139,7 @@ class NewTransferPayloadDTO {
         }
       },
       if (processingType != null) 'processing_type': processingType!.value,
+      if (otpId != null) 'otp_id': otpId,
     };
   }
 }

@@ -65,26 +65,24 @@ class BankDTO {
   });
 
   /// Creates a [BankDTO] from a json.
-  factory BankDTO.fromJson(Map<String, dynamic> json) {
-    print(json);
-    return BankDTO(
-      bic: json['bic'],
-      name: json['name'],
-      address1: json['address1'],
-      address2: json['address2'],
-      countryCode: json['country_code'],
-      created: JsonParser.parseDate(json['ts_created']),
-      updated: JsonParser.parseDate(json['ts_updated']),
-      transferType: TransferTypeDTO.fromRaw(json['type']),
-      country:
-          json['country'] != null ? CountryDTO.fromJson(json['country']) : null,
-      imageUrl: json['image_url'],
-      category: json['category'],
-      code: json['bank_code'],
-      branchCode: json['branch_code'],
-      branchName: json['branch_name'],
-    );
-  }
+  factory BankDTO.fromJson(Map<String, dynamic> json) => BankDTO(
+        bic: json['bic'],
+        name: json['name'],
+        address1: json['address1'],
+        address2: json['address2'],
+        countryCode: json['country_code'],
+        created: JsonParser.parseDate(json['ts_created']),
+        updated: JsonParser.parseDate(json['ts_updated']),
+        transferType: TransferTypeDTO.fromRaw(json['type']),
+        country: json['country'] != null
+            ? CountryDTO.fromJson(json['country'])
+            : null,
+        imageUrl: json['image_url'],
+        category: json['category'],
+        code: json['bank_code'],
+        branchCode: json['branch_code'],
+        branchName: json['branch_name'],
+      );
 
   /// Returns a list of [BankDTO] from a JSON
   static List<BankDTO> fromJsonList(List<Map<String, dynamic>> json) =>

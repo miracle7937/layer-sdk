@@ -24,4 +24,16 @@ abstract class TransferRepositoryInterface {
   Future<Transfer> submit({
     required NewTransfer transfer,
   });
+
+  /// Verifies the second factor for the passed transfer id.
+  Future<Transfer> verifySecondFactor({
+    required int transferId,
+    required String otpValue,
+    required SecondFactorType secondFactorType,
+  });
+
+  /// Resends the second factor for the passed transfer.
+  Future<Transfer> resendSecondFactor({
+    required NewTransfer transfer,
+  });
 }

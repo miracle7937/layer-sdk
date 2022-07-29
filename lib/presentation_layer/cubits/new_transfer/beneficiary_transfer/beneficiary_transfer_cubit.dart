@@ -20,6 +20,8 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
   final ValidateIBANUseCase _validateIBANUseCase;
   final EvaluateTransferUseCase _evaluateTransferUseCase;
   final SubmitTransferUseCase _submitTransferUseCase;
+  final VerifyTransferSecondFactorUseCase _verifyTransferSecondFactorUseCase;
+  final ResendTransferSecondFactorUseCase _resendTransferSecondFactorUseCase;
 
   /// Creates a new [BeneficiaryTransferCubit].
   BeneficiaryTransferCubit({
@@ -36,6 +38,10 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     required ValidateIBANUseCase validateIBANUseCase,
     required EvaluateTransferUseCase evaluateTransferUseCase,
     required SubmitTransferUseCase submitTransferUseCase,
+    required VerifyTransferSecondFactorUseCase
+        verifyTransferSecondFactorUseCase,
+    required ResendTransferSecondFactorUseCase
+        resendTransferSecondFactorUseCase,
   })  : _loadGlobalSettingsUseCase = loadGlobalSettingsUseCase,
         _getSourceAccountsForBeneficiaryTransferUseCase =
             getSourceAccountsForBeneficiaryTransferUseCase,
@@ -48,6 +54,8 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         _validateIBANUseCase = validateIBANUseCase,
         _evaluateTransferUseCase = evaluateTransferUseCase,
         _submitTransferUseCase = submitTransferUseCase,
+        _verifyTransferSecondFactorUseCase = verifyTransferSecondFactorUseCase,
+        _resendTransferSecondFactorUseCase = resendTransferSecondFactorUseCase,
         super(
           BeneficiaryTransferState(
             transfer: transfer,
@@ -78,11 +86,15 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
   Set<BeneficiaryTransferError> _addError({
     required BeneficiaryTransferAction action,
     required BeneficiaryTransferErrorStatus errorStatus,
+    String? code,
+    String? message,
   }) =>
       state.errors.union({
         BeneficiaryTransferError(
           action: action,
           errorStatus: errorStatus,
+          code: code,
+          message: message,
         )
       });
 
@@ -513,6 +525,97 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
                     ? BeneficiaryTransferErrorStatus.insufficientBalance
                     : BeneficiaryTransferErrorStatus.network
                 : BeneficiaryTransferErrorStatus.generic,
+            code: e is NetException ? e.code : null,
+            message: e is NetException ? e.message : e.toString(),
+          ),
+        ),
+      );
+    }
+  }
+
+  /// Verifies the second factor for the transfer retrievied on the [submit]
+  /// method.
+  Future<void> verifySecondFactor({
+    required String otpValue,
+  }) async {
+    emit(
+      state.copyWith(
+        actions: _addAction(BeneficiaryTransferAction.verifySecondFactor),
+        errors: {},
+      ),
+    );
+
+    try {
+      final transferResult = await _verifyTransferSecondFactorUseCase(
+        transferId: state.transferResult?.id ?? 0,
+        otpValue: otpValue,
+        secondFactorType:
+            state.transferResult?.secondFactorType ?? SecondFactorType.otp,
+      );
+
+      emit(
+        state.copyWith(
+          actions: _removeAction(BeneficiaryTransferAction.verifySecondFactor),
+          transferResult: transferResult,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          actions: _removeAction(BeneficiaryTransferAction.verifySecondFactor),
+          errors: _addError(
+            action: BeneficiaryTransferAction.verifySecondFactor,
+            errorStatus: e is NetException
+                ? BeneficiaryTransferErrorStatus.network
+                : BeneficiaryTransferErrorStatus.generic,
+            code: e is NetException
+                ? e.statusCode == null
+                    ? 'connectivity_error'
+                    : e.code
+                : null,
+            message: e is NetException ? e.message : e.toString(),
+          ),
+        ),
+      );
+    }
+  }
+
+  /// Resends the second factor for the transfer retrievied on the [submit]
+  /// method.
+  Future<void> resendSecondFactor() async {
+    emit(
+      state.copyWith(
+        actions: _addAction(BeneficiaryTransferAction.resendSecondFactor),
+        errors: {},
+      ),
+    );
+
+    try {
+      final transferResult = await _resendTransferSecondFactorUseCase(
+        transfer: state.transfer,
+      );
+
+      emit(
+        state.copyWith(
+          actions: _removeAction(BeneficiaryTransferAction.resendSecondFactor),
+          transferResult: transferResult,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          actions: _removeAction(BeneficiaryTransferAction.resendSecondFactor),
+          errors: _addError(
+            action: BeneficiaryTransferAction.resendSecondFactor,
+            errorStatus: e is NetException
+                ? BeneficiaryTransferErrorStatus.network
+                : BeneficiaryTransferErrorStatus.generic,
+            code: e is NetException
+                ? e.statusCode == null
+                    ? 'connectivity_error'
+                    : e.code
+                : null,
+            message: e is NetException ? e.message : e.toString(),
           ),
         ),
       );

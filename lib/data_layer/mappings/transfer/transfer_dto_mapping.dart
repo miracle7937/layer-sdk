@@ -25,6 +25,9 @@ extension TransferDTOMapping on TransferDTO {
         type: type?.toTransferType(),
         scheduledDate: scheduled,
         processingType: processingType?.toTransferProcessingType(),
+        secondFactorType: secondFactor?.toSecondFactorType(),
+        evaluation: evaluation?.toTransferEvaluation(),
+        otpId: otpId,
       );
 
   /// Maps into a [StandingOrder]

@@ -95,6 +95,7 @@ class BottomSheetHelper {
     String confirmKey = 'yes',
     String denyKey = 'no',
     bool isScrollControlled = true,
+    bool showDenyButton = true,
   }) async {
     final result = await showModalBottomSheet(
       context: context,
@@ -115,6 +116,7 @@ class BottomSheetHelper {
         dismissKey: denyKey,
         type: type,
         descriptionKey: descriptionKey,
+        showDenyButton: showDenyButton,
       ),
     );
 
@@ -190,6 +192,7 @@ class _ConfirmationBottomSheet extends StatelessWidget {
   final String confirmKey;
   final String dismissKey;
   final BottomSheetType type;
+  final bool showDenyButton;
 
   const _ConfirmationBottomSheet({
     Key? key,
@@ -198,6 +201,7 @@ class _ConfirmationBottomSheet extends StatelessWidget {
     required this.dismissKey,
     required this.type,
     this.descriptionKey,
+    this.showDenyButton = true,
   }) : super(key: key);
 
   @override
@@ -242,12 +246,14 @@ class _ConfirmationBottomSheet extends StatelessWidget {
             title: translation.translate(confirmKey),
             onPressed: () => Navigator.pop(context, true),
           ),
-          const SizedBox(height: 12.0),
-          DKButton(
-            title: translation.translate(dismissKey),
-            type: DKButtonType.baseSecondary,
-            onPressed: () => Navigator.pop(context, false),
-          ),
+          if (showDenyButton) ...[
+            const SizedBox(height: 12.0),
+            DKButton(
+              title: translation.translate(dismissKey),
+              type: DKButtonType.baseSecondary,
+              onPressed: () => Navigator.pop(context, false),
+            ),
+          ],
         ],
       ),
     );

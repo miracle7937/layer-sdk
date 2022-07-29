@@ -11,16 +11,26 @@ class BeneficiaryTransferError extends Equatable {
   /// The error.
   final BeneficiaryTransferErrorStatus errorStatus;
 
+  /// The error code.
+  final String? code;
+
+  /// The error message.
+  final String? message;
+
   /// Creates a new [BeneficiaryTransferError].
   const BeneficiaryTransferError({
     required this.action,
     required this.errorStatus,
+    this.code,
+    this.message,
   });
 
   @override
   List<Object?> get props => [
         action,
         errorStatus,
+        code,
+        message,
       ];
 }
 
@@ -52,6 +62,12 @@ enum BeneficiaryTransferAction {
 
   /// Transfer is being submitted.
   submit,
+
+  /// The second factor is being verified.
+  verifySecondFactor,
+
+  /// The second factor is being resent.
+  resendSecondFactor,
 }
 
 /// The available error status.
