@@ -1,5 +1,4 @@
 import '../../models.dart';
-import '../recurrence/recurrence.dart';
 
 /// An interface that provides new transfers to be scheduled.
 abstract class NewSchedulableTransfer extends NewTransfer {
