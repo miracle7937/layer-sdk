@@ -62,7 +62,7 @@ class Beneficiary extends Equatable {
   final String? extra;
 
   /// The beneficiary's routing code.
-  String? routingCode;
+  final String? routingCode;
 
   /// Creates a new immutable [Beneficiary]
   Beneficiary({
