@@ -21,6 +21,7 @@ class BeneficiaryProvider {
     int? limit,
     int? offset,
     bool forceRefresh = false,
+    bool activeOnly = false,
   }) async {
     final response = await netClient.request(
       netClient.netEndpoints.beneficiary,
@@ -32,6 +33,7 @@ class BeneficiaryProvider {
         if (limit != null) 'limit': limit,
         if (offset != null) 'offset': offset,
         if (searchText?.isNotEmpty ?? false) 'q': searchText,
+        if (activeOnly) 'status': 'A',
       },
       forceRefresh: forceRefresh,
     );
@@ -41,5 +43,17 @@ class BeneficiaryProvider {
         response.data,
       ),
     );
+  }
+
+  /// Deletes the beneficiary with the provided id.
+  Future<BeneficiaryDTO> delete({
+    required int id,
+  }) async {
+    final response = await netClient.request(
+      '${netClient.netEndpoints.beneficiary}/$id',
+      method: NetRequestMethods.delete,
+    );
+
+    return BeneficiaryDTO.fromJson(response.data);
   }
 }
