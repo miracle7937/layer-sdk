@@ -229,7 +229,7 @@ class PayBillCubit extends Cubit<PayBillState> {
 
   /// Sets the provided value for the service field matching the provided id
   void setServiceFieldValue({
-    required String id,
+    required int id,
     required String value,
   }) {
     final newFields = <ServiceField>[];
