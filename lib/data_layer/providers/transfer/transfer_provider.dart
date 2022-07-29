@@ -105,8 +105,9 @@ class TransferProvider {
     required SecondFactorTypeDTO secondFactorTypeDTO,
   }) async {
     final response = await netClient.request(
-      '${netClient.netEndpoints.submitTransfer}?otp_value=$otpValue',
+      netClient.netEndpoints.submitTransfer,
       method: NetRequestMethods.post,
+      queryParameters: {'otp_value': otpValue},
       data: {
         'transfer_id': transferId,
         'second_factor': secondFactorTypeDTO.value,
