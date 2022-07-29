@@ -209,6 +209,7 @@ class PayBillCubit extends Cubit<PayBillState> {
       state.copyWith(
           payment: state.payment.copyWith(
         amount: amount,
+        forceCopyAmount: true,
       )),
     );
   }
