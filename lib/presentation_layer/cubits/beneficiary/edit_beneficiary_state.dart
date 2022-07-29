@@ -4,6 +4,37 @@ import 'package:equatable/equatable.dart';
 
 import '../../../domain_layer/models.dart';
 
+/// Model used for the errors.
+class EditBeneficiaryError extends Equatable {
+  /// The action.
+  final EditBeneficiaryAction action;
+
+  /// The error.
+  final EditBeneficiaryErrorStatus errorStatus;
+
+  /// The error code.
+  final String? code;
+
+  /// The error message.
+  final String? message;
+
+  /// Creates a new [EditBeneficiaryError].
+  const EditBeneficiaryError({
+    required this.action,
+    required this.errorStatus,
+    this.code,
+    this.message,
+  });
+
+  @override
+  List<Object?> get props => [
+        action,
+        errorStatus,
+        code,
+        message,
+      ];
+}
+
 /// The available error status
 enum EditBeneficiaryErrorStatus {
   /// No errors
@@ -27,14 +58,14 @@ class EditBeneficiaryState extends Equatable {
   /// A list of countries
   final UnmodifiableListView<Country> countries;
 
-  /// The current error status.
-  final EditBeneficiaryErrorStatus errorStatus;
+  /// The errors.
+  final UnmodifiableSetView<EditBeneficiaryError> errors;
 
   /// True if the cubit is processing something.
   final bool busy;
 
-  /// Current action.
-  final EditBeneficiaryAction action;
+  /// The actions that the cubit is performing.
+  final UnmodifiableSetView<EditBeneficiaryAction> actions;
 
   /// Depending on its currency, beneficiary has:
   /// - for `GBP` - account and sorting code
@@ -56,26 +87,29 @@ class EditBeneficiaryState extends Equatable {
     required this.oldBeneficiary,
     required this.beneficiary,
     Iterable<Country> countries = const <Country>[],
-    this.errorStatus = EditBeneficiaryErrorStatus.none,
+    Set<EditBeneficiaryAction> actions = const <EditBeneficiaryAction>{},
+    Set<EditBeneficiaryError> errors = const <EditBeneficiaryError>{},
     this.busy = false,
-    this.action = EditBeneficiaryAction.none,
-  }) : countries = UnmodifiableListView(countries);
+  })  : countries = UnmodifiableListView(countries),
+        actions = UnmodifiableSetView(actions),
+        errors = UnmodifiableSetView(errors);
 
   @override
   List<Object?> get props => [
         oldBeneficiary,
         beneficiary,
         countries,
-        errorStatus,
+        errors,
         busy,
-        action,
+        actions,
       ];
 
   /// Creates a new state based on this one.
   EditBeneficiaryState copyWith({
     Beneficiary? beneficiary,
     Iterable<Country>? countries,
-    EditBeneficiaryErrorStatus? errorStatus,
+    Set<EditBeneficiaryAction>? actions,
+    Set<EditBeneficiaryError>? errors,
     bool? busy,
     EditBeneficiaryAction? action,
   }) =>
@@ -83,9 +117,9 @@ class EditBeneficiaryState extends Equatable {
         oldBeneficiary: oldBeneficiary,
         beneficiary: beneficiary ?? this.beneficiary,
         countries: countries ?? this.countries,
-        errorStatus: errorStatus ?? this.errorStatus,
+        errors: errors ?? this.errors,
         busy: busy ?? this.busy,
-        action: action ?? this.action,
+        actions: actions ?? this.actions,
       );
 }
 

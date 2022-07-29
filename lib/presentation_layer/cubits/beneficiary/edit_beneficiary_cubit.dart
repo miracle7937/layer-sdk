@@ -65,7 +65,10 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
         state.copyWith(
           beneficiary: beneficiary,
           action: EditBeneficiaryAction.editAction,
-          errorStatus: EditBeneficiaryErrorStatus.none,
+          errors: _addError(
+            action: EditBeneficiaryAction.editAction,
+            errorStatus: EditBeneficiaryErrorStatus.none,
+          ),
         ),
       );
 
@@ -75,7 +78,10 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
       state.copyWith(
         action: EditBeneficiaryAction.save,
         busy: true,
-        errorStatus: EditBeneficiaryErrorStatus.none,
+        errors: _addError(
+          action: EditBeneficiaryAction.save,
+          errorStatus: EditBeneficiaryErrorStatus.none,
+        ),
       ),
     );
     try {
@@ -101,9 +107,14 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
         state.copyWith(
           busy: false,
           action: EditBeneficiaryAction.none,
-          errorStatus: e is NetException
-              ? EditBeneficiaryErrorStatus.network
-              : EditBeneficiaryErrorStatus.generic,
+          errors: _addError(
+            action: EditBeneficiaryAction.none,
+            errorStatus: e is NetException
+                ? EditBeneficiaryErrorStatus.network
+                : EditBeneficiaryErrorStatus.generic,
+            code: e is NetException ? e.code : null,
+            message: e is NetException ? e.message : e.toString(),
+          ),
         ),
       );
       rethrow;
@@ -119,7 +130,10 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
       state.copyWith(
         busy: true,
         action: EditBeneficiaryAction.verifyOtp,
-        errorStatus: EditBeneficiaryErrorStatus.none,
+        errors: _addError(
+          action: EditBeneficiaryAction.verifyOtp,
+          errorStatus: EditBeneficiaryErrorStatus.none,
+        ),
       ),
     );
 
@@ -142,9 +156,12 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
         state.copyWith(
           busy: false,
           action: EditBeneficiaryAction.none,
-          errorStatus: e is NetException
-              ? EditBeneficiaryErrorStatus.network
-              : EditBeneficiaryErrorStatus.generic,
+          errors: _addError(
+            action: EditBeneficiaryAction.none,
+            errorStatus: e is NetException
+                ? EditBeneficiaryErrorStatus.network
+                : EditBeneficiaryErrorStatus.generic,
+          ),
         ),
       );
     }
@@ -157,7 +174,10 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
       state.copyWith(
         busy: true,
         action: EditBeneficiaryAction.resendOtp,
-        errorStatus: EditBeneficiaryErrorStatus.none,
+        errors: _addError(
+          action: EditBeneficiaryAction.resendOtp,
+          errorStatus: EditBeneficiaryErrorStatus.none,
+        ),
       ),
     );
 
@@ -179,11 +199,30 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
         state.copyWith(
           busy: false,
           action: EditBeneficiaryAction.none,
-          errorStatus: e is NetException
-              ? EditBeneficiaryErrorStatus.network
-              : EditBeneficiaryErrorStatus.generic,
+          errors: _addError(
+            action: EditBeneficiaryAction.none,
+            errorStatus: e is NetException
+                ? EditBeneficiaryErrorStatus.network
+                : EditBeneficiaryErrorStatus.generic,
+          ),
         ),
       );
     }
   }
+
+  /// Returns an error list that includes the passed action and error status.
+  Set<EditBeneficiaryError> _addError({
+    required EditBeneficiaryAction action,
+    required EditBeneficiaryErrorStatus errorStatus,
+    String? code,
+    String? message,
+  }) =>
+      state.errors.union({
+        EditBeneficiaryError(
+          action: action,
+          errorStatus: errorStatus,
+          code: code,
+          message: message,
+        )
+      });
 }

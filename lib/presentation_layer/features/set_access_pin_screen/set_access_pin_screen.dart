@@ -189,13 +189,13 @@ class __RepeatAccessPinScreenState
           ),
         ),
         if (state.busy)
-
-          /// TODO: change with the correct loader.
           Positioned.fill(
             child: Container(
               color: Colors.black.withOpacity(0.4),
               child: Center(
-                child: Text('Loading...'),
+                child: DKLoader(
+                  size: 40.0,
+                ),
               ),
             ),
           ),

@@ -4,7 +4,7 @@ import '../../models.dart';
 
 /// Model representing a bank.
 class Bank extends Equatable {
-  /// The bic code for the bank.
+  /// The bic/swift code for the bank.
   final String? bic;
 
   /// The bank name.

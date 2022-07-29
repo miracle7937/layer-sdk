@@ -30,6 +30,7 @@ extension BeneficiaryDTOMapping on BeneficiaryDTO {
         ),
         otpId: otpId,
         extra: extra,
+        routingCode: routingCode,
       );
 }
 

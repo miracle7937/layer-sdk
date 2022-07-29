@@ -22,6 +22,7 @@ class LoadCustomerBeneficiariesUseCase {
     int limit = 50,
     bool loadMore = false,
     bool forceRefresh = false,
+    bool activeOnly = false,
   }) =>
       _beneficiaryRepository.list(
         customerId: customerId,
@@ -29,5 +30,6 @@ class LoadCustomerBeneficiariesUseCase {
         offset: offset,
         forceRefresh: forceRefresh,
         searchText: query,
+        activeOnly: activeOnly,
       );
 }

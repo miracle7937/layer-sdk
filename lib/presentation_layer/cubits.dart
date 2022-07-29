@@ -22,6 +22,8 @@ export 'cubits/beneficiary/add_beneficiary_cubit.dart';
 export 'cubits/beneficiary/add_beneficiary_state.dart';
 export 'cubits/beneficiary/beneficiaries_cubit.dart';
 export 'cubits/beneficiary/beneficiaries_states.dart';
+export 'cubits/beneficiary/beneficiary_details_cubit.dart';
+export 'cubits/beneficiary/beneficiary_details_state.dart';
 export 'cubits/beneficiary/edit_beneficiary_cubit.dart';
 export 'cubits/beneficiary/edit_beneficiary_state.dart';
 export 'cubits/bill/bill_cubit.dart';

@@ -22,6 +22,7 @@ class BeneficiaryRepository implements BeneficiaryRepositoryInterface {
     int limit = 50,
     int offset = 0,
     bool forceRefresh = false,
+    bool activeOnly = false,
   }) async {
     final beneficiaryDTO = await _provider.list(
       customerID: customerId,
@@ -29,6 +30,7 @@ class BeneficiaryRepository implements BeneficiaryRepositoryInterface {
       limit: limit,
       offset: offset,
       forceRefresh: forceRefresh,
+      activeOnly: activeOnly,
     );
 
     return beneficiaryDTO.map((e) => e.toBeneficiary()).toList(growable: false);
@@ -93,5 +95,14 @@ class BeneficiaryRepository implements BeneficiaryRepositoryInterface {
     );
 
     return beneficiaryDTO.toBeneficiary();
+  }
+
+  /// Deletes the beneficiary with the provided id.
+  Future<Beneficiary> delete({
+    required int id,
+  }) async {
+    final dto = await _provider.delete(id: id);
+
+    return dto.toBeneficiary();
   }
 }

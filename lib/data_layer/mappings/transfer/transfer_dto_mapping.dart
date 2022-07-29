@@ -1,5 +1,4 @@
 import '../../../domain_layer/models.dart';
-import '../../../domain_layer/models/recurrence/recurrence.dart';
 import '../../dtos.dart';
 import '../../errors.dart';
 import '../../mappings.dart';
@@ -25,6 +24,9 @@ extension TransferDTOMapping on TransferDTO {
         type: type?.toTransferType(),
         scheduledDate: scheduled,
         processingType: processingType?.toTransferProcessingType(),
+        secondFactorType: secondFactor?.toSecondFactorType(),
+        evaluation: evaluation?.toTransferEvaluation(),
+        otpId: otpId,
       );
 
   /// Maps into a [StandingOrder]

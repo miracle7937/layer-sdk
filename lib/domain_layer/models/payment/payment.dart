@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 
 import '../../models.dart';
-import '../recurrence/recurrence.dart';
 
 /// The status a payment can have
 enum PaymentStatus {
