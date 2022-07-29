@@ -69,7 +69,8 @@ class ServiceDTO {
           ? ServiceExtraDTO.fromJson(json['extra'])
           : null,
       serviceFields: json['service_fields'] != null
-          ? ServiceFieldDTO.fromJsonList(json['service_fields'])
+          ? ServiceFieldDTO.fromJsonList(
+              json['service_fields'] as List<Map<String, dynamic>>)
           : null,
     );
   }
