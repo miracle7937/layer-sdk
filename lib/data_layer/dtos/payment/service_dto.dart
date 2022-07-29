@@ -68,6 +68,9 @@ class ServiceDTO {
       extra: json['extra'] != null
           ? ServiceExtraDTO.fromJson(json['extra'])
           : null,
+      serviceFields: json['service_fields'] != null
+          ? ServiceFieldDTO.fromJsonList(json['service_fields'])
+          : null,
     );
   }
 
