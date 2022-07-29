@@ -1,39 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 import '../../models.dart';
-
-///The recurrence of the transfer
-enum TransferRecurrence {
-  ///once
-  once,
-
-  ///daily
-  daily,
-
-  ///weekly
-  weekly,
-
-  ///biweekly
-  biweekly,
-
-  ///monthly
-  monthly,
-
-  ///bimonthly
-  bimonthly,
-
-  ///quarterly
-  quarterly,
-
-  ///yearly
-  yearly,
-
-  ///endOfEachMonth
-  endOfEachMonth,
-
-  ///none
-  none,
-}
+import '../recurrence/recurrence.dart';
 
 ///The status of the transfer
 enum TransferStatus {
@@ -146,7 +114,7 @@ class Transfer extends Equatable {
   final Beneficiary? toBeneficiary;
 
   /// The transfer recurrence.
-  final TransferRecurrence recurrence;
+  final Recurrence recurrence;
 
   /// The transfer creation date.
   final DateTime? created;
@@ -176,7 +144,7 @@ class Transfer extends Equatable {
     this.fromMobile,
     this.toMobile,
     this.toBeneficiary,
-    this.recurrence = TransferRecurrence.none,
+    this.recurrence = Recurrence.none,
     this.created,
     this.status,
     this.type,

@@ -145,6 +145,15 @@ class NetEndpoints {
   ///The payment endpoint
   String get payment => '$_payment/v1/payment';
 
+  ///The payment V2 endpoint
+  String get paymentV2 => '$_payment/v2/payment';
+
+  /// The biller endpoint
+  String get biller => '$_payment/v1/biller';
+
+  /// The services endpoint
+  String get service => '$_payment/v1/service';
+
   ///The frequent payment endpoint
   String get frequentPayment => '$_payment/v1/frequent_payment';
 

@@ -131,6 +131,29 @@ class PaymentDTO {
     );
   }
 
+  /// Creates a JSON map from the model data
+  Map<String, dynamic> toJson() {
+    return {
+      'payment_id': paymentId,
+      'payment_ts': paymentTs?.millisecondsSinceEpoch,
+      'bill_id': billId,
+      'bill': bill?.toJson(),
+      'from_account_id': fromAccountId,
+      'from_card_id': fromCardId,
+      'amount': amount,
+      'currency': currency,
+      'otp_id': otpId,
+      'device_uid': deviceUID,
+      'status': status?.value,
+      'second_factor': secondFactor?.value,
+      'ts_created': created?.millisecondsSinceEpoch,
+      'ts_scheduled': scheduled?.millisecondsSinceEpoch,
+      'recurrence': recurrence?.value,
+      'recurrence_start': recurrenceStart?.millisecondsSinceEpoch,
+      'recurrence_end': recurrenceEnd?.millisecondsSinceEpoch,
+    };
+  }
+
   /// Creates a list of [PaymentDTO]s from the given JSON list.
   static List<PaymentDTO> fromJsonList(List<Map<String, dynamic>> json) =>
       json.map(PaymentDTO.fromJson).toList();

@@ -3,6 +3,7 @@ import 'dart:convert';
 import '../../../data_layer/dtos.dart';
 import '../../../data_layer/mappings.dart';
 import '../../models.dart';
+import '../recurrence/recurrence.dart';
 
 /// The new beneficiary transfer flow.
 class BeneficiaryTransfer extends NewSchedulableTransfer {
@@ -17,7 +18,7 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
     Currency? currency,
     NewTransferDestination? destination,
     this.reason,
-    TransferRecurrence recurrence = TransferRecurrence.none,
+    Recurrence recurrence = Recurrence.none,
     DateTime? starts,
     DateTime? ends,
   }) : super(
@@ -40,7 +41,7 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
       currency != null &&
       currency?.code != null &&
       destination?.beneficiary != null &&
-      (recurrence == TransferRecurrence.none || starts != null);
+      (recurrence == Recurrence.none || starts != null);
 
   @override
   BeneficiaryTransfer copyWith({
@@ -50,7 +51,7 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
     Currency? currency,
     NewTransferDestination? destination,
     Message? reason,
-    TransferRecurrence? recurrence,
+    Recurrence? recurrence,
     DateTime? starts,
     DateTime? ends,
   }) =>
@@ -80,7 +81,7 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
       toBeneficiaryId: destination?.beneficiary?.id,
       reason: reason?.id,
       extra: jsonDecode(destination?.beneficiary?.extra ?? ''),
-      recurrence: recurrence.toTransferRecurrenceDTO(),
+      recurrence: recurrence.toRecurrenceDTO(),
       startDate: starts,
       endDate: ends,
     );
