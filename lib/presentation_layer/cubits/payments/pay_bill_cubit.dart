@@ -8,6 +8,7 @@ import '../../../domain_layer/models/bill/bill.dart';
 import '../../../domain_layer/models/payment/biller.dart';
 import '../../../domain_layer/models/payment/payment.dart';
 import '../../../domain_layer/use_cases/account/get_accounts_by_status_use_case.dart';
+import '../../../domain_layer/use_cases/payments/generate_device_uid_use_case.dart';
 import '../../../domain_layer/use_cases/payments/load_billers_use_case.dart';
 import '../../../domain_layer/use_cases/payments/load_services_use_case.dart';
 import '../../../domain_layer/use_cases/payments/post_payment_use_case.dart';
@@ -19,6 +20,7 @@ class PayBillCubit extends Cubit<PayBillState> {
   final LoadServicesUseCase _loadServicesUseCase;
   final GetAccountsByStatusUseCase _getCustomerAccountsUseCase;
   final PostPaymentUseCase _postPaymentUseCase;
+  final GenerateDeviceUIDUseCase _generateDeviceUIDUseCase;
 
   /// The biller id to pay for, if provided the biller will be pre-selected
   /// when the cubit loads.
@@ -30,11 +32,13 @@ class PayBillCubit extends Cubit<PayBillState> {
     required LoadServicesUseCase loadServicesUseCase,
     required GetAccountsByStatusUseCase getCustomerAccountsUseCase,
     required PostPaymentUseCase postPaymentUseCase,
+    required GenerateDeviceUIDUseCase generateDeviceUIDUseCase,
     this.billerId,
   })  : _loadBillersUseCase = loadBillersUseCase,
         _loadServicesUseCase = loadServicesUseCase,
         _getCustomerAccountsUseCase = getCustomerAccountsUseCase,
         _postPaymentUseCase = postPaymentUseCase,
+        _generateDeviceUIDUseCase = generateDeviceUIDUseCase,
         super(PayBillState());
 
   /// Loads all the required data, must be called at lease once before anything
@@ -98,6 +102,7 @@ class PayBillCubit extends Cubit<PayBillState> {
         state.copyWith(
           busy: true,
           busyAction: PayBillBusyAction.submitting,
+          deviceUID: _generateDeviceUIDUseCase(30),
         ),
       );
 
@@ -110,6 +115,7 @@ class PayBillCubit extends Cubit<PayBillState> {
           billStatus: BillStatus.active,
         ),
         status: PaymentStatus.completed,
+        deviceUID: state.deviceUID,
       );
       final res = await _postPaymentUseCase.pay(_payment);
 
