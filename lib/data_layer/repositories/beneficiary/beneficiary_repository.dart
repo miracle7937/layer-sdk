@@ -11,11 +11,8 @@ class BeneficiaryRepository implements BeneficiaryRepositoryInterface {
   BeneficiaryRepository(BeneficiaryProvider provider) : _provider = provider;
 
   /// Lists the beneficiaries.
-  ///
-  /// Use the [customerId] parameter for loading the beneficiaries related
-  /// to that customer.
-  ///
-  /// The [searchText] field can be used for filtering the beneficiaries.
+  /// Of the provided `customerId`, if passed.
+  /// Optionally filtering by searchText.
   ///
   /// Use [limit] and [offset] to paginate.
   @override

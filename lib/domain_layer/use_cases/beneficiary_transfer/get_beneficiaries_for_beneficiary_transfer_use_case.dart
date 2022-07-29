@@ -1,7 +1,7 @@
 import '../../../features/beneficiaries.dart';
 
-/// A use case that for the destination beneficiaries on the beneficiaries
-/// transfer flow.
+/// A use case that returns the list of beneficiaries to be used as the transfer
+/// destination.
 class GetDestinationBeneficiariesForBeneficiariesTransferUseCase {
   final BeneficiaryRepositoryInterface _beneficiaryRepository;
 

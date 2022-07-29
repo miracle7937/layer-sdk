@@ -13,6 +13,7 @@ class NetEndpoints {
   static const String _integration = '/integration';
   static const String _loyaltyEngine = '/loyalty-engine';
   static const String _engagement = '/engagement';
+  static const String _stripe = '/stripe-gateway';
 
   /// The login endpoint
   String get login => '$_customer/v1/login';
@@ -122,6 +123,9 @@ class NetEndpoints {
 
   ///The transfer endpoint
   String get transfer => '$_txnBanking/v1/transfer';
+
+  /// The frequent transfers endpoint
+  String get frequentTransfers => '$_txnBanking/v1/frequent_transfer';
 
   /// The accounts endpoint
   String get account => '$_infoBanking/v1/account';
@@ -270,12 +274,24 @@ class NetEndpoints {
   /// Endpoint for getting customer checkbooks
   String get checkbooks => '$_infoBanking/v1/checkbook';
 
+  /// Endpoint for getting Mandate payments
+  String get mandatePayments => '$_txnBanking/v1/mandate_payment';
+
+  /// Endpoint for getting Mandates
+  String get mandates => '$_txnBanking/v1/mandate';
+
+  /// Endpoint for both account and card top ups.
+  String get topUp => '$_stripe/v1/topup';
+
+  /// Endpoint for the activities
+  String get activity => '$_infoBanking/v1/activity';
+
+  /// Endpoint for getting the banks.
+  String get bank => '$_infoBanking/v1/bank';
+
   /// Endpoint for evaluating a transfer.
   String get evaluateTransfer => '$_txnBanking/v1/transfer/evaluate';
 
   /// Endpoint for submitting a transfer.
   String get submitTransfer => '$_txnBanking/v2/transfer';
-
-  /// Endpoint for getting the banks.
-  String get bank => '$_infoBanking/v1/bank';
 }

@@ -12,7 +12,7 @@ class GetCustomerAccountsUseCase {
 
   /// Returns the accounts belonging to passed the customer id.
   Future<List<Account>> call({
-    required String customerId,
+    String? customerId,
     bool includeDetails = true,
     bool forceRefresh = false,
     List<AccountStatus> statuses = const [],

@@ -4,6 +4,7 @@ library providers;
 export 'providers/account/account_provider.dart';
 export 'providers/account_loan/account_loan_provider.dart';
 export 'providers/account_transaction/account_transaction_provider.dart';
+export 'providers/activity/activity_provider.dart';
 export 'providers/alert/alert_provider.dart';
 export 'providers/audit/audit_provider.dart';
 export 'providers/authentication/authentication_provider.dart';
@@ -33,6 +34,8 @@ export 'providers/loyalty/loyalty_points_rate/loyalty_points_rate_provider.dart'
 export 'providers/loyalty/loyalty_points_transaction/loyalty_points_transaction_provider.dart';
 export 'providers/loyalty/offer_transaction/offer_transaction_provider.dart';
 export 'providers/loyalty/offers/offer_provider.dart';
+export 'providers/mandates/mandates_payment_provider.dart';
+export 'providers/mandates/mandates_provider.dart';
 export 'providers/message/message_provider.dart';
 export 'providers/ocra/ocra_provider.dart';
 export 'providers/otp/otp_provider.dart';
