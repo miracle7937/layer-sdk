@@ -111,11 +111,10 @@ class PayBillCubit extends Cubit<PayBillState> {
         fromAccount: state.selectedAccount,
         bill: Bill(
           nickname: state.selectedBiller!.name,
-          service: state.selectedService?.copyWith(
-            serviceFields: state.serviceFields,
-          ),
+          service: state.selectedService,
           amount: state.payment.amount,
           billStatus: BillStatus.active,
+          billingFields: state.serviceFields,
         ),
         currency: state.selectedAccount?.currency,
         status: PaymentStatus.completed,
