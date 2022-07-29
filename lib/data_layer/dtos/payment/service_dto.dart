@@ -70,7 +70,10 @@ class ServiceDTO {
           : null,
       serviceFields: json['service_fields'] != null
           ? ServiceFieldDTO.fromJsonList(
-              json['service_fields'] as List<Map<String, dynamic>>)
+              (json['service_fields'] as List<dynamic>)
+                  .map((e) => (e as Map<String, dynamic>))
+                  .toList(growable: false),
+            )
           : null,
     );
   }
