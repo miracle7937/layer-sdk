@@ -16,4 +16,10 @@ extension DateTimeConverter on DateTime {
   /// Converts to a `String` as used by the backend.
   static DateTime? fromDTOString(String? v) =>
       v == null ? null : DateFormat('dd/MM/yyyy').parse(v);
+
+  /// Converts to a `String` to be used on activity card
+  String getStringDate(String pattern) {
+    final activityFormatter = DateFormat(pattern);
+    return activityFormatter.format(this);
+  }
 }
