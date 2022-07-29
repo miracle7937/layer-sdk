@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 import '../../models.dart';
+import '../recurrence/recurrence.dart';
 
 ///The status of the standing order
 enum StandingOrderStatus {

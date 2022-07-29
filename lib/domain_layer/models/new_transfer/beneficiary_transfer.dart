@@ -3,6 +3,7 @@ import 'dart:convert';
 import '../../../data_layer/dtos.dart';
 import '../../../data_layer/mappings.dart';
 import '../../models.dart';
+import '../recurrence/recurrence.dart';
 
 /// The new beneficiary transfer flow.
 class BeneficiaryTransfer extends NewSchedulableTransfer {

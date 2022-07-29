@@ -1,39 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 import '../../models.dart';
-
-/// The recurrence a payment can have
-enum Recurrence {
-  /// No recurrence
-  none,
-
-  /// Once
-  once,
-
-  /// Daily
-  daily,
-
-  /// Weekly
-  weekly,
-
-  /// Bi-weekly
-  biweekly,
-
-  /// Monthly
-  monthly,
-
-  /// Bi-monthly
-  bimonthly,
-
-  /// Quarterly
-  quarterly,
-
-  /// Yearly
-  yearly,
-
-  /// End of each month
-  endOfEachMonth,
-}
+import '../recurrence/recurrence.dart';
 
 /// The status a payment can have
 enum PaymentStatus {
