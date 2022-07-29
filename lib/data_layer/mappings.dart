@@ -55,6 +55,7 @@ export 'mappings/loyalty/offer_transaction/offer_transaction_response_dto_mappin
 export 'mappings/mandates/mandates_mapping.dart';
 export 'mappings/mandates/mandates_payment/mandate_payment_mapping.dart';
 export 'mappings/message/message_dto_mapping.dart';
+export 'mappings/new_beneficiary/new_beneficiay_to_beneficiary_dto_mapping.dart';
 export 'mappings/ocra/ocra_challenge_dto_mapping.dart';
 export 'mappings/ocra/ocra_challenge_response_dto_mapping.dart';
 export 'mappings/ocra/ocra_challenge_result_dto_mapping.dart';

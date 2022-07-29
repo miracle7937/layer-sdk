@@ -26,6 +26,10 @@ class BankProvider {
       forceRefresh: forceRefresh,
     );
 
-    return BankDTO.fromJsonList(response.data);
+    return BankDTO.fromJsonList(
+      List<Map<String, dynamic>>.from(
+        response.data,
+      ),
+    );
   }
 }
