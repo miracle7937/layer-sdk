@@ -4,6 +4,18 @@ import 'package:equatable/equatable.dart';
 
 import '../../../domain_layer/models.dart';
 
+/// The results of actions performed by the cubit
+enum BeneficiariesResultAction {
+  /// The beneficiary was deleted successfully.
+  deleteSuccess,
+
+  /// An error occurred when deleting the beneficiary.
+  deleteError,
+
+  /// No action result is pending.
+  none,
+}
+
 /// The available error status
 enum BeneficiariesErrorStatus {
   /// No errors
@@ -36,6 +48,10 @@ class BeneficiariesState extends Equatable {
   /// Has all the data needed to handle the list of customers.
   final BeneficiaryListData listData;
 
+  // TODO: that doesn't really fit, refactor that out later.
+  /// The result of an action performed by the cubit.
+  final BeneficiariesResultAction resultAction;
+
   /// Creates a new [BeneficiariesState].
   BeneficiariesState({
     this.customerID,
@@ -44,6 +60,7 @@ class BeneficiariesState extends Equatable {
     this.busy = false,
     this.canLoadMore = true,
     this.listData = const BeneficiaryListData(),
+    this.resultAction = BeneficiariesResultAction.none,
   }) : beneficiaries = UnmodifiableListView(beneficiaries);
 
   @override
@@ -54,6 +71,7 @@ class BeneficiariesState extends Equatable {
         busy,
         canLoadMore,
         listData,
+        resultAction,
       ];
 
   /// Creates a new state based on this one.
@@ -64,6 +82,7 @@ class BeneficiariesState extends Equatable {
     bool? busy,
     bool? canLoadMore,
     BeneficiaryListData? listData,
+    BeneficiariesResultAction? resultAction,
   }) =>
       BeneficiariesState(
         customerID: customerID ?? this.customerID,
@@ -72,6 +91,7 @@ class BeneficiariesState extends Equatable {
         busy: busy ?? this.busy,
         canLoadMore: canLoadMore ?? this.canLoadMore,
         listData: listData ?? this.listData,
+        resultAction: resultAction ?? this.resultAction,
       );
 }
 

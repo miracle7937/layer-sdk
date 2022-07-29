@@ -7,6 +7,9 @@ import 'package:test/test.dart';
 
 class MockBeneficiaryRepository extends Mock implements BeneficiaryRepository {}
 
+class MockDeleteBeneficiaryUseCase extends Mock
+    implements DeleteBeneficiaryUseCase {}
+
 final _repositoryList = <Beneficiary>[];
 final _defaultLimit = 10;
 final _searchText = '9';
@@ -16,6 +19,7 @@ final _netExceptionId = '1337';
 final _genericErrorId = '7331';
 
 late MockBeneficiaryRepository _repository;
+late MockDeleteBeneficiaryUseCase _deleteBeneficiaryUseCase;
 
 void main() {
   EquatableConfig.stringify = true;
@@ -38,6 +42,7 @@ void main() {
 
   setUpAll(() {
     _repository = MockBeneficiaryRepository();
+    _deleteBeneficiaryUseCase = MockDeleteBeneficiaryUseCase();
 
     when(
       () => _repository.list(
@@ -116,6 +121,7 @@ void main() {
       loadCustomerBeneficiariesUseCase: LoadCustomerBeneficiariesUseCase(
         beneficiaryRepository: _repository,
       ),
+      deleteBeneficiaryUseCase: _deleteBeneficiaryUseCase,
       customerID: _customerID,
     ),
     verify: (c) => expect(
@@ -131,6 +137,7 @@ void main() {
       loadCustomerBeneficiariesUseCase: LoadCustomerBeneficiariesUseCase(
         beneficiaryRepository: _repository,
       ),
+      deleteBeneficiaryUseCase: _deleteBeneficiaryUseCase,
       limit: _defaultLimit,
       customerID: _customerID,
     ),
@@ -162,6 +169,7 @@ void main() {
       loadCustomerBeneficiariesUseCase: LoadCustomerBeneficiariesUseCase(
         beneficiaryRepository: _repository,
       ),
+      deleteBeneficiaryUseCase: _deleteBeneficiaryUseCase,
       limit: _defaultLimit,
       customerID: _customerID,
     ),
@@ -204,6 +212,7 @@ void main() {
       loadCustomerBeneficiariesUseCase: LoadCustomerBeneficiariesUseCase(
         beneficiaryRepository: _repository,
       ),
+      deleteBeneficiaryUseCase: _deleteBeneficiaryUseCase,
       limit: _defaultLimit,
       customerID: _customerID,
     ),
@@ -252,6 +261,7 @@ void main() {
       loadCustomerBeneficiariesUseCase: LoadCustomerBeneficiariesUseCase(
         beneficiaryRepository: _repository,
       ),
+      deleteBeneficiaryUseCase: _deleteBeneficiaryUseCase,
       limit: _defaultLimit,
       customerID: _customerID,
     ),
@@ -290,6 +300,7 @@ void main() {
       loadCustomerBeneficiariesUseCase: LoadCustomerBeneficiariesUseCase(
         beneficiaryRepository: _repository,
       ),
+      deleteBeneficiaryUseCase: _deleteBeneficiaryUseCase,
       limit: _defaultLimit,
       customerID: _netExceptionId,
     ),
@@ -324,6 +335,7 @@ void main() {
       loadCustomerBeneficiariesUseCase: LoadCustomerBeneficiariesUseCase(
         beneficiaryRepository: _repository,
       ),
+      deleteBeneficiaryUseCase: _deleteBeneficiaryUseCase,
       limit: _defaultLimit,
       customerID: _genericErrorId,
     ),

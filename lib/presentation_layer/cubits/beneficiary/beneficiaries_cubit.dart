@@ -7,6 +7,7 @@ import 'beneficiaries_states.dart';
 /// A cubit that keeps the list of beneficiaries.
 class BeneficiariesCubit extends Cubit<BeneficiariesState> {
   final LoadCustomerBeneficiariesUseCase _loadCustomerBeneficiariesUseCase;
+  final DeleteBeneficiaryUseCase _deleteBeneficiaryUseCase;
 
   /// Maximum number of beneficiaries to load at a time.
   final int limit;
@@ -15,9 +16,11 @@ class BeneficiariesCubit extends Cubit<BeneficiariesState> {
   /// and optional `customerId`.
   BeneficiariesCubit({
     required LoadCustomerBeneficiariesUseCase loadCustomerBeneficiariesUseCase,
+    required DeleteBeneficiaryUseCase deleteBeneficiaryUseCase,
     String? customerID,
     this.limit = 50,
   })  : _loadCustomerBeneficiariesUseCase = loadCustomerBeneficiariesUseCase,
+        _deleteBeneficiaryUseCase = deleteBeneficiaryUseCase,
         super(
           BeneficiariesState(customerID: customerID),
         );
@@ -30,6 +33,7 @@ class BeneficiariesCubit extends Cubit<BeneficiariesState> {
     String? searchText,
     bool loadMore = false,
     bool forceRefresh = false,
+    bool activeOnly = false,
   }) async {
     emit(
       state.copyWith(
@@ -47,6 +51,7 @@ class BeneficiariesCubit extends Cubit<BeneficiariesState> {
         offset: offset,
         limit: limit,
         forceRefresh: forceRefresh,
+        activeOnly: activeOnly,
       );
 
       final list = offset > 0
@@ -76,6 +81,29 @@ class BeneficiariesCubit extends Cubit<BeneficiariesState> {
       );
 
       rethrow;
+    }
+  }
+
+  /// Deletes the beneficiary with the provided id.
+  Future<void> delete({
+    required int id,
+  }) async {
+    emit(state.copyWith(
+      busy: true,
+      resultAction: BeneficiariesResultAction.none,
+    ));
+
+    try {
+      await _deleteBeneficiaryUseCase(id: id);
+      emit(state.copyWith(
+        busy: false,
+        resultAction: BeneficiariesResultAction.deleteSuccess,
+      ));
+    } on Exception {
+      emit(state.copyWith(
+        busy: false,
+        resultAction: BeneficiariesResultAction.deleteError,
+      ));
     }
   }
 }
