@@ -14,7 +14,6 @@ class ActivityCubit extends Cubit<ActivityState> {
   ActivityCubit({
     required LoadActivitiesUseCase loadActivitiesUseCase,
     int limit = 20,
-    int offSet = 0,
   })  : _loadActivitiesUseCase = loadActivitiesUseCase,
         super(ActivityState(
           pagination: Pagination(limit: limit),

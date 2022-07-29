@@ -37,9 +37,6 @@ class ActivityState extends Equatable {
   /// Has all the data needed to handle the list of activities.
   final Pagination pagination;
 
-  /// Use to paginate the activities
-  final int offSet;
-
   /// A list of activities
   final UnmodifiableListView<Activity> activities;
 
@@ -52,7 +49,6 @@ class ActivityState extends Equatable {
     this.action = ActivityBusyAction.none,
     this.errorStatus = ActivityErrorStatus.none,
     this.pagination = const Pagination(),
-    this.offSet = 0,
   }) : activities = UnmodifiableListView(activities);
 
   /// Copies the object with new values
@@ -67,7 +63,6 @@ class ActivityState extends Equatable {
       errorStatus: errorStatus ?? this.errorStatus,
       action: action ?? this.action,
       pagination: pagination ?? this.pagination,
-      offSet: offSet ?? this.offSet,
       activities: activities ?? this.activities,
     );
   }
@@ -78,6 +73,5 @@ class ActivityState extends Equatable {
         action,
         pagination,
         activities,
-        offSet,
       ];
 }
