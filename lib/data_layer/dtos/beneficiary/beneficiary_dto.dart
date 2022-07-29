@@ -81,6 +81,9 @@ class BeneficiaryDTO {
   /// The beneficiary's Bank image url
   String? bankImageUrl;
 
+  /// Extra data fo this beneficiary.
+  String? extra;
+
   /// Creates a new [BeneficiaryDTO]
   BeneficiaryDTO({
     this.beneficiaryId,
@@ -108,6 +111,7 @@ class BeneficiaryDTO {
     this.routingCode,
     this.secondFactor,
     this.bankImageUrl,
+    this.extra,
   });
 
   /// Creates a [BeneficiaryDTO] from a JSON
@@ -137,6 +141,7 @@ class BeneficiaryDTO {
         routingCode: json['routing_code'],
         secondFactor: SecondFactorTypeDTO.fromRaw(json['second_factor']),
         bankImageUrl: json['bank_image_url'],
+        extra: json['extra'],
       );
 
   /// Returns a list of [BeneficiaryDTO] from a JSON

@@ -1,5 +1,6 @@
 import '../../dtos.dart';
 import '../../helpers.dart';
+import '../../mappings.dart';
 
 ///Data transfer object representing Activity
 class ActivityDTO {
@@ -81,7 +82,9 @@ class ActivityDTO {
 dynamic _parseItem(ActivityTypeDTO type, Map<String, dynamic> json) {
   switch (type) {
     case ActivityTypeDTO.transfer:
-      return TransferDTO.fromJson(json);
+    case ActivityTypeDTO.scheduledTransfer:
+    case ActivityTypeDTO.recurringTransfer:
+      return TransferDTO.fromJson(json).toTransfer();
 
     case ActivityTypeDTO.payment:
     case ActivityTypeDTO.scheduledPayment:
@@ -89,7 +92,7 @@ dynamic _parseItem(ActivityTypeDTO type, Map<String, dynamic> json) {
     case ActivityTypeDTO.topupPayment:
     case ActivityTypeDTO.scheduledTopup:
     case ActivityTypeDTO.recurringTopup:
-      return PaymentDTO.fromJson(json);
+      return PaymentDTO.fromJson(json).toPayment();
 
     case ActivityTypeDTO.dpa:
       return DPATaskDTO.fromJson(json);
