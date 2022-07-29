@@ -130,6 +130,9 @@ enum AddBeneficiaryAction {
   /// Adding new beneficiary action.
   add,
 
+  /// Successful adding new beneficiary action.
+  success,
+
   /// No action.
   none,
 }

@@ -249,14 +249,14 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         sortCode: accountRequired ? state.beneficiary!.sortCode! : '',
         iban: accountRequired ? '' : state.beneficiary!.iban!,
       );
-      final newBeneficiary = await _addNewBeneficiaryUseCase(
+      await _addNewBeneficiaryUseCase(
         beneficiary: beneficiary,
       );
 
       emit(
         state.copyWith(
           busy: false,
-          action: AddBeneficiaryAction.none,
+          action: AddBeneficiaryAction.success,
         ),
       );
     } on Exception catch (e) {
