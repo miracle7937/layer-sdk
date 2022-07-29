@@ -97,6 +97,7 @@ class PayBillState extends Equatable {
       selectedBiller != null &&
       selectedService != null &&
       payment.amount != null &&
+      payment.amount! > 0 &&
       _serviceFieldsValid;
 
   bool get _serviceFieldsValid {
