@@ -14,7 +14,6 @@ class ActivityCubit extends Cubit<ActivityState> {
   ActivityCubit({
     required LoadActivitiesUseCase loadActivitiesUseCase,
     int limit = 20,
-    int offSet = 0,
   })  : _loadActivitiesUseCase = loadActivitiesUseCase,
         super(ActivityState(
           pagination: Pagination(limit: limit),
@@ -30,14 +29,21 @@ class ActivityCubit extends Cubit<ActivityState> {
     List<ActivityTag>? activityTags,
     List<TransferType>? transferTypes,
   }) async {
-    emit(state.copyWith(busy: true, errorStatus: ActivityErrorStatus.none));
+    emit(
+      state.copyWith(
+        errorStatus: ActivityErrorStatus.none,
+        action: loadMore
+            ? ActivityBusyAction.loadingMore
+            : ActivityBusyAction.loading,
+      ),
+    );
 
     try {
       final newPage = state.pagination.paginate(loadMore: loadMore);
 
       final resultList = await _loadActivitiesUseCase(
-        limit: state.pagination.limit,
-        offset: state.offSet,
+        limit: newPage.limit,
+        offset: newPage.offset,
         fromTS: startDate,
         toTS: endDate,
         itemIsNull: itemIsNull,
@@ -49,14 +55,14 @@ class ActivityCubit extends Cubit<ActivityState> {
       final activities = newPage.firstPage
           ? resultList
           : [
-              ...state.activities.take(newPage.offset).toList(),
+              ...state.activities,
               ...resultList,
             ];
 
       emit(
         state.copyWith(
           activities: activities,
-          busy: false,
+          action: ActivityBusyAction.none,
           pagination: newPage.refreshCanLoadMore(
             loadedCount: resultList.length,
           ),
@@ -68,7 +74,7 @@ class ActivityCubit extends Cubit<ActivityState> {
           errorStatus: e is NetException
               ? ActivityErrorStatus.network
               : ActivityErrorStatus.generic,
-          busy: false,
+          action: ActivityBusyAction.none,
         ),
       );
 

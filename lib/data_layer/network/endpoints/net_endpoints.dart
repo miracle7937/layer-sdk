@@ -297,4 +297,10 @@ class NetEndpoints {
 
   /// Endpoint for getting the banks.
   String get bank => '$_infoBanking/v1/bank';
+
+  /// Endpoint for evaluating a transfer.
+  String get evaluateTransfer => '$_txnBanking/v1/transfer/evaluate';
+
+  /// Endpoint for submitting a transfer.
+  String get submitTransfer => '$_txnBanking/v2/transfer';
 }
