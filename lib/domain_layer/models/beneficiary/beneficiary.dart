@@ -76,6 +76,9 @@ class Beneficiary extends Equatable {
   /// The address, line 3.
   final String? address3;
 
+  /// The OTP id
+  final int? otpId;
+
   /// Extra data for this beneficiary.
   final String? extra;
 
@@ -98,6 +101,7 @@ class Beneficiary extends Equatable {
     this.address1,
     this.address2,
     this.address3,
+    this.otpId,
     this.extra,
   });
 
@@ -124,6 +128,7 @@ class Beneficiary extends Equatable {
         address1,
         address2,
         address3,
+        otpId,
         extra,
       ];
 
@@ -150,6 +155,7 @@ class Beneficiary extends Equatable {
     String? address1,
     String? address2,
     String? address3,
+    int? otpId,
   }) =>
       Beneficiary(
         id: id ?? this.id,
@@ -169,5 +175,6 @@ class Beneficiary extends Equatable {
         address1: address1 ?? this.address1,
         address2: address2 ?? this.address2,
         address3: address3 ?? this.address3,
+        otpId: otpId ?? this.otpId,
       );
 }

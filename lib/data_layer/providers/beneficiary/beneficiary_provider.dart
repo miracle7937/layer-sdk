@@ -82,4 +82,40 @@ class BeneficiaryProvider {
       ),
     );
   }
+
+  /// Returns the beneficiary dto resulting on verifying the second factor for
+  /// the passed transfer id.
+  /// True should be passed in [isEditing]
+  /// in case of existing beneficiary is being edited.
+  Future<BeneficiaryDTO> verifySecondFactor({
+    required BeneficiaryDTO beneficiaryDTO,
+    required String otpValue,
+    bool isEditing = false,
+  }) async {
+    final response = await netClient.request(
+      netClient.netEndpoints.submitTransfer,
+      method: isEditing ? NetRequestMethods.patch : NetRequestMethods.post,
+      queryParameters: {'otp_value': otpValue},
+      data: beneficiaryDTO.toJson(isVerifyOtp: true),
+    );
+
+    return BeneficiaryDTO.fromJson(response.data);
+  }
+
+  /// Resends the second factor for the passed [BeneficiaryDTO].
+  /// True should be passed in [isEditing]
+  /// in case of existing beneficiary is being edited.
+  Future<BeneficiaryDTO> resendSecondFactor({
+    required BeneficiaryDTO beneficiaryDTO,
+    bool isEditing = false,
+  }) async {
+    final response = await netClient.request(
+      netClient.netEndpoints.submitTransfer,
+      method: isEditing ? NetRequestMethods.patch : NetRequestMethods.post,
+      queryParameters: {'resend_otp': true},
+      data: beneficiaryDTO.toJson(isEditing: isEditing),
+    );
+
+    return BeneficiaryDTO.fromJson(response.data);
+  }
 }

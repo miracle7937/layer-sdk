@@ -61,4 +61,37 @@ class BeneficiaryRepository implements BeneficiaryRepositoryInterface {
 
     return beneficiaryDTO.toBeneficiary();
   }
+
+  /// Returns the beneficiary dto resulting on verifying the second factor for
+  /// the passed transfer id.
+  /// True should be passed in [isEditing]
+  /// in case of existing beneficiary is being edited.
+  @override
+  Future<Beneficiary> verifySecondFactor({
+    required Beneficiary beneficiary,
+    required String otpValue,
+    bool isEditing = false,
+  }) async {
+    final beneficiaryDTO = await _provider.edit(
+      beneficiaryDTO: beneficiary.toBeneficiaryDTO(),
+    );
+
+    return beneficiaryDTO.toBeneficiary();
+  }
+
+  /// Resends the second factor for the passed [Beneficiary].
+  /// True should be passed in [isEditing]
+  /// in case of existing beneficiary is being edited.
+  @override
+  Future<Beneficiary> resendSecondFactor({
+    required Beneficiary beneficiary,
+    bool isEditing = false,
+  }) async {
+    final beneficiaryDTO = await _provider.resendSecondFactor(
+      beneficiaryDTO: beneficiary.toBeneficiaryDTO(),
+      isEditing: isEditing,
+    );
+
+    return beneficiaryDTO.toBeneficiary();
+  }
 }

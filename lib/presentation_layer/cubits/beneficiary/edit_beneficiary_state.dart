@@ -103,6 +103,12 @@ enum EditBeneficiaryAction {
   /// Saving of edited beneficiary action.
   save,
 
+  /// Verifying OTP action.
+  verifyOtp,
+
+  /// Resending OTP action.
+  resendOtp,
+
   /// Edit successful beneficiary action.
   success,
 

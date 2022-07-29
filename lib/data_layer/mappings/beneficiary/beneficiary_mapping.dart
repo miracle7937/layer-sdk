@@ -19,5 +19,6 @@ extension BeneficiaryMapping on Beneficiary {
         bankName: bank?.name ?? '',
         bankCountryCode: bank?.countryCode ?? '',
         currency: currency,
+        otpId: otpId,
       );
 }

@@ -28,6 +28,7 @@ extension BeneficiaryDTOMapping on BeneficiaryDTO {
           bic: bankSwift,
           countryCode: bankCountryCode,
         ),
+        otpId: otpId,
         extra: extra,
       );
 }

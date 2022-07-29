@@ -26,4 +26,22 @@ abstract class BeneficiaryRepositoryInterface {
     required Beneficiary beneficiary,
     bool forceRefresh = false,
   });
+
+  /// Returns the beneficiary dto resulting on verifying the second factor for
+  /// the passed transfer id.
+  /// True should be passed in [isEditing]
+  /// in case of existing beneficiary is being edited.
+  Future<Beneficiary> verifySecondFactor({
+    required Beneficiary beneficiary,
+    required String otpValue,
+    bool isEditing = false,
+  });
+
+  /// Resends the second factor for the passed [Beneficiary].
+  /// True should be passed in [isEditing]
+  /// in case of existing beneficiary is being edited.
+  Future<Beneficiary> resendSecondFactor({
+    required Beneficiary beneficiary,
+    bool isEditing = false,
+  });
 }

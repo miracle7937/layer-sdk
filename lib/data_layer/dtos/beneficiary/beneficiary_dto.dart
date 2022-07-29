@@ -178,7 +178,7 @@ class BeneficiaryDTO {
       'currency': currency,
       if (isEditing || isVerifyOtp) 'beneficiary_id': beneficiaryId,
       'type': type?.value,
-      // 'otp_id': verifyOTP ? otpID : null,
+      'otp_id': isVerifyOtp ? otpId : null,
       // 'image': _base64Image,
       // 'image_url': isShortcut ? imageUrl : null,
       // 'rcpt_id_number': cprNumber,
