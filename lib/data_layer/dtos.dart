@@ -96,7 +96,6 @@ export 'dtos/transfer/share_type_dto.dart';
 export 'dtos/transfer/transfer_dto.dart';
 export 'dtos/transfer/transfer_evaluation_dto.dart';
 export 'dtos/transfer/transfer_processing_type_dto.dart';
-export 'dtos/transfer/transfer_recurrence_dto.dart';
 export 'dtos/transfer/transfer_status_dto.dart';
 export 'dtos/transfer/transfer_type_dto.dart';
 export 'dtos/upcoming_payment/upcoming_payment_dto.dart';

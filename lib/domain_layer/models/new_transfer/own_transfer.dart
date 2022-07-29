@@ -1,6 +1,7 @@
 import '../../../data_layer/dtos/new_transfer/new_transfer_payload_dto.dart';
 import '../../../data_layer/mappings.dart';
 import '../../models.dart';
+import '../recurrence/recurrence.dart';
 
 /// The representation of the new own transfer data.
 class OwnTransfer extends NewSchedulableTransfer {
@@ -19,7 +20,7 @@ class OwnTransfer extends NewSchedulableTransfer {
       amount != null &&
       amount! > 0 &&
       currency != null &&
-      (recurrence == TransferRecurrence.none || starts != null);
+      (recurrence == Recurrence.none || starts != null);
 
   @override
   OwnTransfer copyWith({
