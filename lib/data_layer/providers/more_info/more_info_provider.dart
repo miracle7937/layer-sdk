@@ -40,6 +40,7 @@ class MoreInfoProvider {
       _netClient.netEndpoints.moreInfo,
       method: NetRequestMethods.post,
       responseType: ResponseType.bytes,
+      decodeResponse: false,
       data: data,
     );
 
