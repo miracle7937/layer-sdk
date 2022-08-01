@@ -16,7 +16,7 @@ class MadatesProvider {
     int? offset,
   }) async {
     final params = <String, dynamic>{
-      'sort_by': 'ts_created',
+      'sortby': 'ts_created',
     };
 
     if (mandateId != null) {
