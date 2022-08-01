@@ -53,6 +53,7 @@ class MandateCreateCubit extends Cubit<MandateCreateState> {
 
       emit(
         state.copyWith(
+          busy: false,
           customer: customerInfo.first,
         ),
       );

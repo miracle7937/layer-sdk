@@ -80,7 +80,24 @@ class DPAContinueButton extends StatelessWidget {
         !cubit.state.busy &&
         !cubit.state.busyProcessingFile;
 
-    final onTap = effectiveEnabled ? (customOnTap ?? cubit.stepOrFinish) : null;
+    final hasSkip =
+        cubit.state.activeProcess.stepProperties?.skipButton ?? false;
+
+    final onTap = effectiveEnabled
+        ? (customOnTap ??
+            (hasSkip
+                ? () => cubit.stepOrFinish(
+                      extraVariables: [
+                        DPAVariable(
+                          id: 'skip',
+                          type: DPAVariableType.boolean,
+                          property: DPAVariableProperty(),
+                          value: false,
+                        )
+                      ],
+                    )
+                : cubit.stepOrFinish))
+        : null;
 
     final busy = canEnterLoadingState &&
         cubit.state.busy &&

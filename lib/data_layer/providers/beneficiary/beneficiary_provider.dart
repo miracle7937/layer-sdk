@@ -15,26 +15,31 @@ class BeneficiaryProvider {
   ///
   /// If the search text is supplied, will filter the results.
   Future<List<BeneficiaryDTO>> list({
-    required String customerID,
+    String? customerID,
     String? searchText,
     bool ascendingOrder = true,
-    int limit = 50,
-    int offset = 0,
+    int? limit,
+    int? offset,
     bool forceRefresh = false,
   }) async {
     final response = await netClient.request(
       netClient.netEndpoints.beneficiary,
       method: NetRequestMethods.get,
       queryParameters: {
-        'beneficiary.customer_id': customerID,
+        if (customerID?.isNotEmpty ?? false)
+          'beneficiary.customer_id': customerID,
         'asc': ascendingOrder,
-        'limit': limit,
-        'offset': offset,
+        if (limit != null) 'limit': limit,
+        if (offset != null) 'offset': offset,
         if (searchText?.isNotEmpty ?? false) 'q': searchText,
       },
       forceRefresh: forceRefresh,
     );
 
-    return BeneficiaryDTO.fromJsonList(response.data);
+    return BeneficiaryDTO.fromJsonList(
+      List<Map<String, dynamic>>.from(
+        response.data,
+      ),
+    );
   }
 }

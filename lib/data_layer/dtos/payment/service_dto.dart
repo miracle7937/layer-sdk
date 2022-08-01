@@ -68,7 +68,36 @@ class ServiceDTO {
       extra: json['extra'] != null
           ? ServiceExtraDTO.fromJson(json['extra'])
           : null,
+      serviceFields: json['service_fields'] != null
+          ? ServiceFieldDTO.fromJsonList(
+              (json['service_fields'] as List<dynamic>)
+                  .map((e) => (e as Map<String, dynamic>))
+                  .toList(growable: false),
+            )
+          : null,
     );
+  }
+
+  /// Creates a list of [ServiceDTO]s from the given JSON list.
+  static List<ServiceDTO> fromJsonList(List<Map<String, dynamic>> json) {
+    return json.map(ServiceDTO.fromJson).toList(growable: false);
+  }
+
+  /// Creates a JSON map from the model data
+  Map<String, dynamic> toJson() {
+    return {
+      'service_id': serviceId,
+      'biller_id': billerId,
+      'name': name,
+      'billing_id_tag': billingIdTag,
+      'billing_id_tag_help': billingIdTagHelp,
+      'billing_id_desc': billingIdDesc,
+      'ts_created': created?.millisecondsSinceEpoch,
+      'ts_updated': updated?.millisecondsSinceEpoch,
+      'extra': extra?.toJson(),
+      'service_fields':
+          serviceFields?.map((e) => e.toJson()).toList(growable: false),
+    };
   }
 }
 
@@ -106,8 +135,18 @@ class ServiceExtraDTO {
       maxAmount: json['max_amount'],
       minAmount: json['min_amount'],
       isStatic: json['static_fields'],
-      validateFields: json['validate_fields'],
+      validateFields: json['static_fields'],
       amount: json['amount'],
     );
+  }
+
+  /// Creates a JSON map from the model data
+  Map<String, dynamic> toJson() {
+    return {
+      'max_amount': maxAmount,
+      'min_amount': minAmount,
+      'static_fields': isStatic,
+      'amount': amount,
+    };
   }
 }

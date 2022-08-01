@@ -1,4 +1,5 @@
 import '../../../domain_layer/models.dart';
+import '../../../domain_layer/models/recurrence/recurrence.dart';
 import '../../dtos.dart';
 import '../../errors.dart';
 import '../../mappings.dart';
@@ -18,12 +19,12 @@ extension TransferDTOMapping on TransferDTO {
         fromMobile: fromMobile,
         toMobile: toMobile,
         toBeneficiary: toBeneficiary?.toBeneficiary(),
-        recurrence:
-            recurrence?.toTransferRecurrence() ?? TransferRecurrence.none,
+        recurrence: recurrence?.toRecurrence() ?? Recurrence.none,
         created: created,
         status: status?.toTransferStatus(),
         type: type?.toTransferType(),
         scheduledDate: scheduled,
+        processingType: processingType?.toTransferProcessingType(),
       );
 
   /// Maps into a [StandingOrder]
@@ -39,8 +40,7 @@ extension TransferDTOMapping on TransferDTO {
         fromMobile: fromMobile,
         toMobile: toMobile,
         toBeneficiary: toBeneficiary?.toBeneficiary(),
-        recurrence: recurrence?.toStandingOrderRecurrence() ??
-            StandingOrderRecurrence.none,
+        recurrence: recurrence?.toRecurrence() ?? Recurrence.none,
         created: created,
         status: status?.toStandingOrderStatus(),
         type: type?.toStandingOrderType(),
@@ -48,75 +48,43 @@ extension TransferDTOMapping on TransferDTO {
       );
 }
 
-/// Extension that provides mappings for [TransferRecurrenceDTO]
-extension TransferRecurrenceDTOMapping on TransferRecurrenceDTO {
-  /// Maps into a [TransferRecurrence]
-  TransferRecurrence toTransferRecurrence() {
+/// Extension that provides mappings for [TransferStatus]
+extension TransferStatusMapping on TransferStatus {
+  /// Maps into a [TransferStatusDTO]
+  TransferStatusDTO toTransferStatusDTO() {
     switch (this) {
-      case TransferRecurrenceDTO.once:
-        return TransferRecurrence.once;
+      case TransferStatus.completed:
+        return TransferStatusDTO.completed;
 
-      case TransferRecurrenceDTO.daily:
-        return TransferRecurrence.daily;
+      case TransferStatus.pending:
+        return TransferStatusDTO.pending;
 
-      case TransferRecurrenceDTO.weekly:
-        return TransferRecurrence.weekly;
+      case TransferStatus.scheduled:
+        return TransferStatusDTO.scheduled;
 
-      case TransferRecurrenceDTO.biweekly:
-        return TransferRecurrence.biweekly;
+      case TransferStatus.failed:
+        return TransferStatusDTO.failed;
 
-      case TransferRecurrenceDTO.monthly:
-        return TransferRecurrence.monthly;
+      case TransferStatus.cancelled:
+        return TransferStatusDTO.cancelled;
 
-      case TransferRecurrenceDTO.bimonthly:
-        return TransferRecurrence.bimonthly;
+      case TransferStatus.rejected:
+        return TransferStatusDTO.rejected;
 
-      case TransferRecurrenceDTO.quarterly:
-        return TransferRecurrence.quarterly;
+      case TransferStatus.pendingExpired:
+        return TransferStatusDTO.pendingExpired;
 
-      case TransferRecurrenceDTO.yearly:
-        return TransferRecurrence.yearly;
+      case TransferStatus.otp:
+        return TransferStatusDTO.otp;
 
-      case TransferRecurrenceDTO.endOfEachMonth:
-        return TransferRecurrence.endOfEachMonth;
+      case TransferStatus.otpExpired:
+        return TransferStatusDTO.otpExpired;
+
+      case TransferStatus.deleted:
+        return TransferStatusDTO.deleted;
 
       default:
-        return TransferRecurrence.none;
-    }
-  }
-
-  /// Maps into a [StandingOrderRecurrence]
-  StandingOrderRecurrence toStandingOrderRecurrence() {
-    switch (this) {
-      case TransferRecurrenceDTO.once:
-        return StandingOrderRecurrence.once;
-
-      case TransferRecurrenceDTO.daily:
-        return StandingOrderRecurrence.daily;
-
-      case TransferRecurrenceDTO.weekly:
-        return StandingOrderRecurrence.weekly;
-
-      case TransferRecurrenceDTO.biweekly:
-        return StandingOrderRecurrence.biweekly;
-
-      case TransferRecurrenceDTO.monthly:
-        return StandingOrderRecurrence.monthly;
-
-      case TransferRecurrenceDTO.bimonthly:
-        return StandingOrderRecurrence.bimonthly;
-
-      case TransferRecurrenceDTO.quarterly:
-        return StandingOrderRecurrence.quarterly;
-
-      case TransferRecurrenceDTO.yearly:
-        return StandingOrderRecurrence.yearly;
-
-      case TransferRecurrenceDTO.endOfEachMonth:
-        return StandingOrderRecurrence.endOfEachMonth;
-
-      default:
-        return StandingOrderRecurrence.none;
+        throw MappingException(from: TransferStatus, to: TransferStatusDTO);
     }
   }
 }
@@ -278,6 +246,120 @@ extension TransferTypeDTOMapping on TransferTypeDTO {
 
       default:
         throw MappingException(from: TransferTypeDTO, to: TransferType);
+    }
+  }
+}
+
+/// Extension that provides mappings for [TransferStatus]
+// TODO: Check other status strings
+extension TransferStatusExtension on TransferStatus {
+  /// Maps into String that represents the [TransferStatus]
+  String get toJSONString {
+    switch (this) {
+      case TransferStatus.completed:
+        return 'C';
+
+      default:
+        return '';
+    }
+  }
+}
+
+/// Extension that provides mappings for [TransferType]
+extension TransferTypeExtension on TransferType {
+  /// Maps into String that represents the [TransferType]
+  String get toJSONString {
+    switch (this) {
+      case TransferType.own:
+        return 'O';
+
+      case TransferType.domestic:
+        return 'D';
+
+      case TransferType.international:
+        return 'I';
+
+      case TransferType.bank:
+        return 'B';
+      default:
+        return '';
+    }
+  }
+}
+
+/// Extension that provides mappings for [TransferType]
+extension TransferTypeMapping on TransferType {
+  /// Maps into a [TransferTypeDTO]
+  TransferTypeDTO toTransferTypeDTO() {
+    switch (this) {
+      case TransferType.own:
+        return TransferTypeDTO.own;
+
+      case TransferType.bank:
+        return TransferTypeDTO.bank;
+
+      case TransferType.domestic:
+        return TransferTypeDTO.domestic;
+
+      case TransferType.international:
+        return TransferTypeDTO.international;
+
+      case TransferType.bulk:
+        return TransferTypeDTO.bulk;
+
+      case TransferType.instant:
+        return TransferTypeDTO.instant;
+
+      case TransferType.cashIn:
+        return TransferTypeDTO.cashin;
+
+      case TransferType.cashOut:
+        return TransferTypeDTO.cashout;
+
+      case TransferType.mobileToBeneficiary:
+        return TransferTypeDTO.mobileToBeneficiary;
+
+      case TransferType.merchantTransfer:
+        return TransferTypeDTO.merchantTransfer;
+
+      default:
+        throw MappingException(from: TransferType, to: TransferTypeDTO);
+    }
+  }
+}
+
+/// Extension that provides mappings for [TransferProcessingTypeDTO]
+extension TransferProcessingTypeDTOMapping on TransferProcessingTypeDTO {
+  /// Maps into a [TransferProcessingType]
+  TransferProcessingType toTransferProcessingType() {
+    switch (this) {
+      case TransferProcessingTypeDTO.instant:
+        return TransferProcessingType.instant;
+
+      case TransferProcessingTypeDTO.nextDay:
+        return TransferProcessingType.nextDay;
+
+      default:
+        throw MappingException(
+            from: TransferProcessingTypeDTO, to: TransferProcessingType);
+    }
+  }
+}
+
+/// Extension that provides mappings for [TransferProcessingType]
+extension TransferProcessingTypeMapping on TransferProcessingType {
+  /// Maps into a [TransferStatusDTO]
+  TransferProcessingTypeDTO toTransferProcessingTypeDTO() {
+    switch (this) {
+      case TransferProcessingType.instant:
+        return TransferProcessingTypeDTO.instant;
+
+      case TransferProcessingType.nextDay:
+        return TransferProcessingTypeDTO.nextDay;
+
+      default:
+        throw MappingException(
+            from: TransferProcessingType, to: TransferProcessingTypeDTO);
     }
   }
 }

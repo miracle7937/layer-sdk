@@ -88,6 +88,15 @@ class DPAVariablePropertyDTO {
   /// The text properties for this variable's value.
   final DPAVariableTextPropertiesDTO? valueTextProperties;
 
+  /// The currency string for the flag of the variable
+  final String? currencyFlagCode;
+
+  /// For prefilling a code on a pin screen
+  final bool? characterSplit;
+
+  /// For prefilling a code on a pin screen
+  final PickerDTO? picker;
+
   /// Creates a new [DPAVariablePropertyDTO].
   DPAVariablePropertyDTO({
     this.propertyType,
@@ -117,6 +126,9 @@ class DPAVariablePropertyDTO {
     this.description,
     this.labelTextProperties,
     this.valueTextProperties,
+    this.currencyFlagCode,
+    this.characterSplit,
+    this.picker,
   });
 
   /// Creates a new [DPAVariablePropertyDTO] from the given JSON.
@@ -173,6 +185,10 @@ class DPAVariablePropertyDTO {
                     color: json['value_color'],
                     fontStyle: json['value_font_style'],
                   ),
+        currencyFlagCode: json['currency_flag_code'],
+        characterSplit: json['character_split'],
+        picker:
+            json['picker'] != null ? PickerDTO.fromRaw(json['picker']) : null,
       );
 
   @override
@@ -202,8 +218,11 @@ class DPAVariablePropertyDTO {
       '${allowedTypes != null ? 'allowedTypes: $allowedTypes ' : ''}'
       '${image != null ? 'image: $image ' : ''}'
       '${dialCodes != null ? 'dialCodes: $dialCodes ' : ''}'
+      '${picker != null ? 'picker: $picker ' : ''}'
+      '${currencyFlagCode != null ? 'currencyFlagCode:$currencyFlagCode ' : ''}'
       '${prefixValue != null ? 'prefixValue: $prefixValue ' : ''}'
       '${description != null ? 'description: $description ' : ''}'
+      '${characterSplit != null ? 'characterSplit: $characterSplit ' : ''}'
       '${labelTextProperties != null ? 'labelTextProperties: '
           '$labelTextProperties ' : ''}'
       '${valueTextProperties != null ? 'valueTextProperties: '
@@ -231,6 +250,25 @@ class KeyboardDTO extends EnumDTO {
 
   @override
   String toString() => 'KeyboardDTO{$value}';
+}
+
+/// The type of picker to use for a variable
+class PickerDTO extends EnumDTO {
+  /// Only digits
+  static const currency = PickerDTO._('currencyPicker');
+
+  /// Returns all the values available.
+  static const List<PickerDTO> values = [currency];
+
+  const PickerDTO._(String value) : super.internal(value);
+
+  /// Creates a new [PickerDTO] from a raw text.
+  static PickerDTO? fromRaw(String? raw) => values.firstWhereOrNull(
+        (val) => val.value == raw,
+      );
+
+  @override
+  String toString() => 'PickerDTO{$value}';
 }
 
 /// The type of this property.

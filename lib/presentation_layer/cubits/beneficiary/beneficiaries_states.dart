@@ -1,4 +1,5 @@
 import 'dart:collection';
+
 import 'package:equatable/equatable.dart';
 
 import '../../../domain_layer/models.dart';
@@ -18,7 +19,7 @@ enum BeneficiariesErrorStatus {
 /// The state of the Beneficiaries cubit
 class BeneficiariesState extends Equatable {
   /// The customer id of the user that has these beneficiaries.
-  final String customerID;
+  final String? customerID;
 
   /// A list of Beneficiaries
   final UnmodifiableListView<Beneficiary> beneficiaries;
@@ -37,7 +38,7 @@ class BeneficiariesState extends Equatable {
 
   /// Creates a new [BeneficiariesState].
   BeneficiariesState({
-    required this.customerID,
+    this.customerID,
     Iterable<Beneficiary> beneficiaries = const <Beneficiary>[],
     this.errorStatus = BeneficiariesErrorStatus.none,
     this.busy = false,
