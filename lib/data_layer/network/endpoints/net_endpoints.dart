@@ -14,6 +14,7 @@ class NetEndpoints {
   static const String _loyaltyEngine = '/loyalty-engine';
   static const String _engagement = '/engagement';
   static const String _stripe = '/stripe-gateway';
+  static const String _authengine = '/authengine';
 
   /// The login endpoint
   String get login => '$_customer/v1/login';
@@ -191,7 +192,7 @@ class NetEndpoints {
   String get queueRequest => '';
 
   /// The Requests endpoint
-  String get requests => '';
+  String get requests => '$_authengine/request';
 
   /// The financial data endpoint
   String get financialData => '$_infoBanking/v2/financial_data';

@@ -132,4 +132,31 @@ class ActivityProvider {
       List<Map<String, dynamic>>.from(response.data),
     );
   }
+
+  /// Delete the [Activity] by `id`
+  Future<void> delete(String id) async {
+    final response = await netClient.request(
+      '${netClient.netEndpoints.requests}/$id',
+      method: NetRequestMethods.delete,
+    );
+
+    return response.data;
+  }
+
+  /// Cancel the [Activity] by `id`
+  Future<void> cancel(String id, {String? otpValue}) async {
+    final param = <String, dynamic>{};
+
+    if (otpValue != null) {
+      param['otp_value'] = otpValue;
+    }
+
+    final response = await netClient.request(
+      '${netClient.netEndpoints.requests}/$id/cancel',
+      queryParameters: param,
+      method: NetRequestMethods.post,
+    );
+
+    return response.data;
+  }
 }

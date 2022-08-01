@@ -28,4 +28,10 @@ abstract class ActivityRepositoryInterface {
     List<TransferType>? transferTypes,
     List<ActivityTag>? activityTags,
   });
+
+  /// Delete the [Activity] by `id`
+  Future<dynamic> delete(String id);
+
+  /// Cancel the [Activity] by `id`
+  Future<dynamic> cancel(String id, {String? otpValue});
 }

@@ -3,18 +3,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../data_layer/network.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
+import '../../../domain_layer/use_cases/activity/cancel_activity_use_case.dart';
 import '../../cubits.dart';
 import '../../utils.dart';
 
 /// A cubit that handles the [User] activities
 class ActivityCubit extends Cubit<ActivityState> {
   final LoadActivitiesUseCase _loadActivitiesUseCase;
+  final DeleteActivityUseCase _deleteActivityUseCase;
+  final CancelActivityUseCase _cancelActivityUseCase;
 
   /// Creates a new [ActivityCubit] instance
   ActivityCubit({
     required LoadActivitiesUseCase loadActivitiesUseCase,
+    required DeleteActivityUseCase deleteActivityUseCase,
+    required CancelActivityUseCase cancelActivityUseCase,
     int limit = 20,
   })  : _loadActivitiesUseCase = loadActivitiesUseCase,
+        _deleteActivityUseCase = deleteActivityUseCase,
+        _cancelActivityUseCase = cancelActivityUseCase,
         super(ActivityState(
           pagination: Pagination(limit: limit),
         ));
@@ -68,6 +75,64 @@ class ActivityCubit extends Cubit<ActivityState> {
           ),
         ),
       );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          errorStatus: e is NetException
+              ? ActivityErrorStatus.network
+              : ActivityErrorStatus.generic,
+          action: ActivityBusyAction.none,
+        ),
+      );
+
+      rethrow;
+    }
+  }
+
+  /// Deletes the [Activity] by `id`
+  Future<void> delete(String id) async {
+    emit(
+      state.copyWith(
+        action: ActivityBusyAction.loading,
+        errorStatus: ActivityErrorStatus.none,
+      ),
+    );
+
+    try {
+      final result = _deleteActivityUseCase(id);
+
+      print(result);
+
+      emit(state.copyWith(action: ActivityBusyAction.none));
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          errorStatus: e is NetException
+              ? ActivityErrorStatus.network
+              : ActivityErrorStatus.generic,
+          action: ActivityBusyAction.none,
+        ),
+      );
+
+      rethrow;
+    }
+  }
+
+  /// Cancel the [Activity] by `id`
+  Future<void> cancel(String id, {String? otpValue}) async {
+    emit(
+      state.copyWith(
+        action: ActivityBusyAction.loading,
+        errorStatus: ActivityErrorStatus.none,
+      ),
+    );
+
+    try {
+      final result = _cancelActivityUseCase(id, otpValue: otpValue);
+
+      print(result);
+
+      emit(state.copyWith(action: ActivityBusyAction.none));
     } on Exception catch (e) {
       emit(
         state.copyWith(

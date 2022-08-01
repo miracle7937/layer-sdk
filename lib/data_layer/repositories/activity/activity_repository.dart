@@ -71,4 +71,18 @@ class ActivityRepository implements ActivityRepositoryInterface {
 
     return activitiesDTO.map((e) => e.toActivity(_createCustomData)).toList();
   }
+
+  @override
+  Future<dynamic> delete(String id) {
+    final result = _provider.delete(id);
+
+    return result;
+  }
+
+  @override
+  Future cancel(String id, {String? otpValue}) {
+    final result = _provider.cancel(id, otpValue: otpValue);
+
+    return result;
+  }
 }
