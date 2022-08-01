@@ -48,8 +48,6 @@ class MandateCancelCubit extends Cubit<MandateCancelState> {
           errorMessage: e is NetException ? e.message : e.toString(),
         ),
       );
-
-      rethrow;
     }
   }
 }

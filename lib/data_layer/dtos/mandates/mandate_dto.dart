@@ -19,7 +19,7 @@ class MandateDTO {
   final String? reference;
 
   /// Id of the bank used in the mandate
-  final int? bankMandateId;
+  final String? bankMandateId;
 
   /// When it was created
   final DateTime? createdAt;
@@ -47,7 +47,7 @@ class MandateDTO {
       fromCard: json['from_card'],
       mandateStatus: MandateStatusDTO(json['status'] ?? ''),
       reference: json['reference'],
-      bankMandateId: JsonParser.parseInt(json['bank_mandate_id']),
+      bankMandateId: json['bank_mandate_id'],
       createdAt: JsonParser.parseDate(json['ts_created']),
       updatedAt: JsonParser.parseDate(json['ts_updated']),
     );

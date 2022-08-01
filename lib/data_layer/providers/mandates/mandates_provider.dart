@@ -51,11 +51,11 @@ class MadatesProvider {
     final response = await netClient.request(
       "${netClient.netEndpoints.mandates}/$mandateId",
       method: NetRequestMethods.delete,
-      data: otpValue == null && otpType != null
-          ? null
-          : {
+      data: otpValue != null && otpType != null
+          ? {
               otpType!.value: otpValue,
-            },
+            }
+          : null,
     );
 
     return SecondFactorTypeDTO.fromRaw(response.data['second_factor'] ?? '');

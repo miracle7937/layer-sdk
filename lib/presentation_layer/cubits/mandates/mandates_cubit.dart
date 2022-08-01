@@ -68,8 +68,6 @@ class MandatesCubit extends Cubit<MandatesState> {
           mandates: [],
         ),
       );
-
-      rethrow;
     }
   }
 }
