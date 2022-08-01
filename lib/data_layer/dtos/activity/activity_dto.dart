@@ -1,6 +1,5 @@
 import '../../dtos.dart';
 import '../../helpers.dart';
-import '../../mappings.dart';
 
 ///Data transfer object representing Activity
 class ActivityDTO {
