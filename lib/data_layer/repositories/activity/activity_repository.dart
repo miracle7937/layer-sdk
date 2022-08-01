@@ -12,6 +12,11 @@ class ActivityRepository implements ActivityRepositoryInterface {
     required ActivityProvider provider,
   }) : _provider = provider;
 
+  DPAMappingCustomData get _createCustomData => DPAMappingCustomData(
+        token: _provider.netClient.currentToken() ?? '',
+        fileBaseURL: _provider.netClient.netEndpoints.infobankingLink,
+      );
+
   @override
   Future<List<Activity>> list({
     DateTime? fromTS,
@@ -64,6 +69,6 @@ class ActivityRepository implements ActivityRepositoryInterface {
       activityTags: activityTags,
     );
 
-    return activitiesDTO.map((e) => e.toActivity()).toList();
+    return activitiesDTO.map((e) => e.toActivity(_createCustomData)).toList();
   }
 }
