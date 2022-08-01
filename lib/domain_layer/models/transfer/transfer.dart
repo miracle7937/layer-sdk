@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 
 import '../../models.dart';
-import '../recurrence/recurrence.dart';
 
 ///The status of the transfer
 enum TransferStatus {
@@ -131,6 +130,15 @@ class Transfer extends Equatable {
   /// The processing type.
   final TransferProcessingType? processingType;
 
+  /// The second factor type.
+  final SecondFactorType? secondFactorType;
+
+  /// The transfer evaluation.
+  final TransferEvaluation? evaluation;
+
+  /// The OTP id.
+  final int? otpId;
+
   ///Creates a new immutable [Transfer]
   Transfer({
     this.id,
@@ -150,6 +158,9 @@ class Transfer extends Equatable {
     this.type,
     this.scheduledDate,
     this.processingType,
+    this.secondFactorType,
+    this.evaluation,
+    this.otpId,
   });
 
   /// Returns the transfer id as `String`.
@@ -174,5 +185,8 @@ class Transfer extends Equatable {
         type,
         scheduledDate,
         processingType,
+        secondFactorType,
+        evaluation,
+        otpId,
       ];
 }

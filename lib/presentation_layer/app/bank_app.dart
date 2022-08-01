@@ -185,43 +185,43 @@ class BankAppState extends State<BankApp> {
           ),
         ),
         CreatorProvider<StorageCreator>(
-            create: (_) => StorageCreator(
-                  loadLoggedInUsersUseCase: LoadLoggedInUsersUseCase(
-                    secureStorage: widget.secureStorage,
-                  ),
-                  loadLastLoggedUserUseCase: LoadLastLoggedUserUseCase(
-                    secureStorage: widget.secureStorage,
-                  ),
-                  saveUserUseCase: SaveUserUseCase(
-                    secureStorage: widget.secureStorage,
-                  ),
-                  removeUserUseCase: RemoveUserUseCase(
-                    secureStorage: widget.secureStorage,
-                  ),
-                  loadAuthenticationSettingsUseCase:
-                      LoadAuthenticationSettingsUseCase(
-                    secureStorage: widget.secureStorage,
-                  ),
-                  saveAuthenticationSettingUseCase:
-                      SaveAuthenticationSettingUseCase(
-                    secureStorage: widget.secureStorage,
-                  ),
-                  loadOcraSecretKeyUseCase: LoadOcraSecretKeyUseCase(
-                    secureStorage: widget.secureStorage,
-                  ),
-                  saveOcraSecretKeyUseCase: SaveOcraSecretKeyUseCase(
-                    secureStorage: widget.secureStorage,
-                  ),
-                  setBrightnessUseCase: SetBrightnessUseCase(
-                    secureStorage: widget.secureStorage,
-                  ),
-                  loadBrightnessUseCase: LoadBrightnessUseCase(
-                    secureStorage: widget.secureStorage,
-                  ),
-                  toggleBiometricsUseCase: ToggleBiometricsUseCase(
-                    secureStorage: widget.secureStorage,
-                  ),
-                )),
+          create: (_) => StorageCreator(
+            loadLoggedInUsersUseCase: LoadLoggedInUsersUseCase(
+              secureStorage: widget.secureStorage,
+            ),
+            loadLastLoggedUserUseCase: LoadLastLoggedUserUseCase(
+              secureStorage: widget.secureStorage,
+            ),
+            saveUserUseCase: SaveUserUseCase(
+              secureStorage: widget.secureStorage,
+            ),
+            removeUserUseCase: RemoveUserUseCase(
+              secureStorage: widget.secureStorage,
+            ),
+            loadAuthenticationSettingsUseCase:
+                LoadAuthenticationSettingsUseCase(
+              secureStorage: widget.secureStorage,
+            ),
+            saveAuthenticationSettingUseCase: SaveAuthenticationSettingUseCase(
+              secureStorage: widget.secureStorage,
+            ),
+            loadOcraSecretKeyUseCase: LoadOcraSecretKeyUseCase(
+              secureStorage: widget.secureStorage,
+            ),
+            saveOcraSecretKeyUseCase: SaveOcraSecretKeyUseCase(
+              secureStorage: widget.secureStorage,
+            ),
+            setBrightnessUseCase: SetBrightnessUseCase(
+              secureStorage: widget.secureStorage,
+            ),
+            loadBrightnessUseCase: LoadBrightnessUseCase(
+              secureStorage: widget.secureStorage,
+            ),
+            toggleBiometricsUseCase: ToggleBiometricsUseCase(
+              secureStorage: widget.secureStorage,
+            ),
+          ),
+        ),
       ];
 
   @override

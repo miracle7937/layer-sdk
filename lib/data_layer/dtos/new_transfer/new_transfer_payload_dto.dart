@@ -73,6 +73,9 @@ class NewTransferPayloadDTO {
   /// The transfer processing type.
   TransferProcessingTypeDTO? processingType;
 
+  /// The OTP id for this transfer.
+  int? otpId;
+
   /// Creates a new [NewTransferPayloadDTO].
   NewTransferPayloadDTO({
     required this.type,
@@ -98,10 +101,10 @@ class NewTransferPayloadDTO {
     this.startDate,
     this.endDate,
     this.processingType,
+    this.otpId,
   });
 
   /// Returns a json map with the provided values.
-  /// TODO: add missing values.
   Map<String, dynamic> toJson() {
     var extra = this.extra;
 
@@ -123,7 +126,7 @@ class NewTransferPayloadDTO {
       if (toAccountId != null) 'to_account_id': toAccountId,
       if (toCardId != null) 'to_card_id': toCardId,
       if (toBeneficiaryId != null) 'beneficiary_id': toBeneficiaryId,
-      //if(newBeneficiary != null) 'beneficiary': newBeneficiary.toJson(),
+      if (newBeneficiary != null) 'beneficiary': newBeneficiary!.toJson(),
       if (recurrence != null && startDate != null) ...{
         if (recurrence == RecurrenceDTO.once) ...{
           'ts_scheduled': startDate!.millisecondsSinceEpoch,
@@ -136,6 +139,7 @@ class NewTransferPayloadDTO {
         }
       },
       if (processingType != null) 'processing_type': processingType!.value,
+      if (otpId != null) 'otp_id': otpId,
     };
   }
 }

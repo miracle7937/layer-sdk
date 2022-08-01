@@ -13,5 +13,11 @@ abstract class BeneficiaryRepositoryInterface {
     int limit = 50,
     int offset = 0,
     bool forceRefresh = false,
+    bool activeOnly = false,
+  });
+
+  /// Deletes the beneficiary with the provided id.
+  Future<Beneficiary> delete({
+    required int id,
   });
 }
