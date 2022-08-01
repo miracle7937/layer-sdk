@@ -84,7 +84,6 @@ export 'models/mandates/mandate_status.dart';
 export 'models/mandates/payment/mandate_payment.dart';
 export 'models/message/message.dart';
 export 'models/more_info/more_info_field.dart';
-export 'models/new_transfer/beneficiary_transfer.dart';
 export 'models/new_transfer/beneficiary_transfer/beneficiary_transfer.dart';
 export 'models/new_transfer/beneficiary_transfer/new_beneficiary.dart';
 export 'models/new_transfer/new_schedulable_transfer.dart';
