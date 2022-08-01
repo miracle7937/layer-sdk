@@ -37,6 +37,8 @@ class MadatesProvider {
       queryParameters: params,
     );
 
-    return MandateDTO.fromJsonList(response.data);
+    return MandateDTO.fromJsonList(
+      List<Map<String, dynamic>>.from(response.data),
+    );
   }
 }
