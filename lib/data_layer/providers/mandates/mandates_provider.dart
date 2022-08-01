@@ -41,21 +41,21 @@ class MadatesProvider {
   }
 
   /// Cancels a mandate
-  Future<Map<String, dynamic>> cancelMandate({
+  Future<SecondFactorTypeDTO?> cancelMandate({
     required int mandateId,
     String? otpValue,
-    String? otpType,
+    SecondFactorTypeDTO? otpType,
   }) async {
     final response = await netClient.request(
       "${netClient.netEndpoints.mandates}/$mandateId",
       method: NetRequestMethods.delete,
-      data: otpValue == null
+      data: otpValue == null && otpType != null
           ? null
           : {
-              otpType: otpValue,
+              otpType!.value: otpValue,
             },
     );
 
-    return response.data;
+    return SecondFactorTypeDTO.fromRaw(response.data['second_factor'] ?? '');
   }
 }

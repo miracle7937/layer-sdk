@@ -10,9 +10,9 @@ abstract class MandateRepositoryInterface {
   });
 
   /// DELETE a Mandate
-  Future<Map<String, dynamic>> cancelMandate({
+  Future<SecondFactorType?> cancelMandate({
     required int mandateId,
     String? otpValue,
-    String? otpType,
+    SecondFactorType? otpType,
   });
 }

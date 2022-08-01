@@ -26,3 +26,28 @@ extension SecondFactorMapping on SecondFactorTypeDTO {
     }
   }
 }
+
+/// Extension that provides mapping from [SecondFactorTypeDTO]
+/// to [SecondFactorType].
+extension SecondFactorModelMapping on SecondFactorType {
+  /// Returns [SecondFactorType] built from this DTO.
+  SecondFactorTypeDTO toSecondFactorTypeDTO() {
+    switch (this) {
+      case SecondFactorType.otp:
+        return SecondFactorTypeDTO.otp;
+
+      case SecondFactorType.pin:
+        return SecondFactorTypeDTO.pin;
+
+      case SecondFactorType.hardwareToken:
+        return SecondFactorTypeDTO.hardwareToken;
+
+      default:
+        throw MappingException(
+          from: SecondFactorTypeDTO,
+          to: SecondFactorType,
+          value: this,
+        );
+    }
+  }
+}

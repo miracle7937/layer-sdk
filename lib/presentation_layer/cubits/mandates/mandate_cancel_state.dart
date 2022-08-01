@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+import '../../../domain_layer/models.dart';
+
 ///  The current error status
 enum MandateCancelErrorStatus {
   ///  No errors
@@ -24,18 +26,18 @@ class MandateCancelState extends Equatable {
   final MandateCancelErrorStatus errorStatus;
 
   /// The second factor type
-  final String secondFactor;
+  final SecondFactorType? secondFactor;
 
   /// Creates a new [MandateCancelState] instance
   MandateCancelState({
     this.busy = false,
     this.errorMessage = '',
-    this.secondFactor = '',
     this.errorStatus = MandateCancelErrorStatus.none,
+    this.secondFactor,
   });
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         busy,
         errorMessage,
         errorStatus,
@@ -47,7 +49,7 @@ class MandateCancelState extends Equatable {
     bool? busy,
     String? errorMessage,
     MandateCancelErrorStatus? errorStatus,
-    String? secondFactor,
+    SecondFactorType? secondFactor,
   }) {
     return MandateCancelState(
       busy: busy ?? this.busy,

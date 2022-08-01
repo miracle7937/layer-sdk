@@ -35,7 +35,7 @@ class MandateCancelCubit extends Cubit<MandateCancelState> {
           busy: false,
           errorMessage: '',
           errorStatus: MandateCancelErrorStatus.none,
-          secondFactor: result['second_factor'] ?? '',
+          secondFactor: result,
         ),
       );
     } on Exception catch (e) {

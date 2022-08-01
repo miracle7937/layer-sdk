@@ -1,4 +1,5 @@
 import '../../abstract_repositories.dart';
+import '../../models.dart';
 
 /// Use case for canceling Mandates
 class CancelMandateUseCase {
@@ -10,10 +11,10 @@ class CancelMandateUseCase {
   }) : _repo = repository;
 
   /// Callable that cancels a Mandate
-  Future<Map<String, dynamic>> call({
+  Future<SecondFactorType?> call({
     required int mandateId,
     String? otpValue,
-    String? otpType,
+    SecondFactorType? otpType,
   }) {
     return _repo.cancelMandate(
       mandateId: mandateId,
