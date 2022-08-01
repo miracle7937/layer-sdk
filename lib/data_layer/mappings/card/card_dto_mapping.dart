@@ -7,7 +7,7 @@ import '../../mappings.dart';
 extension CardDTOMapping on CardDTO {
   /// Maps a [CardDTO] instance to a [BankingCard] model
   BankingCard toBankingCard() => BankingCard(
-        cardId: cardId!.toString(),
+        cardId: cardId?.toString() ?? '',
         currency: currency,
         nickname: nickname,
         cardHolderName: cardHolderName,
