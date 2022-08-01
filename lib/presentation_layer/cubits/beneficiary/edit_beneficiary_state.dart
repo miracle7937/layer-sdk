@@ -61,9 +61,6 @@ class EditBeneficiaryState extends Equatable {
   /// The errors.
   final UnmodifiableSetView<EditBeneficiaryError> errors;
 
-  /// True if the cubit is processing something.
-  final bool busy;
-
   /// The actions that the cubit is performing.
   final UnmodifiableSetView<EditBeneficiaryAction> actions;
 
@@ -89,7 +86,6 @@ class EditBeneficiaryState extends Equatable {
     Iterable<Country> countries = const <Country>[],
     Set<EditBeneficiaryAction> actions = const <EditBeneficiaryAction>{},
     Set<EditBeneficiaryError> errors = const <EditBeneficiaryError>{},
-    this.busy = false,
   })  : countries = UnmodifiableListView(countries),
         actions = UnmodifiableSetView(actions),
         errors = UnmodifiableSetView(errors);
@@ -100,7 +96,6 @@ class EditBeneficiaryState extends Equatable {
         beneficiary,
         countries,
         errors,
-        busy,
         actions,
       ];
 
@@ -110,15 +105,12 @@ class EditBeneficiaryState extends Equatable {
     Iterable<Country>? countries,
     Set<EditBeneficiaryAction>? actions,
     Set<EditBeneficiaryError>? errors,
-    bool? busy,
-    EditBeneficiaryAction? action,
   }) =>
       EditBeneficiaryState(
         oldBeneficiary: oldBeneficiary,
         beneficiary: beneficiary ?? this.beneficiary,
         countries: countries ?? this.countries,
         errors: errors ?? this.errors,
-        busy: busy ?? this.busy,
         actions: actions ?? this.actions,
       );
 }
@@ -131,9 +123,6 @@ enum EditBeneficiaryAction {
   /// Editing action.
   editAction,
 
-  /// Completion of process action.
-  confirmCompletionAction,
-
   /// Saving of edited beneficiary action.
   save,
 
@@ -142,6 +131,9 @@ enum EditBeneficiaryAction {
 
   /// Resending OTP action.
   resendOtp,
+
+  /// Edit requires OTP verification action.
+  otpRequired,
 
   /// Edit successful beneficiary action.
   success,

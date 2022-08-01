@@ -64,7 +64,7 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
   void _emitBeneficiary(Beneficiary? beneficiary) => emit(
         state.copyWith(
           beneficiary: beneficiary,
-          action: EditBeneficiaryAction.editAction,
+          actions: _addAction(EditBeneficiaryAction.editAction),
           errors: _addError(
             action: EditBeneficiaryAction.editAction,
             errorStatus: EditBeneficiaryErrorStatus.none,
@@ -76,8 +76,7 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
   void onEdit() async {
     emit(
       state.copyWith(
-        action: EditBeneficiaryAction.save,
-        busy: true,
+        actions: _addAction(EditBeneficiaryAction.save),
         errors: _addError(
           action: EditBeneficiaryAction.save,
           errorStatus: EditBeneficiaryErrorStatus.none,
@@ -98,15 +97,17 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
       emit(
         state.copyWith(
           beneficiary: editedBeneficiary,
-          busy: false,
-          action: EditBeneficiaryAction.success,
+          actions: {
+            editedBeneficiary.otpId == null
+                ? EditBeneficiaryAction.success
+                : EditBeneficiaryAction.otpRequired
+          },
         ),
       );
     } on Exception catch (e) {
       emit(
         state.copyWith(
-          busy: false,
-          action: EditBeneficiaryAction.none,
+          actions: _removeAction(EditBeneficiaryAction.save),
           errors: _addError(
             action: EditBeneficiaryAction.none,
             errorStatus: e is NetException
@@ -128,8 +129,7 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
   }) async {
     emit(
       state.copyWith(
-        busy: true,
-        action: EditBeneficiaryAction.verifyOtp,
+        actions: _addAction(EditBeneficiaryAction.verifyOtp),
         errors: _addError(
           action: EditBeneficiaryAction.verifyOtp,
           errorStatus: EditBeneficiaryErrorStatus.none,
@@ -147,15 +147,13 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
       emit(
         state.copyWith(
           beneficiary: beneficiary,
-          busy: false,
-          action: EditBeneficiaryAction.none,
+          actions: _removeAction(EditBeneficiaryAction.verifyOtp),
         ),
       );
     } on Exception catch (e) {
       emit(
         state.copyWith(
-          busy: false,
-          action: EditBeneficiaryAction.none,
+          actions: _removeAction(EditBeneficiaryAction.verifyOtp),
           errors: _addError(
             action: EditBeneficiaryAction.none,
             errorStatus: e is NetException
@@ -172,8 +170,7 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
   Future<void> resendSecondFactor() async {
     emit(
       state.copyWith(
-        busy: true,
-        action: EditBeneficiaryAction.resendOtp,
+        actions: _addAction(EditBeneficiaryAction.resendOtp),
         errors: _addError(
           action: EditBeneficiaryAction.resendOtp,
           errorStatus: EditBeneficiaryErrorStatus.none,
@@ -190,15 +187,13 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
       emit(
         state.copyWith(
           beneficiary: beneficiary,
-          busy: false,
-          action: EditBeneficiaryAction.none,
+          actions: _removeAction(EditBeneficiaryAction.resendOtp),
         ),
       );
     } on Exception catch (e) {
       emit(
         state.copyWith(
-          busy: false,
-          action: EditBeneficiaryAction.none,
+          actions: _removeAction(EditBeneficiaryAction.resendOtp),
           errors: _addError(
             action: EditBeneficiaryAction.none,
             errorStatus: e is NetException
@@ -225,4 +220,17 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
           message: message,
         )
       });
+
+  /// Returns an action list that includes the passed action.
+  Set<EditBeneficiaryAction> _addAction(
+    EditBeneficiaryAction action,
+  ) =>
+      state.actions.union({action});
+
+  /// Returns an action list containing all the actions but the one that
+  /// coincides with the passed action.
+  Set<EditBeneficiaryAction> _removeAction(
+    EditBeneficiaryAction action,
+  ) =>
+      state.actions.difference({action});
 }
