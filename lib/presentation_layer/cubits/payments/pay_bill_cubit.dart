@@ -110,11 +110,13 @@ class PayBillCubit extends Cubit<PayBillState> {
       final _payment = state.payment.copyWith(
         fromAccount: state.selectedAccount,
         bill: Bill(
-          nickname: state.selectedBiller!.name,
+          // TODO: Change this to set nickname from app
+          nickname: "${state.selectedBiller!.name} ${state.deviceUID}",
           service: state.selectedService,
           amount: state.payment.amount,
           billStatus: BillStatus.active,
           billingFields: state.serviceFields,
+          visible: false,
         ),
         currency: state.selectedAccount?.currency,
         status: PaymentStatus.completed,
