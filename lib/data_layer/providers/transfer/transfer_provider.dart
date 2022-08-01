@@ -70,4 +70,64 @@ class TransferProvider {
       List<Map<String, dynamic>>.from(response.data),
     );
   }
+
+  /// Returns the evaluation from a transfer.
+  Future<TransferEvaluationDTO> evaluate({
+    required NewTransferPayloadDTO newTransferPayloadDTO,
+  }) async {
+    final response = await netClient.request(
+      netClient.netEndpoints.evaluateTransfer,
+      method: NetRequestMethods.post,
+      data: newTransferPayloadDTO.toJson(),
+    );
+
+    return TransferEvaluationDTO.fromJson(response.data);
+  }
+
+  /// Returns the transfer from submiting a new transfer.
+  Future<TransferDTO> submit({
+    required NewTransferPayloadDTO newTransferPayloadDTO,
+  }) async {
+    final response = await netClient.request(
+      netClient.netEndpoints.submitTransfer,
+      method: NetRequestMethods.post,
+      data: newTransferPayloadDTO.toJson(),
+    );
+
+    return TransferDTO.fromJson(response.data);
+  }
+
+  /// Returns trhe transfer dto resulting on verifying the second factor for
+  /// the passed transfer id.
+  Future<TransferDTO> verifySecondFactor({
+    required int transferId,
+    required String otpValue,
+    required SecondFactorTypeDTO secondFactorTypeDTO,
+  }) async {
+    final response = await netClient.request(
+      netClient.netEndpoints.submitTransfer,
+      method: NetRequestMethods.post,
+      queryParameters: {'otp_value': otpValue},
+      data: {
+        'transfer_id': transferId,
+        'second_factor': secondFactorTypeDTO.value,
+      },
+    );
+
+    return TransferDTO.fromJson(response.data);
+  }
+
+  /// Resends the second factor for the passed transfer id.
+  Future<TransferDTO> resendSecondFactor({
+    required NewTransferPayloadDTO newTransferPayloadDTO,
+  }) async {
+    final response = await netClient.request(
+      netClient.netEndpoints.submitTransfer,
+      method: NetRequestMethods.post,
+      queryParameters: {'resend_otp': true},
+      data: newTransferPayloadDTO.toJson(),
+    );
+
+    return TransferDTO.fromJson(response.data);
+  }
 }

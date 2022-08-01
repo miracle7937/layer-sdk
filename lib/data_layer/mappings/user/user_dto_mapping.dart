@@ -5,7 +5,10 @@ import '../../dtos.dart';
 /// Extension that provides mappings for [UserDTO]
 extension UserDTOMapping on UserDTO {
   /// Maps into a [User]
-  User toUser() => User(
+  User toUser({
+    String? accessPin,
+  }) =>
+      User(
         id: id.toString(),
         username: username,
         imageURL: imageUrl,
@@ -26,6 +29,7 @@ extension UserDTOMapping on UserDTO {
         isUSSDActive: isUSSDActive ?? false,
         verifyDevice: verifyDevice ?? false,
         branch: branch,
+        accessPin: accessPin,
       );
 }
 

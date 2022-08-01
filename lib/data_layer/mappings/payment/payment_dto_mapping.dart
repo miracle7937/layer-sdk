@@ -9,6 +9,7 @@ extension PaymentDTOMapping on PaymentDTO {
   Payment toPayment() => Payment(
         id: billId,
         created: created,
+        updated: updated,
         bill: bill?.toBill(),
         fromAccount: fromAccount?.toAccount(),
         fromCard: fromCard?.toBankingCard(),
@@ -18,45 +19,12 @@ extension PaymentDTOMapping on PaymentDTO {
         status: status?.toPaymentStatus() ?? PaymentStatus.unknown,
         scheduled: scheduled,
         recurrence: recurrence?.toRecurrence() ?? Recurrence.none,
+        recurrenceStart: recurrenceStart,
+        recurrenceEnd: recurrenceEnd,
+        otpId: otpId,
+        deviceUID: deviceUID,
+        secondFactor: secondFactor?.toSecondFactorType(),
       );
-}
-
-/// Extension that provides mappings for [RecurrenceDTO]
-extension RecurrenceDTOMapping on RecurrenceDTO {
-  /// Maps into a [Recurrence]
-  Recurrence toRecurrence() {
-    switch (this) {
-      case RecurrenceDTO.once:
-        return Recurrence.once;
-
-      case RecurrenceDTO.daily:
-        return Recurrence.daily;
-
-      case RecurrenceDTO.weekly:
-        return Recurrence.weekly;
-
-      case RecurrenceDTO.biweekly:
-        return Recurrence.biweekly;
-
-      case RecurrenceDTO.monthly:
-        return Recurrence.monthly;
-
-      case RecurrenceDTO.bimonthly:
-        return Recurrence.bimonthly;
-
-      case RecurrenceDTO.quarterly:
-        return Recurrence.quarterly;
-
-      case RecurrenceDTO.yearly:
-        return Recurrence.yearly;
-
-      case RecurrenceDTO.endOfEachMonth:
-        return Recurrence.endOfEachMonth;
-
-      default:
-        return Recurrence.once;
-    }
-  }
 }
 
 /// Extension that provides mappings for [PaymentDTOStatus]
@@ -90,6 +58,72 @@ extension PaymentDTOStatusMapping on PaymentDTOStatus {
 
       case PaymentDTOStatus.pendingExpired:
         return PaymentStatus.pendingExpired;
+
+      default:
+        throw MappingException(from: PaymentDTOStatus, to: PaymentStatus);
+    }
+  }
+}
+
+/// Extension that provides mappings for [Payment]
+extension PaymentToDTOMapping on Payment {
+  /// Maps into a [PaymentDTO]
+  PaymentDTO toPaymentDTO() {
+    return PaymentDTO(
+      paymentId: id,
+      created: created,
+      bill: bill?.toBillDTO(),
+      billId: bill?.billID,
+      fromCardId:
+          fromCard?.cardId != null ? int.tryParse(fromCard!.cardId) : null,
+      fromAccountId: fromAccount?.id,
+      amount: amount,
+      amountVisible: amountVisible,
+      recurrence: recurrence.toRecurrenceDTO(),
+      currency: currency,
+      status: status.toPaymentStatusDTO(),
+      otpId: otpId,
+      deviceUID: deviceUID,
+      secondFactor: secondFactor?.toSecondFactorTypeDTO(),
+      updated: updated,
+      scheduled: scheduled,
+      recurrenceStart: recurrenceStart,
+      recurrenceEnd: recurrenceEnd,
+    );
+  }
+}
+
+/// Extension that provides mappings for [PaymentStatus]
+extension PaymentToDTOStatusMapping on PaymentStatus {
+  /// Maps into a [PaymentDTOStatus]
+  PaymentDTOStatus toPaymentStatusDTO() {
+    switch (this) {
+      case PaymentStatus.otp:
+        return PaymentDTOStatus.otp;
+
+      case PaymentStatus.otpExpired:
+        return PaymentDTOStatus.otpExpired;
+
+      case PaymentStatus.failed:
+        return PaymentDTOStatus.failed;
+
+      case PaymentStatus.completed:
+        return PaymentDTOStatus.completed;
+
+      case PaymentStatus.pending:
+        return PaymentDTOStatus.pending;
+
+      case PaymentStatus.cancelled:
+        return PaymentDTOStatus.cancelled;
+
+      case PaymentStatus.scheduled:
+        return PaymentDTOStatus.scheduled;
+
+      case PaymentStatus.pendingBank:
+        return PaymentDTOStatus.pendingBank;
+
+      case PaymentStatus.pendingExpired:
+        return PaymentDTOStatus.pendingExpired;
 
       default:
         throw MappingException(from: PaymentDTOStatus, to: PaymentStatus);

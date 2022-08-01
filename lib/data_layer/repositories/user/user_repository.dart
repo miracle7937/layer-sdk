@@ -183,7 +183,9 @@ class UserRepository implements UserRepositoryInterface {
       token: token,
     );
 
-    return userDTO.toUser();
+    return userDTO.toUser(
+      accessPin: pin,
+    );
   }
 
   /// Patches the list of blocked channels for the provided user id.

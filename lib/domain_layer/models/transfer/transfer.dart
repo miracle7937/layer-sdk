@@ -2,39 +2,6 @@ import 'package:equatable/equatable.dart';
 
 import '../../models.dart';
 
-///The recurrence of the transfer
-enum TransferRecurrence {
-  ///once
-  once,
-
-  ///daily
-  daily,
-
-  ///weekly
-  weekly,
-
-  ///biweekly
-  biweekly,
-
-  ///monthly
-  monthly,
-
-  ///bimonthly
-  bimonthly,
-
-  ///quarterly
-  quarterly,
-
-  ///yearly
-  yearly,
-
-  ///endOfEachMonth
-  endOfEachMonth,
-
-  ///none
-  none,
-}
-
 ///The status of the transfer
 enum TransferStatus {
   ///Completed
@@ -101,6 +68,15 @@ enum TransferType {
   merchantTransfer,
 }
 
+///The transfer processing type.
+enum TransferProcessingType {
+  ///Instant.
+  instant,
+
+  ///Next day.
+  nextDay,
+}
+
 ///The transfer data used by the application
 class Transfer extends Equatable {
   /// The transfer id.
@@ -137,7 +113,7 @@ class Transfer extends Equatable {
   final Beneficiary? toBeneficiary;
 
   /// The transfer recurrence.
-  final TransferRecurrence recurrence;
+  final Recurrence recurrence;
 
   /// The transfer creation date.
   final DateTime? created;
@@ -150,6 +126,18 @@ class Transfer extends Equatable {
 
   ///The future date when the transfer should happen
   final DateTime? scheduledDate;
+
+  /// The processing type.
+  final TransferProcessingType? processingType;
+
+  /// The second factor type.
+  final SecondFactorType? secondFactorType;
+
+  /// The transfer evaluation.
+  final TransferEvaluation? evaluation;
+
+  /// The OTP id.
+  final int? otpId;
 
   ///Creates a new immutable [Transfer]
   Transfer({
@@ -164,11 +152,15 @@ class Transfer extends Equatable {
     this.fromMobile,
     this.toMobile,
     this.toBeneficiary,
-    this.recurrence = TransferRecurrence.none,
+    this.recurrence = Recurrence.none,
     this.created,
     this.status,
     this.type,
     this.scheduledDate,
+    this.processingType,
+    this.secondFactorType,
+    this.evaluation,
+    this.otpId,
   });
 
   /// Returns the transfer id as `String`.
@@ -192,5 +184,9 @@ class Transfer extends Equatable {
         status,
         type,
         scheduledDate,
+        processingType,
+        secondFactorType,
+        evaluation,
+        otpId,
       ];
 }
