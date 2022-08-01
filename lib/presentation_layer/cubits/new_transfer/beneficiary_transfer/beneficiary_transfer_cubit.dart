@@ -488,6 +488,8 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
             errorStatus: e is NetException
                 ? BeneficiaryTransferErrorStatus.network
                 : BeneficiaryTransferErrorStatus.generic,
+            code: e is NetException ? e.code : null,
+            message: e is NetException ? e.message : e.toString(),
           ),
         ),
       );
