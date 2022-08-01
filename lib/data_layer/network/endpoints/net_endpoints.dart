@@ -299,7 +299,7 @@ class NetEndpoints {
   String get bank => '$_infoBanking/v1/bank';
 
   /// Endpoint for creating a shortcut.
-  String get shortcut => '$customer/v1/shortcut';
+  String get shortcut => '$_customer/v1/shortcut';
 
   /// Endpoint for evaluating a transfer.
   String get evaluateTransfer => '$_txnBanking/v1/transfer/evaluate';

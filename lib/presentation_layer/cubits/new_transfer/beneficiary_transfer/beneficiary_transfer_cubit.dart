@@ -22,6 +22,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
   final SubmitTransferUseCase _submitTransferUseCase;
   final VerifyTransferSecondFactorUseCase _verifyTransferSecondFactorUseCase;
   final ResendTransferSecondFactorUseCase _resendTransferSecondFactorUseCase;
+  final CreateShortcutUseCase _createShortcutUseCase;
 
   /// Creates a new [BeneficiaryTransferCubit].
   BeneficiaryTransferCubit({
@@ -42,6 +43,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         verifyTransferSecondFactorUseCase,
     required ResendTransferSecondFactorUseCase
         resendTransferSecondFactorUseCase,
+    required CreateShortcutUseCase createShortcutUseCase,
   })  : _loadGlobalSettingsUseCase = loadGlobalSettingsUseCase,
         _getSourceAccountsForBeneficiaryTransferUseCase =
             getSourceAccountsForBeneficiaryTransferUseCase,
@@ -56,6 +58,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         _submitTransferUseCase = submitTransferUseCase,
         _verifyTransferSecondFactorUseCase = verifyTransferSecondFactorUseCase,
         _resendTransferSecondFactorUseCase = resendTransferSecondFactorUseCase,
+        _createShortcutUseCase = createShortcutUseCase,
         super(
           BeneficiaryTransferState(
             transfer: transfer,
@@ -395,6 +398,8 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     Message? reason,
     DestinationBeneficiaryType? beneficiaryType,
     NewBeneficiary? newBeneficiary,
+    bool? saveToShortcut,
+    String? shortcutName,
   }) async {
     final sourceCurrency = state.currencies.firstWhereOrNull(
       (currency) => currency.code == state.transfer.source?.account?.currency,
@@ -424,6 +429,8 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
           reason: reason,
           beneficiaryType: beneficiaryType,
           newBeneficiary: newBeneficiary,
+          saveToShortcut: saveToShortcut,
+          shortcutName: shortcutName,
         ),
       ),
     );
@@ -495,6 +502,8 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
   }
 
   /// Submits the transfer.
+
+  /// Submits the transfer.
   Future<void> submit() async {
     emit(
       state.copyWith(
@@ -507,6 +516,16 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
       final transferResult = await _submitTransferUseCase(
         transfer: state.transfer,
       );
+
+      if ([
+            TransferStatus.pending,
+            TransferStatus.completed,
+            TransferStatus.scheduled,
+          ].contains(transferResult.status) &&
+          state.transfer.saveToShortcut) {
+        print('creates shortcut');
+        await createShortcut(transferResult);
+      }
 
       emit(
         state.copyWith(
@@ -525,7 +544,11 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
                     ? BeneficiaryTransferErrorStatus.insufficientBalance
                     : BeneficiaryTransferErrorStatus.network
                 : BeneficiaryTransferErrorStatus.generic,
-            code: e is NetException ? e.code : null,
+            code: e is NetException
+                ? e.statusCode == null
+                    ? 'connectivity_error'
+                    : e.code
+                : null,
             message: e is NetException ? e.message : e.toString(),
           ),
         ),
@@ -552,6 +575,16 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         secondFactorType:
             state.transferResult?.secondFactorType ?? SecondFactorType.otp,
       );
+
+      if ([
+            TransferStatus.pending,
+            TransferStatus.completed,
+            TransferStatus.scheduled,
+          ].contains(transferResult.status) &&
+          state.transfer.saveToShortcut) {
+        print('creates shortcut');
+        await createShortcut(transferResult);
+      }
 
       emit(
         state.copyWith(
@@ -616,6 +649,47 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
                     : e.code
                 : null,
             message: e is NetException ? e.message : e.toString(),
+          ),
+        ),
+      );
+    }
+  }
+
+  /// Creates the shortcut (if enabled) once the transfer has succeded.
+  Future<void> createShortcut(
+    Transfer transfer,
+  ) async {
+    emit(
+      state.copyWith(
+        actions: _addAction(BeneficiaryTransferAction.shortcut),
+        errors: _removeError(BeneficiaryTransferAction.shortcut),
+      ),
+    );
+
+    try {
+      await _createShortcutUseCase(
+        shortcut: NewShortcut(
+          name: state.transfer.shortcutName!,
+          type: ShortcutType.transfer,
+          payload: state.transfer,
+        ),
+      );
+
+      emit(
+        state.copyWith(
+          actions: _removeAction(BeneficiaryTransferAction.shortcut),
+        ),
+      );
+    } on Exception catch (e, s) {
+      print('$e -> $s');
+      emit(
+        state.copyWith(
+          actions: _removeAction(BeneficiaryTransferAction.shortcut),
+          errors: _addError(
+            action: BeneficiaryTransferAction.shortcut,
+            errorStatus: e is NetException
+                ? BeneficiaryTransferErrorStatus.network
+                : BeneficiaryTransferErrorStatus.generic,
           ),
         ),
       );
