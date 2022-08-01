@@ -22,7 +22,7 @@ class MandatesCubit extends Cubit<MandatesState> {
   }) async {
     emit(
       state.copyWith(
-        busy: false,
+        busy: true,
         busyAction: loadMore
             ? MandatesBusyAction.loadingMore
             : MandatesBusyAction.loading,

@@ -4,7 +4,7 @@ import '../../errors.dart';
 
 /// Extension that provides mapping from [SecondFactorTypeDTO]
 /// to [SecondFactorType].
-extension SecondFactorMapping on SecondFactorTypeDTO {
+extension SecondFactorDTOMapping on SecondFactorTypeDTO {
   /// Returns [SecondFactorType] built from this DTO.
   SecondFactorType toSecondFactorType() {
     switch (this) {
@@ -27,10 +27,10 @@ extension SecondFactorMapping on SecondFactorTypeDTO {
   }
 }
 
-/// Extension that provides mapping from [SecondFactorTypeDTO]
-/// to [SecondFactorType].
-extension SecondFactorModelMapping on SecondFactorType {
-  /// Returns [SecondFactorType] built from this DTO.
+/// Extension that provides mapping from [SecondFactorType]
+/// to [SecondFactorTypeDTO].
+extension SecondFactorMapping on SecondFactorType {
+  /// Maps a [SecondFactorType] into a [SecondFactorTypeDTO].
   SecondFactorTypeDTO toSecondFactorTypeDTO() {
     switch (this) {
       case SecondFactorType.otp:
@@ -44,8 +44,8 @@ extension SecondFactorModelMapping on SecondFactorType {
 
       default:
         throw MappingException(
-          from: SecondFactorTypeDTO,
-          to: SecondFactorType,
+          from: SecondFactorType,
+          to: SecondFactorTypeDTO,
           value: this,
         );
     }

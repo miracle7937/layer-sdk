@@ -16,7 +16,7 @@ class MadatesProvider {
     int? offset,
   }) async {
     final params = <String, dynamic>{
-      'sort_by': 'ts_created',
+      'sortby': 'ts_created',
     };
 
     if (mandateId != null) {
@@ -37,7 +37,9 @@ class MadatesProvider {
       queryParameters: params,
     );
 
-    return MandateDTO.fromJsonList(response.data);
+    return MandateDTO.fromJsonList(
+      List<Map<String, dynamic>>.from(response.data),
+    );
   }
 
   /// Cancels a mandate

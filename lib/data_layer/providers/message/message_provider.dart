@@ -14,10 +14,14 @@ class MessageProvider {
   /// Returns the global messages.
   Future<List<MessageDTO>> getMessages({
     bool forceRefresh = false,
+    String? module,
   }) async {
+    final params = module != null ? {'module': module} : null;
+
     final response = await netClient.request(
       netClient.netEndpoints.message,
       forceRefresh: forceRefresh,
+      queryParameters: params,
     );
 
     return response.data is List<Map<String, dynamic>>

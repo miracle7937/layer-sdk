@@ -102,7 +102,9 @@ class CardDTO {
       currency: map['currency'],
       status: CardDTOStatus.fromRaw(map['status']),
       expiryDate: map['expiry_date'],
-      cardType: CardTypeDTO.fromJson(map['card_type']),
+      cardType: map['card_type'] != null
+          ? CardTypeDTO.fromJson(map['card_type'])
+          : null,
       accountID: List.from(map["account_ids"] ?? []),
       preferences: CardPreferencesDTO.fromJson(map),
     );
