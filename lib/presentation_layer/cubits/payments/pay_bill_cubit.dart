@@ -176,6 +176,7 @@ class PayBillCubit extends Cubit<PayBillState> {
         state.copyWith(
           services: services,
           selectedService: services.firstOrNull,
+          serviceFields: services.firstOrNull?.serviceFields,
           busy: false,
         ),
       );
