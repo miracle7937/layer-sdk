@@ -15,7 +15,6 @@ class NetEndpoints {
   static const String _engagement = '/engagement';
   static const String _renderingEngine = '/rendering-engine';
   static const String _stripe = '/stripe-gateway';
-  static const String _authengine = '/authengine';
 
   /// The login endpoint
   String get login => '$_customer/v1/login';
