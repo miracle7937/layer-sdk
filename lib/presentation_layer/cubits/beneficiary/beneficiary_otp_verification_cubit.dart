@@ -5,9 +5,9 @@ import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
 
-/// A cubit that handles OTP verification of the beneficiary etit.
-class EditBeneficiaryOtpVerificationCubit
-    extends Cubit<EditBeneficiaryOtpVerificationState> {
+/// A cubit that handles OTP verification of the beneficiary add/edit actions.
+class BeneficiaryOtpVerificationCubit
+    extends Cubit<BeneficiaryOtpVerificationState> {
   final VerifyBeneficiarySecondFactorUseCase
       _verifyBeneficiarySecondFactorUseCase;
   final ResendBeneficiarySecondFactorUseCase
@@ -16,7 +16,7 @@ class EditBeneficiaryOtpVerificationCubit
   final bool _isEditing;
 
   /// Creates a new cubit using the supplied [LoadAvailableCurrenciesUseCase].
-  EditBeneficiaryOtpVerificationCubit({
+  BeneficiaryOtpVerificationCubit({
     required VerifyBeneficiarySecondFactorUseCase
         verifyBeneficiarySecondFactorUseCase,
     required ResendBeneficiarySecondFactorUseCase
@@ -29,19 +29,18 @@ class EditBeneficiaryOtpVerificationCubit
             resendBeneficiarySecondFactorUseCase,
         _isEditing = isEditing,
         super(
-          EditBeneficiaryOtpVerificationState(
+          BeneficiaryOtpVerificationState(
             beneficiary: beneficiary.copyWith(),
           ),
         );
 
-  /// Verifies the second factor for the edited beneficiary
-  /// retrieved on the [onEdit] method.
+  /// Verifies the second factor for the added/edited beneficiary.
   Future<void> verifySecondFactor({
     required String otpValue,
   }) async {
     emit(
       state.copyWith(
-        actions: _addAction(EditBeneficiaryOtpVerificationAction.verifyOtp),
+        actions: _addAction(BeneficiaryOtpVerificationAction.verifyOtp),
         errors: {},
       ),
     );
@@ -56,20 +55,18 @@ class EditBeneficiaryOtpVerificationCubit
       emit(
         state.copyWith(
           beneficiary: beneficiary,
-          actions:
-              _removeAction(EditBeneficiaryOtpVerificationAction.verifyOtp),
+          actions: _removeAction(BeneficiaryOtpVerificationAction.verifyOtp),
         ),
       );
     } on Exception catch (e) {
       emit(
         state.copyWith(
-          actions:
-              _removeAction(EditBeneficiaryOtpVerificationAction.verifyOtp),
+          actions: _removeAction(BeneficiaryOtpVerificationAction.verifyOtp),
           errors: _addError(
-            action: EditBeneficiaryOtpVerificationAction.verifyOtp,
+            action: BeneficiaryOtpVerificationAction.verifyOtp,
             errorStatus: e is NetException
-                ? EditBeneficiaryOtpVerificationErrorStatus.network
-                : EditBeneficiaryOtpVerificationErrorStatus.generic,
+                ? BeneficiaryOtpVerificationErrorStatus.network
+                : BeneficiaryOtpVerificationErrorStatus.generic,
             code: e is NetException ? e.code : null,
             message: e is NetException ? e.message : e.toString(),
           ),
@@ -78,12 +75,11 @@ class EditBeneficiaryOtpVerificationCubit
     }
   }
 
-  /// Verifies the second factor for the edited beneficiary
-  /// retrieved on the [onEdit] method.
+  /// Verifies the second factor for the added/edited beneficiary.
   Future<void> resendSecondFactor() async {
     emit(
       state.copyWith(
-        actions: _addAction(EditBeneficiaryOtpVerificationAction.resendOtp),
+        actions: _addAction(BeneficiaryOtpVerificationAction.resendOtp),
         errors: {},
       ),
     );
@@ -97,20 +93,18 @@ class EditBeneficiaryOtpVerificationCubit
       emit(
         state.copyWith(
           beneficiary: beneficiary,
-          actions:
-              _removeAction(EditBeneficiaryOtpVerificationAction.resendOtp),
+          actions: _removeAction(BeneficiaryOtpVerificationAction.resendOtp),
         ),
       );
     } on Exception catch (e) {
       emit(
         state.copyWith(
-          actions:
-              _removeAction(EditBeneficiaryOtpVerificationAction.resendOtp),
+          actions: _removeAction(BeneficiaryOtpVerificationAction.resendOtp),
           errors: _addError(
-            action: EditBeneficiaryOtpVerificationAction.resendOtp,
+            action: BeneficiaryOtpVerificationAction.resendOtp,
             errorStatus: e is NetException
-                ? EditBeneficiaryOtpVerificationErrorStatus.network
-                : EditBeneficiaryOtpVerificationErrorStatus.generic,
+                ? BeneficiaryOtpVerificationErrorStatus.network
+                : BeneficiaryOtpVerificationErrorStatus.generic,
             code: e is NetException ? e.code : null,
             message: e is NetException ? e.message : e.toString(),
           ),
@@ -120,14 +114,14 @@ class EditBeneficiaryOtpVerificationCubit
   }
 
   /// Returns an error list that includes the passed action and error status.
-  Set<EditBeneficiaryOtpVerificationError> _addError({
-    required EditBeneficiaryOtpVerificationAction action,
-    required EditBeneficiaryOtpVerificationErrorStatus errorStatus,
+  Set<BeneficiaryOtpVerificationError> _addError({
+    required BeneficiaryOtpVerificationAction action,
+    required BeneficiaryOtpVerificationErrorStatus errorStatus,
     String? code,
     String? message,
   }) =>
       state.errors.union({
-        EditBeneficiaryOtpVerificationError(
+        BeneficiaryOtpVerificationError(
           action: action,
           errorStatus: errorStatus,
           code: code,
@@ -136,15 +130,15 @@ class EditBeneficiaryOtpVerificationCubit
       });
 
   /// Returns an action list that includes the passed action.
-  Set<EditBeneficiaryOtpVerificationAction> _addAction(
-    EditBeneficiaryOtpVerificationAction action,
+  Set<BeneficiaryOtpVerificationAction> _addAction(
+    BeneficiaryOtpVerificationAction action,
   ) =>
       state.actions.union({action});
 
   /// Returns an action list containing all the actions but the one that
   /// coincides with the passed action.
-  Set<EditBeneficiaryOtpVerificationAction> _removeAction(
-    EditBeneficiaryOtpVerificationAction action,
+  Set<BeneficiaryOtpVerificationAction> _removeAction(
+    BeneficiaryOtpVerificationAction action,
   ) =>
       state.actions.difference({action});
 }

@@ -5,12 +5,12 @@ import 'package:equatable/equatable.dart';
 import '../../../domain_layer/models.dart';
 
 /// Model used for the errors.
-class EditBeneficiaryOtpVerificationError extends Equatable {
+class BeneficiaryOtpVerificationError extends Equatable {
   /// The action.
-  final EditBeneficiaryOtpVerificationAction action;
+  final BeneficiaryOtpVerificationAction action;
 
   /// The error.
-  final EditBeneficiaryOtpVerificationErrorStatus errorStatus;
+  final BeneficiaryOtpVerificationErrorStatus errorStatus;
 
   /// The error code.
   final String? code;
@@ -18,8 +18,8 @@ class EditBeneficiaryOtpVerificationError extends Equatable {
   /// The error message.
   final String? message;
 
-  /// Creates a new [EditBeneficiaryOtpVerificationError].
-  const EditBeneficiaryOtpVerificationError({
+  /// Creates a new [BeneficiaryOtpVerificationError].
+  const BeneficiaryOtpVerificationError({
     required this.action,
     required this.errorStatus,
     this.code,
@@ -36,7 +36,7 @@ class EditBeneficiaryOtpVerificationError extends Equatable {
 }
 
 /// The available error status
-enum EditBeneficiaryOtpVerificationErrorStatus {
+enum BeneficiaryOtpVerificationErrorStatus {
   /// No errors
   none,
 
@@ -47,24 +47,24 @@ enum EditBeneficiaryOtpVerificationErrorStatus {
   network,
 }
 
-/// The state of the [EditBeneficiaryOtpVerificationCubit]
-class EditBeneficiaryOtpVerificationState extends Equatable {
+/// The state of the [BeneficiaryOtpVerificationCubit]
+class BeneficiaryOtpVerificationState extends Equatable {
   /// New beneficiary.
   final Beneficiary beneficiary;
 
   /// The errors.
-  final UnmodifiableSetView<EditBeneficiaryOtpVerificationError> errors;
+  final UnmodifiableSetView<BeneficiaryOtpVerificationError> errors;
 
   /// The actions that the cubit is performing.
-  final UnmodifiableSetView<EditBeneficiaryOtpVerificationAction> actions;
+  final UnmodifiableSetView<BeneficiaryOtpVerificationAction> actions;
 
-  /// Creates a new [EditBeneficiaryOtpVerificationState].
-  EditBeneficiaryOtpVerificationState({
+  /// Creates a new [BeneficiaryOtpVerificationState].
+  BeneficiaryOtpVerificationState({
     required this.beneficiary,
-    Set<EditBeneficiaryOtpVerificationAction> actions =
-        const <EditBeneficiaryOtpVerificationAction>{},
-    Set<EditBeneficiaryOtpVerificationError> errors =
-        const <EditBeneficiaryOtpVerificationError>{},
+    Set<BeneficiaryOtpVerificationAction> actions =
+        const <BeneficiaryOtpVerificationAction>{},
+    Set<BeneficiaryOtpVerificationError> errors =
+        const <BeneficiaryOtpVerificationError>{},
   })  : actions = UnmodifiableSetView(actions),
         errors = UnmodifiableSetView(errors);
 
@@ -76,12 +76,12 @@ class EditBeneficiaryOtpVerificationState extends Equatable {
       ];
 
   /// Creates a new state based on this one.
-  EditBeneficiaryOtpVerificationState copyWith({
+  BeneficiaryOtpVerificationState copyWith({
     Beneficiary? beneficiary,
-    Set<EditBeneficiaryOtpVerificationAction>? actions,
-    Set<EditBeneficiaryOtpVerificationError>? errors,
+    Set<BeneficiaryOtpVerificationAction>? actions,
+    Set<BeneficiaryOtpVerificationError>? errors,
   }) =>
-      EditBeneficiaryOtpVerificationState(
+      BeneficiaryOtpVerificationState(
         beneficiary: beneficiary ?? this.beneficiary,
         errors: errors ?? this.errors,
         actions: actions ?? this.actions,
@@ -89,7 +89,7 @@ class EditBeneficiaryOtpVerificationState extends Equatable {
 }
 
 /// All possible actions.
-enum EditBeneficiaryOtpVerificationAction {
+enum BeneficiaryOtpVerificationAction {
   /// Verifying OTP action.
   verifyOtp,
 
