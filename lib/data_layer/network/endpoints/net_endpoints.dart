@@ -13,6 +13,7 @@ class NetEndpoints {
   static const String _integration = '/integration';
   static const String _loyaltyEngine = '/loyalty-engine';
   static const String _engagement = '/engagement';
+  static const String _renderingEngine = '/rendering-engine';
   static const String _stripe = '/stripe-gateway';
 
   /// The login endpoint
@@ -282,6 +283,9 @@ class NetEndpoints {
 
   /// Endpoint for getting customer checkbooks
   String get checkbooks => '$_infoBanking/v1/checkbook';
+
+  /// Endpoint for getting html/image/pdf rendered on server
+  String get moreInfo => '$_renderingEngine/v1/render/more_info';
 
   /// Endpoint for getting Mandate payments
   String get mandatePayments => '$_txnBanking/v1/mandate_payment';

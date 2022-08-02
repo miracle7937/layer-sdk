@@ -36,6 +36,7 @@ export 'abstract_repositories/loyalty/offers/offers_repository_interface.dart';
 export 'abstract_repositories/mandates/mandate_payment_repository_interface.dart';
 export 'abstract_repositories/mandates/mandates_respository_interface.dart';
 export 'abstract_repositories/message/message_repository_interface.dart';
+export 'abstract_repositories/more_info/more_info_repository_interface.dart';
 export 'abstract_repositories/ocra/ocra_repository_interface.dart';
 export 'abstract_repositories/otp/otp_repository_interface.dart';
 export 'abstract_repositories/otp/second_factor_repository_interface.dart';
