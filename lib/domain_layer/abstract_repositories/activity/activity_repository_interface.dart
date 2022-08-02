@@ -29,8 +29,8 @@ abstract class ActivityRepositoryInterface {
     List<ActivityTag>? activityTags,
   });
 
-  /// Delete the [Activity] by `id`
-  Future<dynamic> delete(String id);
+  /// Delete a certain activity based on the id
+  Future<void> delete(String activityId);
 
   /// Cancel the [Activity] by `id`
   Future<dynamic> cancel(String id, {String? otpValue});

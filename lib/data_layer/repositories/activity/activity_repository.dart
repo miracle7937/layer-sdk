@@ -73,11 +73,7 @@ class ActivityRepository implements ActivityRepositoryInterface {
   }
 
   @override
-  Future<dynamic> delete(String id) {
-    final result = _provider.delete(id);
-
-    return result;
-  }
+  Future<void> delete(String activityId) => _provider.delete(activityId);
 
   @override
   Future cancel(String id, {String? otpValue}) {

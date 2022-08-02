@@ -133,14 +133,12 @@ class ActivityProvider {
     );
   }
 
-  /// Delete the [Activity] by `id`
-  Future<void> delete(String id) async {
-    final response = await netClient.request(
-      '${netClient.netEndpoints.requests}/$id',
+  /// Delete a certain activity based on the id
+  Future<void> delete(String activityId) async {
+    await netClient.request(
+      "${netClient.netEndpoints.request}/$activityId",
       method: NetRequestMethods.delete,
     );
-
-    return response.data;
   }
 
   /// Cancel the [Activity] by `id`

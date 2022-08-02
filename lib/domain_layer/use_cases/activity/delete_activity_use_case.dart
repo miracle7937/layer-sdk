@@ -9,6 +9,7 @@ class DeleteActivityUseCase {
     required ActivityRepositoryInterface repository,
   }) : _repository = repository;
 
-  /// Callable methot to delete the [Activity] by `id`
-  Future<dynamic> call(String id) => _repository.delete(id);
+  /// A method to call to delete an activity based on the activity
+  /// request_id ([Activity.id])
+  Future<void> call(String activityId) => _repository.delete(activityId);
 }
