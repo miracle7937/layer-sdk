@@ -122,6 +122,7 @@ export 'models/service/service.dart';
 export 'models/setting/application_settings.dart';
 export 'models/setting/authentication_settings.dart';
 export 'models/setting/global_setting.dart';
+export 'models/shortcut/new_shortcut.dart';
 export 'models/standing_orders/standing_order.dart';
 export 'models/transfer/transfer.dart';
 export 'models/transfer/transfer_evaluation.dart';

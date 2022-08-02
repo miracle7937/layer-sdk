@@ -82,7 +82,7 @@ class NewBeneficiary extends Equatable {
 
   /// Whether if the new beneficiary can be submitted or not.
   bool get canBeSubmitted =>
-      (!shouldSave || nickname != null) &&
+      (!shouldSave || (nickname?.isNotEmpty ?? false)) &&
       country != null &&
       ibanOrAccountNO != null &&
       (!sortCodeIsRequired || sortCode != null) &&
