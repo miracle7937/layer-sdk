@@ -53,7 +53,7 @@ class MadatesProvider {
       method: NetRequestMethods.delete,
       data: otpValue != null && otpType != null
           ? {
-              otpType!.value: otpValue,
+              otpType.value: otpValue,
             }
           : null,
     );
