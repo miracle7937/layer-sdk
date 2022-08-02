@@ -10,6 +10,7 @@ class OwnTransfer extends NewSchedulableTransfer {
     super.destination,
     super.amount,
     super.currency,
+    super.scheduleDetails,
   }) : super(type: TransferType.own);
 
   @override
@@ -19,7 +20,8 @@ class OwnTransfer extends NewSchedulableTransfer {
       amount != null &&
       amount! > 0 &&
       currency != null &&
-      (recurrence == Recurrence.none || starts != null);
+      (scheduleDetails.recurrence == Recurrence.none ||
+          scheduleDetails.startDate != null);
 
   @override
   OwnTransfer copyWith({
@@ -27,12 +29,14 @@ class OwnTransfer extends NewSchedulableTransfer {
     NewTransferDestination? destination,
     double? amount,
     Currency? currency,
+    ScheduleDetails? scheduleDetails,
   }) =>
       OwnTransfer(
         source: source ?? this.source,
         destination: destination ?? this.destination,
         amount: amount ?? this.amount,
         currency: currency ?? this.currency,
+        scheduleDetails: scheduleDetails ?? this.scheduleDetails,
       );
 
   @override
@@ -42,6 +46,9 @@ class OwnTransfer extends NewSchedulableTransfer {
         type: type!.toTransferTypeDTO(),
         amount: amount!,
         currencyCode: currency!.code!,
+        recurrence: scheduleDetails.recurrence.toRecurrenceDTO(),
+        startDate: scheduleDetails.startDate,
+        endDate: scheduleDetails.endDate,
       );
 
   @override
@@ -50,8 +57,6 @@ class OwnTransfer extends NewSchedulableTransfer {
         destination,
         amount,
         currency,
-        recurrence,
-        starts,
-        ends,
+        scheduleDetails,
       ];
 }

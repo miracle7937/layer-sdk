@@ -400,6 +400,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     NewBeneficiary? newBeneficiary,
     bool? saveToShortcut,
     String? shortcutName,
+    ScheduleDetails? scheduleDetails,
   }) async {
     final sourceCurrency = state.currencies.firstWhereOrNull(
       (currency) => currency.code == state.transfer.source?.account?.currency,
@@ -431,6 +432,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
           newBeneficiary: newBeneficiary,
           saveToShortcut: saveToShortcut,
           shortcutName: shortcutName,
+          scheduleDetails: scheduleDetails,
         ),
       ),
     );
