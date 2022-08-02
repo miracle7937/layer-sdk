@@ -31,9 +31,7 @@ class ShortcutRepository extends ShortcutRepositoryInterface {
   }) {
     switch (type) {
       case ShortcutType.transfer:
-        // TODO: Map into a transfer dto and call `toJson()` on it
-        // return (payload as NewTransfer).toNewTransferPayloadDTO().toJson();
-        throw UnimplementedError();
+        return (payload as NewTransfer).toNewTransferPayloadDTO().toJson();
       case ShortcutType.payment:
         // TODO: Map into a payment dto and call `toJson()` on it
         throw UnimplementedError();

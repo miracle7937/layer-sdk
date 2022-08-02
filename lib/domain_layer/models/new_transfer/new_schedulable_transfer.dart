@@ -21,6 +21,8 @@ abstract class NewSchedulableTransfer extends NewTransfer {
     this.recurrence = Recurrence.none,
     this.starts,
     this.ends,
+    super.saveToShortcut,
+    super.shortcutName,
   });
 
   /// Whether if this transfer is recurring or not.

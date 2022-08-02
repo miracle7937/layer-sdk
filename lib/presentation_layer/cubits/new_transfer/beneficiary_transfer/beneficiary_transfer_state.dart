@@ -68,6 +68,9 @@ enum BeneficiaryTransferAction {
 
   /// The second factor is being resent.
   resendSecondFactor,
+
+  /// The shortcut is being created.
+  shortcut,
 }
 
 /// The available error status.

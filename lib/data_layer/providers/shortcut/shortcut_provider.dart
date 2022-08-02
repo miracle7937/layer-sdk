@@ -12,13 +12,15 @@ class ShortcutProvider {
   });
 
   /// Creates a new shortcut.
+  ///
+  /// The data is being sent inside an array as per BE requirements.
   Future<void> submit({
     required ShortcutDTO shortcut,
   }) async {
     await netClient.request(
       netClient.netEndpoints.shortcut,
       method: NetRequestMethods.post,
-      data: shortcut.toJson(),
+      data: [shortcut.toJson()],
     );
   }
 }
