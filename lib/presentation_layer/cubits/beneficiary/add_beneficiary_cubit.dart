@@ -14,6 +14,8 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
   final LoadBanksByCountryCodeUseCase _loadBanksByCountryCodeUseCase;
   final AddNewBeneficiaryUseCase _addNewBeneficiaryUseCase;
 
+  final TransferType? _beneficiaryType;
+
   /// Creates a new cubit using the supplied [LoadAvailableCurrenciesUseCase].
   AddBeneficiaryCubit({
     required LoadCountriesUseCase loadCountriesUseCase,
@@ -21,11 +23,13 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
     required LoadAvailableCurrenciesUseCase loadAvailableCurrenciesUseCase,
     required LoadBanksByCountryCodeUseCase loadBanksByCountryCodeUseCase,
     required AddNewBeneficiaryUseCase addNewBeneficiariesUseCase,
+    TransferType? beneficiaryType,
   })  : _loadCountriesUseCase = loadCountriesUseCase,
         _getCustomerAccountsUseCase = getCustomerAccountsUseCase,
         _loadAvailableCurrenciesUseCase = loadAvailableCurrenciesUseCase,
         _loadBanksByCountryCodeUseCase = loadBanksByCountryCodeUseCase,
         _addNewBeneficiaryUseCase = addNewBeneficiariesUseCase,
+        _beneficiaryType = beneficiaryType,
         super(AddBeneficiaryState());
 
   /// Loads initial data:
@@ -76,6 +80,7 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
             middleName: '',
             bankName: '',
             currency: selectedCurrency?.code,
+            type: _beneficiaryType,
           ),
           countries: countries,
           selectedCurrency: selectedCurrency,
@@ -249,14 +254,17 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         sortCode: accountRequired ? state.beneficiary!.sortCode! : '',
         iban: accountRequired ? '' : state.beneficiary!.iban!,
       );
-      await _addNewBeneficiaryUseCase(
+      final newBeneficiary = await _addNewBeneficiaryUseCase(
         beneficiary: beneficiary,
       );
 
       emit(
         state.copyWith(
+          beneficiary: newBeneficiary,
           busy: false,
-          action: AddBeneficiaryAction.success,
+          action: newBeneficiary.otpId == null
+              ? AddBeneficiaryAction.success
+              : AddBeneficiaryAction.otpRequired,
         ),
       );
     } on Exception catch (e) {

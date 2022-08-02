@@ -13,6 +13,8 @@ class EditBeneficiaryOtpVerificationCubit
   final ResendBeneficiarySecondFactorUseCase
       _resendBeneficiarySecondFactorUseCase;
 
+  final bool _isEditing;
+
   /// Creates a new cubit using the supplied [LoadAvailableCurrenciesUseCase].
   EditBeneficiaryOtpVerificationCubit({
     required VerifyBeneficiarySecondFactorUseCase
@@ -20,10 +22,12 @@ class EditBeneficiaryOtpVerificationCubit
     required ResendBeneficiarySecondFactorUseCase
         resendBeneficiarySecondFactorUseCase,
     required Beneficiary beneficiary,
+    bool isEditing = false,
   })  : _verifyBeneficiarySecondFactorUseCase =
             verifyBeneficiarySecondFactorUseCase,
         _resendBeneficiarySecondFactorUseCase =
             resendBeneficiarySecondFactorUseCase,
+        _isEditing = isEditing,
         super(
           EditBeneficiaryOtpVerificationState(
             beneficiary: beneficiary.copyWith(),
@@ -46,7 +50,7 @@ class EditBeneficiaryOtpVerificationCubit
       final beneficiary = await _verifyBeneficiarySecondFactorUseCase(
         beneficiary: state.beneficiary,
         otpValue: otpValue,
-        isEditing: true,
+        isEditing: _isEditing,
       );
 
       emit(
@@ -87,7 +91,7 @@ class EditBeneficiaryOtpVerificationCubit
     try {
       final beneficiary = await _resendBeneficiarySecondFactorUseCase(
         beneficiary: state.beneficiary,
-        isEditing: true,
+        isEditing: _isEditing,
       );
 
       emit(

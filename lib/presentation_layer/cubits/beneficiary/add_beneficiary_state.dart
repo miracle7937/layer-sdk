@@ -130,6 +130,9 @@ enum AddBeneficiaryAction {
   /// Adding new beneficiary action.
   add,
 
+  /// Adding new beneficiary requires OTP verification action.
+  otpRequired,
+
   /// Successful adding new beneficiary action.
   success,
 

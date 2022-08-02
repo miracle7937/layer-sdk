@@ -1,5 +1,6 @@
 import '../../../domain_layer/models.dart';
 import '../../dtos.dart';
+import '../../mappings.dart';
 
 /// Extension that provides mappings for [Beneficiary]
 extension BeneficiaryMapping on Beneficiary {
@@ -20,5 +21,6 @@ extension BeneficiaryMapping on Beneficiary {
         bankCountryCode: bank?.countryCode ?? '',
         currency: currency,
         otpId: otpId,
+        type: type?.toTransferTypeDTO(),
       );
 }
