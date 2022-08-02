@@ -21,6 +21,9 @@ abstract class CustomerRepositoryInterface {
     String? id,
   });
 
+  /// Fetches the logged in customer
+  Future<Customer?> fetchCurrentCustomer();
+
   /// Returns the id for the customer that owns the associated account id.
   Future<String> fetchIdFromAccountId({
     required String accountId,
