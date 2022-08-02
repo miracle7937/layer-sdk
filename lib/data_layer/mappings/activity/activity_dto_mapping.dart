@@ -35,11 +35,7 @@ extension ActivityDTOMapping on ActivityDTO {
       case ActivityTypeDTO.recurringTopup:
         return (item as PaymentDTO).toPayment();
       default:
-        throw MappingException(
-          from: item.runtimeType,
-          to: dynamic,
-          details: type?.value.toString(),
-        );
+        return item;
     }
   }
 }
