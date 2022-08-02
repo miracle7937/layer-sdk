@@ -50,8 +50,10 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
       amount! > 0 &&
       currency != null &&
       currency?.code != null &&
-      (destination?.beneficiary != null ||
-          (newBeneficiary != null &&
+      ((beneficiaryType == DestinationBeneficiaryType.currentBeneficiary &&
+              destination?.beneficiary != null) ||
+          (beneficiaryType == DestinationBeneficiaryType.newBeneficiary &&
+              newBeneficiary != null &&
               (newBeneficiary?.canBeSubmitted ?? false))) &&
       (recurrence == Recurrence.none || starts != null) &&
       (!saveToShortcut || (shortcutName?.isNotEmpty ?? false));
