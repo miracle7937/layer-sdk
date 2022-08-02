@@ -20,7 +20,7 @@ class MoreInfoProvider {
   /// Fetch the rendered file
   Future<Uint8List> fetchRenderedFile(List<MoreInfoFieldDTO> infoFields) async {
     var fields = <Map<String, dynamic>>[];
-    fields = infoFields.map((field) => field.toJson()).toList();
+    fields = infoFields.map((field) => field.toJson()).toList(growable: false);
 
     final moreInfo = <String, dynamic>{
       'more_info': fields,
