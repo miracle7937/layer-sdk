@@ -150,7 +150,7 @@ class ActivityProvider {
     }
 
     final response = await netClient.request(
-      '${netClient.netEndpoints.requests}/$id/cancel',
+      '${netClient.netEndpoints.request}/$id/cancel',
       queryParameters: param,
       method: NetRequestMethods.post,
     );

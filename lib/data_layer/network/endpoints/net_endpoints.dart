@@ -193,7 +193,7 @@ class NetEndpoints {
   String get queueRequest => '';
 
   /// The Requests endpoint
-  String get requests => '$_authengine/request';
+  String get requests => '';
 
   /// The financial data endpoint
   String get financialData => '$_infoBanking/v2/financial_data';

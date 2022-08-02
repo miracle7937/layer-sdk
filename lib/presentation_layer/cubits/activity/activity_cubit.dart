@@ -98,9 +98,7 @@ class ActivityCubit extends Cubit<ActivityState> {
     );
 
     try {
-      final result = _deleteActivityUseCase(id);
-
-      print(result);
+      _deleteActivityUseCase(id);
 
       emit(state.copyWith(action: ActivityBusyAction.none));
     } on Exception catch (e) {
@@ -127,9 +125,7 @@ class ActivityCubit extends Cubit<ActivityState> {
     );
 
     try {
-      final result = _cancelActivityUseCase(id, otpValue: otpValue);
-
-      print(result);
+      _cancelActivityUseCase(id, otpValue: otpValue);
 
       emit(state.copyWith(action: ActivityBusyAction.none));
     } on Exception catch (e) {
