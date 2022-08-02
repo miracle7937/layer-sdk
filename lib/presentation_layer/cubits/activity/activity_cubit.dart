@@ -88,57 +88,12 @@ class ActivityCubit extends Cubit<ActivityState> {
     }
   }
 
-  /// Deletes the [Activity] by `id`
-  Future<void> delete(String id) async {
-    emit(
-      state.copyWith(
-        action: ActivityBusyAction.loading,
-        errorStatus: ActivityErrorStatus.none,
-      ),
-    );
-
-    try {
-      _deleteActivityUseCase(id);
-
-      emit(state.copyWith(action: ActivityBusyAction.none));
-    } on Exception catch (e) {
-      emit(
-        state.copyWith(
-          errorStatus: e is NetException
-              ? ActivityErrorStatus.network
-              : ActivityErrorStatus.generic,
-          action: ActivityBusyAction.none,
-        ),
-      );
-
-      rethrow;
-    }
-  }
+  /// Delete a certain activity based on the id
+  Future<void> delete(String activityId) => _deleteActivityUseCase(activityId);
 
   /// Cancel the [Activity] by `id`
-  Future<void> cancel(String id, {String? otpValue}) async {
-    emit(
-      state.copyWith(
-        action: ActivityBusyAction.loading,
-        errorStatus: ActivityErrorStatus.none,
-      ),
-    );
-
-    try {
-      _cancelActivityUseCase(id, otpValue: otpValue);
-
-      emit(state.copyWith(action: ActivityBusyAction.none));
-    } on Exception catch (e) {
-      emit(
-        state.copyWith(
-          errorStatus: e is NetException
-              ? ActivityErrorStatus.network
-              : ActivityErrorStatus.generic,
-          action: ActivityBusyAction.none,
-        ),
+  Future<void> cancel(String id, {String? otpValue}) => _cancelActivityUseCase(
+        id,
+        otpValue: otpValue,
       );
-
-      rethrow;
-    }
-  }
 }
