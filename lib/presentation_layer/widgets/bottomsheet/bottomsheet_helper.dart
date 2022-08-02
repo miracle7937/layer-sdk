@@ -42,6 +42,7 @@ class BottomSheetHelper {
   }) =>
       showModalBottomSheet<T>(
         context: context,
+        barrierColor: DesignSystem.of(context).baseTertiary,
         isDismissible: dismissible,
         enableDrag: enableDrag,
         isScrollControlled: isScrollControlled,
@@ -74,6 +75,7 @@ class BottomSheetHelper {
 
     return showModalBottomSheet(
       context: context,
+      barrierColor: DesignSystem.of(context).baseTertiary,
       isScrollControlled: isScrollControlled,
       backgroundColor: backgroundColor,
       shape: const RoundedRectangleBorder(
@@ -106,6 +108,7 @@ class BottomSheetHelper {
     bool isScrollControlled = true,
   }) async =>
       showModalBottomSheet(
+        barrierColor: DesignSystem.of(context).baseTertiary,
         context: context,
         isScrollControlled: isScrollControlled,
         shape: const RoundedRectangleBorder(
@@ -142,6 +145,7 @@ class BottomSheetHelper {
   }) async {
     final result = await showModalBottomSheet(
       context: context,
+      barrierColor: DesignSystem.of(context).baseTertiary,
       backgroundColor: backgroundColor,
       isScrollControlled: isScrollControlled,
       shape: const RoundedRectangleBorder(
