@@ -1,7 +1,7 @@
 import '../../abstract_repositories.dart';
 import '../../models.dart';
 
-/// Use case to update customer grace period
+/// Use case to get the current logged in customer
 class LoadCurrentCustomerUseCase {
   final CustomerRepositoryInterface _repository;
 
