@@ -54,8 +54,7 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
           (newBeneficiary != null &&
               (newBeneficiary?.canBeSubmitted ?? false))) &&
       (recurrence == Recurrence.none || starts != null) &&
-      (!saveToShortcut ||
-          (shortcutName != null && (shortcutName?.isNotEmpty ?? false)));
+      (!saveToShortcut || (shortcutName?.isNotEmpty ?? false));
 
   @override
   BeneficiaryTransfer copyWith({
