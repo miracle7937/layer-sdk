@@ -546,7 +546,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
                     ? 'connectivity_error'
                     : e.code
                 : null,
-            message: e is NetException ? e.message : 'generic_error',
+            message: e is NetException ? e.message : null,
           ),
         ),
       );
@@ -602,7 +602,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
                     ? 'connectivity_error'
                     : e.code
                 : null,
-            message: e is NetException ? e.message : 'generic_error',
+            message: e is NetException ? e.message : null,
           ),
         ),
       );
@@ -644,7 +644,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
                     ? 'connectivity_error'
                     : e.code
                 : null,
-            message: e is NetException ? e.message : 'generic_error',
+            message: e is NetException ? e.message : null,
           ),
         ),
       );
