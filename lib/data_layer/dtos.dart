@@ -91,6 +91,7 @@ export 'dtos/recurrence/recurrence_dto.dart';
 export 'dtos/role/role_dto.dart';
 export 'dtos/second_factor/second_factor_type_dto.dart';
 export 'dtos/setting/global_setting_dto.dart';
+export 'dtos/shortcut/shortcut_dto.dart';
 export 'dtos/transfer/bulk_detail_dto.dart';
 export 'dtos/transfer/share_type_dto.dart';
 export 'dtos/transfer/transfer_dto.dart';

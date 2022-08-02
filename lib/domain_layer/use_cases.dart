@@ -109,6 +109,7 @@ export 'use_cases/queue/reject_queue_use_case.dart';
 export 'use_cases/queue/remove_queue_from_requests_use_case.dart';
 export 'use_cases/role/load_customer_roles_use_case.dart';
 export 'use_cases/setting/load_global_settings_use_case.dart';
+export 'use_cases/shortcut/create_shortcut_use_case.dart';
 export 'use_cases/standing_orders/load_standing_orders_use_case.dart';
 export 'use_cases/storage/load_authentication_settings_use_case.dart';
 export 'use_cases/storage/load_brightness_use_case.dart';
