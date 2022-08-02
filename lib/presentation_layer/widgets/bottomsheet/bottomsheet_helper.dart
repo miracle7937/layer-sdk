@@ -16,6 +16,9 @@ enum BottomSheetType {
 
   /// Sucess
   success,
+
+  /// Info
+  info,
 }
 
 // ignore: avoid_classes_with_only_static_members
@@ -347,6 +350,9 @@ extension BottomSheetTypeUIExtension on BottomSheetType {
 
       case BottomSheetType.success:
         return FLImages.success;
+
+      case BottomSheetType.info:
+        return FLImages.info;
     }
   }
 }
