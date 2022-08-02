@@ -19,7 +19,7 @@ class LabelledValue extends Equatable {
   });
 
   @override
-  List<Object?> get props => [label, value];
+  List<Object?> get props => [label, value, labelledValueExtraInfo];
 }
 
 /// This is an abstract class that will help customizing the extra info about
@@ -27,4 +27,4 @@ class LabelledValue extends Equatable {
 ///
 /// Implement this abstract class to add your custom extra data for the label
 /// and the value.
-abstract class LabelledValueExtraInfo {}
+abstract class LabelledValueExtraInfo extends Equatable {}
