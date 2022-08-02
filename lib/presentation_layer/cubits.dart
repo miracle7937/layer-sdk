@@ -25,6 +25,8 @@ export 'cubits/beneficiary/beneficiaries_states.dart';
 export 'cubits/beneficiary/beneficiary_details_cubit.dart';
 export 'cubits/beneficiary/beneficiary_details_state.dart';
 export 'cubits/beneficiary/edit_beneficiary_cubit.dart';
+export 'cubits/beneficiary/edit_beneficiary_otp_verification_cubit.dart';
+export 'cubits/beneficiary/edit_beneficiary_otp_verification_state.dart';
 export 'cubits/beneficiary/edit_beneficiary_state.dart';
 export 'cubits/bill/bill_cubit.dart';
 export 'cubits/bill/bill_states.dart';

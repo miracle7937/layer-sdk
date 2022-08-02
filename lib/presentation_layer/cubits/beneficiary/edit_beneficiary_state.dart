@@ -126,18 +126,9 @@ enum EditBeneficiaryAction {
   /// Saving of edited beneficiary action.
   save,
 
-  /// Verifying OTP action.
-  verifyOtp,
-
-  /// Resending OTP action.
-  resendOtp,
-
   /// Edit requires OTP verification action.
   otpRequired,
 
   /// Edit successful beneficiary action.
   success,
-
-  /// No action.
-  none,
 }

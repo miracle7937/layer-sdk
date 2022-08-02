@@ -74,8 +74,10 @@ class BeneficiaryRepository implements BeneficiaryRepositoryInterface {
     required String otpValue,
     bool isEditing = false,
   }) async {
-    final beneficiaryDTO = await _provider.edit(
+    final beneficiaryDTO = await _provider.verifySecondFactor(
       beneficiaryDTO: beneficiary.toBeneficiaryDTO(),
+      otpValue: otpValue,
+      isEditing: isEditing,
     );
 
     return beneficiaryDTO.toBeneficiary();

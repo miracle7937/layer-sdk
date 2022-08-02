@@ -95,7 +95,7 @@ class BeneficiaryProvider {
     bool isEditing = false,
   }) async {
     final response = await netClient.request(
-      netClient.netEndpoints.submitTransfer,
+      netClient.netEndpoints.beneficiary2,
       method: isEditing ? NetRequestMethods.patch : NetRequestMethods.post,
       queryParameters: {'otp_value': otpValue},
       data: beneficiaryDTO.toJson(isVerifyOtp: true),
@@ -112,7 +112,7 @@ class BeneficiaryProvider {
     bool isEditing = false,
   }) async {
     final response = await netClient.request(
-      netClient.netEndpoints.submitTransfer,
+      netClient.netEndpoints.beneficiary2,
       method: isEditing ? NetRequestMethods.patch : NetRequestMethods.post,
       queryParameters: {'resend_otp': true},
       data: beneficiaryDTO.toJson(isEditing: isEditing),

@@ -8,24 +8,12 @@ import '../../cubits.dart';
 /// A cubit that handles editing of the beneficiary.
 class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
   final EditBeneficiaryUseCase _editBeneficiaryUseCase;
-  final VerifyBeneficiarySecondFactorUseCase
-      _verifyBeneficiarySecondFactorUseCase;
-  final ResendBeneficiarySecondFactorUseCase
-      _resendBeneficiarySecondFactorUseCase;
 
   /// Creates a new cubit using the supplied [LoadAvailableCurrenciesUseCase].
   EditBeneficiaryCubit({
     required EditBeneficiaryUseCase editBeneficiariesUseCase,
-    required VerifyBeneficiarySecondFactorUseCase
-        verifyBeneficiarySecondFactorUseCase,
-    required ResendBeneficiarySecondFactorUseCase
-        resendBeneficiarySecondFactorUseCase,
     required Beneficiary editingBeneficiary,
   })  : _editBeneficiaryUseCase = editBeneficiariesUseCase,
-        _verifyBeneficiarySecondFactorUseCase =
-            verifyBeneficiarySecondFactorUseCase,
-        _resendBeneficiarySecondFactorUseCase =
-            resendBeneficiarySecondFactorUseCase,
         super(
           EditBeneficiaryState(
             oldBeneficiary: editingBeneficiary,
@@ -76,7 +64,11 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
   void onEdit() async {
     emit(
       state.copyWith(
-        actions: _addAction(EditBeneficiaryAction.save),
+        actions: _addAction(
+          EditBeneficiaryAction.save,
+        ).difference(
+          {EditBeneficiaryAction.otpRequired},
+        ),
         errors: _addError(
           action: EditBeneficiaryAction.save,
           errorStatus: EditBeneficiaryErrorStatus.none,
@@ -109,7 +101,7 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
         state.copyWith(
           actions: _removeAction(EditBeneficiaryAction.save),
           errors: _addError(
-            action: EditBeneficiaryAction.none,
+            action: EditBeneficiaryAction.save,
             errorStatus: e is NetException
                 ? EditBeneficiaryErrorStatus.network
                 : EditBeneficiaryErrorStatus.generic,
@@ -119,89 +111,6 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
         ),
       );
       rethrow;
-    }
-  }
-
-  /// Verifies the second factor for the edited beneficiary
-  /// retrieved on the [onEdit] method.
-  Future<void> verifySecondFactor({
-    required String otpValue,
-  }) async {
-    emit(
-      state.copyWith(
-        actions: _addAction(EditBeneficiaryAction.verifyOtp),
-        errors: _addError(
-          action: EditBeneficiaryAction.verifyOtp,
-          errorStatus: EditBeneficiaryErrorStatus.none,
-        ),
-      ),
-    );
-
-    try {
-      final beneficiary = await _verifyBeneficiarySecondFactorUseCase(
-        beneficiary: state.beneficiary,
-        otpValue: otpValue,
-        isEditing: true,
-      );
-
-      emit(
-        state.copyWith(
-          beneficiary: beneficiary,
-          actions: _removeAction(EditBeneficiaryAction.verifyOtp),
-        ),
-      );
-    } on Exception catch (e) {
-      emit(
-        state.copyWith(
-          actions: _removeAction(EditBeneficiaryAction.verifyOtp),
-          errors: _addError(
-            action: EditBeneficiaryAction.none,
-            errorStatus: e is NetException
-                ? EditBeneficiaryErrorStatus.network
-                : EditBeneficiaryErrorStatus.generic,
-          ),
-        ),
-      );
-    }
-  }
-
-  /// Verifies the second factor for the edited beneficiary
-  /// retrieved on the [onEdit] method.
-  Future<void> resendSecondFactor() async {
-    emit(
-      state.copyWith(
-        actions: _addAction(EditBeneficiaryAction.resendOtp),
-        errors: _addError(
-          action: EditBeneficiaryAction.resendOtp,
-          errorStatus: EditBeneficiaryErrorStatus.none,
-        ),
-      ),
-    );
-
-    try {
-      final beneficiary = await _resendBeneficiarySecondFactorUseCase(
-        beneficiary: state.beneficiary,
-        isEditing: true,
-      );
-
-      emit(
-        state.copyWith(
-          beneficiary: beneficiary,
-          actions: _removeAction(EditBeneficiaryAction.resendOtp),
-        ),
-      );
-    } on Exception catch (e) {
-      emit(
-        state.copyWith(
-          actions: _removeAction(EditBeneficiaryAction.resendOtp),
-          errors: _addError(
-            action: EditBeneficiaryAction.none,
-            errorStatus: e is NetException
-                ? EditBeneficiaryErrorStatus.network
-                : EditBeneficiaryErrorStatus.generic,
-          ),
-        ),
-      );
     }
   }
 
