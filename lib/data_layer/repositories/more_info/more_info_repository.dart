@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import '../../../domain_layer/abstract_repositories.dart';
-import '../../../domain_layer/models.dart';
+import '../../dtos/more_info/more_info_field_dto.dart';
 import '../../providers.dart';
 
 /// Repository for fetching rendered info files
@@ -16,7 +16,7 @@ class MoreInfoRepository implements MoreInfoRepositoryInterface {
 
   /// Fetches info file
   @override
-  Future<Uint8List> fetchRenderedFile(List<MoreInfoField> infoFields) {
+  Future<Uint8List> fetchRenderedFile(List<MoreInfoFieldDTO> infoFields) {
     return _provider.fetchRenderedFile(infoFields);
   }
 }

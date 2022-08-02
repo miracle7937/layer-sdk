@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 
 import '../../../domain_layer/models.dart';
-import '../../mappings.dart';
+import '../../dtos/more_info/more_info_field_dto.dart';
 import '../../network.dart';
 
 /// Provides data related to Image rendered on server
@@ -18,12 +18,9 @@ class MoreInfoProvider {
   }) : _netClient = netClient;
 
   /// Fetch the rendered file
-  Future<Uint8List> fetchRenderedFile(List<MoreInfoField> infoFields) async {
-    final fields = <Map<String, dynamic>>[];
-
-    for (var f in infoFields) {
-      fields.add(f.toMoreInfoFieldDTO().toJson());
-    }
+  Future<Uint8List> fetchRenderedFile(List<MoreInfoFieldDTO> infoFields) async {
+    var fields = <Map<String, dynamic>>[];
+    fields = infoFields.map((field) => field.toJson()).toList();
 
     final moreInfo = <String, dynamic>{
       'more_info': fields,

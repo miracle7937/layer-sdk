@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
+import '../../../data_layer/dtos/more_info/more_info_field_dto.dart';
 import '../../abstract_repositories.dart';
-import '../../models.dart';
 
 /// Usecase for fetching rendered info files
 class LoadInfoRendedFileUseCase {
@@ -13,7 +13,7 @@ class LoadInfoRendedFileUseCase {
   }) : _repository = repository;
 
   /// Callable that fetches the file
-  Future<Uint8List> call({required List<MoreInfoField> infoFields}) {
+  Future<Uint8List> call({required List<MoreInfoFieldDTO> infoFields}) {
     return _repository.fetchRenderedFile(infoFields);
   }
 }

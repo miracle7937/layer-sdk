@@ -284,7 +284,7 @@ class NetEndpoints {
   /// Endpoint for getting customer checkbooks
   String get checkbooks => '$_infoBanking/v1/checkbook';
 
-  ///Endpoint for getting html/image/pdf rendered on server
+  /// Endpoint for getting html/image/pdf rendered on server
   String get moreInfo => '$_renderingEngine/v1/render/more_info';
 
   /// Endpoint for getting Mandate payments
