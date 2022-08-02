@@ -1,6 +1,7 @@
 import 'package:design_kit_layer/design_kit_layer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../../resources.dart';
 import '../../utils.dart';
@@ -162,6 +163,39 @@ class BottomSheetHelper {
     );
 
     return result ?? false;
+  }
+
+  /// Show a modal bottom sheet similar to iOS Modal Sheets
+  static Future<T?> showLayerModalBottomSheet<T>({
+    required BuildContext context,
+    required Widget body,
+    bool expand = false,
+    bool useRootNavigator = false,
+    bool isDismissible = true,
+    Color? backgroundColor,
+    Color? barrierColor,
+    bool enableDrag = true,
+    AnimationController? secondAnimation,
+    bool bounce = false,
+    Duration duration = const Duration(milliseconds: 400),
+    double closeProgressThreshold = 0.6,
+    Radius topRadius = const Radius.circular(12),
+  }) {
+    return showCupertinoModalBottomSheet<T>(
+      context: context,
+      expand: expand,
+      useRootNavigator: useRootNavigator,
+      isDismissible: isDismissible,
+      barrierColor: barrierColor,
+      enableDrag: enableDrag,
+      secondAnimation: secondAnimation,
+      bounce: bounce,
+      duration: duration,
+      closeProgressThreshold: closeProgressThreshold,
+      backgroundColor: backgroundColor,
+      topRadius: topRadius,
+      builder: (context) => Material(child: body),
+    );
   }
 }
 

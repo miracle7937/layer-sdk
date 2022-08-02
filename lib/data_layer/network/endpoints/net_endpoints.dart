@@ -303,4 +303,7 @@ class NetEndpoints {
 
   /// Endpoint for submitting a transfer.
   String get submitTransfer => '$_txnBanking/v2/transfer';
+
+  /// Endpoint for deleting a request
+  String get request => '$_customer/v1/request';
 }

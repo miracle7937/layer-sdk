@@ -69,6 +69,7 @@ dependencies:
   url_launcher: ^6.1.0
   validators: ^3.0.0
   pin_code_fields: ^7.4.0
+  modal_bottom_sheet: ^2.1.0
 
 dev_dependencies:
   # Keep this section alphabetized
