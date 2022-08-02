@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+
 import '../../../../../domain_layer/models.dart';
 
 /// The available error status
@@ -66,6 +67,9 @@ class AuthenticationState extends Equatable {
   /// The logged-in user. If null, no user is logged in.
   final User? user;
 
+  /// The customer information
+  final Customer? customer;
+
   /// The current error status.
   final AuthenticationErrorStatus errorStatus;
 
@@ -97,6 +101,7 @@ class AuthenticationState extends Equatable {
   /// Creates a new authentication state
   AuthenticationState({
     this.user,
+    this.customer,
     this.errorStatus = AuthenticationErrorStatus.none,
     String? errorMessage,
     this.busy = false,
@@ -111,6 +116,7 @@ class AuthenticationState extends Equatable {
   @override
   List<Object?> get props => [
         user,
+        customer,
         errorStatus,
         errorMessage,
         busy,
@@ -124,6 +130,7 @@ class AuthenticationState extends Equatable {
   /// Creates a new state based on this one.
   AuthenticationState copyWith({
     User? user,
+    Customer? customer,
     AuthenticationErrorStatus? errorStatus,
     String? errorMessage,
     bool? busy,
@@ -134,6 +141,7 @@ class AuthenticationState extends Equatable {
   }) =>
       AuthenticationState(
         user: user ?? this.user,
+        customer: customer ?? this.customer,
         errorStatus: errorStatus ?? this.errorStatus,
         errorMessage: errorStatus == AuthenticationErrorStatus.none
             ? null

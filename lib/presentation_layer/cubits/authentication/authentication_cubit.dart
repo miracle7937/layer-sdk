@@ -16,6 +16,8 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   final ChangePasswordUseCase _changePasswordUseCase;
   final VerifyAccessPinUseCase _verifyAccessPinUseCase;
   final UpdateUserTokenUseCase _updateUserTokenUseCase;
+  final LoadCurrentCustomerUseCase _customerUseCase;
+  final bool _shouldGetCustomerObject;
 
   /// Creates a new cubit with an empty [AuthenticationState] and calls
   /// load settings
@@ -27,6 +29,8 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     required ChangePasswordUseCase changePasswordUseCase,
     required VerifyAccessPinUseCase verifyAccessPinUseCase,
     required UpdateUserTokenUseCase updateUserTokenUseCase,
+    required LoadCurrentCustomerUseCase customerUseCase,
+    bool shouldGetCustomerObject = false,
   })  : _loginUseCase = loginUseCase,
         _logoutUseCase = logoutUseCase,
         _recoverPasswordUseCase = recoverPasswordUseCase,
@@ -34,6 +38,8 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         _changePasswordUseCase = changePasswordUseCase,
         _verifyAccessPinUseCase = verifyAccessPinUseCase,
         _updateUserTokenUseCase = updateUserTokenUseCase,
+        _shouldGetCustomerObject = shouldGetCustomerObject,
+        _customerUseCase = customerUseCase,
         super(AuthenticationState());
 
   /// Sets the provided user as the current logged user and emits updated state.
@@ -41,6 +47,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   /// Configures the [NetClient] token with the user token.
   void setLoggedUser(User user) {
     _updateUserTokenUseCase(token: user.token);
+    if (_shouldGetCustomerObject) loadCustomerObject();
     emit(state.copyWith(user: user));
   }
 
@@ -73,6 +80,40 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
               ? AuthenticationErrorStatus.network
               : AuthenticationErrorStatus.generic,
           errorMessage: e is NetException ? e.message : null,
+        ),
+      );
+
+      rethrow;
+    }
+  }
+
+  /// Loads the customer's object
+  Future<void> loadCustomerObject() async {
+    emit(
+      state.copyWith(
+        busy: true,
+        errorMessage: '',
+        errorStatus: AuthenticationErrorStatus.none,
+      ),
+    );
+
+    try {
+      final customerInfo = await _customerUseCase();
+
+      emit(
+        state.copyWith(
+          busy: false,
+          customer: customerInfo,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          busy: false,
+          errorMessage: e is NetException ? e.message : e.toString(),
+          errorStatus: e is NetException
+              ? AuthenticationErrorStatus.network
+              : AuthenticationErrorStatus.generic,
         ),
       );
 
@@ -433,6 +474,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   /// using biometrics successfully
   void unlock(User user) {
     _updateUserTokenUseCase(token: user.token);
+    if (_shouldGetCustomerObject) loadCustomerObject();
 
     emit(
       state.copyWith(

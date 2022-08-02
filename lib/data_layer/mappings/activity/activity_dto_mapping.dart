@@ -1,14 +1,15 @@
 import '../../../domain_layer/models.dart';
 import '../../dtos.dart';
 import '../../errors.dart';
+import '../../mappings.dart';
 
 /// Extension that provides mappings for [ActivityDTO]
 extension ActivityDTOMapping on ActivityDTO {
   /// Maps into a [Activity]
-  Activity toActivity() => Activity(
+  Activity toActivity(DPAMappingCustomData customData) => Activity(
         id: id ?? '',
         itemId: itemId,
-        item: item,
+        item: _itemDTOToModel(customData),
         status: status ?? '',
         message: message ?? '',
         alertID: alertID ?? 0,
@@ -17,6 +18,30 @@ extension ActivityDTOMapping on ActivityDTO {
         type: type?.toType(),
         actions: actions?.map((e) => e.toActivityActionType()).toList(),
       );
+
+  dynamic _itemDTOToModel(DPAMappingCustomData customData) {
+    switch (type) {
+      case ActivityTypeDTO.dpa:
+        return (item as DPATaskDTO).toDPATask(customData);
+      case ActivityTypeDTO.transfer:
+      case ActivityTypeDTO.scheduledTransfer:
+      case ActivityTypeDTO.recurringTransfer:
+        return (item as TransferDTO).toTransfer();
+      case ActivityTypeDTO.payment:
+      case ActivityTypeDTO.scheduledPayment:
+      case ActivityTypeDTO.recurringPayment:
+      case ActivityTypeDTO.topupPayment:
+      case ActivityTypeDTO.scheduledTopup:
+      case ActivityTypeDTO.recurringTopup:
+        return (item as PaymentDTO).toPayment();
+      default:
+        throw MappingException(
+          from: item.runtimeType,
+          to: dynamic,
+          details: type?.value.toString(),
+        );
+    }
+  }
 }
 
 /// Extension that provides mappings for [ActivityTypeDTO]

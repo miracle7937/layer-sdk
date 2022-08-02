@@ -19,6 +19,8 @@ class MockRecoverPasswordUseCase extends Mock
 
 class MockResetPasswordUseCase extends Mock implements ResetPasswordUseCase {}
 
+class MockCustomerUseCase extends Mock implements LoadCurrentCustomerUseCase {}
+
 class MockVerifyAccessPinUseCase extends Mock
     implements VerifyAccessPinUseCase {}
 
@@ -32,6 +34,7 @@ final _recoverPasswordUseCase = MockRecoverPasswordUseCase();
 final _resetPasswordUseCase = MockResetPasswordUseCase();
 final _verifyAccessPinUseCase = MockVerifyAccessPinUseCase();
 final _updateUserTokenUseCase = MockUpdateUserTokenUseCase();
+final _customerUseCase = MockCustomerUseCase();
 
 void main() {
   EquatableConfig.stringify = true;
@@ -46,6 +49,7 @@ void main() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
+      customerUseCase: _customerUseCase,
     ),
     verify: (c) => expect(c.state, AuthenticationState()),
   ); // starts on empty state
@@ -178,6 +182,7 @@ void _loginFlowTests() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
+      customerUseCase: _customerUseCase,
     ),
     act: (c) => c.setLoggedUser(_activeUser),
     expect: () => [
@@ -198,6 +203,7 @@ void _loginFlowTests() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
+      customerUseCase: _customerUseCase,
     ),
     seed: () => AuthenticationState(
       user: _activeUser,
@@ -229,6 +235,7 @@ void _loginFlowTests() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
+      customerUseCase: _customerUseCase,
     ),
     seed: AuthenticationState.new,
     act: (c) => c.login(
@@ -263,6 +270,7 @@ void _loginFlowTests() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
+      customerUseCase: _customerUseCase,
     ),
     act: (c) => c.login(
       username: usernameActive,
@@ -292,6 +300,7 @@ void _loginFlowTests() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
+      customerUseCase: _customerUseCase,
     ),
     act: (c) => c.login(
       username: usernameSuspended,
@@ -322,6 +331,7 @@ void _loginFlowTests() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
+      customerUseCase: _customerUseCase,
     ),
     act: (c) => c.login(
       username: usernameExpired,
@@ -352,6 +362,7 @@ void _loginFlowTests() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
+      customerUseCase: _customerUseCase,
     ),
     act: (c) => c.login(
       username: usernameException,
@@ -387,6 +398,7 @@ void _loginFlowTests() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
+      customerUseCase: _customerUseCase,
     ),
     act: (c) => c.login(
       username: usernameNetException,
@@ -422,6 +434,7 @@ void _loginFlowTests() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
+      customerUseCase: _customerUseCase,
     ),
     seed: () => AuthenticationState(
       user: _exceptionUser,
@@ -458,6 +471,7 @@ void _loginFlowTests() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
+      customerUseCase: _customerUseCase,
     ),
     seed: () => AuthenticationState(
       user: _netExceptionUser,
@@ -532,6 +546,7 @@ void _accessPinTests() {
       recoverPasswordUseCase: _recoverPasswordUseCase,
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      customerUseCase: _customerUseCase,
     ),
     act: (c) => c.verifyAccessPin(correctPin),
     expect: () => [
@@ -556,6 +571,7 @@ void _accessPinTests() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
+      customerUseCase: _customerUseCase,
     ),
     act: (c) => c.verifyAccessPin(incorrectPin),
     expect: () => [
@@ -579,6 +595,7 @@ void _accessPinTests() {
       recoverPasswordUseCase: _recoverPasswordUseCase,
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      customerUseCase: _customerUseCase,
     ),
     seed: () => AuthenticationState(
       verifyPinResponse: VerifyPinResponse(
@@ -605,6 +622,7 @@ void _accessPinTests() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
+      customerUseCase: _customerUseCase,
     ),
     seed: () => AuthenticationState(user: user),
     act: (c) => c.setAccessPin(correctPin),
@@ -623,6 +641,7 @@ void _accessPinTests() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
+      customerUseCase: _customerUseCase,
     ),
     seed: AuthenticationState.new,
     act: (c) => c.lock(),
@@ -639,6 +658,7 @@ void _accessPinTests() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
+      customerUseCase: _customerUseCase,
     ),
     seed: () => AuthenticationState(
       user: user,
@@ -664,6 +684,7 @@ void _accessPinTests() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
+      customerUseCase: _customerUseCase,
     ),
     act: (c) => c.verifyAccessPin(exceptionPin),
     expect: () => [
@@ -691,6 +712,7 @@ void _accessPinTests() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
+      customerUseCase: _customerUseCase,
     ),
     act: (c) => c.verifyAccessPin(netExceptionPin),
     expect: () => [
@@ -720,6 +742,7 @@ void _emptyFieldsTests() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
+      customerUseCase: _customerUseCase,
     ),
     act: (c) => c.login(
       username: '',
@@ -748,6 +771,7 @@ void _emptyFieldsTests() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
+      customerUseCase: _customerUseCase,
     ),
     act: (c) => c.login(
       username: '',
@@ -776,6 +800,7 @@ void _emptyFieldsTests() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
+      customerUseCase: _customerUseCase,
     ),
     act: (c) => c.login(
       username: 'superadmin',
@@ -844,6 +869,7 @@ void _recoverPassword() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
+      customerUseCase: _customerUseCase,
     ),
     act: (c) => c.recoverPassword(username: _successUsername),
     expect: () => [
@@ -869,6 +895,7 @@ void _recoverPassword() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
+      customerUseCase: _customerUseCase,
     ),
     act: (c) => c.recoverPassword(username: _invalidUsername),
     expect: () => [
@@ -894,6 +921,7 @@ void _recoverPassword() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
+      customerUseCase: _customerUseCase,
     ),
     act: (c) => c.recoverPassword(username: _suspendedUsername),
     expect: () => [
@@ -919,6 +947,7 @@ void _recoverPassword() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
+      customerUseCase: _customerUseCase,
     ),
     act: (c) => c.recoverPassword(username: _notAllowedUsername),
     expect: () => [
@@ -944,6 +973,7 @@ void _recoverPassword() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
+      customerUseCase: _customerUseCase,
     ),
     act: (c) => c.recoverPassword(username: _exceptionUsername),
     expect: () => [
@@ -1032,6 +1062,7 @@ void _resetPassword() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
+      customerUseCase: _customerUseCase,
     ),
     act: (c) => c.resetPassword(
       username: successUsername,
@@ -1065,6 +1096,7 @@ void _resetPassword() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
+      customerUseCase: _customerUseCase,
     ),
     act: (c) => c.resetPassword(
       username: failureUsername,
@@ -1098,6 +1130,7 @@ void _resetPassword() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
+      customerUseCase: _customerUseCase,
     ),
     act: (c) => c.resetPassword(
       username: exceptionUsername,
@@ -1133,6 +1166,7 @@ void _resetPassword() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
+      customerUseCase: _customerUseCase,
     ),
     act: (c) => c.resetPassword(
       username: netExceptionUsername,
@@ -1182,6 +1216,7 @@ void _unlock() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
+      customerUseCase: _customerUseCase,
     ),
     act: (c) => c.unlock(user),
     expect: () => [
@@ -1207,6 +1242,7 @@ void _unlock() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
+      customerUseCase: _customerUseCase,
     ),
     act: (c) => c.lock(),
     expect: () => [],
