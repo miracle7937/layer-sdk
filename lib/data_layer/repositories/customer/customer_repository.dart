@@ -54,10 +54,10 @@ class CustomerRepository implements CustomerRepositoryInterface {
 
   /// Fetches the current logged in customer
   @override
-  Future<Customer?> fetchCurrentCustomer() async {
+  Future<Customer> fetchCurrentCustomer() async {
     final customerDTOs = await _provider.fetchLoggedInCustomer();
 
-    return customerDTOs?.toCustomer(_customerCustomData);
+    return customerDTOs.toCustomer(_customerCustomData);
   }
 
   /// Returns the id for the customer that owns the associated account id.

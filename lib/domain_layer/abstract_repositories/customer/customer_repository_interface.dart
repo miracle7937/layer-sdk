@@ -22,7 +22,7 @@ abstract class CustomerRepositoryInterface {
   });
 
   /// Fetches the logged in customer
-  Future<Customer?> fetchCurrentCustomer();
+  Future<Customer> fetchCurrentCustomer();
 
   /// Returns the id for the customer that owns the associated account id.
   Future<String> fetchIdFromAccountId({

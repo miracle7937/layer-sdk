@@ -11,5 +11,5 @@ class LoadCurrentCustomerUseCase {
   }) : _repository = repository;
 
   /// Fetches the currently logged in customer object
-  Future<Customer?> call() => _repository.fetchCurrentCustomer();
+  Future<Customer> call() => _repository.fetchCurrentCustomer();
 }

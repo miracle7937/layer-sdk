@@ -69,17 +69,15 @@ class CustomerProvider {
   }
 
   /// Returns the customer DTO
-  Future<CustomerDTO?> fetchLoggedInCustomer({
+  Future<CustomerDTO> fetchLoggedInCustomer({
     bool forceRefresh = false,
   }) async {
     final response = await netClient.request(
       netClient.netEndpoints.customer,
       method: NetRequestMethods.get,
       forceRefresh: forceRefresh,
-      throwAllErrors: false,
+      throwAllErrors: true,
     );
-
-    if (!response.success || response.data == null) return null;
 
     return CustomerDTO.fromJson(
       response.data is List ? response.data.first : response.data,
