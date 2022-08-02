@@ -296,6 +296,8 @@ class BankAppState extends State<BankApp> {
       ),
       BlocProvider<AuthenticationCubit>(
         create: (context) => AuthenticationCubit(
+          shouldGetCustomerObject:
+              widget.appConfiguration.shouldFetchCustomerObject,
           updateUserTokenUseCase: UpdateUserTokenUseCase(
             repository: AuthenticationRepository(
               AuthenticationProvider(
@@ -336,11 +338,15 @@ class BankAppState extends State<BankApp> {
             ),
           )),
           verifyAccessPinUseCase: VerifyAccessPinUseCase(
-              repository: AuthenticationRepository(
-            AuthenticationProvider(
-              netClient: widget.netClient,
+            repository: AuthenticationRepository(
+              AuthenticationProvider(
+                netClient: widget.netClient,
+              ),
             ),
-          )),
+          ),
+          customerUseCase: LoadCurrentCustomerUseCase(
+            repository: CustomerRepository(CustomerProvider(widget.netClient)),
+          ),
         ),
       ),
       BlocProvider<CurrencyCubit>(

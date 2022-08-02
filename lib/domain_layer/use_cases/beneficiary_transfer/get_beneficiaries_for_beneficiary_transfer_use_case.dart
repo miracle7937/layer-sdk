@@ -13,5 +13,7 @@ class GetDestinationBeneficiariesForBeneficiariesTransferUseCase {
 
   /// Return the beneficiaries for the destination beneficiary picker
   /// on the beneficiary transfer flow.
-  Future<List<Beneficiary>> call() => _beneficiaryRepository.list();
+  Future<List<Beneficiary>> call() => _beneficiaryRepository.list(
+        activeOnly: true,
+      );
 }
