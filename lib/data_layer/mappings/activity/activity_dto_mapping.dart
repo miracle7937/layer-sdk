@@ -36,11 +36,6 @@ extension ActivityDTOMapping on ActivityDTO {
         return (item as PaymentDTO).toPayment();
       default:
         return item;
-      // throw MappingException(
-      //   from: item.runtimeType,
-      //   to: dynamic,
-      //   details: type?.value.toString(),
-      // );
     }
   }
 }
