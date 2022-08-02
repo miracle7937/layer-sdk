@@ -132,4 +132,12 @@ class ActivityProvider {
       List<Map<String, dynamic>>.from(response.data),
     );
   }
+
+  /// Delete a certain activity based on the id
+  Future<void> delete(String activityId) async {
+    await netClient.request(
+      "${netClient.netEndpoints.request}/$activityId",
+      method: NetRequestMethods.delete,
+    );
+  }
 }
