@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import '../../models.dart';
+import '../../models/more_info/more_info_field.dart';
 
 /// Interface for fetching rendered info files
 abstract class MoreInfoRepositoryInterface {

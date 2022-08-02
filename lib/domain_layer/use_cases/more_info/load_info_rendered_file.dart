@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import '../../abstract_repositories.dart';
-import '../../models.dart';
+import '../../models/more_info/more_info_field.dart';
 
 /// Usecase for fetching rendered info files
 class LoadInfoRendedFileUseCase {

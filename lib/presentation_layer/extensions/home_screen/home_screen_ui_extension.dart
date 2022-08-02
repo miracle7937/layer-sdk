@@ -75,7 +75,7 @@ extension HomeScreenUIExtension on Experience {
       case ExperienceMenuType.tabBarBottomWithFocusAndMore:
         final shouldShowMoreItem = visiblePages.length > 3;
         final homePage = visiblePages.singleWhere(
-          (page) => page.title == 'dashboard',
+          (page) => page.title?.toLowerCase() == 'dashboard',
         );
 
         return DKBottomBarMenuWithHomeAndMore<ExperiencePage>(

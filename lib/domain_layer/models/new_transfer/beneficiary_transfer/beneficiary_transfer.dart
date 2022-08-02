@@ -38,6 +38,8 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
     super.ends,
     this.beneficiaryType = DestinationBeneficiaryType.newBeneficiary,
     this.newBeneficiary,
+    super.saveToShortcut,
+    super.shortcutName,
   }) : super();
 
   @override
@@ -48,10 +50,13 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
       amount! > 0 &&
       currency != null &&
       currency?.code != null &&
-      (destination?.beneficiary != null ||
-          (newBeneficiary != null &&
+      ((beneficiaryType == DestinationBeneficiaryType.currentBeneficiary &&
+              destination?.beneficiary != null) ||
+          (beneficiaryType == DestinationBeneficiaryType.newBeneficiary &&
+              newBeneficiary != null &&
               (newBeneficiary?.canBeSubmitted ?? false))) &&
-      (recurrence == Recurrence.none || starts != null);
+      (recurrence == Recurrence.none || starts != null) &&
+      (!saveToShortcut || (shortcutName?.isNotEmpty ?? false));
 
   @override
   BeneficiaryTransfer copyWith({
@@ -66,6 +71,8 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
     DateTime? ends,
     DestinationBeneficiaryType? beneficiaryType,
     NewBeneficiary? newBeneficiary,
+    bool? saveToShortcut,
+    String? shortcutName,
   }) =>
       BeneficiaryTransfer(
         type: type ?? super.type,
@@ -79,6 +86,10 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
         ends: ends ?? super.ends,
         beneficiaryType: beneficiaryType ?? this.beneficiaryType,
         newBeneficiary: newBeneficiary ?? this.newBeneficiary,
+        saveToShortcut: saveToShortcut ?? this.saveToShortcut,
+        shortcutName: !(saveToShortcut ?? this.saveToShortcut)
+            ? null
+            : shortcutName ?? this.shortcutName,
       );
 
   @override
@@ -101,7 +112,9 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
               ? null
               : newBeneficiary?.toBeneficiaryDTO(),
       reason: reason?.id,
-      extra: jsonDecode(destination?.beneficiary?.extra ?? ''),
+      extra: beneficiaryType == DestinationBeneficiaryType.currentBeneficiary
+          ? jsonDecode(destination?.beneficiary?.extra ?? '')
+          : null,
       recurrence: recurrence.toRecurrenceDTO(),
       startDate: starts,
       endDate: ends,
@@ -121,5 +134,7 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
         ends,
         beneficiaryType,
         newBeneficiary,
+        saveToShortcut,
+        shortcutName,
       ];
 }

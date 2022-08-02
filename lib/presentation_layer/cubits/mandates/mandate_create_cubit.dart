@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../../data_layer/network.dart';
 import '../../../domain_layer/models.dart';
@@ -7,18 +11,12 @@ import 'mandate_create_state.dart';
 
 /// Cubit for handling the creation of Debit Mandates
 class MandateCreateCubit extends Cubit<MandateCreateState> {
-  final LoadCustomerUseCase _customerUseCase;
-  final String _customerId;
   final LoadInfoRendedFileUseCase _mandateFileUseCase;
 
   /// Creates a new instance of [MandateCreateCubit]
   MandateCreateCubit({
-    required String customerId,
-    required LoadCustomerUseCase customerUseCase,
     required LoadInfoRendedFileUseCase renderedFileUseCase,
-  })  : _customerUseCase = customerUseCase,
-        _customerId = customerId,
-        _mandateFileUseCase = renderedFileUseCase,
+  })  : _mandateFileUseCase = renderedFileUseCase,
         super(MandateCreateState());
 
   /// Set the account that can be charged
@@ -35,40 +33,6 @@ class MandateCreateCubit extends Cubit<MandateCreateState> {
     emit(
       state.copyWith(hasAccepted: accepted),
     );
-  }
-
-  /// Loads cubit initial data
-  Future<void> load() async {
-    emit(
-      state.copyWith(
-        busy: true,
-        errorMessage: '',
-        errorStatus: MandateCreateErrorStatus.none,
-      ),
-    );
-
-    try {
-      final customerInfo =
-          await _customerUseCase(filters: CustomerFilters(id: _customerId));
-
-      emit(
-        state.copyWith(
-          customer: customerInfo.first,
-        ),
-      );
-    } on Exception catch (e) {
-      emit(
-        state.copyWith(
-          busy: false,
-          errorMessage: e is NetException ? e.message : e.toString(),
-          errorStatus: e is NetException
-              ? MandateCreateErrorStatus.network
-              : MandateCreateErrorStatus.generic,
-        ),
-      );
-
-      rethrow;
-    }
   }
 
   /// Fetches the Mandate pdf file
@@ -107,5 +71,26 @@ class MandateCreateCubit extends Cubit<MandateCreateState> {
 
       rethrow;
     }
+  }
+
+  /// Opens the more info pdf
+  Future<void> getMoreInfoPdf(
+    List<int> bytes,
+    String? id, {
+    bool isImage = false,
+  }) async {
+    final appDocDir = await getApplicationDocumentsDirectory();
+    final appPath = appDocDir.path;
+    final fileFormat = isImage ? "png" : "pdf";
+    final path =
+        '$appPath/direct_debit_more_info${id != null ? "_$id" : ""}.$fileFormat';
+    final file = File(path);
+    await file.writeAsBytes(bytes);
+
+    OpenFile.open(
+      file.path,
+      uti: isImage ? 'public.jpeg' : 'com.adobe.pdf',
+      type: isImage ? 'image/jpeg' : 'application/pdf',
+    );
   }
 }

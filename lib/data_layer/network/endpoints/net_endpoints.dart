@@ -284,7 +284,7 @@ class NetEndpoints {
   /// Endpoint for getting customer checkbooks
   String get checkbooks => '$_infoBanking/v1/checkbook';
 
-  ///Endpoint for getting html/image/pdf rendered on server
+  /// Endpoint for getting html/image/pdf rendered on server
   String get moreInfo => '$_renderingEngine/v1/render/more_info';
 
   /// Endpoint for getting Mandate payments
@@ -301,6 +301,9 @@ class NetEndpoints {
 
   /// Endpoint for getting the banks.
   String get bank => '$_infoBanking/v1/bank';
+
+  /// Endpoint for creating a shortcut.
+  String get shortcut => '$_customer/v1/shortcut';
 
   /// Endpoint for evaluating a transfer.
   String get evaluateTransfer => '$_txnBanking/v1/transfer/evaluate';
