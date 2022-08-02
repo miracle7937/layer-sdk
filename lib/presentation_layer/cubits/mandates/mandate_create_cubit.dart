@@ -7,18 +7,12 @@ import 'mandate_create_state.dart';
 
 /// Cubit for handling the creation of Debit Mandates
 class MandateCreateCubit extends Cubit<MandateCreateState> {
-  final LoadCustomerUseCase _customerUseCase;
-  final String _customerId;
   final LoadInfoRendedFileUseCase _mandateFileUseCase;
 
   /// Creates a new instance of [MandateCreateCubit]
   MandateCreateCubit({
-    required String customerId,
-    required LoadCustomerUseCase customerUseCase,
     required LoadInfoRendedFileUseCase renderedFileUseCase,
-  })  : _customerUseCase = customerUseCase,
-        _customerId = customerId,
-        _mandateFileUseCase = renderedFileUseCase,
+  })  : _mandateFileUseCase = renderedFileUseCase,
         super(MandateCreateState());
 
   /// Set the account that can be charged
@@ -35,41 +29,6 @@ class MandateCreateCubit extends Cubit<MandateCreateState> {
     emit(
       state.copyWith(hasAccepted: accepted),
     );
-  }
-
-  /// Loads cubit initial data
-  Future<void> load() async {
-    emit(
-      state.copyWith(
-        busy: true,
-        errorMessage: '',
-        errorStatus: MandateCreateErrorStatus.none,
-      ),
-    );
-
-    try {
-      final customerInfo =
-          await _customerUseCase(filters: CustomerFilters(id: _customerId));
-
-      emit(
-        state.copyWith(
-          busy: false,
-          customer: customerInfo.first,
-        ),
-      );
-    } on Exception catch (e) {
-      emit(
-        state.copyWith(
-          busy: false,
-          errorMessage: e is NetException ? e.message : e.toString(),
-          errorStatus: e is NetException
-              ? MandateCreateErrorStatus.network
-              : MandateCreateErrorStatus.generic,
-        ),
-      );
-
-      rethrow;
-    }
   }
 
   /// Fetches the Mandate pdf file

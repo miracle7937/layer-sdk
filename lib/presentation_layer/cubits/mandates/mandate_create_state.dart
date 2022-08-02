@@ -33,9 +33,6 @@ class MandateCreateState extends Equatable {
   /// If the user accepted the terms for generating the Mandate file
   final bool hasAccepted;
 
-  /// The customer information
-  final Customer? customer;
-
   /// The PDF file containing a Mandate
   final Uint8List? mandatePDFFile;
 
@@ -46,7 +43,6 @@ class MandateCreateState extends Equatable {
     this.errorStatus = MandateCreateErrorStatus.none,
     this.hasAccepted = false,
     this.account,
-    this.customer,
     this.mandatePDFFile,
   });
 
@@ -58,7 +54,6 @@ class MandateCreateState extends Equatable {
       errorStatus,
       account,
       hasAccepted,
-      customer,
       mandatePDFFile,
     ];
   }
@@ -70,7 +65,6 @@ class MandateCreateState extends Equatable {
     MandateCreateErrorStatus? errorStatus,
     Account? account,
     bool? hasAccepted,
-    Customer? customer,
     Uint8List? mandatePDFFile,
   }) {
     return MandateCreateState(
@@ -79,7 +73,6 @@ class MandateCreateState extends Equatable {
       errorStatus: errorStatus ?? this.errorStatus,
       account: account ?? this.account,
       hasAccepted: hasAccepted ?? this.hasAccepted,
-      customer: customer ?? this.customer,
       mandatePDFFile: mandatePDFFile ?? this.mandatePDFFile,
     );
   }
