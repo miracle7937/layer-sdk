@@ -12,6 +12,7 @@ class ShortcutRepository extends ShortcutRepositoryInterface {
     required ShortcutProvider provider,
   }) : _provider = provider;
 
+  /// Creates a new shortcut.
   @override
   Future<void> submit({
     required NewShortcut shortcut,
