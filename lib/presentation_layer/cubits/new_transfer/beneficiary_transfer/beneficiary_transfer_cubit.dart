@@ -502,8 +502,6 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
   }
 
   /// Submits the transfer.
-
-  /// Submits the transfer.
   Future<void> submit() async {
     emit(
       state.copyWith(
@@ -523,8 +521,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
             TransferStatus.scheduled,
           ].contains(transferResult.status) &&
           state.transfer.saveToShortcut) {
-        print('creates shortcut');
-        await createShortcut(transferResult);
+        await _createShortcut(transferResult);
       }
 
       emit(
@@ -549,7 +546,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
                     ? 'connectivity_error'
                     : e.code
                 : null,
-            message: e is NetException ? e.message : e.toString(),
+            message: e is NetException ? e.message : 'generic_error',
           ),
         ),
       );
@@ -582,8 +579,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
             TransferStatus.scheduled,
           ].contains(transferResult.status) &&
           state.transfer.saveToShortcut) {
-        print('creates shortcut');
-        await createShortcut(transferResult);
+        await _createShortcut(transferResult);
       }
 
       emit(
@@ -606,7 +602,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
                     ? 'connectivity_error'
                     : e.code
                 : null,
-            message: e is NetException ? e.message : e.toString(),
+            message: e is NetException ? e.message : 'generic_error',
           ),
         ),
       );
@@ -648,7 +644,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
                     ? 'connectivity_error'
                     : e.code
                 : null,
-            message: e is NetException ? e.message : e.toString(),
+            message: e is NetException ? e.message : 'generic_error',
           ),
         ),
       );
@@ -656,7 +652,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
   }
 
   /// Creates the shortcut (if enabled) once the transfer has succeded.
-  Future<void> createShortcut(
+  Future<void> _createShortcut(
     Transfer transfer,
   ) async {
     emit(
@@ -680,8 +676,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
           actions: _removeAction(BeneficiaryTransferAction.shortcut),
         ),
       );
-    } on Exception catch (e, s) {
-      print('$e -> $s');
+    } on Exception catch (e) {
       emit(
         state.copyWith(
           actions: _removeAction(BeneficiaryTransferAction.shortcut),
