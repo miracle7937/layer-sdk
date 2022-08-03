@@ -15,6 +15,9 @@ enum OwnTransferAction {
 
   /// The submit is being processed.
   submit,
+
+  /// The shortcut is being created.
+  shortcut
 }
 
 /// The state of the own transfer flow.

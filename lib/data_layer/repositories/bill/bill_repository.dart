@@ -27,4 +27,13 @@ class BillRepository implements BillRepositoryInterface {
 
     return billDTOs.map((e) => e.toBill()).toList(growable: false);
   }
+
+  @override
+  Future<Bill> validateBill({required Bill bill}) async {
+    final billDTO = await _provider.validateBill(
+      bill: bill.toBillDTO(),
+    );
+
+    return billDTO.toBill();
+  }
 }
