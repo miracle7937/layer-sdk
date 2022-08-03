@@ -15,6 +15,7 @@ abstract class NewSchedulableTransfer extends NewTransfer {
     ScheduleDetails? scheduleDetails,
     super.saveToShortcut,
     super.shortcutName,
+    super.note,
   }) : scheduleDetails = scheduleDetails ?? ScheduleDetails();
 
   /// Whether if this transfer is recurring or not.
