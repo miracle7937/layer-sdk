@@ -25,7 +25,7 @@ class MandatePaymentsCubit extends Cubit<MandatePaymentsState> {
   }) async {
     emit(
       state.copyWith(
-        busy: false,
+        busy: true,
         busyAction: loadMore
             ? MandatePaymentsBusyAction.loadingMore
             : MandatePaymentsBusyAction.loading,

@@ -36,9 +36,11 @@ class PaymentRepository implements PaymentsRepositoryInterface {
   @override
   Future<Payment> payBill({
     required Payment payment,
+    String? otp,
   }) async {
     final paymentDTO = await _provider.payBill(
       payment: payment.toPaymentDTO(),
+      otp: otp,
     );
 
     return paymentDTO.toPayment();

@@ -10,14 +10,17 @@ import '../../utils.dart';
 class ActivityCubit extends Cubit<ActivityState> {
   final LoadActivitiesUseCase _loadActivitiesUseCase;
   final DeleteActivityUseCase _deleteActivityUseCase;
+  final CancelActivityUseCase _cancelActivityUseCase;
 
   /// Creates a new [ActivityCubit] instance
   ActivityCubit({
     required LoadActivitiesUseCase loadActivitiesUseCase,
     required DeleteActivityUseCase deleteActivityUseCase,
+    required CancelActivityUseCase cancelActivityUseCase,
     int limit = 20,
   })  : _loadActivitiesUseCase = loadActivitiesUseCase,
         _deleteActivityUseCase = deleteActivityUseCase,
+        _cancelActivityUseCase = cancelActivityUseCase,
         super(ActivityState(
           pagination: Pagination(limit: limit),
         ));
@@ -87,4 +90,10 @@ class ActivityCubit extends Cubit<ActivityState> {
 
   /// Delete a certain activity based on the id
   Future<void> delete(String activityId) => _deleteActivityUseCase(activityId);
+
+  /// Cancel the [Activity] by `id`
+  Future<void> cancel(String id, {String? otpValue}) => _cancelActivityUseCase(
+        id,
+        otpValue: otpValue,
+      );
 }

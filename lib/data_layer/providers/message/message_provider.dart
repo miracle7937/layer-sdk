@@ -24,10 +24,8 @@ class MessageProvider {
       queryParameters: params,
     );
 
-    return response.data is List<Map<String, dynamic>>
-        ? MessageDTO.fromJsonList(
-            List<Map<String, dynamic>>.from(response.data),
-          )
-        : [];
+    return MessageDTO.fromJsonList(
+      List<Map<String, dynamic>>.from(response.data),
+    );
   }
 }

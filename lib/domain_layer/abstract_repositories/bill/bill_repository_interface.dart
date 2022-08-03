@@ -11,4 +11,9 @@ abstract class BillRepositoryInterface {
     int offset = 0,
     bool forceRefresh = false,
   });
+
+  /// Validates the provided bill
+  Future<Bill> validateBill({
+    required Bill bill,
+  });
 }

@@ -140,4 +140,21 @@ class ActivityProvider {
       method: NetRequestMethods.delete,
     );
   }
+
+  /// Cancel the [Activity] by `id`
+  Future<void> cancel(String id, {String? otpValue}) async {
+    final param = <String, dynamic>{};
+
+    if (otpValue != null) {
+      param['otp_value'] = otpValue;
+    }
+
+    final response = await netClient.request(
+      '${netClient.netEndpoints.request}/$id/cancel',
+      queryParameters: param,
+      method: NetRequestMethods.post,
+    );
+
+    return response.data;
+  }
 }

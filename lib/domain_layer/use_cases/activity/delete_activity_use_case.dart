@@ -1,11 +1,10 @@
-import '../../abstract_repositories/activity/activity_repository_interface.dart';
-import '../../models.dart';
+import '../../abstract_repositories.dart';
 
-/// The use case to delete an activity
+/// Use case to delete the [Activity]
 class DeleteActivityUseCase {
   final ActivityRepositoryInterface _repository;
 
-  /// Create new instance of [DeleteActivityUseCase]
+  /// Creates a new [DeleteActivityUseCase] instance
   DeleteActivityUseCase({
     required ActivityRepositoryInterface repository,
   }) : _repository = repository;
