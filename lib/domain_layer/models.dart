@@ -118,6 +118,7 @@ export 'models/queue/queue_request.dart';
 export 'models/recurrence/recurrence.dart';
 export 'models/resolution/resolution.dart';
 export 'models/role/role.dart';
+export 'models/schedule_details/schedule_details.dart';
 export 'models/second_factor/second_factor_type.dart';
 export 'models/service/service.dart';
 export 'models/setting/application_settings.dart';
