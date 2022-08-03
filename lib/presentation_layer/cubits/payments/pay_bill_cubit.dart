@@ -131,7 +131,7 @@ class PayBillCubit extends Cubit<PayBillState> {
   /// Submits the payment
   Future<Payment> submit({
     String? otp,
-    int? otpId,
+    Payment? payment,
   }) async {
     try {
       emit(
@@ -143,9 +143,7 @@ class PayBillCubit extends Cubit<PayBillState> {
       );
 
       final res = await _postPaymentUseCase.pay(
-        state.payment.copyWith(
-          otpId: otpId,
-        ),
+        payment ?? state.payment,
         otp: otp,
       );
 
