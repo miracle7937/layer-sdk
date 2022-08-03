@@ -10,6 +10,8 @@ class OwnTransfer extends NewSchedulableTransfer {
     super.destination,
     super.amount,
     super.currency,
+    super.saveToShortcut,
+    super.shortcutName,
   }) : super(type: TransferType.own);
 
   @override
@@ -27,12 +29,18 @@ class OwnTransfer extends NewSchedulableTransfer {
     NewTransferDestination? destination,
     double? amount,
     Currency? currency,
+    bool? saveToShortcut,
+    String? shortcutName,
   }) =>
       OwnTransfer(
         source: source ?? this.source,
         destination: destination ?? this.destination,
         amount: amount ?? this.amount,
         currency: currency ?? this.currency,
+        saveToShortcut: saveToShortcut ?? this.saveToShortcut,
+        shortcutName: !(saveToShortcut ?? this.saveToShortcut)
+            ? null
+            : shortcutName ?? this.shortcutName,
       );
 
   @override
@@ -53,5 +61,7 @@ class OwnTransfer extends NewSchedulableTransfer {
         recurrence,
         starts,
         ends,
+        saveToShortcut,
+        shortcutName,
       ];
 }
