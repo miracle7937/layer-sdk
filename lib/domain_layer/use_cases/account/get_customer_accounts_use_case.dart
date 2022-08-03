@@ -10,7 +10,7 @@ class GetCustomerAccountsUseCase {
     required AccountRepositoryInterface repository,
   }) : _repository = repository;
 
-  /// Returns the accounts belonging to passed the customer id.
+  /// Returns the accounts belonging to customer with [customerId], if passed.
   Future<List<Account>> call({
     String? customerId,
     bool includeDetails = true,
