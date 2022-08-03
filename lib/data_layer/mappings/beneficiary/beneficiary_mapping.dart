@@ -12,7 +12,7 @@ extension BeneficiaryMapping on Beneficiary {
         middleName: middleName,
         lastName: lastName,
         accountNumber: accountNumber?.isEmpty ?? true ? iban : accountNumber,
-        routingCode: accountNumber?.isEmpty ?? true ? null : sortCode,
+        routingCode: accountNumber?.isEmpty ?? true ? null : routingCode,
         rcptAddress1: address1,
         rcptAddress2: address2,
         rcptAddress3: address3,

@@ -15,7 +15,7 @@ class BeneficiaryOtpVerificationCubit
 
   final bool _isEditing;
 
-  /// Creates a new cubit using the supplied [LoadAvailableCurrenciesUseCase].
+  /// Creates a new [BeneficiaryOtpVerificationCubit].
   BeneficiaryOtpVerificationCubit({
     required VerifyBeneficiarySecondFactorUseCase
         verifyBeneficiarySecondFactorUseCase,
@@ -68,7 +68,7 @@ class BeneficiaryOtpVerificationCubit
                 ? BeneficiaryOtpVerificationErrorStatus.network
                 : BeneficiaryOtpVerificationErrorStatus.generic,
             code: e is NetException ? e.code : null,
-            message: e is NetException ? e.message : e.toString(),
+            message: e is NetException ? e.message : null,
           ),
         ),
       );
@@ -106,7 +106,7 @@ class BeneficiaryOtpVerificationCubit
                 ? BeneficiaryOtpVerificationErrorStatus.network
                 : BeneficiaryOtpVerificationErrorStatus.generic,
             code: e is NetException ? e.code : null,
-            message: e is NetException ? e.message : e.toString(),
+            message: e is NetException ? e.message : null,
           ),
         ),
       );

@@ -12,9 +12,4 @@ abstract class CurrencyRepositoryInterface {
     required String code,
     bool forceRefresh = false,
   });
-
-  ///Lists the available currencies
-  Future<List<Currency>> getAvailable({
-    bool forceRefresh = false,
-  });
 }

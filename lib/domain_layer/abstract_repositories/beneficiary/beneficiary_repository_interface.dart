@@ -33,8 +33,8 @@ abstract class BeneficiaryRepositoryInterface {
     bool forceRefresh = false,
   });
 
-  /// Returns the beneficiary dto resulting on verifying the second factor for
-  /// the passed transfer id.
+  /// Returns the beneficiary resulting on verifying the second factor for
+  /// the passed [beneficiary].
   /// True should be passed in [isEditing]
   /// in case of existing beneficiary is being edited.
   Future<Beneficiary> verifySecondFactor({
@@ -43,7 +43,7 @@ abstract class BeneficiaryRepositoryInterface {
     bool isEditing = false,
   });
 
-  /// Resends the second factor for the passed [Beneficiary].
+  /// Resends the second factor for the passed [beneficiary].
   /// True should be passed in [isEditing]
   /// in case of existing beneficiary is being edited.
   Future<Beneficiary> resendSecondFactor({

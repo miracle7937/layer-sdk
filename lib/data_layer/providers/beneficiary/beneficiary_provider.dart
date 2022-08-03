@@ -74,7 +74,7 @@ class BeneficiaryProvider {
     final response = await netClient.request(
       netClient.netEndpoints.beneficiary2,
       method: isEditing ? NetRequestMethods.patch : NetRequestMethods.post,
-      data: beneficiaryDTO.toJson(isEditing: isEditing),
+      data: beneficiaryDTO.toJson(),
       forceRefresh: forceRefresh,
     );
 
@@ -86,7 +86,7 @@ class BeneficiaryProvider {
   }
 
   /// Returns the beneficiary dto resulting on verifying the second factor for
-  /// the passed transfer id.
+  /// the passed [beneficiaryDTO].
   /// True should be passed in [isEditing]
   /// in case of existing beneficiary is being edited.
   Future<BeneficiaryDTO> verifySecondFactor({
@@ -98,13 +98,13 @@ class BeneficiaryProvider {
       netClient.netEndpoints.beneficiary2,
       method: isEditing ? NetRequestMethods.patch : NetRequestMethods.post,
       queryParameters: {'otp_value': otpValue},
-      data: beneficiaryDTO.toJson(isVerifyOtp: true),
+      data: beneficiaryDTO.toJson(),
     );
 
     return BeneficiaryDTO.fromJson(response.data);
   }
 
-  /// Resends the second factor for the passed [BeneficiaryDTO].
+  /// Resends the second factor for the passed [beneficiaryDTO].
   /// True should be passed in [isEditing]
   /// in case of existing beneficiary is being edited.
   Future<BeneficiaryDTO> resendSecondFactor({
@@ -115,7 +115,7 @@ class BeneficiaryProvider {
       netClient.netEndpoints.beneficiary2,
       method: isEditing ? NetRequestMethods.patch : NetRequestMethods.post,
       queryParameters: {'resend_otp': true},
-      data: beneficiaryDTO.toJson(isEditing: isEditing),
+      data: beneficiaryDTO.toJson(),
     );
 
     return BeneficiaryDTO.fromJson(response.data);

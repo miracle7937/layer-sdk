@@ -148,72 +148,31 @@ class BeneficiaryDTO {
   static List<BeneficiaryDTO> fromJsonList(List<Map<String, dynamic>> json) =>
       json.map(BeneficiaryDTO.fromJson).toList();
 
-  // {
-  // bool verifyOTP = false,
-  // isPatch = false,
-  // isShortcut = false,
-  // bool includeBeneficiaryID = false,
-  // }
-  /// Creates a new JSON from this [BeneficiaryDTO].
-  Map<String, dynamic> toJson({
-    bool isEditing = false,
-    bool isVerifyOtp = false,
-  }) {
-    var json = <String, dynamic>{
-      'nickname': nickname,
-      'rcpt_first_name': firstName,
-      'rcpt_middle_name': middleName,
-      'rcpt_last_name': lastName,
-      'account_number': accountNumber,
-      'rcpt_address_1': rcptAddress1,
-      'rcpt_address_2': rcptAddress2,
-      'rcpt_address_3': rcptAddress3,
-      'rcpt_country_code': rcptCountryCode,
-      'bank_address_1': bankAddress1,
-      'bank_address_2': bankAddress2,
-      'bank_country_code': bankCountryCode,
-      'bank_name': bankName,
-      'bank_swift': bankSwift,
-      'routing_code': routingCode,
-      'currency': currency,
-      if (isEditing || isVerifyOtp) 'beneficiary_id': beneficiaryId,
-      'type': type?.value,
-      'otp_id': isVerifyOtp ? otpId : null,
-      // 'image': _base64Image,
-      // 'image_url': isShortcut ? imageUrl : null,
-      // 'rcpt_id_number': cprNumber,
-      // 'extra': extra,
-      // 'provider': qrProvider?.value,
-      // 'additional_info': additionalInfo,
-      'visible': true,
-    };
-    // if (visible != null && !visible!) {
-    //   json['visible'] = false;
-    // } else {
-    //   json['visible'] = isShortcut ? false : true;
-    // }
-
-    // //TODO(MO): it is becoming messy with too much configs, consider refactoring
-    // //Added this config separately, so we know exactly what it is doing
-    // if (includeBeneficiaryID) {
-    //   json['account_number'] = null;
-    //   json['beneficiary_id'] = beneficiaryID;
-    //   if (isNotEmpty(extra)) {
-    //     try {
-    //       var decodedExtra = jsonDecode(extra!);
-    //       if (decodedExtra is Map) {
-    //         decodedExtra['masked_card_number'] = accountNumber;
-    //         final String encodedExtra = jsonEncode(decodedExtra);
-    //         json['extra'] = encodedExtra;
-    //       }
-    //     } catch (error) {}
-    //   } else {
-    //     json['extra'] = jsonEncode({'masked_card_number': accountNumber});
-    //   }
-    // }
-
-    return json;
-  }
+  /// Maps a instance of [BeneficiaryDTO] into a json map
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        if (beneficiaryId != null) 'beneficiary_id': beneficiaryId,
+        if (firstName != null) 'rcpt_first_name': firstName,
+        if (lastName != null) 'rcpt_last_name': lastName,
+        if (nickname != null) 'nickname': nickname,
+        if (type != null) 'type': type!.value,
+        if (currency != null) 'currency': currency,
+        if (accountNumber != null) 'account_number': accountNumber,
+        if (rcptAddress1 != null) 'rcpt_adress_1': rcptAddress1,
+        if (rcptAddress2 != null) 'rcpt_adress_2': rcptAddress2,
+        if (rcptAddress3 != null) 'rcpt_adress_3': rcptAddress3,
+        if (rcptCountryCode != null) 'rcpt_country_code': rcptCountryCode,
+        if (bankAddress1 != null) 'bank_address_1': bankAddress1,
+        if (bankAddress2 != null) 'bank_address_2': bankAddress2,
+        if (bankCountryCode != null) 'bank_country_code': bankCountryCode,
+        if (bankName != null) 'bank_name': bankName,
+        if (bankSwift != null) 'bank_swift': bankSwift,
+        if (description != null) 'description': description,
+        if (routingCode != null) 'routing_code': routingCode,
+        if (bankImageUrl != null) 'bank_image_url': bankImageUrl,
+        if (extra != null) 'extra': extra,
+        'visible': nickname != null,
+        if (otpId != null) 'otp_id': otpId,
+      };
 }
 
 /// The beneficiary status

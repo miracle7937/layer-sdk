@@ -9,7 +9,7 @@ import '../../cubits.dart';
 class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
   final EditBeneficiaryUseCase _editBeneficiaryUseCase;
 
-  /// Creates a new cubit using the supplied [LoadAvailableCurrenciesUseCase].
+  /// Creates a new [EditBeneficiaryCubit].
   EditBeneficiaryCubit({
     required EditBeneficiaryUseCase editBeneficiariesUseCase,
     required Beneficiary editingBeneficiary,
@@ -79,7 +79,7 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
       final hasAccount = state.hasAccount;
       final beneficiary = state.beneficiary.copyWith(
         accountNumber: hasAccount ? state.beneficiary.accountNumber! : '',
-        sortCode: hasAccount ? state.beneficiary.sortCode! : '',
+        routingCode: hasAccount ? state.beneficiary.routingCode! : '',
         iban: hasAccount ? '' : state.beneficiary.iban!,
       );
       final editedBeneficiary = await _editBeneficiaryUseCase(

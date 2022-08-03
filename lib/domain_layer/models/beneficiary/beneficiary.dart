@@ -43,9 +43,6 @@ class Beneficiary extends Equatable {
   /// The account number associated with this beneficiary.
   final String? accountNumber;
 
-  /// The sort code associated with this beneficiary's account.
-  final String? sortCode;
-
   /// The IBAN associated with this beneficiary.
   final String? iban;
 
@@ -93,7 +90,6 @@ class Beneficiary extends Equatable {
     required this.lastName,
     required this.middleName,
     this.accountNumber,
-    this.sortCode,
     this.iban,
     this.bank,
     required this.bankName,
@@ -121,7 +117,6 @@ class Beneficiary extends Equatable {
         lastName,
         middleName,
         accountNumber,
-        sortCode,
         iban,
         bank,
         bankName,
@@ -149,7 +144,6 @@ class Beneficiary extends Equatable {
     String? lastName,
     String? middleName,
     String? accountNumber,
-    String? sortCode,
     String? iban,
     Bank? bank,
     String? bankName,
@@ -160,6 +154,7 @@ class Beneficiary extends Equatable {
     String? address1,
     String? address2,
     String? address3,
+    String? routingCode,
     int? otpId,
   }) =>
       Beneficiary(
@@ -169,7 +164,6 @@ class Beneficiary extends Equatable {
         lastName: lastName ?? this.lastName,
         middleName: middleName ?? this.middleName,
         accountNumber: accountNumber ?? this.accountNumber,
-        sortCode: sortCode ?? this.sortCode,
         iban: iban ?? this.iban,
         bank: bank ?? this.bank,
         bankName: bankName ?? this.bankName,
@@ -180,6 +174,7 @@ class Beneficiary extends Equatable {
         address1: address1 ?? this.address1,
         address2: address2 ?? this.address2,
         address3: address3 ?? this.address3,
+        routingCode: routingCode ?? this.routingCode,
         otpId: otpId ?? this.otpId,
       );
 }

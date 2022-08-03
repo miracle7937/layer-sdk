@@ -10,27 +10,28 @@ import '../../cubits.dart';
 class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
   final LoadCountriesUseCase _loadCountriesUseCase;
   final GetCustomerAccountsUseCase _getCustomerAccountsUseCase;
-  final LoadAvailableCurrenciesUseCase _loadAvailableCurrenciesUseCase;
+  final LoadAllCurrenciesUseCase _loadAllCurrenciesUseCase;
   final LoadBanksByCountryCodeUseCase _loadBanksByCountryCodeUseCase;
   final AddNewBeneficiaryUseCase _addNewBeneficiaryUseCase;
 
-  final TransferType? _beneficiaryType;
-
-  /// Creates a new cubit using the supplied [LoadAvailableCurrenciesUseCase].
+  /// Creates a new [AddBeneficiaryCubit].
   AddBeneficiaryCubit({
     required LoadCountriesUseCase loadCountriesUseCase,
     required GetCustomerAccountsUseCase getCustomerAccountsUseCase,
-    required LoadAvailableCurrenciesUseCase loadAvailableCurrenciesUseCase,
+    required LoadAllCurrenciesUseCase loadAvailableCurrenciesUseCase,
     required LoadBanksByCountryCodeUseCase loadBanksByCountryCodeUseCase,
     required AddNewBeneficiaryUseCase addNewBeneficiariesUseCase,
     TransferType? beneficiaryType,
   })  : _loadCountriesUseCase = loadCountriesUseCase,
         _getCustomerAccountsUseCase = getCustomerAccountsUseCase,
-        _loadAvailableCurrenciesUseCase = loadAvailableCurrenciesUseCase,
+        _loadAllCurrenciesUseCase = loadAvailableCurrenciesUseCase,
         _loadBanksByCountryCodeUseCase = loadBanksByCountryCodeUseCase,
         _addNewBeneficiaryUseCase = addNewBeneficiariesUseCase,
-        _beneficiaryType = beneficiaryType,
-        super(AddBeneficiaryState());
+        super(
+          AddBeneficiaryState(
+            beneficiaryType: beneficiaryType,
+          ),
+        );
 
   /// Loads initial data:
   /// - countries;
@@ -55,16 +56,14 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         _getCustomerAccountsUseCase(
           forceRefresh: forceRefresh,
         ),
-        _loadAvailableCurrenciesUseCase(
+        _loadAllCurrenciesUseCase(
           forceRefresh: forceRefresh,
         )
       ]);
       final countries = futures[0] as List<Country>;
       final accounts = futures[1] as List<Account>;
       final currencies = futures[2] as List<Currency>;
-      // final currencies = await _loadAvailableCurrenciesUseCase(
-      //   forceRefresh: forceRefresh,
-      // );
+
       final selectedCurrency = accounts.isEmpty
           ? null
           : currencies.firstWhereOrNull(
@@ -80,7 +79,7 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
             middleName: '',
             bankName: '',
             currency: selectedCurrency?.code,
-            type: _beneficiaryType,
+            type: state.beneficiaryType,
           ),
           countries: countries,
           selectedCurrency: selectedCurrency,
@@ -153,10 +152,10 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         ),
       );
 
-  /// Handles event of sort code changes.
-  void onSortCodeChange(String text) => _emitBeneficiary(
+  /// Handles event of routing code changes.
+  void onRoutingCodeChange(String text) => _emitBeneficiary(
         state.beneficiary?.copyWith(
-          sortCode: text,
+          routingCode: text,
         ),
       );
 
@@ -251,7 +250,7 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
       final accountRequired = state.accountRequired;
       final beneficiary = state.beneficiary!.copyWith(
         accountNumber: accountRequired ? state.beneficiary!.accountNumber! : '',
-        sortCode: accountRequired ? state.beneficiary!.sortCode! : '',
+        routingCode: accountRequired ? state.beneficiary!.routingCode! : '',
         iban: accountRequired ? '' : state.beneficiary!.iban!,
       );
       final newBeneficiary = await _addNewBeneficiaryUseCase(

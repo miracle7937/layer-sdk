@@ -36,15 +36,4 @@ class CurrencyRepository implements CurrencyRepositoryInterface {
     );
     return dtos.isEmpty ? null : dtos[0].toCurrency();
   }
-
-  @override
-  Future<List<Currency>> getAvailable({
-    bool forceRefresh = false,
-  }) async {
-    final dtos = await provider.list(
-      // available: true,
-      forceRefresh: forceRefresh,
-    );
-    return dtos.map((e) => e.toCurrency()).toList(growable: false);
-  }
 }

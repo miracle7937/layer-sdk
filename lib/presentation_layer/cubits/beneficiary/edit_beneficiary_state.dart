@@ -65,7 +65,7 @@ class EditBeneficiaryState extends Equatable {
   final UnmodifiableSetView<EditBeneficiaryAction> actions;
 
   /// Depending on its currency, beneficiary has:
-  /// - for `GBP` - account and sorting code
+  /// - for `GBP` - account and routing code
   /// - for `EUR` - iban
   bool get hasAccount =>
       (oldBeneficiary.currency?.toLowerCase() ?? '') == 'gbp';

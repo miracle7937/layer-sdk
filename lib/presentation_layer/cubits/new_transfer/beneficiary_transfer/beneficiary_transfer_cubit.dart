@@ -449,7 +449,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     final beneficiaryType = state.transfer.beneficiaryType;
     final shouldValidateIBAN =
         beneficiaryType == DestinationBeneficiaryType.newBeneficiary &&
-            state.transfer.newBeneficiary?.sortCode == null;
+            state.transfer.newBeneficiary?.routingCode == null;
     if (shouldValidateIBAN) {
       final isValid = _validateIBANUseCase(
         iban: state.transfer.newBeneficiary?.ibanOrAccountNO ?? '',

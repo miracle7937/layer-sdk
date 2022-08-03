@@ -22,7 +22,6 @@ export 'use_cases/bank/load_banks_by_country_code_use_case.dart';
 export 'use_cases/beneficiary/add_new_beneficiary_use_case.dart';
 export 'use_cases/beneficiary/delete_beneficiary_use_case.dart';
 export 'use_cases/beneficiary/edit_beneficiary_use_case.dart';
-export 'use_cases/beneficiary/load_available_currencies_use_case.dart';
 export 'use_cases/beneficiary/load_customer_beneficiaries_use_case.dart';
 export 'use_cases/beneficiary/resend_beneficiary_second_factor_use_case.dart';
 export 'use_cases/beneficiary/verify_beneficiary_second_factor_use_case.dart';

@@ -18,6 +18,9 @@ enum AddBeneficiaryErrorStatus {
 
 /// The state of the AddBeneficiary cubit
 class AddBeneficiaryState extends Equatable {
+  /// Beneficiary type
+  final TransferType? beneficiaryType;
+
   /// New beneficiary.
   final Beneficiary? beneficiary;
 
@@ -59,12 +62,13 @@ class AddBeneficiaryState extends Equatable {
       (beneficiary?.currency?.isNotEmpty != null) &&
       (accountRequired &&
               (beneficiary?.accountNumber?.isNotEmpty != null) &&
-              (beneficiary?.sortCode?.isNotEmpty != null) ||
+              (beneficiary?.routingCode?.isNotEmpty != null) ||
           !accountRequired && (beneficiary?.iban?.isNotEmpty != null)) &&
       (beneficiary?.bank != null);
 
   /// Creates a new [AddBeneficiaryState].
   AddBeneficiaryState({
+    this.beneficiaryType,
     this.beneficiary,
     Iterable<Country> countries = const <Country>[],
     Iterable<Currency> availableCurrencies = const <Currency>[],
@@ -80,6 +84,7 @@ class AddBeneficiaryState extends Equatable {
 
   @override
   List<Object?> get props => [
+        beneficiaryType,
         beneficiary,
         countries,
         availableCurrencies,

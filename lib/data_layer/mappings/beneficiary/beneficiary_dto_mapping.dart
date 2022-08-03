@@ -12,7 +12,7 @@ extension BeneficiaryDTOMapping on BeneficiaryDTO {
         firstName: firstName ?? '',
         middleName: middleName ?? '',
         accountNumber: accountNumber,
-        sortCode: routingCode,
+        routingCode: routingCode,
         iban: accountNumber,
         status: status?.toBeneficiaryStatus(),
         type: type?.toTransferType(),
@@ -30,7 +30,6 @@ extension BeneficiaryDTOMapping on BeneficiaryDTO {
         ),
         otpId: otpId,
         extra: extra,
-        routingCode: routingCode,
       );
 }
 

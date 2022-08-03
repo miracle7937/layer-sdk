@@ -1,7 +1,7 @@
 import '../../abstract_repositories.dart';
 import '../../models.dart';
 
-/// Use case responsible for adding a new beneficiary
+/// Use case responsible for editing a beneficiary
 class EditBeneficiaryUseCase {
   final BeneficiaryRepositoryInterface _beneficiaryRepository;
 
@@ -10,7 +10,7 @@ class EditBeneficiaryUseCase {
     required BeneficiaryRepositoryInterface beneficiaryRepository,
   }) : _beneficiaryRepository = beneficiaryRepository;
 
-  /// Add a new beneficiary.
+  /// Edits an existing beneficiary.
   Future<Beneficiary> call({
     required Beneficiary beneficiary,
     bool forceRefresh = false,
