@@ -40,6 +40,7 @@ class PaymentRepository implements PaymentsRepositoryInterface {
   }) async {
     final paymentDTO = await _provider.payBill(
       payment: payment.toPaymentDTO(),
+      otp: otp,
     );
 
     return paymentDTO.toPayment();
