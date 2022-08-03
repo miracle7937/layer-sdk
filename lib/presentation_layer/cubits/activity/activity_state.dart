@@ -40,16 +40,31 @@ class ActivityState extends Equatable {
   /// A list of activities
   final UnmodifiableListView<Activity> activities;
 
+  /// A list of [ActivityType]s
+  final UnmodifiableListView<ActivityType> types;
+
+  /// A list of [ActivityTag]s
+  final UnmodifiableListView<ActivityTag> activityTags;
+
+  /// A list of [TransferType]s
+  final UnmodifiableListView<TransferType> transferTypes;
+
   /// Which busy action is the cubit doing
   final ActivityBusyAction action;
 
   /// Creates a new [ActivityState] instance
   ActivityState({
     Iterable<Activity> activities = const <Activity>[],
+    Iterable<ActivityType> types = const <ActivityType>[],
+    Iterable<ActivityTag> activityTags = const <ActivityTag>[],
+    Iterable<TransferType> transferTypes = const <TransferType>[],
     this.action = ActivityBusyAction.none,
     this.errorStatus = ActivityErrorStatus.none,
     this.pagination = const Pagination(),
-  }) : activities = UnmodifiableListView(activities);
+  })  : activities = UnmodifiableListView(activities),
+        types = UnmodifiableListView(types),
+        activityTags = UnmodifiableListView(activityTags),
+        transferTypes = UnmodifiableListView(transferTypes);
 
   /// Copies the object with new values
   ActivityState copyWith({
@@ -58,12 +73,18 @@ class ActivityState extends Equatable {
     Pagination? pagination,
     int? offSet,
     Iterable<Activity>? activities,
+    Iterable<ActivityType>? types,
+    Iterable<ActivityTag>? activityTags,
+    Iterable<TransferType>? transferTypes,
   }) {
     return ActivityState(
       errorStatus: errorStatus ?? this.errorStatus,
       action: action ?? this.action,
       pagination: pagination ?? this.pagination,
       activities: activities ?? this.activities,
+      types: types ?? this.types,
+      activityTags: activityTags ?? this.activityTags,
+      transferTypes: transferTypes ?? this.transferTypes,
     );
   }
 
@@ -73,5 +94,8 @@ class ActivityState extends Equatable {
         action,
         pagination,
         activities,
+        types,
+        activityTags,
+        transferTypes,
       ];
 }

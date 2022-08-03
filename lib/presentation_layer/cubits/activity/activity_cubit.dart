@@ -41,6 +41,9 @@ class ActivityCubit extends Cubit<ActivityState> {
         action: loadMore
             ? ActivityBusyAction.loadingMore
             : ActivityBusyAction.loading,
+        types: types,
+        activityTags: activityTags,
+        transferTypes: transferTypes,
       ),
     );
 
@@ -53,9 +56,9 @@ class ActivityCubit extends Cubit<ActivityState> {
         fromTS: startDate,
         toTS: endDate,
         itemIsNull: itemIsNull,
-        types: types,
-        activityTags: activityTags,
-        transferTypes: transferTypes,
+        types: state.types,
+        activityTags: state.activityTags,
+        transferTypes: state.transferTypes,
       );
 
       final activities = newPage.firstPage

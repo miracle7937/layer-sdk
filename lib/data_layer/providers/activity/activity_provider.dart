@@ -112,7 +112,6 @@ class ActivityProvider {
       params["sortby"] = sortBy;
     }
 
-    activityTags?.removeWhere((tag) => tag == ActivityTag.unknown);
     if (activityTags?.isNotEmpty ?? false) {
       final tags = activityTags!.map((tag) => tag.toJSONString).join(',');
       params['tag'] = tags;
