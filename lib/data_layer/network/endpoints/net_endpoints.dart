@@ -140,6 +140,9 @@ class NetEndpoints {
   /// The bill endpoint
   String get bill => '$_payment/v1/bill';
 
+  /// The validate bill endpoint
+  String get validateBill => '$bill/validate';
+
   /// The countries endpoint
   String get country => '$_infoBanking/v1/country';
 

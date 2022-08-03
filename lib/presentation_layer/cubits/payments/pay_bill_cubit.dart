@@ -13,6 +13,7 @@ import '../../../domain_layer/use_cases/payments/generate_device_uid_use_case.da
 import '../../../domain_layer/use_cases/payments/load_billers_use_case.dart';
 import '../../../domain_layer/use_cases/payments/load_services_use_case.dart';
 import '../../../domain_layer/use_cases/payments/post_payment_use_case.dart';
+import '../../../domain_layer/use_cases/payments/validate_bill_use_case.dart';
 import 'pay_bill_state.dart';
 
 /// A cubit for paying customer bills.
@@ -22,6 +23,7 @@ class PayBillCubit extends Cubit<PayBillState> {
   final GetAccountsByStatusUseCase _getCustomerAccountsUseCase;
   final PostPaymentUseCase _postPaymentUseCase;
   final GenerateDeviceUIDUseCase _generateDeviceUIDUseCase;
+  final ValidateBillUseCase _validateBillUseCase;
 
   /// The biller id to pay for, if provided the biller will be pre-selected
   /// when the cubit loads.
@@ -34,12 +36,14 @@ class PayBillCubit extends Cubit<PayBillState> {
     required GetAccountsByStatusUseCase getCustomerAccountsUseCase,
     required PostPaymentUseCase postPaymentUseCase,
     required GenerateDeviceUIDUseCase generateDeviceUIDUseCase,
+    required ValidateBillUseCase validateBillUseCase,
     this.billerId,
   })  : _loadBillersUseCase = loadBillersUseCase,
         _loadServicesUseCase = loadServicesUseCase,
         _getCustomerAccountsUseCase = getCustomerAccountsUseCase,
         _postPaymentUseCase = postPaymentUseCase,
         _generateDeviceUIDUseCase = generateDeviceUIDUseCase,
+        _validateBillUseCase = validateBillUseCase,
         super(PayBillState());
 
   /// Loads all the required data, must be called at lease once before anything
@@ -96,8 +100,39 @@ class PayBillCubit extends Cubit<PayBillState> {
     }
   }
 
+  /// Validates user input and returns the bill object
+  Future<Bill> validateBill() async {
+    try {
+      emit(
+        state.copyWith(
+          busy: true,
+          busyAction: PayBillBusyAction.validating,
+        ),
+      );
+      final validatedBill = await _validateBillUseCase(bill: state.bill);
+      emit(
+        state.copyWith(
+          busy: false,
+          validatedBill: validatedBill,
+        ),
+      );
+      return validatedBill;
+    } on Exception catch (_) {
+      emit(
+        state.copyWith(
+          busy: false,
+        ),
+      );
+
+      rethrow;
+    }
+  }
+
   /// Submits the payment
-  Future<Payment> submit() async {
+  Future<Payment> submit({
+    String? otp,
+    Payment? payment,
+  }) async {
     try {
       emit(
         state.copyWith(
@@ -107,26 +142,13 @@ class PayBillCubit extends Cubit<PayBillState> {
         ),
       );
 
-      final _payment = state.payment.copyWith(
-        fromAccount: state.selectedAccount,
-        bill: Bill(
-          // TODO: Change this to set nickname from app
-          nickname: "${state.selectedBiller!.name} ${state.deviceUID}",
-          service: state.selectedService,
-          amount: state.payment.amount,
-          billStatus: BillStatus.active,
-          billingFields: state.serviceFields,
-          visible: false,
-        ),
-        currency: state.selectedAccount?.currency,
-        status: PaymentStatus.completed,
-        deviceUID: state.deviceUID,
+      final res = await _postPaymentUseCase.pay(
+        payment ?? state.payment,
+        otp: otp,
       );
-      final res = await _postPaymentUseCase.pay(_payment);
 
       emit(
         state.copyWith(
-          payment: res,
           busy: false,
         ),
       );
@@ -210,10 +232,8 @@ class PayBillCubit extends Cubit<PayBillState> {
   void setAmount(double amount) {
     emit(
       state.copyWith(
-          payment: state.payment.copyWith(
         amount: amount,
-        forceCopyAmount: true,
-      )),
+      ),
     );
   }
 
