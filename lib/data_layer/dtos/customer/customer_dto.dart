@@ -403,86 +403,90 @@ class CustomerInformationDTO {
   /// The company type of the company this customer works on.
   String? companyType;
 
+  /// The biller id
+  String? billerId;
+
   /// Creates a new [CustomerInformationDTO]
-  CustomerInformationDTO({
-    this.employerName,
-    this.employerAddress,
-    this.nextKinMobile,
-    this.nextKinName,
-    this.occupation,
-    this.passportExpiryDate,
-    this.passportExpiryGracePeriod,
-    this.passportIssueDate,
-    this.passportCountryIssuance,
-    this.passportCountryIssuanceDescription,
-    this.passportNumber,
-    this.salary,
-    this.sourceOfFunds,
-    this.isResident,
-    this.addresses,
-    this.governmentPosition,
-    this.thirdParty,
-    this.ultimateBeneficiary,
-    this.otherNames,
-    this.taxes,
-    this.otherNationalities,
-    this.fatcaStatus,
-    this.businessDealings,
-    this.otherParty,
-    this.beneficiaryDocument,
-    this.companyName,
-    this.companyType,
-  });
+  CustomerInformationDTO(
+      {this.employerName,
+      this.employerAddress,
+      this.nextKinMobile,
+      this.nextKinName,
+      this.occupation,
+      this.passportExpiryDate,
+      this.passportExpiryGracePeriod,
+      this.passportIssueDate,
+      this.passportCountryIssuance,
+      this.passportCountryIssuanceDescription,
+      this.passportNumber,
+      this.salary,
+      this.sourceOfFunds,
+      this.isResident,
+      this.addresses,
+      this.governmentPosition,
+      this.thirdParty,
+      this.ultimateBeneficiary,
+      this.otherNames,
+      this.taxes,
+      this.otherNationalities,
+      this.fatcaStatus,
+      this.businessDealings,
+      this.otherParty,
+      this.beneficiaryDocument,
+      this.companyName,
+      this.companyType,
+      this.billerId});
 
   /// Creates a [CustomerInformationDTO] from a JSON
   factory CustomerInformationDTO.fromJson(Map<String, dynamic> json) =>
       CustomerInformationDTO(
-        employerName: json['employer_name'],
-        employerAddress: json['employer_address'],
-        nextKinMobile: json['next_of_kin_mobile_number'],
-        nextKinName: json['next_of_kin'],
-        occupation: json['occupation'],
-        passportExpiryDate: JsonParser.parseStringDate(json['passport_expiry']),
-        passportExpiryGracePeriod: json['passport_expiry_grace_period'],
-        passportIssueDate: JsonParser.parseStringDate(
-          json['passport_date_of_issuance'] ?? json['passport_issue_date'],
-        ),
-        passportCountryIssuance: json['passport_country_of_issuance'],
-        passportCountryIssuanceDescription:
-            json['passport_country_of_issuance_description'],
-        passportNumber: json['passport_number'],
-        sourceOfFunds: json['source_funds'],
-        isResident: json['is_resident'],
-        addresses: json['address_details'] == null
-            ? null
-            : AddressDTO.fromJsonList(
-                List<Map<String, dynamic>>.from(json['address_details']),
-              ),
-        governmentPosition: json['pep'],
-        thirdParty: json['representation'],
-        ultimateBeneficiary: json['ultimate_beneficiary'],
-        otherNames: json['other_names']?.split(','),
-        taxes: json['tax_information'] == null
-            ? null
-            : TaxDTO.fromJsonList(
-                List<Map<String, dynamic>>.from(json['tax_information']),
-              ),
-        otherNationalities: json['other_nationalities'] == null
-            ? null
-            : json['other_nationalities'] is List
-                ? NationalityDTO.fromJsonList(
-                    List<Map<String, dynamic>>.from(
-                        json['other_nationalities']),
-                  )
-                : null,
-        fatcaStatus: json['fatca_status'],
-        salary: json['salary'],
-        businessDealings: json['business'],
-        otherParty: json['other_party'],
-        beneficiaryDocument: json['beneficiary_document'],
-        companyName: json['company_name'],
-        companyType: json['company_type'],
-      );
+          employerName: json['employer_name'],
+          employerAddress: json['employer_address'],
+          nextKinMobile: json['next_of_kin_mobile_number'],
+          nextKinName: json['next_of_kin'],
+          occupation: json['occupation'],
+          passportExpiryDate:
+              JsonParser.parseStringDate(json['passport_expiry']),
+          passportExpiryGracePeriod: json['passport_expiry_grace_period'],
+          passportIssueDate: JsonParser.parseStringDate(
+            json['passport_date_of_issuance'] ?? json['passport_issue_date'],
+          ),
+          passportCountryIssuance: json['passport_country_of_issuance'],
+          passportCountryIssuanceDescription:
+              json['passport_country_of_issuance_description'],
+          passportNumber: json['passport_number'],
+          sourceOfFunds: json['source_funds'],
+          isResident: json['is_resident'],
+          addresses: json['address_details'] == null
+              ? null
+              : AddressDTO.fromJsonList(
+                  List<Map<String, dynamic>>.from(json['address_details']),
+                ),
+          governmentPosition: json['pep'],
+          thirdParty: json['representation'],
+          ultimateBeneficiary: json['ultimate_beneficiary'],
+          otherNames: json['other_names']?.split(','),
+          taxes: json['tax_information'] == null
+              ? null
+              : TaxDTO.fromJsonList(
+                  List<Map<String, dynamic>>.from(json['tax_information']),
+                ),
+          otherNationalities: json['other_nationalities'] == null
+              ? null
+              : json['other_nationalities'] is List
+                  ? NationalityDTO.fromJsonList(
+                      List<Map<String, dynamic>>.from(
+                          json['other_nationalities']),
+                    )
+                  : null,
+          fatcaStatus: json['fatca_status'],
+          salary: json['salary'],
+          businessDealings: json['business'],
+          otherParty: json['other_party'],
+          beneficiaryDocument: json['beneficiary_document'],
+          companyName: json['company_name'],
+          companyType: json['company_type'],
+          billerId: json["biller_id"]);
 
   /// Returns a list of [CustomerInformationDTO] from a JSON
   static List<CustomerInformationDTO> fromJsonList(
@@ -518,40 +522,41 @@ class CustomerInformationDTO {
     String? beneficiaryDocument,
     String? companyName,
     String? companyType,
+    String? billerId,
   }) =>
       CustomerInformationDTO(
-        employerName: employerName ?? this.employerName,
-        employerAddress: employerAddress ?? this.employerAddress,
-        nextKinMobile: nextKinMobile ?? this.nextKinMobile,
-        nextKinName: nextKinName ?? this.nextKinName,
-        occupation: occupation ?? this.occupation,
-        passportExpiryDate: passportExpiryDate ?? this.passportExpiryDate,
-        passportExpiryGracePeriod:
-            passportExpiryGracePeriod ?? this.passportExpiryGracePeriod,
-        passportIssueDate: passportIssueDate ?? this.passportIssueDate,
-        passportCountryIssuance:
-            passportCountryIssuance ?? this.passportCountryIssuance,
-        passportCountryIssuanceDescription:
-            passportCountryIssuanceDescription ??
-                this.passportCountryIssuanceDescription,
-        passportNumber: passportNumber ?? this.passportNumber,
-        salary: salary ?? this.salary,
-        sourceOfFunds: sourceOfFunds ?? this.sourceOfFunds,
-        isResident: isResident ?? this.isResident,
-        addresses: addresses ?? this.addresses,
-        governmentPosition: governmentPosition ?? this.governmentPosition,
-        thirdParty: thirdParty ?? this.thirdParty,
-        ultimateBeneficiary: ultimateBeneficiary ?? this.ultimateBeneficiary,
-        otherNames: otherNames ?? this.otherNames,
-        taxes: taxes ?? this.taxes,
-        otherNationalities: otherNationalities ?? this.otherNationalities,
-        fatcaStatus: fatcaStatus ?? this.fatcaStatus,
-        businessDealings: businessDealings ?? this.businessDealings,
-        otherParty: otherParty ?? this.otherParty,
-        beneficiaryDocument: beneficiaryDocument ?? this.beneficiaryDocument,
-        companyName: companyName ?? this.companyName,
-        companyType: companyType ?? this.companyType,
-      );
+          employerName: employerName ?? this.employerName,
+          employerAddress: employerAddress ?? this.employerAddress,
+          nextKinMobile: nextKinMobile ?? this.nextKinMobile,
+          nextKinName: nextKinName ?? this.nextKinName,
+          occupation: occupation ?? this.occupation,
+          passportExpiryDate: passportExpiryDate ?? this.passportExpiryDate,
+          passportExpiryGracePeriod:
+              passportExpiryGracePeriod ?? this.passportExpiryGracePeriod,
+          passportIssueDate: passportIssueDate ?? this.passportIssueDate,
+          passportCountryIssuance:
+              passportCountryIssuance ?? this.passportCountryIssuance,
+          passportCountryIssuanceDescription:
+              passportCountryIssuanceDescription ??
+                  this.passportCountryIssuanceDescription,
+          passportNumber: passportNumber ?? this.passportNumber,
+          salary: salary ?? this.salary,
+          sourceOfFunds: sourceOfFunds ?? this.sourceOfFunds,
+          isResident: isResident ?? this.isResident,
+          addresses: addresses ?? this.addresses,
+          governmentPosition: governmentPosition ?? this.governmentPosition,
+          thirdParty: thirdParty ?? this.thirdParty,
+          ultimateBeneficiary: ultimateBeneficiary ?? this.ultimateBeneficiary,
+          otherNames: otherNames ?? this.otherNames,
+          taxes: taxes ?? this.taxes,
+          otherNationalities: otherNationalities ?? this.otherNationalities,
+          fatcaStatus: fatcaStatus ?? this.fatcaStatus,
+          businessDealings: businessDealings ?? this.businessDealings,
+          otherParty: otherParty ?? this.otherParty,
+          beneficiaryDocument: beneficiaryDocument ?? this.beneficiaryDocument,
+          companyName: companyName ?? this.companyName,
+          companyType: companyType ?? this.companyType,
+          billerId: billerId ?? this.billerId);
 }
 
 /// Holds the provider data for the Customer addresses.
