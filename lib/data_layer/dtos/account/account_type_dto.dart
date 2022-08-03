@@ -148,6 +148,7 @@ class AccountTypeDTO {
     );
   }
 
+  /// Account to json
   Map<String, dynamic> toJson() {
     var json = <String, dynamic>{
       'account_type_id': id,
