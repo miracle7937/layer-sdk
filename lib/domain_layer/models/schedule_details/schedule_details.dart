@@ -25,6 +25,10 @@ class ScheduleDetails extends Equatable {
     this.executions,
   });
 
+  /// TODO: There is to much logic on this method,
+  /// let's divide this to a use case when we have time to solve
+  /// the tech deb.
+  ///
   /// Creates a copy with the passed parameters.
   ScheduleDetails copyWith({
     Recurrence? recurrence,
