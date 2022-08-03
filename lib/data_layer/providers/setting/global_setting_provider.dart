@@ -30,6 +30,7 @@ class GlobalSettingProvider {
     );
 
     return GlobalSettingDTO.fromJsonList(
-        List<Map<String, dynamic>>.from(response.data));
+      List<Map<String, dynamic>>.from(response.data),
+    );
   }
 }

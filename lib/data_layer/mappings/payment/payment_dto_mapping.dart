@@ -8,7 +8,7 @@ import '../../mappings.dart';
 extension PaymentDTOMapping on PaymentDTO {
   /// Maps into a [Payment]
   Payment toPayment() => Payment(
-        id: billId,
+        id: paymentId,
         created: created,
         updated: updated,
         bill: bill?.toBill(),

@@ -20,7 +20,7 @@ class Mandate extends Equatable {
   final String reference;
 
   /// Id of the bank used in the mandate
-  final int? bankMandateId;
+  final String? bankMandateId;
 
   /// When it was created
   final DateTime? createdAt;
@@ -61,7 +61,7 @@ class Mandate extends Equatable {
     String? fromCard,
     MandateStatus? mandateStatus,
     String? reference,
-    int? bankMandateId,
+    String? bankMandateId,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
