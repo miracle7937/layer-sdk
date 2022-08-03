@@ -155,10 +155,6 @@ class PayBillCubit extends Cubit<PayBillState> {
         ),
       );
 
-      if (otp != null) {
-        throw (Exception(""));
-      }
-
       return res;
     } on Exception catch (_) {
       emit(
