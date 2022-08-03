@@ -73,6 +73,8 @@ class SDKHeader extends StatelessWidget implements PreferredSizeWidget {
                 ),
                 const SizedBox(width: 10.0),
               ],
+              if (prefixSvgIcon == null && suffixSvgIcon != null)
+                const SizedBox(width: 24.0),
               Expanded(
                 child: Text(
                   title,
@@ -82,6 +84,8 @@ class SDKHeader extends StatelessWidget implements PreferredSizeWidget {
                   textAlign: TextAlign.center,
                 ),
               ),
+              if (prefixSvgIcon != null && suffixSvgIcon == null)
+                const SizedBox(width: 24.0),
               if (suffixSvgIcon != null) ...[
                 const SizedBox(width: 10.0),
                 GestureDetector(
