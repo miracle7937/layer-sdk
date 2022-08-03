@@ -84,6 +84,7 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
     double? amount,
     bool? saveToShortcut,
     String? shortcutName,
+    ScheduleDetails? scheduleDetails,
   }) {
     emit(state.copyWith(
       transfer: state.transfer.copyWith(
@@ -103,6 +104,7 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
         amount: amount,
         saveToShortcut: saveToShortcut,
         shortcutName: shortcutName,
+        scheduleDetails: scheduleDetails,
       ),
     ));
   }
