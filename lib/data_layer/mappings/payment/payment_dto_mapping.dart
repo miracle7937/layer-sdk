@@ -1,6 +1,5 @@
 import '../../../domain_layer/models.dart';
 import '../../dtos.dart';
-import '../../dtos/payment/payment_payload_dto.dart';
 import '../../errors.dart';
 import '../../mappings.dart';
 

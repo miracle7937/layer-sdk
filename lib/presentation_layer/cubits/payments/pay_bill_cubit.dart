@@ -152,7 +152,7 @@ class PayBillCubit extends Cubit<PayBillState> {
         otp: otp,
       );
 
-      if (state.payment.saveToShortcut) {
+      if ((state.payment.saveToShortcut) && (res.status != PaymentStatus.otp)) {
         await _createShortcut(res);
       }
 
