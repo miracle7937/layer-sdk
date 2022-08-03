@@ -113,10 +113,10 @@ class Account extends Equatable {
   final bool canRequestCertificateOfDeposit;
 
   /// customer can stop issued check
-  bool canStopIssuedCheck = true;
+  final bool canStopIssuedCheck;
 
   /// customer can confirm issued check
-  bool canConfirmIssuedCheck = true;
+  final bool canConfirmIssuedCheck;
 
   /// Creates a new immutable [Account]
   Account({

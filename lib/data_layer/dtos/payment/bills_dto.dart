@@ -152,14 +152,14 @@ class BillDTO {
   }
 
   /// Creates a JSON map from the model data
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson({bool isShortcut = false}) {
     return {
       'bill_id': billId,
       'customer_id': customerId,
       'service_id': serviceId,
       'service': service?.toJson(),
       'billing_number': billingNumber,
-      'nickname': nickname,
+      'nickname': isShortcut ? null : nickname,
       'recurring': recurring,
       'status': status?.value,
       'amount': amount,
@@ -174,7 +174,7 @@ class BillDTO {
       'billing_fields':
           billingFields?.map((e) => e.toJson()).toList(growable: false),
       'additional_fields': additionalFields,
-      'visible': visible,
+      'visible': isShortcut ? false : visible,
       'second_factor': secondFactor?.value,
       'image_url': imageUrl,
     };

@@ -2,34 +2,34 @@ import '../../dtos.dart';
 
 /// The payment payload DTO
 class PaymentPayloadDTO {
-  ///
+  /// The bill amount
   double? amount;
 
-  ///
+  /// The payment ID
   int? paymentId;
 
-  ///
+  /// The bill object
   BillDTO? bill;
 
-  ///
+  /// The device uid
   String? deviceUID;
 
-  ///
+  /// The otp ID
   int? otpId;
 
-  ///
+  /// The payment status
   PaymentDTOStatus? status;
 
-  ///
+  /// The currency used
   String? currency;
 
-  ///
+  /// The from account id
   String? fromAccountId;
 
-  ///
+  /// The from account
   AccountDTO? fromAccount;
 
-  ///
+  /// The wallet id
   int? fromWalletId;
 
   /// Creates a new [PaymentPayloadDTO]
@@ -51,7 +51,7 @@ class PaymentPayloadDTO {
     var json = <String, dynamic>{
       'amount': amount,
       'payment_id': paymentId,
-      'bill': bill!.toJson(),
+      'bill': bill!.toJson(isShortcut: true),
       'device_uid': deviceUID,
       'otp_id': otpId,
       'status': status?.value,
