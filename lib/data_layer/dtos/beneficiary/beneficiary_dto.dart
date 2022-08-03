@@ -144,6 +144,10 @@ class BeneficiaryDTO {
         extra: json['extra'],
       );
 
+  /// Returns a list of [BeneficiaryDTO] from a JSON
+  static List<BeneficiaryDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(BeneficiaryDTO.fromJson).toList();
+
   /// Maps a instance of [BeneficiaryDTO] into a json map
   Map<String, dynamic> toJson() => <String, dynamic>{
         if (beneficiaryId != null) 'beneficiary_id': beneficiaryId,
@@ -167,11 +171,8 @@ class BeneficiaryDTO {
         if (bankImageUrl != null) 'bank_image_url': bankImageUrl,
         if (extra != null) 'extra': extra,
         'visible': nickname != null,
+        if (otpId != null) 'otp_id': otpId,
       };
-
-  /// Returns a list of [BeneficiaryDTO] from a JSON
-  static List<BeneficiaryDTO> fromJsonList(List<Map<String, dynamic>> json) =>
-      json.map(BeneficiaryDTO.fromJson).toList();
 }
 
 /// The beneficiary status

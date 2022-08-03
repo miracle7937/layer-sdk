@@ -36,6 +36,69 @@ class BeneficiaryRepository implements BeneficiaryRepositoryInterface {
     return beneficiaryDTO.map((e) => e.toBeneficiary()).toList(growable: false);
   }
 
+  /// Add a new beneficiary.
+  @override
+  Future<Beneficiary> add({
+    required Beneficiary beneficiary,
+    bool forceRefresh = false,
+  }) async {
+    final beneficiaryDTO = await _provider.add(
+      beneficiaryDTO: beneficiary.toBeneficiaryDTO(),
+      forceRefresh: forceRefresh,
+    );
+
+    return beneficiaryDTO.toBeneficiary();
+  }
+
+  /// Edit the beneficiary.
+  @override
+  Future<Beneficiary> edit({
+    required Beneficiary beneficiary,
+    bool forceRefresh = false,
+  }) async {
+    final beneficiaryDTO = await _provider.edit(
+      beneficiaryDTO: beneficiary.toBeneficiaryDTO(),
+      forceRefresh: forceRefresh,
+    );
+
+    return beneficiaryDTO.toBeneficiary();
+  }
+
+  /// Returns the beneficiary resulting on verifying the second factor for
+  /// the passed [beneficiary].
+  /// True should be passed in [isEditing]
+  /// in case of existing beneficiary is being edited.
+  @override
+  Future<Beneficiary> verifySecondFactor({
+    required Beneficiary beneficiary,
+    required String otpValue,
+    bool isEditing = false,
+  }) async {
+    final beneficiaryDTO = await _provider.verifySecondFactor(
+      beneficiaryDTO: beneficiary.toBeneficiaryDTO(),
+      otpValue: otpValue,
+      isEditing: isEditing,
+    );
+
+    return beneficiaryDTO.toBeneficiary();
+  }
+
+  /// Resends the second factor for the passed [beneficiary].
+  /// True should be passed in [isEditing]
+  /// in case of existing beneficiary is being edited.
+  @override
+  Future<Beneficiary> resendSecondFactor({
+    required Beneficiary beneficiary,
+    bool isEditing = false,
+  }) async {
+    final beneficiaryDTO = await _provider.resendSecondFactor(
+      beneficiaryDTO: beneficiary.toBeneficiaryDTO(),
+      isEditing: isEditing,
+    );
+
+    return beneficiaryDTO.toBeneficiary();
+  }
+
   /// Deletes the beneficiary with the provided id.
   Future<Beneficiary> delete({
     required int id,

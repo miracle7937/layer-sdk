@@ -26,7 +26,6 @@ final MockCheckBranchActivationCodeUseCase _checkBranchActivationCodeUseCase =
 final MockVerifyOTPForBranchActivationUseCase
     _verifyOTPForBranchActivationUseCase =
     MockVerifyOTPForBranchActivationUseCase();
-final MockResendOTPUseCase _resendOTPUseCase = MockResendOTPUseCase();
 final MockLoadUserDetailsFromTokenUseCase _loadUserDetailsFromTokenUseCase =
     MockLoadUserDetailsFromTokenUseCase();
 final MockSetAccessPinForUserUseCase _setAccessPinForUserUseCase =
@@ -67,7 +66,7 @@ final _genericExceptionAccessPin = '1111';
 void main() {
   EquatableConfig.stringify = true;
 
-  setUpAll(() {
+  setUp(() {
     /// Branch activation
     when(
       () => _checkBranchActivationCodeUseCase(
@@ -128,24 +127,6 @@ void main() {
       ),
     ).thenThrow(_genericException);
 
-    when(
-      () => _resendOTPUseCase(
-        otpId: int.parse(_successOtp),
-      ),
-    ).thenAnswer((_) async => NetResponse(statusCode: 200));
-
-    when(
-      () => _resendOTPUseCase(
-        otpId: int.parse(_netExceptionOtp),
-      ),
-    ).thenThrow(_netException);
-
-    when(
-      () => _resendOTPUseCase(
-        otpId: int.parse(_genericExceptionOtp),
-      ),
-    ).thenThrow(_genericException);
-
     /// User
     when(
       () => _loadUserDetailsFromTokenUseCase(
@@ -192,7 +173,6 @@ void main() {
     build: () => BranchActivationCubit(
       checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
       verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
-      resendOTPUseCase: _resendOTPUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
       setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       activationCodeLength: 7,
@@ -222,7 +202,6 @@ void _activationCodeTests() {
     build: () => BranchActivationCubit(
       checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
       verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
-      resendOTPUseCase: _resendOTPUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
       setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       testActivationCode: _pollingCode,
@@ -277,7 +256,6 @@ void _activationCodeTests() {
     build: () => BranchActivationCubit(
       checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
       verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
-      resendOTPUseCase: _resendOTPUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
       setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       testActivationCode: _successCode,
@@ -332,7 +310,6 @@ void _activationCodeTests() {
     build: () => BranchActivationCubit(
       checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
       verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
-      resendOTPUseCase: _resendOTPUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
       setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       testActivationCode: _otpCode,
@@ -364,7 +341,6 @@ void _activationCodeTests() {
     build: () => BranchActivationCubit(
       checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
       verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
-      resendOTPUseCase: _resendOTPUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
       setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       delay: 1,
@@ -387,7 +363,6 @@ void _activationCodeTests() {
     build: () => BranchActivationCubit(
       checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
       verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
-      resendOTPUseCase: _resendOTPUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
       setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       delay: 1,
@@ -423,7 +398,6 @@ void _activationCodeTests() {
     build: () => BranchActivationCubit(
       checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
       verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
-      resendOTPUseCase: _resendOTPUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
       setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       delay: 1,
@@ -460,7 +434,6 @@ void _otpTests() {
     build: () => BranchActivationCubit(
       checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
       verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
-      resendOTPUseCase: _resendOTPUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
       setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       testActivationCode: '',
@@ -512,7 +485,6 @@ void _otpTests() {
     build: () => BranchActivationCubit(
       checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
       verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
-      resendOTPUseCase: _resendOTPUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
       setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       testActivationCode: '',
@@ -526,7 +498,7 @@ void _otpTests() {
       ),
       defaultState.copyWith(
         error: BranchActivationError.network,
-        action: BranchActivationAction.otpCheck,
+        action: BranchActivationAction.none,
         errorMessage: _netException.message,
       ),
     ],
@@ -545,7 +517,6 @@ void _otpTests() {
     build: () => BranchActivationCubit(
       checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
       verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
-      resendOTPUseCase: _resendOTPUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
       setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       testActivationCode: '',
@@ -559,7 +530,7 @@ void _otpTests() {
       ),
       defaultState.copyWith(
         error: BranchActivationError.generic,
-        action: BranchActivationAction.otpCheck,
+        action: BranchActivationAction.none,
       ),
     ],
     verify: (c) {
@@ -584,7 +555,6 @@ void _otpTests() {
     build: () => BranchActivationCubit(
       checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
       verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
-      resendOTPUseCase: _resendOTPUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
       setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       testActivationCode: '',
@@ -592,26 +562,29 @@ void _otpTests() {
     ),
     seed: () => defaultState.copyWith(
       activationResponse: successResponse,
+      activationCode: _successCode,
     ),
     act: (c) => c.resendOTP(),
     expect: () => [
       defaultState.copyWith(
         busy: true,
         error: BranchActivationError.none,
-        action: BranchActivationAction.otpCheck,
+        action: BranchActivationAction.resendOTP,
         activationResponse: successResponse,
+        activationCode: _successCode,
       ),
       defaultState.copyWith(
         busy: false,
         error: BranchActivationError.none,
-        action: BranchActivationAction.otpCheck,
-        activationResponse: successResponse,
+        action: BranchActivationAction.none,
+        activationResponse: _codeSuccessResult,
+        activationCode: _successCode,
       ),
     ],
     verify: (c) {
       verify(
-        () => _resendOTPUseCase(
-          otpId: any(named: 'otpId'),
+        () => _checkBranchActivationCodeUseCase(
+          code: _successCode,
         ),
       ).called(1);
     },
@@ -629,7 +602,6 @@ void _otpTests() {
     build: () => BranchActivationCubit(
       checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
       verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
-      resendOTPUseCase: _resendOTPUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
       setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       testActivationCode: '',
@@ -637,27 +609,30 @@ void _otpTests() {
     ),
     seed: () => defaultState.copyWith(
       activationResponse: netExceptionResponse,
+      activationCode: _netExceptionCode,
     ),
     act: (c) => c.resendOTP(),
     expect: () => [
       defaultState.copyWith(
         busy: true,
         error: BranchActivationError.none,
-        action: BranchActivationAction.otpCheck,
+        action: BranchActivationAction.resendOTP,
         activationResponse: netExceptionResponse,
+        activationCode: _netExceptionCode,
       ),
       defaultState.copyWith(
         busy: false,
         error: BranchActivationError.network,
-        action: BranchActivationAction.otpCheck,
+        action: BranchActivationAction.none,
         errorMessage: _netException.message,
         activationResponse: netExceptionResponse,
+        activationCode: _netExceptionCode,
       ),
     ],
     verify: (c) {
       verify(
-        () => _resendOTPUseCase(
-          otpId: any(named: 'otpId'),
+        () => _checkBranchActivationCodeUseCase(
+          code: _netExceptionCode,
         ),
       ).called(1);
     },
@@ -674,7 +649,6 @@ void _otpTests() {
     build: () => BranchActivationCubit(
       checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
       verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
-      resendOTPUseCase: _resendOTPUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
       setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       testActivationCode: '',
@@ -682,26 +656,29 @@ void _otpTests() {
     ),
     seed: () => defaultState.copyWith(
       activationResponse: genericExceptionResponse,
+      activationCode: _genericExceptionCode,
     ),
     act: (c) => c.resendOTP(),
     expect: () => [
       defaultState.copyWith(
         busy: true,
         error: BranchActivationError.none,
-        action: BranchActivationAction.otpCheck,
+        action: BranchActivationAction.resendOTP,
         activationResponse: genericExceptionResponse,
+        activationCode: _genericExceptionCode,
       ),
       defaultState.copyWith(
         busy: false,
         error: BranchActivationError.generic,
-        action: BranchActivationAction.otpCheck,
+        action: BranchActivationAction.none,
         activationResponse: genericExceptionResponse,
+        activationCode: _genericExceptionCode,
       ),
     ],
     verify: (c) {
       verify(
-        () => _resendOTPUseCase(
-          otpId: any(named: 'otpId'),
+        () => _checkBranchActivationCodeUseCase(
+          code: _genericExceptionCode,
         ),
       ).called(1);
     },
@@ -722,7 +699,6 @@ void _userTests() {
     build: () => BranchActivationCubit(
       checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
       verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
-      resendOTPUseCase: _resendOTPUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
       setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       testActivationCode: '',
@@ -765,7 +741,6 @@ void _userTests() {
     build: () => BranchActivationCubit(
       checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
       verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
-      resendOTPUseCase: _resendOTPUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
       setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       testActivationCode: '',
@@ -785,7 +760,7 @@ void _userTests() {
       defaultState.copyWith(
         busy: false,
         error: BranchActivationError.network,
-        action: BranchActivationAction.userRetrieval,
+        action: BranchActivationAction.none,
         errorMessage: _netException.message,
         activationResponse: netExceptionResponse,
       ),
@@ -807,7 +782,6 @@ void _userTests() {
     build: () => BranchActivationCubit(
       checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
       verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
-      resendOTPUseCase: _resendOTPUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
       setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       testActivationCode: '',
@@ -827,7 +801,7 @@ void _userTests() {
       defaultState.copyWith(
         busy: false,
         error: BranchActivationError.generic,
-        action: BranchActivationAction.userRetrieval,
+        action: BranchActivationAction.none,
         activationResponse: genericExceptionResponse,
       ),
     ],
@@ -852,7 +826,6 @@ void _accesPinTests() {
     build: () => BranchActivationCubit(
       checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
       verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
-      resendOTPUseCase: _resendOTPUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
       setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       testActivationCode: '',
@@ -888,7 +861,6 @@ void _accesPinTests() {
     build: () => BranchActivationCubit(
       checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
       verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
-      resendOTPUseCase: _resendOTPUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
       setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       testActivationCode: '',
@@ -924,7 +896,6 @@ void _accesPinTests() {
     build: () => BranchActivationCubit(
       checkBranchActivationCodeUseCase: _checkBranchActivationCodeUseCase,
       verifyOTPForBranchActivationUseCase: _verifyOTPForBranchActivationUseCase,
-      resendOTPUseCase: _resendOTPUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
       setAccessPinForUserUseCase: _setAccessPinForUserUseCase,
       testActivationCode: '',

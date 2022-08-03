@@ -149,8 +149,8 @@ class DPAVariablesList extends StatelessWidget {
           key: ValueKey(variable.id),
           variable: variable,
           readonly: variable.constraints.readonly,
-          padding: const EdgeInsets.symmetric(
-            vertical: 12.0,
+          padding: EdgeInsets.symmetric(
+            vertical: variable.constraints.readonly ? 12.0 : 0,
           ),
         );
 

@@ -25,6 +25,9 @@ enum BranchActivationAction {
   /// Second factor check.
   otpCheck,
 
+  /// OTP being resent.
+  resendOTP,
+
   /// User retrieval.
   userRetrieval,
 

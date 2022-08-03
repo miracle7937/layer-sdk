@@ -11,7 +11,7 @@ extension NewBeneficiaryToBeneficiaryDTOExtension on NewBeneficiary {
         lastName: lastName,
         currency: currency?.code,
         accountNumber: ibanOrAccountNO,
-        routingCode: sortCode,
+        routingCode: routingCode,
         type: bank?.transferType?.toTransferTypeDTO(),
         rcptCountryCode: country?.countryCode,
         bankName: bank?.name,
