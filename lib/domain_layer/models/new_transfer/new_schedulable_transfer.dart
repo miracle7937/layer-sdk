@@ -23,6 +23,7 @@ abstract class NewSchedulableTransfer extends NewTransfer {
     this.ends,
     super.saveToShortcut,
     super.shortcutName,
+    super.note,
   });
 
   /// Whether if this transfer is recurring or not.

@@ -40,6 +40,7 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
     this.newBeneficiary,
     super.saveToShortcut,
     super.shortcutName,
+    super.note,
   }) : super();
 
   @override
@@ -73,6 +74,7 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
     NewBeneficiary? newBeneficiary,
     bool? saveToShortcut,
     String? shortcutName,
+    String? note,
   }) =>
       BeneficiaryTransfer(
         type: type ?? super.type,
@@ -90,6 +92,7 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
         shortcutName: !(saveToShortcut ?? this.saveToShortcut)
             ? null
             : shortcutName ?? this.shortcutName,
+        note: note ?? this.note,
       );
 
   @override
@@ -118,6 +121,7 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
       recurrence: recurrence.toRecurrenceDTO(),
       startDate: starts,
       endDate: ends,
+      note: note,
     );
   }
 
@@ -136,5 +140,6 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
         newBeneficiary,
         saveToShortcut,
         shortcutName,
+        note,
       ];
 }
