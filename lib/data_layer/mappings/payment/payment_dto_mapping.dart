@@ -1,5 +1,6 @@
 import '../../../domain_layer/models.dart';
 import '../../dtos.dart';
+import '../../dtos/payment/payment_payload_dto.dart';
 import '../../errors.dart';
 import '../../mappings.dart';
 
@@ -89,6 +90,24 @@ extension PaymentToDTOMapping on Payment {
       scheduled: scheduled,
       recurrenceStart: recurrenceStart,
       recurrenceEnd: recurrenceEnd,
+    );
+  }
+}
+
+/// Extension that provides mappings for [Payment]
+extension PaymentToPaymentPayloadDTOMapping on Payment {
+  /// Maps into a [PaymentDTO]
+  PaymentPayloadDTO toPaymentPayloadDTO() {
+    return PaymentPayloadDTO(
+      paymentId: id,
+      bill: bill?.toBillDTO(),
+      amount: amount,
+      currency: currency,
+      otpId: otpId,
+      status: status.toPaymentStatusDTO(),
+      deviceUID: deviceUID,
+      fromAccount: fromAccount?.toAccountDTO(),
+      fromAccountId: fromAccount?.id,
     );
   }
 }

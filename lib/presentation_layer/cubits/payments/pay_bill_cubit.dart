@@ -8,12 +8,14 @@ import '../../../domain_layer/models/bill/bill.dart';
 import '../../../domain_layer/models/payment/biller.dart';
 import '../../../domain_layer/models/payment/payment.dart';
 import '../../../domain_layer/models/service/service_field.dart';
+import '../../../domain_layer/models/shortcut/new_shortcut.dart';
 import '../../../domain_layer/use_cases/account/get_accounts_by_status_use_case.dart';
 import '../../../domain_layer/use_cases/payments/generate_device_uid_use_case.dart';
 import '../../../domain_layer/use_cases/payments/load_billers_use_case.dart';
 import '../../../domain_layer/use_cases/payments/load_services_use_case.dart';
 import '../../../domain_layer/use_cases/payments/post_payment_use_case.dart';
 import '../../../domain_layer/use_cases/payments/validate_bill_use_case.dart';
+import '../../../domain_layer/use_cases/shortcut/create_shortcut_use_case.dart';
 import 'pay_bill_state.dart';
 
 /// A cubit for paying customer bills.
@@ -24,6 +26,7 @@ class PayBillCubit extends Cubit<PayBillState> {
   final PostPaymentUseCase _postPaymentUseCase;
   final GenerateDeviceUIDUseCase _generateDeviceUIDUseCase;
   final ValidateBillUseCase _validateBillUseCase;
+  final CreateShortcutUseCase _createShortcutUseCase;
 
   /// The biller id to pay for, if provided the biller will be pre-selected
   /// when the cubit loads.
@@ -37,6 +40,7 @@ class PayBillCubit extends Cubit<PayBillState> {
     required PostPaymentUseCase postPaymentUseCase,
     required GenerateDeviceUIDUseCase generateDeviceUIDUseCase,
     required ValidateBillUseCase validateBillUseCase,
+    required CreateShortcutUseCase createShortcutUseCase,
     this.billerId,
   })  : _loadBillersUseCase = loadBillersUseCase,
         _loadServicesUseCase = loadServicesUseCase,
@@ -44,6 +48,7 @@ class PayBillCubit extends Cubit<PayBillState> {
         _postPaymentUseCase = postPaymentUseCase,
         _generateDeviceUIDUseCase = generateDeviceUIDUseCase,
         _validateBillUseCase = validateBillUseCase,
+        _createShortcutUseCase = createShortcutUseCase,
         super(PayBillState());
 
   /// Loads all the required data, must be called at lease once before anything
@@ -147,6 +152,10 @@ class PayBillCubit extends Cubit<PayBillState> {
         otp: otp,
       );
 
+      if (state.payment.saveToShortcut) {
+        await _createShortcut(res);
+      }
+
       emit(
         state.copyWith(
           busy: false,
@@ -164,6 +173,44 @@ class PayBillCubit extends Cubit<PayBillState> {
     }
   }
 
+  /// Creates the shortcut (if enabled) once the bill payment has succeeded.
+  Future<void> _createShortcut(
+    Payment payment,
+  ) async {
+    emit(
+      state.copyWith(
+        busy: true,
+        busyAction: PayBillBusyAction.addingShortcut,
+      ),
+    );
+
+    try {
+      await _createShortcutUseCase(
+        shortcut: NewShortcut(
+          name: state.payment.shortcutName!,
+          type: ShortcutType.payment,
+          payload: state.payment,
+        ),
+      );
+
+      emit(
+        state.copyWith(
+          busy: false,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          busy: false,
+          errorStatus: e is NetException
+              ? PayBillErrorStatus.network
+              : PayBillErrorStatus.generic,
+        ),
+      );
+      rethrow;
+    }
+  }
+
   /// Set's the selected category to the one matching the provided category
   /// code.
   void setCatogery(String categoryCode) {
@@ -172,6 +219,28 @@ class PayBillCubit extends Cubit<PayBillState> {
     emit(
       state.copyWith(
         selectedCategory: category,
+      ),
+    );
+  }
+
+  /// Set's save to shortcuts bool
+  void setSaveToShortcut({bool? saveToShortcuts}) {
+    emit(
+      state.copyWith(
+        paymentToBeMade: state.paymentToBeMade?.copyWith(
+          saveToShortcut: saveToShortcuts,
+        ),
+      ),
+    );
+  }
+
+  /// Set's the shortcut name
+  void setShortcutName({String? shortcutName}) {
+    emit(
+      state.copyWith(
+        paymentToBeMade: state.paymentToBeMade?.copyWith(
+          shortcutName: shortcutName,
+        ),
       ),
     );
   }

@@ -1,8 +1,11 @@
 import 'package:collection/collection.dart';
 
+import '../../../domain_layer/models.dart';
+import '../../../domain_layer/models/account/account.dart';
 import '../../dtos.dart';
 import '../../extensions.dart';
 import '../../helpers.dart';
+import '../../mappings.dart';
 
 /// The account DTO represents a customers account
 /// as provided by the infobanking service
@@ -97,6 +100,12 @@ class AccountDTO {
   /// customer can request certificate deposit
   bool canRequestCertificateOfDeposit = true;
 
+  /// customer can stop issued check
+  bool canStopIssuedCheck = true;
+
+  /// customer can confirm issued check
+  bool canConfirmIssuedCheck = true;
+
   /// generic account number
   String? accountNumber;
 
@@ -147,6 +156,8 @@ class AccountDTO {
     this.canRequestBankerCheck = true,
     this.canRequestCertificateOfAccount = true,
     this.canRequestCertificateOfDeposit = true,
+    this.canStopIssuedCheck = true,
+    this.canConfirmIssuedCheck = true,
     this.accountNumber,
     this.extraAccountNumber,
     this.displayAccountNumber,
@@ -197,6 +208,8 @@ class AccountDTO {
       canRequestStatement: json['can_request_stmt'] ?? true,
       canRequestCertificateOfAccount: json['can_request_cert_account'] ?? true,
       canRequestCertificateOfDeposit: json['can_request_cert_deposit'] ?? true,
+      canStopIssuedCheck: json["can_stop_issued_check"] ?? true,
+      canConfirmIssuedCheck: json["can_confirm_issued_check"] ?? true,
       accountNumber: json['account_no'],
       displayAccountNumber: json['account_no_displayed'],
       extraAccountNumber:
@@ -206,6 +219,45 @@ class AccountDTO {
           ?.lookup<dynamic, String>(['location_id'])?.toString(),
       preferences: AccountPreferencesDTO.fromJson(json),
     );
+  }
+
+  /// To json function
+  Map<String, dynamic> toJson() {
+    var json = <String, dynamic>{
+      'account_id': accountId,
+      'account_type_id': type?.id,
+      'branch_id': branchId,
+      'currency': currency,
+      'joint_type': jointType?.value,
+      'balance_available': availableBalance,
+      'balance_current': currentBalance,
+      'status': AccountDTOStatus.getStringFromAccountStatus(status),
+      "can_pay": canPay,
+      "can_trf_internal": canTransferOwn,
+      "can_trf_bank": canTransferBank,
+      "can_trf_domestic": canTransferDomestic,
+      "can_trf_intl": canTransferInternational,
+      "can_trf_bulk": canTransferBulk,
+      "can_receive_trf": canReceiveTransfer,
+      "can_trf_cardless": canTransferCardless,
+      'can_overdraft': canOverdraft,
+      'can_request_card': canRequestCard,
+      'can_request_chkbk': canRequestChkbk,
+      'can_trf_remittance': canTransferRemittance,
+      'can_p2p': type?.canP2P,
+      "account_no": accountNumber,
+      "account_no_displayed": displayAccountNumber,
+      "iban": accountNumber,
+      "can_request_banker_check": canRequestBankerCheck,
+      "can_request_stmt": canRequestStatement,
+      "can_request_cert_account": canRequestCertificateOfAccount,
+      "can_request_cert_deposit": canRequestCertificateOfDeposit,
+      "can_stop_issued_check": canStopIssuedCheck,
+      "can_confirm_issued_check": canConfirmIssuedCheck,
+      'account_type': type?.toJson(),
+      "has_iban": type?.hasIban,
+    };
+    return json;
   }
 
   /// Creates a list of [AccountDTO] from a list
@@ -272,4 +324,22 @@ class AccountDTOStatus extends EnumDTO {
   static AccountDTOStatus? fromRaw(String? raw) => values.firstWhereOrNull(
         (val) => val.value == raw,
       );
+
+  /// Get string from the account status
+  static String getStringFromAccountStatus(AccountDTOStatus? accountStatus) {
+    var status = accountStatus?.toAccountStatus();
+    if (status == null) return 'D';
+    switch (status) {
+      case (AccountStatus.active):
+        return 'A';
+      case (AccountStatus.deleted):
+        return 'D';
+      case (AccountStatus.closed):
+        return 'C';
+      case (AccountStatus.dormant):
+        return 'O';
+      default:
+        return 'O';
+    }
+  }
 }

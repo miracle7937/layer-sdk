@@ -42,12 +42,28 @@ class AccountInfo extends Equatable {
   /// The account description or long name
   final String? accountDescription;
 
+  /// customer can transfer cardless
+  final bool canTransferCardless;
+
+  /// customer can stop issued check
+  final bool canStopIssuedCheck;
+
+  /// customer has iban
+  final bool hasIban;
+
+  /// customer can confirm issued check
+  final bool canConfirmIssuedCheck;
+
   /// Creates a new instance of [AccountInfo]
   AccountInfo({
     this.accountType,
     this.family,
     this.accountName,
     this.accountDescription,
+    this.hasIban = false,
+    this.canTransferCardless = true,
+    this.canConfirmIssuedCheck = true,
+    this.canStopIssuedCheck = true,
   });
 
   @override
@@ -56,5 +72,9 @@ class AccountInfo extends Equatable {
         family,
         accountName,
         accountDescription,
+        hasIban,
+        canTransferCardless,
+        canConfirmIssuedCheck,
+        canStopIssuedCheck,
       ];
 }

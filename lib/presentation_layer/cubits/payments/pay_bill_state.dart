@@ -19,6 +19,9 @@ enum PayBillBusyAction {
   /// Submitting the payment
   submitting,
 
+  /// Adding shortcut
+  addingShortcut,
+
   /// Validating user input
   validating,
 }
@@ -83,6 +86,9 @@ class PayBillState extends Equatable {
   /// The validated bill
   final Bill? validatedBill;
 
+  /// The payment to be made
+  final Payment? paymentToBeMade;
+
   /// Creates a new state.
   PayBillState({
     this.amount = 0,
@@ -100,6 +106,7 @@ class PayBillState extends Equatable {
     this.selectedService,
     this.serviceFields = const [],
     this.validatedBill,
+    this.paymentToBeMade = const Payment(),
   }) : _billers = billers;
 
   @override
@@ -121,6 +128,7 @@ class PayBillState extends Equatable {
         validatedBill,
         payment,
         bill,
+        paymentToBeMade,
       ];
 
   /// Creates a new state based on this one.
@@ -140,6 +148,7 @@ class PayBillState extends Equatable {
     Service? selectedService,
     List<ServiceField>? serviceFields,
     Bill? validatedBill,
+    Payment? paymentToBeMade,
   }) {
     return PayBillState(
       amount: amount ?? this.amount,
@@ -157,6 +166,7 @@ class PayBillState extends Equatable {
       selectedService: selectedService ?? this.selectedService,
       serviceFields: serviceFields ?? this.serviceFields,
       validatedBill: validatedBill ?? this.validatedBill,
+      paymentToBeMade: paymentToBeMade ?? this.paymentToBeMade,
     );
   }
 
@@ -181,7 +191,9 @@ class PayBillState extends Equatable {
       selectedBiller != null &&
       selectedService != null &&
       amount > 0 &&
-      _serviceFieldsValid;
+      _serviceFieldsValid &&
+      (!(paymentToBeMade?.saveToShortcut ?? true) ||
+          (paymentToBeMade?.shortcutName?.isNotEmpty ?? false));
 
   bool get _serviceFieldsValid {
     for (var i = 0; i < serviceFields.length; i++) {
@@ -212,5 +224,7 @@ class PayBillState extends Equatable {
         currency: selectedAccount?.currency ?? '',
         deviceUID: deviceUID,
         status: PaymentStatus.completed,
+        saveToShortcut: paymentToBeMade?.saveToShortcut ?? false,
+        shortcutName: paymentToBeMade?.shortcutName,
       );
 }

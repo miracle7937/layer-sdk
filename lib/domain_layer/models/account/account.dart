@@ -112,6 +112,12 @@ class Account extends Equatable {
   /// customer can request certificate deposit
   final bool canRequestCertificateOfDeposit;
 
+  /// customer can stop issued check
+  bool canStopIssuedCheck = true;
+
+  /// customer can confirm issued check
+  bool canConfirmIssuedCheck = true;
+
   /// Creates a new immutable [Account]
   Account({
     this.id,
@@ -144,6 +150,8 @@ class Account extends Equatable {
     this.canRequestStatement = true,
     this.canRequestCertificateOfAccount = true,
     this.canRequestCertificateOfDeposit = true,
+    this.canStopIssuedCheck = true,
+    this.canConfirmIssuedCheck = true,
   });
 
   @override
