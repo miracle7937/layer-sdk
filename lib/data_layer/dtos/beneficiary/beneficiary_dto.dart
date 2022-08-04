@@ -144,6 +144,10 @@ class BeneficiaryDTO {
         extra: json['extra'],
       );
 
+  /// Returns a list of [BeneficiaryDTO] from a JSON
+  static List<BeneficiaryDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(BeneficiaryDTO.fromJson).toList();
+
   /// Maps a instance of [BeneficiaryDTO] into a json map
   Map<String, dynamic> toJson() => <String, dynamic>{
         if (beneficiaryId != null) 'beneficiary_id': beneficiaryId,
@@ -153,9 +157,9 @@ class BeneficiaryDTO {
         if (type != null) 'type': type!.value,
         if (currency != null) 'currency': currency,
         if (accountNumber != null) 'account_number': accountNumber,
-        if (rcptAddress1 != null) 'rcpt_adress_1': rcptAddress1,
-        if (rcptAddress2 != null) 'rcpt_adress_2': rcptAddress2,
-        if (rcptAddress3 != null) 'rcpt_adress_3': rcptAddress3,
+        if (rcptAddress1 != null) 'rcpt_address_1': rcptAddress1,
+        if (rcptAddress2 != null) 'rcpt_address_2': rcptAddress2,
+        if (rcptAddress3 != null) 'rcpt_address_3': rcptAddress3,
         if (rcptCountryCode != null) 'rcpt_country_code': rcptCountryCode,
         if (bankAddress1 != null) 'bank_address_1': bankAddress1,
         if (bankAddress2 != null) 'bank_address_2': bankAddress2,
@@ -167,11 +171,8 @@ class BeneficiaryDTO {
         if (bankImageUrl != null) 'bank_image_url': bankImageUrl,
         if (extra != null) 'extra': extra,
         'visible': nickname != null,
+        if (otpId != null) 'otp_id': otpId,
       };
-
-  /// Returns a list of [BeneficiaryDTO] from a JSON
-  static List<BeneficiaryDTO> fromJsonList(List<Map<String, dynamic>> json) =>
-      json.map(BeneficiaryDTO.fromJson).toList();
 }
 
 /// The beneficiary status

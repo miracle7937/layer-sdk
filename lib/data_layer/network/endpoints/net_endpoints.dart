@@ -137,6 +137,9 @@ class NetEndpoints {
   /// The beneficiaries endpoint
   String get beneficiary => '$_txnBanking/v1/beneficiary';
 
+  /// The beneficiaries endpoint
+  String get beneficiary2 => '$_txnBanking/v2/beneficiary';
+
   /// The bill endpoint
   String get bill => '$_payment/v1/bill';
 
@@ -313,4 +316,7 @@ class NetEndpoints {
 
   /// Endpoint for submitting a transfer.
   String get submitTransfer => '$_txnBanking/v2/transfer';
+
+  /// Endpoint for deleting a request
+  String get request => '$_customer/v1/request';
 }

@@ -400,6 +400,8 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     NewBeneficiary? newBeneficiary,
     bool? saveToShortcut,
     String? shortcutName,
+    String? note,
+    ScheduleDetails? scheduleDetails,
   }) async {
     final sourceCurrency = state.currencies.firstWhereOrNull(
       (currency) => currency.code == state.transfer.source?.account?.currency,
@@ -431,6 +433,8 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
           newBeneficiary: newBeneficiary,
           saveToShortcut: saveToShortcut,
           shortcutName: shortcutName,
+          note: note,
+          scheduleDetails: scheduleDetails,
         ),
       ),
     );
@@ -449,7 +453,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     final beneficiaryType = state.transfer.beneficiaryType;
     final shouldValidateIBAN =
         beneficiaryType == DestinationBeneficiaryType.newBeneficiary &&
-            state.transfer.newBeneficiary?.sortCode == null;
+            state.transfer.newBeneficiary?.routingCode == null;
     if (shouldValidateIBAN) {
       final isValid = _validateIBANUseCase(
         iban: state.transfer.newBeneficiary?.ibanOrAccountNO ?? '',

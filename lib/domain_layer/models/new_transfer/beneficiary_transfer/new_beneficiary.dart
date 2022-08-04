@@ -18,12 +18,12 @@ class NewBeneficiary extends Equatable {
   /// The IBAN/Account number.
   final String? ibanOrAccountNO;
 
-  /// Whether if the sort code is required or not.
+  /// Whether if the routing code is required or not.
   /// Default is `false`.
-  final bool sortCodeIsRequired;
+  final bool routingCodeIsRequired;
 
-  /// The sort code.
-  final String? sortCode;
+  /// The routing code.
+  final String? routingCode;
 
   /// The bank.
   final Bank? bank;
@@ -43,8 +43,8 @@ class NewBeneficiary extends Equatable {
     this.nickname,
     this.country,
     this.ibanOrAccountNO,
-    this.sortCodeIsRequired = false,
-    this.sortCode,
+    this.routingCodeIsRequired = false,
+    this.routingCode,
     this.bank,
     this.firstName,
     this.lastName,
@@ -57,8 +57,8 @@ class NewBeneficiary extends Equatable {
     String? nickname,
     Country? country,
     String? ibanOrAccountNO,
-    bool? sortCodeIsRequired,
-    String? sortCode,
+    bool? routingCodeIsRequired,
+    String? routingCode,
     Bank? bank,
     String? firstName,
     String? lastName,
@@ -70,8 +70,9 @@ class NewBeneficiary extends Equatable {
             !(shouldSave ?? this.shouldSave) ? null : nickname ?? this.nickname,
         country: country ?? this.country,
         ibanOrAccountNO: ibanOrAccountNO ?? this.ibanOrAccountNO,
-        sortCodeIsRequired: sortCodeIsRequired ?? this.sortCodeIsRequired,
-        sortCode: sortCode ?? this.sortCode,
+        routingCodeIsRequired:
+            routingCodeIsRequired ?? this.routingCodeIsRequired,
+        routingCode: routingCode ?? this.routingCode,
         bank: country != null && country != this.country
             ? null
             : bank ?? this.bank,
@@ -85,7 +86,7 @@ class NewBeneficiary extends Equatable {
       (!shouldSave || (nickname?.isNotEmpty ?? false)) &&
       country != null &&
       ibanOrAccountNO != null &&
-      (!sortCodeIsRequired || sortCode != null) &&
+      (!routingCodeIsRequired || routingCode != null) &&
       bank != null &&
       firstName != null &&
       lastName != null &&
@@ -97,8 +98,8 @@ class NewBeneficiary extends Equatable {
         nickname,
         country,
         ibanOrAccountNO,
-        sortCodeIsRequired,
-        sortCode,
+        routingCodeIsRequired,
+        routingCode,
         bank,
         firstName,
         lastName,
