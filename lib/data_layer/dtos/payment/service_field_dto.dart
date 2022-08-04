@@ -1,3 +1,4 @@
+import '../../../domain_layer/models/service/service_field.dart';
 import '../../helpers.dart';
 
 /// Data transfer object representing Service fields
@@ -41,6 +42,9 @@ class ServiceFieldDTO {
   /// The value selected for the service field
   String? value;
 
+  /// The value of the service field if it was a list field
+  String? valueList;
+
   /// Creates a new [ServiceFieldDTO]
   ServiceFieldDTO({
     this.fieldId,
@@ -55,6 +59,7 @@ class ServiceFieldDTO {
     this.created,
     this.updated,
     this.value,
+    this.valueList,
   });
 
   /// Creates a [ServiceFieldDTO] from a JSON
@@ -76,6 +81,7 @@ class ServiceFieldDTO {
       created: JsonParser.parseDate(json['ts_created']),
       updated: JsonParser.parseDate(json['ts_Updated']),
       value: json['value'],
+      valueList: json['value_list'],
     );
   }
 
@@ -94,6 +100,7 @@ class ServiceFieldDTO {
       'ts_created': created?.millisecondsSinceEpoch,
       'ts_Updated': updated?.millisecondsSinceEpoch,
       'value': value,
+      if (serviceFieldType == ServiceFieldType.list) 'value_list': value,
     };
   }
 
