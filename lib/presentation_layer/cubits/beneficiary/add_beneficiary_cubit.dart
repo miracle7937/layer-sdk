@@ -390,13 +390,6 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         )
       });
 
-  /// Returns an error list containing all the errors but the one that
-  /// coincides with the passed action.
-  Set<AddBeneficiaryError> _removeError(
-    AddBeneficiaryError action,
-  ) =>
-      state.errors.where((error) => error.action != action).toSet();
-
   Set<AddBeneficiaryError> _removeDefault() => state.errors
       .where((error) => ![
             AddBeneficiaryErrorStatus.network,
