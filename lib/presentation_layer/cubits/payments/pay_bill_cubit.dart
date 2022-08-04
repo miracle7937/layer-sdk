@@ -209,7 +209,9 @@ class PayBillCubit extends Cubit<PayBillState> {
   }
 
   /// Set's save to shortcuts bool
-  void setSaveToShortcut({bool? saveToShortcuts}) {
+  void setSaveToShortcut({
+    required bool saveToShortcuts,
+  }) {
     emit(
       state.copyWith(
         saveToShortcut: saveToShortcuts,
@@ -218,7 +220,7 @@ class PayBillCubit extends Cubit<PayBillState> {
   }
 
   /// Set's the shortcut name
-  void setShortcutName({String? shortcutName}) {
+  void setShortcutName(String shortcutName) {
     emit(
       state.copyWith(
         shortcutName: shortcutName,

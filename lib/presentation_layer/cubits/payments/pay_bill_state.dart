@@ -177,7 +177,7 @@ class PayBillState extends Equatable {
       saveToShortcut: saveToShortcut ?? this.saveToShortcut,
       shortcutName: !(saveToShortcut ?? this.saveToShortcut)
           ? null
-          : shortcutName ?? this.shortcutName,
+          : (shortcutName ?? this.shortcutName),
     );
   }
 
