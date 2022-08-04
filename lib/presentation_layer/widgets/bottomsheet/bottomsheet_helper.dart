@@ -58,7 +58,10 @@ class BottomSheetHelper {
                 ),
               ),
             ),
-        builder: builder,
+        builder: (context) => Padding(
+          padding: MediaQuery.of(context).viewInsets,
+          child: builder(context),
+        ),
       );
 
   /// Shows an error bottomsheet with the provided params.
