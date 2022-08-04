@@ -154,7 +154,6 @@ class PayBillState extends Equatable {
     Service? selectedService,
     List<ServiceField>? serviceFields,
     Bill? validatedBill,
-    Payment? paymentToBeMade,
     bool? saveToShortcut,
     String? shortcutName,
   }) {
