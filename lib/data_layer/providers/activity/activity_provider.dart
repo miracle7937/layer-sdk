@@ -112,7 +112,6 @@ class ActivityProvider {
       params["sortby"] = sortBy;
     }
 
-    activityTags?.removeWhere((tag) => tag == ActivityTag.unknown);
     if (activityTags?.isNotEmpty ?? false) {
       final tags = activityTags!.map((tag) => tag.toJSONString).join(',');
       params['tag'] = tags;
@@ -149,12 +148,10 @@ class ActivityProvider {
       param['otp_value'] = otpValue;
     }
 
-    final response = await netClient.request(
+    await netClient.request(
       '${netClient.netEndpoints.request}/$id/cancel',
       queryParameters: param,
       method: NetRequestMethods.post,
     );
-
-    return response.data;
   }
 }

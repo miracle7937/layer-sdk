@@ -10,7 +10,7 @@ class CancelActivityUseCase {
   }) : _repository = repository;
 
   /// Callable method to cancel the [Activity]
-  Future<dynamic> call(String id, {String? otpValue}) => _repository.cancel(
+  Future<void> call(String id, {String? otpValue}) => _repository.cancel(
         id,
         otpValue: otpValue,
       );
