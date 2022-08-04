@@ -98,6 +98,7 @@ class PayBillCubit extends Cubit<PayBillState> {
             setAmount(paymentToRepeat!.amount ?? 0.0);
             setCatogery(biller.category.categoryCode);
             await setBiller(biller.id);
+            setService(paymentToRepeat!.bill?.service?.serviceId);
             _setServiceFieldsValue(
               serviceFields: paymentToRepeat!.bill?.billingFields,
             );
