@@ -158,7 +158,7 @@ class PayBillCubit extends Cubit<PayBillState> {
             PaymentStatus.pending,
             PaymentStatus.scheduled,
             PaymentStatus.pendingBank,
-          ].contains(payment?.status))) {
+          ].contains(res.status))) {
         await _createShortcut(res);
       }
 
