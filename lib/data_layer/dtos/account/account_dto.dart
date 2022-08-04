@@ -1,11 +1,8 @@
 import 'package:collection/collection.dart';
 
-import '../../../domain_layer/models.dart';
-import '../../../domain_layer/models/account/account.dart';
 import '../../dtos.dart';
 import '../../extensions.dart';
 import '../../helpers.dart';
-import '../../mappings.dart';
 
 /// The account DTO represents a customers account
 /// as provided by the infobanking service
@@ -231,7 +228,7 @@ class AccountDTO {
       'joint_type': jointType?.value,
       'balance_available': availableBalance,
       'balance_current': currentBalance,
-      'status': AccountDTOStatus.getStringFromAccountStatus(status),
+      'status': status?.value,
       "can_pay": canPay,
       "can_trf_internal": canTransferOwn,
       "can_trf_bank": canTransferBank,
@@ -324,22 +321,4 @@ class AccountDTOStatus extends EnumDTO {
   static AccountDTOStatus? fromRaw(String? raw) => values.firstWhereOrNull(
         (val) => val.value == raw,
       );
-
-  /// Get string from the account status
-  static String getStringFromAccountStatus(AccountDTOStatus? accountStatus) {
-    var status = accountStatus?.toAccountStatus();
-    if (status == null) return 'D';
-    switch (status) {
-      case (AccountStatus.active):
-        return 'A';
-      case (AccountStatus.deleted):
-        return 'D';
-      case (AccountStatus.closed):
-        return 'C';
-      case (AccountStatus.dormant):
-        return 'O';
-      default:
-        return 'O';
-    }
-  }
 }
