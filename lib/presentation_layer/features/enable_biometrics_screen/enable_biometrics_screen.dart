@@ -46,70 +46,66 @@ class EnableBiometricsScreen extends StatelessWidget {
           onEnable();
         }
       },
-      child: WillPopScope(
-        onWillPop: () async => false,
-        child: Scaffold(
-          appBar: SDKHeader(
-            title: translation.translate('enable_biometrics'),
-            prefixSvgIcon: DKImages.arrowLeft,
-            onPrefixIconPressed: () => Navigator.pop(context, false),
-          ),
-          body: Column(
-            children: [
-              if (stepInfo != null)
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 18.0,
-                  ),
-                  child: SDKStepsIndicator(
-                    currentStep: stepInfo!.currentStep,
-                    stepsCount: stepInfo!.stepsCount,
-                  ),
+      child: Scaffold(
+        appBar: SDKHeader(
+          title: translation.translate('enable_biometrics'),
+          prefixSvgIcon: DKImages.arrowLeft,
+          onPrefixIconPressed: () => Navigator.pop(context, false),
+        ),
+        body: Column(
+          children: [
+            if (stepInfo != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 18.0,
                 ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 32.0),
-                  child: Column(
-                    children: [
-                      Spacer(),
-                      SvgPicture.asset(
-                        FLImages.biometrics,
-                        height: 88.0,
-                        width: 88.0,
-                      ),
-                      const SizedBox(height: 24.0),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 13.0),
-                        child: Text(
-                          translation
-                              .translate('enable_biometrics_description'),
-                          style: layerDesign.bodyL(),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      Spacer(),
-                      DKButton(
-                        title: translation.translate('enable'),
-                        onPressed: () =>
-                            context.read<BiometricsCubit>().authenticate(
-                                  localizedReason: translation.translate(
-                                    'biometric_dialog_description',
-                                  ),
-                                ),
-                      ),
-                      const SizedBox(height: 8.0),
-                      DKButton(
-                        title: translation.translate('skip'),
-                        onPressed: onSkip,
-                        type: DKButtonType.baseSecondary,
-                      ),
-                    ],
-                  ),
+                child: SDKStepsIndicator(
+                  currentStep: stepInfo!.currentStep,
+                  stepsCount: stepInfo!.stepsCount,
                 ),
               ),
-            ],
-          ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 32.0),
+                child: Column(
+                  children: [
+                    Spacer(),
+                    SvgPicture.asset(
+                      FLImages.biometrics,
+                      height: 88.0,
+                      width: 88.0,
+                    ),
+                    const SizedBox(height: 24.0),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 13.0),
+                      child: Text(
+                        translation.translate('enable_biometrics_description'),
+                        style: layerDesign.bodyL(),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Spacer(),
+                    DKButton(
+                      title: translation.translate('enable'),
+                      onPressed: () =>
+                          context.read<BiometricsCubit>().authenticate(
+                                localizedReason: translation.translate(
+                                  'biometric_dialog_description',
+                                ),
+                              ),
+                    ),
+                    const SizedBox(height: 8.0),
+                    DKButton(
+                      title: translation.translate('skip'),
+                      onPressed: onSkip,
+                      type: DKButtonType.baseSecondary,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
