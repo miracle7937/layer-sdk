@@ -20,5 +20,8 @@ extension NewBeneficiaryToBeneficiaryDTOExtension on NewBeneficiary {
         bankAddress1: bank?.address1,
         bankAddress2: bank?.address2,
         bankImageUrl: bank?.imageUrl,
+        rcptAddress1: address1?.isNotEmpty ?? false ? address1 : null,
+        rcptAddress2: address2?.isNotEmpty ?? false ? address2 : null,
+        rcptAddress3: address3?.isNotEmpty ?? false ? address3 : null,
       );
 }
