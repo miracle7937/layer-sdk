@@ -46,9 +46,6 @@ class ActivityState extends Equatable {
   /// Creates a new [ActivityState] instance
   ActivityState({
     Iterable<Activity> activities = const <Activity>[],
-    Iterable<ActivityType> types = const <ActivityType>[],
-    Iterable<ActivityTag> activityTags = const <ActivityTag>[],
-    Iterable<TransferType> transferTypes = const <TransferType>[],
     this.action = ActivityBusyAction.none,
     this.errorStatus = ActivityErrorStatus.none,
     this.pagination = const Pagination(),
