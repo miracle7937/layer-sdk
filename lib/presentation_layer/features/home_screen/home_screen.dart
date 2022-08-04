@@ -182,43 +182,40 @@ class _HomeScreenState extends State<HomeScreen> {
       (cubit) => cubit.state.experience,
     );
 
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: Scaffold(
-        drawer: experience?.sideDrawerMenu,
-        appBar: experience?.topBarMenu,
-        body: Stack(
-          children: [
-            SizedBox(
-              height: double.maxFinite,
-              width: double.maxFinite,
-              child: Column(
-                children: [
-                  if (experience != null && pageWidget != null) ...[
-                    Expanded(
-                      child: pageWidget!,
-                    ),
-                    experience.bottomBarMenu(
-                      context,
-                      initialPage: _initialPage,
-                      visiblePages:
-                          context.watch<ExperienceCubit>().state.visiblePages,
-                      moreMenuItemTitle: widget.moreMenuItemTitle,
-                      onSinglePageChanged: (page) =>
-                          pageWidget = widget.pageBuilder(context, page),
-                      onMorePageChanged: (morePages) => pageWidget =
-                          widget.morePageBuilder(context, morePages),
-                    ),
-                  ],
+    return Scaffold(
+      drawer: experience?.sideDrawerMenu,
+      appBar: experience?.topBarMenu,
+      body: Stack(
+        children: [
+          SizedBox(
+            height: double.maxFinite,
+            width: double.maxFinite,
+            child: Column(
+              children: [
+                if (experience != null && pageWidget != null) ...[
+                  Expanded(
+                    child: pageWidget!,
+                  ),
+                  experience.bottomBarMenu(
+                    context,
+                    initialPage: _initialPage,
+                    visiblePages:
+                        context.watch<ExperienceCubit>().state.visiblePages,
+                    moreMenuItemTitle: widget.moreMenuItemTitle,
+                    onSinglePageChanged: (page) =>
+                        pageWidget = widget.pageBuilder(context, page),
+                    onMorePageChanged: (morePages) =>
+                        pageWidget = widget.morePageBuilder(context, morePages),
+                  ),
                 ],
-              ),
+              ],
             ),
-            if (busy)
-              Positioned.fill(
-                child: widget.fullscreenLoader,
-              ),
-          ],
-        ),
+          ),
+          if (busy)
+            Positioned.fill(
+              child: widget.fullscreenLoader,
+            ),
+        ],
       ),
     );
   }

@@ -403,6 +403,9 @@ class CustomerInformationDTO {
   /// The company type of the company this customer works on.
   String? companyType;
 
+  /// The biller id
+  String? billerId;
+
   /// Creates a new [CustomerInformationDTO]
   CustomerInformationDTO({
     this.employerName,
@@ -432,6 +435,7 @@ class CustomerInformationDTO {
     this.beneficiaryDocument,
     this.companyName,
     this.companyType,
+    this.billerId,
   });
 
   /// Creates a [CustomerInformationDTO] from a JSON
@@ -482,6 +486,7 @@ class CustomerInformationDTO {
         beneficiaryDocument: json['beneficiary_document'],
         companyName: json['company_name'],
         companyType: json['company_type'],
+        billerId: json["biller_id"],
       );
 
   /// Returns a list of [CustomerInformationDTO] from a JSON
@@ -518,6 +523,7 @@ class CustomerInformationDTO {
     String? beneficiaryDocument,
     String? companyName,
     String? companyType,
+    String? billerId,
   }) =>
       CustomerInformationDTO(
         employerName: employerName ?? this.employerName,
@@ -551,6 +557,7 @@ class CustomerInformationDTO {
         beneficiaryDocument: beneficiaryDocument ?? this.beneficiaryDocument,
         companyName: companyName ?? this.companyName,
         companyType: companyType ?? this.companyType,
+        billerId: billerId ?? this.billerId,
       );
 }
 

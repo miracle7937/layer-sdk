@@ -39,6 +39,8 @@ class CurrencyCubit extends Cubit<CurrencyState> {
         final currency = await _loadCurrencyByCodeUseCase(
           code: code,
           forceRefresh: forceRefresh,
+          // TODO: when merging akorn-staging:
+          // TODO: check how to handle the `onlyVisible` here not to break DBO
         );
 
         currencies = [

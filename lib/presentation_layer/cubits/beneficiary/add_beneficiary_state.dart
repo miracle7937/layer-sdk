@@ -109,6 +109,7 @@ class AddBeneficiaryState extends Equatable {
     AddBeneficiaryAction? action,
   }) =>
       AddBeneficiaryState(
+        beneficiaryType: beneficiaryType,
         beneficiary: beneficiary ?? this.beneficiary,
         countries: countries ?? this.countries,
         availableCurrencies: availableCurrencies ?? this.availableCurrencies,
