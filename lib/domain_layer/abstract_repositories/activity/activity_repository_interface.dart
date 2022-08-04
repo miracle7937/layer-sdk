@@ -33,5 +33,5 @@ abstract class ActivityRepositoryInterface {
   Future<void> delete(String activityId);
 
   /// Cancel the [Activity] by `id`
-  Future<dynamic> cancel(String id, {String? otpValue});
+  Future<void> cancel(String id, {String? otpValue});
 }

@@ -37,6 +37,15 @@ class NewBeneficiary extends Equatable {
   /// The currency.
   final Currency? currency;
 
+  /// The first address field.
+  final String? address1;
+
+  /// The second address field.
+  final String? address2;
+
+  /// The third address field.
+  final String? address3;
+
   /// Creates a new [NewBeneficiary].
   const NewBeneficiary({
     this.shouldSave = false,
@@ -49,6 +58,9 @@ class NewBeneficiary extends Equatable {
     this.firstName,
     this.lastName,
     this.currency,
+    this.address1,
+    this.address2,
+    this.address3,
   });
 
   /// Creates a copy with the passed parameters.
@@ -63,6 +75,9 @@ class NewBeneficiary extends Equatable {
     String? firstName,
     String? lastName,
     Currency? currency,
+    String? address1,
+    String? address2,
+    String? address3,
   }) =>
       NewBeneficiary(
         shouldSave: shouldSave ?? this.shouldSave,
@@ -79,6 +94,9 @@ class NewBeneficiary extends Equatable {
         firstName: firstName ?? this.firstName,
         lastName: lastName ?? this.lastName,
         currency: currency ?? this.currency,
+        address1: address1 ?? this.address1,
+        address2: address2 ?? this.address2,
+        address3: address3 ?? this.address3,
       );
 
   /// Whether if the new beneficiary can be submitted or not.
@@ -104,5 +122,8 @@ class NewBeneficiary extends Equatable {
         firstName,
         lastName,
         currency,
+        address1,
+        address2,
+        address3,
       ];
 }

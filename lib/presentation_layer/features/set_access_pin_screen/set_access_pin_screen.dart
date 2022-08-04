@@ -147,6 +147,8 @@ class _RepeatAccessPinScreen extends SetAccessPinBaseWidget {
 
 class __RepeatAccessPinScreenState
     extends SetAccessPinBaseWidgetState<_RepeatAccessPinScreen> {
+  int errorCount = 0;
+
   @override
   Widget build(BuildContext context) {
     final state = context.watch<SetPinScreenCubit>().state;
@@ -168,19 +170,33 @@ class __RepeatAccessPinScreenState
                 title: widget.title,
                 disabled: !state.busy && disabled,
                 warning: state.errorMessage ?? warning,
-                onChanged: (pin) {
+                onChanged: (pin) async {
                   currentPin = pin;
                   if (pin.length == widget.pinLength) {
                     if (pin != widget.pin) {
+                      errorCount++;
                       currentPin = '';
                       warning = Translation.of(context).translate(
                         'pin_code_error_password_not_match',
                       );
+
+                      if (errorCount == 2) {
+                        errorCount = 0;
+                        Navigator.of(context).pop();
+                      }
                     } else {
                       disabled = true;
-                      context.read<SetPinScreenCubit>().setAccesPin(
-                            pin: pin,
-                          );
+                      final result = await BottomSheetHelper.showConfirmation(
+                        context: context,
+                        titleKey: 'pass_code_done',
+                        type: BottomSheetType.success,
+                        showDenyButton: false,
+                        confirmKey: 'ok',
+                      );
+
+                      if (result) {
+                        context.read<SetPinScreenCubit>().setAccesPin(pin: pin);
+                      }
                     }
                   }
                 },

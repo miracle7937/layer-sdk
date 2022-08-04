@@ -91,6 +91,21 @@ extension PaymentToDTOMapping on Payment {
       recurrenceEnd: recurrenceEnd,
     );
   }
+
+  /// Maps into a [PaymenShortcuttPayloadDTO]
+  PaymenShortcuttPayloadDTO toPaymentShortcutPayloadDTO() {
+    return PaymenShortcuttPayloadDTO(
+      paymentId: id,
+      bill: bill?.toBillDTO(),
+      amount: amount,
+      currency: currency,
+      otpId: otpId,
+      status: status.toPaymentStatusDTO(),
+      deviceUID: deviceUID,
+      fromAccount: fromAccount?.toAccountDTO(),
+      fromAccountId: fromAccount?.id,
+    );
+  }
 }
 
 /// Extension that provides mappings for [PaymentStatus]

@@ -21,6 +21,9 @@ enum PayBillBusyAction {
   /// Submitting the payment
   submitting,
 
+  /// Adding shortcut
+  addingShortcut,
+
   /// Validating user input
   validating,
 }
@@ -88,6 +91,13 @@ class PayBillState extends Equatable {
   /// The details about scheduled payments
   final ScheduleDetails? scheduleDetails;
 
+  /// Whether if the payment should be saved to a shortcut.
+  /// Default is `false`
+  final bool saveToShortcut;
+
+  /// The shortcut name.
+  final String? shortcutName;
+
   /// Creates a new state.
   PayBillState({
     this.amount = 0,
@@ -106,6 +116,8 @@ class PayBillState extends Equatable {
     this.serviceFields = const [],
     this.validatedBill,
     this.scheduleDetails,
+    this.saveToShortcut = false,
+    this.shortcutName,
   }) : _billers = billers;
 
   @override
@@ -128,6 +140,8 @@ class PayBillState extends Equatable {
         payment,
         bill,
         scheduleDetails,
+        saveToShortcut,
+        shortcutName,
       ];
 
   /// Creates a new state based on this one.
@@ -148,6 +162,8 @@ class PayBillState extends Equatable {
     List<ServiceField>? serviceFields,
     Bill? validatedBill,
     ScheduleDetails? scheduleDetails,
+    bool? saveToShortcut,
+    String? shortcutName,
   }) {
     return PayBillState(
       amount: amount ?? this.amount,
@@ -166,6 +182,10 @@ class PayBillState extends Equatable {
       serviceFields: serviceFields ?? this.serviceFields,
       validatedBill: validatedBill ?? this.validatedBill,
       scheduleDetails: scheduleDetails ?? this.scheduleDetails,
+      saveToShortcut: saveToShortcut ?? this.saveToShortcut,
+      shortcutName: !(saveToShortcut ?? this.saveToShortcut)
+          ? null
+          : (shortcutName ?? this.shortcutName),
     );
   }
 
@@ -190,7 +210,8 @@ class PayBillState extends Equatable {
       selectedBiller != null &&
       selectedService != null &&
       amount > 0 &&
-      _serviceFieldsValid;
+      _serviceFieldsValid &&
+      (!saveToShortcut || (shortcutName?.isNotEmpty ?? false));
 
   bool get _serviceFieldsValid {
     for (var i = 0; i < serviceFields.length; i++) {

@@ -4,6 +4,37 @@ import 'package:equatable/equatable.dart';
 
 import '../../../domain_layer/models.dart';
 
+/// Model used for the errors.
+class AddBeneficiaryError extends Equatable {
+  /// The action.
+  final AddBeneficiaryAction action;
+
+  /// The error.
+  final AddBeneficiaryErrorStatus errorStatus;
+
+  /// The error code.
+  final String? code;
+
+  /// The error message.
+  final String? message;
+
+  /// Creates a new [AddBeneficiaryError].
+  const AddBeneficiaryError({
+    required this.action,
+    required this.errorStatus,
+    this.code,
+    this.message,
+  });
+
+  @override
+  List<Object?> get props => [
+        action,
+        errorStatus,
+        code,
+        message,
+      ];
+}
+
 /// The available error status
 enum AddBeneficiaryErrorStatus {
   /// No errors
@@ -14,6 +45,12 @@ enum AddBeneficiaryErrorStatus {
 
   /// Network error
   network,
+
+  /// Invalid account number.
+  invalidAccount,
+
+  /// Invalid IBAN.
+  invalidIBAN,
 }
 
 /// The state of the AddBeneficiary cubit
@@ -39,8 +76,11 @@ class AddBeneficiaryState extends Equatable {
   /// Selected country.
   final Country? selectedCountry;
 
-  /// The current error status.
-  final AddBeneficiaryErrorStatus errorStatus;
+  /// The errors.
+  final UnmodifiableSetView<AddBeneficiaryError> errors;
+
+  /// The beneficiary settings.
+  final UnmodifiableListView<GlobalSetting> beneficiarySettings;
 
   /// True if the cubit is processing something.
   final bool busy;
@@ -75,12 +115,15 @@ class AddBeneficiaryState extends Equatable {
     Iterable<Bank> banks = const <Bank>[],
     this.selectedCurrency,
     this.selectedCountry,
-    this.errorStatus = AddBeneficiaryErrorStatus.none,
+    Set<AddBeneficiaryError> errors = const <AddBeneficiaryError>{},
+    Iterable<GlobalSetting> beneficiarySettings = const <GlobalSetting>{},
     this.busy = false,
     this.action = AddBeneficiaryAction.none,
   })  : countries = UnmodifiableListView(countries),
         availableCurrencies = UnmodifiableListView(availableCurrencies),
-        banks = UnmodifiableListView(banks);
+        banks = UnmodifiableListView(banks),
+        errors = UnmodifiableSetView(errors),
+        beneficiarySettings = UnmodifiableListView(beneficiarySettings);
 
   @override
   List<Object?> get props => [
@@ -91,7 +134,8 @@ class AddBeneficiaryState extends Equatable {
         banks,
         selectedCurrency,
         selectedCountry,
-        errorStatus,
+        errors,
+        beneficiarySettings,
         busy,
         action,
       ];
@@ -104,7 +148,8 @@ class AddBeneficiaryState extends Equatable {
     Iterable<Bank>? banks,
     Currency? selectedCurrency,
     Country? selectedCountry,
-    AddBeneficiaryErrorStatus? errorStatus,
+    Set<AddBeneficiaryError>? errors,
+    Iterable<GlobalSetting>? beneficiarySettings,
     bool? busy,
     AddBeneficiaryAction? action,
   }) =>
@@ -116,7 +161,8 @@ class AddBeneficiaryState extends Equatable {
         banks: banks ?? this.banks,
         selectedCurrency: selectedCurrency ?? this.selectedCurrency,
         selectedCountry: selectedCountry ?? this.selectedCountry,
-        errorStatus: errorStatus ?? this.errorStatus,
+        errors: errors ?? this.errors,
+        beneficiarySettings: beneficiarySettings ?? this.beneficiarySettings,
         busy: busy ?? this.busy,
         action: action ?? this.action,
       );
