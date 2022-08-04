@@ -32,6 +32,9 @@ class PayBillCubit extends Cubit<PayBillState> {
   /// when the cubit loads.
   final String? billerId;
 
+  /// A payment to repeat
+  final Payment? paymentToRepeat;
+
   /// Creates a new cubit
   PayBillCubit({
     required LoadBillersUseCase loadBillersUseCase,
@@ -42,6 +45,7 @@ class PayBillCubit extends Cubit<PayBillState> {
     required ValidateBillUseCase validateBillUseCase,
     required CreateShortcutUseCase createShortcutUseCase,
     this.billerId,
+    this.paymentToRepeat,
   })  : _loadBillersUseCase = loadBillersUseCase,
         _loadServicesUseCase = loadServicesUseCase,
         _getCustomerAccountsUseCase = getCustomerAccountsUseCase,
@@ -53,7 +57,7 @@ class PayBillCubit extends Cubit<PayBillState> {
 
   /// Loads all the required data, must be called at lease once before anything
   /// other method in this cubit.
-  void load({Payment? paymentToRepeat}) async {
+  void load() async {
     emit(
       state.copyWith(
         busy: true,
@@ -86,16 +90,16 @@ class PayBillCubit extends Cubit<PayBillState> {
       );
 
       if (paymentToRepeat != null) {
-        if (paymentToRepeat.bill?.service?.billerId != null) {
+        if (paymentToRepeat!.bill?.service?.billerId != null) {
           final biller = billers.firstWhereOrNull((element) =>
-              element.id == paymentToRepeat.bill?.service?.billerId);
+              element.id == paymentToRepeat!.bill?.service?.billerId);
           if (biller != null) {
-            setFromAccount(paymentToRepeat.fromAccount?.id);
-            setAmount(paymentToRepeat.amount ?? 0.0);
+            setFromAccount(paymentToRepeat!.fromAccount?.id);
+            setAmount(paymentToRepeat!.amount ?? 0.0);
             setCatogery(biller.category.categoryCode);
             await setBiller(biller.id);
             _setServiceFieldsValue(
-              serviceFields: paymentToRepeat.bill?.billingFields,
+              serviceFields: paymentToRepeat!.bill?.billingFields,
             );
             // TODO: set recurrence
           }
