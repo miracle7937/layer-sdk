@@ -39,6 +39,9 @@ class PaymentState extends Equatable {
   /// The number of items to load at a time.
   final int limit;
 
+  /// Model containing details about the scheduled payment details
+  final ScheduleDetails? scheduleDetails;
+
   /// Creates a new state.
   PaymentState({
     required this.customerId,
@@ -48,6 +51,7 @@ class PaymentState extends Equatable {
     this.canLoadMore = true,
     this.offset = 0,
     this.limit = 50,
+    this.scheduleDetails,
   }) : payments = UnmodifiableListView(payments);
 
   @override
@@ -59,6 +63,7 @@ class PaymentState extends Equatable {
         canLoadMore,
         offset,
         limit,
+        scheduleDetails,
       ];
 
   /// Creates a new state based on this one.
@@ -70,6 +75,7 @@ class PaymentState extends Equatable {
     bool? canLoadMore,
     int? offset,
     int? limit,
+    ScheduleDetails? scheduleDetails,
   }) =>
       PaymentState(
         customerId: customerId ?? this.customerId,
@@ -79,5 +85,6 @@ class PaymentState extends Equatable {
         canLoadMore: canLoadMore ?? this.canLoadMore,
         offset: offset ?? this.offset,
         limit: limit ?? this.limit,
+        scheduleDetails: scheduleDetails ?? this.scheduleDetails,
       );
 }

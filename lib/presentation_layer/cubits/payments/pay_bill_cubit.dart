@@ -3,12 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../data_layer/mappings/payment/biller_dto_mapping.dart';
 import '../../../data_layer/network/net_exceptions.dart';
-import '../../../domain_layer/models/account/account.dart';
-import '../../../domain_layer/models/bill/bill.dart';
+import '../../../domain_layer/models.dart';
 import '../../../domain_layer/models/payment/biller.dart';
-import '../../../domain_layer/models/payment/payment.dart';
 import '../../../domain_layer/models/service/service_field.dart';
-import '../../../domain_layer/models/shortcut/new_shortcut.dart';
 import '../../../domain_layer/use_cases/account/get_accounts_by_status_use_case.dart';
 import '../../../domain_layer/use_cases/payments/generate_device_uid_use_case.dart';
 import '../../../domain_layer/use_cases/payments/load_billers_use_case.dart';
@@ -357,6 +354,15 @@ class PayBillCubit extends Cubit<PayBillState> {
     }
     emit(
       state.copyWith(serviceFields: newFields),
+    );
+  }
+
+  /// Set the payments scheduling details
+  void setScheduleDetails({required ScheduleDetails scheduleDetails}) {
+    emit(
+      state.copyWith(
+        scheduleDetails: scheduleDetails,
+      ),
     );
   }
 }

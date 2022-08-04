@@ -1,11 +1,8 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../domain_layer/models/account/account.dart';
-import '../../../domain_layer/models/bill/bill.dart';
+import '../../../domain_layer/models.dart';
 import '../../../domain_layer/models/payment/biller.dart';
 import '../../../domain_layer/models/payment/biller_category.dart';
-import '../../../domain_layer/models/payment/payment.dart';
-import '../../../domain_layer/models/service/service.dart';
 import '../../../domain_layer/models/service/service_field.dart';
 
 /// Which loading action the cubit is doing
@@ -86,6 +83,9 @@ class PayBillState extends Equatable {
   /// The validated bill
   final Bill? validatedBill;
 
+  /// The details about scheduled payments
+  final ScheduleDetails? scheduleDetails;
+
   /// Whether if the payment should be saved to a shortcut.
   /// Default is `false`
   final bool saveToShortcut;
@@ -110,6 +110,7 @@ class PayBillState extends Equatable {
     this.selectedService,
     this.serviceFields = const [],
     this.validatedBill,
+    this.scheduleDetails,
     this.saveToShortcut = false,
     this.shortcutName,
   }) : _billers = billers;
@@ -133,6 +134,7 @@ class PayBillState extends Equatable {
         validatedBill,
         payment,
         bill,
+        scheduleDetails,
         saveToShortcut,
         shortcutName,
       ];
@@ -154,6 +156,7 @@ class PayBillState extends Equatable {
     Service? selectedService,
     List<ServiceField>? serviceFields,
     Bill? validatedBill,
+    ScheduleDetails? scheduleDetails,
     bool? saveToShortcut,
     String? shortcutName,
   }) {
@@ -173,6 +176,7 @@ class PayBillState extends Equatable {
       selectedService: selectedService ?? this.selectedService,
       serviceFields: serviceFields ?? this.serviceFields,
       validatedBill: validatedBill ?? this.validatedBill,
+      scheduleDetails: scheduleDetails ?? this.scheduleDetails,
       saveToShortcut: saveToShortcut ?? this.saveToShortcut,
       shortcutName: !(saveToShortcut ?? this.saveToShortcut)
           ? null
@@ -202,7 +206,10 @@ class PayBillState extends Equatable {
       selectedService != null &&
       amount > 0 &&
       _serviceFieldsValid &&
-      (!saveToShortcut || (shortcutName?.isNotEmpty ?? false));
+      (!saveToShortcut || (shortcutName?.isNotEmpty ?? false)) &&
+      (scheduleDetails?.recurrence == null ||
+          scheduleDetails?.recurrence == Recurrence.none ||
+          scheduleDetails?.startDate != null);
 
   bool get _serviceFieldsValid {
     for (var i = 0; i < serviceFields.length; i++) {
@@ -213,6 +220,21 @@ class PayBillState extends Equatable {
     }
     return true;
   }
+
+  bool get _schedueled => scheduleDetails?.recurrence == Recurrence.once;
+  bool get _recurring => ![
+        Recurrence.once,
+        Recurrence.none,
+        null,
+      ].contains(scheduleDetails?.recurrence);
+
+  DateTime? get _recurrenceStart =>
+      _recurring ? scheduleDetails?.startDate : null;
+
+  DateTime? get _recurrenceEnd => _recurring ? scheduleDetails?.endDate : null;
+
+  DateTime? get _scheduledDate =>
+      _schedueled ? scheduleDetails?.startDate : null;
 
   /// The bill to be paid
   Bill get bill => Bill(
@@ -233,5 +255,9 @@ class PayBillState extends Equatable {
         currency: selectedAccount?.currency ?? '',
         deviceUID: deviceUID,
         status: PaymentStatus.completed,
+        recurrence: scheduleDetails?.recurrence ?? Recurrence.none,
+        scheduled: _scheduledDate,
+        recurrenceStart: _recurrenceStart,
+        recurrenceEnd: _recurrenceEnd,
       );
 }
