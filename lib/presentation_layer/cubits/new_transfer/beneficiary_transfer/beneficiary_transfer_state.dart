@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:equatable/equatable.dart';
 
 import '../../../../domain_layer/models.dart';
+import '../../../utils.dart';
 
 /// Model used for the errors.
 class BeneficiaryTransferError extends Equatable {
@@ -121,6 +122,9 @@ class BeneficiaryTransferState extends Equatable {
   /// List of banks for the new beneficiary.
   final UnmodifiableListView<Bank> banks;
 
+  /// Has all the data needed to handle the list of activities.
+  final Pagination banksPagination;
+
   /// The transfer evaluation.
   final TransferEvaluation? evaluation;
 
@@ -140,6 +144,7 @@ class BeneficiaryTransferState extends Equatable {
     Iterable<Beneficiary> beneficiaries = const <Beneficiary>[],
     Iterable<Message> reasons = const <Message>[],
     Iterable<Bank> banks = const <Bank>[],
+    this.banksPagination = const Pagination(),
     this.evaluation,
     this.transferResult,
   })  : actions = UnmodifiableSetView(actions),
@@ -181,6 +186,7 @@ class BeneficiaryTransferState extends Equatable {
     Iterable<Beneficiary>? beneficiaries,
     Iterable<Message>? reasons,
     Iterable<Bank>? banks,
+    Pagination? banksPagination,
     TransferEvaluation? evaluation,
     Transfer? transferResult,
   }) =>
@@ -195,6 +201,7 @@ class BeneficiaryTransferState extends Equatable {
         beneficiaries: beneficiaries ?? this.beneficiaries,
         reasons: reasons ?? this.reasons,
         banks: banks ?? this.banks,
+        banksPagination: banksPagination ?? this.banksPagination,
         evaluation: evaluation ?? this.evaluation,
         transferResult: transferResult ?? this.transferResult,
       );
@@ -211,6 +218,7 @@ class BeneficiaryTransferState extends Equatable {
         beneficiaries,
         reasons,
         banks,
+        banksPagination,
         evaluation,
         transferResult,
       ];
