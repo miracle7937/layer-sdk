@@ -33,7 +33,7 @@ class ShortcutRepository extends ShortcutRepositoryInterface {
       case ShortcutType.transfer:
         return (payload as NewTransfer).toNewTransferPayloadDTO().toJson();
       case ShortcutType.payment:
-        return (payload as Payment).toPaymentPayloadDTO().toJson();
+        return (payload as Payment).toPaymentShortcutPayloadDTO().toJson();
     }
   }
 }

@@ -155,14 +155,15 @@ class BillDTO {
   Map<String, dynamic> toJson({
     bool includeNickname = true,
     bool? visible,
+    bool includeBillId = true,
   }) {
     return {
-      'bill_id': billId,
+      if (includeBillId) 'bill_id': billId,
       'customer_id': customerId,
       'service_id': serviceId,
       'service': service?.toJson(),
       'billing_number': billingNumber,
-      'nickname': includeNickname ? nickname : null,
+      if (includeNickname) 'nickname': nickname,
       'recurring': recurring,
       'status': status?.value,
       'amount': amount,

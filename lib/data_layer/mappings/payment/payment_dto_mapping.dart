@@ -91,13 +91,10 @@ extension PaymentToDTOMapping on Payment {
       recurrenceEnd: recurrenceEnd,
     );
   }
-}
 
-/// Extension that provides mappings for [Payment]
-extension PaymentToPaymentPayloadDTOMapping on Payment {
-  /// Maps into a [PaymentDTO]
-  PaymentPayloadDTO toPaymentPayloadDTO() {
-    return PaymentPayloadDTO(
+  /// Maps into a [PaymenShortcuttPayloadDTO]
+  PaymenShortcuttPayloadDTO toPaymentShortcutPayloadDTO() {
+    return PaymenShortcuttPayloadDTO(
       paymentId: id,
       bill: bill?.toBillDTO(),
       amount: amount,
