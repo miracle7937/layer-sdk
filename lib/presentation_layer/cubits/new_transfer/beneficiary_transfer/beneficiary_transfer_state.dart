@@ -131,6 +131,9 @@ class BeneficiaryTransferState extends Equatable {
   /// The transfer object returned by the transfer submission.
   final Transfer? transferResult;
 
+  /// The bank query for filtering the banks.
+  final String? bankQuery;
+
   /// Creates a new [BeneficiaryTransferState].
   BeneficiaryTransferState({
     required this.transfer,
@@ -147,6 +150,7 @@ class BeneficiaryTransferState extends Equatable {
     this.banksPagination = const Pagination(),
     this.evaluation,
     this.transferResult,
+    this.bankQuery,
   })  : actions = UnmodifiableSetView(actions),
         errors = UnmodifiableSetView(errors),
         beneficiarySettings = UnmodifiableListView(beneficiarySettings),
@@ -189,6 +193,7 @@ class BeneficiaryTransferState extends Equatable {
     Pagination? banksPagination,
     TransferEvaluation? evaluation,
     Transfer? transferResult,
+    String? bankQuery,
   }) =>
       BeneficiaryTransferState(
         transfer: transfer ?? this.transfer,
@@ -204,6 +209,7 @@ class BeneficiaryTransferState extends Equatable {
         banksPagination: banksPagination ?? this.banksPagination,
         evaluation: evaluation ?? this.evaluation,
         transferResult: transferResult ?? this.transferResult,
+        bankQuery: bankQuery ?? this.bankQuery,
       );
 
   @override
@@ -221,5 +227,6 @@ class BeneficiaryTransferState extends Equatable {
         banksPagination,
         evaluation,
         transferResult,
+        bankQuery,
       ];
 }

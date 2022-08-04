@@ -355,7 +355,6 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
   /// Loads the banks for the passed country code.
   Future<void> loadBanks({
     bool loadMore = false,
-    String? query,
   }) async {
     final countryCode = state.transfer.newBeneficiary?.country?.countryCode;
     if (countryCode == null) {
@@ -366,7 +365,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
       state.copyWith(
         actions: _addAction(BeneficiaryTransferAction.banks),
         errors: _removeError(BeneficiaryTransferAction.banks),
-        banks: loadMore ? null : {},
+        banks: loadMore ? state.banks : {},
       ),
     );
 
@@ -377,7 +376,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         countryCode: countryCode,
         limit: newPage.limit,
         offset: newPage.offset,
-        query: query,
+        query: state.bankQuery,
       );
 
       final banks = newPage.firstPage
@@ -425,6 +424,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     String? shortcutName,
     String? note,
     ScheduleDetails? scheduleDetails,
+    String? bankQuery,
   }) async {
     final sourceCurrency = state.currencies.firstWhereOrNull(
       (currency) => currency.code == state.transfer.source?.account?.currency,
@@ -456,11 +456,13 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
           note: note,
           scheduleDetails: scheduleDetails,
         ),
+        bankQuery: bankQuery,
       ),
     );
 
-    if (newBeneficiary?.country != null &&
-        newBeneficiary?.country != currentCountry) {
+    if (bankQuery != null ||
+        (newBeneficiary?.country != null &&
+            newBeneficiary?.country != currentCountry)) {
       loadBanks();
     }
   }
