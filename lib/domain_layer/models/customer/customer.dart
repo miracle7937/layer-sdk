@@ -330,6 +330,9 @@ class PersonalCustomerData extends Equatable {
   /// The Company this customer works to.
   final CustomerCompany company;
 
+  /// Selected biller id
+  final String? billerId;
+
   /// Creates a new [PersonalCustomerData].
   PersonalCustomerData({
     this.title = '',
@@ -350,6 +353,7 @@ class PersonalCustomerData extends Equatable {
     this.company = const CustomerCompany(),
     Iterable<Tax>? taxes,
     Iterable<Nationality>? otherNationalities,
+    this.billerId,
   })  : taxes = UnmodifiableListView(taxes ?? <Tax>[]),
         otherNationalities = UnmodifiableListView(
           otherNationalities ?? <Nationality>[],
@@ -376,6 +380,7 @@ class PersonalCustomerData extends Equatable {
         taxes,
         otherNationalities,
         company,
+        billerId,
       ];
 
   /// Returns a copy of the personal data with select different values.
@@ -396,6 +401,7 @@ class PersonalCustomerData extends Equatable {
     Iterable<Tax>? taxes,
     Iterable<Nationality>? otherNationalities,
     CustomerCompany? company,
+    String? billerId,
   }) =>
       PersonalCustomerData(
         title: title ?? this.title,
@@ -414,6 +420,7 @@ class PersonalCustomerData extends Equatable {
         taxes: taxes ?? this.taxes,
         otherNationalities: otherNationalities ?? this.otherNationalities,
         company: company ?? this.company,
+        billerId: billerId ?? this.billerId,
       );
 }
 
