@@ -211,7 +211,9 @@ class PayBillState extends Equatable {
       selectedService != null &&
       amount > 0 &&
       _serviceFieldsValid &&
-      (!saveToShortcut || (shortcutName?.isNotEmpty ?? false));
+      (!saveToShortcut || (shortcutName?.isNotEmpty ?? false)) &&
+      (scheduleDetails?.recurrence == Recurrence.none ||
+          scheduleDetails?.startDate != null);
 
   bool get _serviceFieldsValid {
     for (var i = 0; i < serviceFields.length; i++) {
@@ -243,18 +245,7 @@ class PayBillState extends Equatable {
         deviceUID: deviceUID,
         status: PaymentStatus.completed,
         recurrence: scheduleDetails?.recurrence ?? Recurrence.none,
-        scheduled: scheduleDetails?.recurrence == Recurrence.once
-            ? scheduleDetails?.startDate
-            : null,
-        recurrenceStart: _validRecurrence(scheduleDetails?.recurrence)
-            ? scheduleDetails?.startDate
-            : null,
-        recurrenceEnd: _validRecurrence(scheduleDetails?.recurrence)
-            ? scheduleDetails?.endDate
-            : null,
+        recurrenceStart: scheduleDetails?.startDate,
+        recurrenceEnd: scheduleDetails?.endDate,
       );
-
-  bool _validRecurrence(Recurrence? rec) {
-    return rec == Recurrence.none || rec == Recurrence.once;
-  }
 }
