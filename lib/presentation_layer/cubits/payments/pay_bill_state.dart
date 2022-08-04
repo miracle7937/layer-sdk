@@ -1,13 +1,8 @@
 import 'package:equatable/equatable.dart';
 
 import '../../../domain_layer/models.dart';
-import '../../../domain_layer/models/account/account.dart';
-import '../../../domain_layer/models/bill/bill.dart';
 import '../../../domain_layer/models/payment/biller.dart';
 import '../../../domain_layer/models/payment/biller_category.dart';
-import '../../../domain_layer/models/payment/payment.dart';
-import '../../../domain_layer/models/schedule_details/schedule_details.dart';
-import '../../../domain_layer/models/service/service.dart';
 import '../../../domain_layer/models/service/service_field.dart';
 
 /// Which loading action the cubit is doing
