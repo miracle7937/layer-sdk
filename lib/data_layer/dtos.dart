@@ -79,6 +79,7 @@ export 'dtos/otp/verify_otp_dto.dart';
 export 'dtos/payment/biller_dto.dart';
 export 'dtos/payment/bills_dto.dart';
 export 'dtos/payment/payment_dto.dart';
+export 'dtos/payment/payment_payload_dto.dart';
 export 'dtos/payment/service_dto.dart';
 export 'dtos/payment/service_field_dto.dart';
 export 'dtos/permission/permission_dto.dart';
