@@ -37,7 +37,7 @@ class BankProvider {
 
     return BankDTO.fromJsonList(
       List<Map<String, dynamic>>.from(
-        response.data['banks'],
+        response.data is List ? response.data : response.data['banks'],
       ),
     );
   }
