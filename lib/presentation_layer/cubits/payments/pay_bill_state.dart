@@ -220,6 +220,20 @@ class PayBillState extends Equatable {
     return true;
   }
 
+  bool get _schedueled => scheduleDetails?.recurrence == Recurrence.once;
+  bool get _recurring => ![
+        Recurrence.once,
+        Recurrence.none,
+      ].contains(scheduleDetails?.recurrence);
+
+  DateTime? get _recurrenceStart =>
+      _recurring ? scheduleDetails?.startDate : null;
+
+  DateTime? get _recurrenceEnd => _recurring ? scheduleDetails?.endDate : null;
+
+  DateTime? get _scheduledDate =>
+      _schedueled ? scheduleDetails?.startDate : null;
+
   /// The bill to be paid
   Bill get bill => Bill(
         // TODO: Change this to set nickname from app
@@ -240,7 +254,8 @@ class PayBillState extends Equatable {
         deviceUID: deviceUID,
         status: PaymentStatus.completed,
         recurrence: scheduleDetails?.recurrence ?? Recurrence.none,
-        recurrenceStart: scheduleDetails?.startDate,
-        recurrenceEnd: scheduleDetails?.endDate,
+        scheduled: _scheduledDate,
+        recurrenceStart: _recurrenceStart,
+        recurrenceEnd: _recurrenceEnd,
       );
 }
