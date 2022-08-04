@@ -183,13 +183,6 @@ class PayBillCubit extends Cubit<PayBillState> {
   Future<void> _createShortcut(
     Payment payment,
   ) async {
-    emit(
-      state.copyWith(
-        busy: true,
-        busyAction: PayBillBusyAction.addingShortcut,
-      ),
-    );
-
     try {
       await _createShortcutUseCase(
         shortcut: NewShortcut(
@@ -198,22 +191,8 @@ class PayBillCubit extends Cubit<PayBillState> {
           payload: state.payment,
         ),
       );
-
-      emit(
-        state.copyWith(
-          busy: false,
-        ),
-      );
-    } on Exception catch (e) {
-      emit(
-        state.copyWith(
-          busy: false,
-          errorStatus: e is NetException
-              ? PayBillErrorStatus.network
-              : PayBillErrorStatus.generic,
-        ),
-      );
-      rethrow;
+    } on Exception catch (_) {
+      // TODO: handle shortcut error without affecting the payment
     }
   }
 
