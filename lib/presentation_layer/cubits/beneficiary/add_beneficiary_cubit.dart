@@ -12,7 +12,10 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
   final GetCustomerAccountsUseCase _getCustomerAccountsUseCase;
   final LoadAllCurrenciesUseCase _loadAllCurrenciesUseCase;
   final LoadBanksByCountryCodeUseCase _loadBanksByCountryCodeUseCase;
+  final ValidateAccountUseCase _validateAccountUseCase;
+  final ValidateIBANUseCase _validateIBANUseCase;
   final AddNewBeneficiaryUseCase _addNewBeneficiaryUseCase;
+  final LoadGlobalSettingsUseCase _loadGlobalSettingsUseCase;
 
   /// Creates a new [AddBeneficiaryCubit].
   AddBeneficiaryCubit({
@@ -20,13 +23,19 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
     required GetCustomerAccountsUseCase getCustomerAccountsUseCase,
     required LoadAllCurrenciesUseCase loadAvailableCurrenciesUseCase,
     required LoadBanksByCountryCodeUseCase loadBanksByCountryCodeUseCase,
+    required ValidateAccountUseCase validateAccountUseCase,
+    required ValidateIBANUseCase validateIBANUseCase,
     required AddNewBeneficiaryUseCase addNewBeneficiariesUseCase,
+    required LoadGlobalSettingsUseCase loadGlobalSettingsUseCase,
     TransferType? beneficiaryType,
   })  : _loadCountriesUseCase = loadCountriesUseCase,
         _getCustomerAccountsUseCase = getCustomerAccountsUseCase,
         _loadAllCurrenciesUseCase = loadAvailableCurrenciesUseCase,
         _loadBanksByCountryCodeUseCase = loadBanksByCountryCodeUseCase,
+        _validateAccountUseCase = validateAccountUseCase,
+        _validateIBANUseCase = validateIBANUseCase,
         _addNewBeneficiaryUseCase = addNewBeneficiariesUseCase,
+        _loadGlobalSettingsUseCase = loadGlobalSettingsUseCase,
         super(
           AddBeneficiaryState(
             beneficiaryType: beneficiaryType,
@@ -44,7 +53,7 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
     emit(
       state.copyWith(
         busy: true,
-        errorStatus: AddBeneficiaryErrorStatus.none,
+        errors: {},
       ),
     );
 
@@ -58,11 +67,20 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         ),
         _loadAllCurrenciesUseCase(
           forceRefresh: forceRefresh,
+        ),
+        _loadGlobalSettingsUseCase(
+          codes: [
+            'benef_iban_allowed_characters',
+            'benef_acc_num_allowed_characters',
+            'benef_acc_num_minimum_characters',
+            'benef_acc_num_maximum_characters',
+          ],
         )
       ]);
       final countries = futures[0] as List<Country>;
       final accounts = futures[1] as List<Account>;
       final currencies = futures[2] as List<Currency>;
+      final beneficiarySettings = futures[3] as List<GlobalSetting>;
 
       final selectedCurrency = accounts.isEmpty
           ? null
@@ -86,6 +104,7 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
           availableCurrencies: currencies,
           busy: false,
           action: AddBeneficiaryAction.initAction,
+          beneficiarySettings: beneficiarySettings,
         ),
       );
     } on Exception catch (e) {
@@ -93,9 +112,14 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         state.copyWith(
           busy: false,
           action: AddBeneficiaryAction.none,
-          errorStatus: e is NetException
-              ? AddBeneficiaryErrorStatus.network
-              : AddBeneficiaryErrorStatus.generic,
+          errors: _addError(
+            action: AddBeneficiaryAction.initAction,
+            errorStatus: e is NetException
+                ? AddBeneficiaryErrorStatus.network
+                : AddBeneficiaryErrorStatus.generic,
+            code: e is NetException ? e.code : null,
+            message: e is NetException ? e.message : null,
+          ),
         ),
       );
 
@@ -150,6 +174,7 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         state.beneficiary?.copyWith(
           accountNumber: text,
         ),
+        AddBeneficiaryErrorStatus.invalidAccount,
       );
 
   /// Handles event of routing code changes.
@@ -164,13 +189,23 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         state.beneficiary?.copyWith(
           iban: text,
         ),
+        AddBeneficiaryErrorStatus.invalidIBAN,
       );
 
-  void _emitBeneficiary(Beneficiary? beneficiary) => emit(
+  /// Emits state with beneficiary and removed [errorStatus] if provided.
+  void _emitBeneficiary(
+    Beneficiary? beneficiary, [
+    AddBeneficiaryErrorStatus? errorStatus,
+  ]) =>
+      emit(
         state.copyWith(
           beneficiary: beneficiary,
           action: AddBeneficiaryAction.editAction,
-          errorStatus: AddBeneficiaryErrorStatus.none,
+          errors: errorStatus == null
+              ? _removeDefault()
+              : _removeDefault()
+                  .where((error) => error.errorStatus != errorStatus)
+                  .toSet(),
         ),
       );
 
@@ -182,7 +217,7 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
           ),
           selectedCurrency: currency,
           action: AddBeneficiaryAction.editAction,
-          errorStatus: AddBeneficiaryErrorStatus.none,
+          errors: _removeDefault(),
         ),
       );
 
@@ -193,7 +228,7 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         selectedCountry: country,
         action: AddBeneficiaryAction.editAction,
         busy: true,
-        errorStatus: AddBeneficiaryErrorStatus.none,
+        errors: _removeDefault(),
       ),
     );
     try {
@@ -216,9 +251,14 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         state.copyWith(
           busy: false,
           action: AddBeneficiaryAction.none,
-          errorStatus: e is NetException
-              ? AddBeneficiaryErrorStatus.network
-              : AddBeneficiaryErrorStatus.generic,
+          errors: _addError(
+            action: AddBeneficiaryAction.editAction,
+            errorStatus: e is NetException
+                ? AddBeneficiaryErrorStatus.network
+                : AddBeneficiaryErrorStatus.generic,
+            code: e is NetException ? e.code : null,
+            message: e is NetException ? e.message : null,
+          ),
         ),
       );
 
@@ -233,21 +273,69 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
             bank: bank,
           ),
           action: AddBeneficiaryAction.editAction,
-          errorStatus: AddBeneficiaryErrorStatus.none,
+          errors: _removeDefault(),
         ),
       );
 
   /// Handles the adding new beneficiary.
   void onAdd() async {
+    final accountRequired = state.accountRequired;
+    if (accountRequired) {
+      final isAccountValid = _validateAccountUseCase(
+        account: state.beneficiary?.accountNumber ?? '',
+        allowedCharacters: state.beneficiarySettings
+            .singleWhereOrNull(
+                (element) => element.code == 'benef_acc_num_allowed_characters')
+            ?.value,
+        minAccountChars: state.beneficiarySettings
+            .singleWhereOrNull(
+                (element) => element.code == 'benef_acc_num_minimum_characters')
+            ?.value,
+        maxAccountChars: state.beneficiarySettings
+            .singleWhereOrNull(
+                (element) => element.code == 'benef_acc_num_maximum_characters')
+            ?.value,
+      );
+      if (!isAccountValid) {
+        emit(
+          state.copyWith(
+            errors: _addError(
+              action: AddBeneficiaryAction.editAction,
+              errorStatus: AddBeneficiaryErrorStatus.invalidAccount,
+            ),
+          ),
+        );
+        return;
+      }
+    } else {
+      final isIbanValid = _validateIBANUseCase(
+        iban: state.beneficiary?.iban ?? '',
+        allowedCharacters: state.beneficiarySettings
+            .singleWhereOrNull(
+                (element) => element.code == 'benef_iban_allowed_characters')
+            ?.value
+            ?.split(''),
+      );
+      if (!isIbanValid) {
+        emit(
+          state.copyWith(
+            errors: _addError(
+              action: AddBeneficiaryAction.editAction,
+              errorStatus: AddBeneficiaryErrorStatus.invalidIBAN,
+            ),
+          ),
+        );
+        return;
+      }
+    }
     emit(
       state.copyWith(
         action: AddBeneficiaryAction.add,
         busy: true,
-        errorStatus: AddBeneficiaryErrorStatus.none,
+        errors: _removeDefault(),
       ),
     );
     try {
-      final accountRequired = state.accountRequired;
       final beneficiary = state.beneficiary!.copyWith(
         accountNumber: accountRequired ? state.beneficiary!.accountNumber! : '',
         routingCode: accountRequired ? state.beneficiary!.routingCode! : '',
@@ -271,13 +359,48 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         state.copyWith(
           busy: false,
           action: AddBeneficiaryAction.none,
-          errorStatus: e is NetException
-              ? AddBeneficiaryErrorStatus.network
-              : AddBeneficiaryErrorStatus.generic,
+          errors: _addError(
+            action: AddBeneficiaryAction.add,
+            errorStatus: e is NetException
+                ? AddBeneficiaryErrorStatus.network
+                : AddBeneficiaryErrorStatus.generic,
+            code: e is NetException ? e.code : null,
+            message: e is NetException ? e.message : null,
+          ),
         ),
       );
 
       rethrow;
     }
   }
+
+  /// Returns an error list that includes the passed action and error status.
+  Set<AddBeneficiaryError> _addError({
+    required AddBeneficiaryAction action,
+    required AddBeneficiaryErrorStatus errorStatus,
+    String? code,
+    String? message,
+  }) =>
+      state.errors.union({
+        AddBeneficiaryError(
+          action: action,
+          errorStatus: errorStatus,
+          code: code,
+          message: message,
+        )
+      });
+
+  /// Returns an error list containing all the errors but the one that
+  /// coincides with the passed action.
+  Set<AddBeneficiaryError> _removeError(
+    AddBeneficiaryError action,
+  ) =>
+      state.errors.where((error) => error.action != action).toSet();
+
+  Set<AddBeneficiaryError> _removeDefault() => state.errors
+      .where((error) => ![
+            AddBeneficiaryErrorStatus.network,
+            AddBeneficiaryErrorStatus.generic,
+          ].contains(error.errorStatus))
+      .toSet();
 }
