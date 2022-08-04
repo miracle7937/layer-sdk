@@ -143,6 +143,10 @@ class _LockScreenState extends SetAccessPinBaseWidgetState<_LockScreen> {
                 ),
               );
 
+              authenticationCubit.setPinNeedsVerification(
+                verified: true,
+              );
+
               widget.onAuthenticated();
             }
           },
