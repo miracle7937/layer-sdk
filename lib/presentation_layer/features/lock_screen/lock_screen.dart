@@ -158,36 +158,33 @@ class _LockScreenState extends SetAccessPinBaseWidgetState<_LockScreen> {
           listener: (context, state) => currentPin = '',
         ),
       ],
-      child: WillPopScope(
-        onWillPop: () async => false,
-        child: Scaffold(
-          backgroundColor: layerDesign.surfaceOctonary1,
-          body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 32.0,
+      child: Scaffold(
+        backgroundColor: layerDesign.surfaceOctonary1,
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 32.0,
+            ),
+            child: PinPadView(
+              pinLenght: widget.pinLength,
+              pin: currentPin,
+              title: widget.title,
+              disabled: disabled,
+              warning: error.localize(
+                translation,
+                state.remainingAttempts,
               ),
-              child: PinPadView(
-                pinLenght: widget.pinLength,
-                pin: currentPin,
-                title: widget.title,
-                disabled: disabled,
-                warning: error.localize(
-                  translation,
-                  state.remainingAttempts,
-                ),
-                onChanged: (pin) {
-                  currentPin = pin;
-                  if (pin.length == widget.pinLength) {
-                    context.read<OcraAuthenticationCubit>().generateToken(
-                          password: currentPin,
-                        );
-                  }
-                },
-                showBiometrics: widget.useBiometrics,
-                onBiometrics: _onBiometrics,
-              ),
+              onChanged: (pin) {
+                currentPin = pin;
+                if (pin.length == widget.pinLength) {
+                  context.read<OcraAuthenticationCubit>().generateToken(
+                        password: currentPin,
+                      );
+                }
+              },
+              showBiometrics: widget.useBiometrics,
+              onBiometrics: _onBiometrics,
             ),
           ),
         ),
