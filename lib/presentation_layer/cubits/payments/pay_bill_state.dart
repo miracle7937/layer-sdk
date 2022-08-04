@@ -1,10 +1,12 @@
 import 'package:equatable/equatable.dart';
 
+import '../../../domain_layer/models.dart';
 import '../../../domain_layer/models/account/account.dart';
 import '../../../domain_layer/models/bill/bill.dart';
 import '../../../domain_layer/models/payment/biller.dart';
 import '../../../domain_layer/models/payment/biller_category.dart';
 import '../../../domain_layer/models/payment/payment.dart';
+import '../../../domain_layer/models/schedule_details/schedule_details.dart';
 import '../../../domain_layer/models/service/service.dart';
 import '../../../domain_layer/models/service/service_field.dart';
 
@@ -83,6 +85,9 @@ class PayBillState extends Equatable {
   /// The validated bill
   final Bill? validatedBill;
 
+  /// The details about scheduled payments
+  final ScheduleDetails? scheduleDetails;
+
   /// Creates a new state.
   PayBillState({
     this.amount = 0,
@@ -100,6 +105,7 @@ class PayBillState extends Equatable {
     this.selectedService,
     this.serviceFields = const [],
     this.validatedBill,
+    this.scheduleDetails,
   }) : _billers = billers;
 
   @override
@@ -121,6 +127,7 @@ class PayBillState extends Equatable {
         validatedBill,
         payment,
         bill,
+        scheduleDetails,
       ];
 
   /// Creates a new state based on this one.
@@ -140,6 +147,7 @@ class PayBillState extends Equatable {
     Service? selectedService,
     List<ServiceField>? serviceFields,
     Bill? validatedBill,
+    ScheduleDetails? scheduleDetails,
   }) {
     return PayBillState(
       amount: amount ?? this.amount,
@@ -157,6 +165,7 @@ class PayBillState extends Equatable {
       selectedService: selectedService ?? this.selectedService,
       serviceFields: serviceFields ?? this.serviceFields,
       validatedBill: validatedBill ?? this.validatedBill,
+      scheduleDetails: scheduleDetails ?? this.scheduleDetails,
     );
   }
 
@@ -212,5 +221,19 @@ class PayBillState extends Equatable {
         currency: selectedAccount?.currency ?? '',
         deviceUID: deviceUID,
         status: PaymentStatus.completed,
+        recurrence: scheduleDetails?.recurrence ?? Recurrence.none,
+        scheduled: scheduleDetails?.recurrence == Recurrence.once
+            ? scheduleDetails?.startDate
+            : null,
+        recurrenceStart: _validRecurrence(scheduleDetails?.recurrence)
+            ? scheduleDetails?.startDate
+            : null,
+        recurrenceEnd: _validRecurrence(scheduleDetails?.recurrence)
+            ? scheduleDetails?.endDate
+            : null,
       );
+
+  bool _validRecurrence(Recurrence? rec) {
+    return rec == Recurrence.none || rec == Recurrence.once;
+  }
 }
