@@ -21,9 +21,7 @@ class ActivityCubit extends Cubit<ActivityState> {
   })  : _loadActivitiesUseCase = loadActivitiesUseCase,
         _deleteActivityUseCase = deleteActivityUseCase,
         _cancelActivityUseCase = cancelActivityUseCase,
-        super(ActivityState(
-          pagination: Pagination(limit: limit),
-        ));
+        super(ActivityState(pagination: Pagination(limit: limit)));
 
   /// Loads all the activities
   Future<void> load({
