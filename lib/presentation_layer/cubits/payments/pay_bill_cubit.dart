@@ -48,7 +48,7 @@ class PayBillCubit extends Cubit<PayBillState> {
 
   /// Loads all the required data, must be called at lease once before anything
   /// other method in this cubit.
-  void load() async {
+  void load({Payment? payment}) async {
     emit(
       state.copyWith(
         busy: true,
@@ -80,7 +80,21 @@ class PayBillCubit extends Cubit<PayBillState> {
         ),
       );
 
-      if (billerId?.isNotEmpty ?? false) {
+      if (payment != null) {
+        if (payment.bill?.service?.billerId != null) {
+          final biller = billers.firstWhereOrNull(
+              (element) => element.id == payment.bill?.service?.billerId);
+          if (biller != null) {
+            setFromAccount(payment.fromAccount?.id);
+            setAmount(payment.amount ?? 0.0);
+            setCatogery(biller.category.categoryCode);
+            setBiller(
+              biller.id,
+              payment: payment,
+            );
+          }
+        }
+      } else if (billerId?.isNotEmpty ?? false) {
         final biller =
             billers.firstWhereOrNull((element) => element.id == billerId);
         if (biller != null) {
@@ -179,7 +193,10 @@ class PayBillCubit extends Cubit<PayBillState> {
   /// Set's the selected biller to the one matching the provided biller id.
   ///
   /// This will trigger a request to fetch the services for the selected biller.
-  void setBiller(String billerId) async {
+  void setBiller(
+    String billerId, {
+    Payment? payment,
+  }) async {
     final biller =
         state.billers.firstWhereOrNull((element) => element.id == billerId);
     if (biller == null) return;
@@ -196,11 +213,17 @@ class PayBillCubit extends Cubit<PayBillState> {
         billerId: billerId,
         sortByName: true,
       );
+
       emit(
         state.copyWith(
           services: services,
           selectedService: services.firstOrNull,
           serviceFields: services.firstOrNull?.serviceFields,
+        ),
+      );
+      if (payment != null) setServiceFieldsValue(payment: payment);
+      emit(
+        state.copyWith(
           busy: false,
         ),
       );
@@ -248,6 +271,19 @@ class PayBillCubit extends Cubit<PayBillState> {
         serviceFields: service?.serviceFields ?? [],
       ),
     );
+  }
+
+  /// Loops over the service fields and sets their values
+  void setServiceFieldsValue({Payment? payment}) {
+    final serviceFields = payment?.bill?.billingFields;
+
+    if (serviceFields?.isEmpty ?? true) return;
+    for (var i = 0; i < serviceFields!.length; i++) {
+      setServiceFieldValue(
+        id: serviceFields[i].fieldId,
+        value: serviceFields[i].value ?? "",
+      );
+    }
   }
 
   /// Sets the provided value for the service field matching the provided id
