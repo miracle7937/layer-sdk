@@ -10,14 +10,14 @@ class AccountTopUpCubit extends Cubit<AccountTopUpState> {
 
   /// Creates a new [AccountTopUpCubit] instance.
   AccountTopUpCubit({
-    required Account account,
-    required double amount,
+    Account? account,
+    double? amount,
     required GetAccountTopUpSecretUseCase accountTopUpSecretUseCase,
   })  : _accountTopUpSecretUseCase = accountTopUpSecretUseCase,
         super(
           AccountTopUpState(
             account: account,
-            amount: amount,
+            amount: amount ?? 0.0,
           ),
         );
 

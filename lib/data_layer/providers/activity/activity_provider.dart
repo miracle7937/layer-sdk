@@ -148,12 +148,10 @@ class ActivityProvider {
       param['otp_value'] = otpValue;
     }
 
-    final response = await netClient.request(
+    await netClient.request(
       '${netClient.netEndpoints.request}/$id/cancel',
       queryParameters: param,
       method: NetRequestMethods.post,
     );
-
-    return response.data;
   }
 }

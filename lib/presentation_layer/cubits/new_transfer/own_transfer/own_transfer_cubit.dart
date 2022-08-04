@@ -18,7 +18,7 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
 
   /// Creates new [OwnTransferCubit].
   OwnTransferCubit({
-    required OwnTransfer transfer,
+    OwnTransfer? transfer,
     required GetSourceAccountsForOwnTransferUseCase
         getSourceAccountsForOwnTransferUseCase,
     required GetDestinationAccountsForOwnTransferUseCase
@@ -33,7 +33,7 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
         _loadAllCurrenciesUseCase = loadAllCurrenciesUseCase,
         _submitTransferUseCase = submitTransferUseCase,
         _createShortcutUseCase = createShortcutUseCase,
-        super(OwnTransferState(transfer: transfer));
+        super(OwnTransferState(transfer: transfer ?? OwnTransfer()));
 
   /// Fetches all the data necessary to start the flow.
   Future<void> initialize() async {
