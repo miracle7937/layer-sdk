@@ -131,33 +131,29 @@ class Customer extends Equatable {
   /// The Foreign Account Tax Compliance Act (FATCA) status.
   final bool fatcaStatus;
 
-  /// Selected biller id
-  final String? billerId;
-
   /// Creates a new immutable [Customer]
-  Customer(
-      {required this.id,
-      this.status = CustomerStatus.unknown,
-      this.type = CustomerType.personal,
-      PersonalCustomerData? personalData,
-      CorporateCustomerData? corporateData,
-      this.firstName = '',
-      this.lastName = '',
-      this.middleName = '',
-      Iterable<Address>? addresses,
-      Iterable<String>? nationalities,
-      this.created,
-      this.eStatement = false,
-      this.cpr = const CPR(),
-      this.isStaff = false,
-      this.branchName = '',
-      this.managingBranch = '',
-      this.governmentPosition = '',
-      Iterable<String>? otherNames,
-      this.vaultDisclaimer = false,
-      this.fatcaStatus = false,
-      this.billerId})
-      : addresses = UnmodifiableListView(
+  Customer({
+    required this.id,
+    this.status = CustomerStatus.unknown,
+    this.type = CustomerType.personal,
+    PersonalCustomerData? personalData,
+    CorporateCustomerData? corporateData,
+    this.firstName = '',
+    this.lastName = '',
+    this.middleName = '',
+    Iterable<Address>? addresses,
+    Iterable<String>? nationalities,
+    this.created,
+    this.eStatement = false,
+    this.cpr = const CPR(),
+    this.isStaff = false,
+    this.branchName = '',
+    this.managingBranch = '',
+    this.governmentPosition = '',
+    Iterable<String>? otherNames,
+    this.vaultDisclaimer = false,
+    this.fatcaStatus = false,
+  })  : addresses = UnmodifiableListView(
           addresses ?? <Address>[],
         ),
         nationalities = UnmodifiableListView(nationalities ?? <String>[]),
@@ -228,50 +224,50 @@ class Customer extends Equatable {
       ];
 
   /// Returns a copy of the customer with select different values.
-  Customer copyWith(
-          {String? id,
-          CustomerStatus? status,
-          CustomerType? type,
-          PersonalCustomerData? personalData,
-          CorporateCustomerData? corporateData,
-          String? firstName,
-          String? lastName,
-          String? middleName,
-          Iterable<Address>? addresses,
-          Iterable<String>? nationalities,
-          DateTime? created,
-          bool? eStatement,
-          CPR? cpr,
-          bool? isStaff,
-          String? branchName,
-          String? managingBranch,
-          String? governmentPosition,
-          Iterable<String>? otherNames,
-          bool? vaultDisclaimer,
-          bool? fatcaStatus,
-          String? billerId}) =>
+  Customer copyWith({
+    String? id,
+    CustomerStatus? status,
+    CustomerType? type,
+    PersonalCustomerData? personalData,
+    CorporateCustomerData? corporateData,
+    String? firstName,
+    String? lastName,
+    String? middleName,
+    Iterable<Address>? addresses,
+    Iterable<String>? nationalities,
+    DateTime? created,
+    bool? eStatement,
+    CPR? cpr,
+    bool? isStaff,
+    String? branchName,
+    String? managingBranch,
+    String? governmentPosition,
+    Iterable<String>? otherNames,
+    bool? vaultDisclaimer,
+    bool? fatcaStatus,
+  }) =>
       Customer(
-          id: id ?? this.id,
-          status: status ?? this.status,
-          type: type ?? this.type,
-          personalData: personalData ?? this.personalData,
-          corporateData: corporateData ?? this.corporateData,
-          firstName: firstName ?? this.firstName,
-          lastName: lastName ?? this.lastName,
-          middleName: middleName ?? this.middleName,
-          addresses: addresses ?? this.addresses,
-          nationalities: nationalities ?? this.nationalities,
-          created: created ?? this.created,
-          eStatement: eStatement ?? this.eStatement,
-          cpr: cpr ?? this.cpr,
-          isStaff: isStaff ?? this.isStaff,
-          branchName: branchName ?? this.branchName,
-          managingBranch: managingBranch ?? this.managingBranch,
-          governmentPosition: governmentPosition ?? this.governmentPosition,
-          otherNames: otherNames ?? this.otherNames,
-          vaultDisclaimer: vaultDisclaimer ?? this.vaultDisclaimer,
-          fatcaStatus: fatcaStatus ?? this.fatcaStatus,
-          billerId: billerId ?? this.billerId);
+        id: id ?? this.id,
+        status: status ?? this.status,
+        type: type ?? this.type,
+        personalData: personalData ?? this.personalData,
+        corporateData: corporateData ?? this.corporateData,
+        firstName: firstName ?? this.firstName,
+        lastName: lastName ?? this.lastName,
+        middleName: middleName ?? this.middleName,
+        addresses: addresses ?? this.addresses,
+        nationalities: nationalities ?? this.nationalities,
+        created: created ?? this.created,
+        eStatement: eStatement ?? this.eStatement,
+        cpr: cpr ?? this.cpr,
+        isStaff: isStaff ?? this.isStaff,
+        branchName: branchName ?? this.branchName,
+        managingBranch: managingBranch ?? this.managingBranch,
+        governmentPosition: governmentPosition ?? this.governmentPosition,
+        otherNames: otherNames ?? this.otherNames,
+        vaultDisclaimer: vaultDisclaimer ?? this.vaultDisclaimer,
+        fatcaStatus: fatcaStatus ?? this.fatcaStatus,
+      );
 }
 
 /// Holds data that is specific for the personal customer.
@@ -334,6 +330,9 @@ class PersonalCustomerData extends Equatable {
   /// The Company this customer works to.
   final CustomerCompany company;
 
+  /// Selected biller id
+  final String? billerId;
+
   /// Creates a new [PersonalCustomerData].
   PersonalCustomerData({
     this.title = '',
@@ -354,6 +353,7 @@ class PersonalCustomerData extends Equatable {
     this.company = const CustomerCompany(),
     Iterable<Tax>? taxes,
     Iterable<Nationality>? otherNationalities,
+    this.billerId,
   })  : taxes = UnmodifiableListView(taxes ?? <Tax>[]),
         otherNationalities = UnmodifiableListView(
           otherNationalities ?? <Nationality>[],
@@ -380,6 +380,7 @@ class PersonalCustomerData extends Equatable {
         taxes,
         otherNationalities,
         company,
+        billerId,
       ];
 
   /// Returns a copy of the personal data with select different values.
@@ -400,6 +401,7 @@ class PersonalCustomerData extends Equatable {
     Iterable<Tax>? taxes,
     Iterable<Nationality>? otherNationalities,
     CustomerCompany? company,
+    String? billerId,
   }) =>
       PersonalCustomerData(
         title: title ?? this.title,
@@ -418,6 +420,7 @@ class PersonalCustomerData extends Equatable {
         taxes: taxes ?? this.taxes,
         otherNationalities: otherNationalities ?? this.otherNationalities,
         company: company ?? this.company,
+        billerId: billerId ?? this.billerId,
       );
 }
 
