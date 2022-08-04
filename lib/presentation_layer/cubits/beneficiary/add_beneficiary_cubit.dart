@@ -281,20 +281,24 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
   void onAdd() async {
     final accountRequired = state.accountRequired;
     if (accountRequired) {
+      final maxChars = state.beneficiarySettings
+          .singleWhereOrNull(
+              (element) => element.code == 'benef_acc_num_maximum_characters')
+          ?.value;
+      final minChars = state.beneficiarySettings
+          .singleWhereOrNull(
+              (element) => element.code == 'benef_acc_num_minimum_characters')
+          ?.value;
       final isAccountValid = _validateAccountUseCase(
         account: state.beneficiary?.accountNumber ?? '',
         allowedCharacters: state.beneficiarySettings
             .singleWhereOrNull(
                 (element) => element.code == 'benef_acc_num_allowed_characters')
             ?.value,
-        minAccountChars: state.beneficiarySettings
-            .singleWhereOrNull(
-                (element) => element.code == 'benef_acc_num_minimum_characters')
-            ?.value,
-        maxAccountChars: state.beneficiarySettings
-            .singleWhereOrNull(
-                (element) => element.code == 'benef_acc_num_maximum_characters')
-            ?.value,
+        minAccountChars:
+            minChars is int ? minChars : int.tryParse(minChars ?? ''),
+        maxAccountChars:
+            maxChars is int ? maxChars : int.tryParse(maxChars ?? ''),
       );
       if (!isAccountValid) {
         emit(
