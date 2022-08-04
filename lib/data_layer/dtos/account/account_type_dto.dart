@@ -76,6 +76,15 @@ class AccountTypeDTO {
   /// account type is displayed on client
   bool visible = true;
 
+  /// customer can stop issued check
+  bool canStopIssuedCheck = true;
+
+  /// customer has iban
+  bool hasIban = false;
+
+  /// customer can confirm issued check
+  bool canConfirmIssuedCheck = true;
+
   /// Creates a new [AccountTypeDTO]
   AccountTypeDTO({
     this.id,
@@ -103,6 +112,9 @@ class AccountTypeDTO {
     this.canRequestCertificateOfDeposit = true,
     this.canP2P = true,
     this.visible = true,
+    this.canStopIssuedCheck = true,
+    this.hasIban = false,
+    this.canConfirmIssuedCheck = true,
   });
 
   /// Creates a [AccountTypeDTO] from a JSON
@@ -134,6 +146,39 @@ class AccountTypeDTO {
       canRequestCertificateOfAccount: json['can_request_cert_account'] ?? true,
       canRequestCertificateOfDeposit: json['can_request_cert_deposit'] ?? true,
     );
+  }
+
+  /// Account to json
+  Map<String, dynamic> toJson() {
+    var json = <String, dynamic>{
+      'account_type_id': id,
+      'type': type?.index,
+      'category': category?.index,
+      'name': name,
+      'description': description,
+      'can_pay': canPay,
+      'can_trf_internal': canTransferOwn,
+      'can_trf_bank': canTransferBank,
+      'can_trf_domestic': canTransferDomestic,
+      'can_trf_intl': canTransferInternational,
+      'can_trf_bulk': canTransferBulk,
+      'can_receive_trf': canReceiveTransfer,
+      'can_trf_cardless': canTransferCardless,
+      'can_overdraft': canOverdraft,
+      'can_trf_remittance': canTransferRemittance,
+      'can_request_card': canRequestCard,
+      'can_request_chkbk': canRequestChkbk,
+      'can_p2p': canP2P,
+      'visible': visible,
+      'can_request_banker_check': canRequestBankerCheck,
+      'can_request_stmt': canRequestStatement,
+      'can_request_cert_account': canRequestCertificateOfAccount,
+      'can_request_cert_deposit': canRequestCertificateOfDeposit,
+      "can_stop_issued_check": canStopIssuedCheck,
+      "can_confirm_issued_check": canConfirmIssuedCheck,
+      "has_iban": hasIban,
+    };
+    return json;
   }
 }
 

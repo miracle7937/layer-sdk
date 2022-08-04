@@ -36,6 +36,7 @@ extension CustomerDTOMapping on CustomerDTO {
             name: customerInformation?.companyName ?? '',
             type: customerInformation?.companyType ?? '',
           ),
+          billerId: customerInformation?.billerId,
         ),
         corporateData: CorporateCustomerData(
           kyc: toKYC(),

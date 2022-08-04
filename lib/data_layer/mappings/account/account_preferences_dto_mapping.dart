@@ -15,3 +15,18 @@ extension AccountPreferencesDTOMapping on AccountPreferencesDTO {
         showBalance: showBalance ?? false,
       );
 }
+
+/// Extension that provides mappings for [AccountPreferences]
+extension AccountPreferencesMapping on AccountPreferences {
+  /// Maps into a [AccountPreferencesDTO]
+  AccountPreferencesDTO toAccountPreferencesDTO() => AccountPreferencesDTO(
+        nickname: nickname,
+        alertTxn: alertOnTransaction,
+        alertLowBal: alertOnLowBalance,
+        alertPmt: alertOnPayment,
+        lowBal: lowBalance,
+        favorite: favorite,
+        display: isVisible,
+        showBalance: showBalance,
+      );
+}

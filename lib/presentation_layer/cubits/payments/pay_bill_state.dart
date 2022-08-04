@@ -19,6 +19,9 @@ enum PayBillBusyAction {
   /// Submitting the payment
   submitting,
 
+  /// Adding shortcut
+  addingShortcut,
+
   /// Validating user input
   validating,
 }
@@ -83,6 +86,13 @@ class PayBillState extends Equatable {
   /// The validated bill
   final Bill? validatedBill;
 
+  /// Whether if the payment should be saved to a shortcut.
+  /// Default is `false`
+  final bool saveToShortcut;
+
+  /// The shortcut name.
+  final String? shortcutName;
+
   /// Creates a new state.
   PayBillState({
     this.amount = 0,
@@ -100,6 +110,8 @@ class PayBillState extends Equatable {
     this.selectedService,
     this.serviceFields = const [],
     this.validatedBill,
+    this.saveToShortcut = false,
+    this.shortcutName,
   }) : _billers = billers;
 
   @override
@@ -121,6 +133,8 @@ class PayBillState extends Equatable {
         validatedBill,
         payment,
         bill,
+        saveToShortcut,
+        shortcutName,
       ];
 
   /// Creates a new state based on this one.
@@ -140,6 +154,8 @@ class PayBillState extends Equatable {
     Service? selectedService,
     List<ServiceField>? serviceFields,
     Bill? validatedBill,
+    bool? saveToShortcut,
+    String? shortcutName,
   }) {
     return PayBillState(
       amount: amount ?? this.amount,
@@ -157,6 +173,10 @@ class PayBillState extends Equatable {
       selectedService: selectedService ?? this.selectedService,
       serviceFields: serviceFields ?? this.serviceFields,
       validatedBill: validatedBill ?? this.validatedBill,
+      saveToShortcut: saveToShortcut ?? this.saveToShortcut,
+      shortcutName: !(saveToShortcut ?? this.saveToShortcut)
+          ? null
+          : (shortcutName ?? this.shortcutName),
     );
   }
 
@@ -181,7 +201,8 @@ class PayBillState extends Equatable {
       selectedBiller != null &&
       selectedService != null &&
       amount > 0 &&
-      _serviceFieldsValid;
+      _serviceFieldsValid &&
+      (!saveToShortcut || (shortcutName?.isNotEmpty ?? false));
 
   bool get _serviceFieldsValid {
     for (var i = 0; i < serviceFields.length; i++) {

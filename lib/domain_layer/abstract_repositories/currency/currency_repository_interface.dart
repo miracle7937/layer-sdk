@@ -5,6 +5,7 @@ abstract class CurrencyRepositoryInterface {
   ///Lists the currencies
   Future<List<Currency>> list({
     bool forceRefresh = false,
+    bool onlyVisible = true,
   });
 
   ///Gets a currency by a code
