@@ -207,7 +207,8 @@ class PayBillState extends Equatable {
       amount > 0 &&
       _serviceFieldsValid &&
       (!saveToShortcut || (shortcutName?.isNotEmpty ?? false)) &&
-      (scheduleDetails?.recurrence == Recurrence.none ||
+      (scheduleDetails?.recurrence == null ||
+          scheduleDetails?.recurrence == Recurrence.none ||
           scheduleDetails?.startDate != null);
 
   bool get _serviceFieldsValid {
