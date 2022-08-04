@@ -225,6 +225,7 @@ class PayBillState extends Equatable {
   bool get _recurring => ![
         Recurrence.once,
         Recurrence.none,
+        null,
       ].contains(scheduleDetails?.recurrence);
 
   DateTime? get _recurrenceStart =>
