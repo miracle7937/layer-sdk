@@ -162,7 +162,9 @@ class PayBillCubit extends Cubit<PayBillState> {
       emit(
         state.copyWith(
           busy: true,
-          busyAction: PayBillBusyAction.submitting,
+          busyAction: otp != null
+              ? PayBillBusyAction.validatingSecondFactor
+              : PayBillBusyAction.submitting,
           deviceUID: _generateDeviceUIDUseCase(30),
         ),
       );
