@@ -19,8 +19,8 @@ enum PayBillBusyAction {
   /// Submitting the payment
   submitting,
 
-  /// Adding shortcut
-  addingShortcut,
+  /// Validating second factory
+  validatingSecondFactor,
 
   /// Validating user input
   validating,

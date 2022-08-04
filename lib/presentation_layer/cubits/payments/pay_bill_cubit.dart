@@ -32,6 +32,9 @@ class PayBillCubit extends Cubit<PayBillState> {
   /// when the cubit loads.
   final String? billerId;
 
+  /// A payment to repeat
+  final Payment? paymentToRepeat;
+
   /// Creates a new cubit
   PayBillCubit({
     required LoadBillersUseCase loadBillersUseCase,
@@ -42,6 +45,7 @@ class PayBillCubit extends Cubit<PayBillState> {
     required ValidateBillUseCase validateBillUseCase,
     required CreateShortcutUseCase createShortcutUseCase,
     this.billerId,
+    this.paymentToRepeat,
   })  : _loadBillersUseCase = loadBillersUseCase,
         _loadServicesUseCase = loadServicesUseCase,
         _getCustomerAccountsUseCase = getCustomerAccountsUseCase,
@@ -85,7 +89,23 @@ class PayBillCubit extends Cubit<PayBillState> {
         ),
       );
 
-      if (billerId?.isNotEmpty ?? false) {
+      if (paymentToRepeat != null) {
+        if (paymentToRepeat!.bill?.service?.billerId != null) {
+          final biller = billers.firstWhereOrNull((element) =>
+              element.id == paymentToRepeat!.bill?.service?.billerId);
+          if (biller != null) {
+            setFromAccount(paymentToRepeat!.fromAccount?.id);
+            setAmount(paymentToRepeat!.amount ?? 0.0);
+            setCatogery(biller.category.categoryCode);
+            await setBiller(biller.id);
+            setService(paymentToRepeat!.bill?.service?.serviceId);
+            _setServiceFieldsValue(
+              serviceFields: paymentToRepeat!.bill?.billingFields,
+            );
+            // TODO: set recurrence
+          }
+        }
+      } else if (billerId?.isNotEmpty ?? false) {
         final biller =
             billers.firstWhereOrNull((element) => element.id == billerId);
         if (biller != null) {
@@ -142,7 +162,9 @@ class PayBillCubit extends Cubit<PayBillState> {
       emit(
         state.copyWith(
           busy: true,
-          busyAction: PayBillBusyAction.submitting,
+          busyAction: otp != null
+              ? PayBillBusyAction.validatingSecondFactor
+              : PayBillBusyAction.submitting,
           deviceUID: _generateDeviceUIDUseCase(30),
         ),
       );
@@ -231,7 +253,7 @@ class PayBillCubit extends Cubit<PayBillState> {
   /// Set's the selected biller to the one matching the provided biller id.
   ///
   /// This will trigger a request to fetch the services for the selected biller.
-  void setBiller(String billerId) async {
+  Future<void> setBiller(String billerId) async {
     final biller =
         state.billers.firstWhereOrNull((element) => element.id == billerId);
     if (biller == null) return;
@@ -248,11 +270,17 @@ class PayBillCubit extends Cubit<PayBillState> {
         billerId: billerId,
         sortByName: true,
       );
+
       emit(
         state.copyWith(
           services: services,
           selectedService: services.firstOrNull,
           serviceFields: services.firstOrNull?.serviceFields,
+        ),
+      );
+
+      emit(
+        state.copyWith(
           busy: false,
         ),
       );
@@ -300,6 +328,17 @@ class PayBillCubit extends Cubit<PayBillState> {
         serviceFields: service?.serviceFields ?? [],
       ),
     );
+  }
+
+  /// Loops over the service fields and sets their values
+  void _setServiceFieldsValue({List<ServiceField>? serviceFields}) {
+    if (serviceFields?.isEmpty ?? true) return;
+    for (var i = 0; i < serviceFields!.length; i++) {
+      setServiceFieldValue(
+        id: serviceFields[i].fieldId,
+        value: serviceFields[i].value ?? "",
+      );
+    }
   }
 
   /// Sets the provided value for the service field matching the provided id
