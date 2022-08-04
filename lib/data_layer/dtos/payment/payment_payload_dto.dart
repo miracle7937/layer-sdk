@@ -51,7 +51,10 @@ class PaymentPayloadDTO {
     var json = <String, dynamic>{
       'amount': amount,
       'payment_id': paymentId,
-      'bill': bill!.toJson(isShortcut: true),
+      'bill': bill!.toJson(
+        includeNickname: false,
+        visible: false,
+      ),
       'device_uid': deviceUID,
       'otp_id': otpId,
       'status': status?.value,

@@ -94,13 +94,6 @@ class Payment extends Equatable {
   /// The second factor type of the payment
   final SecondFactorType? secondFactor;
 
-  /// Whether if the payment should be saved to a shortcut.
-  /// Default is `false`
-  final bool saveToShortcut;
-
-  /// The shortcut name.
-  final String? shortcutName;
-
   ///Creates a new [Payment] object
   const Payment({
     this.id,
@@ -120,8 +113,6 @@ class Payment extends Equatable {
     this.otpId,
     this.deviceUID,
     this.secondFactor,
-    this.saveToShortcut = false,
-    this.shortcutName,
   });
 
   ///Payment id toString()
@@ -151,8 +142,6 @@ class Payment extends Equatable {
         otpId,
         deviceUID,
         secondFactor,
-        saveToShortcut,
-        shortcutName,
       ];
 
   ///Clone and return a new [Payment] object
@@ -174,8 +163,6 @@ class Payment extends Equatable {
     int? otpId,
     String? deviceUID,
     SecondFactorType? secondFactor,
-    bool? saveToShortcut,
-    String? shortcutName,
   }) {
     return Payment(
       id: id ?? this.id,
@@ -195,10 +182,6 @@ class Payment extends Equatable {
       otpId: otpId ?? this.otpId,
       deviceUID: deviceUID ?? this.deviceUID,
       secondFactor: secondFactor ?? this.secondFactor,
-      saveToShortcut: saveToShortcut ?? this.saveToShortcut,
-      shortcutName: !(saveToShortcut ?? this.saveToShortcut)
-          ? null
-          : shortcutName ?? this.shortcutName,
     );
   }
 }

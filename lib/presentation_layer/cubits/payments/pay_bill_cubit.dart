@@ -152,7 +152,13 @@ class PayBillCubit extends Cubit<PayBillState> {
         otp: otp,
       );
 
-      if ((state.payment.saveToShortcut) && (res.status != PaymentStatus.otp)) {
+      if ((state.saveToShortcut) &&
+          ([
+            PaymentStatus.completed,
+            PaymentStatus.pending,
+            PaymentStatus.scheduled,
+            PaymentStatus.pendingBank,
+          ].contains(payment?.status))) {
         await _createShortcut(res);
       }
 
@@ -187,7 +193,7 @@ class PayBillCubit extends Cubit<PayBillState> {
     try {
       await _createShortcutUseCase(
         shortcut: NewShortcut(
-          name: state.payment.shortcutName!,
+          name: state.shortcutName!,
           type: ShortcutType.payment,
           payload: state.payment,
         ),
@@ -227,9 +233,7 @@ class PayBillCubit extends Cubit<PayBillState> {
   void setSaveToShortcut({bool? saveToShortcuts}) {
     emit(
       state.copyWith(
-        paymentToBeMade: state.paymentToBeMade?.copyWith(
-          saveToShortcut: saveToShortcuts,
-        ),
+        saveToShortcut: saveToShortcuts,
       ),
     );
   }
@@ -238,9 +242,7 @@ class PayBillCubit extends Cubit<PayBillState> {
   void setShortcutName({String? shortcutName}) {
     emit(
       state.copyWith(
-        paymentToBeMade: state.paymentToBeMade?.copyWith(
-          shortcutName: shortcutName,
-        ),
+        shortcutName: shortcutName,
       ),
     );
   }
