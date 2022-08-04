@@ -5,6 +5,7 @@ import '../../../../data_layer/network.dart';
 import '../../../../domain_layer/models.dart';
 import '../../../../domain_layer/use_cases.dart';
 import '../../../cubits.dart';
+import '../../../utils.dart';
 
 /// A Cubit that handles the state for the beneficiary transfer flow.
 class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
@@ -62,6 +63,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         super(
           BeneficiaryTransferState(
             transfer: transfer,
+            banksPagination: Pagination(limit: 20),
           ),
         );
 
@@ -352,25 +354,45 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
   /// Loads the banks for the passed country code.
   Future<void> loadBanks({
-    required String countryCode,
+    bool loadMore = false,
   }) async {
+    final countryCode = state.transfer.newBeneficiary?.country?.countryCode;
+    if (countryCode == null) {
+      return;
+    }
+
     emit(
       state.copyWith(
         actions: _addAction(BeneficiaryTransferAction.banks),
         errors: _removeError(BeneficiaryTransferAction.banks),
-        banks: {},
+        banks: loadMore ? state.banks : {},
       ),
     );
 
     try {
-      final banks = await _loadBanksByCountryCodeUseCase(
+      final newPage = state.banksPagination.paginate(loadMore: loadMore);
+
+      final resultList = await _loadBanksByCountryCodeUseCase(
         countryCode: countryCode,
+        limit: newPage.limit,
+        offset: newPage.offset,
+        query: state.bankQuery,
       );
+
+      final banks = newPage.firstPage
+          ? resultList
+          : [
+              ...state.banks,
+              ...resultList,
+            ];
 
       emit(
         state.copyWith(
           actions: _removeAction(BeneficiaryTransferAction.banks),
           banks: banks,
+          banksPagination: newPage.refreshCanLoadMore(
+            loadedCount: resultList.length,
+          ),
         ),
       );
     } on Exception catch (e) {
@@ -402,15 +424,13 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     String? shortcutName,
     String? note,
     ScheduleDetails? scheduleDetails,
+    String? bankQuery,
   }) async {
     final sourceCurrency = state.currencies.firstWhereOrNull(
       (currency) => currency.code == state.transfer.source?.account?.currency,
     );
 
-    if (newBeneficiary?.country != null &&
-        newBeneficiary?.country != state.transfer.newBeneficiary?.country) {
-      loadBanks(countryCode: newBeneficiary!.country!.countryCode ?? '');
-    }
+    final currentCountry = state.transfer.newBeneficiary?.country;
 
     emit(
       state.copyWith(
@@ -436,8 +456,15 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
           note: note,
           scheduleDetails: scheduleDetails,
         ),
+        bankQuery: bankQuery,
       ),
     );
+
+    if (bankQuery != null ||
+        (newBeneficiary?.country != null &&
+            newBeneficiary?.country != currentCountry)) {
+      loadBanks();
+    }
   }
 
   /// Evaluates the transfer.
