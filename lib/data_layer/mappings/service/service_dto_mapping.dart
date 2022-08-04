@@ -1,5 +1,6 @@
 import '../../../domain_layer/models.dart';
 import '../../dtos.dart';
+import '../payment/biller_dto_mapping.dart';
 import 'service_field_dto_mapping.dart';
 
 /// Extension that provides mappings for [ServiceDTO]
@@ -8,6 +9,7 @@ extension ServiceDTOMapping on ServiceDTO {
   Service toService() => Service(
         serviceId: serviceId,
         billerId: billerId,
+        biller: biller?.toBiller(),
         name: name,
         billingIdTag: billingIdTag,
         billingIdTagHelp: billingIdTagHelp,
