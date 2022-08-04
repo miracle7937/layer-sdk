@@ -20,4 +20,34 @@ abstract class BeneficiaryRepositoryInterface {
   Future<Beneficiary> delete({
     required int id,
   });
+
+  /// Add a new beneficiary.
+  Future<Beneficiary> add({
+    required Beneficiary beneficiary,
+    bool forceRefresh = false,
+  });
+
+  /// Edit the beneficiary.
+  Future<Beneficiary> edit({
+    required Beneficiary beneficiary,
+    bool forceRefresh = false,
+  });
+
+  /// Returns the beneficiary resulting on verifying the second factor for
+  /// the passed [beneficiary].
+  /// True should be passed in [isEditing]
+  /// in case of existing beneficiary is being edited.
+  Future<Beneficiary> verifySecondFactor({
+    required Beneficiary beneficiary,
+    required String otpValue,
+    bool isEditing = false,
+  });
+
+  /// Resends the second factor for the passed [beneficiary].
+  /// True should be passed in [isEditing]
+  /// in case of existing beneficiary is being edited.
+  Future<Beneficiary> resendSecondFactor({
+    required Beneficiary beneficiary,
+    bool isEditing = false,
+  });
 }
