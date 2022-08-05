@@ -22,6 +22,7 @@ class SDKHeader extends StatelessWidget implements PreferredSizeWidget {
   /// Only indicate this if [suffixSvgIcon] is not null.
   final VoidCallback? onSuffixIconPressed;
 
+  /// Widget that will be displayed on the right side of the appbar
   final Widget? suffixWidget;
 
   /// Creates a new [SDKHeader].
