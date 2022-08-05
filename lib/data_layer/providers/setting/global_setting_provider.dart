@@ -22,7 +22,7 @@ class GlobalSettingProvider {
     final response = await netClient.request(
       netClient.netEndpoints.settings,
       queryParameters: {
-        if (codes != null) 'codes': codes.join(','),
+        if (codes?.isNotEmpty ?? false) 'codes': codes!.join(','),
       },
       forceRefresh: forceRefresh,
       addLanguage: false,

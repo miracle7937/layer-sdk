@@ -78,9 +78,9 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
     try {
       final hasAccount = state.hasAccount;
       final beneficiary = state.beneficiary.copyWith(
-        accountNumber: hasAccount ? state.beneficiary.accountNumber! : '',
-        routingCode: hasAccount ? state.beneficiary.routingCode! : '',
-        iban: hasAccount ? '' : state.beneficiary.iban!,
+        accountNumber: hasAccount ? state.beneficiary.accountNumber : '',
+        routingCode: hasAccount ? state.beneficiary.routingCode : '',
+        iban: hasAccount ? '' : state.beneficiary.iban,
       );
       final editedBeneficiary = await _editBeneficiaryUseCase(
         beneficiary: beneficiary,
