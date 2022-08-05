@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../data_layer/network.dart';
+import '../../../domain_layer/models/second_factor/second_factor_type.dart';
 import '../../../domain_layer/use_cases.dart';
 import 'mandate_cancel_state.dart';
 
@@ -14,7 +15,11 @@ class MandateCancelCubit extends Cubit<MandateCancelState> {
         super(MandateCancelState());
 
   /// Cancels a Mandate based on its id
-  Future<void> cancelMandate({required int mandateId, String? otpValue}) async {
+  Future<SecondFactorType?> cancelMandate({
+    required int mandateId,
+    String? otpValue,
+    SecondFactorType? type,
+  }) async {
     emit(
       state.copyWith(
         busy: true,
@@ -27,7 +32,7 @@ class MandateCancelCubit extends Cubit<MandateCancelState> {
       final result = await _cancelUseCase(
         mandateId: mandateId,
         otpValue: otpValue,
-        otpType: state.secondFactor,
+        otpType: type,
       );
 
       emit(
@@ -35,9 +40,10 @@ class MandateCancelCubit extends Cubit<MandateCancelState> {
           busy: false,
           errorMessage: '',
           errorStatus: MandateCancelErrorStatus.none,
-          secondFactor: result,
         ),
       );
+
+      return result;
     } on Exception catch (e) {
       emit(
         state.copyWith(
@@ -48,6 +54,7 @@ class MandateCancelCubit extends Cubit<MandateCancelState> {
           errorMessage: e is NetException ? e.message : e.toString(),
         ),
       );
+      rethrow;
     }
   }
 }
