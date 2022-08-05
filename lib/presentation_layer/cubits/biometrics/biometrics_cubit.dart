@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:local_auth/local_auth.dart';
 
@@ -71,18 +72,27 @@ class BiometricsCubit extends Cubit<BiometricsState> {
       ),
     );
 
-    final authenticated = await _localAuth.authenticate(
-      localizedReason: localizedReason,
-      options: AuthenticationOptions(
-        stickyAuth: stickyAuth,
-      ),
-    );
+    try {
+      final authenticated = await _localAuth.authenticate(
+        localizedReason: localizedReason,
+        options: AuthenticationOptions(
+          stickyAuth: stickyAuth,
+        ),
+      );
 
-    emit(
-      state.copyWith(
-        busy: false,
-        authenticated: authenticated,
-      ),
-    );
+      emit(
+        state.copyWith(
+          busy: false,
+          authenticated: authenticated,
+        ),
+      );
+    } on PlatformException catch (_) {
+      emit(
+        state.copyWith(
+          busy: false,
+          error: BiometricsError.generic,
+        ),
+      );
+    }
   }
 }
