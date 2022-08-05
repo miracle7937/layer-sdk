@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import '../../../../../../data_layer/network.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
+import '../../../layer_sdk.dart';
 import '../../cubits.dart';
 
 /// A cubit that handles adding a new beneficiary.
@@ -39,6 +40,7 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         super(
           AddBeneficiaryState(
             beneficiaryType: beneficiaryType,
+            banksPagination: Pagination(limit: 20),
           ),
         );
 
@@ -227,43 +229,10 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
       state.copyWith(
         selectedCountry: country,
         action: AddBeneficiaryAction.editAction,
-        busy: true,
         errors: _removeDefault(),
       ),
     );
-    try {
-      final banks = await _loadBanksByCountryCodeUseCase(
-        countryCode: country.countryCode ?? '',
-      );
-
-      emit(
-        state.copyWith(
-          beneficiary: state.beneficiary?.copyWith(
-            bank: null,
-          ),
-          banks: banks,
-          busy: false,
-          action: AddBeneficiaryAction.none,
-        ),
-      );
-    } on Exception catch (e) {
-      emit(
-        state.copyWith(
-          busy: false,
-          action: AddBeneficiaryAction.none,
-          errors: _addError(
-            action: AddBeneficiaryAction.editAction,
-            errorStatus: e is NetException
-                ? AddBeneficiaryErrorStatus.network
-                : AddBeneficiaryErrorStatus.generic,
-            code: e is NetException ? e.code : null,
-            message: e is NetException ? e.message : null,
-          ),
-        ),
-      );
-
-      rethrow;
-    }
+    loadBanks();
   }
 
   /// Handles the bank change.
@@ -276,6 +245,83 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
           errors: _removeDefault(),
         ),
       );
+
+  /// Loads the banks for the passed country code.
+  Future<void> loadBanks({
+    bool loadMore = false,
+  }) async {
+    final countryCode = state.selectedCountry?.countryCode;
+    if (countryCode == null) {
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        busy: true,
+        action: AddBeneficiaryAction.banks,
+        errors: _removeDefault(),
+        banks: loadMore ? state.banks : {},
+      ),
+    );
+
+    try {
+      final newPage = state.banksPagination.paginate(loadMore: loadMore);
+
+      final resultList = await _loadBanksByCountryCodeUseCase(
+        countryCode: countryCode,
+        limit: newPage.limit,
+        offset: newPage.offset,
+        query: state.bankQuery,
+      );
+
+      final banks = newPage.firstPage
+          ? resultList
+          : [
+              ...state.banks,
+              ...resultList,
+            ];
+
+      emit(
+        state.copyWith(
+          busy: false,
+          action: AddBeneficiaryAction.none,
+          banks: banks,
+          banksPagination: newPage.refreshCanLoadMore(
+            loadedCount: resultList.length,
+          ),
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          busy: false,
+          action: AddBeneficiaryAction.none,
+          errors: _addError(
+            action: AddBeneficiaryAction.banks,
+            errorStatus: e is NetException
+                ? AddBeneficiaryErrorStatus.network
+                : AddBeneficiaryErrorStatus.generic,
+            code: e is NetException ? e.code : null,
+            message: e is NetException ? e.message : null,
+          ),
+        ),
+      );
+    }
+  }
+
+  /// Updates the bank query.
+  Future<void> onChanged({
+    String? bankQuery,
+  }) async {
+    emit(
+      state.copyWith(
+        bankQuery: bankQuery,
+      ),
+    );
+    if (bankQuery != null) {
+      loadBanks();
+    }
+  }
 
   /// Handles the adding new beneficiary.
   void onAdd() async {
