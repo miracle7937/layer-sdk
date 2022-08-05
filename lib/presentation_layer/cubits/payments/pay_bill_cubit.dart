@@ -1,18 +1,22 @@
+import 'dart:io';
+
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../../data_layer/mappings/payment/biller_dto_mapping.dart';
+import '../../../data_layer/network.dart';
 import '../../../data_layer/network/net_exceptions.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/models/payment/biller.dart';
 import '../../../domain_layer/models/service/service_field.dart';
-import '../../../domain_layer/use_cases/account/get_accounts_by_status_use_case.dart';
+import '../../../domain_layer/use_cases.dart';
 import '../../../domain_layer/use_cases/payments/generate_device_uid_use_case.dart';
 import '../../../domain_layer/use_cases/payments/load_billers_use_case.dart';
 import '../../../domain_layer/use_cases/payments/load_services_use_case.dart';
 import '../../../domain_layer/use_cases/payments/post_payment_use_case.dart';
 import '../../../domain_layer/use_cases/payments/validate_bill_use_case.dart';
-import '../../../domain_layer/use_cases/shortcut/create_shortcut_use_case.dart';
 import 'pay_bill_state.dart';
 
 /// A cubit for paying customer bills.
@@ -24,6 +28,7 @@ class PayBillCubit extends Cubit<PayBillState> {
   final GenerateDeviceUIDUseCase _generateDeviceUIDUseCase;
   final ValidateBillUseCase _validateBillUseCase;
   final CreateShortcutUseCase _createShortcutUseCase;
+  final LoadPaymentReceiptUseCase _loadPaymentReceiptUseCase;
 
   /// The biller id to pay for, if provided the biller will be pre-selected
   /// when the cubit loads.
@@ -41,6 +46,7 @@ class PayBillCubit extends Cubit<PayBillState> {
     required GenerateDeviceUIDUseCase generateDeviceUIDUseCase,
     required ValidateBillUseCase validateBillUseCase,
     required CreateShortcutUseCase createShortcutUseCase,
+    required LoadPaymentReceiptUseCase loadPaymentReceiptUseCase,
     this.billerId,
     this.paymentToRepeat,
   })  : _loadBillersUseCase = loadBillersUseCase,
@@ -50,6 +56,7 @@ class PayBillCubit extends Cubit<PayBillState> {
         _generateDeviceUIDUseCase = generateDeviceUIDUseCase,
         _validateBillUseCase = validateBillUseCase,
         _createShortcutUseCase = createShortcutUseCase,
+        _loadPaymentReceiptUseCase = loadPaymentReceiptUseCase,
         super(PayBillState());
 
   /// Loads all the required data, must be called at lease once before anything
@@ -363,6 +370,74 @@ class PayBillCubit extends Cubit<PayBillState> {
       state.copyWith(
         scheduleDetails: scheduleDetails,
       ),
+    );
+  }
+
+  /// Fetches the payment receipt
+  Future<void> loadPaymentReceipt({
+    required int paymentID,
+    bool isImage = false,
+  }) async {
+    emit(
+      state.copyWith(
+        busy: true,
+        busyAction: isImage
+            ? PayBillBusyAction.loadingImage
+            : PayBillBusyAction.loadingPDF,
+      ),
+    );
+
+    try {
+      if (state.receipt == null) {
+        final receipt = await _loadPaymentReceiptUseCase(
+          paymentID: paymentID,
+        );
+        emit(
+          state.copyWith(
+            receipt: receipt,
+          ),
+        );
+      }
+
+      if (state.receipt != null) {
+        await getMoreInfoPdf(state.receipt!, isImage: isImage);
+      }
+
+      emit(
+        state.copyWith(
+          busy: false,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          busy: false,
+          errorStatus: e is NetException
+              ? PayBillErrorStatus.network
+              : PayBillErrorStatus.generic,
+        ),
+      );
+
+      rethrow;
+    }
+  }
+
+  /// Opens the more info pdf
+  Future<void> getMoreInfoPdf(
+    List<int> bytes, {
+    bool isImage = false,
+  }) async {
+    final appDocDir = await getApplicationDocumentsDirectory();
+    final appPath = appDocDir.path;
+    final fileFormat = isImage ? "png" : "pdf";
+    final path = '$appPath/bill_more_info${state.payment.id ?? 0}.$fileFormat';
+    final file = File(path);
+    await file.writeAsBytes(bytes);
+
+    OpenFile.open(
+      file.path,
+      uti: isImage ? 'public.jpeg' : 'com.adobe.pdf',
+      type: isImage ? 'image/jpeg' : 'application/pdf',
     );
   }
 }

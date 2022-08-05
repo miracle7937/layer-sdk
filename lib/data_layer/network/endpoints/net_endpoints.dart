@@ -152,6 +152,9 @@ class NetEndpoints {
   ///The payment endpoint
   String get payment => '$_payment/v1/payment';
 
+  ///The payment receipt endpoint
+  String get paymentReceipt => '$_payment/v1/payment_receipt';
+
   ///The payment V2 endpoint
   String get paymentV2 => '$_payment/v2/payment';
 

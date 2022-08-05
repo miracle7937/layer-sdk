@@ -1,3 +1,7 @@
+import 'dart:typed_data';
+
+import 'package:dio/dio.dart';
+
 import '../../dtos.dart';
 import '../../network.dart';
 
@@ -72,5 +76,24 @@ class PaymentProvider {
     return PaymentDTO.fromJsonList(
       List.from(response.data),
     );
+  }
+
+  /// Fetch the rendered file
+  Future<Uint8List> fetchRenderedFile({
+    required int paymentID,
+  }) async {
+    var fields = <Map<String, dynamic>>[];
+
+    final response = await netClient.request(
+      "${netClient.netEndpoints.paymentReceipt}/$paymentID",
+      method: NetRequestMethods.post,
+      responseType: ResponseType.bytes,
+      decodeResponse: false,
+      data: {
+        'form_id': 'bill_payment',
+      },
+    );
+
+    return response.data;
   }
 }
