@@ -123,7 +123,7 @@ class _OTPScreenState extends State<OTPScreen> with FullScreenLoaderMixin {
         ) ??
         '';
 
-    var maskedNumber = '•••••';
+    var maskedNumber = '𖧹𖧹𖧹𖧹𖧹';
     if (mobileNumber.length > 3) {
       final last3Digits = mobileNumber.substring(
           mobileNumber.length - 4, mobileNumber.length - 1);
@@ -131,12 +131,25 @@ class _OTPScreenState extends State<OTPScreen> with FullScreenLoaderMixin {
     } else {
       maskedNumber = '$maskedNumber$mobileNumber';
     }
+    print(maskedNumber);
 
     return Scaffold(
       appBar: SDKHeader(
         title: widget.title,
         prefixSvgIcon: DKImages.arrowLeft,
         onPrefixIconPressed: () => Navigator.pop(context),
+        suffixWidget: TextButton(
+            onPressed: () {
+              if (Navigator.of(context).canPop()) {
+                Navigator.of(context).pop();
+              }
+            },
+            style: ButtonStyle(
+                padding: MaterialStateProperty.all(EdgeInsets.zero)),
+            child: Text(
+              Translation.translateOf(context, "cancel"),
+              style: design.buttonM(color: design.brandPrimary),
+            )),
       ),
       body: Center(
         child: SingleChildScrollView(
