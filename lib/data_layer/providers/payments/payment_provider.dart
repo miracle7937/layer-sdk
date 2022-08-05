@@ -82,8 +82,6 @@ class PaymentProvider {
   Future<Uint8List> fetchRenderedFile({
     required int paymentID,
   }) async {
-    var fields = <Map<String, dynamic>>[];
-
     final response = await netClient.request(
       "${netClient.netEndpoints.paymentReceipt}/$paymentID",
       method: NetRequestMethods.post,
