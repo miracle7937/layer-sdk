@@ -24,6 +24,7 @@ extension PaymentDTOMapping on PaymentDTO {
         otpId: otpId,
         deviceUID: deviceUID,
         secondFactor: secondFactor?.toSecondFactorType(),
+        recurring: recurring ?? false,
       );
 }
 
@@ -89,6 +90,7 @@ extension PaymentToDTOMapping on Payment {
       scheduled: scheduled,
       recurrenceStart: recurrenceStart,
       recurrenceEnd: recurrenceEnd,
+      recurring: recurring,
     );
   }
 
