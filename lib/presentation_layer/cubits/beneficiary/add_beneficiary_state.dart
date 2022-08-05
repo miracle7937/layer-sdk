@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:equatable/equatable.dart';
 
 import '../../../domain_layer/models.dart';
+import '../../../layer_sdk.dart';
 
 /// Model used for the errors.
 class AddBeneficiaryError extends Equatable {
@@ -70,6 +71,9 @@ class AddBeneficiaryState extends Equatable {
   /// A list of [Bank]s.
   final UnmodifiableListView<Bank> banks;
 
+  /// Has all the data needed to handle the list of activities.
+  final Pagination banksPagination;
+
   /// Selected currency.
   final Currency? selectedCurrency;
 
@@ -106,6 +110,9 @@ class AddBeneficiaryState extends Equatable {
           !accountRequired && (beneficiary?.iban?.isNotEmpty != null)) &&
       (beneficiary?.bank != null);
 
+  /// The bank query for filtering the banks.
+  final String? bankQuery;
+
   /// Creates a new [AddBeneficiaryState].
   AddBeneficiaryState({
     this.beneficiaryType,
@@ -113,12 +120,14 @@ class AddBeneficiaryState extends Equatable {
     Iterable<Country> countries = const <Country>[],
     Iterable<Currency> availableCurrencies = const <Currency>[],
     Iterable<Bank> banks = const <Bank>[],
+    this.banksPagination = const Pagination(),
     this.selectedCurrency,
     this.selectedCountry,
     Set<AddBeneficiaryError> errors = const <AddBeneficiaryError>{},
     Iterable<GlobalSetting> beneficiarySettings = const <GlobalSetting>{},
     this.busy = false,
     this.action = AddBeneficiaryAction.none,
+    this.bankQuery,
   })  : countries = UnmodifiableListView(countries),
         availableCurrencies = UnmodifiableListView(availableCurrencies),
         banks = UnmodifiableListView(banks),
@@ -132,12 +141,14 @@ class AddBeneficiaryState extends Equatable {
         countries,
         availableCurrencies,
         banks,
+        banksPagination,
         selectedCurrency,
         selectedCountry,
         errors,
         beneficiarySettings,
         busy,
         action,
+        bankQuery,
       ];
 
   /// Creates a new state based on this one.
@@ -146,12 +157,14 @@ class AddBeneficiaryState extends Equatable {
     Iterable<Country>? countries,
     Iterable<Currency>? availableCurrencies,
     Iterable<Bank>? banks,
+    Pagination? banksPagination,
     Currency? selectedCurrency,
     Country? selectedCountry,
     Set<AddBeneficiaryError>? errors,
     Iterable<GlobalSetting>? beneficiarySettings,
     bool? busy,
     AddBeneficiaryAction? action,
+    String? bankQuery,
   }) =>
       AddBeneficiaryState(
         beneficiaryType: beneficiaryType,
@@ -159,12 +172,14 @@ class AddBeneficiaryState extends Equatable {
         countries: countries ?? this.countries,
         availableCurrencies: availableCurrencies ?? this.availableCurrencies,
         banks: banks ?? this.banks,
+        banksPagination: banksPagination ?? this.banksPagination,
         selectedCurrency: selectedCurrency ?? this.selectedCurrency,
         selectedCountry: selectedCountry ?? this.selectedCountry,
         errors: errors ?? this.errors,
         beneficiarySettings: beneficiarySettings ?? this.beneficiarySettings,
         busy: busy ?? this.busy,
         action: action ?? this.action,
+        bankQuery: bankQuery ?? this.bankQuery,
       );
 }
 
@@ -187,6 +202,9 @@ enum AddBeneficiaryAction {
 
   /// Successful adding new beneficiary action.
   success,
+
+  /// Loading the banks for the new beneficiary.
+  banks,
 
   /// No action.
   none,
