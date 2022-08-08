@@ -39,8 +39,11 @@ class OTPScreen extends StatefulWidget {
   /// Default is `false`.
   final bool isResending;
 
-  /// Whether if the code input should be cleared.
-  /// Default is `false`.
+  /// Used for clearing the otp code input.
+  ///
+  /// If `true` and the previous time this widget was build, this parameter
+  /// was `false` the controllers for the otp code will clear the current value.
+  /// Usually used for clearing the previous code when there was an error.
   final bool shouldClearCode;
 
   /// Creates a new [OTPScreen].
