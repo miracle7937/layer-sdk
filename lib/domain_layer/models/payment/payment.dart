@@ -74,6 +74,9 @@ class Payment extends Equatable {
   /// Defaults to [PaymentStatus.unknown].
   final PaymentStatus status;
 
+  /// Whether the payment is recurring or not
+  final bool recurring;
+
   /// The payment recurrence
   ///
   /// Defaults to [Recurrence.none].
@@ -113,6 +116,7 @@ class Payment extends Equatable {
     this.otpId,
     this.deviceUID,
     this.secondFactor,
+    this.recurring = false,
   });
 
   ///Payment id toString()
@@ -142,6 +146,7 @@ class Payment extends Equatable {
         otpId,
         deviceUID,
         secondFactor,
+        recurring,
       ];
 
   ///Clone and return a new [Payment] object
@@ -163,6 +168,7 @@ class Payment extends Equatable {
     int? otpId,
     String? deviceUID,
     SecondFactorType? secondFactor,
+    bool? recurring,
   }) {
     return Payment(
       id: id ?? this.id,
@@ -182,6 +188,7 @@ class Payment extends Equatable {
       otpId: otpId ?? this.otpId,
       deviceUID: deviceUID ?? this.deviceUID,
       secondFactor: secondFactor ?? this.secondFactor,
+      recurring: recurring ?? this.recurring,
     );
   }
 }

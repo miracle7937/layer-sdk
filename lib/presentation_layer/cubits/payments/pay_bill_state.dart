@@ -259,5 +259,6 @@ class PayBillState extends Equatable {
         scheduled: _scheduledDate,
         recurrenceStart: _recurrenceStart,
         recurrenceEnd: _recurrenceEnd,
+        recurring: _recurring,
       );
 }
