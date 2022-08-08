@@ -95,9 +95,6 @@ class PayBillState extends Equatable {
   /// The shortcut name.
   final String? shortcutName;
 
-  /// The payment receipt
-  final Uint8List? receipt;
-
   /// Creates a new state.
   PayBillState({
     this.amount = 0,
@@ -118,7 +115,6 @@ class PayBillState extends Equatable {
     this.scheduleDetails,
     this.saveToShortcut = false,
     this.shortcutName,
-    this.receipt,
   }) : _billers = billers;
 
   @override
@@ -143,7 +139,6 @@ class PayBillState extends Equatable {
         scheduleDetails,
         saveToShortcut,
         shortcutName,
-        receipt,
       ];
 
   /// Creates a new state based on this one.
@@ -166,7 +161,6 @@ class PayBillState extends Equatable {
     ScheduleDetails? scheduleDetails,
     bool? saveToShortcut,
     String? shortcutName,
-    Uint8List? receipt,
   }) {
     return PayBillState(
       amount: amount ?? this.amount,
@@ -189,7 +183,6 @@ class PayBillState extends Equatable {
       shortcutName: !(saveToShortcut ?? this.saveToShortcut)
           ? null
           : (shortcutName ?? this.shortcutName),
-      receipt: receipt ?? this.receipt,
     );
   }
 

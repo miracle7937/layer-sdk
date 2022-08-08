@@ -13,7 +13,6 @@ import '../../../domain_layer/use_cases/payments/load_billers_use_case.dart';
 import '../../../domain_layer/use_cases/payments/load_services_use_case.dart';
 import '../../../domain_layer/use_cases/payments/post_payment_use_case.dart';
 import '../../../domain_layer/use_cases/payments/validate_bill_use_case.dart';
-import '../../../layer_sdk.dart';
 import 'pay_bill_state.dart';
 
 /// A cubit for paying customer bills.
@@ -100,7 +99,14 @@ class PayBillCubit extends Cubit<PayBillState> {
             _setServiceFieldsValue(
               serviceFields: paymentToRepeat!.bill?.billingFields,
             );
-            // TODO: set recurrence
+            setScheduleDetails(
+              scheduleDetails: ScheduleDetails(
+                recurrence: paymentToRepeat!.recurrence,
+                startDate: paymentToRepeat!.scheduled ??
+                    paymentToRepeat!.recurrenceStart,
+                endDate: paymentToRepeat!.recurrenceEnd,
+              ),
+            );
           }
         }
       } else if (billerId?.isNotEmpty ?? false) {
