@@ -80,16 +80,12 @@ class LinkCubit extends Cubit<LinkState> {
     bool isPDF = false,
     bool inferFromBase64 = false,
     String defaultInferredType = 'jpeg',
-    Map<String, dynamic>? body,
-    NetRequestMethods method = NetRequestMethods.get,
   }) async {
     assert(!state.busy, 'Cannot open a link when busy.');
 
     emit(
       state.copyWith(
         busy: true,
-        busyAction:
-            isPDF ? LinkBusyAction.loadingPDF : LinkBusyAction.loadingImage,
         downloadedBytes: 0,
         totalBytes: 0,
         errorStatus: LinkErrorStatus.none,
@@ -127,8 +123,110 @@ class LinkCubit extends Cubit<LinkState> {
       final response = await _fileRepository.downloadFile(
         url: url,
         queryParameters: queryParameters,
-        method: method,
-        body: body ?? const <String, dynamic>{},
+        onReceiveProgress: (count, total) => emit(
+          state.copyWith(
+            downloadedBytes: count,
+            totalBytes: total,
+          ),
+        ),
+      );
+
+      if (response is Map<String, dynamic>) {
+        final responseContent = response['image'].toString().split(',');
+        final imageData = base64Decode(responseContent[1]);
+
+        if (inferFromBase64) {
+          final inferPDF = response['image'].contains('application/pdf');
+
+          type = inferPDF ? 'application/pdf' : 'image/$defaultInferredType';
+          uti = inferPDF ? 'com.adobe.pdf' : 'public.$defaultInferredType';
+        }
+
+        await file.writeAsBytes(imageData);
+      } else {
+        await file.writeAsBytes(response);
+      }
+
+      emit(
+        state.copyWith(
+          busy: false,
+          downloadedBytes: 0,
+          totalBytes: 0,
+        ),
+      );
+
+      OpenFile.open(
+        file.path,
+        uti: uti,
+        type: type,
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          busy: false,
+          downloadedBytes: 0,
+          totalBytes: 0,
+          errorStatus: e.toLinkErrorStatus(),
+        ),
+      );
+    }
+  }
+
+  /// Opens a file by downloading it and opening on a dedicated app using post.
+  Future<void> openFileUsingPost(
+    String url, {
+    Map<String, dynamic> queryParameters = const <String, dynamic>{},
+    bool fromCache = false,
+    bool isPDF = false,
+    bool inferFromBase64 = false,
+    String defaultInferredType = 'png',
+    required String filePath,
+    required Map<String, dynamic> body,
+  }) async {
+    assert(!state.busy, 'Cannot open a link when busy.');
+
+    emit(
+      state.copyWith(
+        busy: true,
+        busyAction:
+            isPDF ? LinkBusyAction.loadingPDF : LinkBusyAction.loadingImage,
+        downloadedBytes: 0,
+        totalBytes: 0,
+        errorStatus: LinkErrorStatus.none,
+      ),
+    );
+
+    final appPath = (await getApplicationDocumentsDirectory()).path;
+    final fileFormat = isPDF ? "pdf" : "png";
+    final path = '$appPath/$filePath.$fileFormat';
+
+    final file = File(path);
+
+    var uti = isPDF ? 'com.adobe.pdf' : 'public.jpeg';
+    var type = isPDF ? 'application/pdf' : 'image/jpeg';
+
+    if (fromCache && (await file.exists())) {
+      OpenFile.open(
+        path,
+        uti: uti,
+        type: type,
+      );
+
+      emit(
+        state.copyWith(
+          busy: false,
+        ),
+      );
+
+      return;
+    }
+
+    try {
+      final response = await _fileRepository.downloadFile(
+        url: url,
+        queryParameters: queryParameters,
+        method: NetRequestMethods.post,
+        body: body,
         onReceiveProgress: (count, total) => emit(
           state.copyWith(
             downloadedBytes: count,
