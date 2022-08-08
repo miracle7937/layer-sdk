@@ -50,6 +50,23 @@ extension TransferDTOMapping on TransferDTO {
       );
 }
 
+/// Extension that provides mappings for [Transfer]
+extension TransferToDTOMapping on Transfer {
+  /// Maps into a [NewTransferPayloadDTO]
+  NewTransferPayloadDTO toTransferShortcutPayloadDTO() {
+    return NewTransferPayloadDTO(
+      transferId: id,
+      fromAccountId: fromAccount!.id,
+      toAccountId: toAccount!.id,
+      amount: amount!,
+      currencyCode: currency!,
+      type: type!.toTransferTypeDTO(),
+      recurrence: recurrence.toRecurrenceDTO(),
+      fromMobile: fromMobile,
+    );
+  }
+}
+
 /// Extension that provides mappings for [TransferStatus]
 extension TransferStatusMapping on TransferStatus {
   /// Maps into a [TransferStatusDTO]
