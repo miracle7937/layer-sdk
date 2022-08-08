@@ -39,6 +39,10 @@ class OTPScreen extends StatefulWidget {
   /// Default is `false`.
   final bool isResending;
 
+  /// Whether if the code input should be cleared.
+  /// Default is `false`.
+  final bool shouldClearCode;
+
   /// Creates a new [OTPScreen].
   const OTPScreen({
     Key? key,
@@ -48,6 +52,7 @@ class OTPScreen extends StatefulWidget {
     required this.onOTPCode,
     this.isVerifying = false,
     this.verificationError,
+    this.shouldClearCode = false,
     required this.onResend,
     this.isResending = false,
   }) : super(key: key);
@@ -57,7 +62,6 @@ class OTPScreen extends StatefulWidget {
 }
 
 class _OTPScreenState extends State<OTPScreen> with FullScreenLoaderMixin {
-  final _otpController = TextEditingController();
   late int _remainingTime;
   Timer? _timer;
   bool get resendEnabled => _remainingTime <= 0;
@@ -77,12 +81,18 @@ class _OTPScreenState extends State<OTPScreen> with FullScreenLoaderMixin {
   set isResending(bool isResending) =>
       setState(() => _isResending = isResending);
 
+  late bool _shouldClearCode;
+  bool get shouldClearCode => _shouldClearCode;
+  set shouldClearCode(bool shouldClearCode) =>
+      setState(() => _shouldClearCode = shouldClearCode);
+
   @override
   void initState() {
     super.initState();
 
     _isVerifying = widget.isVerifying;
     _isResending = widget.isResending;
+    _shouldClearCode = widget.shouldClearCode;
 
     _remainingTime = widget.resendInterval;
     _startTimer();
@@ -103,11 +113,14 @@ class _OTPScreenState extends State<OTPScreen> with FullScreenLoaderMixin {
     if (oldWidget.verificationError != widget.verificationError) {
       verificationError = widget.verificationError;
     }
+
+    if (oldWidget.shouldClearCode != widget.shouldClearCode) {
+      shouldClearCode = widget.shouldClearCode;
+    }
   }
 
   @override
   void dispose() {
-    _otpController.dispose();
     if (_timer?.isActive ?? false) _timer?.cancel();
 
     super.dispose();
@@ -159,6 +172,7 @@ class _OTPScreenState extends State<OTPScreen> with FullScreenLoaderMixin {
               _PinWidgetRow(
                 onPinSet: widget.onOTPCode,
                 hasError: verificationError != null,
+                shouldClearCode: shouldClearCode,
               ),
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 200),
@@ -175,7 +189,7 @@ class _OTPScreenState extends State<OTPScreen> with FullScreenLoaderMixin {
                           children: [
                             const SizedBox(height: 16.0),
                             Text(
-                              translation.translate(verificationError!),
+                              verificationError!,
                               style: design.bodyM(
                                 color: design.errorPrimary,
                               ),
@@ -240,10 +254,13 @@ class _PinWidgetRow extends StatefulWidget {
 
   final bool hasError;
 
+  final bool shouldClearCode;
+
   const _PinWidgetRow({
     Key? key,
     required this.onPinSet,
     this.hasError = false,
+    this.shouldClearCode = false,
   }) : super(key: key);
 
   @override
@@ -289,6 +306,11 @@ class _PinWidgetRowState extends State<_PinWidgetRow>
   void didUpdateWidget(covariant _PinWidgetRow oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.hasError != widget.hasError && widget.hasError) {
+      _clearPins();
+    }
+
+    if (oldWidget.shouldClearCode != widget.shouldClearCode &&
+        widget.shouldClearCode) {
       _clearPins();
     }
   }

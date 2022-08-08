@@ -628,7 +628,9 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
           errors: _addError(
             action: BeneficiaryTransferAction.verifySecondFactor,
             errorStatus: e is NetException
-                ? BeneficiaryTransferErrorStatus.network
+                ? e.code == 'incorrect_value'
+                    ? BeneficiaryTransferErrorStatus.incorrectOTPCode
+                    : BeneficiaryTransferErrorStatus.network
                 : BeneficiaryTransferErrorStatus.generic,
             code: e is NetException
                 ? e.statusCode == null
