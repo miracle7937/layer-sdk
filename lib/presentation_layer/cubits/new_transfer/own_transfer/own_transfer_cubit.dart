@@ -61,6 +61,7 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
       emit(state.copyWith(
         fromAccounts: fromAccounts,
         toAccounts: toAccounts,
+        preselectedAccount: fromAccounts[0],
         currencies: currencies,
         actions: state.actions.difference({
           OwnTransferAction.accounts,
