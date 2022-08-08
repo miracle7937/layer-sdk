@@ -53,10 +53,12 @@ class MadatesProvider {
       method: NetRequestMethods.delete,
       data: otpValue != null && otpType != null
           ? {
-              otpType.value: otpValue,
+              otpType.value.toLowerCase(): otpValue,
             }
           : null,
     );
+
+    if (response.data?.isEmpty ?? true) return null;
 
     return SecondFactorTypeDTO.fromRaw(response.data['second_factor'] ?? '');
   }

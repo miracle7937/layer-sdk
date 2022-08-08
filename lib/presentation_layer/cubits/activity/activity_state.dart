@@ -43,12 +43,16 @@ class ActivityState extends Equatable {
   /// Which busy action is the cubit doing
   final ActivityBusyAction action;
 
+  /// The name for the shorcut activity action
+  final String shorcutName;
+
   /// Creates a new [ActivityState] instance
   ActivityState({
     Iterable<Activity> activities = const <Activity>[],
     this.action = ActivityBusyAction.none,
     this.errorStatus = ActivityErrorStatus.none,
     this.pagination = const Pagination(),
+    this.shorcutName = '',
   }) : activities = UnmodifiableListView(activities);
 
   /// Copies the object with new values
@@ -58,12 +62,14 @@ class ActivityState extends Equatable {
     Pagination? pagination,
     int? offSet,
     Iterable<Activity>? activities,
+    String? shorcutName,
   }) {
     return ActivityState(
       errorStatus: errorStatus ?? this.errorStatus,
       action: action ?? this.action,
       pagination: pagination ?? this.pagination,
       activities: activities ?? this.activities,
+      shorcutName: shorcutName ?? this.shorcutName,
     );
   }
 
@@ -73,5 +79,6 @@ class ActivityState extends Equatable {
         action,
         pagination,
         activities,
+        shorcutName,
       ];
 }
