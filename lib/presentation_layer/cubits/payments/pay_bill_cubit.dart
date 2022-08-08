@@ -221,7 +221,7 @@ class PayBillCubit extends Cubit<PayBillState> {
           busy: false,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (_) {
       emit(
         state.copyWith(
           busy: false,
