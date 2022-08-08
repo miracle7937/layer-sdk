@@ -18,6 +18,7 @@ class LoadCustomerBeneficiariesUseCase {
   Future<List<Beneficiary>> call({
     String? customerId,
     String? query,
+    bool ascendingOrder = true,
     int offset = 0,
     int limit = 50,
     bool loadMore = false,
@@ -30,6 +31,7 @@ class LoadCustomerBeneficiariesUseCase {
         offset: offset,
         forceRefresh: forceRefresh,
         searchText: query,
+        ascendingOrder: ascendingOrder,
         activeOnly: activeOnly,
       );
 }

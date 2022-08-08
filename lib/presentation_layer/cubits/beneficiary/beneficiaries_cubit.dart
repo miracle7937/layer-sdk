@@ -17,9 +17,15 @@ class BeneficiariesCubit extends Cubit<BeneficiariesState> {
     required LoadCustomerBeneficiariesUseCase loadCustomerBeneficiariesUseCase,
     String? customerID,
     this.limit = 50,
+    bool ascendingOrder = true,
   })  : _loadCustomerBeneficiariesUseCase = loadCustomerBeneficiariesUseCase,
         super(
-          BeneficiariesState(customerID: customerID),
+          BeneficiariesState(
+            customerID: customerID,
+            listData: BeneficiaryListData(
+              ascendingOrder: ascendingOrder,
+            ),
+          ),
         );
 
   /// Loads a list of beneficiaries, optionally using
@@ -49,6 +55,7 @@ class BeneficiariesCubit extends Cubit<BeneficiariesState> {
         limit: limit,
         forceRefresh: forceRefresh,
         activeOnly: activeOnly,
+        ascendingOrder: state.listData.ascendingOrder,
       );
 
       final list = offset > 0
