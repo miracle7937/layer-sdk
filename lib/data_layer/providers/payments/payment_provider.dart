@@ -73,4 +73,23 @@ class PaymentProvider {
       List.from(response.data),
     );
   }
+
+  /// Resends a second factor
+  Future<PaymentDTO> resendSecondFactor({
+    required PaymentDTO payment,
+  }) async {
+    final requestParams = {
+      "resend_otp": true,
+    };
+
+    final response = await netClient.request(
+      netClient.netEndpoints.paymentV2,
+      method: NetRequestMethods.post,
+      data: payment.toJson(),
+      forceRefresh: true,
+      queryParameters: requestParams,
+    );
+
+    return PaymentDTO.fromJson(response.data);
+  }
 }

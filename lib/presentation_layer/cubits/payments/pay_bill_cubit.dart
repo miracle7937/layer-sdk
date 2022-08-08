@@ -11,6 +11,7 @@ import '../../../domain_layer/use_cases/payments/generate_device_uid_use_case.da
 import '../../../domain_layer/use_cases/payments/load_billers_use_case.dart';
 import '../../../domain_layer/use_cases/payments/load_services_use_case.dart';
 import '../../../domain_layer/use_cases/payments/post_payment_use_case.dart';
+import '../../../domain_layer/use_cases/payments/resend_payment_otp_use_case.dart';
 import '../../../domain_layer/use_cases/payments/validate_bill_use_case.dart';
 import '../../../domain_layer/use_cases/shortcut/create_shortcut_use_case.dart';
 import 'pay_bill_state.dart';
@@ -24,6 +25,7 @@ class PayBillCubit extends Cubit<PayBillState> {
   final GenerateDeviceUIDUseCase _generateDeviceUIDUseCase;
   final ValidateBillUseCase _validateBillUseCase;
   final CreateShortcutUseCase _createShortcutUseCase;
+  final ResendOTPPaymentUseCase _resendOTPUseCase;
 
   /// The biller id to pay for, if provided the biller will be pre-selected
   /// when the cubit loads.
@@ -41,6 +43,7 @@ class PayBillCubit extends Cubit<PayBillState> {
     required GenerateDeviceUIDUseCase generateDeviceUIDUseCase,
     required ValidateBillUseCase validateBillUseCase,
     required CreateShortcutUseCase createShortcutUseCase,
+    required ResendOTPPaymentUseCase resendPaymentOTPUseCase,
     this.billerId,
     this.paymentToRepeat,
   })  : _loadBillersUseCase = loadBillersUseCase,
@@ -50,6 +53,7 @@ class PayBillCubit extends Cubit<PayBillState> {
         _generateDeviceUIDUseCase = generateDeviceUIDUseCase,
         _validateBillUseCase = validateBillUseCase,
         _createShortcutUseCase = createShortcutUseCase,
+        _resendOTPUseCase = resendPaymentOTPUseCase,
         super(PayBillState());
 
   /// Loads all the required data, must be called at lease once before anything
@@ -189,6 +193,35 @@ class PayBillCubit extends Cubit<PayBillState> {
 
       return res;
     } on Exception catch (_) {
+      emit(
+        state.copyWith(
+          busy: false,
+        ),
+      );
+      rethrow;
+    }
+  }
+
+  /// Resend an OTP request
+  Future<void> resendOTP() async {
+    try {
+      emit(
+        state.copyWith(
+          busy: true,
+          deviceUID: _generateDeviceUIDUseCase(30),
+        ),
+      );
+
+      await _resendOTPUseCase(
+        state.payment,
+      );
+
+      emit(
+        state.copyWith(
+          busy: false,
+        ),
+      );
+    } on Exception catch (e) {
       emit(
         state.copyWith(
           busy: false,

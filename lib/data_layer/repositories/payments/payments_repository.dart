@@ -45,4 +45,15 @@ class PaymentRepository implements PaymentsRepositoryInterface {
 
     return paymentDTO.toPayment();
   }
+
+  @override
+  Future<Payment> resendSecondFactor({
+    required Payment payment,
+  }) async {
+    final paymentDTO = await _provider.resendSecondFactor(
+      payment: payment.toPaymentDTO(),
+    );
+
+    return paymentDTO.toPayment();
+  }
 }
