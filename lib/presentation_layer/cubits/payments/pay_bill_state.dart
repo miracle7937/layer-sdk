@@ -23,12 +23,6 @@ enum PayBillBusyAction {
 
   /// Validating user input
   validating,
-
-  /// Loading image
-  loadingImage,
-
-  /// Loading pdf
-  loadingPDF,
 }
 
 /// The available error status

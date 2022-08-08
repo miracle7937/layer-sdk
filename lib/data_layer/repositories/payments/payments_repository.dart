@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import '../../../domain_layer/abstract_repositories.dart';
 import '../../../domain_layer/models.dart';
 import '../../mappings.dart';
@@ -46,13 +44,5 @@ class PaymentRepository implements PaymentsRepositoryInterface {
     );
 
     return paymentDTO.toPayment();
-  }
-
-  /// Fetches info file
-  @override
-  Future<Uint8List> fetchRenderedFile({
-    required int paymentID,
-  }) {
-    return _provider.fetchRenderedFile(paymentID: paymentID);
   }
 }

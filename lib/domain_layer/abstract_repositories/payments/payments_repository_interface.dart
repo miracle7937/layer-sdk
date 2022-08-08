@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import '../../models.dart';
 
 /// Abstract definition of the repository that handles all the payments data.
@@ -20,7 +18,4 @@ abstract class PaymentsRepositoryInterface {
     required Payment payment,
     String? otp,
   });
-
-  /// Fetch info files
-  Future<Uint8List> fetchRenderedFile({required int paymentID});
 }
