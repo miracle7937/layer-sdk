@@ -56,10 +56,10 @@ extension TransferToDTOMapping on Transfer {
   NewTransferPayloadDTO toTransferShortcutPayloadDTO() {
     return NewTransferPayloadDTO(
       transferId: id,
-      fromAccountId: fromAccount!.id,
-      toAccountId: toAccount!.id,
-      amount: amount!,
-      currencyCode: currency!,
+      fromAccountId: fromAccount?.id,
+      toAccountId: toAccount?.id,
+      amount: amount ?? 0.0,
+      currencyCode: currency ?? '',
       type: type!.toTransferTypeDTO(),
       recurrence: recurrence.toRecurrenceDTO(),
       fromMobile: fromMobile,

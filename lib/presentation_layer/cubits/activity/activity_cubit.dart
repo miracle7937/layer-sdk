@@ -107,9 +107,9 @@ class ActivityCubit extends Cubit<ActivityState> {
       );
 
   /// Save the shortcut name
-  void onShortCutNameChanged(String shorCutName) => emit(
+  void onShortcutNameChanged(String shorcutName) => emit(
         state.copyWith(
-          shorCutName: shorCutName,
+          shorcutName: shorcutName,
         ),
       );
 }
