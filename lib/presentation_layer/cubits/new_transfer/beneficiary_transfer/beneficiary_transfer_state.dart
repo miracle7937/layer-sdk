@@ -88,6 +88,9 @@ enum BeneficiaryTransferErrorStatus {
 
   /// Invalid IBAN.
   invalidIBAN,
+
+  /// Incorrect OTP code.
+  incorrectOTPCode,
 }
 
 /// The state for the [BeneficiaryTransferCubit].

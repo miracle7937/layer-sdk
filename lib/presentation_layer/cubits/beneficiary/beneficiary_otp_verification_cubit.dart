@@ -56,6 +56,7 @@ class BeneficiaryOtpVerificationCubit
         state.copyWith(
           beneficiary: beneficiary,
           actions: _removeAction(BeneficiaryOtpVerificationAction.verifyOtp),
+          isVerified: true,
         ),
       );
     } on Exception catch (e) {
@@ -65,7 +66,9 @@ class BeneficiaryOtpVerificationCubit
           errors: _addError(
             action: BeneficiaryOtpVerificationAction.verifyOtp,
             errorStatus: e is NetException
-                ? BeneficiaryOtpVerificationErrorStatus.network
+                ? e.code == 'incorrect_value'
+                    ? BeneficiaryOtpVerificationErrorStatus.incorrectOTPCode
+                    : BeneficiaryOtpVerificationErrorStatus.network
                 : BeneficiaryOtpVerificationErrorStatus.generic,
             code: e is NetException ? e.code : null,
             message: e is NetException ? e.message : null,
