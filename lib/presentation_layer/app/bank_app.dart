@@ -466,7 +466,8 @@ class BankAppState extends State<BankApp> {
           );
 
           if (widget.appConfiguration.designAware) {
-            // Conditional needed to not overwrite the default [DesignAware] sizes
+            // Conditional needed to not overwrite the default
+            // [DesignAware] sizes
             app = widget.designAvailableSizes.isEmpty
                 ? DesignAware(child: app)
                 : DesignAware(
