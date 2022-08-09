@@ -319,4 +319,7 @@ class NetEndpoints {
 
   /// Endpoint for deleting a request
   String get request => '$_customer/v1/request';
+
+  /// Endpoint for the customer limits
+  String get customerLimits => '$_txnBanking/v2/customer_limit';
 }

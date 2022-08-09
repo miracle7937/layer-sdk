@@ -34,6 +34,7 @@ export 'models/currency/currency.dart';
 export 'models/customer/cpr.dart';
 export 'models/customer/customer.dart';
 export 'models/customer/customer_company.dart';
+export 'models/customer/customer_limit.dart';
 export 'models/customer/customer_sort_filters.dart';
 export 'models/customer/employment_details.dart';
 export 'models/customer/iqama.dart';
