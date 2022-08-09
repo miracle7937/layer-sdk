@@ -15,6 +15,8 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
   final LoadAllCurrenciesUseCase _loadAllCurrenciesUseCase;
   final SubmitTransferUseCase _submitTransferUseCase;
   final CreateShortcutUseCase _createShortcutUseCase;
+  final GetPreselectedAccountForOwnTransferUseCase
+      _getPreselectedAccountForOwnTransferUseCase;
 
   /// Creates new [OwnTransferCubit].
   OwnTransferCubit({
@@ -26,6 +28,8 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
     required LoadAllCurrenciesUseCase loadAllCurrenciesUseCase,
     required SubmitTransferUseCase submitTransferUseCase,
     required CreateShortcutUseCase createShortcutUseCase,
+    required GetPreselectedAccountForOwnTransferUseCase
+        getPreselectedAccountForOwnTransferUseCase,
   })  : _getSourceAccountsForOwnTransferUseCase =
             getSourceAccountsForOwnTransferUseCase,
         _getDestinationAccountsForOwnTransferUseCase =
@@ -33,6 +37,8 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
         _loadAllCurrenciesUseCase = loadAllCurrenciesUseCase,
         _submitTransferUseCase = submitTransferUseCase,
         _createShortcutUseCase = createShortcutUseCase,
+        _getPreselectedAccountForOwnTransferUseCase =
+            getPreselectedAccountForOwnTransferUseCase,
         super(OwnTransferState(transfer: transfer ?? OwnTransfer()));
 
   /// Fetches all the data necessary to start the flow.
@@ -57,11 +63,10 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
       final fromAccounts = results[0];
       final toAccounts = results[1];
       final currencies = results[2];
-      var preselectedAccount;
-      if (fromAccounts.isNotEmpty) {
-        preselectedAccount =
-            GetPreselectedAccountForOwnTransferUseCase(fromAccounts).call();
-      }
+      final preselectedAccount = fromAccounts.isNotEmpty
+          ? _getPreselectedAccountForOwnTransferUseCase(fromAccounts)
+          : null;
+
       emit(state.copyWith(
         fromAccounts: fromAccounts,
         toAccounts: toAccounts,
