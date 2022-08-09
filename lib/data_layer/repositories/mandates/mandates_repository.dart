@@ -1,5 +1,5 @@
 import '../../../domain_layer/abstract_repositories.dart';
-import '../../../domain_layer/models/mandates/mandate.dart';
+import '../../../domain_layer/models.dart';
 import '../../mappings.dart';
 import '../../providers.dart';
 
@@ -24,5 +24,20 @@ class MandatesRepository implements MandateRepositoryInterface {
     );
 
     return mandates.map((m) => m.toMandate()).toList(growable: false);
+  }
+
+  @override
+  Future<SecondFactorType?> cancelMandate({
+    required int mandateId,
+    String? otpValue,
+    SecondFactorType? otpType,
+  }) async {
+    final result = await _provider.cancelMandate(
+      mandateId: mandateId,
+      otpValue: otpValue,
+      otpType: otpType?.toSecondFactorTypeDTO(),
+    );
+
+    return result?.toSecondFactorType();
   }
 }

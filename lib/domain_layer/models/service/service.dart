@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+import '../payment/biller.dart';
 import 'service_field.dart';
 
 /// Keeps the data of a service
@@ -9,6 +10,9 @@ class Service extends Equatable {
 
   /// The biller id linked to this service
   final String? billerId;
+
+  /// The biller linked to this service
+  final Biller? biller;
 
   /// The name of the service
   final String? name;
@@ -35,6 +39,7 @@ class Service extends Equatable {
   Service({
     this.serviceId,
     this.billerId,
+    this.biller,
     this.name,
     this.billingIdTag,
     this.billingIdTagHelp,
@@ -48,6 +53,7 @@ class Service extends Equatable {
   List<Object?> get props => [
         serviceId,
         billerId,
+        biller,
         name,
         billingIdTag,
         billingIdTagHelp,
@@ -61,6 +67,7 @@ class Service extends Equatable {
   Service copyWith({
     int? serviceId,
     String? billerId,
+    Biller? biller,
     String? name,
     String? billingIdTag,
     String? billingIdTagHelp,
@@ -72,6 +79,7 @@ class Service extends Equatable {
       Service(
         serviceId: serviceId ?? this.serviceId,
         billerId: billerId ?? this.billerId,
+        biller: biller ?? this.biller,
         name: name ?? this.name,
         billingIdTag: billingIdTag ?? this.billingIdTag,
         billingIdTagHelp: billingIdTagHelp ?? this.billingIdTagHelp,

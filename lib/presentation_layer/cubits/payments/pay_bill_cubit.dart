@@ -3,16 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../data_layer/mappings/payment/biller_dto_mapping.dart';
 import '../../../data_layer/network/net_exceptions.dart';
-import '../../../domain_layer/models/account/account.dart';
-import '../../../domain_layer/models/bill/bill.dart';
+import '../../../domain_layer/models.dart';
 import '../../../domain_layer/models/payment/biller.dart';
-import '../../../domain_layer/models/payment/payment.dart';
 import '../../../domain_layer/models/service/service_field.dart';
 import '../../../domain_layer/use_cases/account/get_accounts_by_status_use_case.dart';
 import '../../../domain_layer/use_cases/payments/generate_device_uid_use_case.dart';
 import '../../../domain_layer/use_cases/payments/load_billers_use_case.dart';
 import '../../../domain_layer/use_cases/payments/load_services_use_case.dart';
 import '../../../domain_layer/use_cases/payments/post_payment_use_case.dart';
+import '../../../domain_layer/use_cases/payments/validate_bill_use_case.dart';
+import '../../../domain_layer/use_cases/shortcut/create_shortcut_use_case.dart';
 import 'pay_bill_state.dart';
 
 /// A cubit for paying customer bills.
@@ -22,10 +22,15 @@ class PayBillCubit extends Cubit<PayBillState> {
   final GetAccountsByStatusUseCase _getCustomerAccountsUseCase;
   final PostPaymentUseCase _postPaymentUseCase;
   final GenerateDeviceUIDUseCase _generateDeviceUIDUseCase;
+  final ValidateBillUseCase _validateBillUseCase;
+  final CreateShortcutUseCase _createShortcutUseCase;
 
   /// The biller id to pay for, if provided the biller will be pre-selected
   /// when the cubit loads.
   final String? billerId;
+
+  /// A payment to repeat
+  final Payment? paymentToRepeat;
 
   /// Creates a new cubit
   PayBillCubit({
@@ -34,12 +39,17 @@ class PayBillCubit extends Cubit<PayBillState> {
     required GetAccountsByStatusUseCase getCustomerAccountsUseCase,
     required PostPaymentUseCase postPaymentUseCase,
     required GenerateDeviceUIDUseCase generateDeviceUIDUseCase,
+    required ValidateBillUseCase validateBillUseCase,
+    required CreateShortcutUseCase createShortcutUseCase,
     this.billerId,
+    this.paymentToRepeat,
   })  : _loadBillersUseCase = loadBillersUseCase,
         _loadServicesUseCase = loadServicesUseCase,
         _getCustomerAccountsUseCase = getCustomerAccountsUseCase,
         _postPaymentUseCase = postPaymentUseCase,
         _generateDeviceUIDUseCase = generateDeviceUIDUseCase,
+        _validateBillUseCase = validateBillUseCase,
+        _createShortcutUseCase = createShortcutUseCase,
         super(PayBillState());
 
   /// Loads all the required data, must be called at lease once before anything
@@ -76,7 +86,23 @@ class PayBillCubit extends Cubit<PayBillState> {
         ),
       );
 
-      if (billerId?.isNotEmpty ?? false) {
+      if (paymentToRepeat != null) {
+        if (paymentToRepeat!.bill?.service?.billerId != null) {
+          final biller = billers.firstWhereOrNull((element) =>
+              element.id == paymentToRepeat!.bill?.service?.billerId);
+          if (biller != null) {
+            setFromAccount(paymentToRepeat!.fromAccount?.id);
+            setAmount(paymentToRepeat!.amount ?? 0.0);
+            setCatogery(biller.category.categoryCode);
+            await setBiller(biller.id);
+            setService(paymentToRepeat!.bill?.service?.serviceId);
+            _setServiceFieldsValue(
+              serviceFields: paymentToRepeat!.bill?.billingFields,
+            );
+            // TODO: set recurrence
+          }
+        }
+      } else if (billerId?.isNotEmpty ?? false) {
         final biller =
             billers.firstWhereOrNull((element) => element.id == billerId);
         if (biller != null) {
@@ -96,35 +122,67 @@ class PayBillCubit extends Cubit<PayBillState> {
     }
   }
 
-  /// Submits the payment
-  Future<Payment> submit() async {
+  /// Validates user input and returns the bill object
+  Future<Bill> validateBill() async {
     try {
       emit(
         state.copyWith(
           busy: true,
-          busyAction: PayBillBusyAction.submitting,
+          busyAction: PayBillBusyAction.validating,
+        ),
+      );
+      final validatedBill = await _validateBillUseCase(bill: state.bill);
+      emit(
+        state.copyWith(
+          busy: false,
+          validatedBill: validatedBill,
+        ),
+      );
+      return validatedBill;
+    } on Exception catch (_) {
+      emit(
+        state.copyWith(
+          busy: false,
+        ),
+      );
+
+      rethrow;
+    }
+  }
+
+  /// Submits the payment
+  Future<Payment> submit({
+    String? otp,
+    Payment? payment,
+  }) async {
+    try {
+      emit(
+        state.copyWith(
+          busy: true,
+          busyAction: otp != null
+              ? PayBillBusyAction.validatingSecondFactor
+              : PayBillBusyAction.submitting,
           deviceUID: _generateDeviceUIDUseCase(30),
         ),
       );
 
-      final _payment = state.payment.copyWith(
-        fromAccount: state.selectedAccount,
-        bill: Bill(
-          nickname: state.selectedBiller!.name,
-          service: state.selectedService,
-          amount: state.payment.amount,
-          billStatus: BillStatus.active,
-          billingFields: state.serviceFields,
-        ),
-        currency: state.selectedAccount?.currency,
-        status: PaymentStatus.completed,
-        deviceUID: state.deviceUID,
+      final res = await _postPaymentUseCase.pay(
+        payment ?? state.payment,
+        otp: otp,
       );
-      final res = await _postPaymentUseCase.pay(_payment);
+
+      if ((state.saveToShortcut) &&
+          ([
+            PaymentStatus.completed,
+            PaymentStatus.pending,
+            PaymentStatus.scheduled,
+            PaymentStatus.pendingBank,
+          ].contains(res.status))) {
+        await _createShortcut(res);
+      }
 
       emit(
         state.copyWith(
-          payment: res,
           busy: false,
         ),
       );
@@ -140,6 +198,23 @@ class PayBillCubit extends Cubit<PayBillState> {
     }
   }
 
+  /// Creates the shortcut (if enabled) once the bill payment has succeeded.
+  Future<void> _createShortcut(
+    Payment payment,
+  ) async {
+    try {
+      await _createShortcutUseCase(
+        shortcut: NewShortcut(
+          name: state.shortcutName!,
+          type: ShortcutType.payment,
+          payload: state.payment,
+        ),
+      );
+    } on Exception catch (_) {
+      // TODO: handle shortcut error without affecting the payment
+    }
+  }
+
   /// Set's the selected category to the one matching the provided category
   /// code.
   void setCatogery(String categoryCode) {
@@ -152,10 +227,30 @@ class PayBillCubit extends Cubit<PayBillState> {
     );
   }
 
+  /// Set's save to shortcuts bool
+  void setSaveToShortcut({
+    required bool saveToShortcuts,
+  }) {
+    emit(
+      state.copyWith(
+        saveToShortcut: saveToShortcuts,
+      ),
+    );
+  }
+
+  /// Set's the shortcut name
+  void setShortcutName(String shortcutName) {
+    emit(
+      state.copyWith(
+        shortcutName: shortcutName,
+      ),
+    );
+  }
+
   /// Set's the selected biller to the one matching the provided biller id.
   ///
   /// This will trigger a request to fetch the services for the selected biller.
-  void setBiller(String billerId) async {
+  Future<void> setBiller(String billerId) async {
     final biller =
         state.billers.firstWhereOrNull((element) => element.id == billerId);
     if (biller == null) return;
@@ -172,11 +267,17 @@ class PayBillCubit extends Cubit<PayBillState> {
         billerId: billerId,
         sortByName: true,
       );
+
       emit(
         state.copyWith(
           services: services,
           selectedService: services.firstOrNull,
           serviceFields: services.firstOrNull?.serviceFields,
+        ),
+      );
+
+      emit(
+        state.copyWith(
           busy: false,
         ),
       );
@@ -208,10 +309,8 @@ class PayBillCubit extends Cubit<PayBillState> {
   void setAmount(double amount) {
     emit(
       state.copyWith(
-          payment: state.payment.copyWith(
         amount: amount,
-        forceCopyAmount: true,
-      )),
+      ),
     );
   }
 
@@ -226,6 +325,17 @@ class PayBillCubit extends Cubit<PayBillState> {
         serviceFields: service?.serviceFields ?? [],
       ),
     );
+  }
+
+  /// Loops over the service fields and sets their values
+  void _setServiceFieldsValue({List<ServiceField>? serviceFields}) {
+    if (serviceFields?.isEmpty ?? true) return;
+    for (var i = 0; i < serviceFields!.length; i++) {
+      setServiceFieldValue(
+        id: serviceFields[i].fieldId,
+        value: serviceFields[i].value ?? "",
+      );
+    }
   }
 
   /// Sets the provided value for the service field matching the provided id
@@ -244,6 +354,15 @@ class PayBillCubit extends Cubit<PayBillState> {
     }
     emit(
       state.copyWith(serviceFields: newFields),
+    );
+  }
+
+  /// Set the payments scheduling details
+  void setScheduleDetails({required ScheduleDetails scheduleDetails}) {
+    emit(
+      state.copyWith(
+        scheduleDetails: scheduleDetails,
+      ),
     );
   }
 }

@@ -13,6 +13,7 @@ class NetEndpoints {
   static const String _integration = '/integration';
   static const String _loyaltyEngine = '/loyalty-engine';
   static const String _engagement = '/engagement';
+  static const String _renderingEngine = '/rendering-engine';
   static const String _stripe = '/stripe-gateway';
 
   /// The login endpoint
@@ -136,8 +137,14 @@ class NetEndpoints {
   /// The beneficiaries endpoint
   String get beneficiary => '$_txnBanking/v1/beneficiary';
 
+  /// The beneficiaries endpoint
+  String get beneficiary2 => '$_txnBanking/v2/beneficiary';
+
   /// The bill endpoint
   String get bill => '$_payment/v1/bill';
+
+  /// The validate bill endpoint
+  String get validateBill => '$bill/validate';
 
   /// The countries endpoint
   String get country => '$_infoBanking/v1/country';
@@ -283,6 +290,9 @@ class NetEndpoints {
   /// Endpoint for getting customer checkbooks
   String get checkbooks => '$_infoBanking/v1/checkbook';
 
+  /// Endpoint for getting html/image/pdf rendered on server
+  String get moreInfo => '$_renderingEngine/v1/render/more_info';
+
   /// Endpoint for getting Mandate payments
   String get mandatePayments => '$_txnBanking/v1/mandate_payment';
 
@@ -298,9 +308,15 @@ class NetEndpoints {
   /// Endpoint for getting the banks.
   String get bank => '$_infoBanking/v1/bank';
 
+  /// Endpoint for creating a shortcut.
+  String get shortcut => '$_customer/v1/shortcut';
+
   /// Endpoint for evaluating a transfer.
   String get evaluateTransfer => '$_txnBanking/v1/transfer/evaluate';
 
   /// Endpoint for submitting a transfer.
   String get submitTransfer => '$_txnBanking/v2/transfer';
+
+  /// Endpoint for deleting a request
+  String get request => '$_customer/v1/request';
 }

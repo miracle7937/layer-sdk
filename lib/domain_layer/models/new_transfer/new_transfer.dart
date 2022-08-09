@@ -20,6 +20,16 @@ abstract class NewTransfer extends Equatable {
   /// The destination.
   final NewTransferDestination? destination;
 
+  /// Whether if the transfer should be saved to a shortcut.
+  /// Default is `false`
+  final bool saveToShortcut;
+
+  /// The shortcut name.
+  final String? shortcutName;
+
+  /// The note for the new transfer.
+  final String? note;
+
   /// Creates a new [NewTransfer].
   NewTransfer({
     this.type,
@@ -27,6 +37,9 @@ abstract class NewTransfer extends Equatable {
     this.amount,
     this.currency,
     this.destination,
+    this.saveToShortcut = false,
+    this.shortcutName,
+    this.note,
   });
 
   /// Creates a new [NewTransfer] with the passed values.

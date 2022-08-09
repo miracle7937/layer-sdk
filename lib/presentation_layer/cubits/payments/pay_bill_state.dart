@@ -1,10 +1,8 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../domain_layer/models/account/account.dart';
+import '../../../domain_layer/models.dart';
 import '../../../domain_layer/models/payment/biller.dart';
 import '../../../domain_layer/models/payment/biller_category.dart';
-import '../../../domain_layer/models/payment/payment.dart';
-import '../../../domain_layer/models/service/service.dart';
 import '../../../domain_layer/models/service/service_field.dart';
 
 /// Which loading action the cubit is doing
@@ -17,6 +15,12 @@ enum PayBillBusyAction {
 
   /// Submitting the payment
   submitting,
+
+  /// Validating second factory
+  validatingSecondFactor,
+
+  /// Validating user input
+  validating,
 }
 
 /// The available error status
@@ -33,8 +37,8 @@ enum PayBillErrorStatus {
 
 /// The state of the bill payment cubit
 class PayBillState extends Equatable {
-  /// The payment to be paid.
-  final Payment payment;
+  /// The amount to be paid
+  final double amount;
 
   /// A list of accounts that the user has to select from in order to pay.
   final List<Account> fromAccounts;
@@ -66,19 +70,6 @@ class PayBillState extends Equatable {
   /// Contains all the billers coming from the BE
   final List<Biller> _billers;
 
-  /// A list of billers that the user has to select from in order to pay.
-  List<Biller> get billers {
-    /// The user has to select a category in order to filter the billers.
-    if (selectedCategory == null) return [];
-
-    /// Return the billers that have the same category as
-    /// the selected category.
-    return _billers
-        .where((element) =>
-            element.category.categoryCode == selectedCategory!.categoryCode)
-        .toList(growable: false);
-  }
-
   /// A list of biller services that the user has to select from in order
   /// to pay.
   final List<Service> services;
@@ -89,30 +80,22 @@ class PayBillState extends Equatable {
   /// The service fields to display and input
   final List<ServiceField> serviceFields;
 
-  /// Wether the user can subit the form or not
-  bool get canSubmit =>
-      !busy &&
-      selectedAccount != null &&
-      selectedCategory != null &&
-      selectedBiller != null &&
-      selectedService != null &&
-      payment.amount != null &&
-      payment.amount! > 0 &&
-      _serviceFieldsValid;
+  /// The validated bill
+  final Bill? validatedBill;
 
-  bool get _serviceFieldsValid {
-    for (var i = 0; i < serviceFields.length; i++) {
-      final field = serviceFields[i];
-      if (field.required && (field.value?.isEmpty ?? true)) {
-        return false;
-      }
-    }
-    return true;
-  }
+  /// The details about scheduled payments
+  final ScheduleDetails? scheduleDetails;
+
+  /// Whether if the payment should be saved to a shortcut.
+  /// Default is `false`
+  final bool saveToShortcut;
+
+  /// The shortcut name.
+  final String? shortcutName;
 
   /// Creates a new state.
   PayBillState({
-    this.payment = const Payment(),
+    this.amount = 0,
     this.fromAccounts = const [],
     this.selectedAccount,
     this.deviceUID,
@@ -126,11 +109,15 @@ class PayBillState extends Equatable {
     this.services = const [],
     this.selectedService,
     this.serviceFields = const [],
+    this.validatedBill,
+    this.scheduleDetails,
+    this.saveToShortcut = false,
+    this.shortcutName,
   }) : _billers = billers;
 
   @override
   List<Object?> get props => [
-        payment,
+        amount,
         fromAccounts,
         selectedAccount,
         deviceUID,
@@ -144,11 +131,17 @@ class PayBillState extends Equatable {
         services,
         selectedService,
         serviceFields,
+        validatedBill,
+        payment,
+        bill,
+        scheduleDetails,
+        saveToShortcut,
+        shortcutName,
       ];
 
   /// Creates a new state based on this one.
   PayBillState copyWith({
-    Payment? payment,
+    double? amount,
     List<Account>? fromAccounts,
     Account? selectedAccount,
     String? deviceUID,
@@ -162,9 +155,13 @@ class PayBillState extends Equatable {
     List<Service>? services,
     Service? selectedService,
     List<ServiceField>? serviceFields,
+    Bill? validatedBill,
+    ScheduleDetails? scheduleDetails,
+    bool? saveToShortcut,
+    String? shortcutName,
   }) {
     return PayBillState(
-      payment: payment ?? this.payment,
+      amount: amount ?? this.amount,
       fromAccounts: fromAccounts ?? this.fromAccounts,
       selectedAccount: selectedAccount ?? this.selectedAccount,
       deviceUID: deviceUID ?? this.deviceUID,
@@ -178,6 +175,90 @@ class PayBillState extends Equatable {
       services: services ?? this.services,
       selectedService: selectedService ?? this.selectedService,
       serviceFields: serviceFields ?? this.serviceFields,
+      validatedBill: validatedBill ?? this.validatedBill,
+      scheduleDetails: scheduleDetails ?? this.scheduleDetails,
+      saveToShortcut: saveToShortcut ?? this.saveToShortcut,
+      shortcutName: !(saveToShortcut ?? this.saveToShortcut)
+          ? null
+          : (shortcutName ?? this.shortcutName),
     );
   }
+
+  /// A list of billers that the user has to select from in order to pay.
+  List<Biller> get billers {
+    /// The user has to select a category in order to filter the billers.
+    if (selectedCategory == null) return [];
+
+    /// Return the billers that have the same category as
+    /// the selected category.
+    return _billers
+        .where((element) =>
+            element.category.categoryCode == selectedCategory!.categoryCode)
+        .toList(growable: false);
+  }
+
+  /// Wether the user can subit the form or not
+  bool get canSubmit =>
+      !busy &&
+      selectedAccount != null &&
+      selectedCategory != null &&
+      selectedBiller != null &&
+      selectedService != null &&
+      amount > 0 &&
+      _serviceFieldsValid &&
+      (!saveToShortcut || (shortcutName?.isNotEmpty ?? false)) &&
+      (scheduleDetails?.recurrence == null ||
+          scheduleDetails?.recurrence == Recurrence.none ||
+          scheduleDetails?.startDate != null);
+
+  bool get _serviceFieldsValid {
+    for (var i = 0; i < serviceFields.length; i++) {
+      final field = serviceFields[i];
+      if (field.required && (field.value?.isEmpty ?? true)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  bool get _schedueled => scheduleDetails?.recurrence == Recurrence.once;
+  bool get _recurring => ![
+        Recurrence.once,
+        Recurrence.none,
+        null,
+      ].contains(scheduleDetails?.recurrence);
+
+  DateTime? get _recurrenceStart =>
+      _recurring ? scheduleDetails?.startDate : null;
+
+  DateTime? get _recurrenceEnd => _recurring ? scheduleDetails?.endDate : null;
+
+  DateTime? get _scheduledDate =>
+      _schedueled ? scheduleDetails?.startDate : null;
+
+  /// The bill to be paid
+  Bill get bill => Bill(
+        // TODO: Change this to set nickname from app
+        nickname: "${selectedBiller?.name} $deviceUID",
+        service: selectedService,
+        amount: amount,
+        billStatus: BillStatus.active,
+        billingFields: serviceFields,
+        visible: false,
+      );
+
+  /// The payment to be made
+  Payment get payment => Payment(
+        fromAccount: selectedAccount,
+        bill: bill,
+        amount: amount,
+        currency: selectedAccount?.currency ?? '',
+        deviceUID: deviceUID,
+        status: PaymentStatus.completed,
+        recurrence: scheduleDetails?.recurrence ?? Recurrence.none,
+        scheduled: _scheduledDate,
+        recurrenceStart: _recurrenceStart,
+        recurrenceEnd: _recurrenceEnd,
+        recurring: _recurring,
+      );
 }

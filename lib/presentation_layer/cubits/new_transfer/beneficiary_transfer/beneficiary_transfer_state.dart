@@ -1,7 +1,9 @@
 import 'dart:collection';
 
 import 'package:equatable/equatable.dart';
+
 import '../../../../domain_layer/models.dart';
+import '../../../utils.dart';
 
 /// Model used for the errors.
 class BeneficiaryTransferError extends Equatable {
@@ -68,6 +70,9 @@ enum BeneficiaryTransferAction {
 
   /// The second factor is being resent.
   resendSecondFactor,
+
+  /// The shortcut is being created.
+  shortcut,
 }
 
 /// The available error status.
@@ -83,6 +88,9 @@ enum BeneficiaryTransferErrorStatus {
 
   /// Invalid IBAN.
   invalidIBAN,
+
+  /// Incorrect OTP code.
+  incorrectOTPCode,
 }
 
 /// The state for the [BeneficiaryTransferCubit].
@@ -117,11 +125,17 @@ class BeneficiaryTransferState extends Equatable {
   /// List of banks for the new beneficiary.
   final UnmodifiableListView<Bank> banks;
 
+  /// Has all the data needed to handle the list of activities.
+  final Pagination banksPagination;
+
   /// The transfer evaluation.
   final TransferEvaluation? evaluation;
 
   /// The transfer object returned by the transfer submission.
   final Transfer? transferResult;
+
+  /// The bank query for filtering the banks.
+  final String? bankQuery;
 
   /// Creates a new [BeneficiaryTransferState].
   BeneficiaryTransferState({
@@ -136,8 +150,10 @@ class BeneficiaryTransferState extends Equatable {
     Iterable<Beneficiary> beneficiaries = const <Beneficiary>[],
     Iterable<Message> reasons = const <Message>[],
     Iterable<Bank> banks = const <Bank>[],
+    this.banksPagination = const Pagination(),
     this.evaluation,
     this.transferResult,
+    this.bankQuery,
   })  : actions = UnmodifiableSetView(actions),
         errors = UnmodifiableSetView(errors),
         beneficiarySettings = UnmodifiableListView(beneficiarySettings),
@@ -177,8 +193,10 @@ class BeneficiaryTransferState extends Equatable {
     Iterable<Beneficiary>? beneficiaries,
     Iterable<Message>? reasons,
     Iterable<Bank>? banks,
+    Pagination? banksPagination,
     TransferEvaluation? evaluation,
     Transfer? transferResult,
+    String? bankQuery,
   }) =>
       BeneficiaryTransferState(
         transfer: transfer ?? this.transfer,
@@ -191,8 +209,10 @@ class BeneficiaryTransferState extends Equatable {
         beneficiaries: beneficiaries ?? this.beneficiaries,
         reasons: reasons ?? this.reasons,
         banks: banks ?? this.banks,
+        banksPagination: banksPagination ?? this.banksPagination,
         evaluation: evaluation ?? this.evaluation,
         transferResult: transferResult ?? this.transferResult,
+        bankQuery: bankQuery ?? this.bankQuery,
       );
 
   @override
@@ -207,7 +227,9 @@ class BeneficiaryTransferState extends Equatable {
         beneficiaries,
         reasons,
         banks,
+        banksPagination,
         evaluation,
         transferResult,
+        bankQuery,
       ];
 }

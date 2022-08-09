@@ -5,6 +5,7 @@ import '../../../../data_layer/network.dart';
 import '../../../../domain_layer/models.dart';
 import '../../../../domain_layer/use_cases.dart';
 import '../../../cubits.dart';
+import '../../../utils.dart';
 
 /// A Cubit that handles the state for the beneficiary transfer flow.
 class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
@@ -22,6 +23,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
   final SubmitTransferUseCase _submitTransferUseCase;
   final VerifyTransferSecondFactorUseCase _verifyTransferSecondFactorUseCase;
   final ResendTransferSecondFactorUseCase _resendTransferSecondFactorUseCase;
+  final CreateShortcutUseCase _createShortcutUseCase;
 
   /// Creates a new [BeneficiaryTransferCubit].
   BeneficiaryTransferCubit({
@@ -42,6 +44,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         verifyTransferSecondFactorUseCase,
     required ResendTransferSecondFactorUseCase
         resendTransferSecondFactorUseCase,
+    required CreateShortcutUseCase createShortcutUseCase,
   })  : _loadGlobalSettingsUseCase = loadGlobalSettingsUseCase,
         _getSourceAccountsForBeneficiaryTransferUseCase =
             getSourceAccountsForBeneficiaryTransferUseCase,
@@ -56,9 +59,11 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         _submitTransferUseCase = submitTransferUseCase,
         _verifyTransferSecondFactorUseCase = verifyTransferSecondFactorUseCase,
         _resendTransferSecondFactorUseCase = resendTransferSecondFactorUseCase,
+        _createShortcutUseCase = createShortcutUseCase,
         super(
           BeneficiaryTransferState(
             transfer: transfer,
+            banksPagination: Pagination(limit: 20),
           ),
         );
 
@@ -349,25 +354,45 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
   /// Loads the banks for the passed country code.
   Future<void> loadBanks({
-    required String countryCode,
+    bool loadMore = false,
   }) async {
+    final countryCode = state.transfer.newBeneficiary?.country?.countryCode;
+    if (countryCode == null) {
+      return;
+    }
+
     emit(
       state.copyWith(
         actions: _addAction(BeneficiaryTransferAction.banks),
         errors: _removeError(BeneficiaryTransferAction.banks),
-        banks: {},
+        banks: loadMore ? state.banks : {},
       ),
     );
 
     try {
-      final banks = await _loadBanksByCountryCodeUseCase(
+      final newPage = state.banksPagination.paginate(loadMore: loadMore);
+
+      final resultList = await _loadBanksByCountryCodeUseCase(
         countryCode: countryCode,
+        limit: newPage.limit,
+        offset: newPage.offset,
+        query: state.bankQuery,
       );
+
+      final banks = newPage.firstPage
+          ? resultList
+          : [
+              ...state.banks,
+              ...resultList,
+            ];
 
       emit(
         state.copyWith(
           actions: _removeAction(BeneficiaryTransferAction.banks),
           banks: banks,
+          banksPagination: newPage.refreshCanLoadMore(
+            loadedCount: resultList.length,
+          ),
         ),
       );
     } on Exception catch (e) {
@@ -395,15 +420,17 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     Message? reason,
     DestinationBeneficiaryType? beneficiaryType,
     NewBeneficiary? newBeneficiary,
+    bool? saveToShortcut,
+    String? shortcutName,
+    String? note,
+    ScheduleDetails? scheduleDetails,
+    String? bankQuery,
   }) async {
     final sourceCurrency = state.currencies.firstWhereOrNull(
       (currency) => currency.code == state.transfer.source?.account?.currency,
     );
 
-    if (newBeneficiary?.country != null &&
-        newBeneficiary?.country != state.transfer.newBeneficiary?.country) {
-      loadBanks(countryCode: newBeneficiary!.country!.countryCode ?? '');
-    }
+    final currentCountry = state.transfer.newBeneficiary?.country;
 
     emit(
       state.copyWith(
@@ -424,9 +451,20 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
           reason: reason,
           beneficiaryType: beneficiaryType,
           newBeneficiary: newBeneficiary,
+          saveToShortcut: saveToShortcut,
+          shortcutName: shortcutName,
+          note: note,
+          scheduleDetails: scheduleDetails,
         ),
+        bankQuery: bankQuery,
       ),
     );
+
+    if (bankQuery != null ||
+        (newBeneficiary?.country != null &&
+            newBeneficiary?.country != currentCountry)) {
+      loadBanks();
+    }
   }
 
   /// Evaluates the transfer.
@@ -442,7 +480,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     final beneficiaryType = state.transfer.beneficiaryType;
     final shouldValidateIBAN =
         beneficiaryType == DestinationBeneficiaryType.newBeneficiary &&
-            state.transfer.newBeneficiary?.sortCode == null;
+            state.transfer.newBeneficiary?.routingCode == null;
     if (shouldValidateIBAN) {
       final isValid = _validateIBANUseCase(
         iban: state.transfer.newBeneficiary?.ibanOrAccountNO ?? '',
@@ -488,6 +526,8 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
             errorStatus: e is NetException
                 ? BeneficiaryTransferErrorStatus.network
                 : BeneficiaryTransferErrorStatus.generic,
+            code: e is NetException ? e.code : null,
+            message: e is NetException ? e.message : null,
           ),
         ),
       );
@@ -508,6 +548,15 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         transfer: state.transfer,
       );
 
+      if ([
+            TransferStatus.pending,
+            TransferStatus.completed,
+            TransferStatus.scheduled,
+          ].contains(transferResult.status) &&
+          state.transfer.saveToShortcut) {
+        await _createShortcut(transferResult);
+      }
+
       emit(
         state.copyWith(
           actions: _removeAction(BeneficiaryTransferAction.submit),
@@ -525,8 +574,12 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
                     ? BeneficiaryTransferErrorStatus.insufficientBalance
                     : BeneficiaryTransferErrorStatus.network
                 : BeneficiaryTransferErrorStatus.generic,
-            code: e is NetException ? e.code : null,
-            message: e is NetException ? e.message : e.toString(),
+            code: e is NetException
+                ? e.statusCode == null
+                    ? 'connectivity_error'
+                    : e.code
+                : null,
+            message: e is NetException ? e.message : null,
           ),
         ),
       );
@@ -553,6 +606,15 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
             state.transferResult?.secondFactorType ?? SecondFactorType.otp,
       );
 
+      if ([
+            TransferStatus.pending,
+            TransferStatus.completed,
+            TransferStatus.scheduled,
+          ].contains(transferResult.status) &&
+          state.transfer.saveToShortcut) {
+        await _createShortcut(transferResult);
+      }
+
       emit(
         state.copyWith(
           actions: _removeAction(BeneficiaryTransferAction.verifySecondFactor),
@@ -566,14 +628,16 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
           errors: _addError(
             action: BeneficiaryTransferAction.verifySecondFactor,
             errorStatus: e is NetException
-                ? BeneficiaryTransferErrorStatus.network
+                ? e.code == 'incorrect_value'
+                    ? BeneficiaryTransferErrorStatus.incorrectOTPCode
+                    : BeneficiaryTransferErrorStatus.network
                 : BeneficiaryTransferErrorStatus.generic,
             code: e is NetException
                 ? e.statusCode == null
                     ? 'connectivity_error'
                     : e.code
                 : null,
-            message: e is NetException ? e.message : e.toString(),
+            message: e is NetException ? e.message : null,
           ),
         ),
       );
@@ -615,7 +679,47 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
                     ? 'connectivity_error'
                     : e.code
                 : null,
-            message: e is NetException ? e.message : e.toString(),
+            message: e is NetException ? e.message : null,
+          ),
+        ),
+      );
+    }
+  }
+
+  /// Creates the shortcut (if enabled) once the transfer has succeded.
+  Future<void> _createShortcut(
+    Transfer transfer,
+  ) async {
+    emit(
+      state.copyWith(
+        actions: _addAction(BeneficiaryTransferAction.shortcut),
+        errors: _removeError(BeneficiaryTransferAction.shortcut),
+      ),
+    );
+
+    try {
+      await _createShortcutUseCase(
+        shortcut: NewShortcut(
+          name: state.transfer.shortcutName!,
+          type: ShortcutType.transfer,
+          payload: state.transfer,
+        ),
+      );
+
+      emit(
+        state.copyWith(
+          actions: _removeAction(BeneficiaryTransferAction.shortcut),
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          actions: _removeAction(BeneficiaryTransferAction.shortcut),
+          errors: _addError(
+            action: BeneficiaryTransferAction.shortcut,
+            errorStatus: e is NetException
+                ? BeneficiaryTransferErrorStatus.network
+                : BeneficiaryTransferErrorStatus.generic,
           ),
         ),
       );

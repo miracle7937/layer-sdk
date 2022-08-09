@@ -16,5 +16,6 @@ abstract class PaymentsRepositoryInterface {
   /// Submits the provided payment
   Future<Payment> payBill({
     required Payment payment,
+    String? otp,
   });
 }

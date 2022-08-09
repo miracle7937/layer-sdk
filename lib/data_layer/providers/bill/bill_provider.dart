@@ -31,4 +31,18 @@ class BillProvider {
 
     return BillDTO.fromJsonList(response.data);
   }
+
+  /// Validates the provided bill
+  Future<BillDTO> validateBill({
+    required BillDTO bill,
+  }) async {
+    final response = await netClient.request(
+      netClient.netEndpoints.validateBill,
+      method: NetRequestMethods.post,
+      data: bill.toJson(),
+      forceRefresh: true,
+    );
+
+    return BillDTO.fromJson(response.data);
+  }
 }

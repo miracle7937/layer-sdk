@@ -17,9 +17,11 @@ class CurrencyRepository implements CurrencyRepositoryInterface {
   @override
   Future<List<Currency>> list({
     bool forceRefresh = false,
+    bool onlyVisible = true,
   }) async {
     final dtos = await provider.list(
       forceRefresh: forceRefresh,
+      onlyVisible: onlyVisible,
     );
     return dtos.map((e) => e.toCurrency()).toList(growable: false);
   }

@@ -14,22 +14,26 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
       _getDestinationAccountsForOwnTransferUseCase;
   final LoadAllCurrenciesUseCase _loadAllCurrenciesUseCase;
   final SubmitTransferUseCase _submitTransferUseCase;
+  final CreateShortcutUseCase _createShortcutUseCase;
 
   /// Creates new [OwnTransferCubit].
   OwnTransferCubit({
+    OwnTransfer? transfer,
     required GetSourceAccountsForOwnTransferUseCase
         getSourceAccountsForOwnTransferUseCase,
     required GetDestinationAccountsForOwnTransferUseCase
         getDestinationAccountsForOwnTransferUseCase,
     required LoadAllCurrenciesUseCase loadAllCurrenciesUseCase,
     required SubmitTransferUseCase submitTransferUseCase,
+    required CreateShortcutUseCase createShortcutUseCase,
   })  : _getSourceAccountsForOwnTransferUseCase =
             getSourceAccountsForOwnTransferUseCase,
         _getDestinationAccountsForOwnTransferUseCase =
             getDestinationAccountsForOwnTransferUseCase,
         _loadAllCurrenciesUseCase = loadAllCurrenciesUseCase,
         _submitTransferUseCase = submitTransferUseCase,
-        super(OwnTransferState(transfer: OwnTransfer()));
+        _createShortcutUseCase = createShortcutUseCase,
+        super(OwnTransferState(transfer: transfer ?? OwnTransfer()));
 
   /// Fetches all the data necessary to start the flow.
   Future<void> initialize() async {
@@ -79,10 +83,12 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
     Account? fromAccount,
     Account? toAccount,
     double? amount,
+    bool? saveToShortcut,
+    String? shortcutName,
+    ScheduleDetails? scheduleDetails,
   }) {
-    emit(
-      state.copyWith(
-          transfer: state.transfer.copyWith(
+    emit(state.copyWith(
+      transfer: state.transfer.copyWith(
         source: fromAccount != null
             ? NewTransferSource(account: fromAccount)
             : null,
@@ -97,8 +103,11 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
               )
             : null,
         amount: amount,
-      )),
-    );
+        saveToShortcut: saveToShortcut,
+        shortcutName: shortcutName,
+        scheduleDetails: scheduleDetails,
+      ),
+    ));
   }
 
   /// Submits the transfer.
@@ -126,6 +135,10 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
         case TransferStatus.completed:
         case TransferStatus.pending:
         case TransferStatus.scheduled:
+          if (state.transfer.saveToShortcut) {
+            await _createShortcut(state.transfer);
+          }
+
           emit(
             state.copyWith(
               actions: state.actions.difference({
@@ -168,6 +181,49 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
           errorMessage: e is NetException ? e.message : null,
         ),
       );
+    }
+  }
+
+  /// Creates the shortcut (if enabled) once the transfer has succeeded.
+  Future<void> _createShortcut(
+    OwnTransfer transfer,
+  ) async {
+    emit(
+      state.copyWith(
+        actions: state.actions.union({
+          OwnTransferAction.shortcut,
+        }),
+        errors: state.errors.difference({
+          OwnTransferAction.shortcut,
+        }),
+      ),
+    );
+
+    try {
+      await _createShortcutUseCase(
+        shortcut: NewShortcut(
+          name: state.transfer.shortcutName!,
+          type: ShortcutType.transfer,
+          payload: state.transfer,
+        ),
+      );
+
+      emit(
+        state.copyWith(
+          actions: state.actions.difference({
+            OwnTransferAction.shortcut,
+          }),
+        ),
+      );
+    } on Exception {
+      emit(state.copyWith(
+        actions: state.actions.difference({
+          OwnTransferAction.shortcut,
+        }),
+        errors: state.errors.union({
+          OwnTransferAction.shortcut,
+        }),
+      ));
     }
   }
 }

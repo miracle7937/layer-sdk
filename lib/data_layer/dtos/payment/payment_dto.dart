@@ -72,6 +72,9 @@ class PaymentDTO {
   /// The recurrence end date of the payment
   DateTime? recurrenceEnd;
 
+  /// Whether the payment is recurring or not
+  bool? recurring;
+
   /// Creates a new [PaymentDTO]
   PaymentDTO({
     this.paymentId,
@@ -96,6 +99,7 @@ class PaymentDTO {
     this.scheduled,
     this.recurrenceStart,
     this.recurrenceEnd,
+    this.recurring,
   });
 
   /// Creates a [PaymentDTO] from a JSON
@@ -128,6 +132,7 @@ class PaymentDTO {
       recurrence: RecurrenceDTO.fromRaw(json["recurrence"]),
       recurrenceStart: JsonParser.parseDate(json["recurrence_start"]),
       recurrenceEnd: JsonParser.parseDate(json["recurrence_end"]),
+      recurring: json['recurring'],
     );
   }
 
@@ -151,6 +156,7 @@ class PaymentDTO {
       'recurrence': recurrence?.value,
       'recurrence_start': recurrenceStart?.millisecondsSinceEpoch,
       'recurrence_end': recurrenceEnd?.millisecondsSinceEpoch,
+      if (recurring != null) 'recurring': recurring,
     };
   }
 

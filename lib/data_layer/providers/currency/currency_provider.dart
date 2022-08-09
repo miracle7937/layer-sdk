@@ -12,13 +12,21 @@ class CurrencyProvider {
   });
 
   /// Returns a list of currencies.
+  /// If [available] is true, then list of available [Currency] returned.
   Future<List<CurrencyDTO>> list({
+    bool available = false,
     bool forceRefresh = false,
+    bool onlyVisible = true,
   }) async {
     final response = await netClient.request(
       netClient.netEndpoints.currency,
       method: NetRequestMethods.get,
       forceRefresh: forceRefresh,
+      queryParameters:
+          {
+             if (available) 'trf_intl': true,
+            if (onlyVisible) 'visible': true,
+            },
     );
     return CurrencyDTO.fromJsonList(
         List<Map<String, dynamic>>.from(response.data));

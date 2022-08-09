@@ -8,4 +8,11 @@ abstract class MandateRepositoryInterface {
     int? limit,
     int? offset,
   });
+
+  /// DELETE a Mandate
+  Future<SecondFactorType?> cancelMandate({
+    required int mandateId,
+    String? otpValue,
+    SecondFactorType? otpType,
+  });
 }

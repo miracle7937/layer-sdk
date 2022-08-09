@@ -13,8 +13,10 @@ class LoadAllCurrenciesUseCase {
   /// Returns a list containing all the currencies.
   Future<List<Currency>> call({
     bool forceRefresh = false,
+    bool onlyVisible = true,
   }) =>
       _repository.list(
         forceRefresh: forceRefresh,
+        onlyVisible: onlyVisible,
       );
 }

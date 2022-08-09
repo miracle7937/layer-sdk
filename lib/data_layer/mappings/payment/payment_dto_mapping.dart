@@ -7,7 +7,7 @@ import '../../mappings.dart';
 extension PaymentDTOMapping on PaymentDTO {
   /// Maps into a [Payment]
   Payment toPayment() => Payment(
-        id: billId,
+        id: paymentId,
         created: created,
         updated: updated,
         bill: bill?.toBill(),
@@ -24,6 +24,7 @@ extension PaymentDTOMapping on PaymentDTO {
         otpId: otpId,
         deviceUID: deviceUID,
         secondFactor: secondFactor?.toSecondFactorType(),
+        recurring: recurring ?? false,
       );
 }
 
@@ -89,6 +90,22 @@ extension PaymentToDTOMapping on Payment {
       scheduled: scheduled,
       recurrenceStart: recurrenceStart,
       recurrenceEnd: recurrenceEnd,
+      recurring: recurring,
+    );
+  }
+
+  /// Maps into a [PaymenShortcuttPayloadDTO]
+  PaymenShortcuttPayloadDTO toPaymentShortcutPayloadDTO() {
+    return PaymenShortcuttPayloadDTO(
+      paymentId: id,
+      bill: bill?.toBillDTO(),
+      amount: amount,
+      currency: currency,
+      otpId: otpId,
+      status: status.toPaymentStatusDTO(),
+      deviceUID: deviceUID,
+      fromAccount: fromAccount?.toAccountDTO(),
+      fromAccountId: fromAccount?.id,
     );
   }
 }

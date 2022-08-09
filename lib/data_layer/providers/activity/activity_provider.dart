@@ -112,7 +112,6 @@ class ActivityProvider {
       params["sortby"] = sortBy;
     }
 
-    activityTags?.removeWhere((tag) => tag == ActivityTag.unknown);
     if (activityTags?.isNotEmpty ?? false) {
       final tags = activityTags!.map((tag) => tag.toJSONString).join(',');
       params['tag'] = tags;
@@ -130,6 +129,29 @@ class ActivityProvider {
 
     return ActivityDTO.fromJsonList(
       List<Map<String, dynamic>>.from(response.data),
+    );
+  }
+
+  /// Delete a certain activity based on the id
+  Future<void> delete(String activityId) async {
+    await netClient.request(
+      "${netClient.netEndpoints.request}/$activityId",
+      method: NetRequestMethods.delete,
+    );
+  }
+
+  /// Cancel the [Activity] by `id`
+  Future<void> cancel(String id, {String? otpValue}) async {
+    final param = <String, dynamic>{};
+
+    if (otpValue != null) {
+      param['otp_value'] = otpValue;
+    }
+
+    await netClient.request(
+      '${netClient.netEndpoints.request}/$id/cancel',
+      queryParameters: param,
+      method: NetRequestMethods.post,
     );
   }
 }
