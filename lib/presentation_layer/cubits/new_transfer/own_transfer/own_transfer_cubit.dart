@@ -52,16 +52,22 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
           _getSourceAccountsForOwnTransferUseCase(),
           _getDestinationAccountsForOwnTransferUseCase(),
           _loadAllCurrenciesUseCase(),
+          _loadAllCurrenciesUseCase(),
         ],
       );
       final fromAccounts = results[0];
       final toAccounts = results[1];
       final currencies = results[2];
-
+      var preselectedAccount;
+      if (fromAccounts.isNotEmpty) {
+        preselectedAccount =
+            await GetPreselectedAccountForOwnTransferUseCase(fromAccounts)
+                .call();
+      }
       emit(state.copyWith(
         fromAccounts: fromAccounts,
         toAccounts: toAccounts,
-        preselectedAccount: fromAccounts[0],
+        preselectedAccount: preselectedAccount,
         currencies: currencies,
         actions: state.actions.difference({
           OwnTransferAction.accounts,
