@@ -173,6 +173,15 @@ class DPAProcessState extends Equatable {
   /// Returns `true` if it's showing a pop-up.
   bool get hasPopup => popUp != null;
 
+  /// Returns `true` if all fields are validated.
+  bool get areVariablesValidated {
+    var isValid = true;
+    for (var element in process.validate().variables) {
+      isValid = isValid && !(element.hasValidationError);
+    }
+    return isValid;
+  }
+
   /// Creates a [DPAProcessState] based on this one.
   ///
   /// To remove the pop-up, pass `true` to [clearPopUp].
