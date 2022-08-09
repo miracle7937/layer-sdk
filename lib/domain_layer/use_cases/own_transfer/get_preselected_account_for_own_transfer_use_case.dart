@@ -11,13 +11,14 @@ class GetPreselectedAccountForOwnTransferUseCase {
   ) : _accounts = accounts;
 
   /// Returns the account with biggest available balance to preselect
-  Future<Account> call() async {
-    var source = _accounts[0];
-    for (var element in _accounts) {
-      if ((element.availableBalance ?? 0) > (source.availableBalance ?? 0)) {
-        source = element;
-      }
+  Account call() {
+    var preselectedAccount;
+    var sortedAccounts = _accounts;
+    if (sortedAccounts.isNotEmpty) {
+      sortedAccounts.sort((a, b) =>
+          (a.availableBalance ?? 0).compareTo((b.availableBalance ?? 0)));
+      preselectedAccount = sortedAccounts.last;
     }
-    return source;
+    return preselectedAccount;
   }
 }
