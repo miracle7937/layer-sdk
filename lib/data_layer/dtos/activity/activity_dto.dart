@@ -81,6 +81,8 @@ class ActivityDTO {
 dynamic _parseItem(ActivityTypeDTO type, Map<String, dynamic> json) {
   switch (type) {
     case ActivityTypeDTO.transfer:
+    case ActivityTypeDTO.scheduledTransfer:
+    case ActivityTypeDTO.recurringTransfer:
       return TransferDTO.fromJson(json);
 
     case ActivityTypeDTO.payment:

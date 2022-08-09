@@ -30,6 +30,7 @@ class BeneficiariesCubit extends Cubit<BeneficiariesState> {
     String? searchText,
     bool loadMore = false,
     bool forceRefresh = false,
+    bool activeOnly = false,
   }) async {
     emit(
       state.copyWith(
@@ -47,6 +48,7 @@ class BeneficiariesCubit extends Cubit<BeneficiariesState> {
         offset: offset,
         limit: limit,
         forceRefresh: forceRefresh,
+        activeOnly: activeOnly,
       );
 
       final list = offset > 0

@@ -151,6 +151,39 @@ class BillDTO {
     );
   }
 
+  /// Creates a JSON map from the model data
+  Map<String, dynamic> toJson({
+    bool includeNickname = true,
+    bool? visible,
+    bool includeBillId = true,
+  }) {
+    return {
+      if (includeBillId) 'bill_id': billId,
+      'customer_id': customerId,
+      'service_id': serviceId,
+      'service': service?.toJson(),
+      'billing_number': billingNumber,
+      if (includeNickname) 'nickname': nickname,
+      'recurring': recurring,
+      'status': status?.value,
+      'amount': amount,
+      'min_pmt': minPayment,
+      'max_pmt': maxPayment,
+      'comment': comment,
+      'fees': fees,
+      'fees_currency': feesCurrency,
+      'validation_code': validationCode,
+      'ts_created': created?.millisecondsSinceEpoch,
+      'ts_updated': updated?.millisecondsSinceEpoch,
+      'billing_fields':
+          billingFields?.map((e) => e.toJson()).toList(growable: false),
+      'additional_fields': additionalFields,
+      'visible': visible ?? this.visible,
+      'second_factor': secondFactor?.value,
+      'image_url': imageUrl,
+    };
+  }
+
   /// Creates a list of [BillDTO]s from the given JSON list.
   static List<BillDTO> fromJsonList(List<Map<String, dynamic>> json) =>
       json.map(BillDTO.fromJson).toList();

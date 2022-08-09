@@ -167,47 +167,59 @@ class _DPATextState extends State<DPAText> {
     final currency = widget.variable.property.currencyFlagCode;
     final valueTextProperties = widget.variable.property.valueTextProperties;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (label?.isNotEmpty ?? false) ...[
-          Text(
-            label!,
-            style: labelTextProperties?.toTextStyle(
-                  layerDesign,
-                ) ??
-                layerDesign.bodyS(
-                  color: labelTextProperties?.flutterColor ??
-                      layerDesign.baseQuaternary,
-                ),
-          ),
-          const SizedBox(height: 2.0),
-        ],
-        if (value?.isNotEmpty ?? false || (currency?.isNotEmpty ?? false))
-          Row(children: [
-            if (currency?.isNotEmpty ?? false) ...[
-              Image.asset(
-                'icons/currency/${currency!.toLowerCase()}.png',
-                width: 24,
-                height: 18,
-                package: 'currency_icons',
-                errorBuilder: (context, object, stackTrace) =>
-                    Container(width: 24),
-              ),
-              SizedBox(width: 8)
-            ],
-            if (value?.isNotEmpty ?? false)
-              Text(
-                value!.toString(),
-                style: valueTextProperties?.toTextStyle(
+    return (labelTextProperties?.textStyle == DPAVariableTextStyle.titleXXL &&
+            (label?.isNotEmpty ?? false))
+        ? Center(
+            child: Text(label!,
+                style: labelTextProperties?.toTextStyle(
                       layerDesign,
                     ) ??
-                    layerDesign.bodyM(
-                      color: valueTextProperties?.flutterColor,
+                    layerDesign.bodyS(
+                      color: labelTextProperties?.flutterColor ??
+                          layerDesign.baseQuaternary,
+                    )),
+          )
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (label?.isNotEmpty ?? false) ...[
+                Text(
+                  label!,
+                  style: labelTextProperties?.toTextStyle(
+                        layerDesign,
+                      ) ??
+                      layerDesign.bodyS(
+                        color: labelTextProperties?.flutterColor ??
+                            layerDesign.baseQuaternary,
+                      ),
+                ),
+                const SizedBox(height: 2.0),
+              ],
+              if (value?.isNotEmpty ?? false || (currency?.isNotEmpty ?? false))
+                Row(children: [
+                  if (currency?.isNotEmpty ?? false) ...[
+                    Image.asset(
+                      'icons/currency/${currency!.toLowerCase()}.png',
+                      width: 24,
+                      height: 18,
+                      package: 'currency_icons',
+                      errorBuilder: (context, object, stackTrace) =>
+                          Container(width: 24),
                     ),
-              ),
-          ])
-      ],
-    );
+                    SizedBox(width: 8)
+                  ],
+                  if (value?.isNotEmpty ?? false)
+                    Expanded(
+                      child: Text(value!.toString(),
+                          style: valueTextProperties?.toTextStyle(
+                                layerDesign,
+                              ) ??
+                              layerDesign.bodyM(
+                                color: valueTextProperties?.flutterColor,
+                              )),
+                    ),
+                ])
+            ],
+          );
   }
 }

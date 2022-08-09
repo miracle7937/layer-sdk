@@ -69,7 +69,7 @@ class ExperienceCubit extends Cubit<ExperienceState> {
       );
 
       emit(
-        ExperienceState(
+        state.copyWith(
           experience: experience,
           visiblePages: _configureUserExperienceByExperiencePreferencesUseCase(
             experience: experience,
@@ -82,7 +82,9 @@ class ExperienceCubit extends Cubit<ExperienceState> {
         state.copyWith(
           busy: false,
           error: e is NetException
-              ? ExperienceStateError.network
+              ? e.statusCode == null
+                  ? ExperienceStateError.connectivity
+                  : ExperienceStateError.network
               : ExperienceStateError.generic,
           errorMessage: e is NetException ? e.message : null,
         ),

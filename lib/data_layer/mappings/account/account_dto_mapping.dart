@@ -13,6 +13,7 @@ extension AccountDTOMapping on AccountDTO {
         currentBalance: currentBalance,
         balanceVisible: balanceVisible,
         formattedAccountNumber: displayAccountNumber,
+        extraAccountNumber: extraAccountNumber,
         id: accountId,
         reference: reference,
         branchId: branchId,
@@ -37,6 +38,64 @@ extension AccountDTOMapping on AccountDTO {
         canRequestStatement: canRequestStatement,
         canRequestCertificateOfAccount: canRequestCertificateOfAccount,
         canRequestCertificateOfDeposit: canRequestCertificateOfDeposit,
+        canStopIssuedCheck: canStopIssuedCheck,
+        canConfirmIssuedCheck: canConfirmIssuedCheck,
+      );
+}
+
+/// Extension that provides mappings for [Account]
+extension AccountToDTOMapping on Account {
+  /// Maps into a [BillStatus]
+  AccountDTO toAccountDTO() {
+    return AccountDTO(
+      accountNumber: accountNumber,
+      availableBalance: double.tryParse(availableBalance.toString()),
+      currency: currency,
+      currentBalance: double.tryParse(currentBalance.toString()),
+      balanceVisible: balanceVisible,
+      displayAccountNumber: formattedAccountNumber,
+      extraAccountNumber: extraAccountNumber,
+      accountId: id,
+      reference: reference,
+      branchId: branchId,
+      extraBranchId: extraBranchId,
+      status: status?.toAccountDTOStatus(),
+      type: accountInfo?.toAccountInfoDTO(),
+      preferences: preferences.toAccountPreferencesDTO(),
+      canPay: canPay,
+      canTransferOwn: canTransferOwn,
+      canTransferBank: canTransferBank,
+      canTransferDomestic: canTransferDomestic,
+      canTransferInternational: canTransferInternational,
+      canTransferBulk: canTransferBulk,
+      canTransferCardless: canTransferCardless,
+      canReceiveTransfer: canReceiveTransfer,
+      canRequestCard: canRequestCard,
+      canRequestChkbk: canRequestChkbk,
+      canOverdraft: canOverdraft,
+      canTransferRemittance: canTransferRemittance,
+      canRequestBankerCheck: canRequestBankerCheck,
+      canRequestStatement: canRequestStatement,
+      canRequestCertificateOfAccount: canRequestCertificateOfAccount,
+      canRequestCertificateOfDeposit: canRequestCertificateOfDeposit,
+      canStopIssuedCheck: canStopIssuedCheck,
+      canConfirmIssuedCheck: canConfirmIssuedCheck,
+    );
+  }
+}
+
+/// Extension that provides mapping for [AccountTypeDTO]
+extension AccountInfoDTOMapping on AccountInfo {
+  /// Maps a [AccountTypeDTO] to a [AccountInfo]
+  AccountTypeDTO toAccountInfoDTO() => AccountTypeDTO(
+        type: accountType?.toAccountTypeDTOType(),
+        family: family,
+        name: accountName,
+        description: accountDescription,
+        hasIban: hasIban,
+        canTransferCardless: canTransferCardless,
+        canStopIssuedCheck: canStopIssuedCheck,
+        canConfirmIssuedCheck: canConfirmIssuedCheck,
       );
 }
 
@@ -86,6 +145,10 @@ extension AccountTypeDTOMapping on AccountTypeDTO {
         family: family,
         accountName: name,
         accountDescription: description,
+        hasIban: hasIban,
+        canTransferCardless: canTransferCardless,
+        canStopIssuedCheck: canStopIssuedCheck,
+        canConfirmIssuedCheck: canConfirmIssuedCheck,
       );
 }
 
@@ -110,6 +173,33 @@ extension AccountTypeDTOTypeMapping on AccountTypeDTOType {
         return AccountType.savings;
       case AccountTypeDTOType.tradeFinance:
         return AccountType.tradeFinance;
+      default:
+        throw MappingException(from: AccountTypeDTOType, to: AccountType);
+    }
+  }
+}
+
+/// Extension that provides mapping for [AccountType]
+extension AccountTypeMapping on AccountType {
+  /// Maps a [AccountTypeDTOType] to a [AccountType]
+  AccountTypeDTOType toAccountTypeDTOType() {
+    switch (this) {
+      case AccountType.current:
+        return AccountTypeDTOType.current;
+      case AccountType.termDeposit:
+        return AccountTypeDTOType.termDeposit;
+      case AccountType.creditCard:
+        return AccountTypeDTOType.creditCard;
+      case AccountType.loan:
+        return AccountTypeDTOType.loan;
+      case AccountType.securities:
+        return AccountTypeDTOType.securities;
+      case AccountType.finance:
+        return AccountTypeDTOType.finance;
+      case AccountType.savings:
+        return AccountTypeDTOType.savings;
+      case AccountType.tradeFinance:
+        return AccountTypeDTOType.tradeFinance;
       default:
         throw MappingException(from: AccountTypeDTOType, to: AccountType);
     }

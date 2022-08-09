@@ -25,7 +25,7 @@ class MandatePaymentsCubit extends Cubit<MandatePaymentsState> {
   }) async {
     emit(
       state.copyWith(
-        busy: false,
+        busy: true,
         busyAction: loadMore
             ? MandatePaymentsBusyAction.loadingMore
             : MandatePaymentsBusyAction.loading,
@@ -37,6 +37,7 @@ class MandatePaymentsCubit extends Cubit<MandatePaymentsState> {
     try {
       final pagination = state.pagination.paginate(loadMore: loadMore);
 
+      // TODO: send mandate id
       final foundPayments = await _loadPaymentsUC(
         limit: pagination.limit,
         offset: pagination.offset,

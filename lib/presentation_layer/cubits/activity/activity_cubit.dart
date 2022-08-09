@@ -9,13 +9,21 @@ import '../../utils.dart';
 /// A cubit that handles the [User] activities
 class ActivityCubit extends Cubit<ActivityState> {
   final LoadActivitiesUseCase _loadActivitiesUseCase;
+  final DeleteActivityUseCase _deleteActivityUseCase;
+  final CancelActivityUseCase _cancelActivityUseCase;
+  final CreateShortcutUseCase _createShortcutUseCase;
 
   /// Creates a new [ActivityCubit] instance
   ActivityCubit({
     required LoadActivitiesUseCase loadActivitiesUseCase,
+    required DeleteActivityUseCase deleteActivityUseCase,
+    required CancelActivityUseCase cancelActivityUseCase,
+    required CreateShortcutUseCase createShortcutUseCase,
     int limit = 20,
-    int offSet = 0,
   })  : _loadActivitiesUseCase = loadActivitiesUseCase,
+        _deleteActivityUseCase = deleteActivityUseCase,
+        _cancelActivityUseCase = cancelActivityUseCase,
+        _createShortcutUseCase = createShortcutUseCase,
         super(ActivityState(
           pagination: Pagination(limit: limit),
         ));
@@ -30,14 +38,21 @@ class ActivityCubit extends Cubit<ActivityState> {
     List<ActivityTag>? activityTags,
     List<TransferType>? transferTypes,
   }) async {
-    emit(state.copyWith(busy: true, errorStatus: ActivityErrorStatus.none));
+    emit(
+      state.copyWith(
+        errorStatus: ActivityErrorStatus.none,
+        action: loadMore
+            ? ActivityBusyAction.loadingMore
+            : ActivityBusyAction.loading,
+      ),
+    );
 
     try {
       final newPage = state.pagination.paginate(loadMore: loadMore);
 
       final resultList = await _loadActivitiesUseCase(
-        limit: state.pagination.limit,
-        offset: state.offSet,
+        limit: newPage.limit,
+        offset: newPage.offset,
         fromTS: startDate,
         toTS: endDate,
         itemIsNull: itemIsNull,
@@ -49,14 +64,14 @@ class ActivityCubit extends Cubit<ActivityState> {
       final activities = newPage.firstPage
           ? resultList
           : [
-              ...state.activities.take(newPage.offset).toList(),
+              ...state.activities,
               ...resultList,
             ];
 
       emit(
         state.copyWith(
           activities: activities,
-          busy: false,
+          action: ActivityBusyAction.none,
           pagination: newPage.refreshCanLoadMore(
             loadedCount: resultList.length,
           ),
@@ -68,11 +83,33 @@ class ActivityCubit extends Cubit<ActivityState> {
           errorStatus: e is NetException
               ? ActivityErrorStatus.network
               : ActivityErrorStatus.generic,
-          busy: false,
+          action: ActivityBusyAction.none,
         ),
       );
 
       rethrow;
     }
   }
+
+  /// Delete a certain activity based on the id
+  Future<void> delete(String activityId) => _deleteActivityUseCase(activityId);
+
+  /// Cancel the [Activity] by `id`
+  Future<void> cancel(String id, {String? otpValue}) => _cancelActivityUseCase(
+        id,
+        otpValue: otpValue,
+      );
+
+  /// Add the activity to shorcut
+  Future<void> shortcut({required NewShortcut newShortcut}) =>
+      _createShortcutUseCase(
+        shortcut: newShortcut,
+      );
+
+  /// Save the shortcut name
+  void onShortcutNameChanged(String shortcutName) => emit(
+        state.copyWith(
+          shortcutName: shortcutName,
+        ),
+      );
 }

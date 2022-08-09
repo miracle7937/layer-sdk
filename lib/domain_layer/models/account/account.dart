@@ -40,6 +40,12 @@ class Account extends Equatable {
   /// The formatted account number
   final String? formattedAccountNumber;
 
+  /// The account number provided in the extra data.
+  ///
+  /// In cases of some integrations it should be displayed instead of the
+  /// [accountNumber].
+  final String? extraAccountNumber;
+
   /// Generic bank defined reference for account
   final String? reference;
 
@@ -106,6 +112,12 @@ class Account extends Equatable {
   /// customer can request certificate deposit
   final bool canRequestCertificateOfDeposit;
 
+  /// customer can stop issued check
+  final bool canStopIssuedCheck;
+
+  /// customer can confirm issued check
+  final bool canConfirmIssuedCheck;
+
   /// Creates a new immutable [Account]
   Account({
     this.id,
@@ -115,6 +127,7 @@ class Account extends Equatable {
     this.balanceVisible = true,
     this.accountNumber,
     this.formattedAccountNumber,
+    this.extraAccountNumber,
     this.reference,
     this.status,
     this.accountInfo,
@@ -137,6 +150,8 @@ class Account extends Equatable {
     this.canRequestStatement = true,
     this.canRequestCertificateOfAccount = true,
     this.canRequestCertificateOfDeposit = true,
+    this.canStopIssuedCheck = true,
+    this.canConfirmIssuedCheck = true,
   });
 
   @override
@@ -148,6 +163,7 @@ class Account extends Equatable {
         balanceVisible,
         accountNumber,
         formattedAccountNumber,
+        extraAccountNumber,
         reference,
         status,
         accountInfo,

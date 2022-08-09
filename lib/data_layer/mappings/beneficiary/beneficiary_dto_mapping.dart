@@ -12,12 +12,24 @@ extension BeneficiaryDTOMapping on BeneficiaryDTO {
         firstName: firstName ?? '',
         middleName: middleName ?? '',
         accountNumber: accountNumber,
+        routingCode: routingCode,
+        iban: accountNumber,
         status: status?.toBeneficiaryStatus(),
         type: type?.toTransferType(),
         lastName: lastName ?? '',
         bankName: bankName ?? '',
         bankCountryCode: bankCountryCode,
         currency: currency,
+        address1: rcptAddress1,
+        address2: rcptAddress2,
+        address3: rcptAddress3,
+        bank: Bank(
+          name: bankName,
+          bic: bankSwift,
+          countryCode: bankCountryCode,
+        ),
+        otpId: otpId,
+        extra: extra,
       );
 }
 

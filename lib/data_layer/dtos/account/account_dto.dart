@@ -97,8 +97,17 @@ class AccountDTO {
   /// customer can request certificate deposit
   bool canRequestCertificateOfDeposit = true;
 
+  /// customer can stop issued check
+  bool canStopIssuedCheck = true;
+
+  /// customer can confirm issued check
+  bool canConfirmIssuedCheck = true;
+
   /// generic account number
   String? accountNumber;
+
+  /// The account number provided in the `extra`
+  String? extraAccountNumber;
 
   /// account number formatted
   String? displayAccountNumber;
@@ -144,7 +153,10 @@ class AccountDTO {
     this.canRequestBankerCheck = true,
     this.canRequestCertificateOfAccount = true,
     this.canRequestCertificateOfDeposit = true,
+    this.canStopIssuedCheck = true,
+    this.canConfirmIssuedCheck = true,
     this.accountNumber,
+    this.extraAccountNumber,
     this.displayAccountNumber,
     this.branchId,
     this.extraBranchId,
@@ -193,13 +205,56 @@ class AccountDTO {
       canRequestStatement: json['can_request_stmt'] ?? true,
       canRequestCertificateOfAccount: json['can_request_cert_account'] ?? true,
       canRequestCertificateOfDeposit: json['can_request_cert_deposit'] ?? true,
+      canStopIssuedCheck: json["can_stop_issued_check"] ?? true,
+      canConfirmIssuedCheck: json["can_confirm_issued_check"] ?? true,
       accountNumber: json['account_no'],
       displayAccountNumber: json['account_no_displayed'],
+      extraAccountNumber:
+          json['extra'] != null ? json['extra']['account_number'] : null,
       branchId: json['branch_id'],
       extraBranchId: (json['branch'] as Map?)
           ?.lookup<dynamic, String>(['location_id'])?.toString(),
       preferences: AccountPreferencesDTO.fromJson(json),
     );
+  }
+
+  /// To json function
+  Map<String, dynamic> toJson() {
+    var json = <String, dynamic>{
+      'account_id': accountId,
+      'account_type_id': type?.id,
+      'branch_id': branchId,
+      'currency': currency,
+      'joint_type': jointType?.value,
+      'balance_available': availableBalance,
+      'balance_current': currentBalance,
+      'status': status?.value,
+      "can_pay": canPay,
+      "can_trf_internal": canTransferOwn,
+      "can_trf_bank": canTransferBank,
+      "can_trf_domestic": canTransferDomestic,
+      "can_trf_intl": canTransferInternational,
+      "can_trf_bulk": canTransferBulk,
+      "can_receive_trf": canReceiveTransfer,
+      "can_trf_cardless": canTransferCardless,
+      'can_overdraft': canOverdraft,
+      'can_request_card': canRequestCard,
+      'can_request_chkbk': canRequestChkbk,
+      'can_trf_remittance': canTransferRemittance,
+      'can_p2p': type?.canP2P,
+      "account_no": accountNumber,
+      "account_no_displayed": displayAccountNumber,
+      "iban": accountNumber,
+      "can_request_banker_check": canRequestBankerCheck,
+      "can_request_stmt": canRequestStatement,
+      "can_request_cert_account": canRequestCertificateOfAccount,
+      "can_request_cert_deposit": canRequestCertificateOfDeposit,
+      "can_stop_issued_check": canStopIssuedCheck,
+      "can_confirm_issued_check": canConfirmIssuedCheck,
+      'account_type': type?.toJson(),
+      "has_iban": type?.hasIban,
+    };
+    return json;
   }
 
   /// Creates a list of [AccountDTO] from a list
