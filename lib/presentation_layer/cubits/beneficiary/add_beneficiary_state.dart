@@ -92,6 +92,12 @@ class AddBeneficiaryState extends Equatable {
   /// Current action.
   final AddBeneficiaryAction action;
 
+  /// List of bytes representing receipt pdf
+  final UnmodifiableListView<int> pdfBytes;
+
+  /// List of bytes representing receipt image
+  final UnmodifiableListView<int> imageBytes;
+
   /// Depending on selected currency we force user to enter:
   /// - for `GBP` - account and sorting code
   /// - for `EUR` - iban
@@ -128,11 +134,15 @@ class AddBeneficiaryState extends Equatable {
     this.busy = false,
     this.action = AddBeneficiaryAction.none,
     this.bankQuery,
+    List<int> pdfBytes = const [],
+    List<int> imageBytes = const [],
   })  : countries = UnmodifiableListView(countries),
         availableCurrencies = UnmodifiableListView(availableCurrencies),
         banks = UnmodifiableListView(banks),
         errors = UnmodifiableSetView(errors),
-        beneficiarySettings = UnmodifiableListView(beneficiarySettings);
+        beneficiarySettings = UnmodifiableListView(beneficiarySettings),
+        pdfBytes = UnmodifiableListView(pdfBytes),
+        imageBytes = UnmodifiableListView(imageBytes);
 
   @override
   List<Object?> get props => [
@@ -149,6 +159,8 @@ class AddBeneficiaryState extends Equatable {
         busy,
         action,
         bankQuery,
+        pdfBytes,
+        imageBytes,
       ];
 
   /// Creates a new state based on this one.
@@ -165,6 +177,8 @@ class AddBeneficiaryState extends Equatable {
     bool? busy,
     AddBeneficiaryAction? action,
     String? bankQuery,
+    List<int>? pdfBytes,
+    List<int>? imageBytes,
   }) =>
       AddBeneficiaryState(
         beneficiaryType: beneficiaryType,
@@ -180,6 +194,8 @@ class AddBeneficiaryState extends Equatable {
         busy: busy ?? this.busy,
         action: action ?? this.action,
         bankQuery: bankQuery ?? this.bankQuery,
+        pdfBytes: pdfBytes ?? this.pdfBytes,
+        imageBytes: imageBytes ?? this.imageBytes,
       );
 }
 
@@ -202,6 +218,9 @@ enum AddBeneficiaryAction {
 
   /// Successful adding new beneficiary action.
   success,
+
+  /// The beneficiary's receipt is being loaded
+  receipt,
 
   /// Loading the banks for the new beneficiary.
   banks,
