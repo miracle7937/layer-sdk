@@ -19,7 +19,7 @@ abstract class PaymentsRepositoryInterface {
     String? otp,
   });
 
-  /// Resend the one time password
+  /// Resends the one time password to the customer
   Future<Payment> resendOTP({
     required Payment payment,
   });

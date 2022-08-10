@@ -74,7 +74,7 @@ class PaymentProvider {
     );
   }
 
-  /// Resends a second factor
+  /// Resends the one time password to the customer
   Future<PaymentDTO> resendOTP({
     required PaymentDTO payment,
   }) async {
