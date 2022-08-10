@@ -23,4 +23,11 @@ abstract class PaymentsRepositoryInterface {
   Future<Payment> resendOTP({
     required Payment payment,
   });
+
+  /// Deletes a payment
+  Future<Payment> deletePayment(
+    String id, {
+    String? otpValue,
+    bool resendOTP = false,
+  });
 }

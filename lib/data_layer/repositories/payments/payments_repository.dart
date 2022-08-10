@@ -56,4 +56,19 @@ class PaymentRepository implements PaymentsRepositoryInterface {
 
     return paymentDTO.toPayment();
   }
+
+  @override
+  Future<Payment> deletePayment(
+    String id, {
+    String? otpValue,
+    bool resendOTP = false,
+  }) async {
+    final paymentDTO = await _provider.deletePaymentV2(
+      id,
+      otpValue: otpValue,
+      resendOTP: resendOTP,
+    );
+
+    return paymentDTO.toPayment();
+  }
 }
