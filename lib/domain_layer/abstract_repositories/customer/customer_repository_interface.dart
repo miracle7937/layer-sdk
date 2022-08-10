@@ -56,4 +56,9 @@ abstract class CustomerRepositoryInterface {
     required String customerId,
     required bool value,
   });
+
+  /// Loads the limits of the customer.
+  ///
+  /// Returns `null` if the customer has no limits set.
+  Future<CustomerLimit?> getCustomerLimits();
 }

@@ -116,6 +116,18 @@ class CustomerRepository implements CustomerRepositoryInterface {
         value: value,
       );
 
+  /// Loads the limits of the customer.
+  ///
+  /// Returns `null` if the customer has no limits set.
+  @override
+  Future<CustomerLimit?> getCustomerLimits() async {
+    final dto = await _provider.getCustomerLimits();
+
+    if (dto == null) return null;
+
+    return dto.toCustomerLimit();
+  }
+
   DPAMappingCustomData get _customerCustomData => DPAMappingCustomData(
         token: _provider.netClient.currentToken() ?? '',
         fileBaseURL: _provider.customerDocumentsURLPrefix,

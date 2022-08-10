@@ -109,4 +109,17 @@ class BeneficiaryRepository implements BeneficiaryRepositoryInterface {
 
     return dto.toBeneficiary();
   }
+
+  /// Getting of the beneficiary receipt
+  Future<List<int>> getReceipt(
+    Beneficiary beneficiary, {
+    bool isImage = true,
+  }) async {
+    final bytes = await _provider.getReceipt(
+      beneficiary.id ?? 0,
+      isImage: isImage,
+    );
+
+    return bytes;
+  }
 }

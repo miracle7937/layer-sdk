@@ -12,6 +12,9 @@ enum BranchActivationError {
 
   /// Network error.
   network,
+
+  /// Incorrect OTP code.
+  incorrectOTPCode,
 }
 
 /// Enum for all the possible actions for the [BranchActivationCubit].
