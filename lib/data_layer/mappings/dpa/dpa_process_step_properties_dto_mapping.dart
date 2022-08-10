@@ -44,7 +44,7 @@ extension DPAProcessStepPropertiesDTOMapping on DPAProcessStepPropertiesDTO {
     }
 
     final baseUrl = customData.fileBaseURL;
-    final completeUrl = '$baseUrl/$image';
+    final completeUrl = image![0] != '/' ? '$baseUrl/$image' : '$baseUrl$image';
 
     if (isURL(completeUrl)) {
       return completeUrl;

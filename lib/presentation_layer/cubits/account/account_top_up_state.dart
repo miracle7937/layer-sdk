@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../domain_layer/models.dart';
@@ -12,6 +13,12 @@ enum AccountTopUpActions {
 
   /// The cubit is busy requesting a new secret key for the Stripe SDK.
   requestingSecret,
+
+  /// The cubit is busy requesting the image receipt of the top up.
+  requestingImageReceipt,
+
+  /// The cubit is busy requesting the pdf receipt of the top up.
+  requestingPdfReceipt,
 }
 
 /// Represents all available errors of the [AccountTopUpCubit].
@@ -24,6 +31,9 @@ enum AccountTopUpErrors {
 
   /// Failed to request a new Stripe SDK secret key.
   failedToRequestSecret,
+
+  /// Failed to request the top up receipt.
+  failedToRequestReceipt,
 }
 
 /// Holds the [AccountTopUpCubit] state.
@@ -43,6 +53,15 @@ class AccountTopUpState extends Equatable {
   /// The actual Stripe SDK secret used to make payments.
   final String? secret;
 
+  /// The image receipt in a list of bytes.
+  final UnmodifiableListView<int>? imageReceipt;
+
+  /// The pdf receipt in a list of bytes.
+  final UnmodifiableListView<int>? pdfReceipt;
+
+  /// The ID of the top up.
+  final String? topUpId;
+
   /// Creates a new [AccountTopUpState] instance.
   AccountTopUpState({
     this.account,
@@ -50,23 +69,37 @@ class AccountTopUpState extends Equatable {
     this.error = AccountTopUpErrors.none,
     this.amount = 0.0,
     this.secret,
-  });
+    this.topUpId,
+    Iterable<int>? imageReceiptBytes,
+    Iterable<int>? pdfReceiptBytes,
+  })  : imageReceipt = imageReceiptBytes != null
+            ? UnmodifiableListView(imageReceiptBytes)
+            : null,
+        pdfReceipt = pdfReceiptBytes != null
+            ? UnmodifiableListView(pdfReceiptBytes)
+            : null;
 
   /// Creates a new [AccountTopUpState] with the provided parameters.
   AccountTopUpState copyWith({
     Account? account,
+    double? amount,
     AccountTopUpActions? action,
     AccountTopUpErrors? error,
-    double? amount,
+    bool clearSecret = false,
     String? secret,
-    bool? clearSecret,
+    Iterable<int>? imageReceipt,
+    Iterable<int>? pdfReceipt,
+    String? topUpId,
   }) {
     return AccountTopUpState(
       account: account ?? this.account,
+      amount: amount ?? this.amount,
       action: action ?? this.action,
       error: error ?? this.error,
-      amount: amount ?? this.amount,
-      secret: (clearSecret ?? false) ? null : secret ?? this.secret,
+      secret: clearSecret ? null : secret ?? this.secret,
+      imageReceiptBytes: imageReceipt ?? this.imageReceipt,
+      pdfReceiptBytes: pdfReceipt ?? this.pdfReceipt,
+      topUpId: topUpId ?? this.topUpId,
     );
   }
 
@@ -77,5 +110,8 @@ class AccountTopUpState extends Equatable {
         error,
         amount,
         secret,
+        imageReceipt,
+        pdfReceipt,
+        topUpId,
       ];
 }

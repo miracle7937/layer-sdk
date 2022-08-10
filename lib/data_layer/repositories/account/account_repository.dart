@@ -33,14 +33,28 @@ class AccountRepository implements AccountRepositoryInterface {
 
   /// Requests a new Stripe secret key for account top ups.
   @override
-  Future<String> getAccountTopUpSecret({
+  Future<AccountTopUpRequest> getAccountTopUpSecret({
     required String accountId,
     required String currency,
     required double amount,
+  }) async {
+    final dto = await _provider.getAccountTopUpSecret(
+      accountId: accountId,
+      currency: currency,
+      amount: amount,
+    );
+
+    return dto.toAccountTopUpRequest();
+  }
+
+  /// Requests a top up receipt with the provided parameters.
+  @override
+  Future<List<int>> getTopUpReceipt({
+    required String topUpId,
+    required ReceiptType type,
   }) =>
-      _provider.getAccountTopUpSecret(
-        accountId: accountId,
-        currency: currency,
-        amount: amount,
+      _provider.getTopUpReceipt(
+        topUpId: topUpId,
+        type: type,
       );
 }

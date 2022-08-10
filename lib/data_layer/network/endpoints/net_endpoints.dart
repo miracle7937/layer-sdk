@@ -305,6 +305,9 @@ class NetEndpoints {
   /// Endpoint for both account and card top ups.
   String get topUp => '$_stripe/v1/topup';
 
+  /// Endpoint for top up receipts.
+  String get topUpReceipt => '$_stripe/v1/payment_receipt';
+
   /// Endpoint for the activities
   String get activity => '$_infoBanking/v1/activity';
 
@@ -322,4 +325,7 @@ class NetEndpoints {
 
   /// Endpoint for deleting a request
   String get request => '$_customer/v1/request';
+
+  /// Endpoint for the customer limits
+  String get customerLimits => '$_txnBanking/v2/customer_limit';
 }
