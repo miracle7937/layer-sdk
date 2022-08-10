@@ -54,6 +54,25 @@ class PaymentProvider {
     return PaymentDTO.fromJson(response.data);
   }
 
+  /// Patches the payment
+  Future<PaymentDTO> patchBill({
+    required PaymentDTO payment,
+    String? otp,
+  }) async {
+    var json = payment.toJson();
+    final response = await netClient.request(
+      netClient.netEndpoints.paymentV2,
+      method: NetRequestMethods.patch,
+      data: json,
+      forceRefresh: true,
+      queryParameters: {
+        if (otp?.isNotEmpty ?? false) 'otp_value': otp,
+      },
+    );
+
+    return PaymentDTO.fromJson(response.data);
+  }
+
   /// Returns the frequent payments of a customer.
   Future<List<PaymentDTO>> getFrequentPayments({
     int limit = 50,

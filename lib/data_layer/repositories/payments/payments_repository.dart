@@ -45,4 +45,17 @@ class PaymentRepository implements PaymentsRepositoryInterface {
 
     return paymentDTO.toPayment();
   }
+
+  @override
+  Future<Payment> patchBill({
+    required Payment payment,
+    String? otp,
+  }) async {
+    final paymentDTO = await _provider.patchBill(
+      payment: payment.toPaymentDTO(),
+      otp: otp,
+    );
+
+    return paymentDTO.toPayment();
+  }
 }

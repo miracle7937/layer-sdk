@@ -18,4 +18,10 @@ abstract class PaymentsRepositoryInterface {
     required Payment payment,
     String? otp,
   });
+
+  /// Patches the provided payment
+  Future<Payment> patchBill({
+    required Payment payment,
+    String? otp,
+  });
 }
