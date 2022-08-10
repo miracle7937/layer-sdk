@@ -15,6 +15,7 @@ class LoadMandatePaymentUseCase {
     int? limit,
     int? offset,
     String? sortBy,
+    int? mandateId,
 
     /// If the sort is descending or not
     bool desc = false,
@@ -24,5 +25,6 @@ class LoadMandatePaymentUseCase {
         offset: offset,
         sortBy: sortBy,
         desc: desc,
+        mandateId: mandateId,
       );
 }
