@@ -12,6 +12,7 @@ class OwnTransfer extends NewSchedulableTransfer {
     super.currency,
     super.scheduleDetails,
     super.saveToShortcut,
+    super.transferId,
     super.shortcutName,
   }) : super(type: TransferType.own);
 
@@ -34,8 +35,10 @@ class OwnTransfer extends NewSchedulableTransfer {
     ScheduleDetails? scheduleDetails,
     bool? saveToShortcut,
     String? shortcutName,
+    int? transferId,
   }) =>
       OwnTransfer(
+        transferId: transferId ?? this.transferId,
         source: source ?? this.source,
         destination: destination ?? this.destination,
         amount: amount ?? this.amount,
@@ -68,5 +71,6 @@ class OwnTransfer extends NewSchedulableTransfer {
         scheduleDetails,
         saveToShortcut,
         shortcutName,
+        transferId,
       ];
 }

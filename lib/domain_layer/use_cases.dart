@@ -142,6 +142,7 @@ export 'use_cases/transfer/load_frequent_transfers_use_case.dart';
 export 'use_cases/transfer/load_transfers_use_case.dart';
 export 'use_cases/transfer/resend_transfer_second_factor_use_case.dart';
 export 'use_cases/transfer/submit_transfer_use_case.dart';
+export 'use_cases/transfer/transfer_receipt_use_case.dart';
 export 'use_cases/transfer/validate_account_use_case.dart';
 export 'use_cases/transfer/validate_iban_use_case.dart';
 export 'use_cases/transfer/verify_transfer_second_factor_use_case.dart';
