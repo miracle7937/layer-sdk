@@ -97,6 +97,7 @@ class BranchActivationCubit extends Cubit<BranchActivationState> {
           emit(
             state.copyWith(
               activationResponse: activationResponse,
+              action: BranchActivationAction.none,
             ),
           );
 
@@ -155,6 +156,7 @@ class BranchActivationCubit extends Cubit<BranchActivationState> {
       if (activationResponse != null) {
         emit(
           state.copyWith(
+            action: BranchActivationAction.none,
             activationResponse: activationResponse,
           ),
         );
@@ -165,7 +167,9 @@ class BranchActivationCubit extends Cubit<BranchActivationState> {
       emit(
         state.copyWith(
           error: e is NetException
-              ? BranchActivationError.network
+              ? e.code == 'incorrect_value'
+                  ? BranchActivationError.incorrectOTPCode
+                  : BranchActivationError.network
               : BranchActivationError.generic,
           errorMessage: e is NetException ? e.message : null,
           action: BranchActivationAction.none,
