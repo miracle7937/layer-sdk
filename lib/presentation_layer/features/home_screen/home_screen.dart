@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../domain_layer/models.dart';
 import '../../cubits.dart';
 import '../../extensions.dart';
+import '../../widgets.dart';
 
 /// Custom type created for building an [ExperiencePage].
 ///
@@ -156,20 +157,9 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await context.read<ExperienceCubit>().load(public: false);
-
-      _initialPage = widget.initialPageCallback != null
-          ? await widget.initialPageCallback!(
-              context.read<ExperienceCubit>().state.visiblePages,
-            )
-          : context.read<ExperienceCubit>().state.visiblePages.first;
-
-      pageWidget = widget.pageBuilder(
-        context,
-        _initialPage,
-      );
-    });
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => context.read<ExperienceCubit>().load(public: false),
+    );
   }
 
   @override
@@ -182,40 +172,73 @@ class _HomeScreenState extends State<HomeScreen> {
       (cubit) => cubit.state.experience,
     );
 
-    return Scaffold(
-      drawer: experience?.sideDrawerMenu,
-      appBar: experience?.topBarMenu,
-      body: Stack(
-        children: [
-          SizedBox(
-            height: double.maxFinite,
-            width: double.maxFinite,
-            child: Column(
-              children: [
-                if (experience != null && pageWidget != null) ...[
-                  Expanded(
-                    child: pageWidget!,
-                  ),
-                  experience.bottomBarMenu(
-                    context,
-                    initialPage: _initialPage,
-                    visiblePages:
-                        context.watch<ExperienceCubit>().state.visiblePages,
-                    moreMenuItemTitle: widget.moreMenuItemTitle,
-                    onSinglePageChanged: (page) =>
-                        pageWidget = widget.pageBuilder(context, page),
-                    onMorePageChanged: (morePages) =>
-                        pageWidget = widget.morePageBuilder(context, morePages),
-                  ),
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<ExperienceCubit, ExperienceState>(
+          listenWhen: (previous, current) =>
+              previous.experience == null && current.experience != null,
+          listener: (context, state) async {
+            _initialPage = widget.initialPageCallback != null
+                ? await widget.initialPageCallback!(state.visiblePages)
+                : state.visiblePages.first;
+
+            pageWidget = widget.pageBuilder(
+              context,
+              _initialPage,
+            );
+          },
+        ),
+        BlocListener<ExperienceCubit, ExperienceState>(
+          listenWhen: (previous, current) =>
+              previous.error == ExperienceStateError.none &&
+              current.error != ExperienceStateError.none,
+          listener: (context, state) async {
+            await BottomSheetHelper.showError(
+              context: context,
+              titleKey: state.error.toTitleKey(),
+              descriptionKey: state.errorMessage,
+              dismissKey: 'retry',
+            );
+
+            context.read<ExperienceCubit>().load(public: false);
+          },
+        ),
+      ],
+      child: Scaffold(
+        drawer: experience?.sideDrawerMenu,
+        appBar: experience?.topBarMenu,
+        body: Stack(
+          children: [
+            SizedBox(
+              height: double.maxFinite,
+              width: double.maxFinite,
+              child: Column(
+                children: [
+                  if (experience != null && pageWidget != null) ...[
+                    Expanded(
+                      child: pageWidget!,
+                    ),
+                    experience.bottomBarMenu(
+                      context,
+                      initialPage: _initialPage,
+                      visiblePages:
+                          context.watch<ExperienceCubit>().state.visiblePages,
+                      moreMenuItemTitle: widget.moreMenuItemTitle,
+                      onSinglePageChanged: (page) =>
+                          pageWidget = widget.pageBuilder(context, page),
+                      onMorePageChanged: (morePages) => pageWidget =
+                          widget.morePageBuilder(context, morePages),
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
-          ),
-          if (busy)
-            Positioned.fill(
-              child: widget.fullscreenLoader,
-            ),
-        ],
+            if (busy)
+              Positioned.fill(
+                child: widget.fullscreenLoader,
+              ),
+          ],
+        ),
       ),
     );
   }
