@@ -20,12 +20,14 @@ class MandatePaymentRepository implements MandatePaymentRepositoryInterface {
 
     /// If the sort is descending or not
     bool desc = false,
+    int? mandateId,
   }) async {
     final mandatePaymentsDTO = await _provider.fetchMandatePayments(
       limit: limit,
       offset: offset,
       sortBy: sortBy,
       desc: desc,
+      mandateId: mandateId,
     );
 
     return mandatePaymentsDTO

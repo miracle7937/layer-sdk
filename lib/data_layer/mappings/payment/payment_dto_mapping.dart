@@ -51,6 +51,9 @@ extension PaymentDTOStatusMapping on PaymentDTOStatus {
       case PaymentDTOStatus.cancelled:
         return PaymentStatus.cancelled;
 
+      case PaymentDTOStatus.deleted:
+        return PaymentStatus.deleted;
+
       case PaymentDTOStatus.scheduled:
         return PaymentStatus.scheduled;
 
@@ -141,6 +144,9 @@ extension PaymentToDTOStatusMapping on PaymentStatus {
 
       case PaymentStatus.pendingExpired:
         return PaymentDTOStatus.pendingExpired;
+
+      case PaymentStatus.deleted:
+        return PaymentDTOStatus.deleted;
 
       default:
         throw MappingException(from: PaymentDTOStatus, to: PaymentStatus);
