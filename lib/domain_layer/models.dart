@@ -4,6 +4,7 @@ export 'models/account/account.dart';
 export 'models/account/account_filter.dart';
 export 'models/account/account_info.dart';
 export 'models/account/account_preferences.dart';
+export 'models/account/account_top_up_request.dart';
 export 'models/account_loan/account_loan.dart';
 export 'models/account_loan/account_loan_payment.dart';
 export 'models/account_transaction/account_transaction.dart';
