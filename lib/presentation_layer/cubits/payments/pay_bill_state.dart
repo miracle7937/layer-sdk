@@ -19,6 +19,9 @@ enum PayBillBusyAction {
   /// Validating second factory
   validatingSecondFactor,
 
+  /// Re-sending the OTP
+  resendingOTP,
+
   /// Validating user input
   validating,
 }

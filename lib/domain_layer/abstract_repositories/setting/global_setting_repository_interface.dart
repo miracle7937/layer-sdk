@@ -6,6 +6,7 @@ abstract class GlobalSettingRepositoryInterface {
   ///
   /// Optional [codes] parameter can be supplied to only fetch
   /// specific settings.
+  /// Invalid settings will be skipped.
   Future<List<GlobalSetting>> list({
     List<String>? codes,
     bool forceRefresh = false,

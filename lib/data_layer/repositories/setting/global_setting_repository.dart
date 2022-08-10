@@ -1,3 +1,5 @@
+import 'package:collection/collection.dart';
+
 import '../../../domain_layer/abstract_repositories.dart';
 import '../../../domain_layer/models/setting/global_setting.dart';
 import '../../mappings.dart';
@@ -16,6 +18,7 @@ class GlobalSettingRepository implements GlobalSettingRepositoryInterface {
   ///
   /// Optional [codes] parameter can be supplied to only fetch
   /// specific settings.
+  /// Invalid settings will be skipped.
   Future<List<GlobalSetting>> list({
     List<String>? codes,
     bool forceRefresh = false,
@@ -25,6 +28,11 @@ class GlobalSettingRepository implements GlobalSettingRepositoryInterface {
       forceRefresh: forceRefresh,
     );
 
-    return dtos.map((dto) => dto.toGlobalSetting()).toList(growable: false);
+    return dtos
+        .map(
+          (dto) => dto.toGlobalSetting(),
+        )
+        .whereNotNull()
+        .toList(growable: false);
   }
 }
