@@ -45,6 +45,9 @@ enum BeneficiaryOtpVerificationErrorStatus {
 
   /// Network error
   network,
+
+  /// Incorrect OTP code.
+  incorrectOTPCode,
 }
 
 /// The state of the [BeneficiaryOtpVerificationCubit]
@@ -58,6 +61,9 @@ class BeneficiaryOtpVerificationState extends Equatable {
   /// The actions that the cubit is performing.
   final UnmodifiableSetView<BeneficiaryOtpVerificationAction> actions;
 
+  /// Whether if the OTP was verified.
+  final bool isVerified;
+
   /// Creates a new [BeneficiaryOtpVerificationState].
   BeneficiaryOtpVerificationState({
     required this.beneficiary,
@@ -65,6 +71,7 @@ class BeneficiaryOtpVerificationState extends Equatable {
         const <BeneficiaryOtpVerificationAction>{},
     Set<BeneficiaryOtpVerificationError> errors =
         const <BeneficiaryOtpVerificationError>{},
+    this.isVerified = false,
   })  : actions = UnmodifiableSetView(actions),
         errors = UnmodifiableSetView(errors);
 
@@ -80,11 +87,13 @@ class BeneficiaryOtpVerificationState extends Equatable {
     Beneficiary? beneficiary,
     Set<BeneficiaryOtpVerificationAction>? actions,
     Set<BeneficiaryOtpVerificationError>? errors,
+    bool? isVerified,
   }) =>
       BeneficiaryOtpVerificationState(
         beneficiary: beneficiary ?? this.beneficiary,
         errors: errors ?? this.errors,
         actions: actions ?? this.actions,
+        isVerified: isVerified ?? this.isVerified,
       );
 }
 
@@ -95,7 +104,4 @@ enum BeneficiaryOtpVerificationAction {
 
   /// Resending OTP action.
   resendOtp,
-
-  /// OTP verification successful.
-  success,
 }

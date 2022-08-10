@@ -11,17 +11,22 @@ class ActivityCubit extends Cubit<ActivityState> {
   final LoadActivitiesUseCase _loadActivitiesUseCase;
   final DeleteActivityUseCase _deleteActivityUseCase;
   final CancelActivityUseCase _cancelActivityUseCase;
+  final CreateShortcutUseCase _createShortcutUseCase;
 
   /// Creates a new [ActivityCubit] instance
   ActivityCubit({
     required LoadActivitiesUseCase loadActivitiesUseCase,
     required DeleteActivityUseCase deleteActivityUseCase,
     required CancelActivityUseCase cancelActivityUseCase,
+    required CreateShortcutUseCase createShortcutUseCase,
     int limit = 20,
   })  : _loadActivitiesUseCase = loadActivitiesUseCase,
         _deleteActivityUseCase = deleteActivityUseCase,
         _cancelActivityUseCase = cancelActivityUseCase,
-        super(ActivityState(pagination: Pagination(limit: limit)));
+        _createShortcutUseCase = createShortcutUseCase,
+        super(ActivityState(
+          pagination: Pagination(limit: limit),
+        ));
 
   /// Loads all the activities
   Future<void> load({
@@ -93,5 +98,18 @@ class ActivityCubit extends Cubit<ActivityState> {
   Future<void> cancel(String id, {String? otpValue}) => _cancelActivityUseCase(
         id,
         otpValue: otpValue,
+      );
+
+  /// Add the activity to shorcut
+  Future<void> shortcut({required NewShortcut newShortcut}) =>
+      _createShortcutUseCase(
+        shortcut: newShortcut,
+      );
+
+  /// Save the shortcut name
+  void onShortcutNameChanged(String shortcutName) => emit(
+        state.copyWith(
+          shortcutName: shortcutName,
+        ),
       );
 }

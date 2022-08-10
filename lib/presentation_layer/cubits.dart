@@ -52,6 +52,8 @@ export 'cubits/country/country_cubit.dart';
 export 'cubits/country/country_states.dart';
 export 'cubits/currency/currency_cubit.dart';
 export 'cubits/currency/currency_state.dart';
+export 'cubits/customer/customer_limits_cubit.dart';
+export 'cubits/customer/customer_limits_state.dart';
 export 'cubits/customer/customers_cubit.dart';
 export 'cubits/customer/customers_states.dart';
 export 'cubits/device_session/device_session_cubit.dart';

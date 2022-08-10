@@ -50,4 +50,13 @@ abstract class BeneficiaryRepositoryInterface {
     required Beneficiary beneficiary,
     bool isEditing = false,
   });
+
+  /// Getting of the beneficiary receipt.
+  ///
+  /// Returning list of bytes that represents image if [isImage] is true
+  /// or PDF if it's false.
+  Future<List<int>> getReceipt(
+    Beneficiary beneficiary, {
+    bool isImage = true,
+  });
 }
