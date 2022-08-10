@@ -4,7 +4,7 @@ import '../../../domain_layer/models.dart';
 import '../../../domain_layer/models/payment/biller.dart';
 
 /// Which loading action the cubit is doing
-enum PatchBillBusyAction {
+enum PatchPaymentBusyAction {
   /// Loading the entire cubit state
   loading,
 
@@ -22,7 +22,7 @@ enum PatchBillBusyAction {
 }
 
 /// The available error status
-enum PatchBillErrorStatus {
+enum PatchPaymentErrorStatus {
   /// No errors
   none,
 
@@ -34,7 +34,7 @@ enum PatchBillErrorStatus {
 }
 
 /// The state of the patch bill payment cubit
-class PatchBillState extends Equatable {
+class PatchPaymentState extends Equatable {
   /// The payment to be patched
   final Payment payment;
 
@@ -45,10 +45,10 @@ class PatchBillState extends Equatable {
   final bool busy;
 
   /// Which busy action is the cubit doing
-  final PatchBillBusyAction busyAction;
+  final PatchPaymentBusyAction busyAction;
 
   /// The current error status.
-  final PatchBillErrorStatus errorStatus;
+  final PatchPaymentErrorStatus errorStatus;
 
   /// The details about scheduled payments
   final ScheduleDetails? scheduleDetails;
@@ -61,13 +61,13 @@ class PatchBillState extends Equatable {
   final String? shortcutName;
 
   /// Creates a new state.
-  PatchBillState({
+  PatchPaymentState({
     required this.payment,
     this.fromAccounts = const [],
     List<Biller> billers = const [],
     this.busy = true,
-    this.busyAction = PatchBillBusyAction.loading,
-    this.errorStatus = PatchBillErrorStatus.none,
+    this.busyAction = PatchPaymentBusyAction.loading,
+    this.errorStatus = PatchPaymentErrorStatus.none,
     this.scheduleDetails,
     this.saveToShortcut = false,
     this.shortcutName,
@@ -86,17 +86,17 @@ class PatchBillState extends Equatable {
       ];
 
   /// Creates a new state based on this one.
-  PatchBillState copyWith({
+  PatchPaymentState copyWith({
     Payment? payment,
     List<Account>? fromAccounts,
     bool? busy,
-    PatchBillErrorStatus? errorStatus,
-    PatchBillBusyAction? busyAction,
+    PatchPaymentErrorStatus? errorStatus,
+    PatchPaymentBusyAction? busyAction,
     ScheduleDetails? scheduleDetails,
     bool? saveToShortcut,
     String? shortcutName,
   }) {
-    return PatchBillState(
+    return PatchPaymentState(
       payment: payment ?? this.payment,
       fromAccounts: fromAccounts ?? this.fromAccounts,
       busy: busy ?? this.busy,

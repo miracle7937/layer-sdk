@@ -8,20 +8,19 @@ import '../../../domain_layer/use_cases.dart';
 import '../../../domain_layer/use_cases/payments/generate_device_uid_use_case.dart';
 import '../../../domain_layer/use_cases/payments/validate_bill_use_case.dart';
 import '../../../layer_sdk.dart';
-import 'patch_bill_state.dart';
+import 'patch_payment_state.dart';
 
-/// A cubit for patching customer bills.
-class PatchBillCubit extends Cubit<PatchBillState> {
+/// A cubit for patching customer bill payments.
+class PatchPaymentCubit extends Cubit<PatchPaymentState> {
   final GetAccountsByStatusUseCase _getCustomerAccountsUseCase;
   final PatchPaymentUseCase _patchPaymentUseCase;
-  final ValidateBillUseCase _validateBillUseCase;
   final CreateShortcutUseCase _createShortcutUseCase;
 
   /// A payment to patch
   // final Payment? paymentToPatch;
 
   /// Creates a new cubit
-  PatchBillCubit({
+  PatchPaymentCubit({
     required GetAccountsByStatusUseCase getCustomerAccountsUseCase,
     required PatchPaymentUseCase patchPaymentUseCase,
     required GenerateDeviceUIDUseCase generateDeviceUIDUseCase,
@@ -30,9 +29,8 @@ class PatchBillCubit extends Cubit<PatchBillState> {
     // this.paymentToPatch,
   })  : _getCustomerAccountsUseCase = getCustomerAccountsUseCase,
         _patchPaymentUseCase = patchPaymentUseCase,
-        _validateBillUseCase = validateBillUseCase,
         _createShortcutUseCase = createShortcutUseCase,
-        super(PatchBillState(payment: Payment()));
+        super(PatchPaymentState(payment: Payment()));
 
   /// Loads all the required data, must be called at lease once before anything
   /// other method in this cubit.
@@ -61,7 +59,7 @@ class PatchBillCubit extends Cubit<PatchBillState> {
           fromAccounts: accounts
               .where((element) => element.canPay)
               .toList(growable: false),
-          errorStatus: PatchBillErrorStatus.none,
+          errorStatus: PatchPaymentErrorStatus.none,
         ),
       );
 
@@ -79,38 +77,10 @@ class PatchBillCubit extends Cubit<PatchBillState> {
         state.copyWith(
           busy: false,
           errorStatus: e is NetException
-              ? PatchBillErrorStatus.network
-              : PatchBillErrorStatus.generic,
+              ? PatchPaymentErrorStatus.network
+              : PatchPaymentErrorStatus.generic,
         ),
       );
-    }
-  }
-
-  /// Validates user input and returns the bill object
-  Future<Bill> validateBill() async {
-    try {
-      emit(
-        state.copyWith(
-          busy: true,
-          busyAction: PatchBillBusyAction.validating,
-        ),
-      );
-      final validatedBill =
-          await _validateBillUseCase(bill: state.payment.bill ?? Bill());
-      emit(
-        state.copyWith(
-          busy: false,
-        ),
-      );
-      return validatedBill;
-    } on Exception catch (_) {
-      emit(
-        state.copyWith(
-          busy: false,
-        ),
-      );
-
-      rethrow;
     }
   }
 
@@ -124,8 +94,8 @@ class PatchBillCubit extends Cubit<PatchBillState> {
         state.copyWith(
           busy: true,
           busyAction: otp != null
-              ? PatchBillBusyAction.validatingSecondFactor
-              : PatchBillBusyAction.submitting,
+              ? PatchPaymentBusyAction.validatingSecondFactor
+              : PatchPaymentBusyAction.submitting,
         ),
       );
 
