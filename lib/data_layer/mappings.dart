@@ -26,6 +26,7 @@ export 'mappings/config/config_dto_mapping.dart';
 export 'mappings/country/country_dto_mapping.dart';
 export 'mappings/currency/currency_dto_mapping.dart';
 export 'mappings/customer/customer_dto_mapping.dart';
+export 'mappings/customer/customer_limit_dto_mapping.dart';
 export 'mappings/device_session/device_session_dto_mapping.dart';
 export 'mappings/dpa/dpa_constraint_dto_mapping.dart';
 export 'mappings/dpa/dpa_process_definition_dto_mapping.dart';

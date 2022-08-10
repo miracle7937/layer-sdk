@@ -221,6 +221,27 @@ class CustomerProvider {
     return response.success;
   }
 
+  /// Loads the limits of the customer.
+  ///
+  /// Returns `null` if the customer has no limits set.
+  Future<CustomerLimitDTO?> getCustomerLimits() async {
+    final response = await netClient.request(
+      netClient.netEndpoints.customerLimits,
+      queryParameters: {
+        'module': 'all',
+      },
+    );
+
+    final data = response.data;
+    if (data is Map<String, dynamic>) {
+      final isEmpty = data['total_limits']?.isEmpty ?? true;
+
+      return isEmpty ? null : CustomerLimitDTO.fromJson(data);
+    }
+
+    return null;
+  }
+
   /// Returns the prefix URL to access files on the server.
   String get customerDocumentsURLPrefix =>
       '${EnvironmentConfiguration.current.baseUrl}'

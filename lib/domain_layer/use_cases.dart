@@ -50,6 +50,7 @@ export 'use_cases/country/load_countries_use_case.dart';
 export 'use_cases/currency/load_all_currencies_use_case.dart';
 export 'use_cases/currency/load_currency_by_code_use_case.dart';
 export 'use_cases/customer/load_current_customer_use_case.dart';
+export 'use_cases/customer/load_customer_limits_use_case.dart';
 export 'use_cases/customer/load_customer_use_case.dart';
 export 'use_cases/customer/update_customer_estatement_use_case.dart';
 export 'use_cases/customer/update_customer_grace_period_use_case.dart';
