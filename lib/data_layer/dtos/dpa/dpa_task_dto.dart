@@ -68,6 +68,9 @@ class DPATaskDTO {
   /// The list of variables for this task.
   final Map<String, DPAVariableDTO>? taskVariables;
 
+  /// The process key.
+  final String? processKey;
+
   /// Creates a new [DPATaskDTO].
   DPATaskDTO({
     this.assignee,
@@ -92,6 +95,7 @@ class DPATaskDTO {
     this.taskDefinitionKey,
     this.preVariables,
     this.taskVariables,
+    this.processKey,
   });
 
   /// Creates a new [DPATaskDTO] from a JSON.
@@ -103,6 +107,7 @@ class DPATaskDTO {
         executionId: json['executionId'],
         id: json['id'],
         name: json['name'],
+        processKey: json['processKey'],
         priority: json['priority'],
         activityInstanceId: json['activityInstanceId'],
         previousTasks: List<String>.from(json['previous_task'] ?? []),
@@ -167,6 +172,7 @@ class DPATaskDTO {
       '${taskDefinitionKey != null ? ' taskDefinitionKey: '
           '$taskDefinitionKey' : ''}'
       '${preVariables != null ? ' preVariables: $preVariables' : ''}'
+      '${processKey != null ? ' processKey: $processKey' : ''}'
       '${taskVariables != null ? ' taskVariables: $taskVariables' : ''}'
       '}';
 }
