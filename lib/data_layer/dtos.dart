@@ -2,6 +2,7 @@ library dtos;
 
 export 'dtos/account/account_dto.dart';
 export 'dtos/account/account_preferences_dto.dart';
+export 'dtos/account/account_top_up_request_dto.dart';
 export 'dtos/account/account_type_dto.dart';
 export 'dtos/account_loan/account_loan_dto.dart';
 export 'dtos/account_loan/account_loan_payment_dto.dart';
@@ -28,6 +29,7 @@ export 'dtos/config/config_dto.dart';
 export 'dtos/country/country_dto.dart';
 export 'dtos/currency/currency_dto.dart';
 export 'dtos/customer/customer_dto.dart';
+export 'dtos/customer/customer_limit_dto.dart';
 export 'dtos/device_session/device_session_dto.dart';
 export 'dtos/dpa/dpa_constraint_dto.dart';
 export 'dtos/dpa/dpa_dial_code_dto.dart';
