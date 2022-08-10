@@ -2,17 +2,17 @@ import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../data_layer/mappings/payment/biller_dto_mapping.dart';
+import '../../../data_layer/network.dart';
 import '../../../data_layer/network/net_exceptions.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/models/payment/biller.dart';
 import '../../../domain_layer/models/service/service_field.dart';
-import '../../../domain_layer/use_cases/account/get_accounts_by_status_use_case.dart';
+import '../../../domain_layer/use_cases.dart';
 import '../../../domain_layer/use_cases/payments/generate_device_uid_use_case.dart';
 import '../../../domain_layer/use_cases/payments/load_billers_use_case.dart';
 import '../../../domain_layer/use_cases/payments/load_services_use_case.dart';
 import '../../../domain_layer/use_cases/payments/post_payment_use_case.dart';
 import '../../../domain_layer/use_cases/payments/validate_bill_use_case.dart';
-import '../../../domain_layer/use_cases/shortcut/create_shortcut_use_case.dart';
 import 'pay_bill_state.dart';
 
 /// A cubit for paying customer bills.
@@ -99,7 +99,14 @@ class PayBillCubit extends Cubit<PayBillState> {
             _setServiceFieldsValue(
               serviceFields: paymentToRepeat!.bill?.billingFields,
             );
-            // TODO: set recurrence
+            setScheduleDetails(
+              scheduleDetails: ScheduleDetails(
+                recurrence: paymentToRepeat!.recurrence,
+                startDate: paymentToRepeat!.scheduled ??
+                    paymentToRepeat!.recurrenceStart,
+                endDate: paymentToRepeat!.recurrenceEnd,
+              ),
+            );
           }
         }
       } else if (billerId?.isNotEmpty ?? false) {

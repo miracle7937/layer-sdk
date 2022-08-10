@@ -16,9 +16,13 @@ class FileRepository {
     Map<String, dynamic> queryParameters = const <String, dynamic>{},
     bool forceRefresh = false,
     NetProgressCallback? onReceiveProgress,
+    NetRequestMethods method = NetRequestMethods.get,
+    Map<String, dynamic> body = const <String, dynamic>{},
   }) async {
     return await _fileProvider.downloadFile(
       url: url,
+      method: method,
+      body: body,
       queryParameters: queryParameters,
       forceRefresh: forceRefresh,
       onReceiveProgress: onReceiveProgress,

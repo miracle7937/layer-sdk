@@ -204,6 +204,7 @@ class PayBillState extends Equatable {
       selectedCategory != null &&
       selectedBiller != null &&
       selectedService != null &&
+      ((selectedAccount?.availableBalance ?? 0) >= amount) &&
       amount > 0 &&
       _serviceFieldsValid &&
       (!saveToShortcut || (shortcutName?.isNotEmpty ?? false)) &&
