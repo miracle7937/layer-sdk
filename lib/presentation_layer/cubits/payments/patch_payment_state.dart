@@ -17,6 +17,9 @@ enum PatchPaymentBusyAction {
   /// Validating second factory
   validatingSecondFactor,
 
+  /// Re-sending the OTP
+  resendingOTP,
+
   /// Validating user input
   validating,
 }
@@ -41,6 +44,15 @@ class PatchPaymentState extends Equatable {
   /// A list of accounts that the user has to select from in order to pay.
   final List<Account> fromAccounts;
 
+  /// The initially selected account when we first open the screen.
+  final Account? initiallySelectedAccount;
+
+  /// The initial amount of the payment when we first open the screen.
+  final double? initialAmount;
+
+  /// The initial schedule details of the payment when we first open the screen
+  final ScheduleDetails? initialRecurrence;
+
   /// True if the cubit is processing something.
   final bool busy;
 
@@ -50,90 +62,80 @@ class PatchPaymentState extends Equatable {
   /// The current error status.
   final PatchPaymentErrorStatus errorStatus;
 
-  /// The details about scheduled payments
-  final ScheduleDetails? scheduleDetails;
-
-  /// Whether if the payment should be saved to a shortcut.
-  /// Default is `false`
-  final bool saveToShortcut;
-
-  /// The shortcut name.
-  final String? shortcutName;
-
   /// Creates a new state.
   PatchPaymentState({
     required this.payment,
     this.fromAccounts = const [],
+    this.initiallySelectedAccount,
+    this.initialAmount,
+    this.initialRecurrence,
     List<Biller> billers = const [],
     this.busy = true,
     this.busyAction = PatchPaymentBusyAction.loading,
     this.errorStatus = PatchPaymentErrorStatus.none,
-    this.scheduleDetails,
-    this.saveToShortcut = false,
-    this.shortcutName,
   });
 
   @override
   List<Object?> get props => [
         payment,
+        initiallySelectedAccount,
+        initialAmount,
+        initialRecurrence,
         fromAccounts,
         busy,
         busyAction,
         errorStatus,
-        scheduleDetails,
-        saveToShortcut,
-        shortcutName,
       ];
 
   /// Creates a new state based on this one.
   PatchPaymentState copyWith({
     Payment? payment,
+    Account? initiallySelectedAccount,
+    double? initialAmount,
+    ScheduleDetails? initialRecurrence,
     List<Account>? fromAccounts,
     bool? busy,
     PatchPaymentErrorStatus? errorStatus,
     PatchPaymentBusyAction? busyAction,
-    ScheduleDetails? scheduleDetails,
-    bool? saveToShortcut,
-    String? shortcutName,
   }) {
     return PatchPaymentState(
       payment: payment ?? this.payment,
+      initiallySelectedAccount:
+          initiallySelectedAccount ?? this.initiallySelectedAccount,
+      initialAmount: initialAmount ?? this.initialAmount,
+      initialRecurrence: initialRecurrence ?? this.initialRecurrence,
       fromAccounts: fromAccounts ?? this.fromAccounts,
       busy: busy ?? this.busy,
       busyAction: busyAction ?? this.busyAction,
       errorStatus: errorStatus ?? this.errorStatus,
-      scheduleDetails: scheduleDetails ?? this.scheduleDetails,
-      saveToShortcut: saveToShortcut ?? this.saveToShortcut,
-      shortcutName: !(saveToShortcut ?? this.saveToShortcut)
-          ? null
-          : (shortcutName ?? this.shortcutName),
     );
   }
 
   /// Whether the user can submit the form or not
   bool get canSubmit =>
       !busy &&
+      (initiallySelectedAccount?.id != payment.fromAccount?.id ||
+          initialAmount != payment.amount ||
+          (initialRecurrence?.recurrence != payment.recurrence ||
+              initialRecurrence?.startDate != payment.recurrenceStart)) &&
       payment.fromAccount != null &&
+      ((payment.fromAccount?.availableBalance ?? 0) >= (payment.amount ?? 0)) &&
       (payment.amount ?? 0) > 0 &&
-      (!saveToShortcut || (shortcutName?.isNotEmpty ?? false)) &&
-      (scheduleDetails?.recurrence == null ||
-          scheduleDetails?.recurrence == Recurrence.none ||
-          scheduleDetails?.startDate != null);
+      (payment.recurrence == Recurrence.none ||
+          payment.recurrenceStart != null);
 
-  bool get _scheduled => scheduleDetails?.recurrence == Recurrence.once;
+  bool get _scheduled => payment.recurrence == Recurrence.once;
   bool get _recurring => ![
         Recurrence.once,
         Recurrence.none,
         null,
-      ].contains(scheduleDetails?.recurrence);
+      ].contains(payment.recurrence);
 
-  DateTime? get _recurrenceStart =>
-      _recurring ? scheduleDetails?.startDate : null;
+  DateTime? get _recurrenceStart => _recurring ? payment.recurrenceStart : null;
 
-  DateTime? get _recurrenceEnd => _recurring ? scheduleDetails?.endDate : null;
+  DateTime? get _recurrenceEnd => _recurring ? payment.recurrenceEnd : null;
 
-  DateTime? get _scheduledDate =>
-      _scheduled ? scheduleDetails?.startDate : null;
+  DateTime? get _scheduledDate => _scheduled ? payment.recurrenceStart : null;
 
   /// The payment to be patched
   Payment get paymentToBePatched => Payment(
@@ -143,7 +145,7 @@ class PatchPaymentState extends Equatable {
         currency: payment.fromAccount?.currency ?? '',
         deviceUID: payment.deviceUID,
         status: PaymentStatus.completed,
-        recurrence: scheduleDetails?.recurrence ?? Recurrence.none,
+        recurrence: payment.recurrence,
         scheduled: _scheduledDate,
         recurrenceStart: _recurrenceStart,
         recurrenceEnd: _recurrenceEnd,

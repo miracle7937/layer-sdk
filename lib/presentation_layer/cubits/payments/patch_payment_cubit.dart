@@ -5,8 +5,6 @@ import '../../../data_layer/network.dart';
 import '../../../data_layer/network/net_exceptions.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
-import '../../../domain_layer/use_cases/payments/generate_device_uid_use_case.dart';
-import '../../../domain_layer/use_cases/payments/validate_bill_use_case.dart';
 import '../../../layer_sdk.dart';
 import 'patch_payment_state.dart';
 
@@ -14,44 +12,55 @@ import 'patch_payment_state.dart';
 class PatchPaymentCubit extends Cubit<PatchPaymentState> {
   final GetAccountsByStatusUseCase _getCustomerAccountsUseCase;
   final PatchPaymentUseCase _patchPaymentUseCase;
-  final CreateShortcutUseCase _createShortcutUseCase;
-
-  /// A payment to patch
-  // final Payment? paymentToPatch;
+  final ResendOTPPaymentUseCase _resendOTPUseCase;
 
   /// Creates a new cubit
   PatchPaymentCubit({
     required GetAccountsByStatusUseCase getCustomerAccountsUseCase,
     required PatchPaymentUseCase patchPaymentUseCase,
-    required GenerateDeviceUIDUseCase generateDeviceUIDUseCase,
-    required ValidateBillUseCase validateBillUseCase,
-    required CreateShortcutUseCase createShortcutUseCase,
-    // this.paymentToPatch,
+    required ResendOTPPaymentUseCase resendPaymentOTPUseCase,
+    required Payment? paymentToPatch,
   })  : _getCustomerAccountsUseCase = getCustomerAccountsUseCase,
         _patchPaymentUseCase = patchPaymentUseCase,
-        _createShortcutUseCase = createShortcutUseCase,
-        super(PatchPaymentState(payment: Payment()));
+        _resendOTPUseCase = resendPaymentOTPUseCase,
+        super(
+          PatchPaymentState(
+            payment: paymentToPatch ?? Payment(),
+            initiallySelectedAccount: paymentToPatch?.fromAccount,
+            initialAmount: paymentToPatch?.amount ?? 0.0,
+            initialRecurrence: paymentToPatch?.recurrence != null &&
+                    paymentToPatch?.recurrence != Recurrence.none &&
+                    paymentToPatch?.recurrence != Recurrence.once
+                ? ScheduleDetails(
+                    recurrence: paymentToPatch?.recurrence ?? Recurrence.none,
+                    startDate: paymentToPatch?.recurrenceStart,
+                    endDate: paymentToPatch?.recurrenceEnd,
+                    executions:
+                        const ScheduleDetails().calculateReccurenceExecutions(
+                      paymentToPatch?.recurrence ?? Recurrence.daily,
+                      paymentToPatch?.recurrenceStart,
+                      paymentToPatch?.recurrenceEnd,
+                    ),
+                  )
+                : null,
+          ),
+        );
 
   /// Loads all the required data, must be called at lease once before anything
   /// other method in this cubit.
-  void load(Payment payment) async {
+  void load() async {
     emit(
       state.copyWith(
         busy: true,
-        payment: payment,
       ),
     );
     try {
-      final responses = await Future.wait([
-        _getCustomerAccountsUseCase(
-          statuses: [
-            AccountStatus.active,
-          ],
-          includeDetails: false,
-        ),
-      ]);
-
-      final accounts = responses[0] as List<Account>;
+      final accounts = await _getCustomerAccountsUseCase(
+        statuses: [
+          AccountStatus.active,
+        ],
+        includeDetails: false,
+      );
 
       emit(
         state.copyWith(
@@ -62,16 +71,6 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
           errorStatus: PatchPaymentErrorStatus.none,
         ),
       );
-
-      // if (paymentToPatch!.bill?.service?.billerId != null) {
-      //   final biller = billers.firstWhereOrNull(
-      //       (element) => element.id == paymentToPatch!.bill?.service?.billerId);
-      //   if (biller != null) {
-      //     setFromAccount(paymentToPatch!.fromAccount?.id);
-      //     setAmount(paymentToPatch!.amount ?? 0.0);
-      //     TODO: set recurrence
-      // }
-      // }
     } on Exception catch (e) {
       emit(
         state.copyWith(
@@ -104,16 +103,6 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
         otp: otp,
       );
 
-      if ((state.saveToShortcut) &&
-          ([
-            PaymentStatus.completed,
-            PaymentStatus.pending,
-            PaymentStatus.scheduled,
-            PaymentStatus.pendingBank,
-          ].contains(res.status))) {
-        await _createShortcut(res);
-      }
-
       emit(
         state.copyWith(
           busy: false,
@@ -131,41 +120,33 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
     }
   }
 
-  /// Creates the shortcut (if enabled) once the bill payment has succeeded.
-  Future<void> _createShortcut(
-    Payment payment,
-  ) async {
+  /// Resend an OTP request
+  Future<void> resendOTP(Payment payment) async {
     try {
-      await _createShortcutUseCase(
-        shortcut: NewShortcut(
-          name: state.shortcutName!,
-          type: ShortcutType.payment,
-          payload: state.payment,
+      emit(
+        state.copyWith(
+          busy: true,
+          busyAction: PatchPaymentBusyAction.resendingOTP,
+        ),
+      );
+
+      await _resendOTPUseCase(
+        payment,
+      );
+
+      emit(
+        state.copyWith(
+          busy: false,
         ),
       );
     } on Exception catch (_) {
-      // TODO: handle shortcut error without affecting the payment
+      emit(
+        state.copyWith(
+          busy: false,
+        ),
+      );
+      rethrow;
     }
-  }
-
-  /// Set's save to shortcuts bool
-  void setSaveToShortcut({
-    required bool saveToShortcuts,
-  }) {
-    emit(
-      state.copyWith(
-        saveToShortcut: saveToShortcuts,
-      ),
-    );
-  }
-
-  /// Set's the shortcut name
-  void setShortcutName(String shortcutName) {
-    emit(
-      state.copyWith(
-        shortcutName: shortcutName,
-      ),
-    );
   }
 
   /// Sets the selected account to the one matching the provided account id.
@@ -193,7 +174,9 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
   void setScheduleDetails({required ScheduleDetails scheduleDetails}) {
     emit(
       state.copyWith(
-        scheduleDetails: scheduleDetails,
+        payment: state.payment.copyWith(
+          recurrence: scheduleDetails.recurrence,
+        ),
       ),
     );
   }
