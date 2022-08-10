@@ -2,10 +2,11 @@ import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
 
+import '../../mixins.dart';
 import '../file_utils.dart';
 
 /// Implementation of [FileUtils] for the mobile platform.
-class PlatformFileUtils implements FileUtils {
+class PlatformFileUtils with FileExistenceCheckerMixin implements FileUtils {
   @override
   Future<String> saveBytes({
     required String filename,

@@ -140,6 +140,9 @@ class NetEndpoints {
   /// The beneficiaries endpoint
   String get beneficiary2 => '$_txnBanking/v2/beneficiary';
 
+  /// The beneficiary receipt
+  String get beneficiaryReceipt => '$_txnBanking/v1/beneficiary_receipt';
+
   /// The bill endpoint
   String get bill => '$_payment/v1/bill';
 
