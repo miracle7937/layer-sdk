@@ -200,6 +200,9 @@ class DPAFlow<T> extends StatelessWidget {
   /// Provide a custom padding for the continue button
   final EdgeInsets customContinueButtonPadding;
 
+  /// Asset for logo
+  final String? asset;
+
   /// Creates a new [DPAFlow].
   const DPAFlow({
     Key? key,
@@ -215,6 +218,7 @@ class DPAFlow<T> extends StatelessWidget {
     this.customEmptySearchBuilder,
     required this.sdkCallback,
     this.isOnboarding = false,
+    this.asset,
     this.customContinueButtonPadding = const EdgeInsets.fromLTRB(
       16.0,
       0.0,
@@ -376,7 +380,8 @@ class DPAFlow<T> extends StatelessWidget {
                   ),
                 ],
               ),
-          if (isDelayTask) DPAFullscreenLoader(),
+          if (isDelayTask)
+            DPAFullscreenLoader(asset: asset),
         ],
       ),
     );
