@@ -62,6 +62,9 @@ class PatchPaymentState extends Equatable {
   /// The current error status.
   final PatchPaymentErrorStatus errorStatus;
 
+  /// The details about scheduled payments
+  final ScheduleDetails? scheduleDetails;
+
   /// Creates a new state.
   PatchPaymentState({
     required this.payment,
@@ -73,6 +76,7 @@ class PatchPaymentState extends Equatable {
     this.busy = true,
     this.busyAction = PatchPaymentBusyAction.loading,
     this.errorStatus = PatchPaymentErrorStatus.none,
+    this.scheduleDetails,
   });
 
   @override
@@ -85,6 +89,7 @@ class PatchPaymentState extends Equatable {
         busy,
         busyAction,
         errorStatus,
+        scheduleDetails,
       ];
 
   /// Creates a new state based on this one.
@@ -97,6 +102,7 @@ class PatchPaymentState extends Equatable {
     bool? busy,
     PatchPaymentErrorStatus? errorStatus,
     PatchPaymentBusyAction? busyAction,
+    ScheduleDetails? scheduleDetails,
   }) {
     return PatchPaymentState(
       payment: payment ?? this.payment,
@@ -108,6 +114,7 @@ class PatchPaymentState extends Equatable {
       busy: busy ?? this.busy,
       busyAction: busyAction ?? this.busyAction,
       errorStatus: errorStatus ?? this.errorStatus,
+      scheduleDetails: scheduleDetails ?? this.scheduleDetails,
     );
   }
 
@@ -116,26 +123,33 @@ class PatchPaymentState extends Equatable {
       !busy &&
       (initiallySelectedAccount?.id != payment.fromAccount?.id ||
           initialAmount != payment.amount ||
-          (initialRecurrence?.recurrence != payment.recurrence ||
-              initialRecurrence?.startDate != payment.recurrenceStart)) &&
+          canSubmitRecurrence) &&
       payment.fromAccount != null &&
       ((payment.fromAccount?.availableBalance ?? 0) >= (payment.amount ?? 0)) &&
       (payment.amount ?? 0) > 0 &&
-      (payment.recurrence == Recurrence.none ||
-          payment.recurrenceStart != null);
+      (scheduleDetails?.recurrence == null ||
+          scheduleDetails?.recurrence == Recurrence.none ||
+          scheduleDetails?.startDate != null);
 
-  bool get _scheduled => payment.recurrence == Recurrence.once;
+  bool get canSubmitRecurrence =>
+      initialRecurrence?.recurrence != scheduleDetails?.recurrence
+          ? true
+          : initialRecurrence?.startDate != scheduleDetails?.startDate;
+
+  bool get _schedueled => scheduleDetails?.recurrence == Recurrence.once;
   bool get _recurring => ![
         Recurrence.once,
         Recurrence.none,
         null,
-      ].contains(payment.recurrence);
+      ].contains(scheduleDetails?.recurrence);
 
-  DateTime? get _recurrenceStart => _recurring ? payment.recurrenceStart : null;
+  DateTime? get _recurrenceStart =>
+      _recurring ? scheduleDetails?.startDate : null;
 
-  DateTime? get _recurrenceEnd => _recurring ? payment.recurrenceEnd : null;
+  DateTime? get _recurrenceEnd => _recurring ? scheduleDetails?.endDate : null;
 
-  DateTime? get _scheduledDate => _scheduled ? payment.recurrenceStart : null;
+  DateTime? get _scheduledDate =>
+      _schedueled ? scheduleDetails?.startDate : null;
 
   /// The payment to be patched
   Payment get paymentToBePatched => Payment(

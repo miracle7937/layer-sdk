@@ -28,19 +28,19 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
             payment: paymentToPatch ?? Payment(),
             initiallySelectedAccount: paymentToPatch?.fromAccount,
             initialAmount: paymentToPatch?.amount ?? 0.0,
-            initialRecurrence: paymentToPatch?.recurrence != null &&
-                    paymentToPatch?.recurrence != Recurrence.none &&
-                    paymentToPatch?.recurrence != Recurrence.once
+            initialRecurrence: paymentToPatch?.recurrence != null
                 ? ScheduleDetails(
                     recurrence: paymentToPatch?.recurrence ?? Recurrence.none,
                     startDate: paymentToPatch?.recurrenceStart,
                     endDate: paymentToPatch?.recurrenceEnd,
-                    executions:
-                        const ScheduleDetails().calculateReccurenceExecutions(
-                      paymentToPatch?.recurrence ?? Recurrence.daily,
-                      paymentToPatch?.recurrenceStart,
-                      paymentToPatch?.recurrenceEnd,
-                    ),
+                    executions: paymentToPatch?.recurrence != Recurrence.none &&
+                            paymentToPatch?.recurrence != Recurrence.once
+                        ? const ScheduleDetails().calculateReccurenceExecutions(
+                            paymentToPatch?.recurrence ?? Recurrence.daily,
+                            paymentToPatch?.recurrenceStart,
+                            paymentToPatch?.recurrenceEnd,
+                          )
+                        : null,
                   )
                 : null,
           ),
@@ -171,12 +171,12 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
   }
 
   /// Set the payments scheduling details
-  void setScheduleDetails({required ScheduleDetails scheduleDetails}) {
+  void setScheduleDetails({ScheduleDetails? scheduleDetails}) {
+    if (scheduleDetails == null) return;
+
     emit(
       state.copyWith(
-        payment: state.payment.copyWith(
-          recurrence: scheduleDetails.recurrence,
-        ),
+        scheduleDetails: scheduleDetails,
       ),
     );
   }
