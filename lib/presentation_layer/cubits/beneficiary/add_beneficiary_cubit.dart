@@ -484,7 +484,7 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
                 ? AddBeneficiaryErrorStatus.network
                 : AddBeneficiaryErrorStatus.generic,
             code: e is NetException ? e.code : null,
-            message: e is NetException ? e.message : e.toString(),
+            message: e is NetException ? e.message : null,
           ),
         ),
       );

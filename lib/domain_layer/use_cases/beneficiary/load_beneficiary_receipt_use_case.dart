@@ -12,13 +12,13 @@ class LoadBeneficiaryReceiptUseCase {
 
   /// Getting of the beneficiary receipt.
   ///
-  /// Returning list of bites that represents image if [isImage] is true
+  /// Returning list of bytes that represents image if [isImage] is true
   /// or PDF if it's false.
   Future<List<int>> call(
     Beneficiary beneficiary, {
     bool isImage = true,
-  }) async {
-    return await _beneficiaryRepository.getReceipt(
+  }) {
+    return _beneficiaryRepository.getReceipt(
       beneficiary,
       isImage: isImage,
     );

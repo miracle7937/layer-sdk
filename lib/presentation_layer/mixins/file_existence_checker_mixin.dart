@@ -5,7 +5,7 @@ import 'package:path_provider/path_provider.dart';
 /// A mixin that exposes method for checking existence of file.
 mixin FileExistenceCheckerMixin {
   /// Check if file with provided name exists in a platform-specific location.
-  Future<bool> isFileExists({
+  Future<bool> fileExists({
     required String filename,
   }) async {
     final directory = await getApplicationDocumentsDirectory();

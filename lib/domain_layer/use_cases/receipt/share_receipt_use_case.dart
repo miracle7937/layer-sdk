@@ -18,7 +18,7 @@ class ShareReceiptUseCase {
     bool checkExistence = false,
   }) async {
     final fileUtils = FileUtils();
-    final fileExists = await fileUtils.isFileExists(filename: filename);
+    final fileExists = await fileUtils.fileExists(filename: filename);
     var path = '';
     if (checkExistence && fileExists) {
       path = (await fileUtils.getFile(filename: filename)).path;

@@ -32,18 +32,4 @@ class LoadCustomerBeneficiariesUseCase {
         searchText: query,
         activeOnly: activeOnly,
       );
-
-  /// Getting of the beneficiary receipt.
-  ///
-  /// Returning list of bites that represents image if [isImage] is true
-  /// or PDF if it's false.
-  Future<List<int>> getReceipt(
-    Beneficiary beneficiary, {
-    bool isImage = true,
-  }) async {
-    return await _beneficiaryRepository.getReceipt(
-      beneficiary,
-      isImage: isImage,
-    );
-  }
 }

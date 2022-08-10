@@ -113,11 +113,11 @@ class BeneficiaryRepository implements BeneficiaryRepositoryInterface {
     Beneficiary beneficiary, {
     bool isImage = true,
   }) async {
-    final bites = await _provider.getReceipt(
+    final bytes = await _provider.getReceipt(
       beneficiary.id ?? 0,
       isImage: isImage,
     );
 
-    return bites;
+    return bytes;
   }
 }

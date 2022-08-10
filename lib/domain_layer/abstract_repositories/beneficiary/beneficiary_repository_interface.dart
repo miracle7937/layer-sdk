@@ -53,7 +53,7 @@ abstract class BeneficiaryRepositoryInterface {
 
   /// Getting of the beneficiary receipt.
   ///
-  /// Returning list of bites that represents image if [isImage] is true
+  /// Returning list of bytes that represents image if [isImage] is true
   /// or PDF if it's false.
   Future<List<int>> getReceipt(
     Beneficiary beneficiary, {

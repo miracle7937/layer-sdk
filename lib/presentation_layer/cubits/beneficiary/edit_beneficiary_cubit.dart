@@ -112,7 +112,7 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
                 ? EditBeneficiaryErrorStatus.network
                 : EditBeneficiaryErrorStatus.generic,
             code: e is NetException ? e.code : null,
-            message: e is NetException ? e.message : e.toString(),
+            message: e is NetException ? e.message : null,
           ),
         ),
       );
@@ -180,7 +180,7 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
                 ? EditBeneficiaryErrorStatus.network
                 : EditBeneficiaryErrorStatus.generic,
             code: e is NetException ? e.code : null,
-            message: e is NetException ? e.message : e.toString(),
+            message: e is NetException ? e.message : null,
           ),
         ),
       );

@@ -20,7 +20,7 @@ abstract class FileUtils {
   });
 
   /// Check if file with provided name exists in a platform-specific location.
-  Future<bool> isFileExists({
+  Future<bool> fileExists({
     required String filename,
   });
 
