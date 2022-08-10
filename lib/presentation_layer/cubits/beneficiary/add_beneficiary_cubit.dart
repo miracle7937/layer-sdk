@@ -456,8 +456,12 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
   /// Loads the beneficiary's receipt, if [isImage] true,
   /// then image, or PDF file.
   Future<void> loadReceipt({bool isImage = true}) async {
+    final action = isImage
+        ? AddBeneficiaryAction.receiptImage
+        : AddBeneficiaryAction.receiptPdf;
+
     emit(state.copyWith(
-      action: AddBeneficiaryAction.receipt,
+      action: action,
       errors: _addError(
         action: AddBeneficiaryAction.editAction,
         errorStatus: AddBeneficiaryErrorStatus.none,
@@ -479,7 +483,7 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         state.copyWith(
           action: AddBeneficiaryAction.none,
           errors: _addError(
-            action: AddBeneficiaryAction.receipt,
+            action: action,
             errorStatus: e is NetException
                 ? AddBeneficiaryErrorStatus.network
                 : AddBeneficiaryErrorStatus.generic,

@@ -145,8 +145,11 @@ enum EditBeneficiaryAction {
   /// Edit requires OTP verification action.
   otpRequired,
 
-  /// The beneficiary's receipt is being loaded
-  receipt,
+  /// The beneficiary's PDF receipt is being loaded
+  receiptPdf,
+
+  /// The beneficiary's image receipt is being loaded
+  receiptImage,
 
   /// Edit successful beneficiary action.
   success,

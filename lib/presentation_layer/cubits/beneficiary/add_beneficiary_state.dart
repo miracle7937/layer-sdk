@@ -219,8 +219,11 @@ enum AddBeneficiaryAction {
   /// Successful adding new beneficiary action.
   success,
 
-  /// The beneficiary's receipt is being loaded
-  receipt,
+  /// The beneficiary's PDF receipt is being loaded
+  receiptPdf,
+
+  /// The beneficiary's image receipt is being loaded
+  receiptImage,
 
   /// Loading the banks for the new beneficiary.
   banks,
