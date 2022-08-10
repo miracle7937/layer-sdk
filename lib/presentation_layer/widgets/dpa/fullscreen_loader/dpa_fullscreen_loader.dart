@@ -4,11 +4,10 @@ import '../../../../layer_sdk.dart';
 
 /// Creates the fullscreen loader for the dpa flow.
 class DPAFullscreenLoader extends StatelessWidget {
-  /// Creates a new [DPAFullscreenLoader].
-
+  /// The logo path
   final String? asset;
 
-  /// constuctor of [DPAFullscreenLoader]
+  /// Creates a new [DPAFullscreenLoader].
   const DPAFullscreenLoader({
     Key? key,
     this.asset,
