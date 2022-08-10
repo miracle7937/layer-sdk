@@ -28,6 +28,7 @@ class BeneficiaryRepository implements BeneficiaryRepositoryInterface {
     final beneficiaryDTO = await _provider.list(
       customerID: customerId,
       searchText: searchText,
+      ascendingOrder: ascendingOrder,
       limit: limit,
       offset: offset,
       forceRefresh: forceRefresh,
