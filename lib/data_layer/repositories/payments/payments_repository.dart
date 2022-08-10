@@ -58,4 +58,15 @@ class PaymentRepository implements PaymentsRepositoryInterface {
 
     return paymentDTO.toPayment();
   }
+
+  @override
+  Future<Payment> resendOTP({
+    required Payment payment,
+  }) async {
+    final paymentDTO = await _provider.resendOTP(
+      payment: payment.toPaymentDTO(),
+    );
+
+    return paymentDTO.toPayment();
+  }
 }

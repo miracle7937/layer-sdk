@@ -14,6 +14,7 @@ class LoadGlobalSettingsUseCase {
   ///
   /// Optional [codes] parameter can be supplied to only fetch
   /// specific settings.
+  /// Invalid settings will be skipped.
   Future<List<GlobalSetting>> call({
     List<String>? codes,
     List<GlobalSetting<dynamic>>? currentSettings,
