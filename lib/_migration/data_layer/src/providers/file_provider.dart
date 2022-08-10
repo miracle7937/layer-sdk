@@ -18,14 +18,20 @@ class FileProvider {
     Map<String, dynamic> queryParameters = const <String, dynamic>{},
     bool forceRefresh = false,
     NetProgressCallback? onReceiveProgress,
+    NetRequestMethods method = NetRequestMethods.get,
+    Map<String, dynamic> body = const <String, dynamic>{},
   }) async {
+    assert((method != NetRequestMethods.post) || body.isNotEmpty);
+
     final response = await netClient.request(
       url,
       queryParameters: queryParameters,
+      method: method,
       forceRefresh: forceRefresh,
       responseType: ResponseType.bytes,
       onReceiveProgress: onReceiveProgress,
       decodeResponse: false,
+      data: body,
     );
 
     return response.data;

@@ -19,6 +19,9 @@ enum PayBillBusyAction {
   /// Validating second factory
   validatingSecondFactor,
 
+  /// Re-sending the OTP
+  resendingOTP,
+
   /// Validating user input
   validating,
 }
@@ -204,6 +207,7 @@ class PayBillState extends Equatable {
       selectedCategory != null &&
       selectedBiller != null &&
       selectedService != null &&
+      ((selectedAccount?.availableBalance ?? 0) >= amount) &&
       amount > 0 &&
       _serviceFieldsValid &&
       (!saveToShortcut || (shortcutName?.isNotEmpty ?? false)) &&

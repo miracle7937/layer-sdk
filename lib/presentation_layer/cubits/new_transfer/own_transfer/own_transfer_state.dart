@@ -46,6 +46,9 @@ class OwnTransferState extends Equatable {
   /// The status of the submitted transfer.
   final TransferStatus? resultStatus;
 
+  /// The preselectedAccount for from account.
+  final Account? preselectedAccount;
+
   /// Creates new [OwnTransferState].
   OwnTransferState({
     required this.transfer,
@@ -56,6 +59,7 @@ class OwnTransferState extends Equatable {
     Set<OwnTransferAction> errors = const {},
     this.errorMessage,
     this.resultStatus,
+    this.preselectedAccount,
   })  : fromAccounts = UnmodifiableListView(fromAccounts),
         toAccounts = UnmodifiableListView(toAccounts),
         currencies = UnmodifiableListView(currencies),
@@ -73,6 +77,7 @@ class OwnTransferState extends Equatable {
     bool clearErrorMessage = false,
     String? errorMessage,
     TransferStatus? resultStatus,
+    Account? preselectedAccount,
   }) =>
       OwnTransferState(
         transfer: transfer ?? this.transfer,
@@ -81,6 +86,7 @@ class OwnTransferState extends Equatable {
         currencies: currencies ?? this.currencies,
         actions: actions ?? this.actions,
         errors: errors ?? this.errors,
+        preselectedAccount: preselectedAccount ?? this.preselectedAccount,
         errorMessage:
             clearErrorMessage ? null : errorMessage ?? this.errorMessage,
         resultStatus: resultStatus ?? this.resultStatus,
@@ -96,5 +102,6 @@ class OwnTransferState extends Equatable {
         errors,
         errorMessage,
         resultStatus,
+        preselectedAccount,
       ];
 }
