@@ -34,11 +34,4 @@ abstract class ActivityRepositoryInterface {
 
   /// Cancel the [Activity] by `id`
   Future<void> cancel(String id, {String? otpValue});
-
-  /// Deletes a payment
-  Future<dynamic> deletePayment(
-    String id, {
-    String? otpValue,
-    bool resendOTP = false,
-  });
 }

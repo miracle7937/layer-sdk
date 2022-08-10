@@ -106,7 +106,7 @@ class ActivityCubit extends Cubit<ActivityState> {
       );
 
   /// Cancel a recurring payment
-  Future<SecondFactorType?> cancelRecurringPayment(
+  Future<Payment> cancelRecurringPayment(
     String itemId, {
     String? otpValue,
     bool resendOTP = false,
