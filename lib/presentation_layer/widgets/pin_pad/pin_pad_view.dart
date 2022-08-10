@@ -111,30 +111,37 @@ class PinPadView extends StatelessWidget {
       child: Builder(
         builder: (context) => IgnorePointer(
           ignoring: disabled,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 32.0,
-              horizontal: 16.0,
-            ),
-            child: Column(
-              children: [
-                Container(
-                  child: AutoSizeText(
-                    title,
-                    textAlign: TextAlign.center,
-                    style: layerDesign.bodyM(),
-                    maxLines: 3,
-                    presetFontSizes: [16.0, 13.0, 10.0],
-                  ),
+          child: Column(
+            children: [
+              Expanded(
+                flex: 3,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: AutoSizeText(
+                          title,
+                          textAlign: TextAlign.center,
+                          style: layerDesign.bodyM(),
+                          maxLines: 3,
+                          maxFontSize: 16.0,
+                          minFontSize: 12.0,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20.0),
+                    Expanded(
+                      child: _buildPinDotsIndicator(layerDesign),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 90.0),
-                _buildPinDotsIndicator(layerDesign),
-                const SizedBox(height: 70.0),
-                Expanded(
-                  child: _buildPinPad(layerDesign),
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 36.0),
+              Expanded(
+                flex: 7,
+                child: _buildPinPad(layerDesign),
+              ),
+            ],
           ),
         ),
       ),
@@ -145,7 +152,8 @@ class PinPadView extends StatelessWidget {
   Widget _buildPinDotsIndicator(
     LayerDesign layerDesign,
   ) =>
-      Stack(
+      Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -162,27 +170,28 @@ class PinPadView extends StatelessWidget {
               ),
             ),
           ),
-          Positioned.fill(
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              child: warning == null
-                  ? Container()
-                  : Transform.translate(
-                      offset: Offset(0.0, 30.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            warning!,
-                            style: layerDesign.bodyS(
-                              color: layerDesign.errorPrimary,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    ),
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            transitionBuilder: (child, animation) => FadeTransition(
+              opacity: animation,
+              child: child,
             ),
+            child: warning == null
+                ? const SizedBox.shrink()
+                : Padding(
+                    padding: const EdgeInsets.only(
+                      top: 12.0,
+                    ),
+                    child: AutoSizeText(
+                      warning!,
+                      textAlign: TextAlign.center,
+                      style: layerDesign.titleM(
+                        color: layerDesign.errorPrimary,
+                      ),
+                      maxFontSize: 16.0,
+                      minFontSize: 12.0,
+                    ),
+                  ),
           ),
         ],
       );
@@ -206,55 +215,49 @@ class PinPadView extends StatelessWidget {
                       vertical: 8.0,
                       horizontal: 14.0,
                     ),
-                    child: Row(
-                      mainAxisAlignment: _calculateButtonAlignment(
-                        context,
-                        button,
-                      ),
-                      children: [
-                        LayoutBuilder(
-                          builder: (context, constraints) {
-                            final buttonSize =
-                                constraints.maxHeight > constraints.maxWidth
-                                    ? constraints.maxWidth
-                                    : constraints.maxHeight;
-
-                            return SizedBox(
-                              height: buttonSize,
-                              width: buttonSize,
-                              child: IgnorePointer(
-                                ignoring: !button.enabled,
-                                child: Visibility(
-                                  visible: button.visible,
-                                  maintainAnimation: true,
-                                  maintainSize: true,
-                                  maintainState: true,
-                                  child: button.svgPath == null
-                                      ? DKButton(
-                                          title: button.title!,
-                                          onPressed: button.onPressed,
-                                          type: DKButtonType.baseSecondary,
-                                          shape: BoxShape.circle,
-                                          customTextStyle:
-                                              layerDesign.titleXXXL().copyWith(
-                                                    height: 1,
-                                                    fontSize: buttonSize * 0.3,
-                                                  ),
-                                        )
-                                      : DKButton.icon(
-                                          iconPath: button.svgPath!,
-                                          onPressed: button.onPressed,
-                                          type: DKButtonType.basePlain,
-                                          shape: BoxShape.circle,
-                                          iconColor: layerDesign.baseQuaternary,
-                                          customIconSize: 40.0,
-                                        ),
+                    child: IgnorePointer(
+                      ignoring: !button.enabled,
+                      child: Visibility(
+                        visible: button.visible,
+                        maintainAnimation: true,
+                        maintainSize: true,
+                        maintainState: true,
+                        child: button.svgPath == null
+                            ? DKButton(
+                                customTextWidget: AutoSizeText(
+                                  button.title!,
+                                  textAlign: TextAlign.center,
+                                  style: layerDesign.titleXXXL().copyWith(
+                                        height: 1,
+                                      ),
+                                  maxLines: 1,
+                                  maxFontSize: 32.0,
+                                  minFontSize: 20.0,
                                 ),
+                                onPressed: button.onPressed,
+                                type: DKButtonType.baseSecondary,
+                                shape: BoxShape.circle,
+                                expands: false,
+                              )
+                            : LayoutBuilder(
+                                builder: (context, constraints) {
+                                  final buttonSize = constraints.maxHeight >
+                                          constraints.maxWidth
+                                      ? constraints.maxWidth
+                                      : constraints.maxHeight;
+
+                                  return DKButton.icon(
+                                    iconPath: button.svgPath!,
+                                    onPressed: button.onPressed,
+                                    type: DKButtonType.basePlain,
+                                    shape: BoxShape.circle,
+                                    expands: false,
+                                    iconColor: layerDesign.baseQuaternary,
+                                    customIconSize: buttonSize * 0.5,
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 )
@@ -262,34 +265,6 @@ class PinPadView extends StatelessWidget {
           );
         },
       );
-
-  /// Calculates the [MainAxisAlignment] of the pin buttons in the wrap.
-  ///
-  /// If the button is first in the row the alignemnt will be
-  /// [MainAxisAlignment.end], if it's las in the row, the alignment will be
-  /// [MainAxisAlignment.start], otherwise the alignment will be
-  /// [MainAxisAlignment.center].
-  MainAxisAlignment _calculateButtonAlignment(
-    BuildContext context,
-    PinButton button,
-  ) {
-    final firstInRowItems = [0, 3, 6, 9];
-    final lastInRowItems = [2, 5, 8, 11];
-
-    for (final item in firstInRowItems) {
-      if (pinButtons(context).elementAt(item) == button) {
-        return MainAxisAlignment.end;
-      }
-    }
-
-    for (final item in lastInRowItems) {
-      if (pinButtons(context).elementAt(item) == button) {
-        return MainAxisAlignment.start;
-      }
-    }
-
-    return MainAxisAlignment.center;
-  }
 }
 
 /// Represents a button on the pin pad.

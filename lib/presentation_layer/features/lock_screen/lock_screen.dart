@@ -162,10 +162,7 @@ class _LockScreenState extends SetAccessPinBaseWidgetState<_LockScreen> {
         backgroundColor: layerDesign.surfaceOctonary1,
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16.0,
-              vertical: 32.0,
-            ),
+            padding: const EdgeInsets.all(32.0),
             child: PinPadView(
               pinLenght: widget.pinLength,
               pin: currentPin,
