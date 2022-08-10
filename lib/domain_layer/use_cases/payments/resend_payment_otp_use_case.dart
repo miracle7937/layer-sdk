@@ -12,7 +12,7 @@ class ResendOTPPaymentUseCase {
 
   /// Posts the provided payment
   Future<Payment> call(Payment payment) {
-    return _repository.resendSecondFactor(
+    return _repository.resendOTP(
       payment: payment,
     );
   }

@@ -75,7 +75,7 @@ class PaymentProvider {
   }
 
   /// Resends a second factor
-  Future<PaymentDTO> resendSecondFactor({
+  Future<PaymentDTO> resendOTP({
     required PaymentDTO payment,
   }) async {
     final requestParams = {

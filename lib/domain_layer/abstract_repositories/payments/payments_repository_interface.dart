@@ -19,8 +19,8 @@ abstract class PaymentsRepositoryInterface {
     String? otp,
   });
 
-  /// Resend a second factor request
-  Future<Payment> resendSecondFactor({
+  /// Resend the one time password
+  Future<Payment> resendOTP({
     required Payment payment,
   });
 }

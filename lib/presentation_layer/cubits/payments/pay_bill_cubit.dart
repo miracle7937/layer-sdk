@@ -12,7 +12,6 @@ import '../../../domain_layer/use_cases/payments/generate_device_uid_use_case.da
 import '../../../domain_layer/use_cases/payments/load_billers_use_case.dart';
 import '../../../domain_layer/use_cases/payments/load_services_use_case.dart';
 import '../../../domain_layer/use_cases/payments/post_payment_use_case.dart';
-import '../../../domain_layer/use_cases/payments/resend_payment_otp_use_case.dart';
 import '../../../domain_layer/use_cases/payments/validate_bill_use_case.dart';
 import 'pay_bill_state.dart';
 
@@ -210,17 +209,17 @@ class PayBillCubit extends Cubit<PayBillState> {
   }
 
   /// Resend an OTP request
-  Future<void> resendOTP() async {
+  Future<void> resendOTP(Payment payment) async {
     try {
       emit(
         state.copyWith(
           busy: true,
-          deviceUID: _generateDeviceUIDUseCase(30),
+          busyAction: PayBillBusyAction.resendingOTP,
         ),
       );
 
       await _resendOTPUseCase(
-        state.payment,
+        payment,
       );
 
       emit(
