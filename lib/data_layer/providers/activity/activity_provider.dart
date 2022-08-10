@@ -154,4 +154,30 @@ class ActivityProvider {
       method: NetRequestMethods.post,
     );
   }
+
+  /// Delete a payment
+  Future<dynamic> deletePaymentV2(
+    String id, {
+    String? otpValue,
+    bool resendOTP = false,
+  }) async {
+    final params = <String, dynamic>{};
+    final body = <dynamic, dynamic>{};
+
+    if (resendOTP) {
+      params['resend_otp'] = 'true';
+    }
+
+    if (otpValue != null) {
+      params['second_factor_verification'] = 'true';
+      params['otp_value'] = otpValue;
+    }
+
+    return await netClient.request(
+      netClient.netEndpoints.paymentV2,
+      queryParameters: params,
+      data: body,
+      method: NetRequestMethods.delete,
+    );
+  }
 }

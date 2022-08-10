@@ -81,4 +81,17 @@ class ActivityRepository implements ActivityRepositoryInterface {
 
     return result;
   }
+
+  @override
+  Future<dynamic> deletePayment(
+    String id, {
+    String? otpValue,
+    bool resendOTP = false,
+  }) async {
+    await _provider.deletePaymentV2(
+      id,
+      otpValue: otpValue,
+      resendOTP: resendOTP,
+    );
+  }
 }

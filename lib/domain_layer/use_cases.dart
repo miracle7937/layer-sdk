@@ -8,6 +8,7 @@ export 'use_cases/account_loan/get_account_loans_use_case.dart';
 export 'use_cases/account_loan/get_customer_account_loans_use_case.dart';
 export 'use_cases/account_transaction/get_customer_account_transactions_use_case.dart';
 export 'use_cases/activity/cancel_activity_use_case.dart';
+export 'use_cases/activity/cancel_recurring_payment.dart';
 export 'use_cases/activity/delete_activity_use_case.dart';
 export 'use_cases/activity/load_activities_use_case.dart';
 export 'use_cases/alert/load_unread_alerts_count_use_case.dart';
