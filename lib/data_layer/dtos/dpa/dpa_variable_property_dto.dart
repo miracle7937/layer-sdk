@@ -97,6 +97,9 @@ class DPAVariablePropertyDTO {
   /// For prefilling a code on a pin screen
   final PickerDTO? picker;
 
+  /// Default prefix used to define the default dial code
+  final String? defaultPrefix;
+
   /// Creates a new [DPAVariablePropertyDTO].
   DPAVariablePropertyDTO({
     this.propertyType,
@@ -129,6 +132,7 @@ class DPAVariablePropertyDTO {
     this.currencyFlagCode,
     this.characterSplit,
     this.picker,
+    this.defaultPrefix,
   });
 
   /// Creates a new [DPAVariablePropertyDTO] from the given JSON.
@@ -164,6 +168,7 @@ class DPAVariablePropertyDTO {
             : DPALabelTypeDTO(json['label_type']),
         allowedTypes: json['allowed_types']?.split(','),
         image: json['image'],
+        defaultPrefix: json['default_prefix'],
         dialCodes: json['prefix_list'] == null
             ? []
             : DPADialCodeDTO.fromStringList(
@@ -218,6 +223,7 @@ class DPAVariablePropertyDTO {
       '${allowedTypes != null ? 'allowedTypes: $allowedTypes ' : ''}'
       '${image != null ? 'image: $image ' : ''}'
       '${dialCodes != null ? 'dialCodes: $dialCodes ' : ''}'
+      '${defaultPrefix != null ? 'defaultPrefix: $defaultPrefix ' : ''}'
       '${picker != null ? 'picker: $picker ' : ''}'
       '${currencyFlagCode != null ? 'currencyFlagCode:$currencyFlagCode ' : ''}'
       '${prefixValue != null ? 'prefixValue: $prefixValue ' : ''}'

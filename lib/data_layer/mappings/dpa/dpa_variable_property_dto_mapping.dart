@@ -42,6 +42,7 @@ extension DPAVariablePropertyDTOMapping on DPAVariablePropertyDTO {
         currencyFlagCode: currencyFlagCode,
         characterSplit: characterSplit,
         picker: picker?.toDPAVariablePicker() ?? DPAVariablePicker.currency,
+        defaultPrefix: defaultPrefix,
       );
 }
 
