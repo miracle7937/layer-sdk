@@ -302,6 +302,9 @@ class NetEndpoints {
   /// Endpoint for both account and card top ups.
   String get topUp => '$_stripe/v1/topup';
 
+  /// Endpoint for top up receipts.
+  String get topUpReceipt => '$_stripe/v1/payment_receipt';
+
   /// Endpoint for the activities
   String get activity => '$_infoBanking/v1/activity';
 

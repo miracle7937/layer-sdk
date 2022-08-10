@@ -1,4 +1,5 @@
 import '../../abstract_repositories.dart';
+import '../../models.dart';
 
 /// Use case that requests a new Stripe secret key used for account top ups.
 class GetAccountTopUpSecretUseCase {
@@ -10,7 +11,7 @@ class GetAccountTopUpSecretUseCase {
   }) : _repository = repository;
 
   /// Requests a new Stripe secret key for account top ups.
-  Future<String> call({
+  Future<AccountTopUpRequest> call({
     required String accountId,
     required String currency,
     required double amount,

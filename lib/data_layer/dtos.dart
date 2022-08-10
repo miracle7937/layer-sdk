@@ -2,6 +2,7 @@ library dtos;
 
 export 'dtos/account/account_dto.dart';
 export 'dtos/account/account_preferences_dto.dart';
+export 'dtos/account/account_top_up_request_dto.dart';
 export 'dtos/account/account_type_dto.dart';
 export 'dtos/account_loan/account_loan_dto.dart';
 export 'dtos/account_loan/account_loan_payment_dto.dart';
