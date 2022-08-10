@@ -131,6 +131,7 @@ class PatchPaymentState extends Equatable {
           scheduleDetails?.recurrence == Recurrence.none ||
           scheduleDetails?.startDate != null);
 
+  /// Whether the recurrence changed or not
   bool get canSubmitRecurrence =>
       initialRecurrence?.recurrence != scheduleDetails?.recurrence
           ? true
