@@ -14,6 +14,9 @@ enum ExperienceStateError {
 
   /// Network error.
   network,
+
+  /// Connectivity error.
+  connectivity,
 }
 
 /// A state representing the user experience in the app.

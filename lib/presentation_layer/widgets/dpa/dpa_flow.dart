@@ -200,6 +200,9 @@ class DPAFlow<T> extends StatelessWidget {
   /// Provide a custom padding for the continue button
   final EdgeInsets customContinueButtonPadding;
 
+  /// Asset for logo
+  final String? asset;
+
   /// Creates a new [DPAFlow].
   const DPAFlow({
     Key? key,
@@ -215,6 +218,7 @@ class DPAFlow<T> extends StatelessWidget {
     this.customEmptySearchBuilder,
     required this.sdkCallback,
     this.isOnboarding = false,
+    this.asset,
     this.customContinueButtonPadding = const EdgeInsets.fromLTRB(
       16.0,
       0.0,
@@ -232,6 +236,11 @@ class DPAFlow<T> extends StatelessWidget {
     final hasPopup = context.select<DPAProcessCubit, bool>(
       (cubit) => cubit.state.hasPopup,
     );
+
+    final areVariablesValidated = context.select<DPAProcessCubit, bool>(
+      (cubit) => cubit.state.areVariablesValidated,
+    );
+
     final translation = Translation.of(context);
     final cubit = context.read<DPAProcessCubit>();
     final isDelayTask = process.stepProperties?.delay != null;
@@ -242,7 +251,7 @@ class DPAFlow<T> extends StatelessWidget {
         : customContinueButton ??
             DPAContinueButton(
               process: process,
-              enabled: !hasPopup,
+              enabled: !hasPopup && areVariablesValidated,
             );
 
     final effectiveHeader = (process.stepProperties?.hideAppBar ?? false)
@@ -371,7 +380,8 @@ class DPAFlow<T> extends StatelessWidget {
                   ),
                 ],
               ),
-          if (isDelayTask) DPAFullscreenLoader(),
+          if (isDelayTask)
+            DPAFullscreenLoader(asset: asset),
         ],
       ),
     );
@@ -508,7 +518,9 @@ class _PopUpContents extends StatelessWidget {
         popUp?.stepProperties?.skipLabel?.isNotEmpty ?? false;
 
     if (popUp == null) return const SizedBox.shrink();
-
+    final areVariablesValidated = context.select<DPAProcessCubit, bool>(
+      (cubit) => cubit.state.areVariablesValidated,
+    );
     // TODO: update to use the correct Layer Design Kit design.
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -524,6 +536,7 @@ class _PopUpContents extends StatelessWidget {
         customContinueButton ??
             DPAContinueButton(
               process: popUp,
+              enabled: areVariablesValidated,
             ),
         if (shouldShowSkipButton) ...[
           const SizedBox(height: 12.0),

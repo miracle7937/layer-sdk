@@ -1,5 +1,14 @@
 import 'package:equatable/equatable.dart';
 
+/// Which loading action the cubit is doing
+enum LinkBusyAction {
+  /// Loading image
+  loadingImage,
+
+  /// Loading pdf
+  loadingPDF,
+}
+
 /// The available error status
 enum LinkErrorStatus {
   /// No errors
@@ -26,6 +35,9 @@ class LinkState extends Equatable {
   /// If the cubit is busy.
   final bool busy;
 
+  /// Which busy action is the cubit doing
+  final LinkBusyAction busyAction;
+
   /// The current number of bytes downloaded.
   final int downloadedBytes;
 
@@ -42,12 +54,14 @@ class LinkState extends Equatable {
     this.busy = false,
     this.downloadedBytes = 0,
     this.totalBytes = 0,
+    this.busyAction = LinkBusyAction.loadingImage,
     this.errorStatus = LinkErrorStatus.none,
   });
 
   @override
   List<Object?> get props => [
         busy,
+        busyAction,
         downloadedBytes,
         totalBytes,
         errorStatus,
@@ -56,12 +70,14 @@ class LinkState extends Equatable {
   /// Creates a [LinkState] based on this one.
   LinkState copyWith({
     bool? busy,
+    LinkBusyAction? busyAction,
     int? downloadedBytes,
     int? totalBytes,
     LinkErrorStatus? errorStatus,
   }) =>
       LinkState(
         busy: busy ?? this.busy,
+        busyAction: busyAction ?? this.busyAction,
         downloadedBytes: downloadedBytes ?? this.downloadedBytes,
         totalBytes: totalBytes ?? this.totalBytes,
         errorStatus: errorStatus ?? this.errorStatus,
