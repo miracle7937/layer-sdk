@@ -1,5 +1,6 @@
 library layer_sdk;
 
+export 'package:auto_size_text/auto_size_text.dart';
 export 'package:design_kit_layer/design_kit_layer.dart';
 
 /// Old layers
