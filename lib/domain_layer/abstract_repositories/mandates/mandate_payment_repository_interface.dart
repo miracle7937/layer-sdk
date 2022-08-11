@@ -10,5 +10,6 @@ abstract class MandatePaymentRepositoryInterface {
 
     /// If the sort is descending or not
     bool desc = false,
+    int? mandateId,
   });
 }

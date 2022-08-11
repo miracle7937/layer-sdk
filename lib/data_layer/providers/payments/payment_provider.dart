@@ -92,4 +92,32 @@ class PaymentProvider {
 
     return PaymentDTO.fromJson(response.data);
   }
+
+  /// Delete a payment
+  Future<PaymentDTO> deletePaymentV2(
+    String id, {
+    String? otpValue,
+    bool resendOTP = false,
+  }) async {
+    final params = <String, dynamic>{};
+    final body = <dynamic, dynamic>{};
+
+    if (resendOTP) {
+      params['resend_otp'] = 'true';
+    }
+
+    if (otpValue != null) {
+      params['second_factor_verification'] = 'true';
+      params['otp_value'] = otpValue;
+    }
+
+    final response = await netClient.request(
+      '${netClient.netEndpoints.paymentV2}/$id',
+      queryParameters: params,
+      data: body,
+      method: NetRequestMethods.delete,
+    );
+
+    return PaymentDTO.fromJson(response.data);
+  }
 }

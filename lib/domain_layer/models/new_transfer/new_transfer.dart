@@ -30,6 +30,9 @@ abstract class NewTransfer extends Equatable {
   /// The note for the new transfer.
   final String? note;
 
+  /// The id of the new transfer
+  final int? transferId;
+
   /// Creates a new [NewTransfer].
   NewTransfer({
     this.type,
@@ -40,6 +43,7 @@ abstract class NewTransfer extends Equatable {
     this.saveToShortcut = false,
     this.shortcutName,
     this.note,
+    this.transferId,
   });
 
   /// Creates a new [NewTransfer] with the passed values.
