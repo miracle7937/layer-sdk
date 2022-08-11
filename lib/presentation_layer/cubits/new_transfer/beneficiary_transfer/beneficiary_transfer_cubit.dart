@@ -543,19 +543,26 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
       ),
     );
 
+    if (state.transfer.saveToShortcut) {
+      await _createShortcut();
+
+      if (state.errors
+          .where((error) => error.action == BeneficiaryTransferAction.shortcut)
+          .isNotEmpty) {
+        emit(
+          state.copyWith(
+            actions: _removeAction(BeneficiaryTransferAction.submit),
+          ),
+        );
+
+        return;
+      }
+    }
+
     try {
       final transferResult = await _submitTransferUseCase(
         transfer: state.transfer,
       );
-
-      if ([
-            TransferStatus.pending,
-            TransferStatus.completed,
-            TransferStatus.scheduled,
-          ].contains(transferResult.status) &&
-          state.transfer.saveToShortcut) {
-        await _createShortcut(transferResult);
-      }
 
       emit(
         state.copyWith(
@@ -605,15 +612,6 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         secondFactorType:
             state.transferResult?.secondFactorType ?? SecondFactorType.otp,
       );
-
-      if ([
-            TransferStatus.pending,
-            TransferStatus.completed,
-            TransferStatus.scheduled,
-          ].contains(transferResult.status) &&
-          state.transfer.saveToShortcut) {
-        await _createShortcut(transferResult);
-      }
 
       emit(
         state.copyWith(
@@ -687,9 +685,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
   }
 
   /// Creates the shortcut (if enabled) once the transfer has succeded.
-  Future<void> _createShortcut(
-    Transfer transfer,
-  ) async {
+  Future<void> _createShortcut() async {
     emit(
       state.copyWith(
         actions: _addAction(BeneficiaryTransferAction.shortcut),
@@ -720,6 +716,12 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
             errorStatus: e is NetException
                 ? BeneficiaryTransferErrorStatus.network
                 : BeneficiaryTransferErrorStatus.generic,
+            code: e is NetException
+                ? e.statusCode == null
+                    ? 'connectivity_error'
+                    : e.code
+                : null,
+            message: e is NetException ? e.message : null,
           ),
         ),
       );
