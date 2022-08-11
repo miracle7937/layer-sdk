@@ -589,7 +589,7 @@ void _stepOrFinishTests() {
     expect: () => [
       DPAProcessState(
         process: _mockedSkipStepProcess,
-        actions: {DPAProcessBusyAction.steppingForward},
+        actions: {DPAProcessBusyAction.skipping},
         runStatus: DPAProcessRunStatus.running,
         errorStatus: DPAProcessErrorStatus.none,
       ),

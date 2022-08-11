@@ -43,7 +43,9 @@ class DPACancelButton extends StatelessWidget {
     final layerDesign = DesignSystem.of(context);
 
     final busy = context.select<DPAProcessCubit, bool>(
-      (cubit) => cubit.state.busy || cubit.state.busyProcessingFile,
+      (cubit) => cubit.state.actions.contains(
+        DPAProcessBusyAction.cancelling,
+      ),
     );
 
     final onTap = busy || !enabled

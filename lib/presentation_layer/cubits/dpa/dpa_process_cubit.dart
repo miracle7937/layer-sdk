@@ -284,7 +284,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
     emit(
       state.copyWith(
         actions: state.actions.union({
-          DPAProcessBusyAction.steppingForward,
+          DPAProcessBusyAction.skipping,
         }),
         errorStatus: DPAProcessErrorStatus.none,
       ),
@@ -306,9 +306,9 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
           popUp: process.isPopUp() ? process : null,
           clearPopUp: !process.isPopUp(),
           actions: state.actions.difference({
-            DPAProcessBusyAction.steppingForward,
+            DPAProcessBusyAction.skipping,
           }).union({
-            if (delay != null) DPAProcessBusyAction.steppingForward,
+            if (delay != null) DPAProcessBusyAction.skipping,
           }),
           runStatus: process.finished ? DPAProcessRunStatus.finished : null,
           clearProcessingFiles: true,
@@ -323,7 +323,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
       emit(
         state.copyWith(
           actions: state.actions.difference({
-            DPAProcessBusyAction.steppingForward,
+            DPAProcessBusyAction.skipping,
           }),
           errorStatus: DPAProcessErrorStatus.network,
         ),
