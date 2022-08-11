@@ -10,7 +10,7 @@ class PatchPaymentUseCase {
     required PaymentsRepositoryInterface repository,
   }) : _repository = repository;
 
-  /// Posts the provided payment
+  /// Patches the provided payment
   Future<Payment> patch(
     Payment payment, {
     String? otp,
