@@ -1,9 +1,10 @@
 import 'dart:html';
 
+import '../../mixins.dart';
 import '../file_utils.dart';
 
 /// Implementation of [FileUtils] for the web platform.
-class PlatformFileUtils implements FileUtils {
+class PlatformFileUtils with FileExistenceCheckerMixin implements FileUtils {
   @override
   Future<String> saveBytes({
     required String filename,

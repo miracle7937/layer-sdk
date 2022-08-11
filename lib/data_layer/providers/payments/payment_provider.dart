@@ -37,7 +37,7 @@ class PaymentProvider {
   }
 
   /// Excutes the payment
-  Future<PaymentDTO> payBill({
+  Future<PaymentDTO> postPayment({
     required PaymentDTO payment,
     String? otp,
   }) async {
@@ -48,6 +48,30 @@ class PaymentProvider {
       forceRefresh: true,
       queryParameters: {
         if (otp?.isNotEmpty ?? false) 'otp_value': otp,
+      },
+    );
+
+    return PaymentDTO.fromJson(response.data);
+  }
+
+  /// Patches the payment
+  Future<PaymentDTO> patchPayment({
+    required PaymentDTO payment,
+    String? otp,
+    bool resendOtp = false,
+  }) async {
+    final data = payment.toJson();
+    if (otp?.isNotEmpty ?? false) {
+      data['otp_value'] = otp;
+    }
+    final response = await netClient.request(
+      netClient.netEndpoints.paymentV2,
+      method: NetRequestMethods.patch,
+      data: data,
+      forceRefresh: true,
+      queryParameters: {
+        if (otp?.isNotEmpty ?? false) 'second_factor_verification': true,
+        if (resendOtp) 'resend_otp': true,
       },
     );
 
@@ -72,5 +96,52 @@ class PaymentProvider {
     return PaymentDTO.fromJsonList(
       List.from(response.data),
     );
+  }
+
+  /// Resends the one time password to the customer
+  Future<PaymentDTO> resendOTP({
+    required PaymentDTO payment,
+  }) async {
+    final requestParams = {
+      "resend_otp": true,
+    };
+
+    final response = await netClient.request(
+      netClient.netEndpoints.paymentV2,
+      method: NetRequestMethods.post,
+      data: payment.toJson(),
+      forceRefresh: true,
+      queryParameters: requestParams,
+    );
+
+    return PaymentDTO.fromJson(response.data);
+  }
+
+  /// Delete a payment
+  Future<PaymentDTO> deletePaymentV2(
+    String id, {
+    String? otpValue,
+    bool resendOTP = false,
+  }) async {
+    final params = <String, dynamic>{};
+    final body = <dynamic, dynamic>{};
+
+    if (resendOTP) {
+      params['resend_otp'] = 'true';
+    }
+
+    if (otpValue != null) {
+      params['second_factor_verification'] = 'true';
+      params['otp_value'] = otpValue;
+    }
+
+    final response = await netClient.request(
+      '${netClient.netEndpoints.paymentV2}/$id',
+      queryParameters: params,
+      data: body,
+      method: NetRequestMethods.delete,
+    );
+
+    return PaymentDTO.fromJson(response.data);
   }
 }

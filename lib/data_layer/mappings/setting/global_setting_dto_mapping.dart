@@ -1,23 +1,22 @@
+import 'package:logging/logging.dart';
+
 import '../../../domain_layer/models/setting/global_setting.dart';
 import '../../dtos.dart';
-import '../../errors.dart';
 
 /// Extension that provides mapping for [GlobalSettingDTO]
 extension GlobalSettingDTOMapping on GlobalSettingDTO {
   /// Maps a [GlobalSettingDTO] into a [GlobalSetting].
-  GlobalSetting toGlobalSetting() {
+  ///
+  /// Returns null for invalid settings.
+  GlobalSetting? toGlobalSetting() {
     if ([
       code,
       module,
       value,
       type,
     ].contains(null)) {
-      throw MappingException(
-        from: GlobalSettingDTO,
-        to: GlobalSetting,
-        value: this,
-        details: 'One of the required parameters is null',
-      );
+      _logSkippedSetting();
+      return null;
     }
     switch (type!.toUpperCase()) {
       case 'B':
@@ -33,11 +32,13 @@ extension GlobalSettingDTOMapping on GlobalSettingDTO {
             value: numValue,
             type: GlobalSettingType.int,
           );
+        } else if (numValue != null) {
+          return _toGlobalSetting<double>(
+            value: numValue.toDouble(),
+            type: GlobalSettingType.double,
+          );
         }
-        return _toGlobalSetting<double>(
-          value: numValue!.toDouble(),
-          type: GlobalSettingType.double,
-        );
+        return null;
 
       case 'S':
         return _toGlobalSetting<String>(
@@ -52,7 +53,8 @@ extension GlobalSettingDTOMapping on GlobalSettingDTO {
         );
 
       default:
-        throw UnsupportedError('Setting type $type is not supported');
+        _logSkippedSetting();
+        return null;
     }
   }
 
@@ -65,6 +67,14 @@ extension GlobalSettingDTOMapping on GlobalSettingDTO {
       module: module!,
       value: value,
       type: type,
+    );
+  }
+
+  void _logSkippedSetting() {
+    Logger('GlobalSettingDTOMapping').severe(
+      'Global setting '
+          '(module: "$module", code: "$code", value: "$value", type: "$type") '
+          'is skipped due to missing data',
     );
   }
 }

@@ -215,7 +215,7 @@ void _activationCodeTests() {
       ),
       pollingState.copyWith(
         error: BranchActivationError.none,
-        action: BranchActivationAction.activationCode,
+        action: BranchActivationAction.none,
         activationResponse: _codeSuccessResult,
       ),
       pollingState.copyWith(
@@ -269,7 +269,7 @@ void _activationCodeTests() {
       ),
       successState.copyWith(
         error: BranchActivationError.none,
-        action: BranchActivationAction.activationCode,
+        action: BranchActivationAction.none,
         activationResponse: _codeSuccessResult,
       ),
       successState.copyWith(
@@ -323,7 +323,7 @@ void _activationCodeTests() {
       ),
       otpState.copyWith(
         error: BranchActivationError.none,
-        action: BranchActivationAction.activationCode,
+        action: BranchActivationAction.none,
         activationResponse: _codeOtpResult,
       ),
     ],
@@ -447,7 +447,7 @@ void _otpTests() {
       ),
       defaultState.copyWith(
         error: BranchActivationError.none,
-        action: BranchActivationAction.otpCheck,
+        action: BranchActivationAction.none,
         activationResponse: _codeSuccessResult,
       ),
       defaultState.copyWith(

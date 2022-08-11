@@ -15,6 +15,9 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
   final LoadAllCurrenciesUseCase _loadAllCurrenciesUseCase;
   final SubmitTransferUseCase _submitTransferUseCase;
   final CreateShortcutUseCase _createShortcutUseCase;
+  final TransferReceiptUseCase _transferReceiptUseCase;
+  final GetPreselectedAccountForOwnTransferUseCase
+      _getPreselectedAccountForOwnTransferUseCase;
 
   /// Creates new [OwnTransferCubit].
   OwnTransferCubit({
@@ -26,6 +29,9 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
     required LoadAllCurrenciesUseCase loadAllCurrenciesUseCase,
     required SubmitTransferUseCase submitTransferUseCase,
     required CreateShortcutUseCase createShortcutUseCase,
+    required TransferReceiptUseCase transferReceiptUseCase,
+    required GetPreselectedAccountForOwnTransferUseCase
+        getPreselectedAccountForOwnTransferUseCase,
   })  : _getSourceAccountsForOwnTransferUseCase =
             getSourceAccountsForOwnTransferUseCase,
         _getDestinationAccountsForOwnTransferUseCase =
@@ -33,6 +39,9 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
         _loadAllCurrenciesUseCase = loadAllCurrenciesUseCase,
         _submitTransferUseCase = submitTransferUseCase,
         _createShortcutUseCase = createShortcutUseCase,
+        _transferReceiptUseCase = transferReceiptUseCase,
+        _getPreselectedAccountForOwnTransferUseCase =
+            getPreselectedAccountForOwnTransferUseCase,
         super(OwnTransferState(transfer: transfer ?? OwnTransfer()));
 
   /// Fetches all the data necessary to start the flow.
@@ -57,10 +66,14 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
       final fromAccounts = results[0];
       final toAccounts = results[1];
       final currencies = results[2];
+      final preselectedAccount = fromAccounts.isNotEmpty
+          ? _getPreselectedAccountForOwnTransferUseCase(fromAccounts)
+          : null;
 
       emit(state.copyWith(
         fromAccounts: fromAccounts,
         toAccounts: toAccounts,
+        preselectedAccount: preselectedAccount,
         currencies: currencies,
         actions: state.actions.difference({
           OwnTransferAction.accounts,
@@ -145,6 +158,7 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
                 OwnTransferAction.submit,
               }),
               resultStatus: transferResult.status,
+              transferId: transferResult.id,
             ),
           );
           break;
@@ -224,6 +238,68 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
           OwnTransferAction.shortcut,
         }),
       ));
+    }
+  }
+
+  /// Loads receipt of succesful transfer.
+  Future<void> getReceipt({
+    required int transferId,
+    bool? isImage,
+  }) async {
+    var currentAction = isImage ?? false
+        ? OwnTransferAction.imageReceipt
+        : OwnTransferAction.pdfReceipt;
+    emit(
+      state.copyWith(
+        actions: state.actions.union({
+          currentAction,
+        }),
+        errors: state.errors.difference({
+          currentAction,
+        }),
+        clearErrorMessage: true,
+        pdfReceipt: [],
+        imageReceipt: [],
+      ),
+    );
+
+    try {
+      final receiptResult = await _transferReceiptUseCase(
+        transferId: transferId,
+        isImage: isImage,
+      );
+      if (isImage ?? false) {
+        emit(
+          state.copyWith(
+            actions: state.actions.difference({
+              OwnTransferAction.imageReceipt,
+            }),
+            imageReceipt: receiptResult,
+            pdfReceipt: [],
+          ),
+        );
+      } else {
+        emit(
+          state.copyWith(
+            actions: state.actions.difference({
+              OwnTransferAction.pdfReceipt,
+            }),
+            pdfReceipt: receiptResult,
+            imageReceipt: [],
+          ),
+        );
+      }
+    } on Exception {
+      emit(state.copyWith(
+        actions: state.actions.difference({
+          currentAction,
+        }),
+        errors: state.errors.union({
+          currentAction,
+        }),
+      ));
+
+      rethrow;
     }
   }
 }

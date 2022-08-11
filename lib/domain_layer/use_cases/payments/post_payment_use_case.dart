@@ -15,7 +15,7 @@ class PostPaymentUseCase {
     Payment payment, {
     String? otp,
   }) {
-    return _repository.payBill(
+    return _repository.postPayment(
       payment: payment,
       otp: otp,
     );

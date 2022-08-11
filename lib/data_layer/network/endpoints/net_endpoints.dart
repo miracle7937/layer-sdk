@@ -140,6 +140,9 @@ class NetEndpoints {
   /// The beneficiaries endpoint
   String get beneficiary2 => '$_txnBanking/v2/beneficiary';
 
+  /// The beneficiary receipt
+  String get beneficiaryReceipt => '$_txnBanking/v1/beneficiary_receipt';
+
   /// The bill endpoint
   String get bill => '$_payment/v1/bill';
 
@@ -151,6 +154,9 @@ class NetEndpoints {
 
   ///The payment endpoint
   String get payment => '$_payment/v1/payment';
+
+  ///The payment receipt endpoint
+  String get paymentReceipt => '$_payment/v1/payment_receipt';
 
   ///The payment V2 endpoint
   String get paymentV2 => '$_payment/v2/payment';
@@ -302,6 +308,9 @@ class NetEndpoints {
   /// Endpoint for both account and card top ups.
   String get topUp => '$_stripe/v1/topup';
 
+  /// Endpoint for top up receipts.
+  String get topUpReceipt => '$_stripe/v1/payment_receipt';
+
   /// Endpoint for the activities
   String get activity => '$_infoBanking/v1/activity';
 
@@ -317,6 +326,12 @@ class NetEndpoints {
   /// Endpoint for submitting a transfer.
   String get submitTransfer => '$_txnBanking/v2/transfer';
 
+  /// Endpoint for getting the receipt for a transfer.
+  String get transferReceipt => '$_txnBanking/v1/transfer_receipt';
+
   /// Endpoint for deleting a request
   String get request => '$_customer/v1/request';
+
+  /// Endpoint for the customer limits
+  String get customerLimits => '$_txnBanking/v2/customer_limit';
 }

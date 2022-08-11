@@ -11,17 +11,25 @@ class ActivityCubit extends Cubit<ActivityState> {
   final LoadActivitiesUseCase _loadActivitiesUseCase;
   final DeleteActivityUseCase _deleteActivityUseCase;
   final CancelActivityUseCase _cancelActivityUseCase;
+  final CreateShortcutUseCase _createShortcutUseCase;
+  final CancelRecurringPaymentUseCase _cancelRecurrPaymentUseCase;
 
   /// Creates a new [ActivityCubit] instance
   ActivityCubit({
     required LoadActivitiesUseCase loadActivitiesUseCase,
     required DeleteActivityUseCase deleteActivityUseCase,
     required CancelActivityUseCase cancelActivityUseCase,
+    required CreateShortcutUseCase createShortcutUseCase,
+    required CancelRecurringPaymentUseCase cancelRecurrPaymentUseCase,
     int limit = 20,
   })  : _loadActivitiesUseCase = loadActivitiesUseCase,
         _deleteActivityUseCase = deleteActivityUseCase,
         _cancelActivityUseCase = cancelActivityUseCase,
-        super(ActivityState(pagination: Pagination(limit: limit)));
+        _createShortcutUseCase = createShortcutUseCase,
+        _cancelRecurrPaymentUseCase = cancelRecurrPaymentUseCase,
+        super(ActivityState(
+          pagination: Pagination(limit: limit),
+        ));
 
   /// Loads all the activities
   Future<void> load({
@@ -39,6 +47,7 @@ class ActivityCubit extends Cubit<ActivityState> {
         action: loadMore
             ? ActivityBusyAction.loadingMore
             : ActivityBusyAction.loading,
+        errorMessage: '',
       ),
     );
 
@@ -79,6 +88,7 @@ class ActivityCubit extends Cubit<ActivityState> {
               ? ActivityErrorStatus.network
               : ActivityErrorStatus.generic,
           action: ActivityBusyAction.none,
+          errorMessage: e is NetException ? e.message : e.toString(),
         ),
       );
 
@@ -93,5 +103,61 @@ class ActivityCubit extends Cubit<ActivityState> {
   Future<void> cancel(String id, {String? otpValue}) => _cancelActivityUseCase(
         id,
         otpValue: otpValue,
+      );
+
+  /// Cancel a recurring payment
+  Future<Payment> cancelRecurringPayment(
+    String itemId, {
+    String? otpValue,
+    bool resendOTP = false,
+  }) async {
+    emit(
+      state.copyWith(
+        errorStatus: ActivityErrorStatus.none,
+        action: ActivityBusyAction.loading,
+      ),
+    );
+
+    try {
+      final result = await _cancelRecurrPaymentUseCase(
+        itemId,
+        otpValue: otpValue,
+        resendOTP: resendOTP,
+      );
+
+      emit(
+        state.copyWith(
+          errorStatus: ActivityErrorStatus.none,
+          action: ActivityBusyAction.none,
+        ),
+      );
+
+      return result;
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          errorStatus: e is NetException
+              ? ActivityErrorStatus.network
+              : ActivityErrorStatus.generic,
+          action: ActivityBusyAction.none,
+          errorMessage: e is NetException ? e.message : e.toString(),
+        ),
+      );
+
+      rethrow;
+    }
+  }
+
+  /// Add the activity to shorcut
+  Future<void> shortcut({required NewShortcut newShortcut}) =>
+      _createShortcutUseCase(
+        shortcut: newShortcut,
+      );
+
+  /// Save the shortcut name
+  void onShortcutNameChanged(String shortcutName) => emit(
+        state.copyWith(
+          shortcutName: shortcutName,
+        ),
       );
 }

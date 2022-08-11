@@ -47,4 +47,10 @@ abstract class TransferRepositoryInterface {
   Future<Transfer> resendSecondFactor({
     required NewTransfer transfer,
   });
+
+  /// Gets the receipt belonging the transfer.
+  Future<List<int>> getTransferReceipt({
+    required int transferId,
+    bool? isImage,
+  });
 }

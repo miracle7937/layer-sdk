@@ -1,3 +1,5 @@
+import 'package:dio/dio.dart';
+
 import '../../../../data_layer/network.dart';
 import '../../dtos.dart';
 
@@ -17,7 +19,6 @@ class BeneficiaryProvider {
   Future<List<BeneficiaryDTO>> list({
     String? customerID,
     String? searchText,
-    bool ascendingOrder = true,
     int? limit,
     int? offset,
     bool forceRefresh = false,
@@ -29,7 +30,8 @@ class BeneficiaryProvider {
       queryParameters: {
         if (customerID?.isNotEmpty ?? false)
           'beneficiary.customer_id': customerID,
-        'asc': ascendingOrder,
+        'asc': true,
+        'sortby': 'nickname',
         if (limit != null) 'limit': limit,
         if (offset != null) 'offset': offset,
         if (searchText?.isNotEmpty ?? false) 'q': searchText,
@@ -131,5 +133,27 @@ class BeneficiaryProvider {
     );
 
     return BeneficiaryDTO.fromJson(response.data);
+  }
+
+  /// Getting of the beneficiary receipt
+  Future<List<int>> getReceipt(
+    int beneficiaryId, {
+    bool isImage = true,
+  }) async {
+    final response = await netClient.request(
+      '${netClient.netEndpoints.beneficiaryReceipt}/$beneficiaryId',
+      method: NetRequestMethods.post,
+      data: {
+        'form_id': 'beneficiary',
+        'format': isImage ? 'image' : 'pdf',
+      },
+      decodeResponse: false,
+      responseType: ResponseType.bytes,
+    );
+    if (response.data is List<int>) {
+      return response.data as List<int>;
+    }
+
+    throw Exception('Beneficiary receipt not received');
   }
 }

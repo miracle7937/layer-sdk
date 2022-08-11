@@ -1,4 +1,5 @@
 import 'dart:core';
+import 'dart:io';
 import 'dart:math';
 
 import 'platform/file_utils_mobile.dart'
@@ -16,6 +17,16 @@ abstract class FileUtils {
   Future<String> saveBytes({
     required String filename,
     required List<int> bytes,
+  });
+
+  /// Check if file with provided name exists in a platform-specific location.
+  Future<bool> fileExists({
+    required String filename,
+  });
+
+  /// Check if file with provided name exists in a platform-specific location.
+  Future<File> getFile({
+    required String filename,
   });
 
   /// Returns the file size.

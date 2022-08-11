@@ -34,7 +34,7 @@ class ExperienceCubit extends Cubit<ExperienceState> {
     required Experience experience,
   }) async {
     emit(
-      ExperienceState(
+      state.copyWith(
         experience: experience,
         visiblePages: _configureUserExperienceByExperiencePreferencesUseCase(
           experience: experience,
@@ -58,6 +58,7 @@ class ExperienceCubit extends Cubit<ExperienceState> {
     emit(
       state.copyWith(
         busy: true,
+        clearExperience: true,
         error: ExperienceStateError.none,
       ),
     );
@@ -69,7 +70,7 @@ class ExperienceCubit extends Cubit<ExperienceState> {
       );
 
       emit(
-        ExperienceState(
+        state.copyWith(
           experience: experience,
           visiblePages: _configureUserExperienceByExperiencePreferencesUseCase(
             experience: experience,
@@ -82,7 +83,9 @@ class ExperienceCubit extends Cubit<ExperienceState> {
         state.copyWith(
           busy: false,
           error: e is NetException
-              ? ExperienceStateError.network
+              ? e.statusCode == null
+                  ? ExperienceStateError.connectivity
+                  : ExperienceStateError.network
               : ExperienceStateError.generic,
           errorMessage: e is NetException ? e.message : null,
         ),
@@ -112,13 +115,13 @@ class ExperienceCubit extends Cubit<ExperienceState> {
 
       emit(
         state.copyWith(
+          busy: false,
           experience: experience,
           visiblePages: experience != null
               ? _configureUserExperienceByExperiencePreferencesUseCase(
                   experience: experience,
                 )
               : null,
-          busy: false,
         ),
       );
     } on Exception catch (e) {

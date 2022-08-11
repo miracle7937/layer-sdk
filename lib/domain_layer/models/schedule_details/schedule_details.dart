@@ -64,7 +64,7 @@ class ScheduleDetails extends Equatable {
       /// end date to the correct one.
       startDate ??= this.startDate ?? today;
 
-      executions = _calculateExecutions(
+      executions = calculateReccurenceExecutions(
         recurrence ?? this.recurrence,
         startDate,
         endDate,
@@ -169,7 +169,7 @@ class ScheduleDetails extends Equatable {
 
   /// Calculates the amount of executions between the start and the end dates
   /// depending on the recurrence.
-  int _calculateExecutions(
+  int calculateReccurenceExecutions(
     Recurrence recurrence,
     DateTime startDate,
     DateTime endDate,
