@@ -17,6 +17,9 @@ enum DPAProcessBusyAction {
   /// Proceeding to the next step in the process.
   steppingForward,
 
+  /// Skipping the current step in the process.
+  skipping,
+
   /// Updating a variable value.
   updatingValue,
 
