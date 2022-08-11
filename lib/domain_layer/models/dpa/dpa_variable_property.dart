@@ -98,6 +98,9 @@ class DPAVariableProperty extends Equatable {
   /// The list of [DPADialCode] associated with this [DPAVariable].
   final UnmodifiableListView<DPADialCode> dialCodes;
 
+  /// The default dial code
+  final String? defaultPrefix;
+
   /// The prefix value.
   final String? prefixValue;
 
@@ -148,6 +151,7 @@ class DPAVariableProperty extends Equatable {
     this.currencyFlagCode,
     this.characterSplit,
     this.picker,
+    this.defaultPrefix,
   })  : allowedTypes = UnmodifiableSetView(allowedTypes?.toSet() ?? <String>{}),
         dialCodes = UnmodifiableListView(dialCodes ?? []);
 
@@ -179,6 +183,7 @@ class DPAVariableProperty extends Equatable {
         valueTextProperties,
         currencyFlagCode,
         picker,
+        defaultPrefix,
       ];
 
   /// Creates a new [DPAVariableProperty] using another as a base.
@@ -210,6 +215,7 @@ class DPAVariableProperty extends Equatable {
     String? currencyFlagCode,
     bool? characterSplit,
     DPAVariablePicker? picker,
+    String? defaultPrefix,
   }) =>
       DPAVariableProperty(
         step: step ?? this.step,
@@ -239,5 +245,6 @@ class DPAVariableProperty extends Equatable {
         currencyFlagCode: currencyFlagCode ?? this.currencyFlagCode,
         characterSplit: characterSplit ?? this.characterSplit,
         picker: picker ?? this.picker,
+        defaultPrefix: defaultPrefix ?? this.defaultPrefix,
       );
 }
