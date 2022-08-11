@@ -46,6 +46,14 @@ class OTPScreen extends StatefulWidget {
   /// Usually used for clearing the previous code when there was an error.
   final bool shouldClearCode;
 
+  /// Whether or not the mobile number should be shown.
+  ///
+  /// Use this parameter when the OTP screen is being used on a unauthenticated
+  /// state where the application doesn't have the customer information.
+  ///
+  /// Defaults to `true`.
+  final bool showMobileNumber;
+
   /// Creates a new [OTPScreen].
   const OTPScreen({
     Key? key,
@@ -58,6 +66,7 @@ class OTPScreen extends StatefulWidget {
     this.shouldClearCode = false,
     required this.onResend,
     this.isResending = false,
+    this.showMobileNumber = true,
   }) : super(key: key);
 
   @override
@@ -167,7 +176,10 @@ class _OTPScreenState extends State<OTPScreen> with FullScreenLoaderMixin {
               Text(
                 translation
                     .translate('enter_code_sent_to_placeholder')
-                    .replaceAll('{phone}', maskedNumber),
+                    .replaceAll(
+                      '{phone}',
+                      widget.showMobileNumber ? maskedNumber : '',
+                    ),
                 style: design.bodyM(),
                 textAlign: TextAlign.center,
               ),
