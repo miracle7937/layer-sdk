@@ -32,6 +32,7 @@ class BeneficiaryProvider {
         if (customerID?.isNotEmpty ?? false)
           'beneficiary.customer_id': customerID,
         'asc': ascendingOrder,
+        'sortby': 'nickname',
         if (limit != null) 'limit': limit,
         if (offset != null) 'offset': offset,
         if (searchText?.isNotEmpty ?? false) 'q': searchText,
