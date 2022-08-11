@@ -19,7 +19,6 @@ class BeneficiaryRepository implements BeneficiaryRepositoryInterface {
   Future<List<Beneficiary>> list({
     String? customerId,
     String? searchText,
-    bool ascendingOrder = true,
     int limit = 50,
     int offset = 0,
     bool forceRefresh = false,
@@ -28,7 +27,6 @@ class BeneficiaryRepository implements BeneficiaryRepositoryInterface {
     final beneficiaryDTO = await _provider.list(
       customerID: customerId,
       searchText: searchText,
-      ascendingOrder: ascendingOrder,
       limit: limit,
       offset: offset,
       forceRefresh: forceRefresh,

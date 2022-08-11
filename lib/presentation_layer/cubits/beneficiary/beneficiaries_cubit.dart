@@ -22,9 +22,7 @@ class BeneficiariesCubit extends Cubit<BeneficiariesState> {
         super(
           BeneficiariesState(
             customerID: customerID,
-            listData: BeneficiaryListData(
-              ascendingOrder: ascendingOrder,
-            ),
+            listData: BeneficiaryListData(),
           ),
         );
 
@@ -55,7 +53,6 @@ class BeneficiariesCubit extends Cubit<BeneficiariesState> {
         limit: limit,
         forceRefresh: forceRefresh,
         activeOnly: activeOnly,
-        ascendingOrder: state.listData.ascendingOrder,
       );
 
       final list = offset > 0

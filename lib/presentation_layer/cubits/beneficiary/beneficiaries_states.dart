@@ -86,15 +86,11 @@ class BeneficiaryListData extends Equatable {
   /// The text used to filter the results.
   final String? searchText;
 
-  /// Order of the list.
-  final bool ascendingOrder;
-
   /// Creates a new [BeneficiaryListData] with the default values.
   const BeneficiaryListData({
     this.canLoadMore = false,
     this.offset = 0,
     this.searchText,
-    this.ascendingOrder = true,
   });
 
   @override
@@ -102,7 +98,6 @@ class BeneficiaryListData extends Equatable {
         canLoadMore,
         offset,
         searchText,
-        ascendingOrder,
       ];
 
   /// Creates a new object based on this one.
@@ -110,12 +105,10 @@ class BeneficiaryListData extends Equatable {
     bool? canLoadMore,
     int? offset,
     String? searchText,
-    bool? ascendingOrder,
   }) =>
       BeneficiaryListData(
         canLoadMore: canLoadMore ?? this.canLoadMore,
         offset: offset ?? this.offset,
         searchText: searchText ?? this.searchText,
-        ascendingOrder: ascendingOrder ?? this.ascendingOrder,
       );
 }
