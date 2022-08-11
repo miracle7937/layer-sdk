@@ -182,7 +182,19 @@ class __RepeatAccessPinScreenState
 
                       if (errorCount == 2) {
                         errorCount = 0;
-                        Navigator.of(context).pop();
+
+                        final result = await BottomSheetHelper.showConfirmation(
+                          context: context,
+                          titleKey: 'invalid_passcode',
+                          descriptionKey: 'invalid_passcode_description',
+                          type: BottomSheetType.error,
+                          showDenyButton: false,
+                          confirmKey: 'ok',
+                        );
+
+                        if (result) {
+                          Navigator.of(context).pop();
+                        }
                       }
                     } else {
                       disabled = true;

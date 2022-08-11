@@ -19,7 +19,6 @@ class BeneficiaryProvider {
   Future<List<BeneficiaryDTO>> list({
     String? customerID,
     String? searchText,
-    bool ascendingOrder = true,
     int? limit,
     int? offset,
     bool forceRefresh = false,
@@ -31,7 +30,8 @@ class BeneficiaryProvider {
       queryParameters: {
         if (customerID?.isNotEmpty ?? false)
           'beneficiary.customer_id': customerID,
-        'asc': ascendingOrder,
+        'asc': true,
+        'sortby': 'nickname',
         if (limit != null) 'limit': limit,
         if (offset != null) 'offset': offset,
         if (searchText?.isNotEmpty ?? false) 'q': searchText,
