@@ -326,6 +326,9 @@ class NetEndpoints {
   /// Endpoint for submitting a transfer.
   String get submitTransfer => '$_txnBanking/v2/transfer';
 
+  /// Endpoint for getting the receipt for a transfer.
+  String get transferReceipt => '$_txnBanking/v1/transfer_receipt';
+
   /// Endpoint for deleting a request
   String get request => '$_customer/v1/request';
 

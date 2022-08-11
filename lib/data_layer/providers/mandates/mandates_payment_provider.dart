@@ -17,13 +17,15 @@ class MandatePaymentsProvider {
     int? limit,
     int? offset,
     String? sortBy,
+    int? mandateId,
 
     /// If the sort is descending or not
     bool desc = false,
   }) async {
     final params = <String, dynamic>{}
       ..addIfNotNull('limit', limit)
-      ..addIfNotNull('offset', offset);
+      ..addIfNotNull('offset', offset)
+      ..addIfNotNull('mandate_id', mandateId);
 
     if (sortBy?.isNotEmpty ?? false) {
       params['sortBy'] = sortBy;

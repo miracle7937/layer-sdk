@@ -16,6 +16,12 @@ enum OwnTransferAction {
   /// The submit is being processed.
   submit,
 
+  /// The receipt type is image.
+  imageReceipt,
+
+  /// The receipt type is pdf.
+  pdfReceipt,
+
   /// The shortcut is being created.
   shortcut
 }
@@ -43,8 +49,17 @@ class OwnTransferState extends Equatable {
   /// The API error message to be displayed.
   final String? errorMessage;
 
+  /// The id of the transfer
+  final int? transferId;
+
   /// The status of the submitted transfer.
   final TransferStatus? resultStatus;
+
+  /// The image receipt belongs transfer
+  final UnmodifiableListView<int> imageReceipt;
+
+  /// The pdf receipt belongs transfer
+  final UnmodifiableListView<int> pdfReceipt;
 
   /// The preselectedAccount for from account.
   final Account? preselectedAccount;
@@ -57,14 +72,19 @@ class OwnTransferState extends Equatable {
     Iterable<Currency> currencies = const [],
     Set<OwnTransferAction> actions = const {},
     Set<OwnTransferAction> errors = const {},
+    Iterable<int> pdfReceipt = const <int>[],
+    Iterable<int> imageReceipt = const <int>[],
     this.errorMessage,
     this.resultStatus,
+    this.transferId,
     this.preselectedAccount,
   })  : fromAccounts = UnmodifiableListView(fromAccounts),
         toAccounts = UnmodifiableListView(toAccounts),
         currencies = UnmodifiableListView(currencies),
         actions = UnmodifiableSetView(actions),
-        errors = UnmodifiableSetView(errors);
+        errors = UnmodifiableSetView(errors),
+        imageReceipt = UnmodifiableListView(imageReceipt),
+        pdfReceipt = UnmodifiableListView(pdfReceipt);
 
   /// Creates a copy of the current state with the passed values.
   OwnTransferState copyWith({
@@ -77,6 +97,9 @@ class OwnTransferState extends Equatable {
     bool clearErrorMessage = false,
     String? errorMessage,
     TransferStatus? resultStatus,
+    Iterable<int>? pdfReceipt,
+    Iterable<int>? imageReceipt,
+    int? transferId,
     Account? preselectedAccount,
   }) =>
       OwnTransferState(
@@ -90,6 +113,9 @@ class OwnTransferState extends Equatable {
         errorMessage:
             clearErrorMessage ? null : errorMessage ?? this.errorMessage,
         resultStatus: resultStatus ?? this.resultStatus,
+        imageReceipt: imageReceipt ?? this.imageReceipt,
+        transferId: transferId ?? this.transferId,
+        pdfReceipt: pdfReceipt ?? this.pdfReceipt,
       );
 
   @override
@@ -102,6 +128,9 @@ class OwnTransferState extends Equatable {
         errors,
         errorMessage,
         resultStatus,
+        transferId,
+        imageReceipt,
+        pdfReceipt,
         preselectedAccount,
       ];
 }

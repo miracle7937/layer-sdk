@@ -8,9 +8,14 @@ import 'mandate_payments_state.dart';
 class MandatePaymentsCubit extends Cubit<MandatePaymentsState> {
   final LoadMandatePaymentUseCase _loadPaymentsUC;
 
+  /// If provided, only the payments related to this mandate id will be
+  /// fetched
+  final int? mandateId;
+
   /// Creates a new [MandatePaymentsCubit] instance
   MandatePaymentsCubit({
     required LoadMandatePaymentUseCase loadMandatePaymentsUseCase,
+    this.mandateId,
   })  : _loadPaymentsUC = loadMandatePaymentsUseCase,
         super(MandatePaymentsState());
 
@@ -43,6 +48,7 @@ class MandatePaymentsCubit extends Cubit<MandatePaymentsState> {
         offset: pagination.offset,
         desc: desc,
         sortBy: sortBy,
+        mandateId: mandateId,
       );
 
       final payments = pagination.firstPage

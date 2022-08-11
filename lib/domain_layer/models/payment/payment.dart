@@ -16,6 +16,9 @@ enum PaymentStatus {
   /// Completed
   completed,
 
+  /// Deleted
+  deleted,
+
   /// Pending
   pending,
 
