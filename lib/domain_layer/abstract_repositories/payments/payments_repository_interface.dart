@@ -14,9 +14,16 @@ abstract class PaymentsRepositoryInterface {
   });
 
   /// Submits the provided payment
-  Future<Payment> payBill({
+  Future<Payment> postPayment({
     required Payment payment,
     String? otp,
+  });
+
+  /// Patches the provided payment
+  Future<Payment> patchPayment({
+    required Payment payment,
+    String? otp,
+    bool resendOtp = false,
   });
 
   /// Resends the one time password to the customer
