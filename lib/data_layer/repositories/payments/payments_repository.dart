@@ -34,7 +34,7 @@ class PaymentRepository implements PaymentsRepositoryInterface {
   }
 
   @override
-  Future<Payment> payBill({
+  Future<Payment> postPayment({
     required Payment payment,
     String? otp,
   }) async {
@@ -47,7 +47,7 @@ class PaymentRepository implements PaymentsRepositoryInterface {
   }
 
   @override
-  Future<Payment> patchBill({
+  Future<Payment> patchPayment({
     required Payment payment,
     String? otp,
     bool resendOtp = false,

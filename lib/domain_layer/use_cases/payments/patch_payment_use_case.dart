@@ -16,7 +16,7 @@ class PatchPaymentUseCase {
     String? otp,
     bool resendOtp = false,
   }) {
-    return _repository.patchBill(
+    return _repository.patchPayment(
       payment: payment,
       otp: otp,
       resendOtp: resendOtp,
