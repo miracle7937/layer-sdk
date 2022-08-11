@@ -139,7 +139,7 @@ class _OTPScreenState extends State<OTPScreen> with FullScreenLoaderMixin {
         ) ??
         '';
 
-    var maskedNumber = '•••••';
+    var maskedNumber = '𖧹𖧹𖧹𖧹𖧹';
     if (mobileNumber.length > 3) {
       final last3Digits = mobileNumber.substring(
           mobileNumber.length - 4, mobileNumber.length - 1);
