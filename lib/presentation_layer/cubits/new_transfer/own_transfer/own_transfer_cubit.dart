@@ -75,6 +75,18 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
         toAccounts: toAccounts,
         preselectedAccount: preselectedAccount,
         currencies: currencies,
+        transfer: state.transfer.copyWith(
+          source: fromAccounts.isNotEmpty
+              ? NewTransferSource(account: preselectedAccount)
+              : null,
+          currency: fromAccounts.isNotEmpty
+              ? currencies.firstWhere(
+                  (currency) =>
+                      currency?.code?.toLowerCase() ==
+                      preselectedAccount?.currency?.toLowerCase(),
+                )
+              : null,
+        ),
         actions: state.actions.difference({
           OwnTransferAction.accounts,
         }),
