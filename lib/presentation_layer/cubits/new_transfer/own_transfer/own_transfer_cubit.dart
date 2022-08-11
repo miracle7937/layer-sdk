@@ -80,7 +80,7 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
               ? NewTransferSource(account: preselectedAccount)
               : null,
           currency: fromAccounts.isNotEmpty
-              ? currencies.firstWhere(
+              ? currencies.firstWhereOrNull(
                   (currency) =>
                       currency?.code?.toLowerCase() ==
                       preselectedAccount?.currency?.toLowerCase(),
