@@ -179,6 +179,9 @@ class PaymentDTOStatus extends EnumDTO {
   /// payment status is completed
   static const completed = PaymentDTOStatus._internal('C');
 
+  /// payment status is deleted
+  static const deleted = PaymentDTOStatus._internal('D');
+
   /// payment status is pending approval
   static const pending = PaymentDTOStatus._internal('P');
 
@@ -205,6 +208,7 @@ class PaymentDTOStatus extends EnumDTO {
     scheduled,
     pendingBank,
     pendingExpired,
+    deleted,
   ];
 
   const PaymentDTOStatus._internal(String value) : super.internal(value);

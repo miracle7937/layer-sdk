@@ -80,6 +80,7 @@ class _DPASearchListState extends State<DPASearchList> {
                   layerDesign,
                 )
               : ListView.separated(
+                  primary: false,
                   shrinkWrap: true,
                   separatorBuilder: (_, __) => Divider(),
                   itemCount: options.length,
