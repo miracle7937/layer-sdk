@@ -25,7 +25,7 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
             payment: paymentToPatch,
             initiallySelectedAccount: paymentToPatch.fromAccount,
             initialAmount: paymentToPatch.amount ?? 0.0,
-            initialRecurrence: ScheduleDetails(
+            scheduleDetails: ScheduleDetails(
               recurrence: paymentToPatch.recurrence,
               startDate: paymentToPatch.recurrenceStart,
               endDate: paymentToPatch.recurrenceEnd,
@@ -97,7 +97,9 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
       );
 
       final res = await _patchPaymentUseCase.patch(
-        payment ?? state.payment,
+        state.paymentToBePatched.copyWith(
+          otpId: payment?.otpId,
+        ),
         otp: otp,
         resendOtp: resendOtp,
       );

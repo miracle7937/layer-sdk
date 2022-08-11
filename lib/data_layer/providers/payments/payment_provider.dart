@@ -60,13 +60,17 @@ class PaymentProvider {
     String? otp,
     bool resendOtp = false,
   }) async {
+    final data = payment.toJson();
+    if (otp?.isNotEmpty ?? false) {
+      data['otp_value'] = otp;
+    }
     final response = await netClient.request(
       netClient.netEndpoints.paymentV2,
       method: NetRequestMethods.patch,
-      data: payment.toJson(),
+      data: data,
       forceRefresh: true,
       queryParameters: {
-        if (otp?.isNotEmpty ?? false) 'otp_value': otp,
+        if (otp?.isNotEmpty ?? false) 'second_factor_verification': true,
         if (resendOtp) 'resend_otp': true,
       },
     );

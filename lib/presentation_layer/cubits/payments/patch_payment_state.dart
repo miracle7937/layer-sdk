@@ -45,13 +45,13 @@ class PatchPaymentState extends Equatable {
   final List<Account> fromAccounts;
 
   /// The initially selected account when we first open the screen.
-  final Account? initiallySelectedAccount;
+  final Account? _initiallySelectedAccount;
 
   /// The initial amount of the payment when we first open the screen.
-  final double? initialAmount;
+  final double? _initialAmount;
 
   /// The initial schedule details of the payment when we first open the screen
-  final ScheduleDetails? initialRecurrence;
+  final ScheduleDetails? _initialRecurrence;
 
   /// True if the cubit is processing something.
   final bool busy;
@@ -69,22 +69,23 @@ class PatchPaymentState extends Equatable {
   PatchPaymentState({
     required this.payment,
     this.fromAccounts = const [],
-    this.initiallySelectedAccount,
-    this.initialAmount,
-    this.initialRecurrence,
+    Account? initiallySelectedAccount,
+    double? initialAmount,
     List<Biller> billers = const [],
     this.busy = true,
     this.busyAction = PatchPaymentBusyAction.loading,
     this.errorStatus = PatchPaymentErrorStatus.none,
     this.scheduleDetails,
-  });
+  })  : _initialRecurrence = scheduleDetails?.copyWith(),
+        _initialAmount = initialAmount,
+        _initiallySelectedAccount = initiallySelectedAccount;
 
   @override
   List<Object?> get props => [
         payment,
-        initiallySelectedAccount,
-        initialAmount,
-        initialRecurrence,
+        _initiallySelectedAccount,
+        _initialAmount,
+        _initialRecurrence,
         fromAccounts,
         busy,
         busyAction,
@@ -95,9 +96,6 @@ class PatchPaymentState extends Equatable {
   /// Creates a new state based on this one.
   PatchPaymentState copyWith({
     Payment? payment,
-    Account? initiallySelectedAccount,
-    double? initialAmount,
-    ScheduleDetails? initialRecurrence,
     List<Account>? fromAccounts,
     bool? busy,
     PatchPaymentErrorStatus? errorStatus,
@@ -106,10 +104,6 @@ class PatchPaymentState extends Equatable {
   }) {
     return PatchPaymentState(
       payment: payment ?? this.payment,
-      initiallySelectedAccount:
-          initiallySelectedAccount ?? this.initiallySelectedAccount,
-      initialAmount: initialAmount ?? this.initialAmount,
-      initialRecurrence: initialRecurrence ?? this.initialRecurrence,
       fromAccounts: fromAccounts ?? this.fromAccounts,
       busy: busy ?? this.busy,
       busyAction: busyAction ?? this.busyAction,
@@ -121,8 +115,8 @@ class PatchPaymentState extends Equatable {
   /// Whether the user can submit the form or not
   bool get canSubmit =>
       !busy &&
-      (initiallySelectedAccount?.id != payment.fromAccount?.id ||
-          initialAmount != payment.amount ||
+      (_initiallySelectedAccount?.id != payment.fromAccount?.id ||
+          _initialAmount != payment.amount ||
           canSubmitRecurrence) &&
       payment.fromAccount != null &&
       ((payment.fromAccount?.availableBalance ?? 0) >= (payment.amount ?? 0)) &&
@@ -133,9 +127,9 @@ class PatchPaymentState extends Equatable {
 
   /// Whether the recurrence changed or not
   bool get canSubmitRecurrence =>
-      initialRecurrence?.recurrence != scheduleDetails?.recurrence
+      _initialRecurrence?.recurrence != scheduleDetails?.recurrence
           ? true
-          : initialRecurrence?.startDate != scheduleDetails?.startDate;
+          : _initialRecurrence?.startDate != scheduleDetails?.startDate;
 
   bool get _schedueled => scheduleDetails?.recurrence == Recurrence.once;
   bool get _recurring => ![
@@ -153,15 +147,10 @@ class PatchPaymentState extends Equatable {
       _schedueled ? scheduleDetails?.startDate : null;
 
   /// The payment to be patched
-  Payment get paymentToBePatched => Payment(
-        fromAccount: payment.fromAccount,
-        bill: payment.bill,
-        amount: payment.amount,
-        currency: payment.fromAccount?.currency ?? '',
-        deviceUID: payment.deviceUID,
-        status: PaymentStatus.completed,
-        recurrence: payment.recurrence,
+  Payment get paymentToBePatched => payment.copyWith(
+        recurrence: scheduleDetails?.recurrence,
         scheduled: _scheduledDate,
+        recurring: _recurring,
         recurrenceStart: _recurrenceStart,
         recurrenceEnd: _recurrenceEnd,
       );
