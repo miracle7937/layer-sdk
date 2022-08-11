@@ -147,25 +147,12 @@ class _OTPScreenState extends State<OTPScreen> with FullScreenLoaderMixin {
     } else {
       maskedNumber = '$maskedNumber$mobileNumber';
     }
-    print(maskedNumber);
 
     return Scaffold(
       appBar: SDKHeader(
         title: widget.title,
         prefixSvgIcon: DKImages.arrowLeft,
         onPrefixIconPressed: () => Navigator.pop(context),
-        suffixWidget: TextButton(
-            onPressed: () {
-              if (Navigator.of(context).canPop()) {
-                Navigator.of(context).pop();
-              }
-            },
-            style: ButtonStyle(
-                padding: MaterialStateProperty.all(EdgeInsets.zero)),
-            child: Text(
-              Translation.translateOf(context, "cancel"),
-              style: design.buttonM(color: design.brandPrimary),
-            )),
       ),
       body: Center(
         child: SingleChildScrollView(

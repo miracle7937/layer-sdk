@@ -22,20 +22,16 @@ class SDKHeader extends StatelessWidget implements PreferredSizeWidget {
   /// Only indicate this if [suffixSvgIcon] is not null.
   final VoidCallback? onSuffixIconPressed;
 
-  /// Widget that will be displayed on the right side of the appbar
-  final Widget? suffixWidget;
-
   /// Creates a new [SDKHeader].
-  const SDKHeader(
-      {Key? key,
-      required this.title,
-      this.preferredSize = const Size.fromHeight(kToolbarHeight),
-      this.prefixSvgIcon,
-      this.onPrefixIconPressed,
-      this.suffixSvgIcon,
-      this.onSuffixIconPressed,
-      this.suffixWidget})
-      : assert(prefixSvgIcon == null || onPrefixIconPressed != null),
+  const SDKHeader({
+    Key? key,
+    required this.title,
+    this.preferredSize = const Size.fromHeight(kToolbarHeight),
+    this.prefixSvgIcon,
+    this.onPrefixIconPressed,
+    this.suffixSvgIcon,
+    this.onSuffixIconPressed,
+  })  : assert(prefixSvgIcon == null || onPrefixIconPressed != null),
         assert(suffixSvgIcon == null || onSuffixIconPressed != null),
         super(key: key);
 
@@ -88,10 +84,7 @@ class SDKHeader extends StatelessWidget implements PreferredSizeWidget {
                   textAlign: TextAlign.center,
                 ),
               ),
-              suffixWidget ?? Container(),
-              if (prefixSvgIcon != null &&
-                  suffixSvgIcon == null &&
-                  suffixWidget == null)
+              if (prefixSvgIcon != null && suffixSvgIcon == null)
                 const SizedBox(width: 34.0),
               if (suffixSvgIcon != null) ...[
                 const SizedBox(width: 10.0),
