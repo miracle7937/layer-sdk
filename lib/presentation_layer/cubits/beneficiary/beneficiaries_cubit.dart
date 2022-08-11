@@ -20,10 +20,7 @@ class BeneficiariesCubit extends Cubit<BeneficiariesState> {
     bool ascendingOrder = true,
   })  : _loadCustomerBeneficiariesUseCase = loadCustomerBeneficiariesUseCase,
         super(
-          BeneficiariesState(
-            customerID: customerID,
-            listData: BeneficiaryListData(),
-          ),
+          BeneficiariesState(customerID: customerID),
         );
 
   /// Loads a list of beneficiaries, optionally using
