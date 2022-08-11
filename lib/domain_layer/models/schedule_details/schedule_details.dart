@@ -171,13 +171,9 @@ class ScheduleDetails extends Equatable {
   /// depending on the recurrence.
   int calculateReccurenceExecutions(
     Recurrence recurrence,
-    DateTime? startDate,
-    DateTime? endDate,
+    DateTime startDate,
+    DateTime endDate,
   ) {
-    if (startDate == null) return -1;
-
-    if (endDate == null) return -1;
-
     final timeBetweenStartAndEndDates = startDate.difference(endDate).abs();
     var executions = 0;
 
