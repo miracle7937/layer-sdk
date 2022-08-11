@@ -17,7 +17,6 @@ class BeneficiariesCubit extends Cubit<BeneficiariesState> {
     required LoadCustomerBeneficiariesUseCase loadCustomerBeneficiariesUseCase,
     String? customerID,
     this.limit = 50,
-    bool ascendingOrder = true,
   })  : _loadCustomerBeneficiariesUseCase = loadCustomerBeneficiariesUseCase,
         super(
           BeneficiariesState(customerID: customerID),
