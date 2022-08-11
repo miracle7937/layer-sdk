@@ -12,37 +12,32 @@ import 'patch_payment_state.dart';
 class PatchPaymentCubit extends Cubit<PatchPaymentState> {
   final GetAccountsByStatusUseCase _getCustomerAccountsUseCase;
   final PatchPaymentUseCase _patchPaymentUseCase;
-  final ResendOTPPaymentUseCase _resendOTPUseCase;
 
   /// Creates a new cubit
   PatchPaymentCubit({
     required GetAccountsByStatusUseCase getCustomerAccountsUseCase,
     required PatchPaymentUseCase patchPaymentUseCase,
-    required ResendOTPPaymentUseCase resendPaymentOTPUseCase,
-    required Payment? paymentToPatch,
+    required Payment paymentToPatch,
   })  : _getCustomerAccountsUseCase = getCustomerAccountsUseCase,
         _patchPaymentUseCase = patchPaymentUseCase,
-        _resendOTPUseCase = resendPaymentOTPUseCase,
         super(
           PatchPaymentState(
-            payment: paymentToPatch ?? Payment(),
-            initiallySelectedAccount: paymentToPatch?.fromAccount,
-            initialAmount: paymentToPatch?.amount ?? 0.0,
-            initialRecurrence: paymentToPatch?.recurrence != null
-                ? ScheduleDetails(
-                    recurrence: paymentToPatch?.recurrence ?? Recurrence.none,
-                    startDate: paymentToPatch?.recurrenceStart,
-                    endDate: paymentToPatch?.recurrenceEnd,
-                    executions: paymentToPatch?.recurrence != Recurrence.none &&
-                            paymentToPatch?.recurrence != Recurrence.once
-                        ? const ScheduleDetails().calculateReccurenceExecutions(
-                            paymentToPatch?.recurrence ?? Recurrence.daily,
-                            paymentToPatch?.recurrenceStart,
-                            paymentToPatch?.recurrenceEnd,
-                          )
-                        : null,
-                  )
-                : null,
+            payment: paymentToPatch,
+            initiallySelectedAccount: paymentToPatch.fromAccount,
+            initialAmount: paymentToPatch.amount ?? 0.0,
+            initialRecurrence: ScheduleDetails(
+              recurrence: paymentToPatch.recurrence,
+              startDate: paymentToPatch.recurrenceStart,
+              endDate: paymentToPatch.recurrenceEnd,
+              executions: (paymentToPatch.recurrence != Recurrence.none &&
+                      paymentToPatch.recurrence != Recurrence.once)
+                  ? const ScheduleDetails().calculateReccurenceExecutions(
+                      paymentToPatch.recurrence,
+                      paymentToPatch.recurrenceStart,
+                      paymentToPatch.recurrenceEnd,
+                    )
+                  : null,
+            ),
           ),
         );
 
@@ -87,20 +82,24 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
   Future<Payment> submit({
     String? otp,
     Payment? payment,
+    bool resendOtp = false,
   }) async {
     try {
       emit(
         state.copyWith(
           busy: true,
-          busyAction: otp != null
-              ? PatchPaymentBusyAction.validatingSecondFactor
-              : PatchPaymentBusyAction.submitting,
+          busyAction: resendOtp
+              ? PatchPaymentBusyAction.resendingOTP
+              : otp != null
+                  ? PatchPaymentBusyAction.validatingSecondFactor
+                  : PatchPaymentBusyAction.submitting,
         ),
       );
 
       final res = await _patchPaymentUseCase.patch(
         payment ?? state.payment,
         otp: otp,
+        resendOtp: resendOtp,
       );
 
       emit(
@@ -110,35 +109,6 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
       );
 
       return res;
-    } on Exception catch (_) {
-      emit(
-        state.copyWith(
-          busy: false,
-        ),
-      );
-      rethrow;
-    }
-  }
-
-  /// Resend an OTP request
-  Future<void> resendOTP(Payment payment) async {
-    try {
-      emit(
-        state.copyWith(
-          busy: true,
-          busyAction: PatchPaymentBusyAction.resendingOTP,
-        ),
-      );
-
-      await _resendOTPUseCase(
-        payment,
-      );
-
-      emit(
-        state.copyWith(
-          busy: false,
-        ),
-      );
     } on Exception catch (_) {
       emit(
         state.copyWith(

@@ -38,7 +38,7 @@ class PaymentRepository implements PaymentsRepositoryInterface {
     required Payment payment,
     String? otp,
   }) async {
-    final paymentDTO = await _provider.payBill(
+    final paymentDTO = await _provider.postPayment(
       payment: payment.toPaymentDTO(),
       otp: otp,
     );
@@ -50,10 +50,12 @@ class PaymentRepository implements PaymentsRepositoryInterface {
   Future<Payment> patchBill({
     required Payment payment,
     String? otp,
+    bool resendOtp = false,
   }) async {
-    final paymentDTO = await _provider.patchBill(
+    final paymentDTO = await _provider.patchPayment(
       payment: payment.toPaymentDTO(),
       otp: otp,
+      resendOtp: resendOtp,
     );
 
     return paymentDTO.toPayment();

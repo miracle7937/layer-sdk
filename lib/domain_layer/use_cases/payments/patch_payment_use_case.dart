@@ -14,9 +14,12 @@ class PatchPaymentUseCase {
   Future<Payment> patch(
     Payment payment, {
     String? otp,
+    bool resendOtp = false,
   }) {
     return _repository.patchBill(
       payment: payment,
+      otp: otp,
+      resendOtp: resendOtp,
     );
   }
 }

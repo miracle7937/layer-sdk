@@ -23,6 +23,7 @@ abstract class PaymentsRepositoryInterface {
   Future<Payment> patchBill({
     required Payment payment,
     String? otp,
+    bool resendOtp = false,
   });
 
   /// Resends the one time password to the customer

@@ -37,7 +37,7 @@ class PaymentProvider {
   }
 
   /// Excutes the payment
-  Future<PaymentDTO> payBill({
+  Future<PaymentDTO> postPayment({
     required PaymentDTO payment,
     String? otp,
   }) async {
@@ -55,18 +55,19 @@ class PaymentProvider {
   }
 
   /// Patches the payment
-  Future<PaymentDTO> patchBill({
+  Future<PaymentDTO> patchPayment({
     required PaymentDTO payment,
     String? otp,
+    bool resendOtp = false,
   }) async {
-    var json = payment.toJson();
     final response = await netClient.request(
       netClient.netEndpoints.paymentV2,
       method: NetRequestMethods.patch,
-      data: json,
+      data: payment.toJson(),
       forceRefresh: true,
       queryParameters: {
         if (otp?.isNotEmpty ?? false) 'otp_value': otp,
+        if (resendOtp) 'resend_otp': true,
       },
     );
 
