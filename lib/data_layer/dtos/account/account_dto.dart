@@ -121,6 +121,9 @@ class AccountDTO {
   /// The preferences for this account.
   AccountPreferencesDTO? preferences;
 
+  /// The iban of this account;
+  final String? iban;
+
   /// Creates a new [AccountDTO]
   AccountDTO({
     this.accountId,
@@ -161,6 +164,7 @@ class AccountDTO {
     this.branchId,
     this.extraBranchId,
     this.preferences,
+    this.iban,
   });
 
   /// Creates a [AccountDTO] from a JSON
@@ -215,6 +219,7 @@ class AccountDTO {
       extraBranchId: (json['branch'] as Map?)
           ?.lookup<dynamic, String>(['location_id'])?.toString(),
       preferences: AccountPreferencesDTO.fromJson(json),
+      iban: json['iban'],
     );
   }
 
@@ -244,7 +249,6 @@ class AccountDTO {
       'can_p2p': type?.canP2P,
       "account_no": accountNumber,
       "account_no_displayed": displayAccountNumber,
-      "iban": accountNumber,
       "can_request_banker_check": canRequestBankerCheck,
       "can_request_stmt": canRequestStatement,
       "can_request_cert_account": canRequestCertificateOfAccount,
@@ -253,6 +257,7 @@ class AccountDTO {
       "can_confirm_issued_check": canConfirmIssuedCheck,
       'account_type': type?.toJson(),
       "has_iban": type?.hasIban,
+      "iban": iban,
     };
     return json;
   }

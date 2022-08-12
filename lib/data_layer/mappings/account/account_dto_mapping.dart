@@ -40,6 +40,7 @@ extension AccountDTOMapping on AccountDTO {
         canRequestCertificateOfDeposit: canRequestCertificateOfDeposit,
         canStopIssuedCheck: canStopIssuedCheck,
         canConfirmIssuedCheck: canConfirmIssuedCheck,
+        iban: iban,
       );
 }
 
@@ -80,6 +81,7 @@ extension AccountToDTOMapping on Account {
       canRequestCertificateOfDeposit: canRequestCertificateOfDeposit,
       canStopIssuedCheck: canStopIssuedCheck,
       canConfirmIssuedCheck: canConfirmIssuedCheck,
+      iban: iban,
     );
   }
 }
