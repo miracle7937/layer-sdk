@@ -55,12 +55,13 @@ class PayBillCubit extends Cubit<PayBillState> {
         _resendOTPUseCase = resendPaymentOTPUseCase,
         super(PayBillState());
 
-  /// Loads all the required data, must be called at lease once before anything
+  /// Loads all the required data, must be called at least once before anything
   /// other method in this cubit.
   void load() async {
     emit(
       state.copyWith(
         busy: true,
+        errors: {},
       ),
     );
     try {
@@ -85,7 +86,6 @@ class PayBillCubit extends Cubit<PayBillState> {
               .where((element) => element.canPay)
               .toList(growable: false),
           billerCategories: billers.toBillerCategories(),
-          errorStatus: PayBillErrorStatus.none,
         ),
       );
 
@@ -124,9 +124,14 @@ class PayBillCubit extends Cubit<PayBillState> {
       emit(
         state.copyWith(
           busy: false,
-          errorStatus: e is NetException
-              ? PayBillErrorStatus.network
-              : PayBillErrorStatus.generic,
+          errors: _addError(
+            action: PayBillBusyAction.loading,
+            errorStatus: e is NetException
+                ? PayBillErrorStatus.network
+                : PayBillErrorStatus.generic,
+            code: e is NetException ? e.code : null,
+            message: e is NetException ? e.message : null,
+          ),
         ),
       );
     }
@@ -173,6 +178,7 @@ class PayBillCubit extends Cubit<PayBillState> {
               ? PayBillBusyAction.validatingSecondFactor
               : PayBillBusyAction.submitting,
           deviceUID: _generateDeviceUIDUseCase(30),
+          errors: {},
         ),
       );
 
@@ -194,14 +200,28 @@ class PayBillCubit extends Cubit<PayBillState> {
       emit(
         state.copyWith(
           busy: false,
+          busyAction: PayBillBusyAction.none,
         ),
       );
 
       return res;
-    } on Exception catch (_) {
+    } on Exception catch (e) {
       emit(
         state.copyWith(
           busy: false,
+          busyAction: PayBillBusyAction.none,
+          errors: _addError(
+            action: otp != null
+                ? PayBillBusyAction.validatingSecondFactor
+                : PayBillBusyAction.submitting,
+            errorStatus: e is NetException
+                ? e.code == 'incorrect_value'
+                    ? PayBillErrorStatus.incorrectOTPCode
+                    : PayBillErrorStatus.network
+                : PayBillErrorStatus.generic,
+            code: e is NetException ? e.code : null,
+            message: e is NetException ? e.message : null,
+          ),
         ),
       );
       rethrow;
@@ -298,6 +318,7 @@ class PayBillCubit extends Cubit<PayBillState> {
         selectedBiller: biller,
         busy: true,
         busyAction: PayBillBusyAction.loadingServices,
+        errors: {},
       ),
     );
 
@@ -324,9 +345,14 @@ class PayBillCubit extends Cubit<PayBillState> {
       emit(
         state.copyWith(
           busy: false,
-          errorStatus: e is NetException
-              ? PayBillErrorStatus.network
-              : PayBillErrorStatus.generic,
+          errors: _addError(
+            action: PayBillBusyAction.loadingServices,
+            errorStatus: e is NetException
+                ? PayBillErrorStatus.network
+                : PayBillErrorStatus.generic,
+            code: e is NetException ? e.code : null,
+            message: e is NetException ? e.message : null,
+          ),
         ),
       );
     }
@@ -404,4 +430,22 @@ class PayBillCubit extends Cubit<PayBillState> {
       ),
     );
   }
+
+  /// Returns an error list that includes the passed action and error status.
+  Set<PayBillError> _addError({
+    required PayBillBusyAction action,
+    required PayBillErrorStatus errorStatus,
+    String? code,
+    String? message,
+  }) =>
+      state.errors.union(
+        {
+          PayBillError(
+            action: action,
+            errorStatus: errorStatus,
+            code: code,
+            message: message,
+          )
+        },
+      );
 }
