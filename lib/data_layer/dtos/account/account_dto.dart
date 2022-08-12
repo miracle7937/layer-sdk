@@ -219,7 +219,7 @@ class AccountDTO {
       extraBranchId: (json['branch'] as Map?)
           ?.lookup<dynamic, String>(['location_id'])?.toString(),
       preferences: AccountPreferencesDTO.fromJson(json),
-      iban: json['iban'] != null ? json['iban'] : null,
+      iban: json['iban'],
     );
   }
 
