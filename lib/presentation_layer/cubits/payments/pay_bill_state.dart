@@ -1,42 +1,11 @@
+import 'dart:collection';
+
 import 'package:equatable/equatable.dart';
 
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/models/payment/biller.dart';
 import '../../../domain_layer/models/payment/biller_category.dart';
 import '../../../domain_layer/models/service/service_field.dart';
-
-/// Which loading action the cubit is doing
-enum PayBillBusyAction {
-  /// Loading the entire cubit state
-  loading,
-
-  /// Loading the list of services
-  loadingServices,
-
-  /// Submitting the payment
-  submitting,
-
-  /// Validating second factory
-  validatingSecondFactor,
-
-  /// Re-sending the OTP
-  resendingOTP,
-
-  /// Validating user input
-  validating,
-}
-
-/// The available error status
-enum PayBillErrorStatus {
-  /// No errors
-  none,
-
-  /// Generic error
-  generic,
-
-  /// Network error
-  network,
-}
 
 /// The state of the bill payment cubit
 class PayBillState extends Equatable {
@@ -58,8 +27,8 @@ class PayBillState extends Equatable {
   /// Which busy action is the cubit doing
   final PayBillBusyAction busyAction;
 
-  /// The current error status.
-  final PayBillErrorStatus errorStatus;
+  /// The errors.
+  final UnmodifiableSetView<PayBillError> errors;
 
   /// A list of biller categories for the user to filter the billers with.
   final List<BillerCategory> billerCategories;
@@ -104,7 +73,7 @@ class PayBillState extends Equatable {
     this.deviceUID,
     this.busy = true,
     this.busyAction = PayBillBusyAction.loading,
-    this.errorStatus = PayBillErrorStatus.none,
+    Set<PayBillError> errors = const <PayBillError>{},
     this.billerCategories = const [],
     this.selectedBiller,
     this.selectedCategory,
@@ -116,7 +85,8 @@ class PayBillState extends Equatable {
     this.scheduleDetails,
     this.saveToShortcut = false,
     this.shortcutName,
-  }) : _billers = billers;
+  })  : errors = UnmodifiableSetView(errors),
+        _billers = billers;
 
   @override
   List<Object?> get props => [
@@ -126,7 +96,7 @@ class PayBillState extends Equatable {
         deviceUID,
         busy,
         busyAction,
-        errorStatus,
+        errors,
         billerCategories,
         selectedBiller,
         selectedCategory,
@@ -149,7 +119,7 @@ class PayBillState extends Equatable {
     Account? selectedAccount,
     String? deviceUID,
     bool? busy,
-    PayBillErrorStatus? errorStatus,
+    Set<PayBillError>? errors,
     PayBillBusyAction? busyAction,
     List<BillerCategory>? billerCategories,
     Biller? selectedBiller,
@@ -170,7 +140,7 @@ class PayBillState extends Equatable {
       deviceUID: deviceUID ?? this.deviceUID,
       busy: busy ?? this.busy,
       busyAction: busyAction ?? this.busyAction,
-      errorStatus: errorStatus ?? this.errorStatus,
+      errors: errors ?? this.errors,
       billerCategories: billerCategories ?? this.billerCategories,
       selectedBiller: selectedBiller ?? this.selectedBiller,
       selectedCategory: selectedCategory ?? this.selectedCategory,
@@ -226,6 +196,7 @@ class PayBillState extends Equatable {
   }
 
   bool get _schedueled => scheduleDetails?.recurrence == Recurrence.once;
+
   bool get _recurring => ![
         Recurrence.once,
         Recurrence.none,
@@ -265,4 +236,74 @@ class PayBillState extends Equatable {
         recurrenceEnd: _recurrenceEnd,
         recurring: _recurring,
       );
+}
+
+/// Model used for the errors.
+class PayBillError extends Equatable {
+  /// The action.
+  final PayBillBusyAction action;
+
+  /// The error.
+  final PayBillErrorStatus errorStatus;
+
+  /// The error code.
+  final String? code;
+
+  /// The error message.
+  final String? message;
+
+  /// Creates a new [PayBillError].
+  const PayBillError({
+    required this.action,
+    required this.errorStatus,
+    this.code,
+    this.message,
+  });
+
+  @override
+  List<Object?> get props => [
+        action,
+        errorStatus,
+        code,
+        message,
+      ];
+}
+
+/// Which loading action the cubit is doing
+enum PayBillBusyAction {
+  /// No errors
+  none,
+
+  /// Loading the entire cubit state
+  loading,
+
+  /// Loading the list of services
+  loadingServices,
+
+  /// Submitting the payment
+  submitting,
+
+  /// Validating second factory
+  validatingSecondFactor,
+
+  /// Re-sending the OTP
+  resendingOTP,
+
+  /// Validating user input
+  validating,
+}
+
+/// The available error status
+enum PayBillErrorStatus {
+  /// No errors
+  none,
+
+  /// Generic error
+  generic,
+
+  /// Network error
+  network,
+
+  /// Incorrect OTP code.
+  incorrectOTPCode,
 }
