@@ -63,9 +63,9 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
           _loadAllCurrenciesUseCase(),
         ],
       );
-      final fromAccounts = results[0];
-      final toAccounts = results[1];
-      final currencies = results[2];
+      final fromAccounts = results[0] as List<Account>;
+      final toAccounts = results[1] as List<Account>;
+      final currencies = results[2] as List<Currency>;
       final preselectedAccount = fromAccounts.isNotEmpty
           ? _getPreselectedAccountForOwnTransferUseCase(fromAccounts)
           : null;
@@ -82,7 +82,7 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
           currency: fromAccounts.isNotEmpty
               ? currencies.firstWhereOrNull(
                   (currency) =>
-                      currency?.code?.toLowerCase() ==
+                      currency.code?.toLowerCase() ==
                       preselectedAccount?.currency?.toLowerCase(),
                 )
               : null,
