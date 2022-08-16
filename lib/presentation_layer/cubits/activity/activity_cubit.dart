@@ -12,6 +12,7 @@ class ActivityCubit extends Cubit<ActivityState> {
   final DeleteActivityUseCase _deleteActivityUseCase;
   final CancelActivityUseCase _cancelActivityUseCase;
   final CreateShortcutUseCase _createShortcutUseCase;
+  final CancelRecurringTransferUseCase _cancelRecurringTransferUseCase;
   final CancelRecurringPaymentUseCase _cancelRecurrPaymentUseCase;
 
   /// Creates a new [ActivityCubit] instance
@@ -20,12 +21,14 @@ class ActivityCubit extends Cubit<ActivityState> {
     required DeleteActivityUseCase deleteActivityUseCase,
     required CancelActivityUseCase cancelActivityUseCase,
     required CreateShortcutUseCase createShortcutUseCase,
+    required CancelRecurringTransferUseCase cancelRecurringTransferUseCase,
     required CancelRecurringPaymentUseCase cancelRecurrPaymentUseCase,
     int limit = 20,
   })  : _loadActivitiesUseCase = loadActivitiesUseCase,
         _deleteActivityUseCase = deleteActivityUseCase,
         _cancelActivityUseCase = cancelActivityUseCase,
         _createShortcutUseCase = createShortcutUseCase,
+        _cancelRecurringTransferUseCase = cancelRecurringTransferUseCase,
         _cancelRecurrPaymentUseCase = cancelRecurrPaymentUseCase,
         super(ActivityState(
           pagination: Pagination(limit: limit),
@@ -101,6 +104,13 @@ class ActivityCubit extends Cubit<ActivityState> {
 
   /// Cancel the [Activity] by `id`
   Future<void> cancel(String id, {String? otpValue}) => _cancelActivityUseCase(
+        id,
+        otpValue: otpValue,
+      );
+
+  /// Cancel the scheduled transfer by `id`
+  Future<void> cancelRecurringTransfer(String id, {String? otpValue}) =>
+      _cancelRecurringTransferUseCase(
         id,
         otpValue: otpValue,
       );

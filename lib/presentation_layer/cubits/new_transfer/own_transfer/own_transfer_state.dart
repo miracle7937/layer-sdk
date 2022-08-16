@@ -64,9 +64,15 @@ class OwnTransferState extends Equatable {
   /// The preselectedAccount for from account.
   final Account? preselectedAccount;
 
+  /// If is edit mode or not
+  ///
+  /// Defautls to `false`
+  final bool editMode;
+
   /// Creates new [OwnTransferState].
   OwnTransferState({
     required this.transfer,
+    required this.editMode,
     Iterable<Account> fromAccounts = const [],
     Iterable<Account> toAccounts = const [],
     Iterable<Currency> currencies = const [],
@@ -101,6 +107,7 @@ class OwnTransferState extends Equatable {
     Iterable<int>? imageReceipt,
     int? transferId,
     Account? preselectedAccount,
+    bool? editMode,
   }) =>
       OwnTransferState(
         transfer: transfer ?? this.transfer,
@@ -116,6 +123,7 @@ class OwnTransferState extends Equatable {
         imageReceipt: imageReceipt ?? this.imageReceipt,
         transferId: transferId ?? this.transferId,
         pdfReceipt: pdfReceipt ?? this.pdfReceipt,
+        editMode: editMode ?? this.editMode,
       );
 
   @override
@@ -132,5 +140,6 @@ class OwnTransferState extends Equatable {
         imageReceipt,
         pdfReceipt,
         preselectedAccount,
+        editMode,
       ];
 }

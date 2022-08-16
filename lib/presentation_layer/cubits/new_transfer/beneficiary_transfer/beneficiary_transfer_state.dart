@@ -137,6 +137,11 @@ class BeneficiaryTransferState extends Equatable {
   /// The bank query for filtering the banks.
   final String? bankQuery;
 
+  /// If is edit mode or not
+  ///
+  /// Defaults to `false`
+  final bool editMode;
+
   /// Creates a new [BeneficiaryTransferState].
   BeneficiaryTransferState({
     required this.transfer,
@@ -154,6 +159,7 @@ class BeneficiaryTransferState extends Equatable {
     this.evaluation,
     this.transferResult,
     this.bankQuery,
+    required this.editMode,
   })  : actions = UnmodifiableSetView(actions),
         errors = UnmodifiableSetView(errors),
         beneficiarySettings = UnmodifiableListView(beneficiarySettings),
@@ -197,6 +203,7 @@ class BeneficiaryTransferState extends Equatable {
     TransferEvaluation? evaluation,
     Transfer? transferResult,
     String? bankQuery,
+    bool? editMode,
   }) =>
       BeneficiaryTransferState(
         transfer: transfer ?? this.transfer,
@@ -213,6 +220,7 @@ class BeneficiaryTransferState extends Equatable {
         evaluation: evaluation ?? this.evaluation,
         transferResult: transferResult ?? this.transferResult,
         bankQuery: bankQuery ?? this.bankQuery,
+        editMode: editMode ?? this.editMode,
       );
 
   @override
@@ -231,5 +239,6 @@ class BeneficiaryTransferState extends Equatable {
         evaluation,
         transferResult,
         bankQuery,
+        editMode,
       ];
 }

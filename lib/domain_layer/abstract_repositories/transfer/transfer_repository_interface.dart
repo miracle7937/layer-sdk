@@ -34,6 +34,7 @@ abstract class TransferRepositoryInterface {
   /// Submits a transfer.
   Future<Transfer> submit({
     required NewTransfer transfer,
+    required bool editMode,
   });
 
   /// Verifies the second factor for the passed transfer id.
