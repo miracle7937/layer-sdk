@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 
 import '../../models.dart';
-import '../service/service_field.dart';
 
 /// The status a bill can have
 enum BillStatus {

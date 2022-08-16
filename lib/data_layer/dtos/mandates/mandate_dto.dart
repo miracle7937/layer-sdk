@@ -1,5 +1,5 @@
 import '../../dtos.dart';
-import '../../helpers/json_parser.dart';
+import '../../helpers.dart';
 
 /// Class that holds data for Mandates
 class MandateDTO {
@@ -28,7 +28,7 @@ class MandateDTO {
   final DateTime? updatedAt;
 
   /// Creates a new [MandateDTO] instance
-  MandateDTO({
+  const MandateDTO({
     this.mandateId,
     this.fromAccount,
     this.fromCard,

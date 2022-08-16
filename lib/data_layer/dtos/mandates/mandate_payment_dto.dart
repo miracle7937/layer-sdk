@@ -1,5 +1,4 @@
-import '../../helpers/enum_dto.dart';
-import '../../helpers/json_parser.dart';
+import '../../helpers.dart';
 
 /// Class that holds data for Mandates that were paid
 class MandatePaymentDTO {
@@ -31,7 +30,7 @@ class MandatePaymentDTO {
   final DateTime? tsUpdated;
 
   /// Creates a new [MandatePaymentDTO] instance
-  MandatePaymentDTO({
+  const MandatePaymentDTO({
     this.paymentId,
     this.mandateId,
     this.status,

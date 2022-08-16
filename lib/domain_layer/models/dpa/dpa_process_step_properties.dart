@@ -50,13 +50,13 @@ class DPAProcessStepProperties extends Equatable {
   /// Defaults to `false`.
   final bool hideAppBar;
 
-  /// The label for the skp button.
+  /// The label for the skip button.
   final String? skipLabel;
 
-  /// The value for the cancel button.
+  /// The value for the skip button.
   final bool? skipButton;
 
-  /// The label for the cancel button.
+  /// The label for the skip button.
   final String? skipButtonLabel;
 
   /// Creates a new [DPAProcessStepProperties].

@@ -98,8 +98,8 @@ extension PaymentToDTOMapping on Payment {
   }
 
   /// Maps into a [PaymenShortcuttPayloadDTO]
-  PaymenShortcuttPayloadDTO toPaymentShortcutPayloadDTO() {
-    return PaymenShortcuttPayloadDTO(
+  PaymenShortcutPayloadDTO toPaymentShortcutPayloadDTO() {
+    return PaymenShortcutPayloadDTO(
       paymentId: id,
       bill: bill?.toBillDTO(),
       amount: amount,
