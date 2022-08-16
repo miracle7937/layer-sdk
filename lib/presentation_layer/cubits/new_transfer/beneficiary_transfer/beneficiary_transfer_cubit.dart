@@ -75,7 +75,6 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
       _loadCurrencies(),
       _loadCountries(),
       _loadBeneficiaries(),
-      _loadReasons(),
     ]);
 
     onChanged();
@@ -312,46 +311,6 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     }
   }
 
-  /// Loads the reasons.
-  Future<void> _loadReasons() async {
-    if (state.reasons.isEmpty ||
-        state.errors.contains(BeneficiaryTransferAction.reasons)) {
-      emit(
-        state.copyWith(
-          actions: _addAction(BeneficiaryTransferAction.reasons),
-          errors: _removeError(BeneficiaryTransferAction.reasons),
-        ),
-      );
-
-      try {
-        final reasons = await _loadMessagesByModuleUseCase(
-          module: state.transfer.type == TransferType.international
-              ? 'transfer_reasons_international'
-              : 'transfer_reasons',
-        );
-
-        emit(
-          state.copyWith(
-            actions: _removeAction(BeneficiaryTransferAction.reasons),
-            reasons: reasons,
-          ),
-        );
-      } on Exception catch (e) {
-        emit(
-          state.copyWith(
-            actions: _removeAction(BeneficiaryTransferAction.reasons),
-            errors: _addError(
-              action: BeneficiaryTransferAction.reasons,
-              errorStatus: e is NetException
-                  ? BeneficiaryTransferErrorStatus.network
-                  : BeneficiaryTransferErrorStatus.generic,
-            ),
-          ),
-        );
-      }
-    }
-  }
-
   /// Loads the banks for the passed country code.
   Future<void> loadBanks({
     bool loadMore = false,
@@ -417,7 +376,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     Beneficiary? destination,
     double? amount,
     Currency? currency,
-    Message? reason,
+    String? reason,
     DestinationBeneficiaryType? beneficiaryType,
     NewBeneficiary? newBeneficiary,
     bool? saveToShortcut,

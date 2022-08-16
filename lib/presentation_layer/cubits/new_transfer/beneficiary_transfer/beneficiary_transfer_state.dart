@@ -53,9 +53,6 @@ enum BeneficiaryTransferAction {
   /// Loading the beneficiaries.
   beneficiaries,
 
-  /// Loading the reasons.
-  reasons,
-
   /// Loading the banks for the new beneficiary.
   banks,
 
@@ -119,9 +116,6 @@ class BeneficiaryTransferState extends Equatable {
   /// List of destination [Beneficiary].
   final UnmodifiableListView<Beneficiary> beneficiaries;
 
-  /// List of reasons.
-  final UnmodifiableListView<Message> reasons;
-
   /// List of banks for the new beneficiary.
   final UnmodifiableListView<Bank> banks;
 
@@ -148,7 +142,6 @@ class BeneficiaryTransferState extends Equatable {
     Iterable<Currency> currencies = const <Currency>{},
     Iterable<Account> accounts = const <Account>[],
     Iterable<Beneficiary> beneficiaries = const <Beneficiary>[],
-    Iterable<Message> reasons = const <Message>[],
     Iterable<Bank> banks = const <Bank>[],
     this.banksPagination = const Pagination(),
     this.evaluation,
@@ -161,7 +154,6 @@ class BeneficiaryTransferState extends Equatable {
         currencies = UnmodifiableListView(currencies),
         accounts = UnmodifiableListView(accounts),
         beneficiaries = UnmodifiableListView(beneficiaries),
-        reasons = UnmodifiableListView(reasons),
         banks = UnmodifiableListView(banks);
 
   /// Whether if the cubit is loading something.
@@ -176,7 +168,6 @@ class BeneficiaryTransferState extends Equatable {
           BeneficiaryTransferAction.beneficiaries,
           BeneficiaryTransferAction.currencies,
           BeneficiaryTransferAction.countries,
-          BeneficiaryTransferAction.reasons,
         ].contains(action),
       )
       .isNotEmpty;
@@ -191,7 +182,6 @@ class BeneficiaryTransferState extends Equatable {
     Iterable<Currency>? currencies,
     Iterable<Account>? accounts,
     Iterable<Beneficiary>? beneficiaries,
-    Iterable<Message>? reasons,
     Iterable<Bank>? banks,
     Pagination? banksPagination,
     TransferEvaluation? evaluation,
@@ -207,7 +197,6 @@ class BeneficiaryTransferState extends Equatable {
         currencies: currencies ?? this.currencies,
         accounts: accounts ?? this.accounts,
         beneficiaries: beneficiaries ?? this.beneficiaries,
-        reasons: reasons ?? this.reasons,
         banks: banks ?? this.banks,
         banksPagination: banksPagination ?? this.banksPagination,
         evaluation: evaluation ?? this.evaluation,
@@ -225,7 +214,6 @@ class BeneficiaryTransferState extends Equatable {
         currencies,
         accounts,
         beneficiaries,
-        reasons,
         banks,
         banksPagination,
         evaluation,
