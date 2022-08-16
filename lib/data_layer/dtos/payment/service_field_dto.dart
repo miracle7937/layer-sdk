@@ -1,4 +1,4 @@
-import '../../../domain_layer/models/service/service_field.dart';
+import '../../../domain_layer/models.dart';
 import '../../helpers.dart';
 
 /// Data transfer object representing Service fields

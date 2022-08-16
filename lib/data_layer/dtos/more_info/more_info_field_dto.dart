@@ -13,8 +13,8 @@ class MoreInfoFieldDTO {
   /// The formatted value
   final String? formattedValue;
 
-  /// Creates a [MoreInfoFieldDTO] model
-  MoreInfoFieldDTO({
+  /// Creates a [MoreInfoFieldDTO] DTO
+  const MoreInfoFieldDTO({
     this.description,
     this.label,
     this.value,

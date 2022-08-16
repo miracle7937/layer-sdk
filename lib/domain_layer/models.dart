@@ -123,6 +123,7 @@ export 'models/role/role.dart';
 export 'models/schedule_details/schedule_details.dart';
 export 'models/second_factor/second_factor_type.dart';
 export 'models/service/service.dart';
+export 'models/service/service_field.dart';
 export 'models/setting/application_settings.dart';
 export 'models/setting/authentication_settings.dart';
 export 'models/setting/global_setting.dart';

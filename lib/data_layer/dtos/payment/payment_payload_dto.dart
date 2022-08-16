@@ -1,8 +1,8 @@
 import '../../dtos.dart';
 
 /// The payment payload DTO
-class PaymenShortcuttPayloadDTO {
-  /// The bill amount
+class PaymenShortcutPayloadDTO {
+  /// The payment amount
   double? amount;
 
   /// The payment ID
@@ -32,8 +32,8 @@ class PaymenShortcuttPayloadDTO {
   /// The wallet id
   int? fromWalletId;
 
-  /// Creates a new [PaymenShortcuttPayloadDTO]
-  PaymenShortcuttPayloadDTO({
+  /// Creates a new [PaymenShortcutPayloadDTO]
+  PaymenShortcutPayloadDTO({
     this.paymentId,
     this.bill,
     this.amount,
