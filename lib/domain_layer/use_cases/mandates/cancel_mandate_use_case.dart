@@ -10,7 +10,10 @@ class CancelMandateUseCase {
     required MandateRepositoryInterface repository,
   }) : _repo = repository;
 
-  /// Callable that cancels a Mandate
+  /// Cancels the mandate of the provided id.
+  ///
+  /// Use the `otpValue` and `otpType` parameters to specify the OTP \
+  /// configuration.
   Future<SecondFactorType?> call({
     required int mandateId,
     String? otpValue,

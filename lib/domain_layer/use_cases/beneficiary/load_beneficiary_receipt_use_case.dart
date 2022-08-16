@@ -10,12 +10,12 @@ class LoadBeneficiaryReceiptUseCase {
     required BeneficiaryRepositoryInterface beneficiaryRepository,
   }) : _beneficiaryRepository = beneficiaryRepository;
 
-  /// Getting of the beneficiary receipt.
+  /// Requests a beneficiary receipt.
   ///
   /// Returning list of bytes that represents image if [isImage] is true
   /// or PDF if it's false.
-  Future<List<int>> call(
-    Beneficiary beneficiary, {
+  Future<List<int>> call({
+    required Beneficiary beneficiary,
     bool isImage = true,
   }) {
     return _beneficiaryRepository.getReceipt(

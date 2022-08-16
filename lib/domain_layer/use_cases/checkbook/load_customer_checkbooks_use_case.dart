@@ -13,8 +13,10 @@ class LoadCustomerCheckbooksUseCase {
   /// Returns a list of checkbooks related to the passed customer id.
   ///
   /// Use the [limit] and [offset] parameters for pagination purposes.
+  ///
   /// If [descendingOrder] is true, the results will be returned in descending
   /// order.
+  ///
   /// The [sortBy] is used for deciding which field will the results sorted by.
   Future<List<Checkbook>> call({
     required String customerId,

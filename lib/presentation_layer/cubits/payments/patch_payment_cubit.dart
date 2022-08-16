@@ -96,7 +96,7 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
         ),
       );
 
-      final res = await _patchPaymentUseCase.patch(
+      final res = await _patchPaymentUseCase(
         state.paymentToBePatched.copyWith(
           otpId: payment?.otpId,
         ),

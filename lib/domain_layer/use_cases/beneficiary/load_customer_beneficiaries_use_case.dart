@@ -20,7 +20,6 @@ class LoadCustomerBeneficiariesUseCase {
     String? query,
     int offset = 0,
     int limit = 50,
-    bool loadMore = false,
     bool forceRefresh = false,
     bool activeOnly = false,
   }) =>
