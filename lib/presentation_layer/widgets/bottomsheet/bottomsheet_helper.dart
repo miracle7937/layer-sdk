@@ -144,9 +144,11 @@ class BottomSheetHelper {
     String denyKey = 'no',
     bool isScrollControlled = true,
     bool showDenyButton = true,
+    bool isDismissible = true,
     Color? backgroundColor,
   }) async {
     final result = await showModalBottomSheet(
+      isDismissible: isDismissible,
       context: context,
       barrierColor: DesignSystem.of(context).basePrimary.withOpacity(0.64),
       backgroundColor: backgroundColor,
