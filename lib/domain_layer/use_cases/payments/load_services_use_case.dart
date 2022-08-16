@@ -14,10 +14,9 @@ class LoadServicesUseCase {
   Future<List<Service>> call({
     String? billerId,
     bool sortByName = false,
-  }) {
-    return _repository.listServices(
-      billerId: billerId,
-      sortByName: sortByName,
-    );
-  }
+  }) =>
+      _repository.listServices(
+        billerId: billerId,
+        sortByName: sortByName,
+      );
 }

@@ -10,7 +10,9 @@ class GetAccountLoansUseCase {
     required AccountLoanRepositoryInterface repository,
   }) : _repository = repository;
 
-  /// Returns the accounts loans belonging to passed the account id.
+  /// Returns the accounts loans of the provided account id.
+  ///
+  /// Use the `limit` and `offset` parameters to paginate.
   Future<List<AccountLoan>> call({
     required String accountId,
     bool includeDetails = true,

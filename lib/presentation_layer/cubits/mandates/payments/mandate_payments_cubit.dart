@@ -46,7 +46,7 @@ class MandatePaymentsCubit extends Cubit<MandatePaymentsState> {
       final foundPayments = await _loadPaymentsUC(
         limit: pagination.limit,
         offset: pagination.offset,
-        desc: desc,
+        descending: desc,
         sortBy: sortBy,
         mandateId: mandateId,
       );

@@ -11,7 +11,7 @@ class PostPaymentUseCase {
   }) : _repository = repository;
 
   /// Posts the provided payment
-  Future<Payment> pay(
+  Future<Payment> call(
     Payment payment, {
     String? otp,
   }) {

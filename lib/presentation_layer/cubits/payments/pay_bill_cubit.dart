@@ -181,7 +181,7 @@ class PayBillCubit extends Cubit<PayBillState> {
         ),
       );
 
-      final res = await _postPaymentUseCase.pay(
+      final res = await _postPaymentUseCase(
         payment ?? state.payment,
         otp: otp,
       );

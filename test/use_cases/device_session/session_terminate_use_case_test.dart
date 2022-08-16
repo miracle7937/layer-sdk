@@ -14,13 +14,13 @@ void main() {
   EquatableConfig.stringify = true;
 
   late MockDeviceSessionRepository _repository;
-  late DeviceSessionTerminateUseCase _deviceSessionTerminateUseCase;
+  late TerminateDeviceSessionUseCase _deviceSessionTerminateUseCase;
 
   late Completer _completer;
 
   setUp(() {
     _repository = MockDeviceSessionRepository();
-    _deviceSessionTerminateUseCase = DeviceSessionTerminateUseCase(
+    _deviceSessionTerminateUseCase = TerminateDeviceSessionUseCase(
       repository: _repository,
     );
     _completer = Completer<void>();

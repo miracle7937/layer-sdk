@@ -14,10 +14,9 @@ class LoadBillersUseCase {
   Future<List<Biller>> call({
     String? status = 'A',
     String? categoryId,
-  }) {
-    return _repository.listBillers(
-      status: status,
-      categoryId: categoryId,
-    );
-  }
+  }) =>
+      _repository.listBillers(
+        status: status,
+        categoryId: categoryId,
+      );
 }

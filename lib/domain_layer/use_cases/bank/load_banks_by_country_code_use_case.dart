@@ -13,7 +13,8 @@ class LoadBanksByCountryCodeUseCase {
   /// Lists banks based on a country code.
   ///
   /// Use the [limit] and [offset] parameters for pagination purposes.
-  /// The [query] parameter can bu used for filtering the results.
+  ///
+  /// The [query] parameter can be used for filtering the results.
   Future<List<Bank>> call({
     required String countryCode,
     int? limit,

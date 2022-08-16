@@ -11,6 +11,8 @@ class LoadActivitiesUseCase {
   }) : _repository = repository;
 
   /// Callable method to load all activities
+  ///
+  /// Use the `limit` and `offset` parameters to paginate.
   Future<List<Activity>> call({
     DateTime? fromTS,
     DateTime? toTS,

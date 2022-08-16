@@ -1,7 +1,7 @@
 import '../../abstract_repositories.dart';
 import '../../models.dart';
 
-/// An use case to load the [Config]
+/// An use case to load the [Config] information of the application.
 class LoadConfigUseCase {
   final ConfigRepositoryInterface _repository;
 
@@ -11,7 +11,10 @@ class LoadConfigUseCase {
   }) : _repository = repository;
 
   /// Callable method to load the [Config]
-  Future<Config> call({bool forceRefresh = true}) => _repository.load(
+  Future<Config> call({
+    bool forceRefresh = true,
+  }) =>
+      _repository.load(
         forceRefresh: forceRefresh,
       );
 }

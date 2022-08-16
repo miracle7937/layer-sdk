@@ -11,6 +11,8 @@ class LoadBranchesUseCase {
   }) : _repository = repository;
 
   /// Callable method to load branches
+  ///
+  /// Use the `limit` and `offset` parameters to paginate.
   Future<List<Branch>> call({
     bool forceRefresh = false,
     int? limit,
