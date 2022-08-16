@@ -4,7 +4,7 @@ import '../../abstract_repositories.dart';
 class CancelActivityUseCase {
   final ActivityRepositoryInterface _repository;
 
-  /// Creates a new [LoadActivitiesUseCase] instance
+  /// Creates a new [CancelActivityUseCase] instance
   CancelActivityUseCase({
     required ActivityRepositoryInterface repository,
   }) : _repository = repository;

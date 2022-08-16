@@ -34,4 +34,7 @@ abstract class ActivityRepositoryInterface {
 
   /// Cancel the [Activity] by `id`
   Future<void> cancel(String id, {String? otpValue});
+
+  /// Cancel the recurring transfer [Activity] by `id`
+  Future<void> cancelRecurringTransfer(String id, {String? otpValue});
 }

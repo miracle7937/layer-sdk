@@ -87,12 +87,16 @@ class TransferProvider {
   }
 
   /// Returns the transfer from submiting a new transfer.
+  ///
+  /// Case `editMode` is `true` the request method will be `PATCH`
+  /// In this case the transfer will be updated with new values.
   Future<TransferDTO> submit({
     required NewTransferPayloadDTO newTransferPayloadDTO,
+    required bool editMode,
   }) async {
     final response = await netClient.request(
       netClient.netEndpoints.submitTransfer,
-      method: NetRequestMethods.post,
+      method: editMode ? NetRequestMethods.patch : NetRequestMethods.post,
       data: newTransferPayloadDTO.toJson(),
     );
 

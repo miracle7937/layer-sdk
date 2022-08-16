@@ -20,8 +20,12 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
       _getPreselectedAccountForOwnTransferUseCase;
 
   /// Creates new [OwnTransferCubit].
+  ///
+  /// The `editMode` param is defined to update/edit the selected transfer
+  /// Case `true` the API will `PATCH` the transfer
   OwnTransferCubit({
     OwnTransfer? transfer,
+    bool editMode = false,
     required GetSourceAccountsForOwnTransferUseCase
         getSourceAccountsForOwnTransferUseCase,
     required GetDestinationAccountsForOwnTransferUseCase
@@ -42,7 +46,12 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
         _transferReceiptUseCase = transferReceiptUseCase,
         _getPreselectedAccountForOwnTransferUseCase =
             getPreselectedAccountForOwnTransferUseCase,
-        super(OwnTransferState(transfer: transfer ?? OwnTransfer()));
+        super(
+          OwnTransferState(
+            transfer: transfer ?? OwnTransfer(),
+            editMode: editMode,
+          ),
+        );
 
   /// Fetches all the data necessary to start the flow.
   Future<void> initialize() async {
@@ -153,7 +162,8 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
 
     try {
       final transferResult = await _submitTransferUseCase(
-        transfer: state.transfer,
+        transfer: transfer,
+        editMode: state.editMode,
       );
 
       switch (transferResult.status) {
