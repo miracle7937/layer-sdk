@@ -120,7 +120,7 @@ class DPATaskDTO {
         suspended: json['suspended'] is String
             ? json['suspended'] != '0'
             : json['suspended'],
-        status: DPAStatusDTO.fromRaw(json['status']),
+        status: DPAStatusDTO.fromRaw(json['Status']),
         statusUpdate: json['statusUpdate'],
         taskDefinitionKey: json['taskDefinitionKey'],
         preVariables: json['PreVariables'] == null
