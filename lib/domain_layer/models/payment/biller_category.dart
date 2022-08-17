@@ -9,7 +9,7 @@ class BillerCategory extends Equatable {
   final String? categoryDesc;
 
   /// Creates a new [BillerCategory]
-  BillerCategory({
+  const BillerCategory({
     required this.categoryCode,
     this.categoryDesc,
   });

@@ -1,11 +1,11 @@
-import '../../../data_layer/dtos/new_transfer/new_transfer_payload_dto.dart';
+import '../../../data_layer/dtos.dart';
 import '../../../data_layer/mappings.dart';
 import '../../models.dart';
 
 /// The representation of the new own transfer data.
 class OwnTransfer extends NewSchedulableTransfer {
   /// Creates new [OwnTransfer].
-  OwnTransfer({
+  const OwnTransfer({
     super.source,
     super.destination,
     super.amount,
@@ -16,6 +16,7 @@ class OwnTransfer extends NewSchedulableTransfer {
     super.shortcutName,
   }) : super(type: TransferType.own);
 
+  /// Whether if the own transfer is ready to be submitted or not.
   @override
   bool canBeSubmitted() =>
       source != null &&
@@ -26,6 +27,7 @@ class OwnTransfer extends NewSchedulableTransfer {
       (scheduleDetails.recurrence == Recurrence.none ||
           scheduleDetails.startDate != null);
 
+  /// Creates a new [OwnTransfer] with the passed values.
   @override
   OwnTransfer copyWith({
     NewTransferSource? source,
@@ -50,6 +52,7 @@ class OwnTransfer extends NewSchedulableTransfer {
             : shortcutName ?? this.shortcutName,
       );
 
+  /// Converts to [NewTransferPayloadDTO]
   @override
   NewTransferPayloadDTO toNewTransferPayloadDTO() => NewTransferPayloadDTO(
         fromAccountId: source!.account!.id!,

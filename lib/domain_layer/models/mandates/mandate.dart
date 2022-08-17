@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 
-import 'mandate_status.dart';
+import '../../models.dart';
 
-/// Class that holds data for Mandates
+/// Class that holds data for [Mandate]s
 class Mandate extends Equatable {
   /// The Id of the mandate
   final int mandateId;
@@ -29,7 +29,7 @@ class Mandate extends Equatable {
   final DateTime? updatedAt;
 
   /// Creates a new [Mandate] instance
-  Mandate({
+  const Mandate({
     this.mandateId = 0,
     this.fromAccount = '',
     this.fromCard = '',
@@ -79,7 +79,9 @@ class Mandate extends Equatable {
 
   @override
   String toString() {
-    // ignore: lines_longer_than_80_chars
-    return 'Mandate(mandateId: $mandateId, fromAccount: $fromAccount, fromCard: $fromCard, mandateStatus: $mandateStatus, reference: $reference, bankMandateId: $bankMandateId, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'Mandate(mandateId: $mandateId, fromAccount: $fromAccount, '
+        'fromCard: $fromCard, mandateStatus: $mandateStatus, '
+        'reference: $reference, bankMandateId: $bankMandateId, '
+        'createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 }

@@ -19,6 +19,7 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
   final String? reason;
 
   /// The destination beneficiary type.
+  ///
   /// Default is [DestinationBeneficiaryType.newBeneficiary].
   final DestinationBeneficiaryType beneficiaryType;
 
@@ -26,7 +27,7 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
   final NewBeneficiary? newBeneficiary;
 
   /// Creates a new [BeneficiaryTransfer].
-  BeneficiaryTransfer({
+  const BeneficiaryTransfer({
     super.type,
     super.source,
     super.amount,
@@ -42,6 +43,7 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
     super.transferId,
   }) : super();
 
+  /// Whether if the beneficiary transfer is ready to be submitted or not.
   @override
   bool canBeSubmitted() =>
       type != null &&
@@ -59,6 +61,7 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
           scheduleDetails.startDate != null) &&
       (!saveToShortcut || (shortcutName?.isNotEmpty ?? false));
 
+  /// Creates a new [BeneficiaryTransfer] with the passed values.
   @override
   BeneficiaryTransfer copyWith({
     TransferType? type,
@@ -93,6 +96,7 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
         note: note ?? this.note,
       );
 
+  /// Converts to [NewTransferPayloadDTO]
   @override
   NewTransferPayloadDTO toNewTransferPayloadDTO() {
     if (!canBeSubmitted()) {

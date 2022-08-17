@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../payment/biller.dart';
-import 'service_field.dart';
+import '../../models.dart';
 
 /// Keeps the data of a service
 class Service extends Equatable {
@@ -36,7 +35,7 @@ class Service extends Equatable {
   final List<ServiceField> serviceFields;
 
   /// Creates a new [Bill]
-  Service({
+  const Service({
     this.serviceId,
     this.billerId,
     this.biller,

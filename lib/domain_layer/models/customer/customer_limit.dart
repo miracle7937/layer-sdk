@@ -51,7 +51,7 @@ class CustomerLimit extends Equatable {
   final String prefCurrency;
 
   /// Creates a new [CustomerLimit] instance.
-  CustomerLimit({
+  const CustomerLimit({
     this.prefCurrency = '',
     this.bankDaily = const Limit(),
     this.bankMonthly = const Limit(),

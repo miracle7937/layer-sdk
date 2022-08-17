@@ -39,6 +39,7 @@ class User extends Equatable {
   final String id;
 
   /// The user's username
+  ///
   /// Can be null if the application does not use usernames.
   final String? username;
 
@@ -69,9 +70,13 @@ class User extends Equatable {
   final String? accessPin;
 
   /// Whether or not this customer consents to email ads
+  ///
+  /// Defaults to `false`
   final bool hasEmailAds;
 
   /// Whether or not this customer consents to sms ads
+  ///
+  /// Defaults to `false`
   final bool hasSmsAds;
 
   /// This customer's device id
@@ -92,6 +97,8 @@ class User extends Equatable {
   final bool isUSSDActive;
 
   /// Whether or not the device of this user should be verified on login
+  ///
+  /// Defaults to `false`
   final bool verifyDevice;
 
   /// The branch this user belongs to.

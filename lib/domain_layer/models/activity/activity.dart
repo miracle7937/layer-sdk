@@ -291,7 +291,7 @@ class Activity extends Equatable {
   /// The [Activity] alert id
   final int alertID;
 
-  ///
+  /// Whether the activity is read only
   final bool read;
 
   /// The [Activity] itemId
