@@ -122,7 +122,6 @@ export 'use_cases/product/load_products_use_case.dart';
 export 'use_cases/queue/accept_queue_use_case.dart';
 export 'use_cases/queue/load_queues_use_case.dart';
 export 'use_cases/queue/reject_queue_use_case.dart';
-export 'use_cases/queue/remove_queue_from_requests_use_case.dart';
 export 'use_cases/receipt/share_receipt_use_case.dart';
 export 'use_cases/role/load_customer_roles_use_case.dart';
 export 'use_cases/setting/load_global_settings_use_case.dart';
