@@ -16,7 +16,7 @@ enum DestinationBeneficiaryType {
 /// The new beneficiary transfer flow.
 class BeneficiaryTransfer extends NewSchedulableTransfer {
   /// The transfer reason.
-  final Message? reason;
+  final String? reason;
 
   /// The destination beneficiary type.
   /// Default is [DestinationBeneficiaryType.newBeneficiary].
@@ -66,7 +66,7 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
     double? amount,
     Currency? currency,
     NewTransferDestination? destination,
-    Message? reason,
+    String? reason,
     ScheduleDetails? scheduleDetails,
     DestinationBeneficiaryType? beneficiaryType,
     NewBeneficiary? newBeneficiary,
@@ -112,7 +112,7 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
           beneficiaryType == DestinationBeneficiaryType.currentBeneficiary
               ? null
               : newBeneficiary?.toBeneficiaryDTO(),
-      reason: reason?.id,
+      reason: reason,
       extra: beneficiaryType == DestinationBeneficiaryType.currentBeneficiary
           ? jsonDecode(destination?.beneficiary?.extra ?? '')
           : null,
