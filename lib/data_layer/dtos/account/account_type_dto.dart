@@ -23,67 +23,67 @@ class AccountTypeDTO {
   String? imageUrl;
 
   /// can perform bill payment or do p2p transfers
-  bool canPay = true;
+  bool canPay;
 
   /// can transfer within own accounts
-  bool canTransferOwn = true;
+  bool canTransferOwn;
 
   /// can transfer to other accounts in same bank
-  bool canTransferBank = true;
+  bool canTransferBank;
 
   /// can transfer to other banks in same country
-  bool canTransferDomestic = true;
+  bool canTransferDomestic;
 
   /// can transfer to international banks
-  bool canTransferInternational = true;
+  bool canTransferInternational;
 
   /// can perform bulk transfers
-  bool canTransferBulk = true;
+  bool canTransferBulk;
 
   /// can cardless withdrawal request
-  bool canTransferCardless = true;
+  bool canTransferCardless;
 
   /// can receive transfers from anywhere
-  bool canReceiveTransfer = true;
+  bool canReceiveTransfer;
 
   /// card can be linked to this account
-  bool canRequestCard = true;
+  bool canRequestCard;
 
   /// customer can request checkbooks on this account
-  bool canRequestChkbk = true;
+  bool canRequestChkbk;
 
   /// account is overdraft capable
-  bool canOverdraft = true;
+  bool canOverdraft;
 
   /// can perform a remittance payment(bank,cash,or wallet)
-  bool canTransferRemittance = true;
+  bool canTransferRemittance;
 
   /// customer can request banker check
-  bool canRequestBankerCheck = true;
+  bool canRequestBankerCheck;
 
   /// customer can request offline statement
-  bool canRequestStatement = true;
+  bool canRequestStatement;
 
   /// customer can request certificate account
-  bool canRequestCertificateOfAccount = true;
+  bool canRequestCertificateOfAccount;
 
   /// customer can request certificate deposit
-  bool canRequestCertificateOfDeposit = true;
+  bool canRequestCertificateOfDeposit;
 
   /// customer can p2p (wallet)
-  bool canP2P = true;
+  bool canP2P;
 
   /// account type is displayed on client
-  bool visible = true;
+  bool visible;
 
   /// customer can stop issued check
-  bool canStopIssuedCheck = true;
+  bool canStopIssuedCheck;
 
   /// customer has iban
-  bool hasIban = false;
+  bool hasIban;
 
   /// customer can confirm issued check
-  bool canConfirmIssuedCheck = true;
+  bool canConfirmIssuedCheck;
 
   /// Creates a new [AccountTypeDTO]
   AccountTypeDTO({

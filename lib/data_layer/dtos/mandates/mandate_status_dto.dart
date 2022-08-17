@@ -1,4 +1,4 @@
-import '../../helpers/enum_dto.dart';
+import '../../helpers.dart';
 
 /// DTO that holds info about the status of a [MandateDTO]
 class MandateStatusDTO extends EnumDTO {

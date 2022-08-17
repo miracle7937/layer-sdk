@@ -24,7 +24,7 @@ class ActivityDTO {
   /// The alertID of the [Activity]
   int? alertID;
 
-  ///
+  /// Whether the activity is read only
   bool? read;
 
   /// The itemId of the [Activity]
@@ -73,11 +73,12 @@ class ActivityDTO {
     );
   }
 
-  /// Returns a list of [TransferDTO] from a JSON
+  /// Returns a list of [ActivityDTO] from a JSON
   static List<ActivityDTO> fromJsonList(List<Map<String, dynamic>> json) =>
       json.map(ActivityDTO.fromJson).toList();
 }
 
+/// Parse the `item` param to the respecitve object
 dynamic _parseItem(ActivityTypeDTO type, Map<String, dynamic> json) {
   switch (type) {
     case ActivityTypeDTO.transfer:

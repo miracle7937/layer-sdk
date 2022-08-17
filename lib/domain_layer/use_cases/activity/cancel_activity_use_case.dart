@@ -4,13 +4,19 @@ import '../../abstract_repositories.dart';
 class CancelActivityUseCase {
   final ActivityRepositoryInterface _repository;
 
-  /// Creates a new [LoadActivitiesUseCase] instance
+  /// Creates a new [CancelActivityUseCase] instance
   CancelActivityUseCase({
     required ActivityRepositoryInterface repository,
   }) : _repository = repository;
 
-  /// Callable method to cancel the [Activity]
-  Future<void> call(String id, {String? otpValue}) => _repository.cancel(
+  /// Cancels the activity of the provided id.
+  ///
+  /// Use the `otpValue` parameter to specify the one time password value.
+  Future<void> call({
+    required String id,
+    String? otpValue,
+  }) =>
+      _repository.cancel(
         id,
         otpValue: otpValue,
       );

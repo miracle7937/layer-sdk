@@ -14,6 +14,8 @@ class DeleteDPAFileUseCase {
   ///
   /// Returns an updated [DPAVariable], or throws a [NetException] if could
   /// not delete the file.
+  ///
+  /// Use the [NetProgressCallback] parameter to be notified of progress updates
   Future<DPAVariable> call({
     required DPAProcess process,
     required DPAVariable variable,

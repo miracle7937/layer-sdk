@@ -26,7 +26,11 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
   final CreateShortcutUseCase _createShortcutUseCase;
 
   /// Creates a new [BeneficiaryTransferCubit].
+  ///
+  /// The `editMode` param is defined to update/edit the selected transfer
+  /// Case `true` the API will `PATCH` the transfer
   BeneficiaryTransferCubit({
+    bool editMode = false,
     required LoadGlobalSettingsUseCase loadGlobalSettingsUseCase,
     required BeneficiaryTransfer transfer,
     required GetSourceAccountsForBeneficiaryTransferUseCase
@@ -64,6 +68,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
           BeneficiaryTransferState(
             transfer: transfer,
             banksPagination: Pagination(limit: 20),
+            editMode: editMode,
           ),
         );
 
@@ -563,6 +568,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     try {
       final transferResult = await _submitTransferUseCase(
         transfer: state.transfer,
+        editMode: state.editMode,
       );
 
       emit(

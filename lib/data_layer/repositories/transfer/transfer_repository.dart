@@ -75,9 +75,11 @@ class TransferRepository implements TransferRepositoryInterface {
   @override
   Future<Transfer> submit({
     required NewTransfer transfer,
+    required bool editMode,
   }) async {
     final transferDTO = await _provider.submit(
       newTransferPayloadDTO: transfer.toNewTransferPayloadDTO(),
+      editMode: editMode,
     );
 
     return transferDTO.toTransfer();

@@ -60,6 +60,7 @@ class OwnTransfer extends NewSchedulableTransfer {
         recurrence: scheduleDetails.recurrence.toRecurrenceDTO(),
         startDate: scheduleDetails.startDate,
         endDate: scheduleDetails.endDate,
+        transferId: transferId,
       );
 
   @override

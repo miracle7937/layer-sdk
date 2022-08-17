@@ -10,7 +10,10 @@ class GetCustomerAccountTransactionsUseCase {
     required AccountTransactionRepositoryInterface repository,
   }) : _repository = repository;
 
-  /// Returns the accounts transactions belonging to passed the customer id.
+  /// Returns the accounts transactions of the provided customer id and account
+  /// id.
+  ///
+  /// Use the `limit` and `offset` parameters to paginate.
   Future<List<AccountTransaction>> call({
     required String customerId,
     required String accountId,

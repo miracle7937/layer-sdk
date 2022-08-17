@@ -39,6 +39,7 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
     super.saveToShortcut,
     super.shortcutName,
     super.note,
+    super.transferId,
   }) : super();
 
   @override
@@ -72,8 +73,10 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
     bool? saveToShortcut,
     String? shortcutName,
     String? note,
+    int? transferId,
   }) =>
       BeneficiaryTransfer(
+        transferId: transferId ?? this.transferId,
         type: type ?? super.type,
         source: source ?? super.source,
         amount: amount ?? super.amount,
@@ -117,6 +120,7 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
       startDate: scheduleDetails.startDate,
       endDate: scheduleDetails.endDate,
       note: note,
+      transferId: transferId,
     );
   }
 
@@ -134,5 +138,6 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
         saveToShortcut,
         shortcutName,
         note,
+        transferId,
       ];
 }

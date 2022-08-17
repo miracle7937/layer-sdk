@@ -10,21 +10,24 @@ class LoadMandatePaymentUseCase {
     required MandatePaymentRepositoryInterface repository,
   }) : _repository = repository;
 
-  /// Load all [MandatePayment]
+  /// Loads all [MandatePayment].
+  ///
+  /// Use the `limit` and `offset` parameters to paginate.
+  ///
+  /// Use the `descending` parameter to specify if the sort is
+  /// descending or ascending.
   Future<List<MandatePayment>> call({
     int? limit,
     int? offset,
     String? sortBy,
     int? mandateId,
-
-    /// If the sort is descending or not
-    bool desc = false,
+    bool descending = false,
   }) =>
       _repository.fetchMandatePayments(
         limit: limit,
         offset: offset,
         sortBy: sortBy,
-        desc: desc,
+        desc: descending,
         mandateId: mandateId,
       );
 }

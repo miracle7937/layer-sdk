@@ -6,7 +6,6 @@ import '../../../data_layer/network.dart';
 import '../../../data_layer/network/net_exceptions.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/models/payment/biller.dart';
-import '../../../domain_layer/models/service/service_field.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../../domain_layer/use_cases/payments/generate_device_uid_use_case.dart';
 import '../../../domain_layer/use_cases/payments/load_billers_use_case.dart';
@@ -182,7 +181,7 @@ class PayBillCubit extends Cubit<PayBillState> {
         ),
       );
 
-      final res = await _postPaymentUseCase.pay(
+      final res = await _postPaymentUseCase(
         payment ?? state.payment,
         otp: otp,
       );
