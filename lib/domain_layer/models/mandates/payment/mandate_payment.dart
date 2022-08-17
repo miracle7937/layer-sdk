@@ -3,10 +3,12 @@ import 'package:equatable/equatable.dart';
 /// Class that stores data for Mandates payments
 class MandatePayment extends Equatable {
   /// The payment id
+  ///
   /// 0 = with no data returned from server
   final int paymentId;
 
   /// The mandateId
+  ///
   /// 0 = with no data returned from server
   final int mandateId;
 
@@ -32,7 +34,7 @@ class MandatePayment extends Equatable {
   final DateTime? tsUpdated;
 
   /// Creates a new [MandatePayment] instance
-  MandatePayment({
+  const MandatePayment({
     this.paymentId = 0,
     this.mandateId = 0,
     this.bankPaymentId = '',

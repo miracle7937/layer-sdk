@@ -72,6 +72,7 @@ export 'dtos/mandates/mandate_status_dto.dart';
 export 'dtos/message/message_dto.dart';
 export 'dtos/more_info/more_info_field_dto.dart';
 export 'dtos/new_transfer/new_transfer_payload_dto.dart';
+export 'dtos/new_transfer/new_transfer_payload_dto.dart';
 export 'dtos/ocra/ocra_challenge_dto.dart';
 export 'dtos/ocra/ocra_challenge_response_dto.dart';
 export 'dtos/ocra/ocra_challenge_result_dto.dart';

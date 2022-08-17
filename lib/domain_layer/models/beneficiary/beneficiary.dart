@@ -83,7 +83,7 @@ class Beneficiary extends Equatable {
   final String? routingCode;
 
   /// Creates a new immutable [Beneficiary]
-  Beneficiary({
+  const Beneficiary({
     this.id,
     required this.nickname,
     required this.firstName,

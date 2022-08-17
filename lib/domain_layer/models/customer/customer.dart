@@ -568,7 +568,7 @@ class Tax extends Equatable {
   final String tin;
 
   /// Creates a new [Tax]
-  Tax({
+  const Tax({
     this.countryName = '',
     this.countryCode = '',
     this.tin = '',
@@ -604,7 +604,7 @@ class Nationality extends Equatable {
   final String countryCode;
 
   /// Creates a new [Nationality]
-  Nationality({
+  const Nationality({
     this.countryName = '',
     this.countryCode = '',
   });

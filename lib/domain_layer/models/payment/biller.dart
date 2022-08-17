@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import 'biller_category.dart';
+import '../../models.dart';
 
 /// Keeps the data of the payment biller
 class Biller extends Equatable {
@@ -23,7 +23,7 @@ class Biller extends Equatable {
   final String? imageUrl;
 
   /// Creates a new [Biller]
-  Biller({
+  const Biller({
     required this.id,
     required this.name,
     required this.category,

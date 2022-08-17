@@ -30,6 +30,7 @@ enum AccountType {
 /// Holds all the account type info
 class AccountInfo extends Equatable {
   /// The type of the account
+  ///
   /// See [AccountType] for more details
   final AccountType? accountType;
 
@@ -42,20 +43,28 @@ class AccountInfo extends Equatable {
   /// The account description or long name
   final String? accountDescription;
 
-  /// customer can transfer cardless
+  /// Customer can transfer cardless
+  ///
+  /// Defaults to `true`
   final bool canTransferCardless;
 
-  /// customer can stop issued check
+  /// Customer can stop issued check
+  ///
+  /// Defaults to `true`
   final bool canStopIssuedCheck;
 
-  /// customer has iban
+  /// Customer has iban
+  ///
+  /// Defaults to `false`
   final bool hasIban;
 
-  /// customer can confirm issued check
+  /// Customer can confirm issued check
+  ///
+  /// Defaults to `true`
   final bool canConfirmIssuedCheck;
 
   /// Creates a new instance of [AccountInfo]
-  AccountInfo({
+  const AccountInfo({
     this.accountType,
     this.family,
     this.accountName,

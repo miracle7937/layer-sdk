@@ -21,6 +21,7 @@ abstract class NewTransfer extends Equatable {
   final NewTransferDestination? destination;
 
   /// Whether if the transfer should be saved to a shortcut.
+  ///
   /// Default is `false`
   final bool saveToShortcut;
 
@@ -34,7 +35,7 @@ abstract class NewTransfer extends Equatable {
   final int? transferId;
 
   /// Creates a new [NewTransfer].
-  NewTransfer({
+  const NewTransfer({
     this.type,
     this.source,
     this.amount,

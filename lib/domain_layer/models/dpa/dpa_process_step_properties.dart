@@ -39,6 +39,7 @@ class DPAProcessStepProperties extends Equatable {
   final DPAJumioConfig? jumioConfig;
 
   /// The amount of seconds to wait in order to auto finish the task.
+  ///
   /// If not null, the taks is a delay task.
   final int? delay;
 
@@ -60,7 +61,7 @@ class DPAProcessStepProperties extends Equatable {
   final String? skipButtonLabel;
 
   /// Creates a new [DPAProcessStepProperties].
-  DPAProcessStepProperties({
+  const DPAProcessStepProperties({
     required this.format,
     required this.screenType,
     required this.alignment,
@@ -157,7 +158,7 @@ class DPAJumioConfig extends Equatable {
   final String? dataCenter;
 
   /// Creates a new [DPAJumioConfig].
-  DPAJumioConfig({
+  const DPAJumioConfig({
     this.authorizationToken,
     this.dataCenter,
   });

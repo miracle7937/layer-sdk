@@ -89,6 +89,8 @@ class Transfer extends Equatable {
   final double? amount;
 
   /// Whether the `amount` should be shown
+  ///
+  /// Defaults to `true`
   final bool amountVisible;
 
   /// The source [Account].
@@ -140,7 +142,7 @@ class Transfer extends Equatable {
   final int? otpId;
 
   ///Creates a new immutable [Transfer]
-  Transfer({
+  const Transfer({
     this.id,
     this.currency,
     this.amount,

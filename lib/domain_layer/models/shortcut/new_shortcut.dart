@@ -25,7 +25,7 @@ class NewShortcut extends Equatable {
   final Equatable payload;
 
   /// Creates new [NewShortcut].
-  NewShortcut({
+  const NewShortcut({
     required this.name,
     required this.type,
     required this.payload,

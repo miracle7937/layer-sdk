@@ -48,7 +48,7 @@ class Bank extends Equatable {
   final String? branchName;
 
   /// Creates a new [Bank].
-  Bank({
+  const Bank({
     this.bic,
     this.name,
     this.address1,
