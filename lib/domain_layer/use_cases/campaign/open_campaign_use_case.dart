@@ -1,6 +1,8 @@
 import '../../abstract_repositories.dart';
 
 /// Use case for using when campaigns open.
+///
+/// This use case will be called when a campaign details are opened
 class OpenCampaignsUseCase {
   final CampaignRepositoryInterface _repository;
 
