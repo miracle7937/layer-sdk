@@ -1,5 +1,4 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:layer_sdk/data_layer/network.dart';
 import 'package:layer_sdk/layer_sdk.dart';
@@ -12,13 +11,9 @@ class MockAcceptQueueUseCase extends Mock implements AcceptQueueUseCase {}
 
 class MockRejectQueueUseCase extends Mock implements RejectQueueUseCase {}
 
-class MockRemoveQueueFromRequestUseCase extends Mock
-    implements RemoveQueueFromRequestsUseCase {}
-
 late MockLoadQueuesUseCase _loadQueuesUseCase;
 late MockAcceptQueueUseCase _acceptQueueUseCase;
 late MockRejectQueueUseCase _rejectQueueUseCase;
-late MockRemoveQueueFromRequestUseCase _removeQueueFromRequestUseCase;
 
 late QueueRequestCubit _cubit;
 
@@ -45,13 +40,11 @@ void main() {
       _loadQueuesUseCase = MockLoadQueuesUseCase();
       _acceptQueueUseCase = MockAcceptQueueUseCase();
       _rejectQueueUseCase = MockRejectQueueUseCase();
-      _removeQueueFromRequestUseCase = MockRemoveQueueFromRequestUseCase();
 
       _cubit = QueueRequestCubit(
         loadQueuesUseCase: _loadQueuesUseCase,
         acceptQueueUseCase: _acceptQueueUseCase,
         rejectQueueUseCase: _rejectQueueUseCase,
-        removeQueueFromRequestsUseCase: _removeQueueFromRequestUseCase,
       );
 
       /// Test case that retrieves a portion of requests successfully
@@ -99,15 +92,6 @@ void main() {
           isRequest: true,
         ),
       ).thenAnswer((_) async => true);
-
-      when(
-        () => _removeQueueFromRequestUseCase(
-            requests: UnmodifiableListView(
-              mockedRequests.take(_defaultLimit).toList(),
-            ),
-            requestId: mockedRequests.first.id!),
-      ).thenAnswer(
-          (_) => mockedRequests.take(_defaultLimit).toList()..removeAt(0));
     });
 
     blocTest<QueueRequestCubit, QueueRequestStates>(
@@ -306,13 +290,11 @@ void main() {
       _loadQueuesUseCase = MockLoadQueuesUseCase();
       _acceptQueueUseCase = MockAcceptQueueUseCase();
       _rejectQueueUseCase = MockRejectQueueUseCase();
-      _removeQueueFromRequestUseCase = MockRemoveQueueFromRequestUseCase();
 
       _cubit = QueueRequestCubit(
         loadQueuesUseCase: _loadQueuesUseCase,
         acceptQueueUseCase: _acceptQueueUseCase,
         rejectQueueUseCase: _rejectQueueUseCase,
-        removeQueueFromRequestsUseCase: _removeQueueFromRequestUseCase,
       );
 
       /// Test case that throws network exception when trying to load requests
@@ -352,15 +334,6 @@ void main() {
           isRequest: true,
         ),
       ).thenAnswer((_) async => false);
-
-      when(
-        () => _removeQueueFromRequestUseCase(
-            requests: UnmodifiableListView(
-              mockedRequests.take(_defaultLimit).toList(),
-            ),
-            requestId: mockedRequests.first.id!),
-      ).thenAnswer(
-          (_) => mockedRequests.take(_defaultLimit).toList()..removeAt(0));
     });
 
     blocTest<QueueRequestCubit, QueueRequestStates>(
