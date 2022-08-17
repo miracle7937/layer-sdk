@@ -16,6 +16,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
       _getDestinationBeneficiariesForBeneficiariesTransferUseCase;
   final LoadCountriesUseCase _loadCountriesUseCase;
   final LoadAllCurrenciesUseCase _loadAllCurrenciesUseCase;
+  final LoadMessagesByModuleUseCase _loadMessagesByModuleUseCase;
   final LoadBanksByCountryCodeUseCase _loadBanksByCountryCodeUseCase;
   final ValidateIBANUseCase _validateIBANUseCase;
   final EvaluateTransferUseCase _evaluateTransferUseCase;
@@ -34,6 +35,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         getDestinationBeneficiariesForBeneficiariesTransferUseCase,
     required LoadCountriesUseCase loadCountriesUseCase,
     required LoadAllCurrenciesUseCase loadAllCurrenciesUseCase,
+      required LoadMessagesByModuleUseCase loadMessagesByModuleUseCase,
     required LoadBanksByCountryCodeUseCase loadBanksByCountryCodeUseCase,
     required ValidateIBANUseCase validateIBANUseCase,
     required EvaluateTransferUseCase evaluateTransferUseCase,
@@ -50,6 +52,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
             getDestinationBeneficiariesForBeneficiariesTransferUseCase,
         _loadCountriesUseCase = loadCountriesUseCase,
         _loadAllCurrenciesUseCase = loadAllCurrenciesUseCase,
+        _loadMessagesByModuleUseCase = loadMessagesByModuleUseCase,
         _loadBanksByCountryCodeUseCase = loadBanksByCountryCodeUseCase,
         _validateIBANUseCase = validateIBANUseCase,
         _evaluateTransferUseCase = evaluateTransferUseCase,
@@ -72,10 +75,52 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
       _loadCurrencies(),
       _loadCountries(),
       _loadBeneficiaries(),
+      _loadReasons(),
     ]);
 
     onChanged();
   }
+
+  /// Loads the reasons.
+  Future<void> _loadReasons() async {
+    if (state.reasons.isEmpty ||
+        state.errors.contains(BeneficiaryTransferAction.reasons)) {
+      emit(
+        state.copyWith(
+          actions: _addAction(BeneficiaryTransferAction.reasons),
+          errors: _removeError(BeneficiaryTransferAction.reasons),
+        ),
+      );
+
+      try {
+        final reasons = await _loadMessagesByModuleUseCase(
+          module: state.transfer.type == TransferType.international
+              ? 'transfer_reasons_international'
+              : 'transfer_reasons',
+        );
+
+        emit(
+          state.copyWith(
+            actions: _removeAction(BeneficiaryTransferAction.reasons),
+            reasons: reasons,
+          ),
+        );
+      } on Exception catch (e) {
+        emit(
+          state.copyWith(
+            actions: _removeAction(BeneficiaryTransferAction.reasons),
+            errors: _addError(
+              action: BeneficiaryTransferAction.reasons,
+              errorStatus: e is NetException
+                  ? BeneficiaryTransferErrorStatus.network
+                  : BeneficiaryTransferErrorStatus.generic,
+            ),
+          ),
+        );
+      }
+    }
+  }
+
 
   /// Returns an action list that includes the passed action.
   Set<BeneficiaryTransferAction> _addAction(
