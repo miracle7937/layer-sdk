@@ -5,7 +5,6 @@ import '../../../data_layer/mappings/payment/biller_dto_mapping.dart';
 import '../../../data_layer/network.dart';
 import '../../../data_layer/network/net_exceptions.dart';
 import '../../../domain_layer/models.dart';
-import '../../../domain_layer/models/payment/biller.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../../domain_layer/use_cases/payments/generate_device_uid_use_case.dart';
 import '../../../domain_layer/use_cases/payments/load_billers_use_case.dart';

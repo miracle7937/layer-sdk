@@ -50,12 +50,16 @@ extension ExperienceMenuTypeDTOMapping on ExperienceMenuTypeDTO {
     switch (this) {
       case ExperienceMenuTypeDTO.tabBarTop:
         return ExperienceMenuType.tabBarTop;
+
       case ExperienceMenuTypeDTO.tabBarBottom:
         return ExperienceMenuType.tabBarBottom;
+
       case ExperienceMenuTypeDTO.tabBarBottomWithFocusAndMore:
         return ExperienceMenuType.tabBarBottomWithFocusAndMore;
+
       case ExperienceMenuTypeDTO.sideDrawer:
         return ExperienceMenuType.sideDrawer;
+
       case ExperienceMenuTypeDTO.bottomDrawer:
         return ExperienceMenuType.bottomDrawer;
     }

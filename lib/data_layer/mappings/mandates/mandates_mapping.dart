@@ -25,16 +25,22 @@ extension MandateStatusDTOMapper on MandateStatusDTO {
     switch (this) {
       case MandateStatusDTO.active:
         return MandateStatus.active;
+
       case MandateStatusDTO.pending:
         return MandateStatus.pending;
+
       case MandateStatusDTO.rejecting:
         return MandateStatus.rejecting;
+
       case MandateStatusDTO.cancelling:
         return MandateStatus.cancelling;
+
       case MandateStatusDTO.cancelled:
         return MandateStatus.cancelled;
+
       case MandateStatusDTO.rejected:
         return MandateStatus.rejected;
+
       default:
         return MandateStatus.unknown;
     }
