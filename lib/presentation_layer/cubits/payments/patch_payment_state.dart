@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 
 import '../../../domain_layer/models.dart';
-import '../../../domain_layer/models/payment/biller.dart';
 
 /// Which loading action the cubit is doing
 enum PatchPaymentBusyAction {

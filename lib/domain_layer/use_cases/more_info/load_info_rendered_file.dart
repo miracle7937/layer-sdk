@@ -13,7 +13,8 @@ class LoadInfoRendedFileUseCase {
   }) : _repository = repository;
 
   /// Callable that fetches the file
-  Future<Uint8List> call({required List<MoreInfoField> infoFields}) {
-    return _repository.fetchRenderedFile(infoFields);
-  }
+  Future<Uint8List> call({
+    required List<MoreInfoField> infoFields,
+  }) =>
+      _repository.fetchRenderedFile(infoFields);
 }

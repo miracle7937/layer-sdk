@@ -1,5 +1,5 @@
-import '../../../domain_layer/models/service/service_field.dart';
-import '../../dtos/payment/service_field_dto.dart';
+import '../../../domain_layer/models.dart';
+import '../../dtos.dart';
 
 /// Extension that provides mappings for [ServiceFieldDTO]
 extension ServiceFieldsDTOMapping on ServiceFieldDTO {
@@ -30,14 +30,19 @@ extension ServiceFieldDTOTypeMapping on ServiceFieldDTOType {
     switch (this) {
       case ServiceFieldDTOType.boolean:
         return ServiceFieldType.boolean;
+
       case ServiceFieldDTOType.date:
         return ServiceFieldType.date;
+
       case ServiceFieldDTOType.list:
         return ServiceFieldType.list;
+
       case ServiceFieldDTOType.numeric:
         return ServiceFieldType.numeric;
+
       case ServiceFieldDTOType.string:
         return ServiceFieldType.string;
+
       default:
         return ServiceFieldType.unknown;
     }
@@ -72,14 +77,19 @@ extension ServiceFieldToDTOTypeMapping on ServiceFieldType {
     switch (this) {
       case ServiceFieldType.boolean:
         return ServiceFieldDTOType.boolean;
+
       case ServiceFieldType.date:
         return ServiceFieldDTOType.date;
+
       case ServiceFieldType.list:
         return ServiceFieldDTOType.list;
+
       case ServiceFieldType.numeric:
         return ServiceFieldDTOType.numeric;
+
       case ServiceFieldType.string:
         return ServiceFieldDTOType.string;
+
       default:
         return ServiceFieldDTOType.unknown;
     }

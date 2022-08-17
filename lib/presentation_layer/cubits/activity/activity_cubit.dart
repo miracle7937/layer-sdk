@@ -104,7 +104,7 @@ class ActivityCubit extends Cubit<ActivityState> {
 
   /// Cancel the [Activity] by `id`
   Future<void> cancel(String id, {String? otpValue}) => _cancelActivityUseCase(
-        id,
+        id: id,
         otpValue: otpValue,
       );
 
@@ -130,7 +130,7 @@ class ActivityCubit extends Cubit<ActivityState> {
 
     try {
       final result = await _cancelRecurrPaymentUseCase(
-        itemId,
+        id: itemId,
         otpValue: otpValue,
         resendOTP: resendOTP,
       );

@@ -273,7 +273,6 @@ extension CustomerStringMapping on String {
 
   /// Maps into a [EmploymentType].
   EmploymentType toEmploymentType() {
-    // TODO: review values.
     switch (trim().toUpperCase()) {
       case 'E':
         return EmploymentType.employed;

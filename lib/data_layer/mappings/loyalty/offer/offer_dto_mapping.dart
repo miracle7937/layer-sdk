@@ -74,14 +74,19 @@ extension RedemptionTypeDTOMapping on RedemptionTypeDTO {
     switch (this) {
       case RedemptionTypeDTO.cardActivation:
         return RedemptionType.cardActivation;
+
       case RedemptionTypeDTO.cardNoActivation:
         return RedemptionType.cardNoActivation;
+
       case RedemptionTypeDTO.couponQR:
         return RedemptionType.couponQR;
+
       case RedemptionTypeDTO.voucherNoActivation:
         return RedemptionType.voucherNoActivation;
+
       case RedemptionTypeDTO.voucherActivation:
         return RedemptionType.voucherActivation;
+
       default:
         throw MappingException(from: RedemptionTypeDTO, to: RedemptionType);
     }
@@ -114,6 +119,7 @@ extension MerchantLocationTypeDTOMapping on MerchantLocationTypeDTO {
     switch (this) {
       case MerchantLocationTypeDTO.merchant:
         return MerchantLocationType.merchant;
+
       default:
         throw MappingException(
             from: MerchantLocationTypeDTO, to: MerchantLocationType);
@@ -128,12 +134,16 @@ extension OfferStatusDTOMapping on OfferStatusDTO {
     switch (this) {
       case OfferStatusDTO.active:
         return OfferStatus.active;
+
       case OfferStatusDTO.pending:
         return OfferStatus.pending;
+
       case OfferStatusDTO.deleted:
         return OfferStatus.deleted;
+
       case OfferStatusDTO.stopped:
         return OfferStatus.stopped;
+
       default:
         throw MappingException(from: OfferStatusDTO, to: OfferStatus);
     }
@@ -147,12 +157,16 @@ extension OfferTypeDTOMapping on OfferTypeDTO {
     switch (this) {
       case OfferTypeDTO.bankCampaign:
         return OfferType.bankCampaign;
+
       case OfferTypeDTO.cardScheme:
         return OfferType.cardScheme;
+
       case OfferTypeDTO.merchant:
         return OfferType.merchant;
+
       case OfferTypeDTO.cardSchemeMerchant:
         return OfferType.cardSchemeMerchant;
+
       default:
         throw MappingException(from: OfferTypeDTO, to: OfferType);
     }

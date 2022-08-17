@@ -1,7 +1,6 @@
 import '../../../domain_layer/models.dart';
 import '../../dtos.dart';
-import '../payment/biller_dto_mapping.dart';
-import 'service_field_dto_mapping.dart';
+import '../../mappings.dart';
 
 /// Extension that provides mappings for [ServiceDTO]
 extension ServiceDTOMapping on ServiceDTO {

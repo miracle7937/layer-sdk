@@ -11,7 +11,10 @@ class LoadCustomerRolesUseCase {
   }) : _repository = repository;
 
   /// Callable methot to retrives all customer roles list
-  Future<List<Role>> call({bool forceRefresh = false}) {
-    return _repository.listCustomerRoles(forceRefresh: forceRefresh);
-  }
+  Future<List<Role>> call({
+    bool forceRefresh = false,
+  }) =>
+      _repository.listCustomerRoles(
+        forceRefresh: forceRefresh,
+      );
 }

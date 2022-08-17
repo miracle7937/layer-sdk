@@ -67,6 +67,7 @@ export 'mappings/ocra/ocra_challenge_response_dto_mapping.dart';
 export 'mappings/ocra/ocra_challenge_result_dto_mapping.dart';
 export 'mappings/ocra/ocra_challenge_result_response_dto_mapping.dart';
 export 'mappings/otp/otp_status_mapping.dart';
+export 'mappings/payment/biller_dto_mapping.dart';
 export 'mappings/payment/payment_dto_mapping.dart';
 export 'mappings/product/products_dto_mapping.dart';
 export 'mappings/queue/queue_dto_mapping.dart';

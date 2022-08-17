@@ -74,6 +74,7 @@ extension PickerDTOMapping on PickerDTO {
     switch (this) {
       case PickerDTO.currency:
         return DPAVariablePicker.currency;
+
       default:
         throw MappingException(
           from: PickerDTO,

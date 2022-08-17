@@ -470,7 +470,7 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
 
     try {
       final receipt = await _loadBeneficiaryReceiptUseCase(
-        state.beneficiary!,
+        beneficiary: state.beneficiary!,
         isImage: isImage,
       );
       emit(state.copyWith(

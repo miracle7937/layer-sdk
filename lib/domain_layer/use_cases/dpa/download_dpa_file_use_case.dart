@@ -13,6 +13,8 @@ class DownloadDPAFileUseCase {
   /// Downloads a base64 encoded file from the server.
   ///
   /// Returns null if the download fails.
+  ///
+  /// Use the [NetProgressCallback] parameter to be notified of progress updates
   Future<String?> call({
     required DPAProcess process,
     required DPAVariable variable,

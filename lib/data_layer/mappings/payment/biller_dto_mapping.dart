@@ -1,6 +1,5 @@
-import '../../../domain_layer/models/payment/biller.dart';
-import '../../../domain_layer/models/payment/biller_category.dart';
-import '../../dtos/payment/biller_dto.dart';
+import '../../../domain_layer/models.dart';
+import '../../dtos.dart';
 
 /// Extension that provides mappings for [BillerDTO]
 extension BillerDTOMapping on BillerDTO {
