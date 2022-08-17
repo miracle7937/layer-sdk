@@ -53,19 +53,6 @@ extension DPAProcessDefinitionDTOMapping on DPAProcessDefinitionDTO {
       case 'open_savings_account':
         return 'saving_account.svg';
 
-      // Files without processes for now:
-      // case '':
-      //   return 'certificate_of_account_request.svg';
-      //
-      // case '':
-      //   return 'certificate_of_deposit_request.svg';
-      // case '':
-      //   return 'deposits_account.svg';
-      // case '':
-      //   return 'dispute_transactions.svg';
-      // case '':
-      //   return 'official_bank_statement_request.svg';
-
       default:
         return null;
     }

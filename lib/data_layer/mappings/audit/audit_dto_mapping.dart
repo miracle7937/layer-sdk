@@ -33,6 +33,7 @@ extension AuditSortMapping on AuditSort {
     switch (this) {
       case AuditSort.date:
         return 'audit.ts_created';
+
       case AuditSort.serviceName:
         return 'service_name';
     }
