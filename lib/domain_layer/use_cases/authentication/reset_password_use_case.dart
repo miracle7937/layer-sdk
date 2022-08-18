@@ -2,6 +2,11 @@ import '../../abstract_repositories.dart';
 
 /// Use case that resets a user's password with the provided value,
 /// newpassword.
+///
+/// This use case can only be used reset the [User]'s password to a new one
+///
+/// If you want to change the password and other [User]'s data you should
+/// use [ChangePasswordUseCase]
 class ResetPasswordUseCase {
   final AuthenticationRepositoryInterface _repository;
 
