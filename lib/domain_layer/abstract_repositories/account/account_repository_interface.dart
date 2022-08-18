@@ -17,19 +17,4 @@ abstract class AccountRepositoryInterface {
     required String currency,
     required double amount,
   });
-
-  /// Requests a top up receipt with the provided parameters.
-  Future<List<int>> getTopUpReceipt({
-    required String topUpId,
-    required ReceiptType type,
-  });
-}
-
-/// Enum that defines all possible receipts types.
-enum ReceiptType {
-  /// PDF receipt
-  pdf,
-
-  /// Image receipt
-  image,
 }

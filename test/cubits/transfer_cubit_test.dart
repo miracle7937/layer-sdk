@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
 import 'package:layer_sdk/data_layer/network.dart';
-import 'package:layer_sdk/domain_layer/use_cases.dart';
 import 'package:layer_sdk/features/transfer.dart';
 import 'package:layer_sdk/presentation_layer/utils.dart';
 import 'package:mocktail/mocktail.dart';
@@ -11,15 +10,11 @@ import 'package:test/test.dart';
 
 class MockLoadTransfersUseCase extends Mock implements LoadTransfersUseCase {}
 
-class MockTransferReceiptUseCase extends Mock
-    implements TransferReceiptUseCase {}
-
 final _repositoryList = <Transfer>[];
 final _defaultLimit = 10;
 final _customerId = '200000';
 
 late MockLoadTransfersUseCase _loadTransfersUseCase;
-late MockTransferReceiptUseCase _transferReceiptUseCase;
 late TransferCubit _cubit;
 
 final _defaultState = TransferState(
@@ -49,12 +44,10 @@ void main() {
 
   setUp(() {
     _loadTransfersUseCase = MockLoadTransfersUseCase();
-    _transferReceiptUseCase = MockTransferReceiptUseCase();
     _cubit = TransferCubit(
       customerId: _customerId,
       loadTransfersUseCase: _loadTransfersUseCase,
       limit: _defaultLimit,
-      transferReceiptUseCase: _transferReceiptUseCase,
     );
 
     when(

@@ -72,6 +72,7 @@ export 'mappings/payment/payment_dto_mapping.dart';
 export 'mappings/product/products_dto_mapping.dart';
 export 'mappings/queue/queue_dto_mapping.dart';
 export 'mappings/queue/request_dto_mapping.dart';
+export 'mappings/receipt/receipt_action_type_mapping.dart';
 export 'mappings/receipt/receipt_type_mapping.dart';
 export 'mappings/recurrence/recurrence_dto_mapping.dart';
 export 'mappings/role/role_dto_mapping.dart';

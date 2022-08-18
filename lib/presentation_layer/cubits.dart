@@ -114,6 +114,8 @@ export 'cubits/product/product_cubit.dart';
 export 'cubits/product/product_state.dart';
 export 'cubits/queue/queue_request_cubit.dart';
 export 'cubits/queue/queue_request_states.dart';
+export 'cubits/receipt/receipt_cubit.dart';
+export 'cubits/receipt/receipt_state.dart';
 export 'cubits/role/roles_cubit.dart';
 export 'cubits/role/roles_state.dart';
 export 'cubits/second_factor/second_factor_cubit.dart';

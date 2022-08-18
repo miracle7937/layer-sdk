@@ -1,4 +1,4 @@
-import '../../../features/accounts.dart';
+import '../../../domain_layer/models.dart';
 
 /// Extension that provides mappings for [ReceiptType].
 extension ReceiptTypeMapping on ReceiptType {
