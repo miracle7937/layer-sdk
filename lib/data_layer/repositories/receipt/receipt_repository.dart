@@ -20,13 +20,10 @@ class ReceiptRepository implements ReceiptRepositoryInterface {
     required String objectId,
     required ReceiptActionType actionType,
     ReceiptType type = ReceiptType.image,
-  }) async {
-    final bytes = await _provider.getReceipt(
-      objectId: objectId,
-      actionType: actionType,
-      type: type,
-    );
-
-    return bytes;
-  }
+  }) =>
+      _provider.getReceipt(
+        objectId: objectId,
+        actionType: actionType,
+        type: type,
+      );
 }
