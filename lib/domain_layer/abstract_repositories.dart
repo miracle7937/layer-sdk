@@ -44,6 +44,7 @@ export 'abstract_repositories/payments/frequent_payments_repository_interface.da
 export 'abstract_repositories/payments/payments_repository_interface.dart';
 export 'abstract_repositories/product/product_repository_interface.dart';
 export 'abstract_repositories/queue/queue_repository_interface.dart';
+export 'abstract_repositories/receipt/receipt_repository_interface.dart';
 export 'abstract_repositories/role/roles_repository_interface.dart';
 export 'abstract_repositories/setting/global_setting_repository_interface.dart';
 export 'abstract_repositories/shortcut/shortcut_repository_interface.dart';

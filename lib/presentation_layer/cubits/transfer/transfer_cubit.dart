@@ -8,16 +8,13 @@ import '../../cubits.dart';
 /// A cubit that keeps the list of customer transfers.
 class TransferCubit extends Cubit<TransferState> {
   final LoadTransfersUseCase _loadTransfersUseCase;
-  final TransferReceiptUseCase _transferReceiptUseCase;
 
   /// Creates a new cubit using the supplied [LoadTransfersUseCase].
   TransferCubit({
     required String customerId,
     required LoadTransfersUseCase loadTransfersUseCase,
-    required TransferReceiptUseCase transferReceiptUseCase,
     int limit = 50,
   })  : _loadTransfersUseCase = loadTransfersUseCase,
-        _transferReceiptUseCase = transferReceiptUseCase,
         super(
           TransferState(
             customerId: customerId,
@@ -66,40 +63,6 @@ class TransferCubit extends Cubit<TransferState> {
             loadedCount: list.length,
           ),
         ),
-      );
-    } on Exception catch (e) {
-      emit(
-        state.copyWith(
-          errorStatus: e is NetException
-              ? TransferErrorStatus.network
-              : TransferErrorStatus.generic,
-          busy: false,
-        ),
-      );
-
-      rethrow;
-    }
-  }
-  /// Loads receipt of succesful transfer.
-  Future<void> getReceipt({
-    required int transferId,
-    bool? isImage,
-  }) async {
-    emit(
-      state.copyWith(
-        busy: true,
-        errorStatus: TransferErrorStatus.none,
-      ),
-    );
-
-    try {
-      final list = await _transferReceiptUseCase(
-        transferId: transferId,
-        isImage: isImage,
-      );
-
-      emit(
-        state.copyWith(busy: false, receipt: list),
       );
     } on Exception catch (e) {
       emit(

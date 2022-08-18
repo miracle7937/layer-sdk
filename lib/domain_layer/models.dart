@@ -119,6 +119,7 @@ export 'models/permissions/permission_module.dart';
 export 'models/preferences/preferences.dart';
 export 'models/product/product.dart';
 export 'models/queue/queue_request.dart';
+export 'models/receipt/receipt.dart';
 export 'models/recurrence/recurrence.dart';
 export 'models/resolution/resolution.dart';
 export 'models/role/role.dart';

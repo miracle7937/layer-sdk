@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 import '../../../domain_layer/use_cases.dart';
 import '../../../features/accounts.dart';
 import '../../cubits.dart';
@@ -8,16 +7,13 @@ import '../../cubits.dart';
 /// Cubit that handles the Account top up flow.
 class AccountTopUpCubit extends Cubit<AccountTopUpState> {
   final GetAccountTopUpSecretUseCase _accountTopUpSecretUseCase;
-  final GetAccountTopUpReceiptUseCase _accountTopUpReceiptUseCase;
 
   /// Creates a new [AccountTopUpCubit] instance.
   AccountTopUpCubit({
     Account? account,
     double? amount,
     required GetAccountTopUpSecretUseCase accountTopUpSecretUseCase,
-    required GetAccountTopUpReceiptUseCase accountTopUpReceiptUseCase,
   })  : _accountTopUpSecretUseCase = accountTopUpSecretUseCase,
-        _accountTopUpReceiptUseCase = accountTopUpReceiptUseCase,
         super(
           AccountTopUpState(
             account: account,
@@ -78,46 +74,6 @@ class AccountTopUpCubit extends Cubit<AccountTopUpState> {
         state.copyWith(
           action: AccountTopUpActions.none,
           error: AccountTopUpErrors.failedToRequestSecret,
-        ),
-      );
-    }
-  }
-
-  /// Requests a new top up receipt.
-  ///
-  /// Can only be called when the top up was requested successfully.
-  Future<void> requestReceipt({
-    required ReceiptType type,
-  }) async {
-    assert(state.topUpId != null);
-
-    emit(
-      state.copyWith(
-        action: type == ReceiptType.image
-            ? AccountTopUpActions.requestingImageReceipt
-            : AccountTopUpActions.requestingPdfReceipt,
-        error: AccountTopUpErrors.none,
-      ),
-    );
-
-    try {
-      final bytes = await _accountTopUpReceiptUseCase(
-        topUpId: state.topUpId!,
-        type: type,
-      );
-
-      emit(
-        state.copyWith(
-          action: AccountTopUpActions.none,
-          pdfReceipt: type == ReceiptType.pdf ? bytes : null,
-          imageReceipt: type == ReceiptType.image ? bytes : null,
-        ),
-      );
-    } on Exception {
-      emit(
-        state.copyWith(
-          action: AccountTopUpActions.none,
-          error: AccountTopUpErrors.failedToRequestReceipt,
         ),
       );
     }

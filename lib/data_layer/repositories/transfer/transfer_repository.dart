@@ -112,18 +112,4 @@ class TransferRepository implements TransferRepositoryInterface {
 
     return transferDTO.toTransfer();
   }
-
-  /// Gets the transfer receipt.
-  @override
-  Future<List<int>> getTransferReceipt({
-    required int transferId,
-    bool? isImage,
-  }) async {
-    final list = await _provider.getTransferReceipt(
-      transferId: transferId,
-      isImage: isImage ?? false,
-    );
-
-    return list;
-  }
 }
