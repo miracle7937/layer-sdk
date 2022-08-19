@@ -567,7 +567,7 @@ void _accessPinTests() {
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
-    act: (c) => c.verifyAccessPin(correctPin, DeviceSession()),
+    act: (c) => c.verifyAccessPin(correctPin, deviceInfo: DeviceSession()),
     expect: () => [
       AuthenticationState(busy: true),
       AuthenticationState(
@@ -594,7 +594,7 @@ void _accessPinTests() {
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
-    act: (c) => c.verifyAccessPin(incorrectPin, DeviceSession()),
+    act: (c) => c.verifyAccessPin(incorrectPin, deviceInfo: DeviceSession()),
     expect: () => [
       AuthenticationState(busy: true),
       AuthenticationState(
@@ -713,7 +713,7 @@ void _accessPinTests() {
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
-    act: (c) => c.verifyAccessPin(exceptionPin, DeviceSession()),
+    act: (c) => c.verifyAccessPin(exceptionPin, deviceInfo: DeviceSession()),
     expect: () => [
       AuthenticationState(busy: true),
       AuthenticationState(
@@ -743,7 +743,7 @@ void _accessPinTests() {
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
-    act: (c) => c.verifyAccessPin(netExceptionPin, DeviceSession()),
+    act: (c) => c.verifyAccessPin(netExceptionPin, deviceInfo: DeviceSession()),
     expect: () => [
       AuthenticationState(busy: true),
       AuthenticationState(

@@ -188,7 +188,8 @@ class _LockScreenState extends SetAccessPinBaseWidgetState<_LockScreen> {
                         password: currentPin,
                       );
                   final session = await _getDeviceSession();
-                  await authenticationCubit.verifyAccessPin(pin, session);
+                  await authenticationCubit.verifyAccessPin(pin,
+                      deviceInfo: session);
                 }
               },
               showBiometrics: widget.useBiometrics,
