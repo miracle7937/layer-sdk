@@ -24,16 +24,14 @@ class ChangePasswordUseCase {
   ///
   /// Returns [MessageResponse] if successful or not.
   Future<MessageResponse> call({
-    int? userId,
-    String? username,
-    User? user,
+    required User user,
     required String oldPassword,
     required String newPassword,
     required String confirmPassword,
   }) =>
       _repository.changePassword(
-        userId: userId,
-        username: username,
+        userId: int.tryParse(user.id),
+        username: user.username,
         user: user,
         oldPassword: oldPassword,
         newPassword: newPassword,
