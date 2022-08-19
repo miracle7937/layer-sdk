@@ -15,7 +15,9 @@ void main() {
   late MockAuthenticationRepository _repository;
   late ChangePasswordUseCase _useCase;
   late MockMessageResponse _messageResponse;
-  final _username = 'User Test';
+  final _user = User(
+    id: 'User Test',
+  );
   setUp(() {
     _messageResponse = MockMessageResponse();
     _repository = MockAuthenticationRepository();
@@ -23,6 +25,8 @@ void main() {
 
     when(
       () => _repository.changePassword(
+        userId: any(named: 'userId'),
+        user: any(named: 'user'),
         username: any(named: 'username'),
         newPassword: any(named: 'newPassword'),
         oldPassword: any(named: 'oldPassword'),
@@ -33,7 +37,7 @@ void main() {
 
   test('Verifies new password with confirm password and changes it', () async {
     final result = await _useCase(
-        username: _username,
+        user: _user,
         oldPassword: "123456",
         newPassword: "123123",
         confirmPassword: "123123");
@@ -42,7 +46,7 @@ void main() {
 
     verify(
       () => _repository.changePassword(
-          username: _username,
+          user: _user,
           oldPassword: "123456",
           newPassword: "123123",
           confirmPassword: "123123"),

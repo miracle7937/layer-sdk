@@ -350,9 +350,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
 
     try {
       final response = await _changePasswordUseCase(
-        userId: int.tryParse(user.id),
         user: user,
-        username: user.username,
         oldPassword: oldPassword,
         newPassword: newPassword,
         confirmPassword: confirmPassword,
