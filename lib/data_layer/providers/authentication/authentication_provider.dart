@@ -1,5 +1,6 @@
 import '../../../../data_layer/dtos.dart';
 import '../../../../data_layer/network.dart';
+import '../../../domain_layer/models/device_session/device_session.dart';
 
 /// The available error status
 enum ForgotPasswordRequestStatus {
@@ -152,7 +153,8 @@ class AuthenticationProvider {
   /// Verifies the provided access PIN.
   ///
   /// Throws if the pin is invalid.
-  Future<VerifyPinResponseDTO> verifyAccessPin(String pin) async {
+  Future<VerifyPinResponseDTO> verifyAccessPin(
+      String pin, DeviceSession deviceInfo) async {
     // TODO: Check what exactly should be provided. This is hardcoded on x-app:
     final key =
         '-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAg'
@@ -175,6 +177,14 @@ class AuthenticationProvider {
       data: {
         'access_pin': pin,
         'key': key,
+        if (deviceInfo.model?.isNotEmpty ?? false) 'model': deviceInfo.model,
+        if (deviceInfo.carrier?.isNotEmpty ?? false)
+          'carrier': deviceInfo.carrier,
+        if (deviceInfo.deviceName?.isNotEmpty ?? false)
+          'device_name': deviceInfo.deviceName,
+        if (deviceInfo.resolution != null)
+          'resolution':
+              '${deviceInfo.resolution!.width}x${deviceInfo.resolution!.width}',
       },
     );
 

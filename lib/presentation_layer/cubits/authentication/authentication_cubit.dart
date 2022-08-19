@@ -1,4 +1,8 @@
+import 'dart:io';
+import 'dart:ui';
 import 'package:bloc/bloc.dart';
+import 'package:carrier_info/carrier_info.dart';
+import 'package:device_info/device_info.dart';
 
 import '../../../../../data_layer/network.dart';
 import '../../../../../domain_layer/models.dart';
@@ -18,6 +22,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   final UpdateUserTokenUseCase _updateUserTokenUseCase;
   final LoadCurrentCustomerUseCase _customerUseCase;
   final bool _shouldGetCustomerObject;
+  final GetDeviceModelUseCase _getDeviceModelUseCase;
 
   /// Creates a new cubit with an empty [AuthenticationState] and calls
   /// load settings
@@ -30,6 +35,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     required VerifyAccessPinUseCase verifyAccessPinUseCase,
     required UpdateUserTokenUseCase updateUserTokenUseCase,
     required LoadCurrentCustomerUseCase customerUseCase,
+    required GetDeviceModelUseCase getDeviceModelUseCase,
     bool shouldGetCustomerObject = false,
   })  : _loginUseCase = loginUseCase,
         _logoutUseCase = logoutUseCase,
@@ -40,6 +46,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         _updateUserTokenUseCase = updateUserTokenUseCase,
         _shouldGetCustomerObject = shouldGetCustomerObject,
         _customerUseCase = customerUseCase,
+        _getDeviceModelUseCase = getDeviceModelUseCase,
         super(AuthenticationState());
 
   /// Sets the provided user as the current logged user and emits updated state.
@@ -396,8 +403,24 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     );
 
     try {
+      final deviceInfoPlugin = DeviceInfoPlugin();
+      var info;
+      if (Platform.isAndroid) {
+        info = await deviceInfoPlugin.androidInfo;
+      }
+      if (Platform.isIOS) {
+        info = await deviceInfoPlugin.iosInfo;
+      }
+      final model = await _getDeviceModelUseCase();
+      final carrierName = await CarrierInfo.carrierName;
       final verifyPinResponse = await _verifyAccessPinUseCase(
         pin: pin,
+        deviceInfo: DeviceSession(
+            model: model,
+            carrier: carrierName,
+            deviceName: Platform.isAndroid ? info.device : info.name,
+            resolution: Resolution(
+                window.physicalSize.width, window.physicalSize.height)),
       );
 
       emit(

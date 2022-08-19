@@ -76,9 +76,11 @@ class AuthenticationRepository implements AuthenticationRepositoryInterface {
   @override
   Future<VerifyPinResponse> verifyAccessPin({
     required String pin,
+    required DeviceSession deviceInfo,
   }) async {
     final verifyPinResponseDTO = await _provider.verifyAccessPin(
       pin,
+      deviceInfo,
     );
 
     return verifyPinResponseDTO.toVerifyPinResponse();

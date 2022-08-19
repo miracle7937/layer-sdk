@@ -172,12 +172,15 @@ class _LockScreenState extends SetAccessPinBaseWidgetState<_LockScreen> {
                 translation,
                 state.remainingAttempts,
               ),
-              onChanged: (pin) {
+              onChanged: (pin) async {
                 currentPin = pin;
                 if (pin.length == widget.pinLength) {
-                  context.read<OcraAuthenticationCubit>().generateToken(
+                  final authenticationCubit =
+                      context.read<AuthenticationCubit>();
+                  await context.read<OcraAuthenticationCubit>().generateToken(
                         password: currentPin,
                       );
+                  await authenticationCubit.verifyAccessPin(pin);
                 }
               },
               showBiometrics: widget.useBiometrics,
