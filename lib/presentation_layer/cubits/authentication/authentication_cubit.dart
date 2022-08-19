@@ -1,9 +1,4 @@
-import 'dart:io';
-import 'dart:ui';
 import 'package:bloc/bloc.dart';
-import 'package:carrier_info/carrier_info.dart';
-import 'package:device_info/device_info.dart';
-
 import '../../../../../data_layer/network.dart';
 import '../../../../../domain_layer/models.dart';
 import '../../../data_layer/providers.dart';
@@ -394,7 +389,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   ///
   /// Emits a busy state while checking and a state with verification result
   /// in the `isPinVerified` field.
-  Future<void> verifyAccessPin(String pin) async {
+  Future<void> verifyAccessPin(String pin, DeviceSession deviceInfo) async {
     emit(
       state.copyWith(
         busy: true,
@@ -403,24 +398,9 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     );
 
     try {
-      final deviceInfoPlugin = DeviceInfoPlugin();
-      var info;
-      if (Platform.isAndroid) {
-        info = await deviceInfoPlugin.androidInfo;
-      }
-      if (Platform.isIOS) {
-        info = await deviceInfoPlugin.iosInfo;
-      }
-      final model = await _getDeviceModelUseCase();
-      final carrierName = await CarrierInfo.carrierName;
       final verifyPinResponse = await _verifyAccessPinUseCase(
         pin: pin,
-        deviceInfo: DeviceSession(
-            model: model,
-            carrier: carrierName,
-            deviceName: Platform.isAndroid ? info.device : info.name,
-            resolution: Resolution(
-                window.physicalSize.width, window.physicalSize.height)),
+        deviceInfo: deviceInfo,
       );
 
       emit(
@@ -503,6 +483,11 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         user: user,
       ),
     );
+  }
+
+  /// Get Device model
+  Future<String> getModelName() {
+    return _getDeviceModelUseCase();
   }
 
   /// Sets the second factor status.

@@ -1,7 +1,14 @@
+import 'dart:io';
+import 'dart:ui';
+
+import 'package:carrier_info/carrier_info.dart';
 import 'package:design_kit_layer/design_kit_layer.dart';
+import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../domain_layer/models/device_session/device_session.dart';
+import '../../../domain_layer/models/resolution/resolution.dart';
 import '../../creators.dart';
 import '../../cubits.dart';
 import '../../extensions/ocra_authentication/ocra_authentication_error_ui_extension.dart';
@@ -180,7 +187,8 @@ class _LockScreenState extends SetAccessPinBaseWidgetState<_LockScreen> {
                   await context.read<OcraAuthenticationCubit>().generateToken(
                         password: currentPin,
                       );
-                  await authenticationCubit.verifyAccessPin(pin);
+                  final session = await _getDeviceSession();
+                  await authenticationCubit.verifyAccessPin(pin, session);
                 }
               },
               showBiometrics: widget.useBiometrics,
@@ -190,6 +198,26 @@ class _LockScreenState extends SetAccessPinBaseWidgetState<_LockScreen> {
         ),
       ),
     );
+  }
+
+  Future<DeviceSession> _getDeviceSession() async {
+    final deviceInfoPlugin = DeviceInfoPlugin();
+    var info;
+    if (Platform.isAndroid) {
+      info = await deviceInfoPlugin.androidInfo;
+    }
+    if (Platform.isIOS) {
+      info = await deviceInfoPlugin.iosInfo;
+    }
+    final model = await context.read<AuthenticationCubit>().getModelName();
+    final carrierName = await CarrierInfo.carrierName;
+    final session = DeviceSession(
+        model: model,
+        carrier: carrierName,
+        deviceName: Platform.isAndroid ? info.device : info.name,
+        resolution:
+            Resolution(window.physicalSize.width, window.physicalSize.height));
+    return session;
   }
 
   /// Method called when the user has completed the biometric authentication

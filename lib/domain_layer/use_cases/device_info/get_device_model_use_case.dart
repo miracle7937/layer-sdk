@@ -12,7 +12,7 @@ class GetDeviceModelUseCase {
   GetDeviceModelUseCase();
 
   /// Returns the device model.
-  Future<String?> call() async {
+  Future<String> call() async {
     String? model;
     if (Platform.isAndroid) {
       final info = await _deviceInfoPlugin.androidInfo;
@@ -23,7 +23,7 @@ class GetDeviceModelUseCase {
       model = _getPhoneModelName(models, info.utsname.machine);
     }
 
-    return model;
+    return model ?? '';
   }
 
   String _getPhoneModelName(String models, String modelName) {
