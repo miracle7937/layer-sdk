@@ -389,11 +389,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   ///
   /// Emits a busy state while checking and a state with verification result
   /// in the `isPinVerified` field.
-  Future<void> verifyAccessPin(
-    String pin, {
-    DeviceSession? deviceInfo,
-    bool rethrowError = false,
-  }) async {
+  Future<void> verifyAccessPin(String pin, {DeviceSession? deviceInfo}) async {
     emit(
       state.copyWith(
         busy: true,
@@ -427,7 +423,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         ),
       );
 
-      if (rethrowError) rethrow;
+      rethrow;
     }
   }
 
