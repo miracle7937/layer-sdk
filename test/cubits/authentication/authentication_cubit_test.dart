@@ -21,6 +21,8 @@ class MockResetPasswordUseCase extends Mock implements ResetPasswordUseCase {}
 
 class MockCustomerUseCase extends Mock implements LoadCurrentCustomerUseCase {}
 
+class MockGetDeviceModelUseCase extends Mock implements GetDeviceModelUseCase {}
+
 class MockVerifyAccessPinUseCase extends Mock
     implements VerifyAccessPinUseCase {}
 
@@ -35,6 +37,7 @@ final _resetPasswordUseCase = MockResetPasswordUseCase();
 final _verifyAccessPinUseCase = MockVerifyAccessPinUseCase();
 final _updateUserTokenUseCase = MockUpdateUserTokenUseCase();
 final _customerUseCase = MockCustomerUseCase();
+final _getDeviceModelUseCase = MockGetDeviceModelUseCase();
 
 void main() {
   EquatableConfig.stringify = true;
@@ -50,6 +53,7 @@ void main() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
     verify: (c) => expect(c.state, AuthenticationState()),
   ); // starts on empty state
@@ -183,6 +187,7 @@ void _loginFlowTests() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
     act: (c) => c.setLoggedUser(_activeUser),
     expect: () => [
@@ -204,6 +209,7 @@ void _loginFlowTests() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
     seed: () => AuthenticationState(
       user: _activeUser,
@@ -236,6 +242,7 @@ void _loginFlowTests() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
     seed: AuthenticationState.new,
     act: (c) => c.login(
@@ -271,6 +278,7 @@ void _loginFlowTests() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
     act: (c) => c.login(
       username: usernameActive,
@@ -301,6 +309,7 @@ void _loginFlowTests() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
     act: (c) => c.login(
       username: usernameSuspended,
@@ -332,6 +341,7 @@ void _loginFlowTests() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
     act: (c) => c.login(
       username: usernameExpired,
@@ -363,6 +373,7 @@ void _loginFlowTests() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
     act: (c) => c.login(
       username: usernameException,
@@ -399,6 +410,7 @@ void _loginFlowTests() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
     act: (c) => c.login(
       username: usernameNetException,
@@ -435,6 +447,7 @@ void _loginFlowTests() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
     seed: () => AuthenticationState(
       user: _exceptionUser,
@@ -472,6 +485,7 @@ void _loginFlowTests() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
     seed: () => AuthenticationState(
       user: _netExceptionUser,
@@ -508,7 +522,8 @@ void _accessPinTests() {
 
   setUp(() {
     when(
-      () => _verifyAccessPinUseCase(pin: correctPin),
+      () =>
+          _verifyAccessPinUseCase(pin: correctPin, deviceInfo: DeviceSession()),
     ).thenAnswer(
       (_) async => VerifyPinResponse(
         isVerified: true,
@@ -516,7 +531,8 @@ void _accessPinTests() {
     );
 
     when(
-      () => _verifyAccessPinUseCase(pin: incorrectPin),
+      () => _verifyAccessPinUseCase(
+          pin: incorrectPin, deviceInfo: DeviceSession()),
     ).thenAnswer(
       (_) async => VerifyPinResponse(
         isVerified: false,
@@ -524,13 +540,15 @@ void _accessPinTests() {
     );
 
     when(
-      () => _verifyAccessPinUseCase(pin: exceptionPin),
+      () => _verifyAccessPinUseCase(
+          pin: exceptionPin, deviceInfo: DeviceSession()),
     ).thenAnswer(
       (_) async => throw Exception(),
     );
 
     when(
-      () => _verifyAccessPinUseCase(pin: netExceptionPin),
+      () => _verifyAccessPinUseCase(
+          pin: netExceptionPin, deviceInfo: DeviceSession()),
     ).thenAnswer(
       (_) async => throw NetException(),
     );
@@ -547,8 +565,9 @@ void _accessPinTests() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
-    act: (c) => c.verifyAccessPin(correctPin),
+    act: (c) => c.verifyAccessPin(correctPin, deviceInfo: DeviceSession()),
     expect: () => [
       AuthenticationState(busy: true),
       AuthenticationState(
@@ -558,7 +577,8 @@ void _accessPinTests() {
       ),
     ],
     verify: (c) {
-      verify(() => _verifyAccessPinUseCase(pin: correctPin)).called(1);
+      verify(() => _verifyAccessPinUseCase(
+          pin: correctPin, deviceInfo: DeviceSession())).called(1);
     },
   );
   blocTest<AuthenticationCubit, AuthenticationState>(
@@ -572,8 +592,9 @@ void _accessPinTests() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
-    act: (c) => c.verifyAccessPin(incorrectPin),
+    act: (c) => c.verifyAccessPin(incorrectPin, deviceInfo: DeviceSession()),
     expect: () => [
       AuthenticationState(busy: true),
       AuthenticationState(
@@ -581,7 +602,8 @@ void _accessPinTests() {
       ),
     ],
     verify: (c) {
-      verify(() => _verifyAccessPinUseCase(pin: incorrectPin)).called(1);
+      verify(() => _verifyAccessPinUseCase(
+          pin: incorrectPin, deviceInfo: DeviceSession())).called(1);
     },
   );
 
@@ -596,6 +618,7 @@ void _accessPinTests() {
       resetPasswordUseCase: _resetPasswordUseCase,
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
     seed: () => AuthenticationState(
       verifyPinResponse: VerifyPinResponse(
@@ -623,6 +646,7 @@ void _accessPinTests() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
     seed: () => AuthenticationState(user: user),
     act: (c) => c.setAccessPin(correctPin),
@@ -642,6 +666,7 @@ void _accessPinTests() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
     seed: AuthenticationState.new,
     act: (c) => c.lock(),
@@ -659,6 +684,7 @@ void _accessPinTests() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
     seed: () => AuthenticationState(
       user: user,
@@ -685,8 +711,9 @@ void _accessPinTests() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
-    act: (c) => c.verifyAccessPin(exceptionPin),
+    act: (c) => c.verifyAccessPin(exceptionPin, deviceInfo: DeviceSession()),
     expect: () => [
       AuthenticationState(busy: true),
       AuthenticationState(
@@ -698,7 +725,8 @@ void _accessPinTests() {
       isA<Exception>(),
     ],
     verify: (c) {
-      verify(() => _verifyAccessPinUseCase(pin: exceptionPin)).called(1);
+      verify(() => _verifyAccessPinUseCase(
+          pin: exceptionPin, deviceInfo: DeviceSession())).called(1);
     },
   );
 
@@ -713,8 +741,9 @@ void _accessPinTests() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
-    act: (c) => c.verifyAccessPin(netExceptionPin),
+    act: (c) => c.verifyAccessPin(netExceptionPin, deviceInfo: DeviceSession()),
     expect: () => [
       AuthenticationState(busy: true),
       AuthenticationState(
@@ -726,7 +755,8 @@ void _accessPinTests() {
       isA<NetException>(),
     ],
     verify: (c) {
-      verify(() => _verifyAccessPinUseCase(pin: netExceptionPin)).called(1);
+      verify(() => _verifyAccessPinUseCase(
+          pin: netExceptionPin, deviceInfo: DeviceSession())).called(1);
     },
   );
 }
@@ -743,6 +773,7 @@ void _emptyFieldsTests() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
     act: (c) => c.login(
       username: '',
@@ -772,6 +803,7 @@ void _emptyFieldsTests() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
     act: (c) => c.login(
       username: '',
@@ -801,6 +833,7 @@ void _emptyFieldsTests() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
     act: (c) => c.login(
       username: 'superadmin',
@@ -870,6 +903,7 @@ void _recoverPassword() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
     act: (c) => c.recoverPassword(username: _successUsername),
     expect: () => [
@@ -896,6 +930,7 @@ void _recoverPassword() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
     act: (c) => c.recoverPassword(username: _invalidUsername),
     expect: () => [
@@ -922,6 +957,7 @@ void _recoverPassword() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
     act: (c) => c.recoverPassword(username: _suspendedUsername),
     expect: () => [
@@ -948,6 +984,7 @@ void _recoverPassword() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
     act: (c) => c.recoverPassword(username: _notAllowedUsername),
     expect: () => [
@@ -974,6 +1011,7 @@ void _recoverPassword() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
     act: (c) => c.recoverPassword(username: _exceptionUsername),
     expect: () => [
@@ -1063,6 +1101,7 @@ void _resetPassword() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
     act: (c) => c.resetPassword(
       username: successUsername,
@@ -1097,6 +1136,7 @@ void _resetPassword() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
     act: (c) => c.resetPassword(
       username: failureUsername,
@@ -1131,6 +1171,7 @@ void _resetPassword() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
     act: (c) => c.resetPassword(
       username: exceptionUsername,
@@ -1167,6 +1208,7 @@ void _resetPassword() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
     act: (c) => c.resetPassword(
       username: netExceptionUsername,
@@ -1217,6 +1259,7 @@ void _unlock() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
     act: (c) => c.unlock(user),
     expect: () => [
@@ -1243,6 +1286,7 @@ void _unlock() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
     ),
     act: (c) => c.lock(),
     expect: () => [],

@@ -14,7 +14,10 @@ dependencies:
     git:
       url: git@gitlab.ubanquity.com:dart-packages/biometricts_change_detector.git
       ref: 3a0c7fdf8e602778265e1b284a25e6451bb1d426
-
+  carrier_info:
+    git:
+      url: git@gitlab.ubanquity.com:flutter-apps/carrier-info.git
+      ref: 433beda7e4b7c0249c9877fe09c9bbc4058fee27
   design_kit_layer:
     git:
       url: git@gitlab.ubanquity.com:dart-packages/design-kit-layer.git
@@ -84,4 +87,5 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/
     - assets/svgs/

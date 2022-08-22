@@ -1,6 +1,7 @@
-import '../../dtos/payment/biller_dto.dart';
-import '../../network/net_client.dart';
-import '../../network/net_request_methods.dart';
+import '../../../domain_layer/models.dart';
+import '../../dtos.dart';
+import '../../mappings.dart';
+import '../../network.dart';
 
 /// Provides data about billers
 class BillerProvider {
@@ -17,7 +18,7 @@ class BillerProvider {
   /// * Use `status` to filter billers by their status
   /// * Use `categoryId` to filter billers by their category
   Future<List<BillerDTO>> list({
-    String? status,
+    BillerStatus status = BillerStatus.active,
     String? categoryId,
     bool forceRefresh = false,
   }) async {
@@ -25,7 +26,7 @@ class BillerProvider {
       netClient.netEndpoints.biller,
       method: NetRequestMethods.get,
       queryParameters: {
-        if (status?.isNotEmpty ?? false) 'status': status,
+        'status': status.toDTOStatus(),
         if (categoryId?.isNotEmpty ?? false) 'category_id': categoryId,
       },
       forceRefresh: forceRefresh,

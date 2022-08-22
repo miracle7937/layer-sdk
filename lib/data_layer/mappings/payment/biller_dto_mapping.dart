@@ -1,5 +1,6 @@
 import '../../../domain_layer/models.dart';
 import '../../dtos.dart';
+import '../../errors.dart';
 
 /// Extension that provides mappings for [BillerDTO]
 extension BillerDTOMapping on BillerDTO {
@@ -31,5 +32,22 @@ extension BillerCategoryMapping on List<Biller> {
     }
 
     return _map.values.toList(growable: false);
+  }
+}
+
+/// Provides DTO mappings for [BillerStatus]
+extension BillerStatusMapping on BillerStatus {
+  /// Maps into a DTO status.
+  String toDTOStatus() {
+    switch (this) {
+      case BillerStatus.active:
+        return 'A';
+
+      default:
+        throw MappingException(
+          from: BillerStatus,
+          to: String,
+        );
+    }
   }
 }
