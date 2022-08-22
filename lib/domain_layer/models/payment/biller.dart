@@ -42,3 +42,12 @@ class Biller extends Equatable {
         imageUrl,
       ];
 }
+
+/// Represents the status of the biller.
+enum BillerStatus {
+  /// Active status
+  active,
+
+  /// TODO: Add the remaining possible values.
+  /// Currently only active is being used.
+}
