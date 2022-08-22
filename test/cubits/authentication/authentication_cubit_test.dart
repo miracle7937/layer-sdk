@@ -721,9 +721,6 @@ void _accessPinTests() {
         errorStatus: AuthenticationErrorStatus.generic,
       ),
     ],
-    errors: () => [
-      isA<Exception>(),
-    ],
     verify: (c) {
       verify(() => _verifyAccessPinUseCase(
           pin: exceptionPin, deviceInfo: DeviceSession())).called(1);
@@ -750,9 +747,6 @@ void _accessPinTests() {
         busy: false,
         errorStatus: AuthenticationErrorStatus.network,
       ),
-    ],
-    errors: () => [
-      isA<NetException>(),
     ],
     verify: (c) {
       verify(() => _verifyAccessPinUseCase(
