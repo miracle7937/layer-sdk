@@ -234,5 +234,8 @@ class _LockScreenState extends SetAccessPinBaseWidgetState<_LockScreen> {
     context.read<OcraAuthenticationCubit>().generateToken(
           password: storageCubit.state.currentUser?.accessPin,
         );
+    final session = await _getDeviceSession();
+    final authenticationCubit = context.read<AuthenticationCubit>();
+    await authenticationCubit.verifyAccessPin(currentPin, deviceInfo: session);
   }
 }
