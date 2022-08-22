@@ -182,6 +182,7 @@ class AuthenticationProvider {
           'carrier': deviceInfo.carrier,
         if (deviceInfo.deviceName?.isNotEmpty ?? false)
           'device_name': deviceInfo.deviceName,
+        if (deviceInfo.osVersion != null) 'os_version': deviceInfo.osVersion,
         if (deviceInfo.resolution != null)
           'resolution':
               '${deviceInfo.resolution!.width}x${deviceInfo.resolution!.width}',

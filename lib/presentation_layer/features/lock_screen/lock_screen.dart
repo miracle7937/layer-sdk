@@ -216,6 +216,8 @@ class _LockScreenState extends SetAccessPinBaseWidgetState<_LockScreen> {
         model: model,
         carrier: carrierName,
         deviceName: Platform.isAndroid ? info.device : info.name,
+        osVersion:
+            Platform.isAndroid ? info.version.release : info.systemVersion,
         resolution:
             Resolution(window.physicalSize.width, window.physicalSize.height));
     return session;
