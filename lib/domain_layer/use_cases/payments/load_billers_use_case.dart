@@ -12,7 +12,7 @@ class LoadBillersUseCase {
 
   /// Callable method to load billers data
   Future<List<Biller>> call({
-    String? status = 'A',
+    BillerStatus status = BillerStatus.active,
     String? categoryId,
   }) =>
       _repository.listBillers(
