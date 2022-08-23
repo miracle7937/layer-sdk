@@ -106,9 +106,7 @@ class _DPADropdownState extends State<DPADropdown> {
             title: e.name,
             value: e.id,
             iconPath: isCurrencyPicker
-                ? DKFlags.path(
-                    countryCode:
-                        currencyToCountryCode(e.id.toLowerCase()).toUpperCase())
+                ? DKFlags.currencyFlag(currency: e.id.toLowerCase())
                 : e.imageUrl ?? e.icon,
           ),
         )
@@ -243,9 +241,7 @@ class _ImageFallback extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SvgPicture.asset(
-      DKFlags.path(
-          countryCode:
-              currencyToCountryCode(currencyId.toLowerCase()).toUpperCase()),
+      DKFlags.currencyFlag(currency: currencyId.toLowerCase()),
       width: 24.0,
       height: 24.0,
     );
