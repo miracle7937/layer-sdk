@@ -1,6 +1,7 @@
 import 'package:design_kit_layer/design_kit_layer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 import '../../../../domain_layer/models.dart';
@@ -198,13 +199,13 @@ class _DPATextState extends State<DPAText> {
               if (value?.isNotEmpty ?? false || (currency?.isNotEmpty ?? false))
                 Row(children: [
                   if (currency?.isNotEmpty ?? false) ...[
-                    Image.asset(
-                      'icons/currency/${currency!.toLowerCase()}.png',
+                    SvgPicture.asset(
+                      DKFlags.path(
+                          countryCode: currencyToCountryCode(
+                                  currency?.toLowerCase() ?? '')
+                              .toUpperCase()),
                       width: 24,
                       height: 18,
-                      package: 'currency_icons',
-                      errorBuilder: (context, object, stackTrace) =>
-                          Container(width: 24),
                     ),
                     SizedBox(width: 8)
                   ],

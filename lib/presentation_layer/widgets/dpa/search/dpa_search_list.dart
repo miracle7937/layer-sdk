@@ -87,18 +87,18 @@ class _DPASearchListState extends State<DPASearchList> {
                   itemBuilder: (context, index) {
                     final value = options[index];
                     var flagSvg;
-                    var flagAsset;
                     if (isCountryPicker) {
                       flagSvg = DKFlags.path(countryCode: value.id);
                     }
 
                     if (isCurrencyPicker) {
-                      flagAsset =
-                          'icons/currency/${value.id.toLowerCase().toLowerCase()}.png';
+                      flagSvg = DKFlags.path(
+                          countryCode:
+                              currencyToCountryCode(value.id.toLowerCase())
+                                  .toUpperCase());
                     }
                     return _DPASearchListItem(
                       svgPath: flagSvg,
-                      assetPath: flagAsset,
                       dpaValue: options[index],
                       onSelected: (value) async {
                         final cubit = context.read<DPAProcessCubit>();
@@ -202,11 +202,8 @@ class _DPASearchListItem extends StatelessWidget {
               SizedBox(
                   height: 24.0,
                   width: 24.0,
-                  child: Image.asset(
+                  child: SvgPicture.asset(
                     assetPath!,
-                    package: 'currency_icons',
-                    errorBuilder: (context, object, stackTrace) =>
-                        Container(width: 24),
                   )),
               const SizedBox(width: 12.0),
             ],

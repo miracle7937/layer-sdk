@@ -1,6 +1,7 @@
 import 'package:country_pickers/country_pickers.dart';
 import 'package:design_kit_layer/design_kit_layer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:validators/validators.dart';
 
 import '../../../../domain_layer/models.dart';
@@ -105,7 +106,9 @@ class _DPADropdownState extends State<DPADropdown> {
             title: e.name,
             value: e.id,
             iconPath: isCurrencyPicker
-                ? 'icons/currency/${e.id.toLowerCase()}.png'
+                ? DKFlags.path(
+                    countryCode:
+                        currencyToCountryCode(e.id.toLowerCase()).toUpperCase())
                 : e.imageUrl ?? e.icon,
           ),
         )
@@ -239,11 +242,12 @@ class _ImageFallback extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.asset(
-      'icons/currency/${currencyId.toLowerCase()}.png',
+    return SvgPicture.asset(
+      DKFlags.path(
+          countryCode:
+              currencyToCountryCode(currencyId.toLowerCase()).toUpperCase()),
       width: 24.0,
       height: 24.0,
-      package: 'currency_icons',
     );
   }
 }
