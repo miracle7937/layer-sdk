@@ -160,9 +160,6 @@ class _DPASearchListItem extends StatelessWidget {
   /// The optional svg path.
   final String? svgPath;
 
-  /// The optional asset path.
-  final String? assetPath;
-
   /// The dpa value.
   final DPAValue dpaValue;
 
@@ -173,7 +170,6 @@ class _DPASearchListItem extends StatelessWidget {
   const _DPASearchListItem({
     Key? key,
     this.svgPath,
-    this.assetPath,
     required this.dpaValue,
     required this.onSelected,
   }) : super(key: key);
