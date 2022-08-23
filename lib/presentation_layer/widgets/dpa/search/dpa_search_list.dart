@@ -87,18 +87,16 @@ class _DPASearchListState extends State<DPASearchList> {
                   itemBuilder: (context, index) {
                     final value = options[index];
                     var flagSvg;
-                    var flagAsset;
                     if (isCountryPicker) {
-                      flagSvg = DKFlags.path(countryCode: value.id);
+                      flagSvg = DKFlags.countryFlag(countryCode: value.id);
                     }
 
                     if (isCurrencyPicker) {
-                      flagAsset =
-                          'icons/currency/${value.id.toLowerCase().toLowerCase()}.png';
+                      flagSvg = DKFlags.currencyFlag(
+                          currency: value.id.toLowerCase());
                     }
                     return _DPASearchListItem(
                       svgPath: flagSvg,
-                      assetPath: flagAsset,
                       dpaValue: options[index],
                       onSelected: (value) async {
                         final cubit = context.read<DPAProcessCubit>();
@@ -160,9 +158,6 @@ class _DPASearchListItem extends StatelessWidget {
   /// The optional svg path.
   final String? svgPath;
 
-  /// The optional asset path.
-  final String? assetPath;
-
   /// The dpa value.
   final DPAValue dpaValue;
 
@@ -173,7 +168,6 @@ class _DPASearchListItem extends StatelessWidget {
   const _DPASearchListItem({
     Key? key,
     this.svgPath,
-    this.assetPath,
     required this.dpaValue,
     required this.onSelected,
   }) : super(key: key);
@@ -196,18 +190,6 @@ class _DPASearchListItem extends StatelessWidget {
                   svgPath!,
                 ),
               ),
-              const SizedBox(width: 12.0),
-            ],
-            if (assetPath != null) ...[
-              SizedBox(
-                  height: 24.0,
-                  width: 24.0,
-                  child: Image.asset(
-                    assetPath!,
-                    package: 'currency_icons',
-                    errorBuilder: (context, object, stackTrace) =>
-                        Container(width: 24),
-                  )),
               const SizedBox(width: 12.0),
             ],
             Expanded(

@@ -94,7 +94,7 @@ class _DPAPhoneTextState extends State<DPAPhoneText> {
                 title: dialCode.countryName,
                 description: dialCode.countryCode,
                 value: dialCode.dialCode,
-                iconPath: DKFlags.path(
+                iconPath: DKFlags.countryFlag(
                   countryCode: dialCode.countryCode.toUpperCase(),
                 ),
               ),
