@@ -194,15 +194,6 @@ class _DPASearchListItem extends StatelessWidget {
               ),
               const SizedBox(width: 12.0),
             ],
-            if (assetPath != null) ...[
-              SizedBox(
-                  height: 24.0,
-                  width: 24.0,
-                  child: SvgPicture.asset(
-                    assetPath!,
-                  )),
-              const SizedBox(width: 12.0),
-            ],
             Expanded(
               child: Text(
                 dpaValue.name,
