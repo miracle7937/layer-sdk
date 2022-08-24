@@ -91,7 +91,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         state.errors.contains(BeneficiaryTransferAction.reasons)) {
       emit(
         state.copyWith(
-          actions: state.addBusyAction(
+          actions: state.addAction(
             BeneficiaryTransferAction.reasons,
           ),
           errors: state.removeCubitError(
@@ -109,7 +109,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
         emit(
           state.copyWith(
-            actions: state.removeBusyAction(
+            actions: state.removeAction(
               BeneficiaryTransferAction.reasons,
             ),
             reasons: reasons,
@@ -118,7 +118,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
       } on Exception catch (e) {
         emit(
           state.copyWith(
-            actions: state.removeBusyAction(
+            actions: state.removeAction(
               BeneficiaryTransferAction.reasons,
             ),
             errors: state.addCubitError(
@@ -137,7 +137,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         state.errors.contains(BeneficiaryTransferAction.beneficiarySettings)) {
       emit(
         state.copyWith(
-          actions: state.addBusyAction(
+          actions: state.addAction(
             BeneficiaryTransferAction.beneficiarySettings,
           ),
           errors: state.removeCubitError(
@@ -153,16 +153,16 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
         emit(
           state.copyWith(
-            actions: state.removeBusyAction(
-                BeneficiaryTransferAction.beneficiarySettings),
+            actions: state
+                .removeAction(BeneficiaryTransferAction.beneficiarySettings),
             beneficiarySettings: beneficiarySettings,
           ),
         );
       } on Exception catch (e) {
         emit(
           state.copyWith(
-            actions: state.removeBusyAction(
-                BeneficiaryTransferAction.beneficiarySettings),
+            actions: state
+                .removeAction(BeneficiaryTransferAction.beneficiarySettings),
             errors: state.addCubitError(
               action: BeneficiaryTransferAction.beneficiarySettings,
               exception: e,
@@ -179,7 +179,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         state.errors.contains(BeneficiaryTransferAction.currencies)) {
       emit(
         state.copyWith(
-          actions: state.addBusyAction(
+          actions: state.addAction(
             BeneficiaryTransferAction.currencies,
           ),
           errors: state.removeCubitError(
@@ -193,7 +193,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
         emit(
           state.copyWith(
-            actions: state.removeBusyAction(
+            actions: state.removeAction(
               BeneficiaryTransferAction.currencies,
             ),
             currencies: currencies,
@@ -202,7 +202,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
       } on Exception catch (e) {
         emit(
           state.copyWith(
-            actions: state.removeBusyAction(
+            actions: state.removeAction(
               BeneficiaryTransferAction.currencies,
             ),
             errors: state.addCubitError(
@@ -221,7 +221,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         state.errors.contains(BeneficiaryTransferAction.countries)) {
       emit(
         state.copyWith(
-          actions: state.addBusyAction(
+          actions: state.addAction(
             BeneficiaryTransferAction.countries,
           ),
           errors: state.removeCubitError(
@@ -235,7 +235,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
         emit(
           state.copyWith(
-            actions: state.removeBusyAction(
+            actions: state.removeAction(
               BeneficiaryTransferAction.countries,
             ),
             countries: countries,
@@ -244,7 +244,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
       } on Exception catch (e) {
         emit(
           state.copyWith(
-            actions: state.removeBusyAction(
+            actions: state.removeAction(
               BeneficiaryTransferAction.countries,
             ),
             errors: state.addCubitError(
@@ -263,7 +263,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         state.errors.contains(BeneficiaryTransferAction.accounts)) {
       emit(
         state.copyWith(
-          actions: state.addBusyAction(
+          actions: state.addAction(
             BeneficiaryTransferAction.accounts,
           ),
           errors: state.removeCubitError(
@@ -287,7 +287,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
         emit(
           state.copyWith(
-            actions: state.removeBusyAction(
+            actions: state.removeAction(
               BeneficiaryTransferAction.accounts,
             ),
             accounts: accounts,
@@ -296,7 +296,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
       } on Exception catch (e) {
         emit(
           state.copyWith(
-            actions: state.removeBusyAction(
+            actions: state.removeAction(
               BeneficiaryTransferAction.accounts,
             ),
             errors: state.addCubitError(
@@ -315,7 +315,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         state.errors.contains(BeneficiaryTransferAction.beneficiaries)) {
       emit(
         state.copyWith(
-          actions: state.addBusyAction(
+          actions: state.addAction(
             BeneficiaryTransferAction.beneficiaries,
           ),
           errors: state.removeCubitError(
@@ -331,14 +331,14 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         emit(
           state.copyWith(
             actions:
-                state.removeBusyAction(BeneficiaryTransferAction.beneficiaries),
+                state.removeAction(BeneficiaryTransferAction.beneficiaries),
             beneficiaries: beneficiaries,
           ),
         );
       } on Exception catch (e) {
         emit(
           state.copyWith(
-            actions: state.removeBusyAction(
+            actions: state.removeAction(
               BeneficiaryTransferAction.beneficiaries,
             ),
             errors: state.addCubitError(
@@ -362,7 +362,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
     emit(
       state.copyWith(
-        actions: state.addBusyAction(
+        actions: state.addAction(
           BeneficiaryTransferAction.banks,
         ),
         errors: state.removeCubitError(
@@ -391,7 +391,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
       emit(
         state.copyWith(
-          actions: state.removeBusyAction(
+          actions: state.removeAction(
             BeneficiaryTransferAction.banks,
           ),
           banks: banks,
@@ -403,7 +403,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     } on Exception catch (e) {
       emit(
         state.copyWith(
-          actions: state.removeBusyAction(
+          actions: state.removeAction(
             BeneficiaryTransferAction.banks,
           ),
           errors: state.addCubitError(
@@ -476,7 +476,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
   Future<void> evaluate() async {
     emit(
       state.copyWith(
-        actions: state.addBusyAction(
+        actions: state.addAction(
           BeneficiaryTransferAction.evaluate,
         ),
         errors: {},
@@ -504,7 +504,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
       if (!isValid) {
         emit(
           state.copyWith(
-            actions: state.removeBusyAction(BeneficiaryTransferAction.evaluate),
+            actions: state.removeAction(BeneficiaryTransferAction.evaluate),
             errors: state.addCustomCubitError(
               action: BeneficiaryTransferAction.evaluate,
               code: CubitErrorCode.invalidIBAN,
@@ -523,7 +523,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
       emit(
         state.copyWith(
-          actions: state.removeBusyAction(
+          actions: state.removeAction(
             BeneficiaryTransferAction.evaluate,
           ),
           events: state.addEvent(
@@ -535,7 +535,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     } on Exception catch (e) {
       emit(
         state.copyWith(
-          actions: state.removeBusyAction(
+          actions: state.removeAction(
             BeneficiaryTransferAction.evaluate,
           ),
           errors: state.addCubitError(
@@ -551,7 +551,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
   Future<void> submit() async {
     emit(
       state.copyWith(
-        actions: state.addBusyAction(
+        actions: state.addAction(
           BeneficiaryTransferAction.submit,
         ),
         errors: state.removeCubitError(
@@ -574,7 +574,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
           .isNotEmpty) {
         emit(
           state.copyWith(
-            actions: state.removeBusyAction(
+            actions: state.removeAction(
               BeneficiaryTransferAction.submit,
             ),
           ),
@@ -596,7 +596,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         case TransferStatus.scheduled:
           emit(
             state.copyWith(
-              actions: state.removeBusyAction(
+              actions: state.removeAction(
                 BeneficiaryTransferAction.submit,
               ),
               transferResult: transferResult,
@@ -610,7 +610,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         case TransferStatus.failed:
           emit(
             state.copyWith(
-              actions: state.removeBusyAction(
+              actions: state.removeAction(
                 BeneficiaryTransferAction.submit,
               ),
               errors: state.addCustomCubitError(
@@ -624,7 +624,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         case TransferStatus.otp:
           emit(
             state.copyWith(
-              actions: state.removeBusyAction(
+              actions: state.removeAction(
                 BeneficiaryTransferAction.submit,
               ),
               transferResult: transferResult,
@@ -643,7 +643,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     } on Exception catch (e) {
       emit(
         state.copyWith(
-          actions: state.removeBusyAction(
+          actions: state.removeAction(
             BeneficiaryTransferAction.submit,
           ),
           errors: state.addCubitError(
@@ -662,7 +662,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
   }) async {
     emit(
       state.copyWith(
-        actions: state.addBusyAction(
+        actions: state.addAction(
           BeneficiaryTransferAction.verifySecondFactor,
         ),
         errors: {},
@@ -679,7 +679,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
       emit(
         state.copyWith(
-          actions: state.removeBusyAction(
+          actions: state.removeAction(
             BeneficiaryTransferAction.verifySecondFactor,
           ),
           transferResult: transferResult,
@@ -688,7 +688,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     } on Exception catch (e) {
       emit(
         state.copyWith(
-          actions: state.removeBusyAction(
+          actions: state.removeAction(
             BeneficiaryTransferAction.verifySecondFactor,
           ),
           errors: state.addCubitError(
@@ -705,7 +705,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
   Future<void> resendSecondFactor() async {
     emit(
       state.copyWith(
-        actions: state.addBusyAction(
+        actions: state.addAction(
           BeneficiaryTransferAction.resendSecondFactor,
         ),
         errors: {},
@@ -719,7 +719,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
       emit(
         state.copyWith(
-          actions: state.removeBusyAction(
+          actions: state.removeAction(
             BeneficiaryTransferAction.resendSecondFactor,
           ),
           transferResult: transferResult,
@@ -728,7 +728,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     } on Exception catch (e) {
       emit(
         state.copyWith(
-          actions: state.removeBusyAction(
+          actions: state.removeAction(
             BeneficiaryTransferAction.resendSecondFactor,
           ),
           errors: state.addCubitError(
@@ -744,7 +744,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
   Future<void> _createShortcut() async {
     emit(
       state.copyWith(
-        actions: state.addBusyAction(
+        actions: state.addAction(
           BeneficiaryTransferAction.shortcut,
         ),
         errors: state.removeCubitError(
@@ -764,7 +764,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
       emit(
         state.copyWith(
-          actions: state.removeBusyAction(
+          actions: state.removeAction(
             BeneficiaryTransferAction.shortcut,
           ),
         ),
@@ -772,7 +772,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     } on Exception catch (e) {
       emit(
         state.copyWith(
-          actions: state.removeBusyAction(
+          actions: state.removeAction(
             BeneficiaryTransferAction.shortcut,
           ),
           errors: state.addCubitError(

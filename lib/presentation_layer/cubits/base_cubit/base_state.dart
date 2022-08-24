@@ -94,21 +94,21 @@ abstract class BaseState<CubitAction, CubitEvent> extends Equatable {
 
   /// Adds the passed action to the current actions and returns the
   /// new set.
-  Set<CubitAction> addBusyAction(CubitAction action) => actions.union({action});
+  Set<CubitAction> addAction(CubitAction action) => actions.union({action});
 
   /// Adds the passed actions to the current actions and returns the
   /// new set.
-  Set<CubitAction> addBusyActions(Set<CubitAction> actions) =>
+  Set<CubitAction> addActions(Set<CubitAction> actions) =>
       actions.union(actions);
 
   /// Removes the passed action from the current actions and returns the
   /// new set.
-  Set<CubitAction> removeBusyAction(CubitAction action) =>
+  Set<CubitAction> removeAction(CubitAction action) =>
       actions.difference({action});
 
   /// Removes the passed actions from the current actions and returns the
   /// new set.
-  Set<CubitAction> removeBusyActions(Set<CubitAction> actions) =>
+  Set<CubitAction> removeActions(Set<CubitAction> actions) =>
       actions.difference(actions);
 
   /// Builds a [CubitError] with the passed action and exception, adds it to
