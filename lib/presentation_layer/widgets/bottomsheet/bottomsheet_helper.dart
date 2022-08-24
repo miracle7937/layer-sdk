@@ -109,28 +109,32 @@ class BottomSheetHelper {
     String? description,
     required String dismiss,
     bool isScrollControlled = true,
-  }) async =>
-      showModalBottomSheet(
-        barrierColor: DesignSystem.of(context).basePrimary.withOpacity(0.64),
-        context: context,
-        isScrollControlled: isScrollControlled,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(
-              24.0,
-            ),
-            topRight: Radius.circular(
-              24.0,
-            ),
+    Color? backgroundColor,
+  }) async {
+    final design = DesignSystem.of(context);
+    return showModalBottomSheet(
+      barrierColor: design.basePrimary.withOpacity(0.64),
+      context: context,
+      backgroundColor: backgroundColor ?? design.surfaceNonary2,
+      isScrollControlled: isScrollControlled,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(
+            24.0,
+          ),
+          topRight: Radius.circular(
+            24.0,
           ),
         ),
-        builder: (context) => _ErrorBottomSheet(
-          title: title,
-          dismiss: dismiss,
-          description: description,
-          type: BottomSheetType.error,
-        ),
-      );
+      ),
+      builder: (context) => _ErrorBottomSheet(
+        title: title,
+        dismiss: dismiss,
+        description: description,
+        type: BottomSheetType.error,
+      ),
+    );
+  }
 
   /// Shows a confirmation bottomsheet with the provided params
   ///
