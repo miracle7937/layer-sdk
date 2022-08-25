@@ -42,16 +42,22 @@ extension ProductTypeDTOMapping on ProductTypeDTO {
     switch (this) {
       case ProductTypeDTO.current:
         return ProductType.current;
+
       case ProductTypeDTO.savings:
         return ProductType.savings;
+
       case ProductTypeDTO.termDeposit:
         return ProductType.termDeposit;
+
       case ProductTypeDTO.loan:
         return ProductType.loan;
+
       case ProductTypeDTO.debitCard:
         return ProductType.debitCard;
+
       case ProductTypeDTO.creditCard:
         return ProductType.creditCard;
+
       default:
         return ProductType.current;
     }

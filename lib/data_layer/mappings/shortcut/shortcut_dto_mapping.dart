@@ -29,6 +29,7 @@ extension ShortcutTypeDTOMapping on ShortcutType {
     switch (this) {
       case ShortcutType.transfer:
         return ShortcutTypeDTO.transfer;
+
       case ShortcutType.payment:
         return ShortcutTypeDTO.bill;
     }

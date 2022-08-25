@@ -11,6 +11,8 @@ class LoadMandatesUseCase {
   }) : _repo = repository;
 
   /// Callable method to load all [Mandate]s
+  ///
+  /// Use the `limit` and `offset` parameters to paginate.
   Future<List<Mandate>> call({
     int? mandateId,
     int? limit,

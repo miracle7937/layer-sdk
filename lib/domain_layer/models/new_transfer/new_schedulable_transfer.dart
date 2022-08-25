@@ -6,7 +6,7 @@ abstract class NewSchedulableTransfer extends NewTransfer {
   final ScheduleDetails scheduleDetails;
 
   /// Creates a new [NewSchedulableTransfer].
-  NewSchedulableTransfer({
+  const NewSchedulableTransfer({
     super.type,
     super.source,
     super.amount,
@@ -17,7 +17,7 @@ abstract class NewSchedulableTransfer extends NewTransfer {
     super.shortcutName,
     super.note,
     super.transferId,
-  }) : scheduleDetails = scheduleDetails ?? ScheduleDetails();
+  }) : scheduleDetails = scheduleDetails ?? const ScheduleDetails();
 
   /// Whether if this transfer is recurring or not.
   bool get isRecurring =>

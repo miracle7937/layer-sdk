@@ -1,6 +1,6 @@
 import '../../abstract_repositories.dart';
 
-/// Use case that Requests a new OTP id from the server.
+/// Use case that Requests a new OTP id from the server for console users.
 class RequestConsoleUserOTPUseCase {
   final SecondFactorRepositoryInterface _repository;
 

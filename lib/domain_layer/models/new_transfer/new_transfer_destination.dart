@@ -42,7 +42,7 @@ class NewTransferDestination extends Equatable {
 
   /// Creates a new [NewTransferDestination].
   /// TODO: Implement comented parameters.
-  NewTransferDestination({
+  const NewTransferDestination({
     this.account,
     this.beneficiary,
     this.mobile,

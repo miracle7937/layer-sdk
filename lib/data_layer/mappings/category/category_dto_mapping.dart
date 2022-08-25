@@ -24,10 +24,13 @@ extension CategoryTypeDTOMapping on CategoryTypeDTO {
     switch (this) {
       case CategoryTypeDTO.income:
         return CategoryType.income;
+
       case CategoryTypeDTO.expense:
         return CategoryType.expense;
+
       case CategoryTypeDTO.transfer:
         return CategoryType.transfer;
+
       default:
         throw MappingException(from: CategoryTypeDTO, to: CategoryType);
     }

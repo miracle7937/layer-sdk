@@ -26,6 +26,9 @@ class GetBiometricsEnabledUseCase {
   /// `wipe_on_biometric_change` setting enabled, an Exception containing
   /// the `wipe_on_biometric_change` message will be thrown.
   Future<bool> call() async {
+    final appId = EnvironmentConfiguration.current.experienceAppId;
+    assert(appId != null, 'Please specify appId in environment configuration');
+
     final biometricsSettings = await _loadGlobalSettingsUseCase(
       codes: [
         'fingerprint_enabled',
@@ -52,9 +55,6 @@ class GetBiometricsEnabledUseCase {
                 (setting) => setting.code == 'wipe_on_biometric_change')
             ?.value ??
         false;
-
-    final appId = EnvironmentConfiguration.current.experienceAppId;
-    assert(appId != null, 'Please specify appId in environment configuration');
 
     if (wipeOnBiometricsChange) {
       final didChange =

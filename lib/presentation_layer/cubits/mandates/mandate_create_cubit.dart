@@ -11,11 +11,11 @@ import 'mandate_create_state.dart';
 
 /// Cubit for handling the creation of Debit Mandates
 class MandateCreateCubit extends Cubit<MandateCreateState> {
-  final LoadInfoRendedFileUseCase _mandateFileUseCase;
+  final LoadInfoRenderedFileUseCase _mandateFileUseCase;
 
   /// Creates a new instance of [MandateCreateCubit]
   MandateCreateCubit({
-    required LoadInfoRendedFileUseCase renderedFileUseCase,
+    required LoadInfoRenderedFileUseCase renderedFileUseCase,
   })  : _mandateFileUseCase = renderedFileUseCase,
         super(MandateCreateState());
 

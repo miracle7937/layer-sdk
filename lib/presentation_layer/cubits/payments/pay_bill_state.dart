@@ -3,9 +3,6 @@ import 'dart:collection';
 import 'package:equatable/equatable.dart';
 
 import '../../../domain_layer/models.dart';
-import '../../../domain_layer/models/payment/biller.dart';
-import '../../../domain_layer/models/payment/biller_category.dart';
-import '../../../domain_layer/models/service/service_field.dart';
 
 /// The state of the bill payment cubit
 class PayBillState extends Equatable {

@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-
 import '../../../../../data_layer/network.dart';
 import '../../../../../domain_layer/models.dart';
 import '../../../data_layer/providers.dart';
@@ -18,6 +17,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   final UpdateUserTokenUseCase _updateUserTokenUseCase;
   final LoadCurrentCustomerUseCase _customerUseCase;
   final bool _shouldGetCustomerObject;
+  final GetDeviceModelUseCase _getDeviceModelUseCase;
 
   /// Creates a new cubit with an empty [AuthenticationState] and calls
   /// load settings
@@ -30,6 +30,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     required VerifyAccessPinUseCase verifyAccessPinUseCase,
     required UpdateUserTokenUseCase updateUserTokenUseCase,
     required LoadCurrentCustomerUseCase customerUseCase,
+    required GetDeviceModelUseCase getDeviceModelUseCase,
     bool shouldGetCustomerObject = false,
   })  : _loginUseCase = loginUseCase,
         _logoutUseCase = logoutUseCase,
@@ -40,6 +41,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         _updateUserTokenUseCase = updateUserTokenUseCase,
         _shouldGetCustomerObject = shouldGetCustomerObject,
         _customerUseCase = customerUseCase,
+        _getDeviceModelUseCase = getDeviceModelUseCase,
         super(AuthenticationState());
 
   /// Sets the provided user as the current logged user and emits updated state.
@@ -350,9 +352,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
 
     try {
       final response = await _changePasswordUseCase(
-        userId: int.tryParse(user.id),
         user: user,
-        username: user.username,
         oldPassword: oldPassword,
         newPassword: newPassword,
         confirmPassword: confirmPassword,
@@ -389,7 +389,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   ///
   /// Emits a busy state while checking and a state with verification result
   /// in the `isPinVerified` field.
-  Future<void> verifyAccessPin(String pin) async {
+  Future<void> verifyAccessPin(String pin, {DeviceSession? deviceInfo}) async {
     emit(
       state.copyWith(
         busy: true,
@@ -400,6 +400,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     try {
       final verifyPinResponse = await _verifyAccessPinUseCase(
         pin: pin,
+        deviceInfo: deviceInfo ?? DeviceSession(),
       );
 
       emit(
@@ -482,6 +483,11 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         user: user,
       ),
     );
+  }
+
+  /// Get Device model
+  Future<String> getModelName() {
+    return _getDeviceModelUseCase();
   }
 
   /// Sets the second factor status.

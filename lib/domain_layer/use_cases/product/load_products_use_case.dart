@@ -13,6 +13,7 @@ class LoadProductsUseCase {
   /// Callable method to load all products
   ///
   /// Can be filtered by `searchQuery` and `productType`
+  ///
   /// Use `limit` and `offset` to paginate.
   Future<List<Product>> call({
     String? productType,

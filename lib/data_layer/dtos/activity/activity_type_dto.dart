@@ -129,7 +129,7 @@ class ActivityTypeDTO extends EnumDTO {
   /// The activity type is vault
   static const vault = ActivityTypeDTO._internal('vault');
 
-  /// The activity type is merchantTransfer
+  /// The activity type is Merchant Transfer
   static const merchantTransfer =
       ActivityTypeDTO._internal('merchant_transfer');
 

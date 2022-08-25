@@ -1,5 +1,3 @@
-import 'package:dio/dio.dart';
-
 import '../../../../data_layer/network.dart';
 import '../../dtos.dart';
 
@@ -133,27 +131,5 @@ class BeneficiaryProvider {
     );
 
     return BeneficiaryDTO.fromJson(response.data);
-  }
-
-  /// Getting of the beneficiary receipt
-  Future<List<int>> getReceipt(
-    int beneficiaryId, {
-    bool isImage = true,
-  }) async {
-    final response = await netClient.request(
-      '${netClient.netEndpoints.beneficiaryReceipt}/$beneficiaryId',
-      method: NetRequestMethods.post,
-      data: {
-        'form_id': 'beneficiary',
-        'format': isImage ? 'image' : 'pdf',
-      },
-      decodeResponse: false,
-      responseType: ResponseType.bytes,
-    );
-    if (response.data is List<int>) {
-      return response.data as List<int>;
-    }
-
-    throw Exception('Beneficiary receipt not received');
   }
 }

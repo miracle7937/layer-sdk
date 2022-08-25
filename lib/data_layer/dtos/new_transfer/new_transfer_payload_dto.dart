@@ -61,7 +61,7 @@ class NewTransferPayloadDTO {
   /// The destination provider.
   String? toProvider;
 
-  /// The ransfer recurrence.
+  /// The transfer recurrence.
   RecurrenceDTO? recurrence;
 
   /// The start date.

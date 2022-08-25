@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 
 import '../../models.dart';
-import '../service/service_field.dart';
 
 /// The status a bill can have
 enum BillStatus {
@@ -57,6 +56,8 @@ class Bill extends Equatable {
   final List<ServiceField> billingFields;
 
   /// Whether a bill is visible to the customer
+  ///
+  /// Defaults to `false`
   final bool visible;
 
   /// The fees of the bill
@@ -66,6 +67,8 @@ class Bill extends Equatable {
   final String? customerId;
 
   /// Whether the bill is recurring or not.
+  ///
+  /// Defaults to `false`
   final bool recurring;
 
   /// The currency of the bill's fees
@@ -75,7 +78,7 @@ class Bill extends Equatable {
   final SecondFactorType? secondFactor;
 
   /// Creates a new [Bill]
-  Bill({
+  const Bill({
     this.billID,
     this.nickname,
     this.service,

@@ -26,14 +26,19 @@ extension MandatePaymentStatusDTOMapper on MandatePaymentStatusDTO {
     switch (this) {
       case MandatePaymentStatusDTO.active:
         return MandatePaymentStatus.active;
+
       case MandatePaymentStatusDTO.returning:
         return MandatePaymentStatus.returning;
+
       case MandatePaymentStatusDTO.accepted:
         return MandatePaymentStatus.accepted;
+
       case MandatePaymentStatusDTO.pending:
         return MandatePaymentStatus.pending;
+
       case MandatePaymentStatusDTO.declined:
         return MandatePaymentStatus.declined;
+
       default:
         return MandatePaymentStatus.unknown;
     }

@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:layer_sdk/data_layer/network.dart';
 import 'package:layer_sdk/domain_layer/models.dart';
 import 'package:layer_sdk/domain_layer/use_cases/device_session/load_device_sessions_use_case.dart';
-import 'package:layer_sdk/domain_layer/use_cases/device_session/session_terminate_use_case.dart';
+import 'package:layer_sdk/domain_layer/use_cases/device_session/terminate_device_session_use_case.dart';
 import 'package:layer_sdk/presentation_layer/cubits/device_session/device_session_cubit.dart';
 import 'package:layer_sdk/presentation_layer/cubits/device_session/device_session_state.dart';
 
@@ -14,7 +14,7 @@ class MockLoadDeviceSessionsUseCase extends Mock
     implements LoadDeviceSessionsUseCase {}
 
 class MockDeviceSessionTerminateUseCase extends Mock
-    implements DeviceSessionTerminateUseCase {}
+    implements TerminateDeviceSessionUseCase {}
 
 final _sessionUseCase = MockLoadDeviceSessionsUseCase();
 final _terminateUseCase = MockDeviceSessionTerminateUseCase();

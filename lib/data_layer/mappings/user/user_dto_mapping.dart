@@ -66,13 +66,6 @@ extension on String {
       case 'P':
         return UserStatus.changePassword;
 
-      // TODO: add in the future, only if needed.
-      // case 'O':
-      //   return UserStatus.otp;
-      //
-      // case 'V':
-      //   return UserStatus.verify;
-
       case 'U':
         return UserStatus.pending;
 

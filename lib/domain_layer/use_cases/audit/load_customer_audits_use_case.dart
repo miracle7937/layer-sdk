@@ -13,8 +13,11 @@ class LoadCustomerAuditsUseCase {
   /// Returns the list of audits related to the passed customer id.
   ///
   /// Use the [limit] and [offset] values for pagination purposes.
+  ///
   /// The [searchText] is used for filtering the audits.
+  ///
   /// Use the [sortBy] to indicate what fields should the list be sorted by.
+  ///
   /// If [descendingOrder] is true, the results will be sorted descending.
   Future<List<Audit>> call({
     required String customerId,

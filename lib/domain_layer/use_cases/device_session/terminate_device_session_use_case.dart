@@ -2,11 +2,11 @@ import '../../abstract_repositories.dart';
 import '../../models.dart';
 
 /// The use case that terminates the device session
-class DeviceSessionTerminateUseCase {
+class TerminateDeviceSessionUseCase {
   final DeviceSessionRepositoryInterface _repository;
 
-  /// Creates a new [DeviceSessionTerminateUseCase] use case.
-  DeviceSessionTerminateUseCase({
+  /// Creates a new [TerminateDeviceSessionUseCase] use case.
+  TerminateDeviceSessionUseCase({
     required DeviceSessionRepositoryInterface repository,
   }) : _repository = repository;
 

@@ -9,7 +9,7 @@ class AccountTopUpRequest extends Equatable {
   final String id;
 
   /// Creates a new [AccountTopUpRequest] instance.
-  AccountTopUpRequest({
+  const AccountTopUpRequest({
     this.clientSecret = '',
     this.id = '',
   });

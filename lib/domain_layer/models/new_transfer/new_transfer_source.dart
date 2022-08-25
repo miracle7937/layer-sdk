@@ -42,7 +42,7 @@ class NewTransferSource extends Equatable {
 
   /// Creates a new [NewTransferSource].
   /// TODO: Implement comented parameters.
-  NewTransferSource({
+  const NewTransferSource({
     this.account,
     //this.wallet,
     this.mobile,

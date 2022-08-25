@@ -1,7 +1,7 @@
 import '../../abstract_repositories.dart';
 import '../../models.dart';
 
-/// Use case for load all messages
+/// Use case that loads all messages
 class LoadMessageUseCase {
   final MessageRepositoryInterface _repository;
 
@@ -11,7 +11,10 @@ class LoadMessageUseCase {
   }) : _repository = repository;
 
   /// Callable method to fetch all messages
-  Future<List<Message>> call({bool forceRefresh = false}) {
-    return _repository.getMessages(forceRefresh: forceRefresh);
-  }
+  Future<List<Message>> call({
+    bool forceRefresh = false,
+  }) =>
+      _repository.getMessages(
+        forceRefresh: forceRefresh,
+      );
 }

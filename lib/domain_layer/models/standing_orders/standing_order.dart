@@ -80,6 +80,8 @@ class StandingOrder extends Equatable {
   final double? amount;
 
   /// Whether the `amount` should be shown
+  ///
+  /// Defaults to `true`
   final bool amountVisible;
 
   /// The source [Account].
@@ -119,7 +121,7 @@ class StandingOrder extends Equatable {
   final DateTime? scheduledDate;
 
   ///Creates a new immutable [StandingOrder]
-  StandingOrder({
+  const StandingOrder({
     this.id,
     this.currency,
     this.amount,

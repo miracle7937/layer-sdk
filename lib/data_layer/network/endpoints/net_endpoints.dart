@@ -125,6 +125,9 @@ class NetEndpoints {
   ///The transfer endpoint
   String get transfer => '$_txnBanking/v1/transfer';
 
+  ///The transferV2 endpoint
+  String get transferV2 => '$_txnBanking/v2/transfer';
+
   /// The frequent transfers endpoint
   String get frequentTransfers => '$_txnBanking/v1/frequent_transfer';
 

@@ -17,6 +17,7 @@ class ActivityRepository implements ActivityRepositoryInterface {
         fileBaseURL: _provider.netClient.netEndpoints.infobankingLink,
       );
 
+  /// Load all the activities
   @override
   Future<List<Activity>> list({
     DateTime? fromTS,
@@ -72,12 +73,22 @@ class ActivityRepository implements ActivityRepositoryInterface {
     return activitiesDTO.map((e) => e.toActivity(_createCustomData)).toList();
   }
 
+  /// Delete an [Activity] by `activityId`
   @override
   Future<void> delete(String activityId) => _provider.delete(activityId);
 
+  /// Cancel an [Activity] by `id`
   @override
   Future<void> cancel(String id, {String? otpValue}) {
     final result = _provider.cancel(id, otpValue: otpValue);
+
+    return result;
+  }
+
+  /// Cancel the recurring transfer [Activity] by `id`
+  @override
+  Future<void> cancelRecurringTransfer(String id, {String? otpValue}) {
+    final result = _provider.cancelRecurringTransfer(id, otpValue: otpValue);
 
     return result;
   }

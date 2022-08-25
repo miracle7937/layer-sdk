@@ -34,6 +34,7 @@ abstract class TransferRepositoryInterface {
   /// Submits a transfer.
   Future<Transfer> submit({
     required NewTransfer transfer,
+    required bool editMode,
   });
 
   /// Verifies the second factor for the passed transfer id.
@@ -46,11 +47,5 @@ abstract class TransferRepositoryInterface {
   /// Resends the second factor for the passed transfer.
   Future<Transfer> resendSecondFactor({
     required NewTransfer transfer,
-  });
-
-  /// Gets the receipt belonging the transfer.
-  Future<List<int>> getTransferReceipt({
-    required int transferId,
-    bool? isImage,
   });
 }

@@ -17,8 +17,6 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
   final ValidateIBANUseCase _validateIBANUseCase;
   final AddNewBeneficiaryUseCase _addNewBeneficiaryUseCase;
   final LoadGlobalSettingsUseCase _loadGlobalSettingsUseCase;
-  final LoadBeneficiaryReceiptUseCase _loadBeneficiaryReceiptUseCase;
-  final ShareReceiptUseCase _shareReceiptUseCase;
 
   /// Creates a new [AddBeneficiaryCubit].
   AddBeneficiaryCubit({
@@ -30,8 +28,6 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
     required ValidateIBANUseCase validateIBANUseCase,
     required AddNewBeneficiaryUseCase addNewBeneficiariesUseCase,
     required LoadGlobalSettingsUseCase loadGlobalSettingsUseCase,
-    required LoadBeneficiaryReceiptUseCase loadBeneficiaryReceiptUseCase,
-    required ShareReceiptUseCase shareReceiptUseCase,
     TransferType? beneficiaryType,
   })  : _loadCountriesUseCase = loadCountriesUseCase,
         _getCustomerAccountsUseCase = getCustomerAccountsUseCase,
@@ -41,8 +37,6 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         _validateIBANUseCase = validateIBANUseCase,
         _addNewBeneficiaryUseCase = addNewBeneficiariesUseCase,
         _loadGlobalSettingsUseCase = loadGlobalSettingsUseCase,
-        _loadBeneficiaryReceiptUseCase = loadBeneficiaryReceiptUseCase,
-        _shareReceiptUseCase = shareReceiptUseCase,
         super(
           AddBeneficiaryState(
             beneficiaryType: beneficiaryType,
@@ -452,56 +446,4 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
             AddBeneficiaryErrorStatus.generic,
           ].contains(error.errorStatus))
       .toSet();
-
-  /// Loads the beneficiary's receipt, if [isImage] true,
-  /// then image, or PDF file.
-  Future<void> loadReceipt({bool isImage = true}) async {
-    final action = isImage
-        ? AddBeneficiaryAction.receiptImage
-        : AddBeneficiaryAction.receiptPdf;
-
-    emit(state.copyWith(
-      action: action,
-      errors: _addError(
-        action: AddBeneficiaryAction.editAction,
-        errorStatus: AddBeneficiaryErrorStatus.none,
-      ),
-    ));
-
-    try {
-      final receipt = await _loadBeneficiaryReceiptUseCase(
-        state.beneficiary!,
-        isImage: isImage,
-      );
-      emit(state.copyWith(
-        imageBytes: isImage ? receipt : state.imageBytes,
-        pdfBytes: isImage ? state.pdfBytes : receipt,
-        action: AddBeneficiaryAction.none,
-      ));
-    } on Exception catch (e) {
-      emit(
-        state.copyWith(
-          action: AddBeneficiaryAction.none,
-          errors: _addError(
-            action: action,
-            errorStatus: e is NetException
-                ? AddBeneficiaryErrorStatus.network
-                : AddBeneficiaryErrorStatus.generic,
-            code: e is NetException ? e.code : null,
-            message: e is NetException ? e.message : null,
-          ),
-        ),
-      );
-    }
-  }
-
-  /// Share receipt, if [isImage] true,
-  /// then image, or PDF file.
-  void shareReceipt({bool isImage = true}) {
-    _shareReceiptUseCase(
-      filename: 'beneficiary_${state.beneficiary!.id}_receipt.'
-          '${isImage ? 'jpeg' : 'pdf'}',
-      bytes: isImage ? state.imageBytes : state.pdfBytes,
-    );
-  }
 }

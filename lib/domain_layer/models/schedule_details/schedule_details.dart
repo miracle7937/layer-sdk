@@ -5,6 +5,7 @@ import '../../models.dart';
 /// Model representing the schedule details for an activity.
 class ScheduleDetails extends Equatable {
   /// The schedule details recurrence.
+  ///
   /// Default is [Recurrence.none].
   final Recurrence recurrence;
 

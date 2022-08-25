@@ -26,7 +26,11 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
   final CreateShortcutUseCase _createShortcutUseCase;
 
   /// Creates a new [BeneficiaryTransferCubit].
+  ///
+  /// The `editMode` param is defined to update/edit the selected transfer
+  /// Case `true` the API will `PATCH` the transfer
   BeneficiaryTransferCubit({
+    bool editMode = false,
     required LoadGlobalSettingsUseCase loadGlobalSettingsUseCase,
     required BeneficiaryTransfer transfer,
     required GetSourceAccountsForBeneficiaryTransferUseCase
@@ -35,7 +39,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         getDestinationBeneficiariesForBeneficiariesTransferUseCase,
     required LoadCountriesUseCase loadCountriesUseCase,
     required LoadAllCurrenciesUseCase loadAllCurrenciesUseCase,
-    required LoadMessagesByModuleUseCase loadMessagesByModuleUseCase,
+      required LoadMessagesByModuleUseCase loadMessagesByModuleUseCase,
     required LoadBanksByCountryCodeUseCase loadBanksByCountryCodeUseCase,
     required ValidateIBANUseCase validateIBANUseCase,
     required EvaluateTransferUseCase evaluateTransferUseCase,
@@ -64,6 +68,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
           BeneficiaryTransferState(
             transfer: transfer,
             banksPagination: Pagination(limit: 20),
+            editMode: editMode,
           ),
         );
 
@@ -80,6 +85,47 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
     onChanged();
   }
+
+  /// Loads the reasons.
+  Future<void> _loadReasons() async {
+    if (state.reasons.isEmpty ||
+        state.errors.contains(BeneficiaryTransferAction.reasons)) {
+      emit(
+        state.copyWith(
+          actions: _addAction(BeneficiaryTransferAction.reasons),
+          errors: _removeError(BeneficiaryTransferAction.reasons),
+        ),
+      );
+
+      try {
+        final reasons = await _loadMessagesByModuleUseCase(
+          module: state.transfer.type == TransferType.international
+              ? 'transfer_reasons_international'
+              : 'transfer_reasons',
+        );
+
+        emit(
+          state.copyWith(
+            actions: _removeAction(BeneficiaryTransferAction.reasons),
+            reasons: reasons,
+          ),
+        );
+      } on Exception catch (e) {
+        emit(
+          state.copyWith(
+            actions: _removeAction(BeneficiaryTransferAction.reasons),
+            errors: _addError(
+              action: BeneficiaryTransferAction.reasons,
+              errorStatus: e is NetException
+                  ? BeneficiaryTransferErrorStatus.network
+                  : BeneficiaryTransferErrorStatus.generic,
+            ),
+          ),
+        );
+      }
+    }
+  }
+
 
   /// Returns an action list that includes the passed action.
   Set<BeneficiaryTransferAction> _addAction(
@@ -312,46 +358,6 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     }
   }
 
-  /// Loads the reasons.
-  Future<void> _loadReasons() async {
-    if (state.reasons.isEmpty ||
-        state.errors.contains(BeneficiaryTransferAction.reasons)) {
-      emit(
-        state.copyWith(
-          actions: _addAction(BeneficiaryTransferAction.reasons),
-          errors: _removeError(BeneficiaryTransferAction.reasons),
-        ),
-      );
-
-      try {
-        final reasons = await _loadMessagesByModuleUseCase(
-          module: state.transfer.type == TransferType.international
-              ? 'transfer_reasons_international'
-              : 'transfer_reasons',
-        );
-
-        emit(
-          state.copyWith(
-            actions: _removeAction(BeneficiaryTransferAction.reasons),
-            reasons: reasons,
-          ),
-        );
-      } on Exception catch (e) {
-        emit(
-          state.copyWith(
-            actions: _removeAction(BeneficiaryTransferAction.reasons),
-            errors: _addError(
-              action: BeneficiaryTransferAction.reasons,
-              errorStatus: e is NetException
-                  ? BeneficiaryTransferErrorStatus.network
-                  : BeneficiaryTransferErrorStatus.generic,
-            ),
-          ),
-        );
-      }
-    }
-  }
-
   /// Loads the banks for the passed country code.
   Future<void> loadBanks({
     bool loadMore = false,
@@ -417,7 +423,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     Beneficiary? destination,
     double? amount,
     Currency? currency,
-    Message? reason,
+    String? reason,
     DestinationBeneficiaryType? beneficiaryType,
     NewBeneficiary? newBeneficiary,
     bool? saveToShortcut,
@@ -562,6 +568,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     try {
       final transferResult = await _submitTransferUseCase(
         transfer: state.transfer,
+        editMode: state.editMode,
       );
 
       emit(

@@ -46,15 +46,4 @@ class AccountRepository implements AccountRepositoryInterface {
 
     return dto.toAccountTopUpRequest();
   }
-
-  /// Requests a top up receipt with the provided parameters.
-  @override
-  Future<List<int>> getTopUpReceipt({
-    required String topUpId,
-    required ReceiptType type,
-  }) =>
-      _provider.getTopUpReceipt(
-        topUpId: topUpId,
-        type: type,
-      );
 }

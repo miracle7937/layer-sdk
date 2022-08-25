@@ -1,6 +1,6 @@
 import 'package:logging/logging.dart';
 
-import '../../../domain_layer/models/setting/global_setting.dart';
+import '../../../domain_layer/models.dart';
 import '../../dtos.dart';
 
 /// Extension that provides mapping for [GlobalSettingDTO]
@@ -73,8 +73,8 @@ extension GlobalSettingDTOMapping on GlobalSettingDTO {
   void _logSkippedSetting() {
     Logger('GlobalSettingDTOMapping').severe(
       'Global setting '
-          '(module: "$module", code: "$code", value: "$value", type: "$type") '
-          'is skipped due to missing data',
+      '(module: "$module", code: "$code", value: "$value", type: "$type") '
+      'is skipped due to missing data',
     );
   }
 }

@@ -1,5 +1,5 @@
-import '../../../domain_layer/models/recurrence/recurrence.dart';
-import '../../dtos/recurrence/recurrence_dto.dart';
+import '../../../domain_layer/models.dart';
+import '../../dtos.dart';
 
 /// Extension that provides mappings for [RecurrenceDTO]
 extension RecurrenceDTOMapping on RecurrenceDTO {
