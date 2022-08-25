@@ -176,20 +176,6 @@ class __RepeatAccessPinScreenState
                       warning = Translation.of(context).translate(
                         'pin_code_error_password_not_match',
                       );
-
-                      final result = await BottomSheetHelper.showConfirmation(
-                        context: context,
-                        titleKey: 'invalid_passcode',
-                        descriptionKey: 'invalid_passcode_description',
-                        type: BottomSheetType.error,
-                        showDenyButton: false,
-                        isDismissible: false,
-                        confirmKey: 'ok',
-                      );
-
-                      if (result) {
-                        Navigator.of(context).pop();
-                      }
                     } else {
                       disabled = true;
                       final result = await BottomSheetHelper.showConfirmation(
