@@ -29,12 +29,6 @@ class MockAddNewBeneficiaryUseCase extends Mock
 class MockLoadGlobalSettingsUseCase extends Mock
     implements LoadGlobalSettingsUseCase {}
 
-class MockCountry extends Mock implements Country {}
-
-class MockAccount extends Mock implements Account {}
-
-class MockCurrency extends Mock implements Currency {}
-
 class MockGlobalSetting extends Mock implements GlobalSetting {}
 
 class MockBank extends Mock implements Bank {}
@@ -48,19 +42,24 @@ final _validateIBANUseCase = MockValidateIBANUseCase();
 final _addNewBeneficiaryUseCase = MockAddNewBeneficiaryUseCase();
 final _loadGlobalSettingsUseCase = MockLoadGlobalSettingsUseCase();
 
-final _mockedCountriesList = List.generate(10, (index) => MockCountry());
-final _mockedSelectedCountry = _mockedCountriesList.first;
+final _countriesList = [
+  Country(countryCode: 'GB'),
+  Country(countryCode: 'IE'),
+];
+final _selectedCountry = _countriesList.first;
 
-final _mockedBanksList = List.generate(10, (index) => MockBank());
+final _banksPaginationLimit = 20;
+final _mockedBanksList =
+    List.generate(_banksPaginationLimit, (index) => MockBank());
 final _mockedSelectedBank = _mockedBanksList.first;
 
-final _mockedAccountsList = [
+final _accountsList = [
   Account(currency: 'GBP'),
   Account(currency: 'USD'),
 ];
 
 final _selectedCurrency = Currency(code: 'GBP');
-final _mockedCurrenciesList = [
+final _currenciesList = [
   Currency(code: 'EUR'),
   _selectedCurrency,
 ];
@@ -76,6 +75,25 @@ final _mockedGlobalSettingList =
 late AddBeneficiaryCubit _cubit;
 
 final _beneficiaryType = TransferType.international;
+
+final _initialState = AddBeneficiaryState(
+  banksPagination: Pagination(limit: _banksPaginationLimit),
+  beneficiaryType: _beneficiaryType,
+  beneficiary: Beneficiary(
+    nickname: '',
+    firstName: '',
+    lastName: '',
+    middleName: '',
+    bankName: '',
+    currency: _selectedCurrency.code,
+    type: _beneficiaryType,
+  ),
+  countries: _countriesList,
+  selectedCurrency: _selectedCurrency,
+  availableCurrencies: _currenciesList,
+  beneficiarySettings: _mockedGlobalSettingList,
+  action: AddBeneficiaryAction.initAction,
+);
 
 void main() {
   EquatableConfig.stringify = true;
@@ -94,15 +112,15 @@ void main() {
     );
 
     when(_loadCountriesUseCase).thenAnswer(
-      (_) async => _mockedCountriesList,
+      (_) async => _countriesList,
     );
 
     when(_getCustomerAccountsUseCase).thenAnswer(
-      (_) async => _mockedAccountsList,
+      (_) async => _accountsList,
     );
 
     when(_loadAllCurrenciesUseCase).thenAnswer(
-      (_) async => _mockedCurrenciesList,
+      (_) async => _currenciesList,
     );
 
     when(
@@ -115,7 +133,9 @@ void main() {
 
     when(
       () => _loadBanksByCountryCodeUseCase(
-        countryCode: _mockedSelectedCountry.countryCode!,
+        countryCode: _selectedCountry.countryCode!,
+        limit: _banksPaginationLimit,
+        offset: 0,
       ),
     ).thenAnswer(
       (_) async => _mockedBanksList,
@@ -134,30 +154,12 @@ void main() {
     act: (c) => c.load(),
     expect: () => [
       AddBeneficiaryState(
-        banksPagination: Pagination(limit: 20),
+        banksPagination: Pagination(limit: _banksPaginationLimit),
         beneficiaryType: TransferType.international,
         busy: true,
         action: AddBeneficiaryAction.none,
       ),
-      AddBeneficiaryState(
-        banksPagination: Pagination(limit: 20),
-        beneficiaryType: TransferType.international,
-        beneficiary: Beneficiary(
-          nickname: '',
-          firstName: '',
-          lastName: '',
-          middleName: '',
-          bankName: '',
-          currency: _selectedCurrency.code,
-          type: TransferType.international,
-        ),
-        countries: _mockedCountriesList,
-        selectedCurrency: _selectedCurrency,
-        availableCurrencies: _mockedCurrenciesList,
-        busy: false,
-        action: AddBeneficiaryAction.initAction,
-        beneficiarySettings: _mockedGlobalSettingList,
-      ),
+      _initialState,
     ],
     verify: (c) {
       verify(_loadCountriesUseCase).called(1);
@@ -170,40 +172,56 @@ void main() {
       ).called(1);
     },
   );
+  //
+  // group('Selecting new country', () {
+  //   blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+  //     'Emits state with new selected country',
+  //     build: () => _cubit,
+  //     seed: () => _initialState,
+  //     act: (c) => c.onCountryChanged(_selectedCountry),
+  //     expect: () => [
+  //       _initialState.copyWith(
+  //         action: AddBeneficiaryAction.editAction,
+  //         selectedCountry: _selectedCountry,
+  //       ),
+  //     ],
+  //   );
+  // });
 
-  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
-    'Loads banks with empty states emits nothing',
-    build: () => _cubit,
-    act: (c) => c.loadBanks(),
-    expect: () => [],
-  );
+  group('Load banks', () {
+    blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+      'With empty states emits nothing',
+      build: () => _cubit,
+      act: (c) => c.loadBanks(),
+      expect: () => [],
+    );
 
-  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
-    'Emits state with new selected country',
-    build: () => _cubit,
-    seed: () => AddBeneficiaryState(
-      banksPagination: Pagination(limit: 20),
-      beneficiaryType: TransferType.international,
-      countries: _mockedCountriesList,
-      selectedCurrency: _selectedCurrency,
-      availableCurrencies: _mockedCurrenciesList,
-      beneficiarySettings: _mockedGlobalSettingList,
-      action: AddBeneficiaryAction.initAction,
-    ),
-    act: (c) => c.onCountryChanged(_mockedSelectedCountry),
-    expect: () => [
-      AddBeneficiaryState(
-        banksPagination: Pagination(limit: 20),
-        beneficiaryType: TransferType.international,
-        countries: _mockedCountriesList,
-        selectedCurrency: _selectedCurrency,
-        availableCurrencies: _mockedCurrenciesList,
-        beneficiarySettings: _mockedGlobalSettingList,
+    blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+      'Loads banks and emits resulting list',
+      build: () => _cubit,
+      seed: () => _initialState.copyWith(
         action: AddBeneficiaryAction.editAction,
-        selectedCountry: _mockedSelectedCountry,
+        selectedCountry: _selectedCountry,
       ),
-    ],
-  );
+      act: (c) => c.loadBanks(),
+      expect: () => [
+        _initialState.copyWith(
+          action: AddBeneficiaryAction.banks,
+          selectedCountry: _selectedCountry,
+          busy: true,
+        ),
+        _initialState.copyWith(
+          action: AddBeneficiaryAction.none,
+          selectedCountry: _selectedCountry,
+          banks: _mockedBanksList,
+          banksPagination: Pagination(
+            limit: _banksPaginationLimit,
+            canLoadMore: true,
+          ),
+        ),
+      ],
+    );
+  });
 
   group('GetCustomerAccountsUseCase returns empty list', () {
     final _loadCountriesUseCase = MockLoadCountriesUseCase();
@@ -217,7 +235,7 @@ void main() {
 
     setUp(() {
       when(_loadCountriesUseCase).thenAnswer(
-        (_) async => _mockedCountriesList,
+        (_) async => _countriesList,
       );
 
       when(_getCustomerAccountsUseCase).thenAnswer(
@@ -225,7 +243,7 @@ void main() {
       );
 
       when(_loadAllCurrenciesUseCase).thenAnswer(
-        (_) async => _mockedCurrenciesList,
+        (_) async => _currenciesList,
       );
 
       when(
@@ -236,6 +254,7 @@ void main() {
         (_) async => _mockedGlobalSettingList,
       );
     });
+
     blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
       'Loads countries, currencies, empty accounts and settings.'
       'Should emit null for selected currency',
@@ -255,13 +274,13 @@ void main() {
       act: (c) => c.load(),
       expect: () => [
         AddBeneficiaryState(
-          banksPagination: Pagination(limit: 20),
+          banksPagination: Pagination(limit: _banksPaginationLimit),
           beneficiaryType: _beneficiaryType,
           busy: true,
           action: AddBeneficiaryAction.none,
         ),
         AddBeneficiaryState(
-          banksPagination: Pagination(limit: 20),
+          banksPagination: Pagination(limit: _banksPaginationLimit),
           beneficiaryType: _beneficiaryType,
           beneficiary: Beneficiary(
             nickname: '',
@@ -271,8 +290,8 @@ void main() {
             bankName: '',
             type: _beneficiaryType,
           ),
-          countries: _mockedCountriesList,
-          availableCurrencies: _mockedCurrenciesList,
+          countries: _countriesList,
+          availableCurrencies: _currenciesList,
           busy: false,
           action: AddBeneficiaryAction.initAction,
           beneficiarySettings: _mockedGlobalSettingList,
@@ -310,14 +329,13 @@ void main() {
     final newRoutingCode = '${routingCode}A';
     final iban = 'iban';
     final newIban = '${iban}A';
-    final newCurrency = _mockedCurrenciesList.first;
-    // final newBank =
+    final newCurrency = _currenciesList.first;
 
     final editedBeneficiary = Beneficiary(
       nickname: 'nickname',
       firstName: firstName,
       lastName: lastName,
-      bankName: 'e',
+      bankName: '',
       currency: _selectedCurrency.code,
       type: TransferType.international,
       middleName: '',
@@ -332,25 +350,13 @@ void main() {
     blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
       'Emits state with beneficiary new first name',
       build: () => _cubit,
-      seed: () => AddBeneficiaryState(
-        banksPagination: Pagination(limit: 20),
-        beneficiaryType: TransferType.international,
-        countries: _mockedCountriesList,
-        selectedCurrency: _selectedCurrency,
-        availableCurrencies: _mockedCurrenciesList,
-        beneficiarySettings: _mockedGlobalSettingList,
+      seed: () => _initialState.copyWith(
         action: AddBeneficiaryAction.editAction,
         beneficiary: editedBeneficiary,
       ),
       act: (c) => c.onFirstNameChange(newFirstName),
       expect: () => [
-        AddBeneficiaryState(
-          banksPagination: Pagination(limit: 20),
-          beneficiaryType: TransferType.international,
-          countries: _mockedCountriesList,
-          selectedCurrency: _selectedCurrency,
-          availableCurrencies: _mockedCurrenciesList,
-          beneficiarySettings: _mockedGlobalSettingList,
+        _initialState.copyWith(
           action: AddBeneficiaryAction.editAction,
           beneficiary: editedBeneficiary.copyWith(firstName: newFirstName),
         ),
@@ -360,25 +366,13 @@ void main() {
     blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
       'Emits state with beneficiary new last name',
       build: () => _cubit,
-      seed: () => AddBeneficiaryState(
-        banksPagination: Pagination(limit: 20),
-        beneficiaryType: TransferType.international,
-        countries: _mockedCountriesList,
-        selectedCurrency: _selectedCurrency,
-        availableCurrencies: _mockedCurrenciesList,
-        beneficiarySettings: _mockedGlobalSettingList,
+      seed: () => _initialState.copyWith(
         action: AddBeneficiaryAction.editAction,
         beneficiary: editedBeneficiary,
       ),
       act: (c) => c.onLastNameChange(newLastName),
       expect: () => [
-        AddBeneficiaryState(
-          banksPagination: Pagination(limit: 20),
-          beneficiaryType: TransferType.international,
-          countries: _mockedCountriesList,
-          selectedCurrency: _selectedCurrency,
-          availableCurrencies: _mockedCurrenciesList,
-          beneficiarySettings: _mockedGlobalSettingList,
+        _initialState.copyWith(
           action: AddBeneficiaryAction.editAction,
           beneficiary: editedBeneficiary.copyWith(lastName: newLastName),
         ),
@@ -388,25 +382,13 @@ void main() {
     blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
       'Emits state with beneficiary new nickname',
       build: () => _cubit,
-      seed: () => AddBeneficiaryState(
-        banksPagination: Pagination(limit: 20),
-        beneficiaryType: TransferType.international,
-        countries: _mockedCountriesList,
-        selectedCurrency: _selectedCurrency,
-        availableCurrencies: _mockedCurrenciesList,
-        beneficiarySettings: _mockedGlobalSettingList,
+      seed: () => _initialState.copyWith(
         action: AddBeneficiaryAction.editAction,
         beneficiary: editedBeneficiary,
       ),
       act: (c) => c.onNicknameChange(newNickname),
       expect: () => [
-        AddBeneficiaryState(
-          banksPagination: Pagination(limit: 20),
-          beneficiaryType: TransferType.international,
-          countries: _mockedCountriesList,
-          selectedCurrency: _selectedCurrency,
-          availableCurrencies: _mockedCurrenciesList,
-          beneficiarySettings: _mockedGlobalSettingList,
+        _initialState.copyWith(
           action: AddBeneficiaryAction.editAction,
           beneficiary: editedBeneficiary.copyWith(nickname: newNickname),
         ),
@@ -416,25 +398,13 @@ void main() {
     blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
       'Emits state with beneficiary new address 1',
       build: () => _cubit,
-      seed: () => AddBeneficiaryState(
-        banksPagination: Pagination(limit: 20),
-        beneficiaryType: TransferType.international,
-        countries: _mockedCountriesList,
-        selectedCurrency: _selectedCurrency,
-        availableCurrencies: _mockedCurrenciesList,
-        beneficiarySettings: _mockedGlobalSettingList,
+      seed: () => _initialState.copyWith(
         action: AddBeneficiaryAction.editAction,
         beneficiary: editedBeneficiary,
       ),
       act: (c) => c.onAddress1Change(newAddress1),
       expect: () => [
-        AddBeneficiaryState(
-          banksPagination: Pagination(limit: 20),
-          beneficiaryType: TransferType.international,
-          countries: _mockedCountriesList,
-          selectedCurrency: _selectedCurrency,
-          availableCurrencies: _mockedCurrenciesList,
-          beneficiarySettings: _mockedGlobalSettingList,
+        _initialState.copyWith(
           action: AddBeneficiaryAction.editAction,
           beneficiary: editedBeneficiary.copyWith(address1: newAddress1),
         ),
@@ -444,25 +414,13 @@ void main() {
     blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
       'Emits state with beneficiary new address 2',
       build: () => _cubit,
-      seed: () => AddBeneficiaryState(
-        banksPagination: Pagination(limit: 20),
-        beneficiaryType: TransferType.international,
-        countries: _mockedCountriesList,
-        selectedCurrency: _selectedCurrency,
-        availableCurrencies: _mockedCurrenciesList,
-        beneficiarySettings: _mockedGlobalSettingList,
+      seed: () => _initialState.copyWith(
         action: AddBeneficiaryAction.editAction,
         beneficiary: editedBeneficiary,
       ),
       act: (c) => c.onAddress2Change(newAddress2),
       expect: () => [
-        AddBeneficiaryState(
-          banksPagination: Pagination(limit: 20),
-          beneficiaryType: TransferType.international,
-          countries: _mockedCountriesList,
-          selectedCurrency: _selectedCurrency,
-          availableCurrencies: _mockedCurrenciesList,
-          beneficiarySettings: _mockedGlobalSettingList,
+        _initialState.copyWith(
           action: AddBeneficiaryAction.editAction,
           beneficiary: editedBeneficiary.copyWith(address2: newAddress2),
         ),
@@ -472,25 +430,13 @@ void main() {
     blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
       'Emits state with beneficiary new address 3',
       build: () => _cubit,
-      seed: () => AddBeneficiaryState(
-        banksPagination: Pagination(limit: 20),
-        beneficiaryType: TransferType.international,
-        countries: _mockedCountriesList,
-        selectedCurrency: _selectedCurrency,
-        availableCurrencies: _mockedCurrenciesList,
-        beneficiarySettings: _mockedGlobalSettingList,
+      seed: () => _initialState.copyWith(
         action: AddBeneficiaryAction.editAction,
         beneficiary: editedBeneficiary,
       ),
       act: (c) => c.onAddress3Change(newAddress3),
       expect: () => [
-        AddBeneficiaryState(
-          banksPagination: Pagination(limit: 20),
-          beneficiaryType: TransferType.international,
-          countries: _mockedCountriesList,
-          selectedCurrency: _selectedCurrency,
-          availableCurrencies: _mockedCurrenciesList,
-          beneficiarySettings: _mockedGlobalSettingList,
+        _initialState.copyWith(
           action: AddBeneficiaryAction.editAction,
           beneficiary: editedBeneficiary.copyWith(address3: newAddress3),
         ),
@@ -500,25 +446,13 @@ void main() {
     blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
       'Emits state with beneficiary new account number',
       build: () => _cubit,
-      seed: () => AddBeneficiaryState(
-        banksPagination: Pagination(limit: 20),
-        beneficiaryType: TransferType.international,
-        countries: _mockedCountriesList,
-        selectedCurrency: _selectedCurrency,
-        availableCurrencies: _mockedCurrenciesList,
-        beneficiarySettings: _mockedGlobalSettingList,
+      seed: () => _initialState.copyWith(
         action: AddBeneficiaryAction.editAction,
         beneficiary: editedBeneficiary,
       ),
       act: (c) => c.onAccountChange(newAccount),
       expect: () => [
-        AddBeneficiaryState(
-          banksPagination: Pagination(limit: 20),
-          beneficiaryType: TransferType.international,
-          countries: _mockedCountriesList,
-          selectedCurrency: _selectedCurrency,
-          availableCurrencies: _mockedCurrenciesList,
-          beneficiarySettings: _mockedGlobalSettingList,
+        _initialState.copyWith(
           action: AddBeneficiaryAction.editAction,
           beneficiary: editedBeneficiary.copyWith(accountNumber: newAccount),
         ),
@@ -528,25 +462,13 @@ void main() {
     blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
       'Emits state with beneficiary new sort code',
       build: () => _cubit,
-      seed: () => AddBeneficiaryState(
-        banksPagination: Pagination(limit: 20),
-        beneficiaryType: TransferType.international,
-        countries: _mockedCountriesList,
-        selectedCurrency: _selectedCurrency,
-        availableCurrencies: _mockedCurrenciesList,
-        beneficiarySettings: _mockedGlobalSettingList,
+      seed: () => _initialState.copyWith(
         action: AddBeneficiaryAction.editAction,
         beneficiary: editedBeneficiary,
       ),
       act: (c) => c.onRoutingCodeChange(newRoutingCode),
       expect: () => [
-        AddBeneficiaryState(
-          banksPagination: Pagination(limit: 20),
-          beneficiaryType: TransferType.international,
-          countries: _mockedCountriesList,
-          selectedCurrency: _selectedCurrency,
-          availableCurrencies: _mockedCurrenciesList,
-          beneficiarySettings: _mockedGlobalSettingList,
+        _initialState.copyWith(
           action: AddBeneficiaryAction.editAction,
           beneficiary: editedBeneficiary.copyWith(routingCode: newRoutingCode),
         ),
@@ -556,25 +478,13 @@ void main() {
     blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
       'Emits state with beneficiary new IBAN',
       build: () => _cubit,
-      seed: () => AddBeneficiaryState(
-        banksPagination: Pagination(limit: 20),
-        beneficiaryType: TransferType.international,
-        countries: _mockedCountriesList,
-        selectedCurrency: _selectedCurrency,
-        availableCurrencies: _mockedCurrenciesList,
-        beneficiarySettings: _mockedGlobalSettingList,
+      seed: () => _initialState.copyWith(
         action: AddBeneficiaryAction.editAction,
         beneficiary: editedBeneficiary,
       ),
       act: (c) => c.onIbanChange(newIban),
       expect: () => [
-        AddBeneficiaryState(
-          banksPagination: Pagination(limit: 20),
-          beneficiaryType: TransferType.international,
-          countries: _mockedCountriesList,
-          selectedCurrency: _selectedCurrency,
-          availableCurrencies: _mockedCurrenciesList,
-          beneficiarySettings: _mockedGlobalSettingList,
+        _initialState.copyWith(
           action: AddBeneficiaryAction.editAction,
           beneficiary: editedBeneficiary.copyWith(iban: newIban),
         ),
@@ -584,27 +494,32 @@ void main() {
     blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
       'Emits state with beneficiary new currency',
       build: () => _cubit,
-      seed: () => AddBeneficiaryState(
-        banksPagination: Pagination(limit: 20),
-        beneficiaryType: TransferType.international,
-        countries: _mockedCountriesList,
-        selectedCurrency: _selectedCurrency,
-        availableCurrencies: _mockedCurrenciesList,
-        beneficiarySettings: _mockedGlobalSettingList,
+      seed: () => _initialState.copyWith(
         action: AddBeneficiaryAction.editAction,
         beneficiary: editedBeneficiary,
       ),
       act: (c) => c.onCurrencyChanged(newCurrency),
       expect: () => [
-        AddBeneficiaryState(
-          banksPagination: Pagination(limit: 20),
-          beneficiaryType: TransferType.international,
-          countries: _mockedCountriesList,
+        _initialState.copyWith(
           selectedCurrency: newCurrency,
-          availableCurrencies: _mockedCurrenciesList,
-          beneficiarySettings: _mockedGlobalSettingList,
           action: AddBeneficiaryAction.editAction,
           beneficiary: editedBeneficiary.copyWith(currency: newCurrency.code),
+        ),
+      ],
+    );
+
+    blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+      'Emits state with beneficiary new selected bank',
+      build: () => _cubit,
+      seed: () => _initialState.copyWith(
+        action: AddBeneficiaryAction.editAction,
+        beneficiary: editedBeneficiary,
+      ),
+      act: (c) => c.onBankChanged(_mockedSelectedBank),
+      expect: () => [
+        _initialState.copyWith(
+          action: AddBeneficiaryAction.editAction,
+          beneficiary: editedBeneficiary.copyWith(bank: _mockedSelectedBank),
         ),
       ],
     );
