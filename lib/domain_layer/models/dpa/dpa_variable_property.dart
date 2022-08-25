@@ -25,6 +25,9 @@ enum DPAVariableLabelType {
 enum DPAVariablePicker {
   /// Currency
   currency,
+
+  /// None
+  none,
 }
 
 /// The type of this DPA Variable property
