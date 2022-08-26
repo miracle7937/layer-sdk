@@ -249,8 +249,6 @@ class UserDTO {
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
 
-    if (mobileNumber != null) json['mobile_number'] = mobileNumber;
-    if (email != null) json['email'] = email;
     if (customerId != null) json['customer_id'] = customerId;
     if (username != null) json['username'] = username;
     if (password != null) json['password'] = password;
