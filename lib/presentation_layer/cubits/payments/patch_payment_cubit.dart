@@ -8,6 +8,10 @@ import '../../../domain_layer/use_cases.dart';
 import '../../../layer_sdk.dart';
 import 'patch_payment_state.dart';
 
+/// TODO: cubit_issue | As discussed with Hassan, this cubit and the
+/// [PaymentCubit] share lot of duplicated logic. We should create a base
+/// state and try to reuse the common parameters there.
+///
 /// A cubit for patching customer bill payments.
 class PatchPaymentCubit extends Cubit<PatchPaymentState> {
   final GetAccountsByStatusUseCase _getCustomerAccountsUseCase;
@@ -47,6 +51,7 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
     emit(
       state.copyWith(
         busy: true,
+        errorStatus: PatchPaymentErrorStatus.none,
       ),
     );
     try {
@@ -63,7 +68,6 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
           fromAccounts: accounts
               .where((element) => element.canPay)
               .toList(growable: false),
-          errorStatus: PatchPaymentErrorStatus.none,
         ),
       );
     } on Exception catch (e) {
@@ -78,6 +82,10 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
     }
   }
 
+  /// TODO: cubit_issue | Why is the payment nullable? This is the payment
+  /// that we want to submit, right? And also, why should we pass it as a
+  /// parameter when we have it on the state at this point?
+  ///
   /// Submits the payment
   Future<Payment> submit({
     String? otp,
@@ -112,6 +120,7 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
 
       return res;
     } on Exception catch (_) {
+      /// TODO: cubit_issue | Handle errors.
       emit(
         state.copyWith(
           busy: false,
@@ -121,6 +130,10 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
     }
   }
 
+  /// TODO: cubit_issue | The account id should be required. Using a nullable
+  /// parameter here does no have any effect, will copy the payment on the state
+  /// with the same from account that the object used to have.
+  ///
   /// Sets the selected account to the one matching the provided account id.
   void setFromAccount(String? accountId) {
     final selectedAccount = state.fromAccounts.firstWhereOrNull(
@@ -143,7 +156,11 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
   }
 
   /// Set the payments scheduling details
-  void setScheduleDetails({ScheduleDetails? scheduleDetails}) {
+  /// TODO: cubit_issue | If we are going to return when the passed schedule
+  /// details are null, why not indicating this parameter as required?
+  void setScheduleDetails({
+    ScheduleDetails? scheduleDetails,
+  }) {
     if (scheduleDetails == null) return;
 
     emit(

@@ -172,6 +172,9 @@ class LinkCubit extends Cubit<LinkState> {
     }
   }
 
+  /// TODO: cubit_issue | how is this any different than the [openFile] method?
+  /// It seems that we are only changing the method type for the request.
+  ///
   /// Opens a file by downloading it and opening on a dedicated app using post.
   Future<void> openFileUsingPost(
     String url, {

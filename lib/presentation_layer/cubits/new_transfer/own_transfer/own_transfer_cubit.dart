@@ -143,6 +143,7 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
 
   /// Submits the transfer.
   Future<void> submit({
+    /// TODO: cubit_issue | We are not using this value at all.
     required NewTransfer transfer,
   }) async {
     emit(
@@ -167,8 +168,11 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
         case TransferStatus.completed:
         case TransferStatus.pending:
         case TransferStatus.scheduled:
+
+          /// TODO: cubit_issue | We should create the shortcut first. Just
+          /// like we did on the beneficiary transfer flow.
           if (state.transfer.saveToShortcut) {
-            await _createShortcut(state.transfer);
+            await _createShortcut();
           }
 
           emit(
@@ -218,9 +222,7 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
   }
 
   /// Creates the shortcut (if enabled) once the transfer has succeeded.
-  Future<void> _createShortcut(
-    OwnTransfer transfer,
-  ) async {
+  Future<void> _createShortcut() async {
     emit(
       state.copyWith(
         actions: state.actions.union({

@@ -112,7 +112,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
       emit(
         state.copyWith(
           busy: false,
-          errorMessage: e is NetException ? e.message : e.toString(),
+          errorMessage: e is NetException ? e.message : null,
           errorStatus: e is NetException
               ? AuthenticationErrorStatus.network
               : AuthenticationErrorStatus.generic,
