@@ -35,6 +35,7 @@ class CustomerLimitsCubit extends Cubit<CustomerLimitsState> {
         ),
       );
     } on Exception {
+      /// TODO: cubit_issue | check other kind of errors?
       emit(
         state.copyWith(
           error: CustomerLimitsError.generic,

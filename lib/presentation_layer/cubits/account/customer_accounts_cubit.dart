@@ -16,10 +16,12 @@ class CustomerAccountsCubit extends Cubit<CustomerAccountsState> {
 
   /// Loads all accounts of the customer
   ///
+  /// Use the [filter] parameter for filtering purposes.
+  ///
   /// If [forceRefresh] is true, will skip the cache.
   Future<void> load({
-    bool forceRefresh = false,
     AccountFilter? filter,
+    bool forceRefresh = false,
   }) async {
     emit(
       state.copyWith(
@@ -38,7 +40,6 @@ class CustomerAccountsCubit extends Cubit<CustomerAccountsState> {
         state.copyWith(
           accounts: accounts,
           busy: false,
-          error: CustomerAccountStateErrors.none,
         ),
       );
     } on Exception {

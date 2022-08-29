@@ -5,6 +5,9 @@ import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
 
+/// TODO: cubit_issue | I feel like this is a clone of the [AddBeneficiaryCubit]
+/// Whith some tweaks on the add beneficiary cubit, we could handle the editing
+/// for the beneficiary.
 /// A cubit that handles editing of the beneficiary.
 class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
   final EditBeneficiaryUseCase _editBeneficiaryUseCase;
