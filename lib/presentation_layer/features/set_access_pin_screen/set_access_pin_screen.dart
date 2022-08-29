@@ -169,6 +169,7 @@ class __RepeatAccessPinScreenState
                 disabled: !state.busy && disabled,
                 warning: state.errorMessage ?? warning,
                 onChanged: (pin) async {
+                  var result = false;
                   currentPin = pin;
                   if (pin.length == widget.pinLength) {
                     if (pin != widget.pin) {
@@ -178,7 +179,17 @@ class __RepeatAccessPinScreenState
                       );
                     } else {
                       disabled = true;
-                      final result = await BottomSheetHelper.showConfirmation(
+                      Future.delayed(Duration(seconds: 2)).then((val) async {
+                        if (mounted) {
+                          if (!result) {
+                            Navigator.pop(context, true);
+                          } else {
+                            return null;
+                          }
+                        }
+                      });
+
+                      result = await BottomSheetHelper.showConfirmation(
                         context: context,
                         titleKey: 'pass_code_done',
                         type: BottomSheetType.success,
