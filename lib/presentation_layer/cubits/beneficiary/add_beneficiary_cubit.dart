@@ -10,7 +10,7 @@ import '../../cubits.dart';
 /// A cubit that handles adding a new beneficiary.
 class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
   final LoadCountriesUseCase _loadCountriesUseCase;
-  final GetCustomerAccountsUseCase _getCustomerAccountsUseCase;
+  final LoadCurrentCustomerUseCase _loadCustomerUseCase;
   final LoadAllCurrenciesUseCase _loadAllCurrenciesUseCase;
   final LoadBanksByCountryCodeUseCase _loadBanksByCountryCodeUseCase;
   final ValidateAccountUseCase _validateAccountUseCase;
@@ -21,22 +21,22 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
   /// Creates a new [AddBeneficiaryCubit].
   AddBeneficiaryCubit({
     required LoadCountriesUseCase loadCountriesUseCase,
-    required GetCustomerAccountsUseCase getCustomerAccountsUseCase,
     required LoadAllCurrenciesUseCase loadAvailableCurrenciesUseCase,
     required LoadBanksByCountryCodeUseCase loadBanksByCountryCodeUseCase,
     required ValidateAccountUseCase validateAccountUseCase,
     required ValidateIBANUseCase validateIBANUseCase,
     required AddNewBeneficiaryUseCase addNewBeneficiariesUseCase,
     required LoadGlobalSettingsUseCase loadGlobalSettingsUseCase,
+    required LoadCurrentCustomerUseCase loadCustomerUseCase,
     TransferType? beneficiaryType,
   })  : _loadCountriesUseCase = loadCountriesUseCase,
-        _getCustomerAccountsUseCase = getCustomerAccountsUseCase,
         _loadAllCurrenciesUseCase = loadAvailableCurrenciesUseCase,
         _loadBanksByCountryCodeUseCase = loadBanksByCountryCodeUseCase,
         _validateAccountUseCase = validateAccountUseCase,
         _validateIBANUseCase = validateIBANUseCase,
         _addNewBeneficiaryUseCase = addNewBeneficiariesUseCase,
         _loadGlobalSettingsUseCase = loadGlobalSettingsUseCase,
+        _loadCustomerUseCase = loadCustomerUseCase,
         super(
           AddBeneficiaryState(
             beneficiaryType: beneficiaryType,
@@ -64,9 +64,6 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         _loadCountriesUseCase(
           forceRefresh: forceRefresh,
         ),
-        _getCustomerAccountsUseCase(
-          forceRefresh: forceRefresh,
-        ),
         _loadAllCurrenciesUseCase(
           forceRefresh: forceRefresh,
         ),
@@ -77,18 +74,21 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
             'benef_acc_num_minimum_characters',
             'benef_acc_num_maximum_characters',
           ],
-        )
+        ),
+        _loadCustomerUseCase(),
       ]);
       final countries = futures[0] as List<Country>;
-      final accounts = futures[1] as List<Account>;
       final currencies = futures[2] as List<Currency>;
       final beneficiarySettings = futures[3] as List<GlobalSetting>;
+      final customer = futures[4] as Customer;
 
-      final selectedCurrency = accounts.isEmpty
-          ? null
-          : currencies.firstWhereOrNull(
-              (currency) => accounts.first.currency == currency.code,
-            );
+      final customerCountry = countries.firstWhereOrNull(
+        (e) => e.countryCode == customer.country,
+      );
+
+      final selectedCurrency = currencies.firstWhereOrNull(
+        (e) => e.code == customerCountry?.currency,
+      );
 
       /// TODO: cubit_issue | Why is the action being used here like this.
       /// The action is just for letting the user know what action is being
