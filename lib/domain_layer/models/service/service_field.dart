@@ -21,6 +21,7 @@ class ServiceField extends Equatable {
   final String? description;
 
   /// The different options of the field.
+  ///
   /// This is usually in case the type is List
   final List<Map<String, dynamic>>? options;
 
@@ -41,7 +42,7 @@ class ServiceField extends Equatable {
   final String? value;
 
   /// Creates a new [ServiceField]
-  ServiceField({
+  const ServiceField({
     required this.fieldId,
     required this.serviceId,
     required this.code,

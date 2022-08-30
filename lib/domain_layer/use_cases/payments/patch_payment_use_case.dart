@@ -11,7 +11,7 @@ class PatchPaymentUseCase {
   }) : _repository = repository;
 
   /// Patches the provided payment
-  Future<Payment> patch(
+  Future<Payment> call(
     Payment payment, {
     String? otp,
     bool resendOtp = false,

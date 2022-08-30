@@ -2,11 +2,11 @@ name: layer_sdk
 description: A new Flutter package project.
 version: 0.0.3
 
-publish_to: "none" # Remove this line if you wish to publish to pub.dev
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 environment:
-  sdk: ">=2.17.1 <3.0.0"
-  flutter: ">=1.17.0"
+  sdk: '>=2.17.1 <3.0.0'
+  flutter: '>=1.17.0'
 
 dependencies:
   # hosted
@@ -15,10 +15,15 @@ dependencies:
       url: git@gitlab.ubanquity.com:dart-packages/biometricts_change_detector.git
       ref: 3a0c7fdf8e602778265e1b284a25e6451bb1d426
 
+  carrier_info:
+    git:
+      url: git@gitlab.ubanquity.com:flutter-apps/carrier-info.git
+      ref: 433beda7e4b7c0249c9877fe09c9bbc4058fee27
+
   design_kit_layer:
     git:
       url: git@gitlab.ubanquity.com:dart-packages/design-kit-layer.git
-      ref: 66270d17b04adef74fd1c782fa9b3fc0a09b1c32
+      ref: a3df852362541a51293f286331a1e091051e9856
 
   ocra_authentication:
     git:
@@ -31,7 +36,7 @@ dependencies:
   cached_network_image: ^3.1.0
   collection: ^1.15.0
   country_pickers: ^2.0.0
-  currency_icons: ^0.3.0
+
   device_info: ^2.0.2
   dio: ^4.0.4
   equatable: ^2.0.2
@@ -84,4 +89,5 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/
     - assets/svgs/

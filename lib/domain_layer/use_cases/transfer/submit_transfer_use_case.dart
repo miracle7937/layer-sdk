@@ -11,10 +11,15 @@ class SubmitTransferUseCase {
   }) : _transferRepository = transferRepository;
 
   /// Return the transfer object obtained from submitting a transfer object.
+  ///
+  /// The `editMode` param is defined to update/edit the selected transfer
+  /// Case `true` the API will `PATCH` the transfer
   Future<Transfer> call({
     required NewTransfer transfer,
+    required bool editMode,
   }) =>
       _transferRepository.submit(
         transfer: transfer,
+        editMode: editMode,
       );
 }

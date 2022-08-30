@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../data_layer/network.dart';
 import '../../../../domain_layer/use_cases.dart';
+import '../../../utils.dart';
 import 'mandate_payments_state.dart';
 
 /// Cubit that handle [MandatePayment] data
@@ -16,15 +17,22 @@ class MandatePaymentsCubit extends Cubit<MandatePaymentsState> {
   MandatePaymentsCubit({
     required LoadMandatePaymentUseCase loadMandatePaymentsUseCase,
     this.mandateId,
+    int limit = 25,
   })  : _loadPaymentsUC = loadMandatePaymentsUseCase,
-        super(MandatePaymentsState());
+        super(
+          MandatePaymentsState(
+            pagination: Pagination(limit: limit),
+          ),
+        );
 
+  /// TODO: Change the [sortBy] parameter to be an enum.
+  ///
   /// Loads [MandatePayments] data
+  ///
+  /// If the [desc] parameter is `true`, the values will be returned
+  /// in a descending order.
   Future<void> load({
-    // TODO: this should be an enum
     String? sortBy,
-
-    /// If the sort is descending or not
     bool desc = false,
     bool loadMore = false,
   }) async {
@@ -34,7 +42,6 @@ class MandatePaymentsCubit extends Cubit<MandatePaymentsState> {
         busyAction: loadMore
             ? MandatePaymentsBusyAction.loadingMore
             : MandatePaymentsBusyAction.loading,
-        errorMessage: '',
         errorStatus: MandatePaymentsErrorStatus.none,
       ),
     );
@@ -46,7 +53,7 @@ class MandatePaymentsCubit extends Cubit<MandatePaymentsState> {
       final foundPayments = await _loadPaymentsUC(
         limit: pagination.limit,
         offset: pagination.offset,
-        desc: desc,
+        descending: desc,
         sortBy: sortBy,
         mandateId: mandateId,
       );
@@ -61,8 +68,6 @@ class MandatePaymentsCubit extends Cubit<MandatePaymentsState> {
       emit(
         state.copyWith(
           busy: false,
-          errorMessage: '',
-          errorStatus: MandatePaymentsErrorStatus.none,
           payments: payments,
           pagination: pagination.refreshCanLoadMore(
             loadedCount: foundPayments.length,

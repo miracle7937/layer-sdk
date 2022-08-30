@@ -55,25 +55,28 @@ class OwnTransferState extends Equatable {
   /// The status of the submitted transfer.
   final TransferStatus? resultStatus;
 
-  /// The image receipt belongs transfer
-  final UnmodifiableListView<int> imageReceipt;
-
-  /// The pdf receipt belongs transfer
-  final UnmodifiableListView<int> pdfReceipt;
-
+  /// TODO: cubit_issue | Why do we need this? We already have the transfer
+  /// object which has a destination account. We should only set that account
+  /// to the preselected one when we fetch the accounts. This value is
+  /// duplicated.
+  ///
   /// The preselectedAccount for from account.
   final Account? preselectedAccount;
+
+  /// If is edit mode or not
+  ///
+  /// Defaults to `false`
+  final bool editMode;
 
   /// Creates new [OwnTransferState].
   OwnTransferState({
     required this.transfer,
+    required this.editMode,
     Iterable<Account> fromAccounts = const [],
     Iterable<Account> toAccounts = const [],
     Iterable<Currency> currencies = const [],
     Set<OwnTransferAction> actions = const {},
     Set<OwnTransferAction> errors = const {},
-    Iterable<int> pdfReceipt = const <int>[],
-    Iterable<int> imageReceipt = const <int>[],
     this.errorMessage,
     this.resultStatus,
     this.transferId,
@@ -82,9 +85,7 @@ class OwnTransferState extends Equatable {
         toAccounts = UnmodifiableListView(toAccounts),
         currencies = UnmodifiableListView(currencies),
         actions = UnmodifiableSetView(actions),
-        errors = UnmodifiableSetView(errors),
-        imageReceipt = UnmodifiableListView(imageReceipt),
-        pdfReceipt = UnmodifiableListView(pdfReceipt);
+        errors = UnmodifiableSetView(errors);
 
   /// Creates a copy of the current state with the passed values.
   OwnTransferState copyWith({
@@ -97,10 +98,9 @@ class OwnTransferState extends Equatable {
     bool clearErrorMessage = false,
     String? errorMessage,
     TransferStatus? resultStatus,
-    Iterable<int>? pdfReceipt,
-    Iterable<int>? imageReceipt,
     int? transferId,
     Account? preselectedAccount,
+    bool? editMode,
   }) =>
       OwnTransferState(
         transfer: transfer ?? this.transfer,
@@ -113,9 +113,8 @@ class OwnTransferState extends Equatable {
         errorMessage:
             clearErrorMessage ? null : errorMessage ?? this.errorMessage,
         resultStatus: resultStatus ?? this.resultStatus,
-        imageReceipt: imageReceipt ?? this.imageReceipt,
         transferId: transferId ?? this.transferId,
-        pdfReceipt: pdfReceipt ?? this.pdfReceipt,
+        editMode: editMode ?? this.editMode,
       );
 
   @override
@@ -129,8 +128,7 @@ class OwnTransferState extends Equatable {
         errorMessage,
         resultStatus,
         transferId,
-        imageReceipt,
-        pdfReceipt,
         preselectedAccount,
+        editMode,
       ];
 }

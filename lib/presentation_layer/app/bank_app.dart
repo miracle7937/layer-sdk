@@ -296,6 +296,7 @@ class BankAppState extends State<BankApp> {
       ),
       BlocProvider<AuthenticationCubit>(
         create: (context) => AuthenticationCubit(
+          getDeviceModelUseCase: GetDeviceModelUseCase(),
           shouldGetCustomerObject:
               widget.appConfiguration.shouldFetchCustomerObject,
           updateUserTokenUseCase: UpdateUserTokenUseCase(

@@ -15,13 +15,16 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
   final LoadAllCurrenciesUseCase _loadAllCurrenciesUseCase;
   final SubmitTransferUseCase _submitTransferUseCase;
   final CreateShortcutUseCase _createShortcutUseCase;
-  final TransferReceiptUseCase _transferReceiptUseCase;
   final GetPreselectedAccountForOwnTransferUseCase
       _getPreselectedAccountForOwnTransferUseCase;
 
   /// Creates new [OwnTransferCubit].
+  ///
+  /// The `editMode` param is defined to update/edit the selected transfer
+  /// Case `true` the API will `PATCH` the transfer
   OwnTransferCubit({
     OwnTransfer? transfer,
+    bool editMode = false,
     required GetSourceAccountsForOwnTransferUseCase
         getSourceAccountsForOwnTransferUseCase,
     required GetDestinationAccountsForOwnTransferUseCase
@@ -29,7 +32,6 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
     required LoadAllCurrenciesUseCase loadAllCurrenciesUseCase,
     required SubmitTransferUseCase submitTransferUseCase,
     required CreateShortcutUseCase createShortcutUseCase,
-    required TransferReceiptUseCase transferReceiptUseCase,
     required GetPreselectedAccountForOwnTransferUseCase
         getPreselectedAccountForOwnTransferUseCase,
   })  : _getSourceAccountsForOwnTransferUseCase =
@@ -39,10 +41,14 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
         _loadAllCurrenciesUseCase = loadAllCurrenciesUseCase,
         _submitTransferUseCase = submitTransferUseCase,
         _createShortcutUseCase = createShortcutUseCase,
-        _transferReceiptUseCase = transferReceiptUseCase,
         _getPreselectedAccountForOwnTransferUseCase =
             getPreselectedAccountForOwnTransferUseCase,
-        super(OwnTransferState(transfer: transfer ?? OwnTransfer()));
+        super(
+          OwnTransferState(
+            transfer: transfer ?? OwnTransfer(),
+            editMode: editMode,
+          ),
+        );
 
   /// Fetches all the data necessary to start the flow.
   Future<void> initialize() async {
@@ -137,6 +143,7 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
 
   /// Submits the transfer.
   Future<void> submit({
+    /// TODO: cubit_issue | We are not using this value at all.
     required NewTransfer transfer,
   }) async {
     emit(
@@ -153,15 +160,19 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
 
     try {
       final transferResult = await _submitTransferUseCase(
-        transfer: state.transfer,
+        transfer: transfer,
+        editMode: state.editMode,
       );
 
       switch (transferResult.status) {
         case TransferStatus.completed:
         case TransferStatus.pending:
         case TransferStatus.scheduled:
+
+          /// TODO: cubit_issue | We should create the shortcut first. Just
+          /// like we did on the beneficiary transfer flow.
           if (state.transfer.saveToShortcut) {
-            await _createShortcut(state.transfer);
+            await _createShortcut();
           }
 
           emit(
@@ -211,9 +222,7 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
   }
 
   /// Creates the shortcut (if enabled) once the transfer has succeeded.
-  Future<void> _createShortcut(
-    OwnTransfer transfer,
-  ) async {
+  Future<void> _createShortcut() async {
     emit(
       state.copyWith(
         actions: state.actions.union({
@@ -250,68 +259,6 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
           OwnTransferAction.shortcut,
         }),
       ));
-    }
-  }
-
-  /// Loads receipt of succesful transfer.
-  Future<void> getReceipt({
-    required int transferId,
-    bool? isImage,
-  }) async {
-    var currentAction = isImage ?? false
-        ? OwnTransferAction.imageReceipt
-        : OwnTransferAction.pdfReceipt;
-    emit(
-      state.copyWith(
-        actions: state.actions.union({
-          currentAction,
-        }),
-        errors: state.errors.difference({
-          currentAction,
-        }),
-        clearErrorMessage: true,
-        pdfReceipt: [],
-        imageReceipt: [],
-      ),
-    );
-
-    try {
-      final receiptResult = await _transferReceiptUseCase(
-        transferId: transferId,
-        isImage: isImage,
-      );
-      if (isImage ?? false) {
-        emit(
-          state.copyWith(
-            actions: state.actions.difference({
-              OwnTransferAction.imageReceipt,
-            }),
-            imageReceipt: receiptResult,
-            pdfReceipt: [],
-          ),
-        );
-      } else {
-        emit(
-          state.copyWith(
-            actions: state.actions.difference({
-              OwnTransferAction.pdfReceipt,
-            }),
-            pdfReceipt: receiptResult,
-            imageReceipt: [],
-          ),
-        );
-      }
-    } on Exception {
-      emit(state.copyWith(
-        actions: state.actions.difference({
-          currentAction,
-        }),
-        errors: state.errors.union({
-          currentAction,
-        }),
-      ));
-
-      rethrow;
     }
   }
 }

@@ -154,4 +154,20 @@ class ActivityProvider {
       method: NetRequestMethods.post,
     );
   }
+
+  /// Cancel the recurring transfer [Activity] by `id`
+  Future<void> cancelRecurringTransfer(String id, {String? otpValue}) async {
+    final param = <String, dynamic>{};
+
+    if (otpValue != null) {
+      param['second_factor_verification'] = true;
+      param['otp_value'] = otpValue;
+    }
+
+    await netClient.request(
+      '${netClient.netEndpoints.transferV2}/$id',
+      queryParameters: param,
+      method: NetRequestMethods.delete,
+    );
+  }
 }

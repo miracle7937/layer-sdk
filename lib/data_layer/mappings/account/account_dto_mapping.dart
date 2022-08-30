@@ -108,12 +108,16 @@ extension AccountStatusDTOMapping on AccountDTOStatus {
     switch (this) {
       case AccountDTOStatus.active:
         return AccountStatus.active;
+
       case AccountDTOStatus.closed:
         return AccountStatus.closed;
+
       case AccountDTOStatus.deleted:
         return AccountStatus.deleted;
+
       case AccountDTOStatus.dormant:
         return AccountStatus.dormant;
+
       default:
         throw MappingException(from: AccountDTOStatus, to: AccountStatus);
     }
@@ -127,12 +131,16 @@ extension AccountStatusMapping on AccountStatus {
     switch (this) {
       case AccountStatus.active:
         return AccountDTOStatus.active;
+
       case AccountStatus.closed:
         return AccountDTOStatus.closed;
+
       case AccountStatus.deleted:
         return AccountDTOStatus.deleted;
+
       case AccountStatus.dormant:
         return AccountDTOStatus.dormant;
+
       default:
         throw MappingException(from: AccountStatus, to: AccountDTOStatus);
     }
@@ -161,20 +169,28 @@ extension AccountTypeDTOTypeMapping on AccountTypeDTOType {
     switch (this) {
       case AccountTypeDTOType.current:
         return AccountType.current;
+
       case AccountTypeDTOType.termDeposit:
         return AccountType.termDeposit;
+
       case AccountTypeDTOType.creditCard:
         return AccountType.creditCard;
+
       case AccountTypeDTOType.loan:
         return AccountType.loan;
+
       case AccountTypeDTOType.securities:
         return AccountType.securities;
+
       case AccountTypeDTOType.finance:
         return AccountType.finance;
+
       case AccountTypeDTOType.savings:
         return AccountType.savings;
+
       case AccountTypeDTOType.tradeFinance:
         return AccountType.tradeFinance;
+
       default:
         throw MappingException(from: AccountTypeDTOType, to: AccountType);
     }
@@ -188,20 +204,28 @@ extension AccountTypeMapping on AccountType {
     switch (this) {
       case AccountType.current:
         return AccountTypeDTOType.current;
+
       case AccountType.termDeposit:
         return AccountTypeDTOType.termDeposit;
+
       case AccountType.creditCard:
         return AccountTypeDTOType.creditCard;
+
       case AccountType.loan:
         return AccountTypeDTOType.loan;
+
       case AccountType.securities:
         return AccountTypeDTOType.securities;
+
       case AccountType.finance:
         return AccountTypeDTOType.finance;
+
       case AccountType.savings:
         return AccountTypeDTOType.savings;
+
       case AccountType.tradeFinance:
         return AccountTypeDTOType.tradeFinance;
+
       default:
         throw MappingException(from: AccountTypeDTOType, to: AccountType);
     }

@@ -34,19 +34,14 @@ class TransferState extends Equatable {
   /// The current error status.
   final TransferErrorStatus errorStatus;
 
-  /// The receipt belongs transfer
-  final UnmodifiableListView<int> receipt;
-
   /// Creates a new [TransferState].
   TransferState({
     required this.customerId,
     Iterable<Transfer> transfers = const <Transfer>[],
-    Iterable<int> receipt = const <int>[],
     this.busy = false,
     this.pagination = const Pagination(),
     this.errorStatus = TransferErrorStatus.none,
-  })  : transfers = UnmodifiableListView(transfers),
-        receipt = UnmodifiableListView(receipt);
+  }) : transfers = UnmodifiableListView(transfers);
 
   @override
   List<Object?> get props => [
@@ -55,14 +50,12 @@ class TransferState extends Equatable {
         busy,
         pagination,
         errorStatus,
-        receipt,
       ];
 
   /// Creates a new state based on this one.
   TransferState copyWith({
     String? customerId,
     Iterable<Transfer>? transfers,
-    Iterable<int>? receipt,
     bool? busy,
     Pagination? pagination,
     TransferErrorStatus? errorStatus,
@@ -70,7 +63,6 @@ class TransferState extends Equatable {
       TransferState(
         customerId: customerId ?? this.customerId,
         transfers: transfers ?? this.transfers,
-        receipt: receipt ?? this.receipt,
         busy: busy ?? this.busy,
         pagination: pagination ?? this.pagination,
         errorStatus: errorStatus ?? this.errorStatus,

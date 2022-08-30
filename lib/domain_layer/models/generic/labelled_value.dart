@@ -12,7 +12,7 @@ class LabelledValue extends Equatable {
   final LabelledValueExtraInfo? labelledValueExtraInfo;
 
   /// Create new instant of [LabelledValue]
-  LabelledValue({
+  const LabelledValue({
     required this.label,
     required this.value,
     this.labelledValueExtraInfo,

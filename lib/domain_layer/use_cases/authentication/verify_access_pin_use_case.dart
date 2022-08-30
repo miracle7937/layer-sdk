@@ -13,6 +13,9 @@ class VerifyAccessPinUseCase {
   /// Verifies access pin with the `pin` value.
   ///
   /// Returns [VerifyPinResponse] depends on verify process status.
-  Future<VerifyPinResponse> call({required String pin}) =>
-      _repository.verifyAccessPin(pin: pin);
+  Future<VerifyPinResponse> call({
+    required String pin,
+    required DeviceSession deviceInfo,
+  }) =>
+      _repository.verifyAccessPin(pin: pin, deviceInfo: deviceInfo);
 }

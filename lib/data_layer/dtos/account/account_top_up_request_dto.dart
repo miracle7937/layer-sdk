@@ -7,7 +7,7 @@ class AccountTopUpRequestDTO {
   final String? id;
 
   /// Creates a new [AccountTopUpRequestDTO] instance.
-  AccountTopUpRequestDTO({
+  const AccountTopUpRequestDTO({
     this.clientSecret,
     this.id,
   });

@@ -44,18 +44,25 @@ extension CampaignTypeDTOMapping on CampaignTypeDTO {
     switch (this) {
       case CampaignTypeDTO.newsfeed:
         return CampaignType.newsfeed;
+
       case CampaignTypeDTO.arCampaign:
         return CampaignType.arCampaign;
+
       case CampaignTypeDTO.inbox:
         return CampaignType.inbox;
+
       case CampaignTypeDTO.landingPage:
         return CampaignType.landingPage;
+
       case CampaignTypeDTO.popup:
         return CampaignType.popup;
+
       case CampaignTypeDTO.transactionPopup:
         return CampaignType.transactionPopup;
+
       case CampaignTypeDTO.unknown:
         return CampaignType.unknown;
+
       default:
         throw MappingException(from: CampaignTypeDTO, to: CampaignType);
     }
@@ -69,18 +76,25 @@ extension CampaignActionTypeDTOMapping on CampaignActionTypeDTO {
     switch (this) {
       case CampaignActionTypeDTO.call:
         return CampaignActionType.call;
+
       case CampaignActionTypeDTO.sendMessage:
         return CampaignActionType.sendMessage;
+
       case CampaignActionTypeDTO.callOrSend:
         return CampaignActionType.callOrSend;
+
       case CampaignActionTypeDTO.dpa:
         return CampaignActionType.dpa;
+
       case CampaignActionTypeDTO.dpa:
         return CampaignActionType.dpa;
+
       case CampaignActionTypeDTO.openLink:
         return CampaignActionType.openLink;
+
       case CampaignActionTypeDTO.none:
         return CampaignActionType.none;
+
       default:
         throw MappingException(
             from: CampaignActionTypeDTO, to: CampaignActionType);
@@ -95,10 +109,13 @@ extension CampaignTargetDTOMapping on CampaignTargetDTO {
     switch (this) {
       case CampaignTargetDTO.public:
         return CampaignTarget.public;
+
       case CampaignTargetDTO.targeted:
         return CampaignTarget.targeted;
+
       case CampaignTargetDTO.unknown:
         return CampaignTarget.unknown;
+
       default:
         throw MappingException(from: CampaignTargetDTO, to: CampaignTarget);
     }

@@ -74,6 +74,10 @@ class AddBeneficiaryState extends Equatable {
   /// Has all the data needed to handle the list of activities.
   final Pagination banksPagination;
 
+  /// TODO: cubit_issue | Don't we have the selectedCurrency and selectedCountry
+  /// available inside the beneficiary object? Why do we need it also in the
+  /// state as standalone parameters?
+  ///
   /// Selected currency.
   final Currency? selectedCurrency;
 
@@ -89,14 +93,10 @@ class AddBeneficiaryState extends Equatable {
   /// True if the cubit is processing something.
   final bool busy;
 
+  /// TODO: cubit_issue | This should be a [UnmodifiableSetView] as multiple
+  /// actions can be done at the same time (example: while initializing).
   /// Current action.
   final AddBeneficiaryAction action;
-
-  /// List of bytes representing receipt pdf
-  final UnmodifiableListView<int> pdfBytes;
-
-  /// List of bytes representing receipt image
-  final UnmodifiableListView<int> imageBytes;
 
   /// Depending on selected currency we force user to enter:
   /// - for `GBP` - account and sorting code
@@ -104,6 +104,8 @@ class AddBeneficiaryState extends Equatable {
   bool get accountRequired =>
       (selectedCurrency?.code?.toLowerCase() ?? '') == 'gbp';
 
+  /// TODO: cubit_issue | Not very descriptive. Could we change this to
+  /// `canSubmit`for example?
   /// Adding of new beneficiary is allowed when all required fields are filled.
   bool get addAvailable =>
       (beneficiary?.firstName.isNotEmpty ?? false) &&
@@ -140,9 +142,7 @@ class AddBeneficiaryState extends Equatable {
         availableCurrencies = UnmodifiableListView(availableCurrencies),
         banks = UnmodifiableListView(banks),
         errors = UnmodifiableSetView(errors),
-        beneficiarySettings = UnmodifiableListView(beneficiarySettings),
-        pdfBytes = UnmodifiableListView(pdfBytes),
-        imageBytes = UnmodifiableListView(imageBytes);
+        beneficiarySettings = UnmodifiableListView(beneficiarySettings);
 
   @override
   List<Object?> get props => [
@@ -159,12 +159,11 @@ class AddBeneficiaryState extends Equatable {
         busy,
         action,
         bankQuery,
-        pdfBytes,
-        imageBytes,
       ];
 
   /// Creates a new state based on this one.
   AddBeneficiaryState copyWith({
+    TransferType? beneficiaryType,
     Beneficiary? beneficiary,
     Iterable<Country>? countries,
     Iterable<Currency>? availableCurrencies,
@@ -177,11 +176,9 @@ class AddBeneficiaryState extends Equatable {
     bool? busy,
     AddBeneficiaryAction? action,
     String? bankQuery,
-    List<int>? pdfBytes,
-    List<int>? imageBytes,
   }) =>
       AddBeneficiaryState(
-        beneficiaryType: beneficiaryType,
+        beneficiaryType: beneficiaryType ?? this.beneficiaryType,
         beneficiary: beneficiary ?? this.beneficiary,
         countries: countries ?? this.countries,
         availableCurrencies: availableCurrencies ?? this.availableCurrencies,
@@ -194,11 +191,13 @@ class AddBeneficiaryState extends Equatable {
         busy: busy ?? this.busy,
         action: action ?? this.action,
         bankQuery: bankQuery ?? this.bankQuery,
-        pdfBytes: pdfBytes ?? this.pdfBytes,
-        imageBytes: imageBytes ?? this.imageBytes,
       );
 }
 
+/// TODO: cubit_issue | Some of this actions are being used as flags for the UI
+/// to perform steps. This is not how states should be used.
+/// This can be achieved using [BlocListener]s on the UI.
+///
 /// All possible actions.
 enum AddBeneficiaryAction {
   /// Init action, is used to set initial values.
@@ -218,12 +217,6 @@ enum AddBeneficiaryAction {
 
   /// Successful adding new beneficiary action.
   success,
-
-  /// The beneficiary's PDF receipt is being loaded
-  receiptPdf,
-
-  /// The beneficiary's image receipt is being loaded
-  receiptImage,
 
   /// Loading the banks for the new beneficiary.
   banks,

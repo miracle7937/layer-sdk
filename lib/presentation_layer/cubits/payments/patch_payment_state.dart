@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 
 import '../../../domain_layer/models.dart';
-import '../../../domain_layer/models/payment/biller.dart';
 
 /// Which loading action the cubit is doing
 enum PatchPaymentBusyAction {
@@ -123,7 +122,7 @@ class PatchPaymentState extends Equatable {
       (payment.amount ?? 0) > 0 &&
       (scheduleDetails?.recurrence == null ||
           scheduleDetails?.recurrence == Recurrence.none ||
-          scheduleDetails?.startDate != null);
+          (scheduleDetails?.startDate != null || payment.scheduled != null));
 
   /// Whether the recurrence changed or not
   bool get canSubmitRecurrence =>

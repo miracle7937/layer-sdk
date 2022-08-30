@@ -7,7 +7,7 @@ abstract class BillersRepositoryInterface {
   /// * Use `status` to filter billers by their status
   /// * Use `categoryId` to filter billers by their category
   Future<List<Biller>> listBillers({
-    String? status,
+    BillerStatus status = BillerStatus.active,
     String? categoryId,
   });
 }

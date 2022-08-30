@@ -11,14 +11,17 @@ import 'mandate_create_state.dart';
 
 /// Cubit for handling the creation of Debit Mandates
 class MandateCreateCubit extends Cubit<MandateCreateState> {
-  final LoadInfoRendedFileUseCase _mandateFileUseCase;
+  final LoadInfoRenderedFileUseCase _mandateFileUseCase;
 
   /// Creates a new instance of [MandateCreateCubit]
   MandateCreateCubit({
-    required LoadInfoRendedFileUseCase renderedFileUseCase,
+    required LoadInfoRenderedFileUseCase renderedFileUseCase,
   })  : _mandateFileUseCase = renderedFileUseCase,
         super(MandateCreateState());
 
+  /// TODO: cubit_issue | This seems to be UI only logic. Should not be placed
+  /// on the cubit state.
+  ///
   /// Set the account that can be charged
   void setAccount(Account account) {
     emit(
@@ -28,8 +31,13 @@ class MandateCreateCubit extends Cubit<MandateCreateState> {
     );
   }
 
+  /// TODO: cubit_issue | This seems to be UI only logic. Should not be placed
+  /// on the cubit state.
+  ///
   /// set if the user marked the checkbox
-  void setHasAccepted({required bool accepted}) {
+  void setHasAccepted({
+    required bool accepted,
+  }) {
     emit(
       state.copyWith(hasAccepted: accepted),
     );
@@ -42,7 +50,6 @@ class MandateCreateCubit extends Cubit<MandateCreateState> {
     emit(
       state.copyWith(
         busy: true,
-        errorMessage: '',
         errorStatus: MandateCreateErrorStatus.none,
       ),
     );
@@ -53,8 +60,6 @@ class MandateCreateCubit extends Cubit<MandateCreateState> {
       emit(
         state.copyWith(
           busy: false,
-          errorMessage: '',
-          errorStatus: MandateCreateErrorStatus.none,
           mandatePDFFile: mandateFile,
         ),
       );
@@ -62,7 +67,7 @@ class MandateCreateCubit extends Cubit<MandateCreateState> {
       emit(
         state.copyWith(
           busy: false,
-          errorMessage: e is NetException ? e.message : e.toString(),
+          errorMessage: e is NetException ? e.message : null,
           errorStatus: e is NetException
               ? MandateCreateErrorStatus.network
               : MandateCreateErrorStatus.generic,
@@ -73,6 +78,10 @@ class MandateCreateCubit extends Cubit<MandateCreateState> {
     }
   }
 
+  /// TODO: cubit_issue | This does not seem to be something that the cubit
+  /// should handle. Looks more like a method that could be converted into a
+  /// mixin for opening files and being used directly by the UI.
+  ///
   /// Opens the more info pdf
   Future<void> getMoreInfoPdf(
     List<int> bytes,

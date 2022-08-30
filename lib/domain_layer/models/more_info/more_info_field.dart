@@ -1,6 +1,8 @@
+import 'package:equatable/equatable.dart';
+
 /// Class used to choose fields that will be rendered in the server
 /// and returned to the client as a html/image/pdf file
-class MoreInfoField {
+class MoreInfoField extends Equatable {
   /// The field description
   final String description;
 
@@ -14,10 +16,18 @@ class MoreInfoField {
   final String? formattedValue;
 
   /// Creates a [MoreInfoField] model
-  MoreInfoField({
+  const MoreInfoField({
     required this.description,
     required this.label,
     required this.value,
     this.formattedValue,
   });
+
+  @override
+  List<Object?> get props => [
+        description,
+        label,
+        value,
+        formattedValue,
+      ];
 }

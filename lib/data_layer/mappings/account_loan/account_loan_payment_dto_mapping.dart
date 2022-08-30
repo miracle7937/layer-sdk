@@ -27,6 +27,7 @@ extension AccountLoanPaymentStatusDTOMapping on AccountLoanPaymentStatusDTO {
     switch (this) {
       case AccountLoanPaymentStatusDTO.paid:
         return AccountLoanPaymentStatus.paid;
+
       case AccountLoanPaymentStatusDTO.unpaid:
         return AccountLoanPaymentStatus.unpaid;
     }

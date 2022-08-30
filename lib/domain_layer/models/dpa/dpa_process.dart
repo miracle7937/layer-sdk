@@ -15,6 +15,8 @@ class DPAProcess extends Equatable {
   final String stepName;
 
   /// If the process has finished.
+  ///
+  /// Defaults to `false`
   final bool finished;
 
   /// The current status of this process.

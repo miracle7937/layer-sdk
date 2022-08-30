@@ -1,6 +1,3 @@
-import 'package:dio/dio.dart';
-
-import '../../../domain_layer/abstract_repositories.dart';
 import '../../../domain_layer/models.dart';
 import '../../dtos.dart';
 import '../../mappings.dart';
@@ -140,24 +137,5 @@ class AccountProvider {
     );
 
     return AccountTopUpRequestDTO.fromJson(response.data);
-  }
-
-  /// Requests a top up receipt with the provided parameters.
-  Future<List<int>> getTopUpReceipt({
-    required String topUpId,
-    required ReceiptType type,
-  }) async {
-    final response = await netClient.request(
-      '${netClient.netEndpoints.topUpReceipt}/$topUpId',
-      data: {
-        'form_id': 'payment_intent_receipt',
-        'format': type.toFormat(),
-      },
-      responseType: ResponseType.bytes,
-      decodeResponse: false,
-      method: NetRequestMethods.post,
-    );
-
-    return response.data;
   }
 }

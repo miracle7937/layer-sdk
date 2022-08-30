@@ -11,6 +11,8 @@ class LoadCustomerCardTransactionsUseCase {
   }) : _repository = repository;
 
   /// Returns all completed transactions of the supplied customer card
+  ///
+  /// Use the `limit` and `offset` parameters to paginate.
   Future<List<CardTransaction>> call({
     required String cardId,
     String? customerId,

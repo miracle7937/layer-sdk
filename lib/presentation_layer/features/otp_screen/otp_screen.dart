@@ -1,10 +1,11 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../layer_sdk.dart';
 
+import '../../../layer_sdk.dart';
 import '../../cubits.dart';
 import '../../widgets/header/sdk_header.dart';
 
@@ -76,25 +77,34 @@ class OTPScreen extends StatefulWidget {
 class _OTPScreenState extends State<OTPScreen> with FullScreenLoaderMixin {
   late int _remainingTime;
   Timer? _timer;
+
   bool get resendEnabled => _remainingTime <= 0;
 
   late bool _isVerifying;
+
   bool get isVerifying => _isVerifying;
+
   set isVerifying(bool isVerifying) =>
       setState(() => _isVerifying = isVerifying);
 
   String? _verificationError;
+
   String? get verificationError => _verificationError;
+
   set verificationError(String? verificationError) =>
       setState(() => _verificationError = verificationError);
 
   late bool _isResending;
+
   bool get isResending => _isResending;
+
   set isResending(bool isResending) =>
       setState(() => _isResending = isResending);
 
   late bool _shouldClearCode;
+
   bool get shouldClearCode => _shouldClearCode;
+
   set shouldClearCode(bool shouldClearCode) =>
       setState(() => _shouldClearCode = shouldClearCode);
 
@@ -284,6 +294,9 @@ class _PinWidgetRow extends StatefulWidget {
 
 class _PinWidgetRowState extends State<_PinWidgetRow>
     with FullScreenLoaderMixin {
+  final _pastKey = GlobalKey();
+  OverlayEntry? _entry;
+
   // In order to allow for deleting the pin digits without manually switching
   // focus to another field we're populating each text field initially with
   // an empty, zero-width character.
@@ -341,75 +354,197 @@ class _PinWidgetRowState extends State<_PinWidgetRow>
     secondNode.dispose();
     thirdNode.dispose();
     fourthNode.dispose();
+    _clearCurrentEntry();
     super.dispose();
   }
 
+  void _clearCurrentEntry() {
+    if (_entry != null) {
+      try {
+        _entry!.remove();
+        _entry = null;
+      } on Exception catch (error) {
+        print(error);
+      }
+    }
+  }
+
+  void _onPaste() async {
+    _clearCurrentEntry();
+    final data = await Clipboard.getData("text/plain");
+    final pastedText = data?.text;
+    if (pastedText?.isNotEmpty ?? false) {
+      final formattedPastedText =
+          pastedText!.trim().substring(0, min(pastedText.trim().length, 4));
+      final digits = formattedPastedText.split("");
+      final invalid = digits.any((digit) => int.tryParse(digit) == null);
+      if (invalid) return;
+      if (digits.length == 4) {
+        firstPin.text = digits[0];
+        secondPin.text = digits[1];
+        thirdPin.text = digits[2];
+        fourthPin.text = digits[3];
+        FocusScope.of(context).unfocus();
+        widget.onPinSet(digits.join().replaceAll(emptyChar, ''));
+      } else if (digits.length == 3) {
+        firstPin.text = digits[0];
+        secondPin.text = digits[1];
+        thirdPin.text = digits[2];
+        fourthNode.requestFocus();
+      } else if (digits.length == 2) {
+        firstPin.text = digits[0];
+        secondPin.text = digits[1];
+        thirdNode.requestFocus();
+      } else if (digits.length == 1) {
+        firstPin.text = digits[0];
+        secondNode.requestFocus();
+      }
+    }
+  }
+
   @override
-  Widget build(BuildContext context) => Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+  Widget build(BuildContext context) => Stack(
+        fit: StackFit.passthrough,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: _PinWidget(
-              controller: firstPin,
-              onFill: () => _onPinUpdated(
-                next: secondNode,
-                self: firstNode,
-              ),
-              onDelete: (clearPrevious) => _onDelete(
-                controller: firstPin,
-                clearPrevious: clearPrevious,
-              ),
-              node: firstNode,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: _PinWidget(
-              controller: secondPin,
-              onFill: () => _onPinUpdated(
-                next: thirdNode,
-                self: secondNode,
-              ),
-              onDelete: (clearPrevious) => _onDelete(
-                controller: secondPin,
-                previousController: firstPin,
-                previousNode: firstNode,
-                clearPrevious: clearPrevious,
-              ),
-              node: secondNode,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: _PinWidget(
-              controller: thirdPin,
-              onFill: () => _onPinUpdated(
-                next: fourthNode,
-                self: thirdNode,
-              ),
-              onDelete: (clearPrevious) => _onDelete(
-                controller: thirdPin,
-                previousController: secondPin,
-                previousNode: secondNode,
-                clearPrevious: clearPrevious,
-              ),
-              node: thirdNode,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: _PinWidget(
-              controller: fourthPin,
-              node: fourthNode,
-              onFill: () => _onPinUpdated(
-                self: fourthNode,
-              ),
-              onDelete: (clearPrevious) => _onDelete(
-                controller: fourthPin,
-                previousController: thirdPin,
-                previousNode: thirdNode,
-                clearPrevious: clearPrevious,
+          GestureDetector(
+            onTap: () {
+              _clearCurrentEntry();
+              if (firstPin.text.isEmpty || firstPin.text == emptyChar) {
+                firstNode.requestFocus();
+              } else if (secondPin.text.isEmpty ||
+                  secondPin.text == emptyChar) {
+                secondNode.requestFocus();
+              } else if (thirdPin.text.isEmpty || thirdPin.text == emptyChar) {
+                thirdNode.requestFocus();
+              } else if (fourthPin.text.isEmpty ||
+                  fourthPin.text == emptyChar) {
+                fourthNode.requestFocus();
+              } else {
+                // all are filled, set the cursor at the end
+                fourthNode.requestFocus();
+              }
+            },
+            onLongPress: () {
+              _clearCurrentEntry();
+              final size = MediaQuery.of(context).size;
+              _entry = OverlayEntry(
+                builder: (context) => Positioned.directional(
+                  textDirection: TextDirection.ltr,
+                  width: 75,
+                  height: 37,
+                  top: _pastKey._globalPaintBounds == null
+                      ? size.height / 2
+                      : _pastKey._globalPaintBounds!.top - 45,
+                  start: _pastKey._globalPaintBounds == null
+                      ? size.width / 2
+                      : (_pastKey._globalPaintBounds!.right - 75) / 2,
+                  child: GestureDetector(
+                    onTap: _onPaste,
+                    child: Container(
+                      width: 75,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: Color.fromRGBO(237, 237, 237, 1),
+                        borderRadius: BorderRadius.circular(8.0),
+                        boxShadow: <BoxShadow>[
+                          BoxShadow(
+                            color: Colors.grey,
+                            offset: Offset(0, 1),
+                            spreadRadius: 1,
+                            blurRadius: 1,
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: Material(
+                          color: Color.fromRGBO(237, 237, 237, 1),
+                          child: Text("Paste"),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+              Overlay.of(context)!.insert(_entry!);
+            },
+            child: Container(
+              key: _pastKey,
+              child: AbsorbPointer(
+                absorbing: true,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: _PinWidget(
+                        controller: firstPin,
+                        onFill: () => _onPinUpdated(
+                          next: secondNode,
+                          self: firstNode,
+                        ),
+                        onDelete: (clearPrevious) => _onDelete(
+                          controller: firstPin,
+                          clearPrevious: clearPrevious,
+                        ),
+                        node: firstNode,
+                        onSubmitted: (_) => _clearCurrentEntry(),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: _PinWidget(
+                        controller: secondPin,
+                        onFill: () => _onPinUpdated(
+                          next: thirdNode,
+                          self: secondNode,
+                        ),
+                        onDelete: (clearPrevious) => _onDelete(
+                          controller: secondPin,
+                          previousController: firstPin,
+                          previousNode: firstNode,
+                          clearPrevious: clearPrevious,
+                        ),
+                        node: secondNode,
+                        onSubmitted: (_) => _clearCurrentEntry(),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: _PinWidget(
+                        controller: thirdPin,
+                        onFill: () => _onPinUpdated(
+                          next: fourthNode,
+                          self: thirdNode,
+                        ),
+                        onDelete: (clearPrevious) => _onDelete(
+                          controller: thirdPin,
+                          previousController: secondPin,
+                          previousNode: secondNode,
+                          clearPrevious: clearPrevious,
+                        ),
+                        node: thirdNode,
+                        onSubmitted: (_) => _clearCurrentEntry(),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: _PinWidget(
+                        controller: fourthPin,
+                        node: fourthNode,
+                        onFill: () => _onPinUpdated(
+                          self: fourthNode,
+                        ),
+                        onDelete: (clearPrevious) => _onDelete(
+                          controller: fourthPin,
+                          previousController: thirdPin,
+                          previousNode: thirdNode,
+                          clearPrevious: clearPrevious,
+                        ),
+                        onSubmitted: (_) => _clearCurrentEntry(),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -470,6 +605,7 @@ class _PinWidget extends StatelessWidget {
 
   final VoidCallback onFill;
   final void Function(bool clearPrevious) onDelete;
+  final ValueChanged<String>? onSubmitted;
 
   const _PinWidget({
     Key? key,
@@ -477,6 +613,7 @@ class _PinWidget extends StatelessWidget {
     required this.onDelete,
     required this.controller,
     this.node,
+    this.onSubmitted,
   }) : super(key: key);
 
   @override
@@ -494,27 +631,45 @@ class _PinWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.0),
         color: design.surfaceNonary3,
       ),
-      child: TextField(
-        controller: controller,
-        focusNode: node,
-        textAlign: TextAlign.center,
-        style: design.bodyXXL(),
-        keyboardType: TextInputType.number,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.zero,
-          border: InputBorder.none,
+      child: Center(
+        child: TextField(
+          controller: controller,
+          focusNode: node,
+          textAlign: TextAlign.center,
+          style: design.bodyXXL().copyWith(height: 1.0),
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.only(top: 6.0),
+            border: InputBorder.none,
+          ),
+          onChanged: (v) {
+            if (v.replaceAll(_PinWidgetRowState.emptyChar, '').isNotEmpty) {
+              onFill();
+            } else {
+              onDelete(v.isEmpty);
+            }
+          },
+          inputFormatters: [
+            LengthLimitingTextInputFormatter(2),
+          ],
+          onSubmitted: onSubmitted,
         ),
-        onChanged: (v) {
-          if (v.replaceAll(_PinWidgetRowState.emptyChar, '').isNotEmpty) {
-            onFill();
-          } else {
-            onDelete(v.isEmpty);
-          }
-        },
-        inputFormatters: [
-          LengthLimitingTextInputFormatter(2),
-        ],
       ),
     );
+  }
+}
+
+/// GlobalKeyExtension
+extension _GlobalKeyExtension on GlobalKey {
+  /// globalPaintBounds
+  Rect? get _globalPaintBounds {
+    final renderObject = currentContext?.findRenderObject();
+    final translation = renderObject?.getTransformTo(null).getTranslation();
+    if (translation != null && renderObject?.paintBounds != null) {
+      final offset = Offset(translation.x, translation.y);
+      return renderObject?.paintBounds.shift(offset);
+    } else {
+      return null;
+    }
   }
 }

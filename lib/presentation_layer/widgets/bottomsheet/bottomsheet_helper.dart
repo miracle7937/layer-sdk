@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:design_kit_layer/design_kit_layer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -65,6 +67,9 @@ class BottomSheetHelper {
       );
 
   /// Shows an error bottomsheet with the provided params.
+  ///
+  /// Use the `blurBackground` parameter to blur the background of the
+  /// bottomsheet. Defaults to `false`.
   static Future<void> showError({
     required BuildContext context,
     required String titleKey,
@@ -73,64 +78,114 @@ class BottomSheetHelper {
     bool isScrollControlled = true,
     Color? backgroundColor,
     BottomSheetType type = BottomSheetType.error,
+    bool blurBackground = false,
   }) async {
     final translation = Translation.of(context);
+    final design = DesignSystem.of(context);
+
+    final content = _ErrorBottomSheet(
+      title: translation.translate(titleKey),
+      dismiss: translation.translate(dismissKey),
+      description:
+          descriptionKey != null ? translation.translate(descriptionKey) : null,
+      type: type,
+    );
+
+    final radius = BorderRadius.only(
+      topLeft: Radius.circular(
+        24.0,
+      ),
+      topRight: Radius.circular(
+        24.0,
+      ),
+    );
 
     return showModalBottomSheet(
       context: context,
       barrierColor: DesignSystem.of(context).basePrimary.withOpacity(0.64),
       isScrollControlled: isScrollControlled,
-      backgroundColor: backgroundColor,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(
-            24.0,
-          ),
-          topRight: Radius.circular(
-            24.0,
-          ),
-        ),
+      backgroundColor: blurBackground
+          ? Colors.transparent
+          : (backgroundColor ?? design.surfaceNonary2),
+      shape: RoundedRectangleBorder(
+        borderRadius: radius,
       ),
-      builder: (context) => _ErrorBottomSheet(
-        title: translation.translate(titleKey),
-        dismiss: translation.translate(dismissKey),
-        description: descriptionKey != null
-            ? translation.translate(descriptionKey)
-            : null,
-        type: type,
-      ),
+      builder: (context) => blurBackground
+          ? BackdropFilter(
+              filter: ImageFilter.blur(
+                sigmaX: 2.0,
+                sigmaY: 2.0,
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: backgroundColor ?? design.surfaceNonary2,
+                  borderRadius: radius,
+                ),
+                child: content,
+              ),
+            )
+          : content,
     );
   }
 
   /// Shows an error bottomsheet with the provided params.
+  ///
+  /// Use the `blurBackground` parameter to blur the background of the
+  /// bottomsheet. Defaults to `false`.
   static Future<void> showLocalizedError({
     required BuildContext context,
     required String title,
     String? description,
     required String dismiss,
     bool isScrollControlled = true,
-  }) async =>
-      showModalBottomSheet(
-        barrierColor: DesignSystem.of(context).basePrimary.withOpacity(0.64),
-        context: context,
-        isScrollControlled: isScrollControlled,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(
-              24.0,
-            ),
-            topRight: Radius.circular(
-              24.0,
-            ),
-          ),
-        ),
-        builder: (context) => _ErrorBottomSheet(
-          title: title,
-          dismiss: dismiss,
-          description: description,
-          type: BottomSheetType.error,
-        ),
-      );
+    Color? backgroundColor,
+    bool blurBackground = false,
+  }) async {
+    final design = DesignSystem.of(context);
+
+    final content = _ErrorBottomSheet(
+      title: title,
+      dismiss: dismiss,
+      description: description,
+      type: BottomSheetType.error,
+    );
+
+    final radius = BorderRadius.only(
+      topLeft: Radius.circular(
+        24.0,
+      ),
+      topRight: Radius.circular(
+        24.0,
+      ),
+    );
+
+    return showModalBottomSheet(
+      barrierColor: design.basePrimary.withOpacity(0.64),
+      context: context,
+      backgroundColor: blurBackground
+          ? Colors.transparent
+          : (backgroundColor ?? design.surfaceNonary2),
+      isScrollControlled: isScrollControlled,
+      shape: RoundedRectangleBorder(
+        borderRadius: radius,
+      ),
+      builder: (context) => blurBackground
+          ? BackdropFilter(
+              filter: ImageFilter.blur(
+                sigmaX: 2.0,
+                sigmaY: 2.0,
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: backgroundColor ?? design.surfaceNonary2,
+                  borderRadius: radius,
+                ),
+                child: content,
+              ),
+            )
+          : content,
+    );
+  }
 
   /// Shows a confirmation bottomsheet with the provided params
   ///
@@ -144,9 +199,11 @@ class BottomSheetHelper {
     String denyKey = 'no',
     bool isScrollControlled = true,
     bool showDenyButton = true,
+    bool isDismissible = true,
     Color? backgroundColor,
   }) async {
     final result = await showModalBottomSheet(
+      isDismissible: isDismissible,
       context: context,
       barrierColor: DesignSystem.of(context).basePrimary.withOpacity(0.64),
       backgroundColor: backgroundColor,

@@ -89,6 +89,8 @@ class Transfer extends Equatable {
   final double? amount;
 
   /// Whether the `amount` should be shown
+  ///
+  /// Defaults to `true`
   final bool amountVisible;
 
   /// The source [Account].
@@ -139,8 +141,14 @@ class Transfer extends Equatable {
   /// The OTP id.
   final int? otpId;
 
+  /// The recurrence start date.
+  final DateTime? starts;
+
+  /// The recurrence end date.
+  final DateTime? ends;
+
   ///Creates a new immutable [Transfer]
-  Transfer({
+  const Transfer({
     this.id,
     this.currency,
     this.amount,
@@ -161,6 +169,8 @@ class Transfer extends Equatable {
     this.secondFactorType,
     this.evaluation,
     this.otpId,
+    this.starts,
+    this.ends,
   });
 
   /// Returns the transfer id as `String`.
@@ -188,5 +198,7 @@ class Transfer extends Equatable {
         secondFactorType,
         evaluation,
         otpId,
+        starts,
+        ends,
       ];
 }

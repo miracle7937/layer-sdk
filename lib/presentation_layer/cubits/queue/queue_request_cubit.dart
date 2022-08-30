@@ -10,18 +10,15 @@ class QueueRequestCubit extends Cubit<QueueRequestStates> {
   final LoadQueuesUseCase _loadQueuesUseCase;
   final AcceptQueueUseCase _acceptQueueUseCase;
   final RejectQueueUseCase _rejectQueueUseCase;
-  final RemoveQueueFromRequestsUseCase _removeQueueFromRequestsUseCase;
 
-  /// Creates a new instance of [CardTransactionsCubit]
+  /// Creates a new instance of [QueueRequestCubit]
   QueueRequestCubit({
     required LoadQueuesUseCase loadQueuesUseCase,
     required AcceptQueueUseCase acceptQueueUseCase,
     required RejectQueueUseCase rejectQueueUseCase,
-    required RemoveQueueFromRequestsUseCase removeQueueFromRequestsUseCase,
   })  : _loadQueuesUseCase = loadQueuesUseCase,
         _acceptQueueUseCase = acceptQueueUseCase,
         _rejectQueueUseCase = rejectQueueUseCase,
-        _removeQueueFromRequestsUseCase = removeQueueFromRequestsUseCase,
         super(QueueRequestStates());
 
   /// Loads the most recent requests
@@ -97,10 +94,7 @@ class QueueRequestCubit extends Cubit<QueueRequestStates> {
         state.copyWith(
           busy: false,
           requests: accepted
-              ? _removeQueueFromRequestsUseCase(
-                  requests: state.requests,
-                  requestId: queueRequest.id!,
-                )
+              ? state.requests.where((x) => x.id != queueRequest.id!).toList()
               : state.requests,
           error: accepted
               ? QueueRequestStatesErrors.none
@@ -145,10 +139,7 @@ class QueueRequestCubit extends Cubit<QueueRequestStates> {
         state.copyWith(
           busy: false,
           requests: rejected
-              ? _removeQueueFromRequestsUseCase(
-                  requests: state.requests,
-                  requestId: queueRequest.id!,
-                )
+              ? state.requests.where((x) => x.id != queueRequest.id!).toList()
               : state.requests,
           error: rejected
               ? QueueRequestStatesErrors.none

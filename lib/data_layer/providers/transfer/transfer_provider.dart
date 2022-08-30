@@ -1,5 +1,3 @@
-import 'package:dio/dio.dart';
-
 import '../../../domain_layer/models.dart';
 import '../../dtos.dart';
 import '../../mappings.dart';
@@ -87,12 +85,16 @@ class TransferProvider {
   }
 
   /// Returns the transfer from submiting a new transfer.
+  ///
+  /// Case `editMode` is `true` the request method will be `PATCH`
+  /// In this case the transfer will be updated with new values.
   Future<TransferDTO> submit({
     required NewTransferPayloadDTO newTransferPayloadDTO,
+    required bool editMode,
   }) async {
     final response = await netClient.request(
       netClient.netEndpoints.submitTransfer,
-      method: NetRequestMethods.post,
+      method: editMode ? NetRequestMethods.patch : NetRequestMethods.post,
       data: newTransferPayloadDTO.toJson(),
     );
 
@@ -131,26 +133,5 @@ class TransferProvider {
     );
 
     return TransferDTO.fromJson(response.data);
-  }
-
-  /// Resends the second factor for the passed transfer id.
-  Future<List<int>> getTransferReceipt({
-    required int transferId,
-    bool isImage = false,
-  }) async {
-    var body = <String, dynamic>{
-      'form_id': 'transfer_c2c',
-    };
-    if (isImage) body['format'] = 'image';
-
-    final response = await netClient.request(
-      "${netClient.netEndpoints.transferReceipt}/$transferId",
-      method: NetRequestMethods.post,
-      data: body,
-      decodeResponse: false,
-      responseType: ResponseType.bytes,
-    );
-
-    return response.data;
   }
 }

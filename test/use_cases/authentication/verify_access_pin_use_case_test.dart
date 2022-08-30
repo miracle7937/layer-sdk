@@ -24,17 +24,18 @@ void main() {
     when(
       () => _repository.verifyAccessPin(
         pin: any(named: 'pin'),
+        deviceInfo: DeviceSession(),
       ),
     ).thenAnswer((_) async => _verifyPinResponse);
   });
 
   test('Verifies access pin and returns the response', () async {
-    final result = await _useCase(pin: _pin);
+    final result = await _useCase(pin: _pin, deviceInfo: DeviceSession());
 
     expect(result, _verifyPinResponse);
 
     verify(
-      () => _repository.verifyAccessPin(pin: _pin),
+      () => _repository.verifyAccessPin(pin: _pin, deviceInfo: DeviceSession()),
     ).called(1);
 
     verifyNoMoreInteractions(_repository);

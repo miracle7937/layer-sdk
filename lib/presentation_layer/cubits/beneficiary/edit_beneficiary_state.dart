@@ -64,12 +64,6 @@ class EditBeneficiaryState extends Equatable {
   /// The actions that the cubit is performing.
   final UnmodifiableSetView<EditBeneficiaryAction> actions;
 
-  /// List of bytes representing receipt pdf
-  final UnmodifiableListView<int> pdfBytes;
-
-  /// List of bytes representing receipt image
-  final UnmodifiableListView<int> imageBytes;
-
   /// Depending on its currency, beneficiary has:
   /// - for `GBP` - account and routing code
   /// - for `EUR` - iban
@@ -92,13 +86,9 @@ class EditBeneficiaryState extends Equatable {
     Iterable<Country> countries = const <Country>[],
     Set<EditBeneficiaryAction> actions = const <EditBeneficiaryAction>{},
     Set<EditBeneficiaryError> errors = const <EditBeneficiaryError>{},
-    List<int> pdfBytes = const [],
-    List<int> imageBytes = const [],
   })  : countries = UnmodifiableListView(countries),
         actions = UnmodifiableSetView(actions),
-        errors = UnmodifiableSetView(errors),
-        pdfBytes = UnmodifiableListView(pdfBytes),
-        imageBytes = UnmodifiableListView(imageBytes);
+        errors = UnmodifiableSetView(errors);
 
   @override
   List<Object?> get props => [
@@ -107,8 +97,6 @@ class EditBeneficiaryState extends Equatable {
         countries,
         errors,
         actions,
-        pdfBytes,
-        imageBytes,
       ];
 
   /// Creates a new state based on this one.
@@ -117,8 +105,6 @@ class EditBeneficiaryState extends Equatable {
     Iterable<Country>? countries,
     Set<EditBeneficiaryAction>? actions,
     Set<EditBeneficiaryError>? errors,
-    List<int>? pdfBytes,
-    List<int>? imageBytes,
   }) =>
       EditBeneficiaryState(
         oldBeneficiary: oldBeneficiary,
@@ -126,8 +112,6 @@ class EditBeneficiaryState extends Equatable {
         countries: countries ?? this.countries,
         errors: errors ?? this.errors,
         actions: actions ?? this.actions,
-        pdfBytes: pdfBytes ?? this.pdfBytes,
-        imageBytes: imageBytes ?? this.imageBytes,
       );
 }
 
@@ -144,12 +128,6 @@ enum EditBeneficiaryAction {
 
   /// Edit requires OTP verification action.
   otpRequired,
-
-  /// The beneficiary's PDF receipt is being loaded
-  receiptPdf,
-
-  /// The beneficiary's image receipt is being loaded
-  receiptImage,
 
   /// Edit successful beneficiary action.
   success,

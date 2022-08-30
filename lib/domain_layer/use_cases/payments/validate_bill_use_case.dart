@@ -13,7 +13,8 @@ class ValidateBillUseCase {
   /// Validates the provided bill
   Future<Bill> call({
     required Bill bill,
-  }) {
-    return _billRepository.validateBill(bill: bill);
-  }
+  }) =>
+      _billRepository.validateBill(
+        bill: bill,
+      );
 }

@@ -14,7 +14,7 @@ class BillersRepository extends BillersRepositoryInterface {
 
   @override
   Future<List<Biller>> listBillers({
-    String? status,
+    BillerStatus status = BillerStatus.active,
     String? categoryId,
   }) async {
     final billers = await _provider.list(
