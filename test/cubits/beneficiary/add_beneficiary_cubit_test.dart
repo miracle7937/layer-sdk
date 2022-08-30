@@ -29,8 +29,6 @@ class MockAddNewBeneficiaryUseCase extends Mock
 class MockLoadGlobalSettingsUseCase extends Mock
     implements LoadGlobalSettingsUseCase {}
 
-class MockGlobalSetting extends Mock implements GlobalSetting {}
-
 class MockBank extends Mock implements Bank {}
 
 final _loadCountriesUseCase = MockLoadCountriesUseCase();
@@ -58,19 +56,46 @@ final _accountsList = [
   Account(currency: 'USD'),
 ];
 
-final _selectedCurrency = Currency(code: 'GBP');
+final _currencyEur = Currency(code: 'EUR');
+final _currencyGbp = Currency(code: 'GBP');
 final _currenciesList = [
-  Currency(code: 'EUR'),
-  _selectedCurrency,
+  _currencyEur,
+  _currencyGbp,
 ];
+
+final String _allowedCharactersForIban = 'abcedfghijklmnopqrstuvwxyz'
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+final String _allowedCharactersForAccount = '1234567890';
+final int _minAccountCharsForAccount = 8;
+final int _maxAccountCharsForAccount = 15;
+
 final _globalSettingsCodes = [
   'benef_iban_allowed_characters',
   'benef_acc_num_allowed_characters',
   'benef_acc_num_minimum_characters',
   'benef_acc_num_maximum_characters',
 ];
-final _mockedGlobalSettingList =
-    List.generate(10, (index) => MockGlobalSetting());
+final _globalSettingsValues = [
+  _allowedCharactersForIban,
+  _allowedCharactersForAccount,
+  _minAccountCharsForAccount,
+  _maxAccountCharsForAccount,
+];
+final _globalSettingsTypes = [
+  GlobalSettingType.string,
+  GlobalSettingType.string,
+  GlobalSettingType.int,
+  GlobalSettingType.int,
+];
+final _globalSettingList = List.generate(
+  _globalSettingsCodes.length,
+  (index) => GlobalSetting(
+    code: _globalSettingsCodes[index],
+    module: 'module',
+    value: _globalSettingsValues[index],
+    type: _globalSettingsTypes[index],
+  ),
+);
 
 late AddBeneficiaryCubit _cubit;
 
@@ -85,14 +110,47 @@ final _initialState = AddBeneficiaryState(
     lastName: '',
     middleName: '',
     bankName: '',
-    currency: _selectedCurrency.code,
+    currency: _currencyGbp.code,
     type: _beneficiaryType,
   ),
   countries: _countriesList,
-  selectedCurrency: _selectedCurrency,
+  selectedCurrency: _currencyGbp,
   availableCurrencies: _currenciesList,
-  beneficiarySettings: _mockedGlobalSettingList,
+  beneficiarySettings: _globalSettingList,
   action: AddBeneficiaryAction.initAction,
+);
+
+final String _validAccount = '123456789';
+
+final String _validIban = 'GB30PAYR00997700004655';
+
+final _newBeneficiary = Beneficiary(
+  nickname: 'nickname',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  middleName: '',
+  bankName: 'bankName',
+);
+
+final _newValidBeneficiaryWithAccount = _newBeneficiary.copyWith(
+  accountNumber: _validAccount,
+  routingCode: '111111',
+  iban: '',
+);
+
+final _newValidBeneficiaryWithIban = _newBeneficiary.copyWith(
+  accountNumber: '',
+  routingCode: '',
+  iban: _validIban,
+);
+
+final _newCreatedBeneficiaryWithAccount =
+    _newValidBeneficiaryWithAccount.copyWith(
+  id: 1,
+);
+
+final _newCreatedBeneficiaryWithIban = _newValidBeneficiaryWithIban.copyWith(
+  id: 1,
 );
 
 void main() {
@@ -128,7 +186,7 @@ void main() {
         codes: _globalSettingsCodes,
       ),
     ).thenAnswer(
-      (_) async => _mockedGlobalSettingList,
+      (_) async => _globalSettingList,
     );
 
     when(
@@ -140,6 +198,33 @@ void main() {
     ).thenAnswer(
       (_) async => _mockedBanksList,
     );
+
+    when(
+      () => _validateAccountUseCase(
+        account: _validAccount,
+        allowedCharacters: _allowedCharactersForAccount,
+        minAccountChars: _minAccountCharsForAccount,
+        maxAccountChars: _maxAccountCharsForAccount,
+      ),
+    ).thenReturn(true);
+
+    when(
+      () => _validateIBANUseCase(
+        iban: _validIban,
+        allowedCharacters: _allowedCharactersForIban,
+      ),
+    ).thenReturn(true);
+
+    when(
+      () => _addNewBeneficiaryUseCase(
+        beneficiary: _newValidBeneficiaryWithAccount,
+      ),
+    ).thenAnswer((_) async => _newCreatedBeneficiaryWithAccount);
+    when(
+      () => _addNewBeneficiaryUseCase(
+        beneficiary: _newValidBeneficiaryWithIban,
+      ),
+    ).thenAnswer((_) async => _newCreatedBeneficiaryWithIban);
   });
 
   blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
@@ -172,21 +257,95 @@ void main() {
       ).called(1);
     },
   );
-  //
-  // group('Selecting new country', () {
-  //   blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
-  //     'Emits state with new selected country',
-  //     build: () => _cubit,
-  //     seed: () => _initialState,
-  //     act: (c) => c.onCountryChanged(_selectedCountry),
-  //     expect: () => [
-  //       _initialState.copyWith(
-  //         action: AddBeneficiaryAction.editAction,
-  //         selectedCountry: _selectedCountry,
-  //       ),
-  //     ],
-  //   );
-  // });
+
+  group('Adds new beneficiary', () {
+    blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+      'With valid account',
+      build: () => _cubit,
+      seed: () => _initialState.copyWith(
+        beneficiary: _newValidBeneficiaryWithAccount,
+      ),
+      act: (c) => c.onAdd(),
+      expect: () => [
+        _initialState.copyWith(
+          beneficiary: _newValidBeneficiaryWithAccount,
+          action: AddBeneficiaryAction.add,
+          busy: true,
+        ),
+        _initialState.copyWith(
+          beneficiary: _newCreatedBeneficiaryWithAccount,
+          action: AddBeneficiaryAction.success,
+          busy: false,
+        ),
+      ],
+      verify: (c) {
+        verify(
+          () => _validateAccountUseCase(
+            account: _validAccount,
+            allowedCharacters: _allowedCharactersForAccount,
+            minAccountChars: _minAccountCharsForAccount,
+            maxAccountChars: _maxAccountCharsForAccount,
+          ),
+        ).called(1);
+        verify(
+          () => _addNewBeneficiaryUseCase(
+            beneficiary: _newValidBeneficiaryWithAccount,
+          ),
+        ).called(1);
+        verifyNever(
+          () => _validateIBANUseCase(
+            iban: any(named: 'iban'),
+            allowedCharacters: any(named: 'allowedCharacters'),
+          ),
+        );
+      },
+    );
+
+    blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+      'With valid IBAN',
+      build: () => _cubit,
+      seed: () => _initialState.copyWith(
+        beneficiary: _newValidBeneficiaryWithIban,
+        selectedCurrency: _currencyEur,
+      ),
+      act: (c) => c.onAdd(),
+      expect: () => [
+        _initialState.copyWith(
+          beneficiary: _newValidBeneficiaryWithIban,
+          action: AddBeneficiaryAction.add,
+          busy: true,
+          selectedCurrency: _currencyEur,
+        ),
+        _initialState.copyWith(
+          beneficiary: _newCreatedBeneficiaryWithIban,
+          action: AddBeneficiaryAction.success,
+          busy: false,
+          selectedCurrency: _currencyEur,
+        ),
+      ],
+      verify: (c) {
+        verify(
+          () => _validateIBANUseCase(
+            iban: _validIban,
+            allowedCharacters: _allowedCharactersForIban,
+          ),
+        ).called(1);
+        verify(
+          () => _addNewBeneficiaryUseCase(
+            beneficiary: _newValidBeneficiaryWithIban,
+          ),
+        ).called(1);
+        verifyNever(
+          () => _validateAccountUseCase(
+            account: any(named: 'account'),
+            allowedCharacters: any(named: 'allowedCharacters'),
+            maxAccountChars: any(named: 'maxAccountChars'),
+            minAccountChars: any(named: 'minAccountChars'),
+          ),
+        );
+      },
+    );
+  });
 
   group('Load banks', () {
     blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
@@ -251,7 +410,7 @@ void main() {
           codes: _globalSettingsCodes,
         ),
       ).thenAnswer(
-        (_) async => _mockedGlobalSettingList,
+        (_) async => _globalSettingList,
       );
     });
 
@@ -294,7 +453,7 @@ void main() {
           availableCurrencies: _currenciesList,
           busy: false,
           action: AddBeneficiaryAction.initAction,
-          beneficiarySettings: _mockedGlobalSettingList,
+          beneficiarySettings: _globalSettingList,
         ),
       ],
       verify: (c) {
@@ -336,7 +495,7 @@ void main() {
       firstName: firstName,
       lastName: lastName,
       bankName: '',
-      currency: _selectedCurrency.code,
+      currency: _currencyGbp.code,
       type: TransferType.international,
       middleName: '',
       address1: address1,
