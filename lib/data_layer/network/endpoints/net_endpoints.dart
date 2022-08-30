@@ -339,5 +339,5 @@ class NetEndpoints {
   String get customerLimits => '$_txnBanking/v2/customer_limit';
 
   /// Endpoint for handling inbox calls
-  String get report => '$_engagement/report';
+  String get report => '$_engagement/v1/report';
 }
