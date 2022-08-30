@@ -22,7 +22,12 @@ class LandingTransferCubit extends Cubit<LandingTransferState> {
   Future<void> load({
     bool loadMore = false,
   }) async {
-    emit(state.copyWith(busy: true, error: LandingTransferErrorStatus.none));
+    emit(
+      state.copyWith(
+        busy: true,
+        error: LandingTransferErrorStatus.none,
+      ),
+    );
 
     try {
       final newPage = state.pagination.paginate(loadMore: loadMore);
@@ -39,6 +44,8 @@ class LandingTransferCubit extends Cubit<LandingTransferState> {
         ],
       );
 
+      /// TODO: cubit_issue | For me it seems wrong to load the currencies all
+      /// the time. Shouldn't we only load them once?
       final currencies = await _loadAllCurrenciesUseCase();
 
       emit(
