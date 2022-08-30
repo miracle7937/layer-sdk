@@ -233,6 +233,15 @@ void main() {
     expect: () => [],
   );
 
+  group('Initial loads', _initialLoads);
+  group('Adds new beneficiary', _addNewBeneficiary);
+  group('Load banks', _loadBanks);
+  group('Beneficiary details changes', _detailsChanges);
+}
+
+void _initialLoads() {
+  final _getCustomerAccountsUseCaseEmpty = MockGetCustomerAccountsUseCase();
+
   blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
     'Loads countries, currencies, accounts and settings',
     build: () => _cubit,
@@ -258,429 +267,401 @@ void main() {
     },
   );
 
-  group('Adds new beneficiary', () {
-    blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
-      'With valid account',
-      build: () => _cubit,
-      seed: () => _initialState.copyWith(
-        beneficiary: _newValidBeneficiaryWithAccount,
-      ),
-      act: (c) => c.onAdd(),
-      expect: () => [
-        _initialState.copyWith(
-          beneficiary: _newValidBeneficiaryWithAccount,
-          action: AddBeneficiaryAction.add,
-          busy: true,
-        ),
-        _initialState.copyWith(
-          beneficiary: _newCreatedBeneficiaryWithAccount,
-          action: AddBeneficiaryAction.success,
-          busy: false,
-        ),
-      ],
-      verify: (c) {
-        verify(
-          () => _validateAccountUseCase(
-            account: _validAccount,
-            allowedCharacters: _allowedCharactersForAccount,
-            minAccountChars: _minAccountCharsForAccount,
-            maxAccountChars: _maxAccountCharsForAccount,
-          ),
-        ).called(1);
-        verify(
-          () => _addNewBeneficiaryUseCase(
-            beneficiary: _newValidBeneficiaryWithAccount,
-          ),
-        ).called(1);
-        verifyNever(
-          () => _validateIBANUseCase(
-            iban: any(named: 'iban'),
-            allowedCharacters: any(named: 'allowedCharacters'),
-          ),
-        );
-      },
-    );
-
-    blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
-      'With valid IBAN',
-      build: () => _cubit,
-      seed: () => _initialState.copyWith(
-        beneficiary: _newValidBeneficiaryWithIban,
-        selectedCurrency: _currencyEur,
-      ),
-      act: (c) => c.onAdd(),
-      expect: () => [
-        _initialState.copyWith(
-          beneficiary: _newValidBeneficiaryWithIban,
-          action: AddBeneficiaryAction.add,
-          busy: true,
-          selectedCurrency: _currencyEur,
-        ),
-        _initialState.copyWith(
-          beneficiary: _newCreatedBeneficiaryWithIban,
-          action: AddBeneficiaryAction.success,
-          busy: false,
-          selectedCurrency: _currencyEur,
-        ),
-      ],
-      verify: (c) {
-        verify(
-          () => _validateIBANUseCase(
-            iban: _validIban,
-            allowedCharacters: _allowedCharactersForIban,
-          ),
-        ).called(1);
-        verify(
-          () => _addNewBeneficiaryUseCase(
-            beneficiary: _newValidBeneficiaryWithIban,
-          ),
-        ).called(1);
-        verifyNever(
-          () => _validateAccountUseCase(
-            account: any(named: 'account'),
-            allowedCharacters: any(named: 'allowedCharacters'),
-            maxAccountChars: any(named: 'maxAccountChars'),
-            minAccountChars: any(named: 'minAccountChars'),
-          ),
-        );
-      },
-    );
-  });
-
-  group('Load banks', () {
-    blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
-      'With empty states emits nothing',
-      build: () => _cubit,
-      act: (c) => c.loadBanks(),
-      expect: () => [],
-    );
-
-    blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
-      'Loads banks and emits resulting list',
-      build: () => _cubit,
-      seed: () => _initialState.copyWith(
-        action: AddBeneficiaryAction.editAction,
-        selectedCountry: _selectedCountry,
-      ),
-      act: (c) => c.loadBanks(),
-      expect: () => [
-        _initialState.copyWith(
-          action: AddBeneficiaryAction.banks,
-          selectedCountry: _selectedCountry,
-          busy: true,
-        ),
-        _initialState.copyWith(
-          action: AddBeneficiaryAction.none,
-          selectedCountry: _selectedCountry,
-          banks: _mockedBanksList,
-          banksPagination: Pagination(
-            limit: _banksPaginationLimit,
-            canLoadMore: true,
-          ),
-        ),
-      ],
-    );
-  });
-
-  group('GetCustomerAccountsUseCase returns empty list', () {
-    final _loadCountriesUseCase = MockLoadCountriesUseCase();
-    final _getCustomerAccountsUseCase = MockGetCustomerAccountsUseCase();
-    final _loadAllCurrenciesUseCase = MockLoadAllCurrenciesUseCase();
-    final _loadBanksByCountryCodeUseCase = MockLoadBanksByCountryCodeUseCase();
-    final _validateAccountUseCase = MockValidateAccountUseCase();
-    final _validateIBANUseCase = MockValidateIBANUseCase();
-    final _addNewBeneficiaryUseCase = MockAddNewBeneficiaryUseCase();
-    final _loadGlobalSettingsUseCase = MockLoadGlobalSettingsUseCase();
-
-    setUp(() {
-      when(_loadCountriesUseCase).thenAnswer(
-        (_) async => _countriesList,
-      );
-
-      when(_getCustomerAccountsUseCase).thenAnswer(
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'Loads countries, currencies, empty accounts list and settings.'
+    'Should emit null for selected currency',
+    setUp: () {
+      when(_getCustomerAccountsUseCaseEmpty).thenAnswer(
         (_) async => <Account>[],
       );
-
-      when(_loadAllCurrenciesUseCase).thenAnswer(
-        (_) async => _currenciesList,
+    },
+    build: () {
+      return AddBeneficiaryCubit(
+        loadCountriesUseCase: _loadCountriesUseCase,
+        getCustomerAccountsUseCase: _getCustomerAccountsUseCaseEmpty,
+        loadAvailableCurrenciesUseCase: _loadAllCurrenciesUseCase,
+        loadBanksByCountryCodeUseCase: _loadBanksByCountryCodeUseCase,
+        validateAccountUseCase: _validateAccountUseCase,
+        validateIBANUseCase: _validateIBANUseCase,
+        addNewBeneficiariesUseCase: _addNewBeneficiaryUseCase,
+        loadGlobalSettingsUseCase: _loadGlobalSettingsUseCase,
+        beneficiaryType: _beneficiaryType,
       );
-
-      when(
+    },
+    act: (c) => c.load(),
+    expect: () => [
+      AddBeneficiaryState(
+        banksPagination: Pagination(limit: _banksPaginationLimit),
+        beneficiaryType: _beneficiaryType,
+        busy: true,
+        action: AddBeneficiaryAction.none,
+      ),
+      AddBeneficiaryState(
+        banksPagination: Pagination(limit: _banksPaginationLimit),
+        beneficiaryType: _beneficiaryType,
+        beneficiary: Beneficiary(
+          nickname: '',
+          firstName: '',
+          lastName: '',
+          middleName: '',
+          bankName: '',
+          type: _beneficiaryType,
+        ),
+        countries: _countriesList,
+        availableCurrencies: _currenciesList,
+        busy: false,
+        action: AddBeneficiaryAction.initAction,
+        beneficiarySettings: _globalSettingList,
+      ),
+    ],
+    verify: (c) {
+      verify(_loadCountriesUseCase).called(1);
+      verify(_getCustomerAccountsUseCaseEmpty).called(1);
+      verify(_loadAllCurrenciesUseCase).called(1);
+      verify(
         () => _loadGlobalSettingsUseCase(
           codes: _globalSettingsCodes,
         ),
-      ).thenAnswer(
-        (_) async => _globalSettingList,
+      ).called(1);
+    },
+  );
+}
+
+void _loadBanks() {
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'With empty states emits nothing',
+    build: () => _cubit,
+    act: (c) => c.loadBanks(),
+    expect: () => [],
+  );
+
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'Loads banks and emits resulting list',
+    build: () => _cubit,
+    seed: () => _initialState.copyWith(
+      action: AddBeneficiaryAction.editAction,
+      selectedCountry: _selectedCountry,
+    ),
+    act: (c) => c.loadBanks(),
+    expect: () => [
+      _initialState.copyWith(
+        action: AddBeneficiaryAction.banks,
+        selectedCountry: _selectedCountry,
+        busy: true,
+      ),
+      _initialState.copyWith(
+        action: AddBeneficiaryAction.none,
+        selectedCountry: _selectedCountry,
+        banks: _mockedBanksList,
+        banksPagination: Pagination(
+          limit: _banksPaginationLimit,
+          canLoadMore: true,
+        ),
+      ),
+    ],
+  );
+}
+
+void _addNewBeneficiary() {
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'With valid account',
+    build: () => _cubit,
+    seed: () => _initialState.copyWith(
+      beneficiary: _newValidBeneficiaryWithAccount,
+    ),
+    act: (c) => c.onAdd(),
+    expect: () => [
+      _initialState.copyWith(
+        beneficiary: _newValidBeneficiaryWithAccount,
+        action: AddBeneficiaryAction.add,
+        busy: true,
+      ),
+      _initialState.copyWith(
+        beneficiary: _newCreatedBeneficiaryWithAccount,
+        action: AddBeneficiaryAction.success,
+        busy: false,
+      ),
+    ],
+    verify: (c) {
+      verify(
+        () => _validateAccountUseCase(
+          account: _validAccount,
+          allowedCharacters: _allowedCharactersForAccount,
+          minAccountChars: _minAccountCharsForAccount,
+          maxAccountChars: _maxAccountCharsForAccount,
+        ),
+      ).called(1);
+      verify(
+        () => _addNewBeneficiaryUseCase(
+          beneficiary: _newValidBeneficiaryWithAccount,
+        ),
+      ).called(1);
+      verifyNever(
+        () => _validateIBANUseCase(
+          iban: any(named: 'iban'),
+          allowedCharacters: any(named: 'allowedCharacters'),
+        ),
       );
-    });
+    },
+  );
 
-    blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
-      'Loads countries, currencies, empty accounts and settings.'
-      'Should emit null for selected currency',
-      build: () {
-        return AddBeneficiaryCubit(
-          loadCountriesUseCase: _loadCountriesUseCase,
-          getCustomerAccountsUseCase: _getCustomerAccountsUseCase,
-          loadAvailableCurrenciesUseCase: _loadAllCurrenciesUseCase,
-          loadBanksByCountryCodeUseCase: _loadBanksByCountryCodeUseCase,
-          validateAccountUseCase: _validateAccountUseCase,
-          validateIBANUseCase: _validateIBANUseCase,
-          addNewBeneficiariesUseCase: _addNewBeneficiaryUseCase,
-          loadGlobalSettingsUseCase: _loadGlobalSettingsUseCase,
-          beneficiaryType: _beneficiaryType,
-        );
-      },
-      act: (c) => c.load(),
-      expect: () => [
-        AddBeneficiaryState(
-          banksPagination: Pagination(limit: _banksPaginationLimit),
-          beneficiaryType: _beneficiaryType,
-          busy: true,
-          action: AddBeneficiaryAction.none,
-        ),
-        AddBeneficiaryState(
-          banksPagination: Pagination(limit: _banksPaginationLimit),
-          beneficiaryType: _beneficiaryType,
-          beneficiary: Beneficiary(
-            nickname: '',
-            firstName: '',
-            lastName: '',
-            middleName: '',
-            bankName: '',
-            type: _beneficiaryType,
-          ),
-          countries: _countriesList,
-          availableCurrencies: _currenciesList,
-          busy: false,
-          action: AddBeneficiaryAction.initAction,
-          beneficiarySettings: _globalSettingList,
-        ),
-      ],
-      verify: (c) {
-        verify(_loadCountriesUseCase).called(1);
-        verify(_getCustomerAccountsUseCase).called(1);
-        verify(_loadAllCurrenciesUseCase).called(1);
-        verify(
-          () => _loadGlobalSettingsUseCase(
-            codes: _globalSettingsCodes,
-          ),
-        ).called(1);
-      },
-    );
-  });
-
-  group('Beneficiary details changes', () {
-    final firstName = 'firstName';
-    final newFirstName = '${firstName}A';
-    final lastName = 'lastName';
-    final newLastName = '${lastName}A';
-    final nickname = 'nickname';
-    final newNickname = '${nickname}A';
-    final address1 = 'address1';
-    final newAddress1 = '${address1}A';
-    final address2 = 'address2';
-    final newAddress2 = '${address2}A';
-    final address3 = 'address3';
-    final newAddress3 = '${address3}A';
-    final account = 'account';
-    final newAccount = '${account}A';
-    final routingCode = 'routingCode';
-    final newRoutingCode = '${routingCode}A';
-    final iban = 'iban';
-    final newIban = '${iban}A';
-    final newCurrency = _currenciesList.first;
-
-    final editedBeneficiary = Beneficiary(
-      nickname: 'nickname',
-      firstName: firstName,
-      lastName: lastName,
-      bankName: '',
-      currency: _currencyGbp.code,
-      type: TransferType.international,
-      middleName: '',
-      address1: address1,
-      address2: address2,
-      address3: address3,
-      accountNumber: account,
-      routingCode: routingCode,
-      iban: iban,
-    );
-
-    blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
-      'Emits state with beneficiary new first name',
-      build: () => _cubit,
-      seed: () => _initialState.copyWith(
-        action: AddBeneficiaryAction.editAction,
-        beneficiary: editedBeneficiary,
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'With valid IBAN',
+    build: () => _cubit,
+    seed: () => _initialState.copyWith(
+      beneficiary: _newValidBeneficiaryWithIban,
+      selectedCurrency: _currencyEur,
+    ),
+    act: (c) => c.onAdd(),
+    expect: () => [
+      _initialState.copyWith(
+        beneficiary: _newValidBeneficiaryWithIban,
+        action: AddBeneficiaryAction.add,
+        busy: true,
+        selectedCurrency: _currencyEur,
       ),
-      act: (c) => c.onFirstNameChange(newFirstName),
-      expect: () => [
-        _initialState.copyWith(
-          action: AddBeneficiaryAction.editAction,
-          beneficiary: editedBeneficiary.copyWith(firstName: newFirstName),
-        ),
-      ],
-    );
-
-    blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
-      'Emits state with beneficiary new last name',
-      build: () => _cubit,
-      seed: () => _initialState.copyWith(
-        action: AddBeneficiaryAction.editAction,
-        beneficiary: editedBeneficiary,
+      _initialState.copyWith(
+        beneficiary: _newCreatedBeneficiaryWithIban,
+        action: AddBeneficiaryAction.success,
+        busy: false,
+        selectedCurrency: _currencyEur,
       ),
-      act: (c) => c.onLastNameChange(newLastName),
-      expect: () => [
-        _initialState.copyWith(
-          action: AddBeneficiaryAction.editAction,
-          beneficiary: editedBeneficiary.copyWith(lastName: newLastName),
+    ],
+    verify: (c) {
+      verify(
+        () => _validateIBANUseCase(
+          iban: _validIban,
+          allowedCharacters: _allowedCharactersForIban,
         ),
-      ],
-    );
+      ).called(1);
+      verify(
+        () => _addNewBeneficiaryUseCase(
+          beneficiary: _newValidBeneficiaryWithIban,
+        ),
+      ).called(1);
+      verifyNever(
+        () => _validateAccountUseCase(
+          account: any(named: 'account'),
+          allowedCharacters: any(named: 'allowedCharacters'),
+          maxAccountChars: any(named: 'maxAccountChars'),
+          minAccountChars: any(named: 'minAccountChars'),
+        ),
+      );
+    },
+  );
+}
 
-    blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
-      'Emits state with beneficiary new nickname',
-      build: () => _cubit,
-      seed: () => _initialState.copyWith(
-        action: AddBeneficiaryAction.editAction,
-        beneficiary: editedBeneficiary,
-      ),
-      act: (c) => c.onNicknameChange(newNickname),
-      expect: () => [
-        _initialState.copyWith(
-          action: AddBeneficiaryAction.editAction,
-          beneficiary: editedBeneficiary.copyWith(nickname: newNickname),
-        ),
-      ],
-    );
+void _detailsChanges() {
+  final firstName = 'firstName';
+  final newFirstName = '${firstName}A';
+  final lastName = 'lastName';
+  final newLastName = '${lastName}A';
+  final nickname = 'nickname';
+  final newNickname = '${nickname}A';
+  final address1 = 'address1';
+  final newAddress1 = '${address1}A';
+  final address2 = 'address2';
+  final newAddress2 = '${address2}A';
+  final address3 = 'address3';
+  final newAddress3 = '${address3}A';
+  final account = 'account';
+  final newAccount = '${account}A';
+  final routingCode = 'routingCode';
+  final newRoutingCode = '${routingCode}A';
+  final iban = 'iban';
+  final newIban = '${iban}A';
+  final newCurrency = _currenciesList.first;
 
-    blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
-      'Emits state with beneficiary new address 1',
-      build: () => _cubit,
-      seed: () => _initialState.copyWith(
-        action: AddBeneficiaryAction.editAction,
-        beneficiary: editedBeneficiary,
-      ),
-      act: (c) => c.onAddress1Change(newAddress1),
-      expect: () => [
-        _initialState.copyWith(
-          action: AddBeneficiaryAction.editAction,
-          beneficiary: editedBeneficiary.copyWith(address1: newAddress1),
-        ),
-      ],
-    );
+  final editedBeneficiary = Beneficiary(
+    nickname: 'nickname',
+    firstName: firstName,
+    lastName: lastName,
+    bankName: '',
+    currency: _currencyGbp.code,
+    type: TransferType.international,
+    middleName: '',
+    address1: address1,
+    address2: address2,
+    address3: address3,
+    accountNumber: account,
+    routingCode: routingCode,
+    iban: iban,
+  );
 
-    blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
-      'Emits state with beneficiary new address 2',
-      build: () => _cubit,
-      seed: () => _initialState.copyWith(
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'Emits state with beneficiary new first name',
+    build: () => _cubit,
+    seed: () => _initialState.copyWith(
+      action: AddBeneficiaryAction.editAction,
+      beneficiary: editedBeneficiary,
+    ),
+    act: (c) => c.onFirstNameChange(newFirstName),
+    expect: () => [
+      _initialState.copyWith(
         action: AddBeneficiaryAction.editAction,
-        beneficiary: editedBeneficiary,
+        beneficiary: editedBeneficiary.copyWith(firstName: newFirstName),
       ),
-      act: (c) => c.onAddress2Change(newAddress2),
-      expect: () => [
-        _initialState.copyWith(
-          action: AddBeneficiaryAction.editAction,
-          beneficiary: editedBeneficiary.copyWith(address2: newAddress2),
-        ),
-      ],
-    );
+    ],
+  );
 
-    blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
-      'Emits state with beneficiary new address 3',
-      build: () => _cubit,
-      seed: () => _initialState.copyWith(
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'Emits state with beneficiary new last name',
+    build: () => _cubit,
+    seed: () => _initialState.copyWith(
+      action: AddBeneficiaryAction.editAction,
+      beneficiary: editedBeneficiary,
+    ),
+    act: (c) => c.onLastNameChange(newLastName),
+    expect: () => [
+      _initialState.copyWith(
         action: AddBeneficiaryAction.editAction,
-        beneficiary: editedBeneficiary,
+        beneficiary: editedBeneficiary.copyWith(lastName: newLastName),
       ),
-      act: (c) => c.onAddress3Change(newAddress3),
-      expect: () => [
-        _initialState.copyWith(
-          action: AddBeneficiaryAction.editAction,
-          beneficiary: editedBeneficiary.copyWith(address3: newAddress3),
-        ),
-      ],
-    );
+    ],
+  );
 
-    blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
-      'Emits state with beneficiary new account number',
-      build: () => _cubit,
-      seed: () => _initialState.copyWith(
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'Emits state with beneficiary new nickname',
+    build: () => _cubit,
+    seed: () => _initialState.copyWith(
+      action: AddBeneficiaryAction.editAction,
+      beneficiary: editedBeneficiary,
+    ),
+    act: (c) => c.onNicknameChange(newNickname),
+    expect: () => [
+      _initialState.copyWith(
         action: AddBeneficiaryAction.editAction,
-        beneficiary: editedBeneficiary,
+        beneficiary: editedBeneficiary.copyWith(nickname: newNickname),
       ),
-      act: (c) => c.onAccountChange(newAccount),
-      expect: () => [
-        _initialState.copyWith(
-          action: AddBeneficiaryAction.editAction,
-          beneficiary: editedBeneficiary.copyWith(accountNumber: newAccount),
-        ),
-      ],
-    );
+    ],
+  );
 
-    blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
-      'Emits state with beneficiary new sort code',
-      build: () => _cubit,
-      seed: () => _initialState.copyWith(
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'Emits state with beneficiary new address 1',
+    build: () => _cubit,
+    seed: () => _initialState.copyWith(
+      action: AddBeneficiaryAction.editAction,
+      beneficiary: editedBeneficiary,
+    ),
+    act: (c) => c.onAddress1Change(newAddress1),
+    expect: () => [
+      _initialState.copyWith(
         action: AddBeneficiaryAction.editAction,
-        beneficiary: editedBeneficiary,
+        beneficiary: editedBeneficiary.copyWith(address1: newAddress1),
       ),
-      act: (c) => c.onRoutingCodeChange(newRoutingCode),
-      expect: () => [
-        _initialState.copyWith(
-          action: AddBeneficiaryAction.editAction,
-          beneficiary: editedBeneficiary.copyWith(routingCode: newRoutingCode),
-        ),
-      ],
-    );
+    ],
+  );
 
-    blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
-      'Emits state with beneficiary new IBAN',
-      build: () => _cubit,
-      seed: () => _initialState.copyWith(
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'Emits state with beneficiary new address 2',
+    build: () => _cubit,
+    seed: () => _initialState.copyWith(
+      action: AddBeneficiaryAction.editAction,
+      beneficiary: editedBeneficiary,
+    ),
+    act: (c) => c.onAddress2Change(newAddress2),
+    expect: () => [
+      _initialState.copyWith(
         action: AddBeneficiaryAction.editAction,
-        beneficiary: editedBeneficiary,
+        beneficiary: editedBeneficiary.copyWith(address2: newAddress2),
       ),
-      act: (c) => c.onIbanChange(newIban),
-      expect: () => [
-        _initialState.copyWith(
-          action: AddBeneficiaryAction.editAction,
-          beneficiary: editedBeneficiary.copyWith(iban: newIban),
-        ),
-      ],
-    );
+    ],
+  );
 
-    blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
-      'Emits state with beneficiary new currency',
-      build: () => _cubit,
-      seed: () => _initialState.copyWith(
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'Emits state with beneficiary new address 3',
+    build: () => _cubit,
+    seed: () => _initialState.copyWith(
+      action: AddBeneficiaryAction.editAction,
+      beneficiary: editedBeneficiary,
+    ),
+    act: (c) => c.onAddress3Change(newAddress3),
+    expect: () => [
+      _initialState.copyWith(
         action: AddBeneficiaryAction.editAction,
-        beneficiary: editedBeneficiary,
+        beneficiary: editedBeneficiary.copyWith(address3: newAddress3),
       ),
-      act: (c) => c.onCurrencyChanged(newCurrency),
-      expect: () => [
-        _initialState.copyWith(
-          selectedCurrency: newCurrency,
-          action: AddBeneficiaryAction.editAction,
-          beneficiary: editedBeneficiary.copyWith(currency: newCurrency.code),
-        ),
-      ],
-    );
+    ],
+  );
 
-    blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
-      'Emits state with beneficiary new selected bank',
-      build: () => _cubit,
-      seed: () => _initialState.copyWith(
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'Emits state with beneficiary new account number',
+    build: () => _cubit,
+    seed: () => _initialState.copyWith(
+      action: AddBeneficiaryAction.editAction,
+      beneficiary: editedBeneficiary,
+    ),
+    act: (c) => c.onAccountChange(newAccount),
+    expect: () => [
+      _initialState.copyWith(
         action: AddBeneficiaryAction.editAction,
-        beneficiary: editedBeneficiary,
+        beneficiary: editedBeneficiary.copyWith(accountNumber: newAccount),
       ),
-      act: (c) => c.onBankChanged(_mockedSelectedBank),
-      expect: () => [
-        _initialState.copyWith(
-          action: AddBeneficiaryAction.editAction,
-          beneficiary: editedBeneficiary.copyWith(bank: _mockedSelectedBank),
-        ),
-      ],
-    );
-  });
+    ],
+  );
+
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'Emits state with beneficiary new sort code',
+    build: () => _cubit,
+    seed: () => _initialState.copyWith(
+      action: AddBeneficiaryAction.editAction,
+      beneficiary: editedBeneficiary,
+    ),
+    act: (c) => c.onRoutingCodeChange(newRoutingCode),
+    expect: () => [
+      _initialState.copyWith(
+        action: AddBeneficiaryAction.editAction,
+        beneficiary: editedBeneficiary.copyWith(routingCode: newRoutingCode),
+      ),
+    ],
+  );
+
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'Emits state with beneficiary new IBAN',
+    build: () => _cubit,
+    seed: () => _initialState.copyWith(
+      action: AddBeneficiaryAction.editAction,
+      beneficiary: editedBeneficiary,
+    ),
+    act: (c) => c.onIbanChange(newIban),
+    expect: () => [
+      _initialState.copyWith(
+        action: AddBeneficiaryAction.editAction,
+        beneficiary: editedBeneficiary.copyWith(iban: newIban),
+      ),
+    ],
+  );
+
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'Emits state with beneficiary new currency',
+    build: () => _cubit,
+    seed: () => _initialState.copyWith(
+      action: AddBeneficiaryAction.editAction,
+      beneficiary: editedBeneficiary,
+    ),
+    act: (c) => c.onCurrencyChanged(newCurrency),
+    expect: () => [
+      _initialState.copyWith(
+        selectedCurrency: newCurrency,
+        action: AddBeneficiaryAction.editAction,
+        beneficiary: editedBeneficiary.copyWith(currency: newCurrency.code),
+      ),
+    ],
+  );
+
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'Emits state with beneficiary new selected bank',
+    build: () => _cubit,
+    seed: () => _initialState.copyWith(
+      action: AddBeneficiaryAction.editAction,
+      beneficiary: editedBeneficiary,
+    ),
+    act: (c) => c.onBankChanged(_mockedSelectedBank),
+    expect: () => [
+      _initialState.copyWith(
+        action: AddBeneficiaryAction.editAction,
+        beneficiary: editedBeneficiary.copyWith(bank: _mockedSelectedBank),
+      ),
+    ],
+  );
 }
