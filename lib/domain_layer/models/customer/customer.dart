@@ -132,7 +132,7 @@ class Customer extends Equatable {
   final bool fatcaStatus;
 
   /// The day of birth of the customer.
-  DateTime? dob;
+  final DateTime? dob;
 
   /// Creates a new immutable [Customer]
   Customer({
