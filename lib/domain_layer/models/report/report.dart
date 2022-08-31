@@ -1,64 +1,66 @@
+import 'package:equatable/equatable.dart';
+
 /// Report model
-class Report {
+class Report extends Equatable {
   /// Report id
-  int? id;
+  final int? id;
 
   /// Created at
-  DateTime? tsCreated;
+  final DateTime? tsCreated;
 
   /// Updated at
-  DateTime? tsUpdated;
+  final DateTime? tsUpdated;
 
   /// Customer id
-  String? customerID;
+  final String? customerID;
 
   /// Username
-  String? username;
+  final String? username;
 
   /// Device id
-  int? deviceID;
+  final int? deviceID;
 
   /// Description
-  String? description;
+  final String? description;
 
   /// Device info
-  String? deviceInfo;
+  final String? deviceInfo;
 
   /// files
-  List<String>? files;
+  final List<String>? files;
 
   /// UnmodifiedFiles
-  List<String>? unmodifiedFiles;
+  final List<String>? unmodifiedFiles;
 
   /// Status
-  String? status;
+  final String? status;
 
   /// osVersion
-  String? osVersion;
+  final String? osVersion;
 
   /// Private note
-  String? privateNote;
+  final String? privateNote;
 
   /// Assignee
-  String? assignee;
+  final String? assignee;
 
   /// Assignee first name
-  String? assigneeFirstName;
+  final String? assigneeFirstName;
 
   /// Assignee last name
-  String? assigneeLastName;
+  final String? assigneeLastName;
 
   /// Category
-  String? category;
+  final String? category;
 
   /// Category name
-  String? categoryName;
+  final String? categoryName;
 
   /// Extra
-  Map<String, dynamic>? extra;
+  final Map<String, dynamic>? extra;
 
   /// Is read
-  bool? read;
+  final bool? read;
 
   /// Default constructor
   Report({
@@ -83,4 +85,28 @@ class Report {
     this.extra,
     this.read,
   });
+
+  @override
+  List<Object?> get props => [
+        id,
+        tsCreated,
+        tsUpdated,
+        customerID,
+        username,
+        deviceID,
+        description,
+        deviceInfo,
+        files,
+        unmodifiedFiles,
+        status,
+        osVersion,
+        privateNote,
+        assignee,
+        assigneeFirstName,
+        assigneeLastName,
+        category,
+        categoryName,
+        extra,
+        read,
+      ];
 }
