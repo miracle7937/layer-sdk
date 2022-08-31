@@ -1,5 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:layer_sdk/data_layer/network.dart';
 import 'package:layer_sdk/domain_layer/use_cases.dart';
 import 'package:layer_sdk/features/beneficiaries.dart';
 import 'package:layer_sdk/presentation_layer/cubits.dart';
@@ -18,6 +19,9 @@ String _newNickName = 'New Banco';
 String _onAddress1Change = 'new Address 1 Change';
 String _onAddress2Change = 'new Address 2 Change';
 String _onAddress3Change = 'new Address 3 Change';
+
+final _exception = Exception('error 123');
+final _netException = NetException(message: 'error 123');
 
 void main() {
   setUp(() {
@@ -51,6 +55,14 @@ void main() {
     when(() => _repo.edit(beneficiary: _benef)).thenAnswer(
       (_) async => _benef,
     );
+
+    when(
+      () => _repo.edit(beneficiary: _benef.copyWith(id: 1)),
+    ).thenThrow(_exception);
+
+    when(
+      () => _repo.edit(beneficiary: _benef.copyWith(id: 2)),
+    ).thenThrow(_netException);
   });
 
   blocTest<EditBeneficiaryCubit, EditBeneficiaryState>(
@@ -135,14 +147,46 @@ void main() {
     expect: () => [
       _baseState.copyWith(
         actions: {
+          EditBeneficiaryAction.editAction,
           EditBeneficiaryAction.save,
-          EditBeneficiaryAction.otpRequired,
         },
         errors: {
           EditBeneficiaryError(
+            action: EditBeneficiaryAction.editAction,
+            errorStatus: EditBeneficiaryErrorStatus.none,
+          ),
+          EditBeneficiaryError(
             action: EditBeneficiaryAction.save,
             errorStatus: EditBeneficiaryErrorStatus.none,
-          )
+          ),
+        },
+      )
+    ],
+    verify: (a) {
+      verify(() => _repo.edit(beneficiary: _benef)).called(1);
+    },
+  );
+
+  blocTest<EditBeneficiaryCubit, EditBeneficiaryState>(
+    'should edit a beneficiary',
+    build: () => _cubit,
+    seed: () => _baseState.copyWith(),
+    act: (c) => c.onEdit(),
+    expect: () => [
+      _baseState.copyWith(
+        actions: {
+          EditBeneficiaryAction.editAction,
+          EditBeneficiaryAction.save,
+        },
+        errors: {
+          EditBeneficiaryError(
+            action: EditBeneficiaryAction.editAction,
+            errorStatus: EditBeneficiaryErrorStatus.none,
+          ),
+          EditBeneficiaryError(
+            action: EditBeneficiaryAction.save,
+            errorStatus: EditBeneficiaryErrorStatus.none,
+          ),
         },
       )
     ],
