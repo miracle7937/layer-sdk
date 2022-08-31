@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import '../../../data_layer/network/net_exceptions.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
+import '../../utils.dart';
 
 /// A cubit that keeps a list of frequently made payments.
 class FrequentPaymentsCubit extends Cubit<FrequentPaymentsState> {
@@ -11,9 +12,14 @@ class FrequentPaymentsCubit extends Cubit<FrequentPaymentsState> {
   /// Creates a new cubit using the supplied [LoadFrequentPaymentsUseCase]
   FrequentPaymentsCubit({
     required LoadFrequentPaymentsUseCase loadFrequentPaymentsUseCase,
+    int limit = 25,
   })  : _loadFrequentPaymentsUseCase = loadFrequentPaymentsUseCase,
         super(
-          FrequentPaymentsState(),
+          FrequentPaymentsState(
+            pagination: Pagination(
+              limit: 25,
+            ),
+          ),
         );
 
   /// Loads the customer's list of frequent payments
@@ -33,6 +39,9 @@ class FrequentPaymentsCubit extends Cubit<FrequentPaymentsState> {
     try {
       final pagination = state.pagination.paginate(loadMore: loadMore);
 
+      /// TODO: cubit_issue | We are going to start taking out unnecesary
+      /// paramters for the UI out of the state and back to the cubit. Why
+      /// is it needed for the pagination to be emmited?
       emit(state.copyWith(
         pagination: pagination,
       ));
@@ -47,8 +56,8 @@ class FrequentPaymentsCubit extends Cubit<FrequentPaymentsState> {
 
       emit(
         state.copyWith(
-          payments: list,
           busy: false,
+          payments: list,
           pagination: pagination.refreshCanLoadMore(
             loadedCount: payments.length,
           ),

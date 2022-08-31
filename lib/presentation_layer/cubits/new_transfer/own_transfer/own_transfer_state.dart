@@ -55,6 +55,11 @@ class OwnTransferState extends Equatable {
   /// The status of the submitted transfer.
   final TransferStatus? resultStatus;
 
+  /// TODO: cubit_issue | Why do we need this? We already have the transfer
+  /// object which has a destination account. We should only set that account
+  /// to the preselected one when we fetch the accounts. This value is
+  /// duplicated.
+  ///
   /// The preselectedAccount for from account.
   final Account? preselectedAccount;
 

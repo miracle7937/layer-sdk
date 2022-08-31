@@ -45,7 +45,9 @@ class MandateCancelState extends Equatable {
   }) {
     return MandateCancelState(
       busy: busy ?? this.busy,
-      errorMessage: errorMessage ?? this.errorMessage,
+      errorMessage: errorStatus == MandateCancelErrorStatus.none
+          ? ''
+          : errorMessage ?? this.errorMessage,
       errorStatus: errorStatus ?? this.errorStatus,
     );
   }

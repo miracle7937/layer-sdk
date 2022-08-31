@@ -4,6 +4,15 @@ import 'package:equatable/equatable.dart';
 
 import '../../../domain_layer/models.dart';
 
+/// Enum for all possible errors for [AccountCubit]
+enum CustomerAccountStateErrors {
+  /// No errors
+  none,
+
+  /// Generic error
+  generic,
+}
+
 /// Represents the state of [CustomerAccountsCubit]
 class CustomerAccountsState extends Equatable {
   /// True if the cubit is processing something
@@ -22,13 +31,6 @@ class CustomerAccountsState extends Equatable {
     this.error = CustomerAccountStateErrors.none,
   }) : accounts = UnmodifiableListView(accounts);
 
-  @override
-  List<Object?> get props => [
-        busy,
-        accounts,
-        error,
-      ];
-
   /// Creates a new instance of [CustomerAccountsState] based on
   /// the current instance.
   CustomerAccountsState copyWith({
@@ -42,13 +44,11 @@ class CustomerAccountsState extends Equatable {
       error: error ?? this.error,
     );
   }
-}
 
-/// Enum for all possible errors for [AccountCubit]
-enum CustomerAccountStateErrors {
-  /// No errors
-  none,
-
-  /// Generic error
-  generic,
+  @override
+  List<Object?> get props => [
+        busy,
+        accounts,
+        error,
+      ];
 }
