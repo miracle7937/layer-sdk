@@ -47,6 +47,7 @@ extension CustomerDTOMapping on CustomerDTO {
         ),
         firstName: firstName ?? '',
         middleName: middleName ?? '',
+        dob: dob,
         lastName: lastName ?? '',
         nationalities: nationality?.split(';').whereNotNull(),
         created: created,

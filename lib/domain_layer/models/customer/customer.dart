@@ -131,6 +131,9 @@ class Customer extends Equatable {
   /// The Foreign Account Tax Compliance Act (FATCA) status.
   final bool fatcaStatus;
 
+  /// The day of birth of the customer.
+  DateTime? dob;
+
   /// Creates a new immutable [Customer]
   Customer({
     required this.id,
@@ -144,6 +147,7 @@ class Customer extends Equatable {
     Iterable<Address>? addresses,
     Iterable<String>? nationalities,
     this.created,
+    this.dob,
     this.eStatement = false,
     this.cpr = const CPR(),
     this.isStaff = false,
