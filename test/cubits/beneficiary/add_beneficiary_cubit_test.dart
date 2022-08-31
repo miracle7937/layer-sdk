@@ -1,5 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
+import 'package:layer_sdk/data_layer/network.dart';
 import 'package:layer_sdk/domain_layer/models.dart';
 import 'package:layer_sdk/domain_layer/use_cases.dart';
 import 'package:layer_sdk/layer_sdk.dart';
@@ -46,9 +47,9 @@ final _countriesList = [
 ];
 final _selectedCountry = _countriesList.first;
 
+final _banksCount = 83;
 final _banksPaginationLimit = 20;
-final _mockedBanksList =
-    List.generate(_banksPaginationLimit, (index) => MockBank());
+final _mockedBanksList = List.generate(_banksCount, (index) => MockBank());
 final _mockedSelectedBank = _mockedBanksList.first;
 
 final _accountsList = [
@@ -101,7 +102,8 @@ late AddBeneficiaryCubit _cubit;
 
 final _beneficiaryType = TransferType.international;
 
-final _initialState = AddBeneficiaryState(
+/// When cubit loaded all required data
+final _loadedState = AddBeneficiaryState(
   banksPagination: Pagination(limit: _banksPaginationLimit),
   beneficiaryType: _beneficiaryType,
   beneficiary: Beneficiary(
@@ -153,6 +155,11 @@ final _newCreatedBeneficiaryWithIban = _newValidBeneficiaryWithIban.copyWith(
   id: 1,
 );
 
+final _netException = NetException(
+  code: 'code',
+  message: 'message',
+);
+
 void main() {
   EquatableConfig.stringify = true;
 
@@ -190,16 +197,6 @@ void main() {
     );
 
     when(
-      () => _loadBanksByCountryCodeUseCase(
-        countryCode: _selectedCountry.countryCode!,
-        limit: _banksPaginationLimit,
-        offset: 0,
-      ),
-    ).thenAnswer(
-      (_) async => _mockedBanksList,
-    );
-
-    when(
       () => _validateAccountUseCase(
         account: _validAccount,
         allowedCharacters: _allowedCharactersForAccount,
@@ -220,11 +217,22 @@ void main() {
         beneficiary: _newValidBeneficiaryWithAccount,
       ),
     ).thenAnswer((_) async => _newCreatedBeneficiaryWithAccount);
+
     when(
       () => _addNewBeneficiaryUseCase(
         beneficiary: _newValidBeneficiaryWithIban,
       ),
     ).thenAnswer((_) async => _newCreatedBeneficiaryWithIban);
+
+    when(
+      () => _loadBanksByCountryCodeUseCase(
+        countryCode: _selectedCountry.countryCode!,
+        limit: _banksPaginationLimit,
+        offset: 0,
+      ),
+    ).thenAnswer(
+      (_) async => _mockedBanksList,
+    );
   });
 
   blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
@@ -240,20 +248,20 @@ void main() {
 }
 
 void _initialLoads() {
-  final _getCustomerAccountsUseCaseEmpty = MockGetCustomerAccountsUseCase();
+  final _initialState = AddBeneficiaryState(
+    banksPagination: Pagination(limit: _banksPaginationLimit),
+    beneficiaryType: TransferType.international,
+    busy: true,
+    action: AddBeneficiaryAction.none,
+  );
 
   blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
     'Loads countries, currencies, accounts and settings',
     build: () => _cubit,
     act: (c) => c.load(),
     expect: () => [
-      AddBeneficiaryState(
-        banksPagination: Pagination(limit: _banksPaginationLimit),
-        beneficiaryType: TransferType.international,
-        busy: true,
-        action: AddBeneficiaryAction.none,
-      ),
       _initialState,
+      _loadedState,
     ],
     verify: (c) {
       verify(_loadCountriesUseCase).called(1);
@@ -268,17 +276,17 @@ void _initialLoads() {
   );
 
   blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
-    'Loads countries, currencies, empty accounts list and settings.'
+    'Loads countries, currencies, empty accounts list and settings. '
     'Should emit null for selected currency',
     setUp: () {
-      when(_getCustomerAccountsUseCaseEmpty).thenAnswer(
+      when(_getCustomerAccountsUseCase).thenAnswer(
         (_) async => <Account>[],
       );
     },
     build: () {
       return AddBeneficiaryCubit(
         loadCountriesUseCase: _loadCountriesUseCase,
-        getCustomerAccountsUseCase: _getCustomerAccountsUseCaseEmpty,
+        getCustomerAccountsUseCase: _getCustomerAccountsUseCase,
         loadAvailableCurrenciesUseCase: _loadAllCurrenciesUseCase,
         loadBanksByCountryCodeUseCase: _loadBanksByCountryCodeUseCase,
         validateAccountUseCase: _validateAccountUseCase,
@@ -290,15 +298,8 @@ void _initialLoads() {
     },
     act: (c) => c.load(),
     expect: () => [
-      AddBeneficiaryState(
-        banksPagination: Pagination(limit: _banksPaginationLimit),
-        beneficiaryType: _beneficiaryType,
-        busy: true,
-        action: AddBeneficiaryAction.none,
-      ),
-      AddBeneficiaryState(
-        banksPagination: Pagination(limit: _banksPaginationLimit),
-        beneficiaryType: _beneficiaryType,
+      _initialState,
+      _initialState.copyWith(
         beneficiary: Beneficiary(
           nickname: '',
           firstName: '',
@@ -316,7 +317,7 @@ void _initialLoads() {
     ],
     verify: (c) {
       verify(_loadCountriesUseCase).called(1);
-      verify(_getCustomerAccountsUseCaseEmpty).called(1);
+      verify(_getCustomerAccountsUseCase).called(1);
       verify(_loadAllCurrenciesUseCase).called(1);
       verify(
         () => _loadGlobalSettingsUseCase(
@@ -324,6 +325,228 @@ void _initialLoads() {
         ),
       ).called(1);
     },
+  );
+
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'Loads countries with exception,'
+    'emits state with generic error',
+    setUp: () {
+      when(
+        _loadCountriesUseCase,
+      ).thenAnswer(
+        (_) async => throw Exception('Some error'),
+      );
+    },
+    build: () => _cubit,
+    act: (c) => c.load(),
+    expect: () => [
+      _initialState,
+      _initialState.copyWith(
+        busy: false,
+        errors: {
+          AddBeneficiaryError(
+            action: AddBeneficiaryAction.initAction,
+            errorStatus: AddBeneficiaryErrorStatus.generic,
+          )
+        },
+      ),
+    ],
+    verify: (c) => verify(_loadCountriesUseCase).called(1),
+  );
+
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'Loads countries with exception,'
+    'emits state with NetException error',
+    setUp: () {
+      when(
+        _loadCountriesUseCase,
+      ).thenAnswer(
+        (_) async => throw _netException,
+      );
+    },
+    build: () => _cubit,
+    act: (c) => c.load(),
+    expect: () => [
+      _initialState,
+      _initialState.copyWith(
+        busy: false,
+        errors: {
+          AddBeneficiaryError(
+            action: AddBeneficiaryAction.initAction,
+            errorStatus: AddBeneficiaryErrorStatus.network,
+            code: _netException.code,
+            message: _netException.message,
+          )
+        },
+      ),
+    ],
+    verify: (c) => verify(_loadCountriesUseCase).called(1),
+  );
+
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'Loads accounts with exception,'
+    'emits state with generic error',
+    setUp: () {
+      when(
+        _getCustomerAccountsUseCase,
+      ).thenAnswer(
+        (_) async => throw Exception('Some error'),
+      );
+    },
+    build: () => _cubit,
+    act: (c) => c.load(),
+    expect: () => [
+      _initialState,
+      _initialState.copyWith(
+        busy: false,
+        errors: {
+          AddBeneficiaryError(
+            action: AddBeneficiaryAction.initAction,
+            errorStatus: AddBeneficiaryErrorStatus.generic,
+          )
+        },
+      ),
+    ],
+  );
+
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'Loads accounts with exception,'
+    'emits state with NetException error',
+    setUp: () {
+      when(
+        _getCustomerAccountsUseCase,
+      ).thenAnswer(
+        (_) async => throw _netException,
+      );
+    },
+    build: () => _cubit,
+    act: (c) => c.load(),
+    expect: () => [
+      _initialState,
+      _initialState.copyWith(
+        busy: false,
+        errors: {
+          AddBeneficiaryError(
+            action: AddBeneficiaryAction.initAction,
+            errorStatus: AddBeneficiaryErrorStatus.network,
+            code: _netException.code,
+            message: _netException.message,
+          )
+        },
+      ),
+    ],
+  );
+
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'Loads currencies with exception,'
+    'emits state with generic error',
+    setUp: () {
+      when(
+        _loadAllCurrenciesUseCase,
+      ).thenAnswer(
+        (_) async => throw Exception('Some error'),
+      );
+    },
+    build: () => _cubit,
+    act: (c) => c.load(),
+    expect: () => [
+      _initialState,
+      _initialState.copyWith(
+        busy: false,
+        errors: {
+          AddBeneficiaryError(
+            action: AddBeneficiaryAction.initAction,
+            errorStatus: AddBeneficiaryErrorStatus.generic,
+          )
+        },
+      ),
+    ],
+  );
+
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'Loads currencies with exception,'
+    'emits state with NetException error',
+    setUp: () {
+      when(
+        _loadAllCurrenciesUseCase,
+      ).thenAnswer(
+        (_) async => throw _netException,
+      );
+    },
+    build: () => _cubit,
+    act: (c) => c.load(),
+    expect: () => [
+      _initialState,
+      _initialState.copyWith(
+        busy: false,
+        errors: {
+          AddBeneficiaryError(
+            action: AddBeneficiaryAction.initAction,
+            errorStatus: AddBeneficiaryErrorStatus.network,
+            code: _netException.code,
+            message: _netException.message,
+          )
+        },
+      ),
+    ],
+  );
+
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'Loads global settings with exception,'
+    'emits state with generic error',
+    setUp: () {
+      when(
+        () => _loadGlobalSettingsUseCase(
+          codes: _globalSettingsCodes,
+        ),
+      ).thenAnswer(
+        (_) async => throw Exception('Some error'),
+      );
+    },
+    build: () => _cubit,
+    act: (c) => c.load(),
+    expect: () => [
+      _initialState,
+      _initialState.copyWith(
+        busy: false,
+        errors: {
+          AddBeneficiaryError(
+            action: AddBeneficiaryAction.initAction,
+            errorStatus: AddBeneficiaryErrorStatus.generic,
+          )
+        },
+      ),
+    ],
+  );
+
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'Loads global settings with exception,'
+    'emits state with NetException error',
+    setUp: () {
+      when(
+        () => _loadGlobalSettingsUseCase(
+          codes: _globalSettingsCodes,
+        ),
+      ).thenAnswer(
+        (_) async => throw _netException,
+      );
+    },
+    build: () => _cubit,
+    act: (c) => c.load(),
+    expect: () => [
+      _initialState,
+      _initialState.copyWith(
+        busy: false,
+        errors: {
+          AddBeneficiaryError(
+            action: AddBeneficiaryAction.initAction,
+            errorStatus: AddBeneficiaryErrorStatus.network,
+            code: _netException.code,
+            message: _netException.message,
+          )
+        },
+      ),
+    ],
   );
 }
 
@@ -333,23 +556,31 @@ void _loadBanks() {
     build: () => _cubit,
     act: (c) => c.loadBanks(),
     expect: () => [],
+    verify: (c) => verifyNever(
+      () => _loadBanksByCountryCodeUseCase(
+        countryCode: any(named: 'countryCode'),
+        limit: any(named: 'limit'),
+        offset: any(named: 'offset'),
+        query: any(named: 'query'),
+      ),
+    ),
   );
 
   blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
     'Loads banks and emits resulting list',
     build: () => _cubit,
-    seed: () => _initialState.copyWith(
+    seed: () => _loadedState.copyWith(
       action: AddBeneficiaryAction.editAction,
       selectedCountry: _selectedCountry,
     ),
     act: (c) => c.loadBanks(),
     expect: () => [
-      _initialState.copyWith(
+      _loadedState.copyWith(
         action: AddBeneficiaryAction.banks,
         selectedCountry: _selectedCountry,
         busy: true,
       ),
-      _initialState.copyWith(
+      _loadedState.copyWith(
         action: AddBeneficiaryAction.none,
         selectedCountry: _selectedCountry,
         banks: _mockedBanksList,
@@ -360,23 +591,132 @@ void _loadBanks() {
       ),
     ],
   );
+
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'Loads more banks, '
+    'emits resulting list',
+    build: () => _cubit,
+    seed: () => _loadedState.copyWith(
+      action: AddBeneficiaryAction.editAction,
+      selectedCountry: _selectedCountry,
+    ),
+    act: (c) => c.loadBanks(),
+    expect: () => [
+      _loadedState.copyWith(
+        action: AddBeneficiaryAction.banks,
+        selectedCountry: _selectedCountry,
+        busy: true,
+      ),
+      _loadedState.copyWith(
+        action: AddBeneficiaryAction.none,
+        selectedCountry: _selectedCountry,
+        banks: _mockedBanksList,
+        banksPagination: Pagination(
+          limit: _banksPaginationLimit,
+          canLoadMore: true,
+        ),
+      ),
+    ],
+  );
+
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'Loads banks with exception,'
+    'emits state with generic error',
+    setUp: () {
+      when(
+        () => _loadBanksByCountryCodeUseCase(
+          countryCode: _selectedCountry.countryCode!,
+          limit: _banksPaginationLimit,
+          offset: 0,
+        ),
+      ).thenAnswer(
+        (_) async => throw Exception('Some error'),
+      );
+    },
+    build: () => _cubit,
+    seed: () => _loadedState.copyWith(
+      action: AddBeneficiaryAction.editAction,
+      selectedCountry: _selectedCountry,
+    ),
+    act: (c) => c.loadBanks(),
+    expect: () => [
+      _loadedState.copyWith(
+        action: AddBeneficiaryAction.banks,
+        selectedCountry: _selectedCountry,
+        busy: true,
+      ),
+      _loadedState.copyWith(
+        action: AddBeneficiaryAction.none,
+        selectedCountry: _selectedCountry,
+        busy: false,
+        errors: {
+          AddBeneficiaryError(
+            action: AddBeneficiaryAction.banks,
+            errorStatus: AddBeneficiaryErrorStatus.generic,
+          )
+        },
+      ),
+    ],
+  );
+
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'Loads banks with exception,'
+    'emits state with NetException error',
+    setUp: () {
+      when(
+        () => _loadBanksByCountryCodeUseCase(
+          countryCode: _selectedCountry.countryCode!,
+          limit: _banksPaginationLimit,
+          offset: 0,
+        ),
+      ).thenAnswer(
+        (_) async => throw _netException,
+      );
+    },
+    build: () => _cubit,
+    seed: () => _loadedState.copyWith(
+      action: AddBeneficiaryAction.editAction,
+      selectedCountry: _selectedCountry,
+    ),
+    act: (c) => c.loadBanks(),
+    expect: () => [
+      _loadedState.copyWith(
+        action: AddBeneficiaryAction.banks,
+        selectedCountry: _selectedCountry,
+        busy: true,
+      ),
+      _loadedState.copyWith(
+        action: AddBeneficiaryAction.none,
+        selectedCountry: _selectedCountry,
+        busy: false,
+        errors: {
+          AddBeneficiaryError(
+            action: AddBeneficiaryAction.banks,
+            errorStatus: AddBeneficiaryErrorStatus.network,
+            code: _netException.code,
+            message: _netException.message,
+          )
+        },
+      ),
+    ],
+  );
 }
 
 void _addNewBeneficiary() {
   blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
     'With valid account',
     build: () => _cubit,
-    seed: () => _initialState.copyWith(
+    seed: () => _loadedState.copyWith(
       beneficiary: _newValidBeneficiaryWithAccount,
     ),
     act: (c) => c.onAdd(),
     expect: () => [
-      _initialState.copyWith(
+      _loadedState.copyWith(
         beneficiary: _newValidBeneficiaryWithAccount,
         action: AddBeneficiaryAction.add,
         busy: true,
       ),
-      _initialState.copyWith(
+      _loadedState.copyWith(
         beneficiary: _newCreatedBeneficiaryWithAccount,
         action: AddBeneficiaryAction.success,
         busy: false,
@@ -408,19 +748,19 @@ void _addNewBeneficiary() {
   blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
     'With valid IBAN',
     build: () => _cubit,
-    seed: () => _initialState.copyWith(
+    seed: () => _loadedState.copyWith(
       beneficiary: _newValidBeneficiaryWithIban,
       selectedCurrency: _currencyEur,
     ),
     act: (c) => c.onAdd(),
     expect: () => [
-      _initialState.copyWith(
+      _loadedState.copyWith(
         beneficiary: _newValidBeneficiaryWithIban,
         action: AddBeneficiaryAction.add,
         busy: true,
         selectedCurrency: _currencyEur,
       ),
-      _initialState.copyWith(
+      _loadedState.copyWith(
         beneficiary: _newCreatedBeneficiaryWithIban,
         action: AddBeneficiaryAction.success,
         busy: false,
@@ -491,13 +831,13 @@ void _detailsChanges() {
   blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
     'Emits state with beneficiary new first name',
     build: () => _cubit,
-    seed: () => _initialState.copyWith(
+    seed: () => _loadedState.copyWith(
       action: AddBeneficiaryAction.editAction,
       beneficiary: editedBeneficiary,
     ),
     act: (c) => c.onFirstNameChange(newFirstName),
     expect: () => [
-      _initialState.copyWith(
+      _loadedState.copyWith(
         action: AddBeneficiaryAction.editAction,
         beneficiary: editedBeneficiary.copyWith(firstName: newFirstName),
       ),
@@ -507,13 +847,13 @@ void _detailsChanges() {
   blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
     'Emits state with beneficiary new last name',
     build: () => _cubit,
-    seed: () => _initialState.copyWith(
+    seed: () => _loadedState.copyWith(
       action: AddBeneficiaryAction.editAction,
       beneficiary: editedBeneficiary,
     ),
     act: (c) => c.onLastNameChange(newLastName),
     expect: () => [
-      _initialState.copyWith(
+      _loadedState.copyWith(
         action: AddBeneficiaryAction.editAction,
         beneficiary: editedBeneficiary.copyWith(lastName: newLastName),
       ),
@@ -523,13 +863,13 @@ void _detailsChanges() {
   blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
     'Emits state with beneficiary new nickname',
     build: () => _cubit,
-    seed: () => _initialState.copyWith(
+    seed: () => _loadedState.copyWith(
       action: AddBeneficiaryAction.editAction,
       beneficiary: editedBeneficiary,
     ),
     act: (c) => c.onNicknameChange(newNickname),
     expect: () => [
-      _initialState.copyWith(
+      _loadedState.copyWith(
         action: AddBeneficiaryAction.editAction,
         beneficiary: editedBeneficiary.copyWith(nickname: newNickname),
       ),
@@ -539,13 +879,13 @@ void _detailsChanges() {
   blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
     'Emits state with beneficiary new address 1',
     build: () => _cubit,
-    seed: () => _initialState.copyWith(
+    seed: () => _loadedState.copyWith(
       action: AddBeneficiaryAction.editAction,
       beneficiary: editedBeneficiary,
     ),
     act: (c) => c.onAddress1Change(newAddress1),
     expect: () => [
-      _initialState.copyWith(
+      _loadedState.copyWith(
         action: AddBeneficiaryAction.editAction,
         beneficiary: editedBeneficiary.copyWith(address1: newAddress1),
       ),
@@ -555,13 +895,13 @@ void _detailsChanges() {
   blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
     'Emits state with beneficiary new address 2',
     build: () => _cubit,
-    seed: () => _initialState.copyWith(
+    seed: () => _loadedState.copyWith(
       action: AddBeneficiaryAction.editAction,
       beneficiary: editedBeneficiary,
     ),
     act: (c) => c.onAddress2Change(newAddress2),
     expect: () => [
-      _initialState.copyWith(
+      _loadedState.copyWith(
         action: AddBeneficiaryAction.editAction,
         beneficiary: editedBeneficiary.copyWith(address2: newAddress2),
       ),
@@ -571,13 +911,13 @@ void _detailsChanges() {
   blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
     'Emits state with beneficiary new address 3',
     build: () => _cubit,
-    seed: () => _initialState.copyWith(
+    seed: () => _loadedState.copyWith(
       action: AddBeneficiaryAction.editAction,
       beneficiary: editedBeneficiary,
     ),
     act: (c) => c.onAddress3Change(newAddress3),
     expect: () => [
-      _initialState.copyWith(
+      _loadedState.copyWith(
         action: AddBeneficiaryAction.editAction,
         beneficiary: editedBeneficiary.copyWith(address3: newAddress3),
       ),
@@ -587,13 +927,13 @@ void _detailsChanges() {
   blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
     'Emits state with beneficiary new account number',
     build: () => _cubit,
-    seed: () => _initialState.copyWith(
+    seed: () => _loadedState.copyWith(
       action: AddBeneficiaryAction.editAction,
       beneficiary: editedBeneficiary,
     ),
     act: (c) => c.onAccountChange(newAccount),
     expect: () => [
-      _initialState.copyWith(
+      _loadedState.copyWith(
         action: AddBeneficiaryAction.editAction,
         beneficiary: editedBeneficiary.copyWith(accountNumber: newAccount),
       ),
@@ -603,13 +943,13 @@ void _detailsChanges() {
   blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
     'Emits state with beneficiary new sort code',
     build: () => _cubit,
-    seed: () => _initialState.copyWith(
+    seed: () => _loadedState.copyWith(
       action: AddBeneficiaryAction.editAction,
       beneficiary: editedBeneficiary,
     ),
     act: (c) => c.onRoutingCodeChange(newRoutingCode),
     expect: () => [
-      _initialState.copyWith(
+      _loadedState.copyWith(
         action: AddBeneficiaryAction.editAction,
         beneficiary: editedBeneficiary.copyWith(routingCode: newRoutingCode),
       ),
@@ -619,13 +959,13 @@ void _detailsChanges() {
   blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
     'Emits state with beneficiary new IBAN',
     build: () => _cubit,
-    seed: () => _initialState.copyWith(
+    seed: () => _loadedState.copyWith(
       action: AddBeneficiaryAction.editAction,
       beneficiary: editedBeneficiary,
     ),
     act: (c) => c.onIbanChange(newIban),
     expect: () => [
-      _initialState.copyWith(
+      _loadedState.copyWith(
         action: AddBeneficiaryAction.editAction,
         beneficiary: editedBeneficiary.copyWith(iban: newIban),
       ),
@@ -635,13 +975,13 @@ void _detailsChanges() {
   blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
     'Emits state with beneficiary new currency',
     build: () => _cubit,
-    seed: () => _initialState.copyWith(
+    seed: () => _loadedState.copyWith(
       action: AddBeneficiaryAction.editAction,
       beneficiary: editedBeneficiary,
     ),
     act: (c) => c.onCurrencyChanged(newCurrency),
     expect: () => [
-      _initialState.copyWith(
+      _loadedState.copyWith(
         selectedCurrency: newCurrency,
         action: AddBeneficiaryAction.editAction,
         beneficiary: editedBeneficiary.copyWith(currency: newCurrency.code),
@@ -652,13 +992,13 @@ void _detailsChanges() {
   blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
     'Emits state with beneficiary new selected bank',
     build: () => _cubit,
-    seed: () => _initialState.copyWith(
+    seed: () => _loadedState.copyWith(
       action: AddBeneficiaryAction.editAction,
       beneficiary: editedBeneficiary,
     ),
     act: (c) => c.onBankChanged(_mockedSelectedBank),
     expect: () => [
-      _initialState.copyWith(
+      _loadedState.copyWith(
         action: AddBeneficiaryAction.editAction,
         beneficiary: editedBeneficiary.copyWith(bank: _mockedSelectedBank),
       ),
