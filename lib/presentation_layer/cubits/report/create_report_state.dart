@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../domain_layer/models/report/report.dart';
+import '../../../domain_layer/models.dart';
 
 /// Create report action
 enum CreateReportAction {
@@ -32,23 +32,32 @@ class CreateReportState extends Equatable {
   final CreateReportErrorStatus error;
 
   /// Created report
-  final Report? createdReport;
+  final InboxReport? createdReport;
 
   /// Copy with method
-  CreateReportState copyWith(
-          {CreateReportAction? action,
-          CreateReportErrorStatus? error,
-          String? category,
-          Report? createdReport}) =>
+  CreateReportState copyWith({
+    CreateReportAction? action,
+    CreateReportErrorStatus? error,
+    String? category,
+    InboxReport? createdReport,
+  }) =>
       CreateReportState(
-          action: action ?? this.action,
-          error: error ?? this.error,
-          createdReport: createdReport ?? this.createdReport);
+        action: action ?? this.action,
+        error: error ?? this.error,
+        createdReport: createdReport ?? this.createdReport,
+      );
 
   /// Default constructor
-  CreateReportState(
-      {required this.action, required this.error, this.createdReport});
+  CreateReportState({
+    required this.action,
+    required this.error,
+    this.createdReport,
+  });
 
   @override
-  List<Object?> get props => [action, error, createdReport];
+  List<Object?> get props => [
+        action,
+        error,
+        createdReport,
+      ];
 }

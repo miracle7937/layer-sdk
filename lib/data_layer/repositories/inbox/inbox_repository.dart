@@ -25,4 +25,10 @@ class InboxRepository implements InboxRepositoryInterface {
 
     return reports.map((r) => r.toInboxReport()).toList();
   }
+
+  @override
+  Future<InboxReport> createReport(String categoryId) async {
+    final reportDto = await _provider.createReport(categoryId);
+    return reportDto.toInboxReport();
+  }
 }

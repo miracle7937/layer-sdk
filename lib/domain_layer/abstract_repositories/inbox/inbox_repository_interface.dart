@@ -8,4 +8,7 @@ abstract class InboxRepositoryInterface {
     int? limit,
     int? offset,
   });
+
+  /// Create a new Report
+  Future<InboxReport> createReport(String category);
 }
