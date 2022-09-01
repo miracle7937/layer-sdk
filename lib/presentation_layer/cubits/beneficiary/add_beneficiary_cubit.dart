@@ -351,7 +351,7 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         emit(
           state.copyWith(
             errors: _addError(
-              action: AddBeneficiaryAction.editAction,
+              action: AddBeneficiaryAction.add,
               errorStatus: AddBeneficiaryErrorStatus.invalidAccount,
             ),
           ),
@@ -370,7 +370,7 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         emit(
           state.copyWith(
             errors: _addError(
-              action: AddBeneficiaryAction.editAction,
+              action: AddBeneficiaryAction.add,
               errorStatus: AddBeneficiaryErrorStatus.invalidIBAN,
             ),
           ),

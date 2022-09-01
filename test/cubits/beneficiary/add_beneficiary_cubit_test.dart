@@ -784,8 +784,10 @@ void _loadBanks() {
 
 void _addNewBeneficiary() {
   final _validAccount = '123456789';
+  final _invalidAccount = '123';
 
   final _validIban = 'GB30PAYR00997700004655';
+  final _invalidIban = 'GB30';
 
   final _newBeneficiary = Beneficiary(
     nickname: 'nickname',
@@ -795,28 +797,39 @@ void _addNewBeneficiary() {
     bankName: 'bankName',
   );
 
-  final _newValidBeneficiaryWithAccount = _newBeneficiary.copyWith(
+  final _newBeneficiaryWithValidAccount = _newBeneficiary.copyWith(
     accountNumber: _validAccount,
     routingCode: '111111',
     iban: '',
   );
+  final _newBeneficiaryWithInvalidAccount =
+      _newBeneficiaryWithValidAccount.copyWith(
+    accountNumber: _invalidAccount,
+  );
 
-  final _newValidBeneficiaryWithIban = _newBeneficiary.copyWith(
+  final _newBeneficiaryWithValidIban = _newBeneficiary.copyWith(
     accountNumber: '',
     routingCode: '',
     iban: _validIban,
   );
 
+  final _newBeneficiaryWithInvalidIban = _newBeneficiary.copyWith(
+    accountNumber: '',
+    routingCode: '',
+    iban: _invalidIban,
+  );
+
   final _newCreatedBeneficiaryWithAccount =
-      _newValidBeneficiaryWithAccount.copyWith(
+      _newBeneficiaryWithValidAccount.copyWith(
     id: 1,
   );
 
-  final _newCreatedBeneficiaryWithIban = _newValidBeneficiaryWithIban.copyWith(
+  final _newCreatedBeneficiaryWithIban = _newBeneficiaryWithValidIban.copyWith(
     id: 1,
   );
 
   setUp(() {
+    /// Stub method for VALID Account validation
     when(
       () => _validateAccountUseCase(
         account: _validAccount,
@@ -826,6 +839,17 @@ void _addNewBeneficiary() {
       ),
     ).thenReturn(true);
 
+    /// Stub method for INVALID Account validation
+    when(
+      () => _validateAccountUseCase(
+        account: _invalidAccount,
+        allowedCharacters: _allowedCharactersForAccount,
+        minAccountChars: _minAccountCharsForAccount,
+        maxAccountChars: _maxAccountCharsForAccount,
+      ),
+    ).thenReturn(false);
+
+    /// Stub method for VALID IBAN validation
     when(
       () => _validateIBANUseCase(
         iban: _validIban,
@@ -833,15 +857,23 @@ void _addNewBeneficiary() {
       ),
     ).thenReturn(true);
 
+    /// Stub method for INVALID IBAN validation
+    when(
+      () => _validateIBANUseCase(
+        iban: _invalidIban,
+        allowedCharacters: _allowedCharactersForIban,
+      ),
+    ).thenReturn(false);
+
     when(
       () => _addNewBeneficiaryUseCase(
-        beneficiary: _newValidBeneficiaryWithAccount,
+        beneficiary: _newBeneficiaryWithValidAccount,
       ),
     ).thenAnswer((_) async => _newCreatedBeneficiaryWithAccount);
 
     when(
       () => _addNewBeneficiaryUseCase(
-        beneficiary: _newValidBeneficiaryWithIban,
+        beneficiary: _newBeneficiaryWithValidIban,
       ),
     ).thenAnswer((_) async => _newCreatedBeneficiaryWithIban);
   });
@@ -850,12 +882,12 @@ void _addNewBeneficiary() {
     'With valid account',
     build: () => _cubit,
     seed: () => _loadedState.copyWith(
-      beneficiary: _newValidBeneficiaryWithAccount,
+      beneficiary: _newBeneficiaryWithValidAccount,
     ),
     act: (c) => c.onAdd(),
     expect: () => [
       _loadedState.copyWith(
-        beneficiary: _newValidBeneficiaryWithAccount,
+        beneficiary: _newBeneficiaryWithValidAccount,
         action: AddBeneficiaryAction.add,
         busy: true,
       ),
@@ -876,9 +908,174 @@ void _addNewBeneficiary() {
       ).called(1);
       verify(
         () => _addNewBeneficiaryUseCase(
-          beneficiary: _newValidBeneficiaryWithAccount,
+          beneficiary: _newBeneficiaryWithValidAccount,
         ),
       ).called(1);
+      verifyNever(
+        () => _validateIBANUseCase(
+          iban: any(named: 'iban'),
+          allowedCharacters: any(named: 'allowedCharacters'),
+        ),
+      );
+    },
+  );
+
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'With valid account'
+    'emits state with NetException error',
+    setUp: () {
+      when(
+        () => _addNewBeneficiaryUseCase(
+          beneficiary: _newBeneficiaryWithValidAccount,
+        ),
+      ).thenAnswer(
+        (_) async => throw _netException,
+      );
+    },
+    build: () => _cubit,
+    seed: () => _loadedState.copyWith(
+      beneficiary: _newBeneficiaryWithValidAccount,
+    ),
+    act: (c) => c.onAdd(),
+    expect: () => [
+      _loadedState.copyWith(
+        beneficiary: _newBeneficiaryWithValidAccount,
+        action: AddBeneficiaryAction.add,
+        busy: true,
+      ),
+      _loadedState.copyWith(
+        beneficiary: _newBeneficiaryWithValidAccount,
+        busy: false,
+        action: AddBeneficiaryAction.none,
+        errors: {
+          AddBeneficiaryError(
+            action: AddBeneficiaryAction.add,
+            errorStatus: AddBeneficiaryErrorStatus.network,
+            code: _netException.code,
+            message: _netException.message,
+          )
+        },
+      ),
+    ],
+    errors: () => [
+      isA<NetException>(),
+    ],
+    verify: (c) {
+      verify(
+        () => _validateAccountUseCase(
+          account: _validAccount,
+          allowedCharacters: _allowedCharactersForAccount,
+          minAccountChars: _minAccountCharsForAccount,
+          maxAccountChars: _maxAccountCharsForAccount,
+        ),
+      ).called(1);
+      verify(
+        () => _addNewBeneficiaryUseCase(
+          beneficiary: _newBeneficiaryWithValidAccount,
+        ),
+      ).called(1);
+      verifyNever(
+        () => _validateIBANUseCase(
+          iban: any(named: 'iban'),
+          allowedCharacters: any(named: 'allowedCharacters'),
+        ),
+      );
+    },
+  );
+
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'With valid account'
+    'emits state with generic error',
+    setUp: () {
+      when(
+        () => _addNewBeneficiaryUseCase(
+          beneficiary: _newBeneficiaryWithValidAccount,
+        ),
+      ).thenAnswer(
+        (_) async => throw Exception('Some error'),
+      );
+    },
+    build: () => _cubit,
+    seed: () => _loadedState.copyWith(
+      beneficiary: _newBeneficiaryWithValidAccount,
+    ),
+    act: (c) => c.onAdd(),
+    expect: () => [
+      _loadedState.copyWith(
+        beneficiary: _newBeneficiaryWithValidAccount,
+        action: AddBeneficiaryAction.add,
+        busy: true,
+      ),
+      _loadedState.copyWith(
+        beneficiary: _newBeneficiaryWithValidAccount,
+        busy: false,
+        action: AddBeneficiaryAction.none,
+        errors: {
+          AddBeneficiaryError(
+            action: AddBeneficiaryAction.add,
+            errorStatus: AddBeneficiaryErrorStatus.generic,
+          )
+        },
+      ),
+    ],
+    errors: () => [
+      isA<Exception>(),
+    ],
+    verify: (c) {
+      verify(
+        () => _validateAccountUseCase(
+          account: _validAccount,
+          allowedCharacters: _allowedCharactersForAccount,
+          minAccountChars: _minAccountCharsForAccount,
+          maxAccountChars: _maxAccountCharsForAccount,
+        ),
+      ).called(1);
+      verify(
+        () => _addNewBeneficiaryUseCase(
+          beneficiary: _newBeneficiaryWithValidAccount,
+        ),
+      ).called(1);
+      verifyNever(
+        () => _validateIBANUseCase(
+          iban: any(named: 'iban'),
+          allowedCharacters: any(named: 'allowedCharacters'),
+        ),
+      );
+    },
+  );
+
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'With invalid account',
+    build: () => _cubit,
+    seed: () => _loadedState.copyWith(
+      beneficiary: _newBeneficiaryWithInvalidAccount,
+    ),
+    act: (c) => c.onAdd(),
+    expect: () => [
+      _loadedState.copyWith(
+        beneficiary: _newBeneficiaryWithInvalidAccount,
+        errors: {
+          AddBeneficiaryError(
+            action: AddBeneficiaryAction.add,
+            errorStatus: AddBeneficiaryErrorStatus.invalidAccount,
+          ),
+        },
+      ),
+    ],
+    verify: (c) {
+      verify(
+        () => _validateAccountUseCase(
+          account: _invalidAccount,
+          allowedCharacters: _allowedCharactersForAccount,
+          minAccountChars: _minAccountCharsForAccount,
+          maxAccountChars: _maxAccountCharsForAccount,
+        ),
+      ).called(1);
+      verifyNever(
+        () => _addNewBeneficiaryUseCase(
+          beneficiary: _newBeneficiaryWithInvalidAccount,
+        ),
+      );
       verifyNever(
         () => _validateIBANUseCase(
           iban: any(named: 'iban'),
@@ -892,13 +1089,13 @@ void _addNewBeneficiary() {
     'With valid IBAN',
     build: () => _cubit,
     seed: () => _loadedState.copyWith(
-      beneficiary: _newValidBeneficiaryWithIban,
+      beneficiary: _newBeneficiaryWithValidIban,
       selectedCurrency: _currencyEur,
     ),
     act: (c) => c.onAdd(),
     expect: () => [
       _loadedState.copyWith(
-        beneficiary: _newValidBeneficiaryWithIban,
+        beneficiary: _newBeneficiaryWithValidIban,
         action: AddBeneficiaryAction.add,
         busy: true,
         selectedCurrency: _currencyEur,
@@ -919,9 +1116,182 @@ void _addNewBeneficiary() {
       ).called(1);
       verify(
         () => _addNewBeneficiaryUseCase(
-          beneficiary: _newValidBeneficiaryWithIban,
+          beneficiary: _newBeneficiaryWithValidIban,
         ),
       ).called(1);
+      verifyNever(
+        () => _validateAccountUseCase(
+          account: any(named: 'account'),
+          allowedCharacters: any(named: 'allowedCharacters'),
+          maxAccountChars: any(named: 'maxAccountChars'),
+          minAccountChars: any(named: 'minAccountChars'),
+        ),
+      );
+    },
+  );
+
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'With valid IBAN, '
+    'emits state with NetException error',
+    setUp: () {
+      when(
+        () => _addNewBeneficiaryUseCase(
+          beneficiary: _newBeneficiaryWithValidIban,
+        ),
+      ).thenAnswer(
+        (_) async => throw _netException,
+      );
+    },
+    build: () => _cubit,
+    seed: () => _loadedState.copyWith(
+      beneficiary: _newBeneficiaryWithValidIban,
+      selectedCurrency: _currencyEur,
+    ),
+    act: (c) => c.onAdd(),
+    expect: () => [
+      _loadedState.copyWith(
+        beneficiary: _newBeneficiaryWithValidIban,
+        action: AddBeneficiaryAction.add,
+        busy: true,
+        selectedCurrency: _currencyEur,
+      ),
+      _loadedState.copyWith(
+        beneficiary: _newBeneficiaryWithValidIban,
+        busy: false,
+        selectedCurrency: _currencyEur,
+        action: AddBeneficiaryAction.none,
+        errors: {
+          AddBeneficiaryError(
+            action: AddBeneficiaryAction.add,
+            errorStatus: AddBeneficiaryErrorStatus.network,
+            code: _netException.code,
+            message: _netException.message,
+          )
+        },
+      ),
+    ],
+    errors: () => [
+      isA<NetException>(),
+    ],
+    verify: (c) {
+      verify(
+        () => _validateIBANUseCase(
+          iban: _validIban,
+          allowedCharacters: _allowedCharactersForIban,
+        ),
+      ).called(1);
+      verify(
+        () => _addNewBeneficiaryUseCase(
+          beneficiary: _newBeneficiaryWithValidIban,
+        ),
+      ).called(1);
+      verifyNever(
+        () => _validateAccountUseCase(
+          account: any(named: 'account'),
+          allowedCharacters: any(named: 'allowedCharacters'),
+          maxAccountChars: any(named: 'maxAccountChars'),
+          minAccountChars: any(named: 'minAccountChars'),
+        ),
+      );
+    },
+  );
+
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'With valid IBAN, '
+    'emits state with generic error',
+    setUp: () {
+      when(
+        () => _addNewBeneficiaryUseCase(
+          beneficiary: _newBeneficiaryWithValidIban,
+        ),
+      ).thenAnswer(
+        (_) async => throw Exception('Some error'),
+      );
+    },
+    build: () => _cubit,
+    seed: () => _loadedState.copyWith(
+      beneficiary: _newBeneficiaryWithValidIban,
+      selectedCurrency: _currencyEur,
+    ),
+    act: (c) => c.onAdd(),
+    expect: () => [
+      _loadedState.copyWith(
+        beneficiary: _newBeneficiaryWithValidIban,
+        action: AddBeneficiaryAction.add,
+        busy: true,
+        selectedCurrency: _currencyEur,
+      ),
+      _loadedState.copyWith(
+        beneficiary: _newBeneficiaryWithValidIban,
+        busy: false,
+        selectedCurrency: _currencyEur,
+        action: AddBeneficiaryAction.none,
+        errors: {
+          AddBeneficiaryError(
+            action: AddBeneficiaryAction.add,
+            errorStatus: AddBeneficiaryErrorStatus.generic,
+          )
+        },
+      ),
+    ],
+    errors: () => [
+      isA<Exception>(),
+    ],
+    verify: (c) {
+      verify(
+        () => _validateIBANUseCase(
+          iban: _validIban,
+          allowedCharacters: _allowedCharactersForIban,
+        ),
+      ).called(1);
+      verify(
+        () => _addNewBeneficiaryUseCase(
+          beneficiary: _newBeneficiaryWithValidIban,
+        ),
+      ).called(1);
+      verifyNever(
+        () => _validateAccountUseCase(
+          account: any(named: 'account'),
+          allowedCharacters: any(named: 'allowedCharacters'),
+          maxAccountChars: any(named: 'maxAccountChars'),
+          minAccountChars: any(named: 'minAccountChars'),
+        ),
+      );
+    },
+  );
+
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'With invalid IBAN',
+    build: () => _cubit,
+    seed: () => _loadedState.copyWith(
+      beneficiary: _newBeneficiaryWithInvalidIban,
+      selectedCurrency: _currencyEur,
+    ),
+    act: (c) => c.onAdd(),
+    expect: () => [
+      _loadedState.copyWith(
+        beneficiary: _newBeneficiaryWithInvalidIban,
+        selectedCurrency: _currencyEur,
+        errors: {
+          AddBeneficiaryError(
+            action: AddBeneficiaryAction.add,
+            errorStatus: AddBeneficiaryErrorStatus.invalidIBAN,
+          ),
+        },
+      ),
+    ],
+    verify: (c) {
+      verify(
+        () => _validateIBANUseCase(
+          iban: _invalidIban,
+          allowedCharacters: _allowedCharactersForIban,
+        ),
+      ).called(1);
+      verifyNever(
+        () => _addNewBeneficiaryUseCase(
+          beneficiary: _newBeneficiaryWithInvalidIban,
+        ),
+      );
       verifyNever(
         () => _validateAccountUseCase(
           account: any(named: 'account'),
