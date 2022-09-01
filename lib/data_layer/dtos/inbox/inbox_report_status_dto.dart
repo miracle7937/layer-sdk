@@ -1,6 +1,6 @@
-import '../../helpers/enum_dto.dart';
+import '../../helpers.dart';
 
-/// Enum that holds what is the category of a report
+/// Enum that holds what is the status of a report
 class InboxReportStatusDTO extends EnumDTO {
   const InboxReportStatusDTO._internal(String value) : super.internal(value);
 
@@ -13,7 +13,7 @@ class InboxReportStatusDTO extends EnumDTO {
   /// Status Closed
   static const unknown = InboxReportStatusDTO._internal('');
 
-  /// A list containing all possible categories
+  /// A list containing all possible status
   static const List<InboxReportStatusDTO> values = [
     deleted,
     closed,

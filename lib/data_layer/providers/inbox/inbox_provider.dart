@@ -1,5 +1,5 @@
 import '../../dtos.dart';
-import '../../extensions/map/map_extensions.dart';
+import '../../extensions.dart';
 import '../../network.dart';
 
 /// Provider that handles calls to the Inbox endpoint

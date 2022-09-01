@@ -1,4 +1,4 @@
-import '../../helpers/enum_dto.dart';
+import '../../helpers.dart';
 
 /// Enum that holds what is the category of a report
 class InboxReportCategoryDTO extends EnumDTO {

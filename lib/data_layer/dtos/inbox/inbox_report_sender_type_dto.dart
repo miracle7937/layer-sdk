@@ -1,4 +1,4 @@
-import '../../helpers/enum_dto.dart';
+import '../../helpers.dart';
 
 /// Enum that holds what is the sender type of a report message
 class InboxReportSenderTypeDTO extends EnumDTO {
@@ -14,7 +14,7 @@ class InboxReportSenderTypeDTO extends EnumDTO {
   /// Status Closed
   static const unknown = InboxReportSenderTypeDTO._internal('');
 
-  /// A list containing all possible categories
+  /// A list containing all possible types
   static const List<InboxReportSenderTypeDTO> values = [
     customer,
     public,

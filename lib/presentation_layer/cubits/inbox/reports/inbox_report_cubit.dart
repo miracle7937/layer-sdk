@@ -7,15 +7,18 @@ import 'inbox_report_state.dart';
 /// Cubit used to load reports for the inbox feature
 class InboxReportCubit extends Cubit<InboxReportState> {
   /// Use case that load all [InboxReport]s
-  final ListAllInboxMessagesUseCase _listInboxUseCase;
+  final LoadAllInboxMessagesUseCase _listInboxUseCase;
 
   /// Creates a new [InboxReportCubit] instance
   InboxReportCubit({
-    required ListAllInboxMessagesUseCase listInboxUseCase,
+    required LoadAllInboxMessagesUseCase listInboxUseCase,
   })  : _listInboxUseCase = listInboxUseCase,
         super(InboxReportState());
 
-  /// Method that loads the cubit info
+  /// Adds a list of [InboxReport]s on the state.
+  ///
+  /// Use the [limit] and [offset] parameters for pagination purposes.
+  /// The [query] parameter can be used for filtering the results.
   Future<void> load({
     int? offset,
     int? limit,
@@ -25,7 +28,7 @@ class InboxReportCubit extends Cubit<InboxReportState> {
     try {
       emit(
         state.copyWith(
-          busy: false,
+          busy: true,
           busyAction: loadMore == true
               ? InboxReportBusyAction.loadingMore
               : InboxReportBusyAction.loading,
