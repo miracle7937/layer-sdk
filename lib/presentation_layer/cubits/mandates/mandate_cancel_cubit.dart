@@ -10,8 +10,9 @@ class MandateCancelCubit extends Cubit<MandateCancelState> {
   final CancelMandateUseCase _cancelUseCase;
 
   /// Creates a new [MandateCancelCubit]
-  MandateCancelCubit({required CancelMandateUseCase cancelUseCase})
-      : _cancelUseCase = cancelUseCase,
+  MandateCancelCubit({
+    required CancelMandateUseCase cancelUseCase,
+  })  : _cancelUseCase = cancelUseCase,
         super(MandateCancelState());
 
   /// Cancels a Mandate based on its id
@@ -23,7 +24,6 @@ class MandateCancelCubit extends Cubit<MandateCancelState> {
     emit(
       state.copyWith(
         busy: true,
-        errorMessage: '',
         errorStatus: MandateCancelErrorStatus.none,
       ),
     );
@@ -38,11 +38,10 @@ class MandateCancelCubit extends Cubit<MandateCancelState> {
       emit(
         state.copyWith(
           busy: false,
-          errorMessage: '',
-          errorStatus: MandateCancelErrorStatus.none,
         ),
       );
 
+      /// TODO: cubit_issue | This should be handled by the state.
       return result;
     } on Exception catch (e) {
       emit(

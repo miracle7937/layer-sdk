@@ -10,7 +10,7 @@ import '../../cubits.dart';
 /// A cubit that handles adding a new beneficiary.
 class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
   final LoadCountriesUseCase _loadCountriesUseCase;
-  final GetCustomerAccountsUseCase _getCustomerAccountsUseCase;
+  final LoadCurrentCustomerUseCase _loadCustomerUseCase;
   final LoadAllCurrenciesUseCase _loadAllCurrenciesUseCase;
   final LoadBanksByCountryCodeUseCase _loadBanksByCountryCodeUseCase;
   final ValidateAccountUseCase _validateAccountUseCase;
@@ -21,22 +21,22 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
   /// Creates a new [AddBeneficiaryCubit].
   AddBeneficiaryCubit({
     required LoadCountriesUseCase loadCountriesUseCase,
-    required GetCustomerAccountsUseCase getCustomerAccountsUseCase,
     required LoadAllCurrenciesUseCase loadAvailableCurrenciesUseCase,
     required LoadBanksByCountryCodeUseCase loadBanksByCountryCodeUseCase,
     required ValidateAccountUseCase validateAccountUseCase,
     required ValidateIBANUseCase validateIBANUseCase,
     required AddNewBeneficiaryUseCase addNewBeneficiariesUseCase,
     required LoadGlobalSettingsUseCase loadGlobalSettingsUseCase,
+    required LoadCurrentCustomerUseCase loadCustomerUseCase,
     TransferType? beneficiaryType,
   })  : _loadCountriesUseCase = loadCountriesUseCase,
-        _getCustomerAccountsUseCase = getCustomerAccountsUseCase,
         _loadAllCurrenciesUseCase = loadAvailableCurrenciesUseCase,
         _loadBanksByCountryCodeUseCase = loadBanksByCountryCodeUseCase,
         _validateAccountUseCase = validateAccountUseCase,
         _validateIBANUseCase = validateIBANUseCase,
         _addNewBeneficiaryUseCase = addNewBeneficiariesUseCase,
         _loadGlobalSettingsUseCase = loadGlobalSettingsUseCase,
+        _loadCustomerUseCase = loadCustomerUseCase,
         super(
           AddBeneficiaryState(
             beneficiaryType: beneficiaryType,
@@ -64,9 +64,6 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         _loadCountriesUseCase(
           forceRefresh: forceRefresh,
         ),
-        _getCustomerAccountsUseCase(
-          forceRefresh: forceRefresh,
-        ),
         _loadAllCurrenciesUseCase(
           forceRefresh: forceRefresh,
         ),
@@ -77,19 +74,25 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
             'benef_acc_num_minimum_characters',
             'benef_acc_num_maximum_characters',
           ],
-        )
+        ),
+        _loadCustomerUseCase(),
       ]);
       final countries = futures[0] as List<Country>;
-      final accounts = futures[1] as List<Account>;
-      final currencies = futures[2] as List<Currency>;
-      final beneficiarySettings = futures[3] as List<GlobalSetting>;
+      final currencies = futures[1] as List<Currency>;
+      final beneficiarySettings = futures[2] as List<GlobalSetting>;
+      final customer = futures[3] as Customer;
 
-      final selectedCurrency = accounts.isEmpty
-          ? null
-          : currencies.firstWhereOrNull(
-              (currency) => accounts.first.currency == currency.code,
-            );
+      final customerCountry = countries.firstWhereOrNull(
+        (e) => e.countryCode == customer.country,
+      );
 
+      final selectedCurrency = currencies.firstWhereOrNull(
+        (e) => e.code == customerCountry?.currency,
+      );
+
+      /// TODO: cubit_issue | Why is the action being used here like this.
+      /// The action is just for letting the user know what action is being
+      /// processed. If the loading was done, the action should be `none`.
       emit(
         state.copyWith(
           beneficiary: Beneficiary(
@@ -105,7 +108,7 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
           selectedCurrency: selectedCurrency,
           availableCurrencies: currencies,
           busy: false,
-          action: AddBeneficiaryAction.initAction,
+          action: AddBeneficiaryAction.none,
           beneficiarySettings: beneficiarySettings,
         ),
       );
@@ -129,6 +132,9 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
     }
   }
 
+  /// TODO: cubit_issue | So many method for changing an specific value from
+  /// the beneficiary. Would be better to have only one method that handles the
+  /// changes.
   /// Handles event of first name changes.
   void onFirstNameChange(String text) => _emitBeneficiary(
         state.beneficiary?.copyWith(
@@ -211,6 +217,11 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         ),
       );
 
+  /// TODO: cubit_issue | You are using a method called `_emitBeneficiary` all
+  /// the time for updating the beneficiary details, but for the following
+  /// methods you are not using that anymore. This is very confusing for
+  /// someone that has not developed the cubit.
+  ///
   /// Handles the currency change.
   void onCurrencyChanged(Currency currency) => emit(
         state.copyWith(
@@ -309,7 +320,8 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
     }
   }
 
-  // TODO: Should be renamed to onBankQueryChanged
+  /// TODO: cubit_issue | This method is not descriptive at all. Let's maybe
+  /// skip this and merge it to the `loadBanks` method.
   /// Updates the bank query.
   Future<void> onChanged({
     String? bankQuery,
@@ -324,8 +336,11 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
     }
   }
 
+  /// TODO: cubit_issue | Not very descriptive. This should be called something
+  /// like `submit` or `submitBeneficiary`.
+  ///
   /// Handles the adding new beneficiary.
-  void onAdd() async {
+  Future<void> onAdd() async {
     final accountRequired = state.accountRequired;
     if (accountRequired) {
       final maxChars = state.beneficiarySettings
@@ -386,6 +401,10 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
       ),
     );
     try {
+      /// TODO: cubit_issue | At this point, the beneficiary should be ready.
+      /// Why are we changing it before sending it? I don't understand. The
+      /// values that you are clearing should be already empty or null
+      /// at this stage.
       final beneficiary = state.beneficiary!.copyWith(
         accountNumber: accountRequired ? state.beneficiary!.accountNumber! : '',
         routingCode: accountRequired ? state.beneficiary!.routingCode! : '',
@@ -395,6 +414,16 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         beneficiary: beneficiary,
       );
 
+      /// TODO: cubit_issue | I think we should keep separated the beneficiary
+      /// item that we were creating and the beneficiary result that BE is
+      /// sending back.
+      ///
+      /// Also I think the action usage is not coherent with the rest os cubits
+      /// that we have on the sdk. As I stated before, the actions are for
+      /// indicating the type of loading that it's being done by the cubit.
+      /// You are using them as actions that the UI should perform later on.
+      ///
+      /// For that, you should be using [BlocListener]s on the UI.
       emit(
         state.copyWith(
           beneficiary: newBeneficiary,
@@ -440,6 +469,9 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         )
       });
 
+  /// TODO: cubit_issue | Not very self explanatory. Anyways the errors should
+  /// clear each time something is being loaded by the cubit. That is how we
+  /// usually have it on other cubits.
   Set<AddBeneficiaryError> _removeDefault() => state.errors
       .where((error) => ![
             AddBeneficiaryErrorStatus.network,

@@ -10,8 +10,8 @@ import 'package:test/test.dart';
 
 class MockLoadCountriesUseCase extends Mock implements LoadCountriesUseCase {}
 
-class MockGetCustomerAccountsUseCase extends Mock
-    implements GetCustomerAccountsUseCase {}
+class MockLoadCurrentCustomerUseCase extends Mock
+    implements LoadCurrentCustomerUseCase {}
 
 class MockLoadAllCurrenciesUseCase extends Mock
     implements LoadAllCurrenciesUseCase {}
@@ -33,7 +33,7 @@ class MockLoadGlobalSettingsUseCase extends Mock
 class MockBank extends Mock implements Bank {}
 
 final _loadCountriesUseCase = MockLoadCountriesUseCase();
-final _getCustomerAccountsUseCase = MockGetCustomerAccountsUseCase();
+final _loadCustomerUseCase = MockLoadCurrentCustomerUseCase();
 final _loadAllCurrenciesUseCase = MockLoadAllCurrenciesUseCase();
 final _loadBanksByCountryCodeUseCase = MockLoadBanksByCountryCodeUseCase();
 final _validateAccountUseCase = MockValidateAccountUseCase();
@@ -42,8 +42,8 @@ final _addNewBeneficiaryUseCase = MockAddNewBeneficiaryUseCase();
 final _loadGlobalSettingsUseCase = MockLoadGlobalSettingsUseCase();
 
 final _countriesList = [
-  Country(countryCode: 'GB'),
-  Country(countryCode: 'IE'),
+  Country(countryCode: 'GB', currency: 'GBP'),
+  Country(countryCode: 'IE', currency: 'EUR'),
 ];
 final _selectedCountry = _countriesList.first;
 
@@ -63,6 +63,13 @@ final _currenciesList = [
   _currencyEur,
   _currencyGbp,
 ];
+
+final Customer _customer = Customer(
+  id: '',
+  addresses: [
+    Address(country: 'GB'),
+  ],
+);
 
 final String _allowedCharactersForIban = 'abcedfghijklmnopqrstuvwxyz'
     'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -119,7 +126,7 @@ final _loadedState = AddBeneficiaryState(
   selectedCurrency: _currencyGbp,
   availableCurrencies: _currenciesList,
   beneficiarySettings: _globalSettingList,
-  action: AddBeneficiaryAction.initAction,
+  action: AddBeneficiaryAction.none,
 );
 
 final _netException = NetException(
@@ -133,7 +140,7 @@ void main() {
   setUp(() {
     _cubit = AddBeneficiaryCubit(
       loadCountriesUseCase: _loadCountriesUseCase,
-      getCustomerAccountsUseCase: _getCustomerAccountsUseCase,
+      loadCustomerUseCase: _loadCustomerUseCase,
       loadAvailableCurrenciesUseCase: _loadAllCurrenciesUseCase,
       loadBanksByCountryCodeUseCase: _loadBanksByCountryCodeUseCase,
       validateAccountUseCase: _validateAccountUseCase,
@@ -147,8 +154,8 @@ void main() {
       (_) async => _countriesList,
     );
 
-    when(_getCustomerAccountsUseCase).thenAnswer(
-      (_) async => _accountsList,
+    when(_loadCustomerUseCase).thenAnswer(
+      (_) async => _customer,
     );
 
     when(_loadAllCurrenciesUseCase).thenAnswer(
@@ -185,7 +192,7 @@ void _initialLoads() {
   );
 
   blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
-    'Loads countries, currencies, accounts and settings',
+    'Loads countries, currencies, customer and settings',
     build: () => _cubit,
     act: (c) => c.load(),
     expect: () => [
@@ -194,7 +201,7 @@ void _initialLoads() {
     ],
     verify: (c) {
       verify(_loadCountriesUseCase).called(1);
-      verify(_getCustomerAccountsUseCase).called(1);
+      verify(_loadCustomerUseCase).called(1);
       verify(_loadAllCurrenciesUseCase).called(1);
       verify(
         () => _loadGlobalSettingsUseCase(
@@ -205,17 +212,17 @@ void _initialLoads() {
   );
 
   blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
-    'Loads countries, currencies, empty accounts list and settings. '
+    'Loads countries, currencies, empty country for Customer and settings. '
     'Should emit null for selected currency',
     setUp: () {
-      when(_getCustomerAccountsUseCase).thenAnswer(
-        (_) async => <Account>[],
+      when(_loadCustomerUseCase).thenAnswer(
+        (_) async => Customer(id: ''),
       );
     },
     build: () {
       return AddBeneficiaryCubit(
         loadCountriesUseCase: _loadCountriesUseCase,
-        getCustomerAccountsUseCase: _getCustomerAccountsUseCase,
+        loadCustomerUseCase: _loadCustomerUseCase,
         loadAvailableCurrenciesUseCase: _loadAllCurrenciesUseCase,
         loadBanksByCountryCodeUseCase: _loadBanksByCountryCodeUseCase,
         validateAccountUseCase: _validateAccountUseCase,
@@ -240,13 +247,13 @@ void _initialLoads() {
         countries: _countriesList,
         availableCurrencies: _currenciesList,
         busy: false,
-        action: AddBeneficiaryAction.initAction,
+        action: AddBeneficiaryAction.none,
         beneficiarySettings: _globalSettingList,
       ),
     ],
     verify: (c) {
       verify(_loadCountriesUseCase).called(1);
-      verify(_getCustomerAccountsUseCase).called(1);
+      verify(_loadCustomerUseCase).called(1);
       verify(_loadAllCurrenciesUseCase).called(1);
       verify(
         () => _loadGlobalSettingsUseCase(
@@ -317,7 +324,7 @@ void _initialLoads() {
     'emits state with generic error',
     setUp: () {
       when(
-        _getCustomerAccountsUseCase,
+        _loadCustomerUseCase,
       ).thenAnswer(
         (_) async => throw Exception('Some error'),
       );
@@ -343,7 +350,7 @@ void _initialLoads() {
     'emits state with NetException error',
     setUp: () {
       when(
-        _getCustomerAccountsUseCase,
+        _loadCustomerUseCase,
       ).thenAnswer(
         (_) async => throw _netException,
       );

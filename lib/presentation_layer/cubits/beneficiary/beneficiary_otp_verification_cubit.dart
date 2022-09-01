@@ -5,6 +5,8 @@ import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
 
+/// TODO: cubit_issue | Any reason why we have this a sepparte cubit and
+/// we don't include these on the [AddBeneficiaryCubit]?
 /// A cubit that handles OTP verification of the beneficiary add/edit actions.
 class BeneficiaryOtpVerificationCubit
     extends Cubit<BeneficiaryOtpVerificationState> {
