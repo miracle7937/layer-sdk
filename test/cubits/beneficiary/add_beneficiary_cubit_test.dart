@@ -52,11 +52,6 @@ final _banksPaginationLimit = 20;
 final _mockedBanksList = List.generate(_banksCount, (index) => MockBank());
 final _mockedSelectedBank = _mockedBanksList.first;
 
-final _accountsList = [
-  Account(currency: 'GBP'),
-  Account(currency: 'USD'),
-];
-
 final _currencyEur = Currency(code: 'EUR');
 final _currencyGbp = Currency(code: 'GBP');
 final _currenciesList = [
