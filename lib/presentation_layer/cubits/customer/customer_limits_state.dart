@@ -23,6 +23,9 @@ enum CustomerLimitsError {
 
   /// Generic error.
   generic,
+
+  /// Network error
+  network,
 }
 
 /// Holds the state of the [CustomerLimitsCubit].
