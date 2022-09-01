@@ -30,9 +30,6 @@ class LandingTransferState extends Equatable {
   /// A list of frequent transfers
   final UnmodifiableListView<Transfer> frequentTransfers;
 
-  /// A list of currecies
-  final UnmodifiableListView<Currency> currencies;
-
   /// Creates a new [LandingTransferState] instance
   LandingTransferState({
     Iterable<Transfer> frequentTransfers = const <Transfer>[],
@@ -40,8 +37,7 @@ class LandingTransferState extends Equatable {
     this.busy = false,
     this.error = LandingTransferErrorStatus.none,
     this.pagination = const Pagination(),
-  })  : frequentTransfers = UnmodifiableListView(frequentTransfers),
-        currencies = UnmodifiableListView(currencies);
+  }) : frequentTransfers = UnmodifiableListView(frequentTransfers);
 
   /// Creates a new state based on this one.
   LandingTransferState copyWith({
@@ -50,14 +46,12 @@ class LandingTransferState extends Equatable {
     int? limit,
     Pagination? pagination,
     Iterable<Transfer>? frequentTransfers,
-    Iterable<Currency>? currencies,
   }) {
     return LandingTransferState(
       busy: busy ?? this.busy,
       error: error ?? this.error,
       pagination: pagination ?? this.pagination,
       frequentTransfers: frequentTransfers ?? this.frequentTransfers,
-      currencies: currencies ?? this.currencies,
     );
   }
 
@@ -67,6 +61,5 @@ class LandingTransferState extends Equatable {
         error,
         pagination,
         frequentTransfers,
-        currencies,
       ];
 }
