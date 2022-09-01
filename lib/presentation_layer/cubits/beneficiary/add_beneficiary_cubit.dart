@@ -309,6 +309,7 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
     }
   }
 
+  // TODO: Should be renamed to onBankQueryChanged
   /// Updates the bank query.
   Future<void> onChanged({
     String? bankQuery,
@@ -358,11 +359,6 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         return;
       }
     } else {
-      final value = state.beneficiarySettings
-          .singleWhereOrNull(
-              (element) => element.code == 'benef_iban_allowed_characters')
-          ?.value
-          ?.split('');
       final isIbanValid = _validateIBANUseCase(
         iban: state.beneficiary?.iban ?? '',
         allowedCharacters: state.beneficiarySettings

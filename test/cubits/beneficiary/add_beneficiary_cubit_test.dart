@@ -122,39 +122,6 @@ final _loadedState = AddBeneficiaryState(
   action: AddBeneficiaryAction.initAction,
 );
 
-final String _validAccount = '123456789';
-
-final String _validIban = 'GB30PAYR00997700004655';
-
-final _newBeneficiary = Beneficiary(
-  nickname: 'nickname',
-  firstName: 'firstName',
-  lastName: 'lastName',
-  middleName: '',
-  bankName: 'bankName',
-);
-
-final _newValidBeneficiaryWithAccount = _newBeneficiary.copyWith(
-  accountNumber: _validAccount,
-  routingCode: '111111',
-  iban: '',
-);
-
-final _newValidBeneficiaryWithIban = _newBeneficiary.copyWith(
-  accountNumber: '',
-  routingCode: '',
-  iban: _validIban,
-);
-
-final _newCreatedBeneficiaryWithAccount =
-    _newValidBeneficiaryWithAccount.copyWith(
-  id: 1,
-);
-
-final _newCreatedBeneficiaryWithIban = _newValidBeneficiaryWithIban.copyWith(
-  id: 1,
-);
-
 final _netException = NetException(
   code: 'code',
   message: 'message',
@@ -194,44 +161,6 @@ void main() {
       ),
     ).thenAnswer(
       (_) async => _globalSettingList,
-    );
-
-    when(
-      () => _validateAccountUseCase(
-        account: _validAccount,
-        allowedCharacters: _allowedCharactersForAccount,
-        minAccountChars: _minAccountCharsForAccount,
-        maxAccountChars: _maxAccountCharsForAccount,
-      ),
-    ).thenReturn(true);
-
-    when(
-      () => _validateIBANUseCase(
-        iban: _validIban,
-        allowedCharacters: _allowedCharactersForIban,
-      ),
-    ).thenReturn(true);
-
-    when(
-      () => _addNewBeneficiaryUseCase(
-        beneficiary: _newValidBeneficiaryWithAccount,
-      ),
-    ).thenAnswer((_) async => _newCreatedBeneficiaryWithAccount);
-
-    when(
-      () => _addNewBeneficiaryUseCase(
-        beneficiary: _newValidBeneficiaryWithIban,
-      ),
-    ).thenAnswer((_) async => _newCreatedBeneficiaryWithIban);
-
-    when(
-      () => _loadBanksByCountryCodeUseCase(
-        countryCode: _selectedCountry.countryCode!,
-        limit: _banksPaginationLimit,
-        offset: 0,
-      ),
-    ).thenAnswer(
-      (_) async => _mockedBanksList,
     );
   });
 
@@ -551,6 +480,18 @@ void _initialLoads() {
 }
 
 void _loadBanks() {
+  setUp(() {
+    when(
+      () => _loadBanksByCountryCodeUseCase(
+        countryCode: _selectedCountry.countryCode!,
+        limit: _banksPaginationLimit,
+        offset: 0,
+      ),
+    ).thenAnswer(
+      (_) async => _mockedBanksList.take(_banksPaginationLimit).toList(),
+    );
+  });
+
   blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
     'With empty states emits nothing',
     build: () => _cubit,
@@ -583,7 +524,7 @@ void _loadBanks() {
       _loadedState.copyWith(
         action: AddBeneficiaryAction.none,
         selectedCountry: _selectedCountry,
-        banks: _mockedBanksList,
+        banks: _mockedBanksList.take(_banksPaginationLimit).toList(),
         banksPagination: Pagination(
           limit: _banksPaginationLimit,
           canLoadMore: true,
@@ -593,18 +534,156 @@ void _loadBanks() {
   );
 
   blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
-    'Loads more banks, '
-    'emits resulting list',
+    'Loads banks by "onChanged()" call with query not being passed '
+    'and emits nothing',
+    build: () => _cubit,
+    seed: () => _loadedState.copyWith(
+      action: AddBeneficiaryAction.editAction,
+      selectedCountry: _selectedCountry,
+      bankQuery: 'bankQuery',
+    ),
+    act: (c) => c.onChanged(),
+    expect: () => [],
+  );
+
+  final bankQuery = 'bankQuery';
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'Loads banks by "onChanged()" call '
+    'and emits resulting list',
+    setUp: () => when(
+      () => _loadBanksByCountryCodeUseCase(
+        countryCode: _selectedCountry.countryCode!,
+        limit: _banksPaginationLimit,
+        offset: 0,
+        query: bankQuery,
+      ),
+    ).thenAnswer(
+      (_) async => _mockedBanksList.take(_banksPaginationLimit).toList(),
+    ),
     build: () => _cubit,
     seed: () => _loadedState.copyWith(
       action: AddBeneficiaryAction.editAction,
       selectedCountry: _selectedCountry,
     ),
-    act: (c) => c.loadBanks(),
+    act: (c) => c.onChanged(bankQuery: bankQuery),
+    expect: () => [
+      _loadedState.copyWith(
+        action: AddBeneficiaryAction.editAction,
+        selectedCountry: _selectedCountry,
+        bankQuery: bankQuery,
+      ),
+      _loadedState.copyWith(
+        action: AddBeneficiaryAction.banks,
+        selectedCountry: _selectedCountry,
+        busy: true,
+        bankQuery: bankQuery,
+      ),
+      _loadedState.copyWith(
+        action: AddBeneficiaryAction.none,
+        selectedCountry: _selectedCountry,
+        banks: _mockedBanksList.take(_banksPaginationLimit).toList(),
+        banksPagination: Pagination(
+          limit: _banksPaginationLimit,
+          canLoadMore: true,
+        ),
+        bankQuery: bankQuery,
+      ),
+    ],
+  );
+
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'Loads more banks(loading of second page), '
+    'emits resulting list',
+    setUp: () {
+      when(
+        () => _loadBanksByCountryCodeUseCase(
+          countryCode: _selectedCountry.countryCode!,
+          limit: _banksPaginationLimit,
+          offset: _banksPaginationLimit,
+        ),
+      ).thenAnswer(
+        (_) async => _mockedBanksList
+            .skip(_banksPaginationLimit)
+            .take(_banksPaginationLimit)
+            .toList(),
+      );
+    },
+    build: () => _cubit,
+    seed: () => _loadedState.copyWith(
+      action: AddBeneficiaryAction.none,
+      selectedCountry: _selectedCountry,
+      banks: _mockedBanksList.take(_banksPaginationLimit).toList(),
+      banksPagination: Pagination(
+        limit: _banksPaginationLimit,
+        canLoadMore: true,
+      ),
+    ),
+    act: (c) => c.loadBanks(loadMore: true),
     expect: () => [
       _loadedState.copyWith(
         action: AddBeneficiaryAction.banks,
         selectedCountry: _selectedCountry,
+        banks: _mockedBanksList.take(_banksPaginationLimit).toList(),
+        banksPagination: Pagination(
+          limit: _banksPaginationLimit,
+          canLoadMore: true,
+        ),
+        busy: true,
+      ),
+      _loadedState.copyWith(
+        action: AddBeneficiaryAction.none,
+        selectedCountry: _selectedCountry,
+        banks: _mockedBanksList.take(2 * _banksPaginationLimit).toList(),
+        banksPagination: Pagination(
+          limit: _banksPaginationLimit,
+          canLoadMore: true,
+          offset: _banksPaginationLimit,
+        ),
+      ),
+    ],
+  );
+
+  final _lastOffset =
+      (_banksCount ~/ _banksPaginationLimit) * _banksPaginationLimit;
+
+  blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
+    'Loads last page , '
+    'emits resulting list with "false" for canLoadMore',
+    setUp: () {
+      when(
+        () => _loadBanksByCountryCodeUseCase(
+          countryCode: _selectedCountry.countryCode!,
+          limit: _banksPaginationLimit,
+          offset: _lastOffset + _banksPaginationLimit,
+        ),
+      ).thenAnswer(
+        (_) async => _mockedBanksList
+            .skip(_lastOffset)
+            .take(_banksPaginationLimit)
+            .toList(),
+      );
+    },
+    build: () => _cubit,
+    seed: () => _loadedState.copyWith(
+      action: AddBeneficiaryAction.none,
+      selectedCountry: _selectedCountry,
+      banks: _mockedBanksList.take(_lastOffset).toList(),
+      banksPagination: Pagination(
+        limit: _banksPaginationLimit,
+        canLoadMore: true,
+        offset: _lastOffset,
+      ),
+    ),
+    act: (c) => c.loadBanks(loadMore: true),
+    expect: () => [
+      _loadedState.copyWith(
+        action: AddBeneficiaryAction.banks,
+        selectedCountry: _selectedCountry,
+        banks: _mockedBanksList.take(_lastOffset).toList(),
+        banksPagination: Pagination(
+            limit: _banksPaginationLimit,
+            canLoadMore: true,
+            offset: _lastOffset),
         busy: true,
       ),
       _loadedState.copyWith(
@@ -613,7 +692,8 @@ void _loadBanks() {
         banks: _mockedBanksList,
         banksPagination: Pagination(
           limit: _banksPaginationLimit,
-          canLoadMore: true,
+          canLoadMore: false,
+          offset: _lastOffset + _banksPaginationLimit,
         ),
       ),
     ],
@@ -703,6 +783,69 @@ void _loadBanks() {
 }
 
 void _addNewBeneficiary() {
+  final _validAccount = '123456789';
+
+  final _validIban = 'GB30PAYR00997700004655';
+
+  final _newBeneficiary = Beneficiary(
+    nickname: 'nickname',
+    firstName: 'firstName',
+    lastName: 'lastName',
+    middleName: '',
+    bankName: 'bankName',
+  );
+
+  final _newValidBeneficiaryWithAccount = _newBeneficiary.copyWith(
+    accountNumber: _validAccount,
+    routingCode: '111111',
+    iban: '',
+  );
+
+  final _newValidBeneficiaryWithIban = _newBeneficiary.copyWith(
+    accountNumber: '',
+    routingCode: '',
+    iban: _validIban,
+  );
+
+  final _newCreatedBeneficiaryWithAccount =
+      _newValidBeneficiaryWithAccount.copyWith(
+    id: 1,
+  );
+
+  final _newCreatedBeneficiaryWithIban = _newValidBeneficiaryWithIban.copyWith(
+    id: 1,
+  );
+
+  setUp(() {
+    when(
+      () => _validateAccountUseCase(
+        account: _validAccount,
+        allowedCharacters: _allowedCharactersForAccount,
+        minAccountChars: _minAccountCharsForAccount,
+        maxAccountChars: _maxAccountCharsForAccount,
+      ),
+    ).thenReturn(true);
+
+    when(
+      () => _validateIBANUseCase(
+        iban: _validIban,
+        allowedCharacters: _allowedCharactersForIban,
+      ),
+    ).thenReturn(true);
+
+    when(
+      () => _addNewBeneficiaryUseCase(
+        beneficiary: _newValidBeneficiaryWithAccount,
+      ),
+    ).thenAnswer((_) async => _newCreatedBeneficiaryWithAccount);
+
+    when(
+      () => _addNewBeneficiaryUseCase(
+        beneficiary: _newValidBeneficiaryWithIban,
+      ),
+    ).thenAnswer((_) async => _newCreatedBeneficiaryWithIban);
+  });
+
   blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
     'With valid account',
     build: () => _cubit,
