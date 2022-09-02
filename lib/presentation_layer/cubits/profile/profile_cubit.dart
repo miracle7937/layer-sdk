@@ -11,6 +11,7 @@ class ProfileCubit extends Cubit<ProfileState> {
   final LoadUserByCustomerIdUseCase _loadUserUseCase;
   final LoadCustomerImageUseCase _loadCustomerImageUseCase;
   final PatchUserImageUseCase _patchUserImageUseCase;
+  final LoadGlobalSettingsUseCase _loadGlobalSettingsUseCase;
 
   /// Creates a new cubit using the supplied [CustomerRepository].
   ProfileCubit({
@@ -18,10 +19,12 @@ class ProfileCubit extends Cubit<ProfileState> {
     required LoadUserByCustomerIdUseCase loadUserUseCase,
     required LoadCustomerImageUseCase loadCustomerImageUseCase,
     required PatchUserImageUseCase patchUserImageUseCase,
+    required LoadGlobalSettingsUseCase loadGlobalSettingsUseCase,
   })  : _customerUseCase = customerUseCase,
         _loadUserUseCase = loadUserUseCase,
         _loadCustomerImageUseCase = loadCustomerImageUseCase,
         _patchUserImageUseCase = patchUserImageUseCase,
+        _loadGlobalSettingsUseCase = loadGlobalSettingsUseCase,
         super(ProfileState());
 
   /// Loads the customers data
@@ -44,7 +47,12 @@ class ProfileCubit extends Cubit<ProfileState> {
         ),
         _loadUserUseCase(
           forceRefresh: forceRefresh,
-        )
+        ),
+        _loadGlobalSettingsUseCase(
+          codes: [
+            'file_allowed_types',
+          ],
+        ),
       ]);
 
       emit(
@@ -52,6 +60,7 @@ class ProfileCubit extends Cubit<ProfileState> {
           actions: state.actions.difference({ProfileBusyAction.load}),
           customer: requests[0] as Customer,
           user: requests[1] as User,
+          profileConsoleSettings: requests[2] as List<GlobalSetting>,
         ),
       );
     } on Exception {

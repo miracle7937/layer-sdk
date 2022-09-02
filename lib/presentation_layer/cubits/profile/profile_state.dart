@@ -50,6 +50,9 @@ class ProfileState extends Equatable {
   /// The actions that the cubit is performing.
   final UnmodifiableSetView<ProfileBusyAction> actions;
 
+  /// The profile settings taken from the console
+  final UnmodifiableListView<GlobalSetting> profileConsoleSettings;
+
   /// Creates a new profile state
   ProfileState({
     this.user,
@@ -58,7 +61,9 @@ class ProfileState extends Equatable {
     this.base64,
     this.error = ProfileErrorStatus.none,
     Set<ProfileBusyAction> actions = const <ProfileBusyAction>{},
-  }) : actions = UnmodifiableSetView(actions);
+    Iterable<GlobalSetting> profileConsoleSettings = const <GlobalSetting>{},
+  })  : actions = UnmodifiableSetView(actions),
+        profileConsoleSettings = UnmodifiableListView(profileConsoleSettings);
 
   @override
   List<Object?> get props => [
@@ -68,6 +73,7 @@ class ProfileState extends Equatable {
         actions,
         image,
         base64,
+        profileConsoleSettings,
       ];
 
   /// Creates a new state based on this one.
@@ -78,6 +84,7 @@ class ProfileState extends Equatable {
     ProfileErrorStatus? error,
     Uint8List? image,
     String? base64,
+    Iterable<GlobalSetting>? profileConsoleSettings,
   }) =>
       ProfileState(
         user: user ?? this.user,
@@ -86,5 +93,7 @@ class ProfileState extends Equatable {
         error: error ?? this.error,
         image: image ?? this.image,
         base64: base64 ?? this.base64,
+        profileConsoleSettings:
+            profileConsoleSettings ?? this.profileConsoleSettings,
       );
 }
