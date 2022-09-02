@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import '../../../../data_layer/network.dart';
 import '../../../domain_layer/abstract_repositories.dart';
 import '../../../domain_layer/models.dart';
@@ -136,4 +138,13 @@ class CustomerRepository implements CustomerRepositoryInterface {
         token: _provider.netClient.currentToken() ?? '',
         fileBaseURL: _provider.customerDocumentsURLPrefix,
       );
+
+  /// Loads the currently logged in customer
+  /// image
+  @override
+  Future<Uint8List?> getCustomerImage({required String imageURL}) async {
+    final image = await _provider.getCustomerImage(imageURL: imageURL);
+
+    return image;
+  }
 }

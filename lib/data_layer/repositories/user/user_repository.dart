@@ -213,4 +213,10 @@ class UserRepository implements UserRepositoryInterface {
         userId: userId,
         roles: roles,
       );
+
+  /// Uploads the newly selected image
+  @override
+  Future patchImage({required String base64}) => _userProvider.patchImage(
+        base64: base64,
+      );
 }

@@ -111,4 +111,7 @@ abstract class UserRepositoryInterface {
     required String userId,
     required List<String> roles,
   });
+
+  /// Patches the newly selected image
+  Future patchImage({required String base64});
 }
