@@ -1,5 +1,9 @@
 import 'package:equatable/equatable.dart';
 
+/// TODO: cubit_issue | I don't think this is the right way to handle the check
+/// for what action is the cubit performing. We don't have a parameter for
+/// setting this as none or idle.
+///
 /// Which loading action the cubit is doing
 enum LinkBusyAction {
   /// Loading image

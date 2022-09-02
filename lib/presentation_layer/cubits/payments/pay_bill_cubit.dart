@@ -151,8 +151,12 @@ class PayBillCubit extends Cubit<PayBillState> {
           validatedBill: validatedBill,
         ),
       );
+
+      /// TODO: cubit_issue | this should be handled by the state, not directly
+      /// returned.
       return validatedBill;
     } on Exception catch (_) {
+      /// TODO: cubit_issue | Empty catch clause, should we handle the errors?
       emit(
         state.copyWith(
           busy: false,
@@ -202,6 +206,7 @@ class PayBillCubit extends Cubit<PayBillState> {
         ),
       );
 
+      /// TODO: cubit_issue | this should be handled by the cubit state.
       return res;
     } on Exception catch (e) {
       emit(
@@ -226,6 +231,9 @@ class PayBillCubit extends Cubit<PayBillState> {
     }
   }
 
+  /// TODO: cubit_issue | This is the payment that we have on the state, right?
+  /// I think it would be better to use that one and add an assert.
+  ///
   /// Resend an OTP request
   Future<void> resendOTP(Payment payment) async {
     try {
@@ -246,6 +254,7 @@ class PayBillCubit extends Cubit<PayBillState> {
         ),
       );
     } on Exception catch (_) {
+      /// TODO: cubit_issue | Empty catch clause, should we handle the errors?
       emit(
         state.copyWith(
           busy: false,
@@ -328,15 +337,10 @@ class PayBillCubit extends Cubit<PayBillState> {
 
       emit(
         state.copyWith(
+          busy: false,
           services: services,
           selectedService: services.firstOrNull,
           serviceFields: services.firstOrNull?.serviceFields,
-        ),
-      );
-
-      emit(
-        state.copyWith(
-          busy: false,
         ),
       );
     } on Exception catch (e) {
