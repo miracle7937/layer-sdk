@@ -42,6 +42,7 @@ class InboxReportCategoryDTO extends EnumDTO {
 
   /// Return a [InboxReportCategoryDTO] based on a string
   static InboxReportCategoryDTO fromRaw(String? value) {
-    return values.firstWhere((it) => it.value == value);
+    return values.firstWhere((it) => it.value == value,
+        orElse: () => InboxReportCategoryDTO.other);
   }
 }

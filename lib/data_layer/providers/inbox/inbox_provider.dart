@@ -29,6 +29,7 @@ class InboxProvider {
       queryParameters: params,
     );
 
-    return InboxReportDTO.fromJsonList(response.data);
+    return InboxReportDTO.fromJsonList(
+        List<Map<String, dynamic>>.from(response.data));
   }
 }

@@ -22,6 +22,7 @@ class InboxReportStatusDTO extends EnumDTO {
 
   /// Return a [InboxReportStatusDTO] based on a string
   static InboxReportStatusDTO fromRaw(String? value) {
-    return values.firstWhere((it) => it.value == value);
+    return values.firstWhere((it) => it.value == value,
+        orElse: () => InboxReportStatusDTO.unknown);
   }
 }
