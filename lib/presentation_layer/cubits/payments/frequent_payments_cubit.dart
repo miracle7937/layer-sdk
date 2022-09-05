@@ -39,20 +39,17 @@ class FrequentPaymentsCubit extends Cubit<FrequentPaymentsState> {
     try {
       final pagination = state.pagination.paginate(loadMore: loadMore);
 
-      /// TODO: cubit_issue | We are going to start taking out unnecesary
-      /// paramters for the UI out of the state and back to the cubit. Why
-      /// is it needed for the pagination to be emmited?
-      emit(state.copyWith(
-        pagination: pagination,
-      ));
-
       final payments = await _loadFrequentPaymentsUseCase(
         limit: pagination.limit,
         offset: pagination.offset,
       );
 
-      final list =
-          pagination.firstPage ? payments : [...state.payments, ...payments];
+      final list = pagination.firstPage
+          ? payments
+          : [
+              ...state.payments,
+              ...payments,
+            ];
 
       emit(
         state.copyWith(
