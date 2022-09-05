@@ -180,9 +180,7 @@ class PayBillState extends Equatable {
       (!saveToShortcut || (shortcutName?.isNotEmpty ?? false)) &&
       (scheduleDetails?.recurrence == null ||
           scheduleDetails?.recurrence == Recurrence.none ||
-          (scheduleDetails?.startDate != null ||
-              (scheduleDetails?.recurrence == Recurrence.once &&
-                  scheduleDetails?.startDate == null)));
+          scheduleDetails?.startDate != null);
 
   bool get _serviceFieldsValid {
     for (var i = 0; i < serviceFields.length; i++) {
