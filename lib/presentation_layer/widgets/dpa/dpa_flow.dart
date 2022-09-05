@@ -43,6 +43,12 @@ typedef DPAHidePopUpCallback = void Function(
   DPAProcessCubit cubit,
 );
 
+/// Signature for [DPAFlow.customCarouselScreenBuilder].
+typedef DPACarouselScreenBuilder = Widget? Function(
+  BuildContext context,
+  DPAProcess process,
+);
+
 /// A widget that starts a flow that has been created by a user console.
 ///
 /// By default this widget uses the design kit layer widgets but it exposes
@@ -203,6 +209,9 @@ class DPAFlow<T> extends StatelessWidget {
   /// Asset for logo
   final String? asset;
 
+  /// Optional callback for creating custom Carousel Screens.
+  final DPACarouselScreenBuilder? customCarouselScreemBuilder;
+
   /// Creates a new [DPAFlow].
   const DPAFlow({
     Key? key,
@@ -225,6 +234,7 @@ class DPAFlow<T> extends StatelessWidget {
       16.0,
       42.0,
     ),
+    this.customCarouselScreemBuilder,
   }) : super(key: key);
 
   @override
@@ -380,8 +390,7 @@ class DPAFlow<T> extends StatelessWidget {
                   ),
                 ],
               ),
-          if (isDelayTask)
-            DPAFullscreenLoader(asset: asset),
+          if (isDelayTask) DPAFullscreenLoader(asset: asset),
         ],
       ),
     );
@@ -401,7 +410,8 @@ class DPAFlow<T> extends StatelessWidget {
           (e) => e.type == DPAVariableType.swipe,
         );
     if (isCarouselScreen) {
-      return DPACarouselScreen();
+      return customCarouselScreemBuilder?.call(context, process) ??
+          DPACarouselScreen();
     }
 
     final isOTPScreen = process.stepProperties?.screenType == DPAScreenType.otp;

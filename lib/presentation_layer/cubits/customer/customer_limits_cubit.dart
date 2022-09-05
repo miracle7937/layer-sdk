@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../data_layer/network.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
 
@@ -34,11 +35,12 @@ class CustomerLimitsCubit extends Cubit<CustomerLimitsState> {
           limit: limit,
         ),
       );
-    } on Exception {
-      /// TODO: cubit_issue | check other kind of errors?
+    } on Exception catch (e) {
       emit(
         state.copyWith(
-          error: CustomerLimitsError.generic,
+          error: e is NetException
+              ? CustomerLimitsError.network
+              : CustomerLimitsError.generic,
           action: CustomerLimitsAction.none,
         ),
       );
