@@ -78,9 +78,9 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         _loadCustomerUseCase(),
       ]);
       final countries = futures[0] as List<Country>;
-      final currencies = futures[2] as List<Currency>;
-      final beneficiarySettings = futures[3] as List<GlobalSetting>;
-      final customer = futures[4] as Customer;
+      final currencies = futures[1] as List<Currency>;
+      final beneficiarySettings = futures[2] as List<GlobalSetting>;
+      final customer = futures[3] as Customer;
 
       final customerCountry = countries.firstWhereOrNull(
         (e) => e.countryCode == customer.country,
