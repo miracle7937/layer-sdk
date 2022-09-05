@@ -1,3 +1,5 @@
+import 'package:dio/dio.dart';
+
 import '../../dtos.dart';
 import '../../extensions.dart';
 import '../../network.dart';
@@ -30,5 +32,16 @@ class InboxProvider {
     );
 
     return InboxReportDTO.fromJsonList(response.data);
+  }
+
+  Future<InboxReportMessageDTO> postMessage(
+    Map<String, Object> body,
+    List<MultipartFile> file,
+  ) async {
+    /// TODO - Multipart request is needed here
+    final response = await netClient.request(
+      netClient.netEndpoints.inboxMessage,
+      method: NetRequestMethods.post,
+    );
   }
 }

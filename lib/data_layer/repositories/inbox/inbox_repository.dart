@@ -1,3 +1,5 @@
+import 'package:dio/dio.dart';
+
 import '../../../domain_layer/abstract_repositories.dart';
 import '../../../domain_layer/models.dart';
 import '../../mappings.dart';
@@ -27,5 +29,15 @@ class InboxRepository implements InboxRepositoryInterface {
     );
 
     return reports.map((r) => r.toInboxReport()).toList();
+  }
+
+  /// Creates a new report
+  @override
+  Future<InboxReportMessage> postMessage(
+    Map<String, Object> body,
+    List<MultipartFile> files,
+  ) async {
+    final result = await _provider.postMessage(body, files);
+    return result.toInboxReportMessage();
   }
 }

@@ -340,4 +340,7 @@ class NetEndpoints {
 
   /// Endpoint for handling inbox calls
   String get report => '$_engagement/v1/report';
+
+  /// Endpoint for handling report messages
+  String get inboxMessage => '$_engagement/v2/message';
 }

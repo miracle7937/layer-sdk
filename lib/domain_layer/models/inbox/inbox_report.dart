@@ -7,7 +7,7 @@ import '../../models.dart';
 /// Data class that holds data for inbox reports
 class InboxReport extends Equatable {
   /// The report ID
-  final int id;
+  final int? id;
 
   /// When the record was created
   final DateTime? tsCreated;
@@ -16,13 +16,13 @@ class InboxReport extends Equatable {
   final DateTime? tsUpdated;
 
   /// The Customer id
-  final String customerID;
+  final String? customerID;
 
   /// A username
   final String username;
 
   /// The ID of the current device
-  final int deviceID;
+  final int? deviceID;
 
   /// The description text of this report
   final String description;
@@ -68,9 +68,9 @@ class InboxReport extends Equatable {
 
   /// [InboxReport] constructor
   InboxReport({
-    required this.id,
-    required this.customerID,
-    required this.deviceID,
+    this.id = 0,
+    this.customerID = '0',
+    this.deviceID = 0,
     Iterable<String> files = const [],
     Iterable<InboxReportMessage> messages = const [],
     this.username = '',
