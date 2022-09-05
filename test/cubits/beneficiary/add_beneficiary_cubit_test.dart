@@ -169,7 +169,13 @@ void main() {
   blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(
     'Should start with an empty state.',
     build: () => _cubit,
-    expect: () => [],
+    verify: (c) => expect(
+      c.state,
+      AddBeneficiaryState(
+        beneficiaryType: TransferType.international,
+        banksPagination: Pagination(limit: 20),
+      ),
+    ),
   );
 
   group('Initial loads', _initialLoads);
@@ -498,15 +504,23 @@ void _loadBanks() {
     'With empty states emits nothing',
     build: () => _cubit,
     act: (c) => c.loadBanks(),
-    expect: () => [],
-    verify: (c) => verifyNever(
-      () => _loadBanksByCountryCodeUseCase(
-        countryCode: any(named: 'countryCode'),
-        limit: any(named: 'limit'),
-        offset: any(named: 'offset'),
-        query: any(named: 'query'),
-      ),
-    ),
+    verify: (c) {
+      expect(
+        c.state,
+        AddBeneficiaryState(
+          beneficiaryType: TransferType.international,
+          banksPagination: Pagination(limit: 20),
+        ),
+      );
+      verifyNever(
+        () => _loadBanksByCountryCodeUseCase(
+          countryCode: any(named: 'countryCode'),
+          limit: any(named: 'limit'),
+          offset: any(named: 'offset'),
+          query: any(named: 'query'),
+        ),
+      );
+    },
   );
 
   blocTest<AddBeneficiaryCubit, AddBeneficiaryState>(

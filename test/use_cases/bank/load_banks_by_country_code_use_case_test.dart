@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:layer_sdk/domain_layer/abstract_repositories/bank/bank_repository_interface.dart';
-import 'package:layer_sdk/domain_layer/models/bank/bank.dart';
-import 'package:layer_sdk/domain_layer/use_cases/bank/load_banks_by_country_code_use_case.dart';
+import 'package:layer_sdk/domain_layer/abstract_repositories.dart';
+import 'package:layer_sdk/domain_layer/models.dart';
+import 'package:layer_sdk/domain_layer/use_cases.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockBankRepository extends Mock implements BankRepositoryInterface {}
