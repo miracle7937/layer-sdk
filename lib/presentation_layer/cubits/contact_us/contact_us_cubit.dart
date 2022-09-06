@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:collection/collection.dart';
 
 import '../../../../domain_layer/models.dart';
 import '../../../_migration/data_layer/src/helpers/dto_helpers.dart';
@@ -9,15 +10,18 @@ import '../../cubits.dart';
 class ContactUsCubit extends Cubit<ContactUsState> {
   final GetExperienceAndConfigureItUseCase _getExperienceAndConfigureItUseCase;
   final LoadGlobalSettingsUseCase _loadGlobalSettingsUseCase;
+  final OpenLinkUseCase _openLinkUseCase;
 
   /// Creates a new cubit [ContactUs] cubit.
   ContactUsCubit({
     required GetExperienceAndConfigureItUseCase
         getExperienceAndConfigureItUseCase,
     required LoadGlobalSettingsUseCase loadGlobalSettingsUseCase,
+    required OpenLinkUseCase openLinkUseCase,
   })  : _getExperienceAndConfigureItUseCase =
             getExperienceAndConfigureItUseCase,
         _loadGlobalSettingsUseCase = loadGlobalSettingsUseCase,
+        _openLinkUseCase = openLinkUseCase,
         super(ContactUsState());
 
   /// Loads the contact us data
@@ -103,9 +107,9 @@ class ContactUsCubit extends Cubit<ContactUsState> {
           id: ContactUsType.facebook,
           title: getContainerMessage(message: "facebook_title"),
           subtitle: "https://www.facebook.com/$fbPage",
-          androidValue: "fb://page/$fbPageId",
-          iosValue: "fb://profile/$fbPageId/",
-          actionType: ContactUsActionType.link,
+          onTap: () => _openLinkUseCase.openFacebookProfile(
+            facebookPageId: fbPageId,
+          ),
         ),
       );
     }
@@ -115,16 +119,17 @@ class ContactUsCubit extends Cubit<ContactUsState> {
         "customer_service",
       );
 
-      var value = "twitter://user?screen_name=$twitterSettings";
+      var link = "twitter://user?screen_name=$twitterSettings";
 
       items.add(
         ContactUs(
           id: ContactUsType.twitter,
           title: getContainerMessage(message: "twitter_title"),
           subtitle: "https://www.twitter.com/$twitterSettings",
-          androidValue: value,
-          iosValue: value,
-          actionType: ContactUsActionType.link,
+          onTap: () => _openLinkUseCase.openLink(
+            link: link,
+            url: "https://www.twitter.com/$twitterSettings",
+          ),
         ),
       );
     }
@@ -140,9 +145,10 @@ class ContactUsCubit extends Cubit<ContactUsState> {
           id: ContactUsType.email,
           title: getContainerMessage(message: "email_title"),
           subtitle: subTitle,
-          androidValue: "mailto:$subTitle",
-          iosValue: "mailto:$subTitle",
-          actionType: ContactUsActionType.email,
+          onTap: () => _openLinkUseCase.openLink(
+            link: "mailto:$subTitle",
+            url: subTitle ?? "",
+          ),
         ),
       );
     }
@@ -158,9 +164,10 @@ class ContactUsCubit extends Cubit<ContactUsState> {
           id: ContactUsType.complaintsEmail,
           title: getContainerMessage(message: "complaints_email_title"),
           subtitle: subTitle,
-          androidValue: "mailto:$subTitle",
-          iosValue: "mailto:$subTitle",
-          actionType: ContactUsActionType.email,
+          onTap: () => _openLinkUseCase.openLink(
+            link: "mailto:$subTitle",
+            url: subTitle ?? "",
+          ),
         ),
       );
     }
@@ -176,9 +183,9 @@ class ContactUsCubit extends Cubit<ContactUsState> {
           id: ContactUsType.linkedin,
           title: getContainerMessage(message: "linkedin_title"),
           subtitle: "https://www.linkedin.com/company/$settings",
-          androidValue: "linkedin://$settings",
-          iosValue: "linkedin://company/$settings",
-          actionType: ContactUsActionType.link,
+          onTap: () => _openLinkUseCase.openLinkedIn(
+            username: settings ?? "",
+          ),
         ),
       );
     }
@@ -190,16 +197,17 @@ class ContactUsCubit extends Cubit<ContactUsState> {
       );
 
       var subTitle = "https://www.instagram.com/$settings";
-      var value = "instagram://user?username=$settings";
+      var link = "instagram://user?username=$settings";
 
       items.add(
         ContactUs(
           id: ContactUsType.instagram,
           title: getContainerMessage(message: "instagram_title"),
           subtitle: subTitle,
-          androidValue: value,
-          iosValue: value,
-          actionType: ContactUsActionType.link,
+          onTap: () => _openLinkUseCase.openLink(
+            link: link,
+            url: subTitle,
+          ),
         ),
       );
     }
@@ -215,9 +223,10 @@ class ContactUsCubit extends Cubit<ContactUsState> {
           id: ContactUsType.website,
           title: getContainerMessage(message: "website_title"),
           subtitle: subTitle,
-          androidValue: subTitle,
-          iosValue: subTitle,
-          actionType: ContactUsActionType.link,
+          onTap: () => _openLinkUseCase.openLink(
+            link: subTitle ?? "",
+            url: subTitle ?? "",
+          ),
         ),
       );
     }
@@ -234,9 +243,10 @@ class ContactUsCubit extends Cubit<ContactUsState> {
           id: ContactUsType.local,
           title: getContainerMessage(message: "call_local_number_title"),
           subtitle: subTitle,
-          androidValue: "tel:$subTitle",
-          iosValue: "tel:$subTitle",
-          actionType: ContactUsActionType.phone,
+          onTap: () => _openLinkUseCase.openLink(
+            link: "tel:$subTitle",
+            url: subTitle ?? "",
+          ),
         ),
       );
     }
@@ -254,9 +264,29 @@ class ContactUsCubit extends Cubit<ContactUsState> {
           title:
               getContainerMessage(message: "call_international_number_title"),
           subtitle: subTitle,
-          androidValue: "tel:$subTitle",
-          iosValue: "tel:$subTitle",
-          actionType: ContactUsActionType.phone,
+          onTap: () => _openLinkUseCase.openLink(
+            link: "tel:$subTitle",
+            url: subTitle ?? "",
+          ),
+        ),
+      );
+    }
+
+    if (_settingsAvailable("whatsapp_enabled", "whatsapp_link")) {
+      String? subTitle = getGlobalSettingValue(
+        "whatsapp_link",
+        "customer_service",
+      );
+
+      items.add(
+        ContactUs(
+          id: ContactUsType.whatsapp,
+          title: getContainerMessage(message: "whatsapp_title"),
+          subtitle: subTitle,
+          onTap: () => _openLinkUseCase.openLink(
+            link: "https://wa.me/$subTitle",
+            url: "https://wa.me/$subTitle",
+          ),
         ),
       );
     }
@@ -273,9 +303,10 @@ class ContactUsCubit extends Cubit<ContactUsState> {
           id: ContactUsType.complaintsNumber,
           title: getContainerMessage(message: "call_complaints_number_title"),
           subtitle: subTitle,
-          androidValue: "tel:$subTitle",
-          iosValue: "tel:$subTitle",
-          actionType: ContactUsActionType.phone,
+          onTap: () => _openLinkUseCase.openLink(
+            link: "tel:$subTitle",
+            url: subTitle ?? "",
+          ),
         ),
       );
     }
@@ -293,20 +324,23 @@ class ContactUsCubit extends Cubit<ContactUsState> {
   }
 
   /// Returns the contact us container
-  ExperienceContainer? getContainer() => (state.experience?.pages.firstWhere(
+  ExperienceContainer? getContainer() =>
+      (state.experience?.pages.firstWhereOrNull(
         (pages) => pages.containers.contains(
-          pages.containers.firstWhere(
+          pages.containers.firstWhereOrNull(
             (container) => container.name == "gr_contact_us",
           ),
         ),
-      ))?.containers.firstWhere((element) => element.name == "gr_contact_us");
+      ))
+          ?.containers
+          .firstWhereOrNull((element) => element.name == "gr_contact_us");
 
   bool _settingsAvailable(String containerSettingId, String globalSettingId) {
-    return (getContainerSettings()?.firstWhere(
+    return (getContainerSettings()?.firstWhereOrNull(
               (element) => element?.setting == containerSettingId,
             ) !=
             null) &&
-        (getContainerSettings()?.firstWhere(
+        (getContainerSettings()?.firstWhereOrNull(
               (element) => element?.setting == containerSettingId,
             ) !=
             false) &&
@@ -319,8 +353,7 @@ class ContactUsCubit extends Cubit<ContactUsState> {
     String module,
   ) =>
       state.globalSettings
-          .firstWhere(
-              (element) => element?.code == code && element?.module == module,
-              orElse: () => null)
+          .firstWhereOrNull(
+              (element) => element?.code == code && element?.module == module)
           ?.value;
 }
