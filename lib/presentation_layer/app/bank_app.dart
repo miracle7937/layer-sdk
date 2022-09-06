@@ -1,5 +1,4 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -267,6 +266,14 @@ class BankAppState extends State<BankApp> {
               netClient: widget.netClient,
             ),
           )),
+          loadDeveloperUserDetailsFromTokenUseCase:
+              LoadDeveloperUserDetailsFromTokenUseCase(
+            repository: UserRepository(
+              userProvider: UserProvider(
+                netClient: widget.netClient,
+              ),
+            ),
+          ),
         ),
       ),
       BlocProvider<CurrencyCubit>(
@@ -350,7 +357,7 @@ class BankAppState extends State<BankApp> {
             useInheritedMediaQuery: widget.useInheritedMediaQuery,
             locale: Locale(languageCode),
             navigatorObservers: [
-              FirebaseAnalyticsObserver(analytics: FirebaseAnalytics()),
+              FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
             ],
             builder: (context, child) {
               // `child` can't be null, because the `initialRoute` is always
