@@ -2,9 +2,8 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:layer_sdk/data_layer/network/net_exceptions.dart';
 import 'package:layer_sdk/domain_layer/models.dart';
-import 'package:layer_sdk/domain_layer/use_cases/inbox/create_inbox_report_use_case.dart';
-import 'package:layer_sdk/presentation_layer/cubits/report/create_report_cubit.dart';
-import 'package:layer_sdk/presentation_layer/cubits/report/create_report_state.dart';
+import 'package:layer_sdk/domain_layer/use_cases.dart';
+import 'package:layer_sdk/presentation_layer/cubits.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockCreateReportUseCase extends Mock implements CreateInboxReportUseCase {
@@ -12,7 +11,7 @@ class MockCreateReportUseCase extends Mock implements CreateInboxReportUseCase {
 
 void main() {
   late CreateInboxReportUseCase createReportUseCase;
-  late CreateReportCubit createReportCubit;
+  late CreateInboxReportCubit createReportCubit;
   final _category = '1_category_name';
   final _defReport = InboxReport(
     category: InboxReportCategory.appIssue,
@@ -24,18 +23,19 @@ void main() {
   setUp(() {
     createReportUseCase = MockCreateReportUseCase();
     createReportCubit =
-        CreateReportCubit(createReportUseCase: createReportUseCase);
+        CreateInboxReportCubit(createReportUseCase: createReportUseCase);
   });
 
-  blocTest<CreateReportCubit, CreateReportState>("Should test initial state",
+  blocTest<CreateInboxReportCubit, CreateInboxReportState>(
+      "Should test initial state",
       build: () => createReportCubit,
       verify: (c) => expect(
           c.state,
-          CreateReportState(
-              action: CreateReportAction.none,
+          CreateInboxReportState(
+              action: CreateInboxReportAction.none,
               error: CreateReportErrorStatus.none)));
 
-  blocTest<CreateReportCubit, CreateReportState>(
+  blocTest<CreateInboxReportCubit, CreateInboxReportState>(
     "Should create report",
     setUp: () {
       when(() => createReportUseCase(_category)).thenAnswer(
@@ -45,19 +45,19 @@ void main() {
     build: () => createReportCubit,
     act: (c) => c.createReport(categoryId: _category),
     expect: () => [
-      CreateReportState(
-        action: CreateReportAction.creating,
+      CreateInboxReportState(
+        action: CreateInboxReportAction.creating,
         error: CreateReportErrorStatus.none,
       ),
-      CreateReportState(
-        action: CreateReportAction.none,
+      CreateInboxReportState(
+        action: CreateInboxReportAction.none,
         error: CreateReportErrorStatus.none,
         createdReport: _defReport,
       ),
     ],
   );
 
-  blocTest<CreateReportCubit, CreateReportState>(
+  blocTest<CreateInboxReportCubit, CreateInboxReportState>(
     "Should emits network error",
     setUp: () {
       when(() => createReportUseCase(_category)).thenThrow(NetException());
@@ -65,18 +65,18 @@ void main() {
     build: () => createReportCubit,
     act: (c) => c.createReport(categoryId: _category),
     expect: () => [
-      CreateReportState(
-        action: CreateReportAction.creating,
+      CreateInboxReportState(
+        action: CreateInboxReportAction.creating,
         error: CreateReportErrorStatus.none,
       ),
-      CreateReportState(
-        action: CreateReportAction.none,
+      CreateInboxReportState(
+        action: CreateInboxReportAction.none,
         error: CreateReportErrorStatus.network,
       ),
     ],
   );
 
-  blocTest<CreateReportCubit, CreateReportState>(
+  blocTest<CreateInboxReportCubit, CreateInboxReportState>(
     "Should emits generic error",
     setUp: () {
       when(() => createReportUseCase(_category)).thenThrow(Exception());
@@ -84,11 +84,11 @@ void main() {
     build: () => createReportCubit,
     act: (c) => c.createReport(categoryId: _category),
     expect: () => [
-      CreateReportState(
-          action: CreateReportAction.creating,
+      CreateInboxReportState(
+          action: CreateInboxReportAction.creating,
           error: CreateReportErrorStatus.none),
-      CreateReportState(
-        action: CreateReportAction.none,
+      CreateInboxReportState(
+        action: CreateInboxReportAction.none,
         error: CreateReportErrorStatus.generic,
       ),
     ],

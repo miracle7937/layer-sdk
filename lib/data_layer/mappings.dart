@@ -47,6 +47,7 @@ export 'mappings/experience_preferences/save_experience_preferences_parameter_dt
 export 'mappings/financial/financial_data_dto_mapping.dart';
 export 'mappings/inbox/inbox_report_dto_mapping.dart';
 export 'mappings/inbox/inbox_report_message_dto_mapping.dart';
+export 'mappings/inbox/inbox_report_message_dto_mapping.dart';
 export 'mappings/loyalty/loyalty_points/loyalty_points_mapping.dart';
 export 'mappings/loyalty/loyalty_points_exchange/loyalty_points_exchange_mapping.dart';
 export 'mappings/loyalty/loyalty_points_expiration/loyalty_points_expiration_mapping.dart';

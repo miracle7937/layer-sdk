@@ -44,4 +44,14 @@ class InboxProvider {
 
     return InboxReportDTO.fromJson(result.data);
   }
+
+  /// Delete report
+  Future<bool> deleteReport(InboxReportDTO inboxReport) async {
+    final result = await netClient.request(
+      "${netClient.netEndpoints.report}/${inboxReport.id}",
+      method: NetRequestMethods.delete,
+    );
+
+    return result.success;
+  }
 }

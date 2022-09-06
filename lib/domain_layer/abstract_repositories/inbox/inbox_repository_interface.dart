@@ -11,4 +11,7 @@ abstract class InboxRepositoryInterface {
 
   /// Create a new Report
   Future<InboxReport> createReport(String category);
+
+  /// Delete report
+  Future<bool> deleteReport(InboxReport inboxReport);
 }

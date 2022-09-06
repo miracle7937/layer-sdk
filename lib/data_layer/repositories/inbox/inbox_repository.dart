@@ -31,4 +31,9 @@ class InboxRepository implements InboxRepositoryInterface {
     final reportDto = await _provider.createReport(categoryId);
     return reportDto.toInboxReport();
   }
+
+  @override
+  Future<bool> deleteReport(InboxReport inboxReport) {
+    return _provider.deleteReport(inboxReport.toInboxReportDTO());
+  }
 }

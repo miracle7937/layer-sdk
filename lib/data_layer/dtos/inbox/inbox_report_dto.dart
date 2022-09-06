@@ -62,7 +62,7 @@ class InboxReportDTO {
   bool? read;
 
   /// a Json map for holding extra data
-  Map<String, Object>? extra;
+  Map<String, dynamic>? extra;
 
   /// [InboxReportDTO] constructor
   InboxReportDTO({

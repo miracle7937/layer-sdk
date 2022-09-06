@@ -1,19 +1,19 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../data_layer/network/net_exceptions.dart';
-import '../../../domain_layer/use_cases/inbox/create_inbox_report_use_case.dart';
-import 'create_report_state.dart';
+import '../../../../data_layer/network.dart';
+import '../../../../domain_layer/use_cases/inbox/create_inbox_report_use_case.dart';
+import 'create_inbox_report_state.dart';
 
 /// Create report cubit
-class CreateReportCubit extends Cubit<CreateReportState> {
+class CreateInboxReportCubit extends Cubit<CreateInboxReportState> {
   /// Create report use case
   final CreateInboxReportUseCase createReportUseCase;
 
   /// Default constructor
-  CreateReportCubit({required this.createReportUseCase})
+  CreateInboxReportCubit({required this.createReportUseCase})
       : super(
-          CreateReportState(
-            action: CreateReportAction.none,
+          CreateInboxReportState(
+            action: CreateInboxReportAction.none,
             error: CreateReportErrorStatus.none,
           ),
         );
@@ -24,7 +24,7 @@ class CreateReportCubit extends Cubit<CreateReportState> {
   }) async {
     emit(
       state.copyWith(
-        action: CreateReportAction.creating,
+        action: CreateInboxReportAction.creating,
       ),
     );
 
@@ -32,14 +32,14 @@ class CreateReportCubit extends Cubit<CreateReportState> {
       final report = await createReportUseCase(categoryId);
       emit(
         state.copyWith(
-          action: CreateReportAction.none,
+          action: CreateInboxReportAction.none,
           createdReport: report,
         ),
       );
     } on Exception catch (e) {
       emit(
         state.copyWith(
-          action: CreateReportAction.none,
+          action: CreateInboxReportAction.none,
           error: e is NetException
               ? CreateReportErrorStatus.network
               : CreateReportErrorStatus.generic,
