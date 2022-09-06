@@ -32,6 +32,7 @@ export 'models/card/card_type.dart';
 export 'models/category/category.dart';
 export 'models/checkbook/checkbook.dart';
 export 'models/config/config.dart';
+export 'models/contact_us/contact_us.dart';
 export 'models/country/country.dart';
 export 'models/currency/currency.dart';
 export 'models/customer/cpr.dart';
