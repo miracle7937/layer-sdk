@@ -111,37 +111,36 @@ class PinPadView extends StatelessWidget {
       child: Builder(
         builder: (context) => IgnorePointer(
           ignoring: disabled,
-          child: Column(
-            children: [
-              Expanded(
-                flex: 3,
-                child: Column(
+          child: Container(
+            margin: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Expanded(
-                      child: Center(
-                        child: AutoSizeText(
-                          title,
-                          textAlign: TextAlign.center,
-                          style: layerDesign.bodyM(),
-                          maxLines: 3,
-                          maxFontSize: 16.0,
-                          minFontSize: 12.0,
-                        ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Center(
+                      child: AutoSizeText(
+                        title,
+                        textAlign: TextAlign.center,
+                        style: layerDesign.bodyM(),
+                        maxLines: 3,
+                        maxFontSize: 16.0,
+                        minFontSize: 12.0,
                       ),
                     ),
-                    const SizedBox(height: 20.0),
-                    Expanded(
-                      child: _buildPinDotsIndicator(layerDesign),
-                    ),
+                    const SizedBox(height: 46.0),
+                    _buildPinDotsIndicator(layerDesign),
                   ],
                 ),
-              ),
-              const SizedBox(height: 36.0),
-              Expanded(
-                flex: 7,
-                child: _buildPinPad(layerDesign),
-              ),
-            ],
+                const SizedBox(height: 72.0),
+                Expanded(
+                  child: _buildPinPad(layerDesign),
+                ),
+              ],
+            ),
           ),
         ),
       ),
