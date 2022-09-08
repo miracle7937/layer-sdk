@@ -34,7 +34,7 @@ extension RecurrenceDTOMapping on RecurrenceDTO {
         return Recurrence.endOfEachMonth;
 
       default:
-        return Recurrence.once;
+        return Recurrence.none;
     }
   }
 }
@@ -42,7 +42,7 @@ extension RecurrenceDTOMapping on RecurrenceDTO {
 /// Extension that provides mappings for [Recurrence]
 extension RecurrenceToDTOMapping on Recurrence {
   /// Maps into a [RecurrenceDTO]
-  RecurrenceDTO toRecurrenceDTO() {
+  RecurrenceDTO? toRecurrenceDTO() {
     switch (this) {
       case Recurrence.once:
         return RecurrenceDTO.once;
@@ -72,7 +72,7 @@ extension RecurrenceToDTOMapping on Recurrence {
         return RecurrenceDTO.endOfEachMonth;
 
       default:
-        return RecurrenceDTO.once;
+        return null;
     }
   }
 }

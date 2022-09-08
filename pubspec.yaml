@@ -14,14 +14,17 @@ dependencies:
     git:
       url: git@gitlab.ubanquity.com:dart-packages/biometricts_change_detector.git
       ref: 3a0c7fdf8e602778265e1b284a25e6451bb1d426
+
   carrier_info:
     git:
       url: git@gitlab.ubanquity.com:flutter-apps/carrier-info.git
       ref: 433beda7e4b7c0249c9877fe09c9bbc4058fee27
+
   design_kit_layer:
-    git:
-      url: git@gitlab.ubanquity.com:dart-packages/design-kit-layer.git
-      ref: 6a003c04049c3f99cdfeda3ce2d6713f34b64916
+    #git:
+    #url: git@gitlab.ubanquity.com:dart-packages/design-kit-layer.git
+    #ref: aff73de15fc608de20c6dc96df0299b2bf2c8df2
+    path: "/Users/josejet/Projects/ui_layer"
 
   ocra_authentication:
     git:

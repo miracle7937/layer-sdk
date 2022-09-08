@@ -4,8 +4,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../layer_sdk.dart';
 
+import '../../../layer_sdk.dart';
 import '../../cubits.dart';
 import '../../widgets/header/sdk_header.dart';
 
@@ -631,27 +631,29 @@ class _PinWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.0),
         color: design.surfaceNonary3,
       ),
-      child: TextField(
-        controller: controller,
-        focusNode: node,
-        textAlign: TextAlign.center,
-        style: design.bodyXXL(),
-        keyboardType: TextInputType.number,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.zero,
-          border: InputBorder.none,
+      child: Center(
+        child: TextField(
+          controller: controller,
+          focusNode: node,
+          textAlign: TextAlign.center,
+          style: design.bodyXXL().copyWith(height: 1.0),
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.only(top: 6.0),
+            border: InputBorder.none,
+          ),
+          onChanged: (v) {
+            if (v.replaceAll(_PinWidgetRowState.emptyChar, '').isNotEmpty) {
+              onFill();
+            } else {
+              onDelete(v.isEmpty);
+            }
+          },
+          inputFormatters: [
+            LengthLimitingTextInputFormatter(2),
+          ],
+          onSubmitted: onSubmitted,
         ),
-        onChanged: (v) {
-          if (v.replaceAll(_PinWidgetRowState.emptyChar, '').isNotEmpty) {
-            onFill();
-          } else {
-            onDelete(v.isEmpty);
-          }
-        },
-        inputFormatters: [
-          LengthLimitingTextInputFormatter(2),
-        ],
-        onSubmitted: onSubmitted,
       ),
     );
   }

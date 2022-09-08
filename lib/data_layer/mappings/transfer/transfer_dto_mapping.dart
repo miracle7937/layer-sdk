@@ -27,6 +27,8 @@ extension TransferDTOMapping on TransferDTO {
         secondFactorType: secondFactor?.toSecondFactorType(),
         evaluation: evaluation?.toTransferEvaluation(),
         otpId: otpId,
+        starts: starts,
+        ends: ends,
       );
 
   /// Maps into a [StandingOrder]

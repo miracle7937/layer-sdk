@@ -49,6 +49,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     required ResendTransferSecondFactorUseCase
         resendTransferSecondFactorUseCase,
     required CreateShortcutUseCase createShortcutUseCase,
+    int banksPaginationLimit = 20,
   })  : _loadGlobalSettingsUseCase = loadGlobalSettingsUseCase,
         _getSourceAccountsForBeneficiaryTransferUseCase =
             getSourceAccountsForBeneficiaryTransferUseCase,
@@ -67,7 +68,9 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         super(
           BeneficiaryTransferState(
             transfer: transfer,
-            banksPagination: Pagination(limit: 20),
+            banksPagination: Pagination(
+              limit: banksPaginationLimit,
+            ),
             editMode: editMode,
           ),
         );

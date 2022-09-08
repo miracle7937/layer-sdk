@@ -33,9 +33,6 @@ class MandatePaymentsState extends Equatable {
   /// Which busy action is the cubit doing
   final MandatePaymentsBusyAction busyAction;
 
-  /// The possible error message
-  final String errorMessage;
-
   /// The cubit error status
   final MandatePaymentsErrorStatus errorStatus;
 
@@ -48,9 +45,8 @@ class MandatePaymentsState extends Equatable {
   /// Creates a new [MandatePaymentsState]
   MandatePaymentsState({
     this.busy = false,
-    this.errorMessage = '',
     this.errorStatus = MandatePaymentsErrorStatus.none,
-    this.pagination = const Pagination(limit: 25),
+    this.pagination = const Pagination(),
     Iterable<MandatePayment> payments = const <MandatePayment>[],
     this.busyAction = MandatePaymentsBusyAction.loading,
   }) : payments = UnmodifiableListView(payments);
@@ -59,7 +55,6 @@ class MandatePaymentsState extends Equatable {
   List<Object?> get props {
     return [
       busy,
-      errorMessage,
       errorStatus,
       payments,
       pagination,
@@ -70,7 +65,6 @@ class MandatePaymentsState extends Equatable {
   /// Creates a copy of [MandatePaymentsState]
   MandatePaymentsState copyWith({
     bool? busy,
-    String? errorMessage,
     MandatePaymentsErrorStatus? errorStatus,
     Iterable<MandatePayment>? payments,
     Pagination? pagination,
@@ -78,7 +72,6 @@ class MandatePaymentsState extends Equatable {
   }) {
     return MandatePaymentsState(
       busy: busy ?? this.busy,
-      errorMessage: errorMessage ?? this.errorMessage,
       errorStatus: errorStatus ?? this.errorStatus,
       payments: payments ?? this.payments,
       pagination: pagination ?? this.pagination,
