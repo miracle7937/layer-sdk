@@ -202,6 +202,7 @@ class BottomSheetHelper {
     bool isDismissible = true,
     Color? backgroundColor,
     bool blurBackground = false,
+    bool enableDrag = true,
     DKButtonType denyButtonType = DKButtonType.baseSecondary,
   }) async {
     final design = DesignSystem.of(context);
@@ -216,6 +217,7 @@ class BottomSheetHelper {
     );
 
     final result = await showModalBottomSheet(
+      enableDrag: enableDrag,
       isDismissible: isDismissible,
       context: context,
       barrierColor: DesignSystem.of(context).basePrimary.withOpacity(0.64),
