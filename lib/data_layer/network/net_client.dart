@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
@@ -376,5 +377,120 @@ class NetClient {
     RegExp('.{1,800}').allMatches(text.toString()).forEach(
           (e) => _log.finest(e.group(0)),
         );
+  }
+
+  /// Request that accepts a list of [MultipartFile] in its body
+  Future<NetResponse> multipartRequest(
+    String path, {
+    required List<MultipartFile> files,
+    Map<String, Object> fields = const {},
+    NetRequestMethods method = NetRequestMethods.post,
+    Map<String, dynamic>? queryParameters,
+    bool decodeResponse = true,
+    bool useDefaultToken = false,
+    bool useBackgroundJsonHandler = true,
+    bool addLanguage = true,
+    String? language,
+    bool? forceRefresh,
+    Duration? cacheDuration,
+    String? cachePrimaryKey,
+    String? cacheSubKey,
+    String? authorizationHeader,
+    bool throwAllErrors = true,
+    ResponseType responseType = ResponseType.plain,
+    NetRequestCanceller? requestCanceller,
+    NetProgressCallback? onSendProgress,
+    NetProgressCallback? onReceiveProgress,
+  }) async {
+    final effectivePath = useUpdatedEnvironment
+        ? _pathContext!.join(EnvironmentConfiguration.current.baseUrl, path)
+        : path;
+
+    final effectiveLanguage =
+        addLanguage ? (language ?? defaultLanguage) : null;
+
+    final formData = FormData.fromMap({
+      'files': files.asMap().map(
+        (key, value) {
+          return MapEntry(key, "${value.filename} - ${value.length} bytes");
+        },
+      )
+    });
+
+    for (var f in files) {
+      formData.files.add(MapEntry<String, MultipartFile>(f.filename ?? '', f));
+    }
+
+    fields.forEach((key, value) => fields[key] = jsonEncode(value));
+    try {
+      final response = await client.request(
+        effectivePath,
+        data: {
+          ...fields,
+          'files': formData,
+        },
+        queryParameters: {
+          if (queryParameters != null) ...queryParameters,
+          if (effectiveLanguage != null) 'language': effectiveLanguage,
+        },
+        cancelToken: requestCanceller?.token,
+        onSendProgress: onSendProgress,
+        onReceiveProgress: onReceiveProgress,
+        options: buildOptions(
+          token: currentToken(useDefaultToken: useDefaultToken),
+          authorizationHeader: authorizationHeader,
+          method: method,
+          forceRefresh: forceRefresh,
+          cacheDuration: cacheDuration,
+          cachePrimaryKey: cachePrimaryKey,
+          cacheSubKey: cacheSubKey,
+          responseType: responseType,
+          contentType: ContentType.parse('multipart/form-data'),
+        ),
+      );
+
+      return await _buildResponse(
+        response: response,
+        decodeResponse: decodeResponse,
+        useBackgroundJsonHandler: useBackgroundJsonHandler,
+      );
+    } on DioError catch (e) {
+      if (e.type == DioErrorType.cancel) {
+        return NetResponse(
+          statusCode: 204, // No content as it was cancelled
+          statusMessage: 'Request Cancelled',
+        );
+      }
+
+      if (!throwAllErrors && e.response != null) {
+        _log.warning('${method.name} ${e.requestOptions.uri}: $e');
+
+        return await _buildResponse(
+          response: e.response,
+          decodeResponse: decodeResponse,
+          useBackgroundJsonHandler: useBackgroundJsonHandler,
+        );
+      }
+
+      _log.severe('${method.name}: $e');
+
+      NetException? exception;
+
+      if (e.response?.data != null) {
+        final dynamic json = await jsonHandler.decode(e.response?.data);
+
+        exception = NetException.fromJson(
+          json,
+          statusCode: e.response?.statusCode,
+        );
+      }
+
+      exception ??= NetException(
+        details: e.message,
+        statusCode: e.response?.statusCode,
+      );
+
+      throw exception;
+    }
   }
 }
