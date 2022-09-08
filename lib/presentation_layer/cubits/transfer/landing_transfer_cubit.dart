@@ -7,22 +7,24 @@ import '../../../layer_sdk.dart';
 /// A cubit that handles the [User] transfers
 class LandingTransferCubit extends Cubit<LandingTransferState> {
   final LoadFrequentTransfersUseCase _loadFrequentTransfersUseCase;
-  final LoadAllCurrenciesUseCase _loadAllCurrenciesUseCase;
 
   /// Creates a new cubit using the supplied [LoadFrequentTransfersUseCase].
   LandingTransferCubit({
     required LoadFrequentTransfersUseCase loadFrequentTransfersUseCase,
-    required LoadAllCurrenciesUseCase loadAllCurrenciesUseCase,
     int limit = 10,
   })  : _loadFrequentTransfersUseCase = loadFrequentTransfersUseCase,
-        _loadAllCurrenciesUseCase = loadAllCurrenciesUseCase,
         super(LandingTransferState(pagination: Pagination(limit: limit)));
 
   /// Loads the list of frequent transfers
   Future<void> load({
     bool loadMore = false,
   }) async {
-    emit(state.copyWith(busy: true, error: LandingTransferErrorStatus.none));
+    emit(
+      state.copyWith(
+        busy: true,
+        error: LandingTransferErrorStatus.none,
+      ),
+    );
 
     try {
       final newPage = state.pagination.paginate(loadMore: loadMore);
@@ -39,12 +41,9 @@ class LandingTransferCubit extends Cubit<LandingTransferState> {
         ],
       );
 
-      final currencies = await _loadAllCurrenciesUseCase();
-
       emit(
         state.copyWith(
           frequentTransfers: frequentTransfers,
-          currencies: currencies,
           busy: false,
         ),
       );
