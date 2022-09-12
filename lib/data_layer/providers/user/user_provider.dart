@@ -182,9 +182,14 @@ class UserProvider {
     final data = response.data;
 
     final effectiveData = data['user'] as Map<String, dynamic>;
+    final userId = effectiveData['a_user_id'];
 
     if (data['device'] != null) {
       effectiveData.addAll(data['device']!);
+    }
+
+    if (effectiveData['a_user_id'] == null) {
+      effectiveData['a_user_id'] = userId;
     }
 
     return UserDTO.fromJson(effectiveData);
