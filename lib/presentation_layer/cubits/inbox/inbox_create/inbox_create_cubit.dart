@@ -108,7 +108,7 @@ class InboxCreateCubit extends Cubit<InboxCreateState> {
 
       if (state.selectedCategory?.id == 'application_issue') {
         /// TODO - Needs to include the log file when implemented
-        addFile(/** load logfile here*/);
+        addFile(InboxFile(name: ''));
       }
 
       final message = await _createReportUseCase(
