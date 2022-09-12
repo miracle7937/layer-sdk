@@ -43,9 +43,6 @@ class InboxCreateState extends Equatable {
   /// The error message if any error occour
   final String errorMessage;
 
-  /// The report returned from the server
-  final InboxReport? report;
-
   /// Description text for a inbox
   final String? description;
 
@@ -58,11 +55,13 @@ class InboxCreateState extends Equatable {
   /// A list of all [InboxFiles]
   final UnmodifiableListView<InboxFile> inboxFiles;
 
+  final InboxReportMessage? inboxMessage;
+
   /// Creates a new instance of [InboxCreateState]
   InboxCreateState({
     Iterable<Message> categories = const [],
     Iterable<InboxFile> inboxFiles = const [],
-    this.report,
+    this.inboxMessage,
     this.errorStatus = InboxCreateErrorStatus.none,
     this.busyAction = InboxCreateBusyAction.idle,
     this.busy = false,
@@ -79,7 +78,7 @@ class InboxCreateState extends Equatable {
       busyAction,
       busy,
       errorMessage,
-      report,
+      inboxMessage,
       description,
       categories,
       selectedCategory,
@@ -93,22 +92,22 @@ class InboxCreateState extends Equatable {
     InboxCreateBusyAction? busyAction,
     bool? busy,
     String? errorMessage,
-    InboxReport? report,
     String? description,
     Iterable<Message>? categories,
     Iterable<InboxFile>? inboxFiles,
     Message? selectedCategory,
+    InboxReportMessage? inboxMessage,
   }) {
     return InboxCreateState(
       errorStatus: errorStatus ?? this.errorStatus,
       busyAction: busyAction ?? this.busyAction,
       busy: busy ?? this.busy,
       errorMessage: errorMessage ?? this.errorMessage,
-      report: report ?? this.report,
       description: description ?? this.description,
       categories: categories ?? this.categories,
       selectedCategory: selectedCategory ?? this.selectedCategory,
       inboxFiles: inboxFiles ?? this.inboxFiles,
+      inboxMessage: inboxMessage ?? this.inboxMessage,
     );
   }
 }

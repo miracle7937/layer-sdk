@@ -11,11 +11,14 @@ import 'inbox_create_state.dart';
 /// and a list of files that can be sent to the server
 class InboxCreateCubit extends Cubit<InboxCreateState> {
   final LoadAllInboxReportCategoriesUseCase _categoriesUseCase;
+  final CreateReportUseCase _createReportUseCase;
 
   /// Creates a new [InboxCreateCubit]
   InboxCreateCubit({
     required LoadAllInboxReportCategoriesUseCase categoriesUseCase,
+    required CreateReportUseCase createReportUseCase,
   })  : _categoriesUseCase = categoriesUseCase,
+        _createReportUseCase = createReportUseCase,
         super(InboxCreateState());
 
   /// Set the selectedCategory
@@ -104,8 +107,24 @@ class InboxCreateCubit extends Cubit<InboxCreateState> {
       );
 
       if (state.selectedCategory?.id == 'application_issue') {
+        /// TODO - Needs to include the log file when implemented
         addFile(/** load logfile here*/);
       }
+
+      final message = await _createReportUseCase(
+        description: state.description ?? '',
+        categoryId: state.selectedCategory!.id ?? '',
+        files: state.inboxFiles,
+      );
+
+      emit(
+        state.copyWith(
+          busy: false,
+          busyAction: InboxCreateBusyAction.idle,
+          errorStatus: InboxCreateErrorStatus.none,
+          inboxMessage: message,
+        ),
+      );
     });
   }
 }

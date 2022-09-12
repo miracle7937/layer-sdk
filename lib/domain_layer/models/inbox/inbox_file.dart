@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:typed_data';
 
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 
 /// Class that holds information about inbox files
@@ -59,6 +60,13 @@ class InboxFile extends Equatable {
       fileBinary: fileBinary ?? this.fileBinary,
       path: path ?? this.path,
       fileCount: fileCount ?? this.fileCount,
+    );
+  }
+
+  MultipartFile toMultipartFile() {
+    return MultipartFile.fromBytes(
+      fileBinary!,
+      filename: name,
     );
   }
 }

@@ -34,14 +34,53 @@ class InboxProvider {
     return InboxReportDTO.fromJsonList(response.data);
   }
 
+  /// Posts a Inbox message
   Future<InboxReportMessageDTO> postMessage(
     Map<String, Object> body,
-    List<MultipartFile> file,
+    List<MultipartFile> files,
   ) async {
-    /// TODO - Multipart request is needed here
-    final response = await netClient.request(
+    final response = await netClient.multipartRequest(
       netClient.netEndpoints.inboxMessage,
       method: NetRequestMethods.post,
+      fields: body,
+      files: files,
     );
+
+    return InboxReportMessageDTO.fromJson(response.data);
+  }
+
+  /// Posts a report chat message
+  Future<InboxReportMessageDTO> postChatMessage({
+    required int reportId,
+    required String messageText,
+    required String? file,
+  }) async {
+    final response = await netClient.request(
+      netClient.netEndpoints.reportMessage,
+      data: {
+        "report_id": reportId,
+        "text": messageText,
+        "files": file,
+      },
+    );
+
+    return InboxReportMessageDTO.fromJson(response.data.first);
+  }
+
+  /// Posts a list of
+  Future<InboxReportMessageDTO> postInboxFileList({
+    required Map<String, Object> body,
+    required List<MultipartFile> files,
+  }) async {
+    final response = await netClient.multipartRequest(
+      netClient.netEndpoints.inboxMessage,
+      fields: {'message_object': body},
+      files: files,
+    );
+
+    if (response.data is List) {
+      return InboxReportMessageDTO.fromJson(response.data.first);
+    }
+    return InboxReportMessageDTO.fromJson(response.data);
   }
 }

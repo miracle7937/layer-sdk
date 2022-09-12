@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:dio/dio.dart';
-
 import '../../abstract_repositories.dart';
 import '../../models.dart';
 
@@ -27,13 +25,7 @@ class CreateReportUseCase {
       }
     };
 
-    final _files = files.map((file) {
-      return MultipartFile.fromBytes(
-        file.fileBinary!,
-        filename: file.name,
-      );
-    }).toList();
-
-    return _repository.postMessage(body, _files);
+    final _files = files.map((file) => file.toMultipartFile()).toList();
+    return _repository.postNewMessage(body, _files);
   }
 }

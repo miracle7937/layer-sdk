@@ -15,8 +15,21 @@ abstract class InboxRepositoryInterface {
   ///
   /// Receives a json map containing information about the report
   /// and a list of [InboxFile]s containing files to be sent to the server
-  Future<InboxReportMessage> postMessage(
+  Future<InboxReportMessage> postNewMessage(
     Map<String, Object> body,
     List<MultipartFile> files,
   );
+
+  /// Send a new report chat message
+  Future<InboxReportMessage> postChatMessage({
+    required int reportId,
+    required String messageText,
+    String? file,
+  });
+
+  /// Send a list of [InboxFile] to the server
+  Future<InboxReportMessage> postInboxFileList({
+    required Map<String, Object> body,
+    required List<MultipartFile> files,
+  });
 }

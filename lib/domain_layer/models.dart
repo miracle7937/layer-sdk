@@ -67,6 +67,7 @@ export 'models/experience_preferences/experience_preferences.dart';
 export 'models/experience_preferences/save_experience_preferences_parameters.dart';
 export 'models/financial/financial_data.dart';
 export 'models/generic/labelled_value.dart';
+export 'models/inbox/inbox_chat_message.dart';
 export 'models/inbox/inbox_file.dart';
 export 'models/inbox/inbox_report.dart';
 export 'models/inbox/inbox_report_message.dart';
