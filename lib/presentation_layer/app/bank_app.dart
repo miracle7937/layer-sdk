@@ -128,13 +128,12 @@ class BankApp extends StatefulWidget {
 /// The state of the [BankApp] widget.
 class BankAppState extends State<BankApp> {
   Key _appKey = UniqueKey();
-  GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 
   /// Resets the [Key] passed to the [MaterialApp] to restart the application.
   void restart() {
     setState(() {
       _appKey = UniqueKey();
-      _navigatorKey = GlobalKey<NavigatorState>();
     });
   }
 
