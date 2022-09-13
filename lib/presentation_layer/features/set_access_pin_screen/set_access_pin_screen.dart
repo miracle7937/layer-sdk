@@ -147,8 +147,6 @@ class _RepeatAccessPinScreen extends SetAccessPinBaseWidget {
 
 class __RepeatAccessPinScreenState
     extends SetAccessPinBaseWidgetState<_RepeatAccessPinScreen> {
-  int errorCount = 0;
-
   @override
   Widget build(BuildContext context) {
     final state = context.watch<SetPinScreenCubit>().state;
@@ -174,41 +172,24 @@ class __RepeatAccessPinScreenState
                   currentPin = pin;
                   if (pin.length == widget.pinLength) {
                     if (pin != widget.pin) {
-                      errorCount++;
                       currentPin = '';
                       warning = Translation.of(context).translate(
                         'pin_code_error_password_not_match',
                       );
-
-                      if (errorCount == 2) {
-                        errorCount = 0;
-
-                        final result = await BottomSheetHelper.showConfirmation(
-                          context: context,
-                          titleKey: 'invalid_passcode',
-                          descriptionKey: 'invalid_passcode_description',
-                          type: BottomSheetType.error,
-                          showDenyButton: false,
-                          confirmKey: 'ok',
-                        );
-
-                        if (result) {
-                          Navigator.of(context).pop();
-                        }
-                      }
                     } else {
                       disabled = true;
-                      final result = await BottomSheetHelper.showConfirmation(
+
+                      await BottomSheetHelper.showConfirmation(
                         context: context,
                         titleKey: 'pass_code_done',
                         type: BottomSheetType.success,
                         showDenyButton: false,
                         confirmKey: 'ok',
+                      ).then(
+                        (_) => context
+                            .read<SetPinScreenCubit>()
+                            .setAccesPin(pin: pin),
                       );
-
-                      if (result) {
-                        context.read<SetPinScreenCubit>().setAccesPin(pin: pin);
-                      }
                     }
                   }
                 },

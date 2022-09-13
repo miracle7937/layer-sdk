@@ -200,7 +200,7 @@ class _DPATextState extends State<DPAText> {
                 Row(children: [
                   if (currency?.isNotEmpty ?? false) ...[
                     SvgPicture.asset(
-                      DKFlags.countryFlag(countryCode: currency?.toUpperCase()),
+                      DKFlags.currencyFlag(currency: currency ?? ''),
                       width: 24,
                       height: 18,
                     ),
