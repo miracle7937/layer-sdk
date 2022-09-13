@@ -48,6 +48,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     required ResendTransferSecondFactorUseCase
         resendTransferSecondFactorUseCase,
     required CreateShortcutUseCase createShortcutUseCase,
+    int banksPaginationLimit = 20,
   })  : _loadGlobalSettingsUseCase = loadGlobalSettingsUseCase,
         _getSourceAccountsForBeneficiaryTransferUseCase =
             getSourceAccountsForBeneficiaryTransferUseCase,
@@ -66,7 +67,9 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         super(
           BeneficiaryTransferState(
             transfer: transfer,
-            banksPagination: Pagination(limit: 20),
+            banksPagination: Pagination(
+              limit: banksPaginationLimit,
+            ),
             editMode: editMode,
           ),
         );
@@ -437,6 +440,18 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
     final currentCountry = state.transfer.newBeneficiary?.country;
 
+    if (scheduleDetails != null) {
+      emit(
+        state.copyWith(
+          errors: state.errors
+              .where((error) =>
+                  error.errorStatus !=
+                  BeneficiaryTransferErrorStatus.scheduleDetailsValidationError)
+              .toSet(),
+        ),
+      );
+    }
+
     emit(
       state.copyWith(
         transfer: state.transfer.copyWith(
@@ -487,33 +502,17 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
       ),
     );
 
-    final beneficiaryType = state.transfer.beneficiaryType;
-    final shouldValidateIBAN =
-        beneficiaryType == DestinationBeneficiaryType.newBeneficiary &&
-            state.transfer.newBeneficiary?.routingCode == null;
-    if (shouldValidateIBAN) {
-      final isValid = _validateIBANUseCase(
-        iban: state.transfer.newBeneficiary?.ibanOrAccountNO ?? '',
-        allowedCharacters: state.beneficiarySettings
-            .singleWhereOrNull(
-                (element) => element.code == 'benef_iban_allowed_characters')
-            ?.value
-            ?.split(''),
+    final validationErrors = _validateTransfer();
+
+    if (validationErrors.isNotEmpty) {
+      emit(
+        state.copyWith(
+          actions: _removeAction(BeneficiaryTransferAction.evaluate),
+          errors: validationErrors,
+        ),
       );
 
-      if (!isValid) {
-        emit(
-          state.copyWith(
-            actions: state.removeAction(BeneficiaryTransferAction.evaluate),
-            errors: state.addCustomCubitError(
-              action: BeneficiaryTransferAction.evaluate,
-              code: CubitErrorCode.invalidIBAN,
-            ),
-          ),
-        );
-
-        return;
-      }
+      return;
     }
 
     try {
@@ -545,6 +544,148 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         ),
       );
     }
+  }
+
+  /// Validates the new transfer and returns the validation errors.
+  Set<BeneficiaryTransferError> _validateTransfer() {
+    final validationErrors = <BeneficiaryTransferError>{};
+
+    final transfer = state.transfer;
+    final beneficiaryType = transfer.beneficiaryType;
+
+    if (transfer.source?.account == null) {
+      validationErrors.add(BeneficiaryTransferError(
+        action: BeneficiaryTransferAction.evaluate,
+        errorStatus:
+            BeneficiaryTransferErrorStatus.sourceAccountValidationError,
+      ));
+    }
+
+    if ((transfer.amount ?? 0.0) <= 0.0) {
+      validationErrors.add(BeneficiaryTransferError(
+        action: BeneficiaryTransferAction.evaluate,
+        errorStatus: BeneficiaryTransferErrorStatus.amountValidationError,
+      ));
+    }
+
+    if (transfer.saveToShortcut &&
+        (transfer.shortcutName ?? '').toString().isEmpty) {
+      validationErrors.add(BeneficiaryTransferError(
+        action: BeneficiaryTransferAction.evaluate,
+        errorStatus: BeneficiaryTransferErrorStatus.shortcutNameValidationError,
+      ));
+    }
+
+    if (transfer.scheduleDetails.recurrence != Recurrence.none &&
+        transfer.scheduleDetails.startDate == null) {
+      validationErrors.add(BeneficiaryTransferError(
+        action: BeneficiaryTransferAction.evaluate,
+        errorStatus:
+            BeneficiaryTransferErrorStatus.scheduleDetailsValidationError,
+      ));
+    }
+
+    if (beneficiaryType == DestinationBeneficiaryType.newBeneficiary) {
+      validationErrors.addAll(_validateNewBeneficiary());
+    } else if (transfer.destination?.beneficiary == null) {
+      validationErrors.add(BeneficiaryTransferError(
+        action: BeneficiaryTransferAction.evaluate,
+        errorStatus:
+            BeneficiaryTransferErrorStatus.selectedBeneficiaryValidationError,
+      ));
+    }
+
+    return validationErrors;
+  }
+
+  /// Validates the new beneficiary and retruns a list of validation errors.
+  Set<BeneficiaryTransferError> _validateNewBeneficiary() {
+    final validationErrors = <BeneficiaryTransferError>{};
+
+    final newBeneficiary = state.transfer.newBeneficiary;
+
+    if ((newBeneficiary?.firstName ?? '').trim().isEmpty) {
+      validationErrors.add(BeneficiaryTransferError(
+        action: BeneficiaryTransferAction.evaluate,
+        errorStatus: BeneficiaryTransferErrorStatus.firstNameValidationError,
+      ));
+    }
+
+    if ((newBeneficiary?.lastName ?? '').isEmpty) {
+      validationErrors.add(BeneficiaryTransferError(
+        action: BeneficiaryTransferAction.evaluate,
+        errorStatus: BeneficiaryTransferErrorStatus.lastNameValidationError,
+      ));
+    }
+
+    if (newBeneficiary?.country == null) {
+      validationErrors.add(BeneficiaryTransferError(
+        action: BeneficiaryTransferAction.evaluate,
+        errorStatus: BeneficiaryTransferErrorStatus.countryValidationError,
+      ));
+    }
+
+    if (newBeneficiary?.currency == null) {
+      validationErrors.add(BeneficiaryTransferError(
+        action: BeneficiaryTransferAction.evaluate,
+        errorStatus: BeneficiaryTransferErrorStatus.currencyValidationError,
+      ));
+    }
+
+    if ((newBeneficiary?.ibanOrAccountNO ?? '').trim().isEmpty) {
+      validationErrors.add(BeneficiaryTransferError(
+        action: BeneficiaryTransferAction.evaluate,
+        errorStatus:
+            BeneficiaryTransferErrorStatus.ibanOrAccountValidationError,
+      ));
+    }
+
+    if ((newBeneficiary?.routingCode ?? '').trim().isEmpty &&
+        (newBeneficiary?.routingCodeIsRequired ?? false)) {
+      validationErrors.add(BeneficiaryTransferError(
+        action: BeneficiaryTransferAction.evaluate,
+        errorStatus: BeneficiaryTransferErrorStatus.routingCodeValidationError,
+      ));
+    }
+
+    if (newBeneficiary?.bank == null) {
+      validationErrors.add(BeneficiaryTransferError(
+        action: BeneficiaryTransferAction.evaluate,
+        errorStatus: BeneficiaryTransferErrorStatus.bankValidationError,
+      ));
+    }
+
+    if ((newBeneficiary?.shouldSave ?? false) &&
+        (newBeneficiary?.nickname ?? '').trim().isEmpty) {
+      validationErrors.add(BeneficiaryTransferError(
+        action: BeneficiaryTransferAction.evaluate,
+        errorStatus: BeneficiaryTransferErrorStatus.nicknameValidationError,
+      ));
+    }
+
+    final shouldValidateIBAN =
+        !(newBeneficiary?.routingCodeIsRequired ?? false) &&
+            (newBeneficiary?.ibanOrAccountNO?.isNotEmpty ?? false);
+
+    if (shouldValidateIBAN) {
+      final isValid = _validateIBANUseCase(
+        iban: state.transfer.newBeneficiary?.ibanOrAccountNO ?? '',
+        allowedCharacters: state.beneficiarySettings
+            .singleWhereOrNull(
+                (element) => element.code == 'benef_iban_allowed_characters')
+            ?.value
+            ?.split(''),
+      );
+
+      if (!isValid) {
+        validationErrors.add(BeneficiaryTransferError(
+          action: BeneficiaryTransferAction.evaluate,
+          errorStatus: BeneficiaryTransferErrorStatus.invalidIBAN,
+        ));
+      }
+    }
+
+    return validationErrors;
   }
 
   /// Submits the transfer.

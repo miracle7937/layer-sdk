@@ -24,26 +24,36 @@ enum CubitErrorType {
 /// The error codes that can occur inside a cubit.
 enum CubitErrorCode {
   /// Insuficient balance.
-  insuficientBalance,
+  insuficientBalance('insufficient_balance'),
 
   /// Incorrect OTP code.
-  incorrectOTPCode,
+  incorrectOTPCode('incorrect_value'),
 
   /// The transfer failed.
-  transferFailed,
+  transferFailed('transfer_failed'),
+
+  /// unknown error code.
+  unknown('unknown');
+
+  /// The string value for the [CubitErrorCode].
+  final String value;
+
+  /// Creates a new [CubitErrorCode] with the passed value.
+  const CubitErrorCode(this.value);
+
+  /// Creates a new [CubitErrorCode] from a passed string.
+  factory CubitErrorCode.fromString(String? code) => values.singleWhere(
+        (value) => value.value == code,
+        orElse: () => unknown,
+      );
 }
 
 /// The base abstract error class.
 ///
 /// All cubit errors should extend this.
 abstract class CubitError extends Equatable {
-  /// The error type.
-  final CubitErrorType type;
-
   /// Creates a new [CubitError].
-  CubitError({
-    required this.type,
-  });
+  CubitError();
 }
 
 /// Cubit error representing a connectivity error.
@@ -54,11 +64,10 @@ class CubitConnectivityError<CubitAction> extends CubitError {
   /// Creates a new [CubitConnectivityError].
   CubitConnectivityError({
     required this.action,
-  }) : super(type: CubitErrorType.connectivity);
+  }) : super();
 
   @override
   List<Object?> get props => [
-        type,
         action,
       ];
 }
@@ -79,11 +88,10 @@ class CubitAPIError<CubitAction> extends CubitError {
     required this.action,
     this.code,
     this.message,
-  }) : super(type: CubitErrorType.api);
+  }) : super();
 
   @override
   List<Object?> get props => [
-        type,
         action,
         code,
         message,
@@ -98,11 +106,10 @@ class CubitValidationError<ValidationErrorCode> extends CubitError {
   /// Creates a new [CubitConnectivityError].
   CubitValidationError({
     required this.validationErrorCode,
-  }) : super(type: CubitErrorType.validation);
+  }) : super();
 
   @override
   List<Object?> get props => [
-        type,
         validationErrorCode,
       ];
 }
@@ -123,11 +130,10 @@ class CubitCustomError<CubitAction> extends CubitError {
     this.action,
     this.code,
     this.message,
-  }) : super(type: CubitErrorType.custom);
+  }) : super();
 
   @override
   List<Object?> get props => [
-        type,
         action,
         code,
         message,
@@ -200,7 +206,7 @@ abstract class BaseState<CubitAction, CubitEvent, ValidationErrorCode>
       return errors.union({
         CubitAPIError<CubitAction>(
           action: action,
-          code: exception.code?.toCubitErrorCode(),
+          code: CubitErrorCode.fromString(exception.code),
           message: exception.message,
         )
       });
@@ -264,22 +270,4 @@ abstract class BaseState<CubitAction, CubitEvent, ValidationErrorCode>
   /// new set.
   Set<CubitEvent> removeEvents(Set<CubitEvent> events) =>
       events.difference(events);
-}
-
-/// Extension for mapping status codes returned by the API
-/// into [CubitErrorCode]s
-extension CubitErrorCodeMappingExtension on String? {
-  /// Maps a status code into a [CubitErrorCode].
-  CubitErrorCode? toCubitErrorCode() {
-    switch (this) {
-      case 'insufficient_balance':
-        return CubitErrorCode.insuficientBalance;
-
-      case 'incorrect_value':
-        return CubitErrorCode.incorrectOTPCode;
-
-      default:
-        return null;
-    }
-  }
 }

@@ -37,6 +37,15 @@ class ReceiptCubit extends Cubit<ReceiptState> {
       });
 
   /// Loads the receipt.
+  ///
+  /// The [objectId] is the id that identifies the object that you are trying
+  /// to get the receipt for.
+  ///
+  /// The [actionType] identifies the type of object that the receipt belongs
+  /// to.
+  ///
+  /// The [type] refers to the type of receipt that you are tring to load.
+  /// Default is [ReceiptType.image].
   Future<void> loadReceipt({
     required String objectId,
     required ReceiptActionType actionType,
@@ -60,10 +69,11 @@ class ReceiptCubit extends Cubit<ReceiptState> {
         actionType: actionType,
         type: type,
       );
+
       emit(state.copyWith(
-        imageBytes: isImage ? receipt : state.imageBytes,
-        pdfBytes: isImage ? state.pdfBytes : receipt,
         action: ReceiptAction.none,
+        imageBytes: isImage ? receipt : null,
+        pdfBytes: isImage ? null : receipt,
       ));
     } on Exception catch (e) {
       emit(
@@ -75,7 +85,7 @@ class ReceiptCubit extends Cubit<ReceiptState> {
                 ? ReceiptErrorStatus.network
                 : ReceiptErrorStatus.generic,
             code: e is NetException ? e.code : null,
-            message: e is NetException ? e.message : e.toString(),
+            message: e is NetException ? e.message : null,
           ),
         ),
       );

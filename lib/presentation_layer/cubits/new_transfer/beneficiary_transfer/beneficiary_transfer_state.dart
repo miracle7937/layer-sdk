@@ -59,6 +59,48 @@ enum BeneficiaryTransferEvent {
 enum BeneficiaryTransferValidationError {
   /// Invalid IBAN.
   invalidIBAN,
+
+  /// Incorrect OTP code.
+  incorrectOTPCode,
+
+  /// Source account validation error.
+  sourceAccountValidationError,
+
+  /// Selected beneficiary validation error.
+  selectedBeneficiaryValidationError,
+
+  /// New beneficiary first name validation error.
+  firstNameValidationError,
+
+  /// New beneficiary last name validation error.
+  lastNameValidationError,
+
+  /// New beneficiary country validation error.
+  countryValidationError,
+
+  /// New beneficiary currency validation error.
+  currencyValidationError,
+
+  /// New beneficiary IBAN/Account number validation error.
+  ibanOrAccountValidationError,
+
+  /// New beneficiary routing code validation error.
+  routingCodeValidationError,
+
+  /// New beneficiary bank validation error.
+  bankValidationError,
+
+  /// New beneficiary amount validation error.
+  amountValidationError,
+
+  /// New beneficiary nickname validation error.
+  nicknameValidationError,
+
+  /// Shortcut name validation error.
+  shortcutNameValidationError,
+
+  /// Schedule details validation error.
+  scheduleDetailsValidationError,
 }
 
 /// The state for the [BeneficiaryTransferCubit].

@@ -74,6 +74,10 @@ class AddBeneficiaryState extends Equatable {
   /// Has all the data needed to handle the list of activities.
   final Pagination banksPagination;
 
+  /// TODO: cubit_issue | Don't we have the selectedCurrency and selectedCountry
+  /// available inside the beneficiary object? Why do we need it also in the
+  /// state as standalone parameters?
+  ///
   /// Selected currency.
   final Currency? selectedCurrency;
 
@@ -89,6 +93,8 @@ class AddBeneficiaryState extends Equatable {
   /// True if the cubit is processing something.
   final bool busy;
 
+  /// TODO: cubit_issue | This should be a [UnmodifiableSetView] as multiple
+  /// actions can be done at the same time (example: while initializing).
   /// Current action.
   final AddBeneficiaryAction action;
 
@@ -98,6 +104,8 @@ class AddBeneficiaryState extends Equatable {
   bool get accountRequired =>
       (selectedCurrency?.code?.toLowerCase() ?? '') == 'gbp';
 
+  /// TODO: cubit_issue | Not very descriptive. Could we change this to
+  /// `canSubmit`for example?
   /// Adding of new beneficiary is allowed when all required fields are filled.
   bool get addAvailable =>
       (beneficiary?.firstName.isNotEmpty ?? false) &&
@@ -155,6 +163,7 @@ class AddBeneficiaryState extends Equatable {
 
   /// Creates a new state based on this one.
   AddBeneficiaryState copyWith({
+    TransferType? beneficiaryType,
     Beneficiary? beneficiary,
     Iterable<Country>? countries,
     Iterable<Currency>? availableCurrencies,
@@ -169,7 +178,7 @@ class AddBeneficiaryState extends Equatable {
     String? bankQuery,
   }) =>
       AddBeneficiaryState(
-        beneficiaryType: beneficiaryType,
+        beneficiaryType: beneficiaryType ?? this.beneficiaryType,
         beneficiary: beneficiary ?? this.beneficiary,
         countries: countries ?? this.countries,
         availableCurrencies: availableCurrencies ?? this.availableCurrencies,
@@ -185,6 +194,10 @@ class AddBeneficiaryState extends Equatable {
       );
 }
 
+/// TODO: cubit_issue | Some of this actions are being used as flags for the UI
+/// to perform steps. This is not how states should be used.
+/// This can be achieved using [BlocListener]s on the UI.
+///
 /// All possible actions.
 enum AddBeneficiaryAction {
   /// Init action, is used to set initial values.

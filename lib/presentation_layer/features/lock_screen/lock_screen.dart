@@ -28,6 +28,10 @@ class LockScreen extends StatelessWidget {
   /// Callback when the user has been authenticated successfully.
   final VoidCallback onAuthenticated;
 
+  /// Callback when the device is inactive for entering an wrong passcode so
+  /// many times.
+  final VoidCallback? onDeviceInactive;
+
   /// Whether if the biometrics should be used or not.
   /// Default is `false`.
   final bool useBiometrics;
@@ -45,6 +49,7 @@ class LockScreen extends StatelessWidget {
     required this.title,
     required this.onAuthenticated,
     this.useBiometrics = false,
+    this.onDeviceInactive,
     required this.ocraSecret,
     required this.deviceId,
   }) : assert(ocraSecret.isNotEmpty, 'The ocra secret cannot be empty');
@@ -64,6 +69,7 @@ class LockScreen extends StatelessWidget {
             useBiometrics: useBiometrics,
             ocraSecret: ocraSecret,
             deviceId: deviceId,
+            onDeviceInactive: onDeviceInactive,
           ),
         ),
       );
@@ -77,7 +83,12 @@ class _LockScreen extends SetAccessPinBaseWidget {
   /// Callback when the user has been authenticated successfully.
   final VoidCallback onAuthenticated;
 
+  /// Callback when the device is inactive for entering an wrong passcode so
+  /// many times.
+  final VoidCallback? onDeviceInactive;
+
   /// Whether if the biometrics should be used or not.
+  ///
   /// Default is `false`.
   final bool useBiometrics;
 
@@ -96,6 +107,7 @@ class _LockScreen extends SetAccessPinBaseWidget {
     this.useBiometrics = false,
     required this.ocraSecret,
     required this.deviceId,
+    required this.onDeviceInactive,
   });
 
   @override
@@ -162,7 +174,13 @@ class _LockScreenState extends SetAccessPinBaseWidgetState<_LockScreen> {
           listenWhen: (previous, current) =>
               previous.error != current.error &&
               current.error != OcraAuthenticationError.none,
-          listener: (context, state) => currentPin = '',
+          listener: (context, state) {
+            if (state.error == OcraAuthenticationError.deviceInactive) {
+              widget.onDeviceInactive?.call();
+            }
+
+            currentPin = '';
+          },
         ),
       ],
       child: Scaffold(

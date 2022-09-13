@@ -89,11 +89,8 @@ class _DPASearchListState extends State<DPASearchList> {
                     var flagSvg;
                     if (isCountryPicker) {
                       flagSvg = DKFlags.countryFlag(countryCode: value.id);
-                    }
-
-                    if (isCurrencyPicker) {
-                      flagSvg = DKFlags.currencyFlag(
-                          currency: value.id.toLowerCase());
+                    } else if (isCurrencyPicker) {
+                      flagSvg = DKFlags.currencyFlag(currency: value.id);
                     }
                     return _DPASearchListItem(
                       svgPath: flagSvg,

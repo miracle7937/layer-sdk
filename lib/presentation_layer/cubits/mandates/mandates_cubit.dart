@@ -3,8 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../data_layer/network.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases/mandates/load_mandates_use_case.dart';
+import '../../utils.dart';
 import 'mandates_state.dart';
 
+/// TODO: cubit_issue | I think it would be better to merge the
+/// [MandateCancelCubit], [MandateCreateCubit] and this cubit together.
+/// Don't see the advantage of having all of these separated.
+///
 /// Cubit that loads a [Mandate] data
 class MandatesCubit extends Cubit<MandatesState> {
   final LoadMandatesUseCase _mandatesUseCase;
@@ -12,8 +17,15 @@ class MandatesCubit extends Cubit<MandatesState> {
   /// Creates a new [MandatesCubit] instance
   MandatesCubit({
     required LoadMandatesUseCase loadMandateUseCase,
+    int limit = 25,
   })  : _mandatesUseCase = loadMandateUseCase,
-        super(MandatesState());
+        super(
+          MandatesState(
+            pagination: Pagination(
+              limit: limit,
+            ),
+          ),
+        );
 
   /// Load [Mandate]s
   Future<void> load({
@@ -26,8 +38,8 @@ class MandatesCubit extends Cubit<MandatesState> {
         busyAction: loadMore
             ? MandatesBusyAction.loadingMore
             : MandatesBusyAction.loading,
-        errorMessage: '',
         errorStatus: MandatesErrorStatus.none,
+        mandates: [],
       ),
     );
 
@@ -49,8 +61,6 @@ class MandatesCubit extends Cubit<MandatesState> {
       emit(
         state.copyWith(
           busy: false,
-          errorMessage: '',
-          errorStatus: MandatesErrorStatus.none,
           mandates: mandates,
           pagination: pagination.refreshCanLoadMore(
             loadedCount: foundMandates.length,
@@ -64,8 +74,7 @@ class MandatesCubit extends Cubit<MandatesState> {
           errorStatus: e is NetException
               ? MandatesErrorStatus.network
               : MandatesErrorStatus.generic,
-          errorMessage: e is NetException ? e.message : e.toString(),
-          mandates: [],
+          errorMessage: e is NetException ? e.message : null,
         ),
       );
     }
