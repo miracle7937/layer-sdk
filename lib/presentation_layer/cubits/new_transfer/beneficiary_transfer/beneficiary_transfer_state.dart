@@ -55,9 +55,15 @@ enum BeneficiaryTransferEvent {
   showResultView,
 }
 
+/// The available validation errors.
+enum BeneficiaryTransferValidationError {
+  /// Invalid IBAN.
+  invalidIBAN,
+}
+
 /// The state for the [BeneficiaryTransferCubit].
-class BeneficiaryTransferState
-    extends BaseState<BeneficiaryTransferAction, BeneficiaryTransferEvent> {
+class BeneficiaryTransferState extends BaseState<BeneficiaryTransferAction,
+    BeneficiaryTransferEvent, BeneficiaryTransferValidationError> {
   /// The transfer object.
   final BeneficiaryTransfer transfer;
 
@@ -103,7 +109,7 @@ class BeneficiaryTransferState
   BeneficiaryTransferState({
     required this.transfer,
     super.actions = const <BeneficiaryTransferAction>{},
-    super.errors = const <CubitError<BeneficiaryTransferAction>>{},
+    super.errors = const <CubitError>{},
     super.events = const <BeneficiaryTransferEvent>{},
     Iterable<GlobalSetting> beneficiarySettings = const <GlobalSetting>{},
     Iterable<Country> countries = const <Country>{},
@@ -147,7 +153,7 @@ class BeneficiaryTransferState
   BeneficiaryTransferState copyWith({
     BeneficiaryTransfer? transfer,
     Set<BeneficiaryTransferAction>? actions,
-    Set<CubitError<BeneficiaryTransferAction>>? errors,
+    Set<CubitError>? errors,
     Set<BeneficiaryTransferEvent>? events,
     Iterable<GlobalSetting>? beneficiarySettings,
     Iterable<Country>? countries,

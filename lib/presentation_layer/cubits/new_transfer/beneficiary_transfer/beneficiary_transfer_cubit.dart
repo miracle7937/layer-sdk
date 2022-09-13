@@ -538,7 +538,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
           actions: state.removeAction(
             BeneficiaryTransferAction.evaluate,
           ),
-          errors: state.addCubitError(
+          errors: state.addErrorFromException(
             action: BeneficiaryTransferAction.evaluate,
             exception: e,
           ),

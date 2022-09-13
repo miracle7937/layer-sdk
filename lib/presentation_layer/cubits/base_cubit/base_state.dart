@@ -16,15 +16,15 @@ enum CubitErrorType {
 
   /// Custom error.
   custom,
+
+  /// Validation.
+  validation,
 }
 
 /// The error codes that can occur inside a cubit.
 enum CubitErrorCode {
   /// Insuficient balance.
   insuficientBalance,
-
-  /// Invalid IBAN.
-  invalidIBAN,
 
   /// Incorrect OTP code.
   incorrectOTPCode,
@@ -33,13 +33,40 @@ enum CubitErrorCode {
   transferFailed,
 }
 
-/// Model that represents an error that occured inside a cubit.
-class CubitError<CubitAction> extends Equatable {
+/// The base abstract error class.
+///
+/// All cubit errors should extend this.
+abstract class CubitError extends Equatable {
+  /// The error type.
+  final CubitErrorType type;
+
+  /// Creates a new [CubitError].
+  CubitError({
+    required this.type,
+  });
+}
+
+/// Cubit error representing a connectivity error.
+class CubitConnectivityError<CubitAction> extends CubitError {
   /// The action that the cubit was performing when the error occurred .
   final CubitAction action;
 
-  /// The error type.
-  final CubitErrorType type;
+  /// Creates a new [CubitConnectivityError].
+  CubitConnectivityError({
+    required this.action,
+  }) : super(type: CubitErrorType.connectivity);
+
+  @override
+  List<Object?> get props => [
+        type,
+        action,
+      ];
+}
+
+/// Cubit error representing an API error.
+class CubitAPIError<CubitAction> extends CubitError {
+  /// The action that the cubit was performing when the error occurred .
+  final CubitAction action;
 
   /// The optional error code.
   final CubitErrorCode? code;
@@ -47,18 +74,61 @@ class CubitError<CubitAction> extends Equatable {
   /// The optinal error message.
   final String? message;
 
-  /// Creates a new [CubitError].
-  const CubitError({
+  /// Creates a new [CubitAPIError].
+  CubitAPIError({
     required this.action,
-    required this.type,
     this.code,
     this.message,
-  });
+  }) : super(type: CubitErrorType.api);
 
   @override
   List<Object?> get props => [
-        action,
         type,
+        action,
+        code,
+        message,
+      ];
+}
+
+/// Cubit error representing a connectivity error.
+class CubitValidationError<ValidationErrorCode> extends CubitError {
+  /// The validation error code.
+  final ValidationErrorCode validationErrorCode;
+
+  /// Creates a new [CubitConnectivityError].
+  CubitValidationError({
+    required this.validationErrorCode,
+  }) : super(type: CubitErrorType.validation);
+
+  @override
+  List<Object?> get props => [
+        type,
+        validationErrorCode,
+      ];
+}
+
+/// Cubit error representing a custom error.
+class CubitCustomError<CubitAction> extends CubitError {
+  /// The action that the cubit was performing when the error occurred .
+  final CubitAction? action;
+
+  /// The optional error code.
+  final CubitErrorCode? code;
+
+  /// The optinal error message.
+  final String? message;
+
+  /// Creates a new [CubitCustomError].
+  CubitCustomError({
+    this.action,
+    this.code,
+    this.message,
+  }) : super(type: CubitErrorType.custom);
+
+  @override
+  List<Object?> get props => [
+        type,
+        action,
         code,
         message,
       ];
@@ -70,12 +140,13 @@ class CubitError<CubitAction> extends Equatable {
 ///   - Busy actions
 ///   - Error handling
 ///   - Events
-abstract class BaseState<CubitAction, CubitEvent> extends Equatable {
+abstract class BaseState<CubitAction, CubitEvent, ValidationErrorCode>
+    extends Equatable {
   /// The actions that the cubit is performing.
   final UnmodifiableSetView<CubitAction> actions;
 
   /// The cubit errors.
-  final UnmodifiableSetView<CubitError<CubitAction>> errors;
+  final UnmodifiableSetView<CubitError> errors;
 
   /// The events that the cubit has emitted for the UI to perform.
   final UnmodifiableSetView<CubitEvent> events;
@@ -83,14 +154,14 @@ abstract class BaseState<CubitAction, CubitEvent> extends Equatable {
   /// Creates a new [BaseState].
   BaseState({
     Set<CubitAction>? actions,
-    Set<CubitError<CubitAction>>? errors,
+    Set<CubitError>? errors,
     Set<CubitEvent>? events,
   })  : actions = UnmodifiableSetView(actions ?? <CubitAction>{}),
-        errors = UnmodifiableSetView(errors ?? <CubitError<CubitAction>>{}),
+        errors = UnmodifiableSetView(errors ?? <CubitError>{}),
         events = UnmodifiableSetView(events ?? <CubitEvent>{});
 
   /// Method for creating a copy of this [BaseState].
-  BaseState<CubitAction, CubitEvent> copyWith();
+  BaseState copyWith();
 
   /// Adds the passed action to the current actions and returns the
   /// new set.
@@ -111,45 +182,71 @@ abstract class BaseState<CubitAction, CubitEvent> extends Equatable {
   Set<CubitAction> removeActions(Set<CubitAction> actions) =>
       actions.difference(actions);
 
-  /// Builds a [CubitError] with the passed action and exception, adds it to
-  /// the current errors and returns the new set.
-  Set<CubitError<CubitAction>> addCubitError({
+  /// Builds the corresponding [CubitError] with the passed action and
+  /// exception, adds it to the current errors and returns the new set.
+  Set<CubitError> addErrorFromException({
     required CubitAction action,
     required Exception exception,
+  }) {
+    if (exception is NetException) {
+      if (exception.code == null) {
+        return errors.union({
+          CubitConnectivityError<CubitAction>(
+            action: action,
+          )
+        });
+      }
+
+      return errors.union({
+        CubitAPIError<CubitAction>(
+          action: action,
+          code: exception.code?.toCubitErrorCode(),
+          message: exception.message,
+        )
+      });
+    }
+
+    /// Corner case. The error concentrator should handle this.
+    throw exception;
+  }
+
+  /// Builds a [CubitValidationError] with the passed validation error code,
+  /// adds  it to the current errors and returns the new set.
+  Set<CubitError> addValidationError({
+    required ValidationErrorCode validationErrorCode,
   }) =>
       errors.union({
-        CubitError<CubitAction>(
-          action: action,
-          type: exception is NetException
-              ? exception.code == null
-                  ? CubitErrorType.connectivity
-                  : CubitErrorType.api
-              : CubitErrorType.generic,
-          code: exception is NetException
-              ? exception.code?.toCubitErrorCode()
-              : null,
-          message: exception is NetException ? exception.message : null,
-        )
+        CubitValidationError<ValidationErrorCode>(
+          validationErrorCode: validationErrorCode,
+        ),
       });
 
   /// Adds a custom error to the errors and returns the new set.
-  Set<CubitError<CubitAction>> addCustomCubitError({
-    required CubitAction action,
+  Set<CubitError> addCustomCubitError({
+    CubitAction? action,
     CubitErrorCode? code,
     String? message,
   }) =>
       errors.union({
-        CubitError<CubitAction>(
+        CubitCustomError<CubitAction>(
           action: action,
-          type: CubitErrorType.custom,
           code: code,
           message: message,
         )
       });
 
   /// Removes any error related to the passed action and returns the new set.
-  Set<CubitError<CubitAction>> removeCubitError(CubitAction action) =>
-      errors.where((error) => error.action != action).toSet();
+  Set<CubitError> removeErrorForAction(CubitAction action) => errors
+      .where((error) =>
+          (error is CubitConnectivityError<CubitAction> ||
+              error is CubitConnectivityError<CubitAction>) &&
+          error.action != action)
+      .toSet();
+
+  /// Removes all the validation errors and returns the new set of errors.
+  Set<CubitError> clearValidationErrors() => errors.difference(
+        errors.whereType<CubitValidationError<ValidationErrorCode>>().toSet(),
+      );
 
   /// Adds the passed event to the current events and returns the
   /// new set.
