@@ -103,7 +103,10 @@ class PaymentDTO {
   });
 
   /// Creates a [PaymentDTO] from a JSON
-  factory PaymentDTO.fromJson(Map<String, dynamic> json) {
+  factory PaymentDTO.fromJson(
+    Map<String, dynamic> json, {
+    bool ignoreRecurrence = false,
+  }) {
     return PaymentDTO(
       paymentId: json['payment_id'],
       paymentTs: JsonParser.parseDate(json['payment_ts']),
@@ -129,7 +132,8 @@ class PaymentDTO {
       secondFactor: SecondFactorTypeDTO.fromRaw(json['second_factor']),
       created: JsonParser.parseDate(json['ts_created']),
       scheduled: JsonParser.parseDate(json['ts_scheduled']),
-      recurrence: RecurrenceDTO.fromRaw(json["recurrence"]),
+      recurrence:
+          ignoreRecurrence ? null : RecurrenceDTO.fromRaw(json["recurrence"]),
       recurrenceStart: JsonParser.parseDate(json["recurrence_start"]),
       recurrenceEnd: JsonParser.parseDate(json["recurrence_end"]),
       recurring: json['recurring'],
@@ -161,8 +165,16 @@ class PaymentDTO {
   }
 
   /// Creates a list of [PaymentDTO]s from the given JSON list.
-  static List<PaymentDTO> fromJsonList(List<Map<String, dynamic>> json) =>
-      json.map(PaymentDTO.fromJson).toList();
+  static List<PaymentDTO> fromJsonList(
+    List<Map<String, dynamic>> json, {
+    bool ignoreRecurrence = false,
+  }) =>
+      json
+          .map((e) => PaymentDTO.fromJson(
+                e,
+                ignoreRecurrence: ignoreRecurrence,
+              ))
+          .toList();
 }
 
 /// payment status options
