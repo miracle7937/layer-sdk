@@ -35,6 +35,11 @@ class ActivityCubit extends Cubit<ActivityState> {
         ));
 
   /// Loads all the activities
+  ///
+  /// Use the [loadMore] parameter for loading the next page of items.
+  ///
+  /// The [startDate], [endDate], [types], [activityTags] and [transferTypes]
+  /// parameters can be used for filtering purposes.
   Future<void> load({
     bool loadMore = false,
     bool itemIsNull = false,
@@ -91,7 +96,7 @@ class ActivityCubit extends Cubit<ActivityState> {
               ? ActivityErrorStatus.network
               : ActivityErrorStatus.generic,
           action: ActivityBusyAction.none,
-          errorMessage: e is NetException ? e.message : e.toString(),
+          errorMessage: e is NetException ? e.message : null,
         ),
       );
 
@@ -99,6 +104,8 @@ class ActivityCubit extends Cubit<ActivityState> {
     }
   }
 
+  /// TODO: cubit_issue | We don't handle busy states and errors on the delete
+  /// and cancel methods?
   /// Delete a certain activity based on the id
   Future<void> delete(String activityId) => _deleteActivityUseCase(activityId);
 
@@ -115,7 +122,16 @@ class ActivityCubit extends Cubit<ActivityState> {
         otpValue: otpValue,
       );
 
+  /// TODO: cubit_issue | This method is returning the result from the
+  /// cancel recurring payment use case instead of using the state. Migrate to
+  /// cubit and state based.
+  ///
   /// Cancel a recurring payment
+  ///
+  /// The [itemId] corresponds to the payment id.
+  ///
+  /// For verifying the otp, you can use the [otpValue] paramter. And set
+  /// the [resendOTP] as `true` if you want the OTP to be resent.
   Future<Payment> cancelRecurringPayment(
     String itemId, {
     String? otpValue,
@@ -137,7 +153,6 @@ class ActivityCubit extends Cubit<ActivityState> {
 
       emit(
         state.copyWith(
-          errorStatus: ActivityErrorStatus.none,
           action: ActivityBusyAction.none,
         ),
       );
@@ -158,6 +173,8 @@ class ActivityCubit extends Cubit<ActivityState> {
     }
   }
 
+  /// TODO: cubit_issue | We don't handle busy states and errors on the
+  /// shortcut method
   /// Add the activity to shorcut
   Future<void> shortcut({required NewShortcut newShortcut}) =>
       _createShortcutUseCase(

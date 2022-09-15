@@ -69,7 +69,9 @@ class MandateCreateState extends Equatable {
   }) {
     return MandateCreateState(
       busy: busy ?? this.busy,
-      errorMessage: errorMessage ?? this.errorMessage,
+      errorMessage: errorStatus == MandateCreateErrorStatus.none
+          ? ''
+          : errorMessage ?? this.errorMessage,
       errorStatus: errorStatus ?? this.errorStatus,
       account: account ?? this.account,
       hasAccepted: hasAccepted ?? this.hasAccepted,

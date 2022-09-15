@@ -41,7 +41,7 @@ extension DPAVariablePropertyDTOMapping on DPAVariablePropertyDTO {
         valueTextProperties: valueTextProperties?.toTextProperties(),
         currencyFlagCode: currencyFlagCode,
         characterSplit: characterSplit,
-        picker: picker?.toDPAVariablePicker() ?? DPAVariablePicker.currency,
+        picker: picker?.toDPAVariablePicker(),
         defaultPrefix: defaultPrefix,
       );
 }
@@ -76,11 +76,7 @@ extension PickerDTOMapping on PickerDTO {
         return DPAVariablePicker.currency;
 
       default:
-        throw MappingException(
-          from: PickerDTO,
-          to: DPAVariablePicker,
-          value: this,
-        );
+        return DPAVariablePicker.none;
     }
   }
 }

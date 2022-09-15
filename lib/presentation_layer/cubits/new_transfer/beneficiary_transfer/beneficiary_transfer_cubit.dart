@@ -39,7 +39,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         getDestinationBeneficiariesForBeneficiariesTransferUseCase,
     required LoadCountriesUseCase loadCountriesUseCase,
     required LoadAllCurrenciesUseCase loadAllCurrenciesUseCase,
-      required LoadMessagesByModuleUseCase loadMessagesByModuleUseCase,
+    required LoadMessagesByModuleUseCase loadMessagesByModuleUseCase,
     required LoadBanksByCountryCodeUseCase loadBanksByCountryCodeUseCase,
     required ValidateIBANUseCase validateIBANUseCase,
     required EvaluateTransferUseCase evaluateTransferUseCase,
@@ -49,6 +49,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     required ResendTransferSecondFactorUseCase
         resendTransferSecondFactorUseCase,
     required CreateShortcutUseCase createShortcutUseCase,
+    int banksPaginationLimit = 20,
   })  : _loadGlobalSettingsUseCase = loadGlobalSettingsUseCase,
         _getSourceAccountsForBeneficiaryTransferUseCase =
             getSourceAccountsForBeneficiaryTransferUseCase,
@@ -67,7 +68,9 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         super(
           BeneficiaryTransferState(
             transfer: transfer,
-            banksPagination: Pagination(limit: 20),
+            banksPagination: Pagination(
+              limit: banksPaginationLimit,
+            ),
             editMode: editMode,
           ),
         );
@@ -125,7 +128,6 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
       }
     }
   }
-
 
   /// Returns an action list that includes the passed action.
   Set<BeneficiaryTransferAction> _addAction(
