@@ -9,6 +9,7 @@ extension CustomerDTOMapping on CustomerDTO {
   /// Maps into a [Customer].
   Customer toCustomer(DPAMappingCustomData customData) => Customer(
         id: id ?? '',
+        postalCode: customerInformation?.postalCode,
         status: status?.toCustomerStatus() ?? CustomerStatus.unknown,
         type: type?.toCustomerType() ?? CustomerType.unknown,
         personalData: PersonalCustomerData(
