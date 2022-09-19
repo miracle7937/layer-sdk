@@ -84,4 +84,17 @@ class InboxProvider {
     }
     return InboxReportMessageDTO.fromJson(response.data);
   }
+
+  /// Create a new report
+  Future<InboxReportDTO> createReport(String categoryId) async {
+    final result = await netClient.request(
+      netClient.netEndpoints.report,
+      method: NetRequestMethods.post,
+      data: {
+        'category': categoryId,
+      },
+    );
+
+    return InboxReportDTO.fromJson(result.data);
+  }
 }

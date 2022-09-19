@@ -32,4 +32,7 @@ abstract class InboxRepositoryInterface {
     required Map<String, Object> body,
     required List<MultipartFile> files,
   });
+
+  /// Create a new Report
+  Future<InboxReport> createReport(String category);
 }
