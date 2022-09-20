@@ -1,3 +1,5 @@
+import 'package:collection/collection.dart';
+
 import '../../../features/accounts.dart';
 
 /// The use case for the accounts on a beneficiary transfer flow.
@@ -11,9 +13,16 @@ class GetSourceAccountsForBeneficiaryTransferUseCase {
 
   /// Return the accounts for the source account picker on the beneficiary
   /// transfer flow.
-  Future<List<Account>> call() => _accountRepository.list(
-        statuses: const [
-          AccountStatus.active,
-        ],
-      );
+  Future<List<Account>> call() async {
+    final accounts = await _accountRepository.list(
+      statuses: const [
+        AccountStatus.active,
+      ],
+    );
+
+    return accounts
+        .sortedBy<num>((element) => element.availableBalance ?? 0.0)
+        .reversed
+        .toList();
+  }
 }
