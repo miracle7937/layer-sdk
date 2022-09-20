@@ -23,8 +23,8 @@ enum CubitErrorType {
 
 /// The error codes that can occur inside a cubit.
 enum CubitErrorCode {
-  /// Insuficient balance.
-  insuficientBalance('insufficient_balance'),
+  /// Insufficient balance.
+  insufficientBalance('insufficient_balance'),
 
   /// Incorrect OTP code.
   incorrectOTPCode('incorrect_value'),
@@ -194,15 +194,13 @@ abstract class BaseState<CubitAction, CubitEvent, ValidationErrorCode>
     required CubitAction action,
     required Exception exception,
   }) {
-    if (exception is NetException) {
-      if (exception.code == null) {
-        return errors.union({
-          CubitConnectivityError<CubitAction>(
-            action: action,
-          )
-        });
-      }
-
+    if (exception is ConnectivityException) {
+      return errors.union({
+        CubitConnectivityError<CubitAction>(
+          action: action,
+        )
+      });
+    } else if (exception is NetException) {
       return errors.union({
         CubitAPIError<CubitAction>(
           action: action,
@@ -227,6 +225,13 @@ abstract class BaseState<CubitAction, CubitEvent, ValidationErrorCode>
         ),
       });
 
+  /// Adds the passed [CubitValidationError] set to the current errors and
+  ///  returns the new set.
+  Set<CubitError> addValidationErrors({
+    required Set<CubitValidationError<ValidationErrorCode>> validationErrors,
+  }) =>
+      errors.union(validationErrors);
+
   /// Adds a custom error to the errors and returns the new set.
   Set<CubitError> addCustomCubitError({
     CubitAction? action,
@@ -249,18 +254,40 @@ abstract class BaseState<CubitAction, CubitEvent, ValidationErrorCode>
           error.action != action)
       .toSet();
 
+  /// Removes the passed validation error related to the passed validation
+  /// error code.
+  Set<CubitError> removeValidationError(
+          ValidationErrorCode validationErrorCode) =>
+      errors.difference(
+        errors
+            .whereType<CubitValidationError<ValidationErrorCode>>()
+            .where((error) => error.validationErrorCode == validationErrorCode)
+            .toSet(),
+      );
+
   /// Removes all the validation errors and returns the new set of errors.
   Set<CubitError> clearValidationErrors() => errors.difference(
         errors.whereType<CubitValidationError<ValidationErrorCode>>().toSet(),
       );
 
+  /// Returns whether if the passed action contains errors or not.
+  bool actionHasErrors(CubitAction action) =>
+      errors
+          .whereType<CubitConnectivityError<CubitAction>>()
+          .where((error) => error.action == action)
+          .isNotEmpty ||
+      errors
+          .whereType<CubitAPIError<CubitAction>>()
+          .where((error) => error.action == action)
+          .isNotEmpty ||
+      errors
+          .whereType<CubitCustomError<CubitAction>>()
+          .where((error) => error.action == action)
+          .isNotEmpty;
+
   /// Adds the passed event to the current events and returns the
   /// new set.
   Set<CubitEvent> addEvent(CubitEvent event) => events.union({event});
-
-  /// Adds the passed events to the current events and returns the
-  /// new set.
-  Set<CubitEvent> addEvents(Set<CubitEvent> events) => events.union(events);
 
   /// Removes the passed event from the current events and returns the
   /// new set.

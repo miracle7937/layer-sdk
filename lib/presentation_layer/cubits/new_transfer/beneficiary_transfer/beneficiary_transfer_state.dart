@@ -53,10 +53,13 @@ enum BeneficiaryTransferEvent {
 
   /// Event for showing the transfer result view.
   showResultView,
+
+  /// Event for closing the OTP code.
+  closeOTPView,
 }
 
-/// The available validation errors.
-enum BeneficiaryTransferValidationError {
+/// The available validation error codes.
+enum BeneficiaryTransferValidationErrorCode {
   /// Invalid IBAN.
   invalidIBAN,
 
@@ -101,11 +104,14 @@ enum BeneficiaryTransferValidationError {
 
   /// Schedule details validation error.
   scheduleDetailsValidationError,
+
+  /// Insufficient balance validation error.
+  insufficientBalanceValidationError,
 }
 
 /// The state for the [BeneficiaryTransferCubit].
 class BeneficiaryTransferState extends BaseState<BeneficiaryTransferAction,
-    BeneficiaryTransferEvent, BeneficiaryTransferValidationError> {
+    BeneficiaryTransferEvent, BeneficiaryTransferValidationErrorCode> {
   /// The transfer object.
   final BeneficiaryTransfer transfer;
 
@@ -173,24 +179,6 @@ class BeneficiaryTransferState extends BaseState<BeneficiaryTransferAction,
         reasons = UnmodifiableListView(reasons),
         banks = UnmodifiableListView(banks);
 
-  /// Whether if the cubit is loading something.
-  bool get busy => super.actions.isNotEmpty;
-
-  /// Whether if the cubit is initializing.
-  bool get initializing => super
-      .actions
-      .where(
-        (action) => [
-          BeneficiaryTransferAction.beneficiarySettings,
-          BeneficiaryTransferAction.accounts,
-          BeneficiaryTransferAction.beneficiaries,
-          BeneficiaryTransferAction.currencies,
-          BeneficiaryTransferAction.countries,
-          BeneficiaryTransferAction.reasons,
-        ].contains(action),
-      )
-      .isNotEmpty;
-
   @override
   BeneficiaryTransferState copyWith({
     BeneficiaryTransfer? transfer,
@@ -232,8 +220,8 @@ class BeneficiaryTransferState extends BaseState<BeneficiaryTransferAction,
   @override
   List<Object?> get props => [
         transfer,
-        busy,
         errors,
+        actions,
         events,
         beneficiarySettings,
         countries,
