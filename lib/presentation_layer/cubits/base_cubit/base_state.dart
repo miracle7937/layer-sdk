@@ -51,10 +51,7 @@ enum CubitErrorCode {
 /// The base abstract error class.
 ///
 /// All cubit errors should extend this.
-abstract class CubitError extends Equatable {
-  /// Creates a new [CubitError].
-  CubitError();
-}
+abstract class CubitError extends Equatable {}
 
 /// Cubit error representing a connectivity error.
 class CubitConnectivityError<CubitAction> extends CubitError {
@@ -80,7 +77,7 @@ class CubitAPIError<CubitAction> extends CubitError {
   /// The optional error code.
   final CubitErrorCode? code;
 
-  /// The optinal error message.
+  /// The optional error message.
   final String? message;
 
   /// Creates a new [CubitAPIError].

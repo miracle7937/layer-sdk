@@ -151,10 +151,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
         if (accounts.isNotEmpty) {
           onChanged(
-            source: accounts
-                .sortedBy<num>((element) => element.availableBalance ?? 0.0)
-                .reversed
-                .first,
+            source: accounts.first,
           );
         }
 
