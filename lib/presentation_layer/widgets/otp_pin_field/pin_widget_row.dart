@@ -1,9 +1,10 @@
 import 'dart:math';
 
+import 'package:design_kit_layer/design_kit_layer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../layer_sdk.dart';
+import '../../mixins.dart';
 
 /// Row of text fields for inputing OTP codes
 class PinWidgetRow extends StatefulWidget {
@@ -399,9 +400,9 @@ class _PinWidget extends StatelessWidget {
   }
 }
 
-/// GlobalKeyExtension
+/// Extension on [GlobalKey]
 extension _GlobalKeyExtension on GlobalKey {
-  /// globalPaintBounds
+  /// It gets the bounds for painting the [PinWidgetRow] using the [GlobalKey].
   Rect? get _globalPaintBounds {
     final renderObject = currentContext?.findRenderObject();
     final translation = renderObject?.getTransformTo(null).getTranslation();
