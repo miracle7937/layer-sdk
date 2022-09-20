@@ -12,13 +12,16 @@ import 'inbox_create_state.dart';
 class InboxCreateCubit extends Cubit<InboxCreateState> {
   final LoadAllInboxReportCategoriesUseCase _categoriesUseCase;
   final CreateReportUseCase _createReportUseCase;
+  final CreateInboxReportUseCase _createInboxReportUseCase;
 
   /// Creates a new [InboxCreateCubit]
   InboxCreateCubit({
     required LoadAllInboxReportCategoriesUseCase categoriesUseCase,
     required CreateReportUseCase createReportUseCase,
+    required CreateInboxReportUseCase createInboxReportUseCase,
   })  : _categoriesUseCase = categoriesUseCase,
         _createReportUseCase = createReportUseCase,
+        _createInboxReportUseCase = createInboxReportUseCase,
         super(InboxCreateState());
 
   /// Set the selectedCategory
@@ -53,10 +56,26 @@ class InboxCreateCubit extends Cubit<InboxCreateState> {
     ].every((it) => it);
   }
 
-  /// Base function for running async code
-  Future<void> _exec(Future<void> Function() execAction) async {
+  /// Loads the categories
+  Future<void> load() async {
     try {
-      return await execAction();
+      emit(
+        state.copyWith(
+          busy: true,
+          busyAction: InboxCreateBusyAction.loadingCategories,
+          errorStatus: InboxCreateErrorStatus.none,
+        ),
+      );
+
+      final categories = await _categoriesUseCase();
+
+      emit(
+        state.copyWith(
+          busy: false,
+          categories: categories,
+          selectedCategory: categories.first,
+        ),
+      );
     } on Exception catch (e) {
       emit(
         state.copyWith(
@@ -73,31 +92,9 @@ class InboxCreateCubit extends Cubit<InboxCreateState> {
     }
   }
 
-  /// Loads the categories
-  Future<void> load() async {
-    _exec(() async {
-      emit(
-        state.copyWith(
-          busy: true,
-          busyAction: InboxCreateBusyAction.loadingCategories,
-          errorStatus: InboxCreateErrorStatus.none,
-        ),
-      );
-
-      final categories = await _categoriesUseCase();
-
-      emit(
-        state.copyWith(
-          categories: categories,
-          selectedCategory: categories.first,
-        ),
-      );
-    });
-  }
-
   /// Posts a new [InboxReport]
   Future<void> post() async {
-    _exec(() async {
+    try {
       emit(
         state.copyWith(
           busy: true,
@@ -125,6 +122,62 @@ class InboxCreateCubit extends Cubit<InboxCreateState> {
           inboxMessage: message,
         ),
       );
-    });
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          busy: false,
+          busyAction: InboxCreateBusyAction.idle,
+          errorStatus: e is NetException
+              ? InboxCreateErrorStatus.network
+              : InboxCreateErrorStatus.generic,
+          errorMessage: e is NetException ? e.message : e.toString(),
+        ),
+      );
+
+      rethrow;
+    }
+  }
+
+  /// Posts a new [InboxReport] using only the category of the report
+  Future<void> createReport() async {
+    try {
+      emit(
+        state.copyWith(
+          busy: true,
+          busyAction: InboxCreateBusyAction.creatingReport,
+          errorStatus: InboxCreateErrorStatus.none,
+        ),
+      );
+
+      if (state.selectedCategory?.id == 'application_issue') {
+        /// TODO - Needs to include the log file when implemented
+        addFile(InboxFile(name: ''));
+      }
+
+      await _createInboxReportUseCase(
+        state.selectedCategory?.id ?? '',
+      );
+
+      emit(
+        state.copyWith(
+          busy: false,
+          busyAction: InboxCreateBusyAction.idle,
+          errorStatus: InboxCreateErrorStatus.none,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          busy: false,
+          busyAction: InboxCreateBusyAction.idle,
+          errorStatus: e is NetException
+              ? InboxCreateErrorStatus.network
+              : InboxCreateErrorStatus.generic,
+          errorMessage: e is NetException ? e.message : e.toString(),
+        ),
+      );
+
+      rethrow;
+    }
   }
 }
