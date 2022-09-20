@@ -37,6 +37,7 @@ export 'widgets/dpa/texts/dpa_phone_text.dart';
 export 'widgets/dpa/texts/dpa_task_name.dart';
 export 'widgets/dpa/texts/dpa_text.dart';
 export 'widgets/dpa/upload/dpa_file_upload.dart';
+export 'widgets/otp_pin_field/pin_widget_row.dart';
 export 'widgets/pin_pad/pin_pad_view.dart';
 export 'widgets/themes/branding_listener.dart';
 export 'widgets/themes/branding_loader.dart';

@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../layer_sdk.dart';
 import '../../cubits.dart';
 import '../../widgets/header/sdk_header.dart';
-import '../../widgets/otp_pin_field/pin_widget_row.dart';
 
 /// A screen for validating an OTP.
 class OTPScreen extends StatefulWidget {
