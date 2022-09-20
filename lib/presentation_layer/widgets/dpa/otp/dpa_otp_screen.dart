@@ -10,7 +10,6 @@ import '../../../extensions.dart';
 import '../../../mixins.dart';
 import '../../../utils.dart';
 import '../../../widgets.dart';
-import '../../otp_pin_field/pin_widget_row.dart';
 
 /// DPA Screen that handles the [DPAScreenType.otp] screen type.
 class DPAOTPScreen extends StatefulWidget {
