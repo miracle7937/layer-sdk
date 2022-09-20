@@ -178,17 +178,18 @@ class __RepeatAccessPinScreenState
                       );
                     } else {
                       disabled = true;
-                      final result = await BottomSheetHelper.showConfirmation(
+
+                      await BottomSheetHelper.showConfirmation(
                         context: context,
                         titleKey: 'pass_code_done',
                         type: BottomSheetType.success,
                         showDenyButton: false,
                         confirmKey: 'ok',
+                      ).then(
+                        (_) => context
+                            .read<SetPinScreenCubit>()
+                            .setAccesPin(pin: pin),
                       );
-
-                      if (result) {
-                        context.read<SetPinScreenCubit>().setAccesPin(pin: pin);
-                      }
                     }
                   }
                 },
