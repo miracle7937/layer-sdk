@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 
 import '../../../../domain_layer/models.dart';
+import '../../../_migration/data_layer/src/helpers/dto_helpers.dart';
 import '../../../data_layer/repositories.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
@@ -57,10 +58,19 @@ class ProfileCubit extends Cubit<ProfileState> {
 
       emit(
         state.copyWith(
-          actions: state.actions.difference({ProfileBusyAction.load}),
           customer: requests[0] as Customer,
           user: requests[1] as User,
           profileConsoleSettings: requests[2] as List<GlobalSetting>,
+        ),
+      );
+
+      if (isNotEmpty(state.user?.imageURL)) {
+        await loadImage(imageURL: state.user!.imageURL!);
+      }
+
+      emit(
+        state.copyWith(
+          actions: state.actions.difference({ProfileBusyAction.load}),
         ),
       );
     } on Exception {
