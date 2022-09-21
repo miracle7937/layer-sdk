@@ -96,11 +96,6 @@ class ContactUsCubit extends Cubit<ContactUsState> {
         "facebook_app_id",
         "customer_service",
       );
-      var fbPageId = getGlobalSettingValue(
-            "facebook_page_id",
-            "customer_service",
-          ) ??
-          "";
 
       items.add(
         ContactUs(
@@ -108,7 +103,7 @@ class ContactUsCubit extends Cubit<ContactUsState> {
           title: getContainerMessage(message: "facebook_title"),
           subtitle: "https://www.facebook.com/$fbPage",
           onTap: () => _openLinkUseCase.openFacebookProfile(
-            facebookPageId: fbPageId,
+            facebookPageId: fbPage,
           ),
         ),
       );
