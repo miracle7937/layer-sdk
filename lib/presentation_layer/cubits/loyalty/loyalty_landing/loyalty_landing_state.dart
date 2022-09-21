@@ -33,9 +33,6 @@ class LoyaltyLandingState extends BaseState<LoyaltyLandingActions, void, void> {
   /// The [LoyaltyPointsExpiration] object
   final LoyaltyPointsExpiration? loyaltyPointsExpiration;
 
-  /// Has all the data needed to handle the list of offers.
-  final Pagination pagination;
-
   /// Creates a new [LoyaltyLandingState] instance
   LoyaltyLandingState({
     super.actions = const <LoyaltyLandingActions>{},
@@ -44,7 +41,6 @@ class LoyaltyLandingState extends BaseState<LoyaltyLandingActions, void, void> {
     Iterable<Offer> offers = const <Offer>{},
     this.loyaltyPointsRate,
     this.loyaltyPointsExpiration,
-    this.pagination = const Pagination(),
   })  : loyaltyPoints = UnmodifiableListView(loyaltyPoints),
         offers = UnmodifiableListView(offers);
 
@@ -65,7 +61,6 @@ class LoyaltyLandingState extends BaseState<LoyaltyLandingActions, void, void> {
       loyaltyPointsRate: loyaltyPointsRate ?? this.loyaltyPointsRate,
       loyaltyPointsExpiration:
           loyaltyPointsExpiration ?? this.loyaltyPointsExpiration,
-      pagination: pagination ?? this.pagination,
       offers: offers ?? this.offers,
     );
   }
@@ -77,7 +72,6 @@ class LoyaltyLandingState extends BaseState<LoyaltyLandingActions, void, void> {
         loyaltyPoints,
         loyaltyPointsRate,
         loyaltyPointsExpiration,
-        pagination,
         offers,
       ];
 }

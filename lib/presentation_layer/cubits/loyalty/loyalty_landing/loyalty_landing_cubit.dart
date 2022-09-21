@@ -11,6 +11,7 @@ class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
   final LoadExpiredLoyaltyPointsByDateUseCase
       _loadExpiredLoyaltyPointsByDateUseCase;
   final LoadOffersUseCase _loadOffersUseCase;
+  final Pagination _pagination;
 
   /// Creates a new [LoyaltyLandingCubit] using the suplied use cases
   LoyaltyLandingCubit({
@@ -27,9 +28,8 @@ class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
         _loadExpiredLoyaltyPointsByDateUseCase =
             loadExpiredLoyaltyPointsByDateUseCase,
         _loadOffersUseCase = loadOffersUseCase,
-        super(LoyaltyLandingState(
-          pagination: Pagination(limit: limit),
-        ));
+        _pagination = Pagination(),
+        super(LoyaltyLandingState());
 
   /// Initialize / loads all necessary data for the landing screen
   Future<void> initialize({
@@ -200,7 +200,7 @@ class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
     );
 
     try {
-      final newPage = state.pagination.paginate(loadMore: loadMore);
+      final newPage = _pagination.paginate(loadMore: loadMore);
 
       final result = await _loadOffersUseCase(
         offset: newPage.offset,
@@ -243,4 +243,7 @@ class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
       ));
     }
   }
+
+  /// Getter method to check if there is more data to me loaded
+  bool get canLoadMore => _pagination.canLoadMore;
 }
