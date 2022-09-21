@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../layer_sdk.dart';
 import 'loyalty_landing_state.dart';
 
-///
+/// Cubit responsible for Landing loyalty page
 class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
   final LoadAllLoyaltyPointsUseCase _loadAllLoyaltyPointsUseCase;
   final LoadCurrentLoyaltyPointsRateUseCase
@@ -12,7 +12,7 @@ class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
       _loadExpiredLoyaltyPointsByDateUseCase;
   final LoadOffersUseCase _loadOffersUseCase;
 
-  ///
+  /// Creates a new [LoyaltyLandingCubit] using the suplied use cases
   LoyaltyLandingCubit({
     required LoadAllLoyaltyPointsUseCase loadAllLoyaltyPointsUseCase,
     required LoadCurrentLoyaltyPointsRateUseCase
@@ -31,7 +31,7 @@ class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
           pagination: Pagination(limit: limit),
         ));
 
-  ///
+  /// Initialize / loads all necessary data for the landing screen
   Future<void> initialize({
     required DateTime expirationDate,
   }) async {
@@ -45,14 +45,15 @@ class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
     ]);
   }
 
+  /// Loads all loyalty points
   Future<void> _loadAllLoyaltyPoints() async {
     emit(
       state.copyWith(
         actions: state.addAction(
-          LoyaltyLandingActions.allLoyaltyPoints,
+          LoyaltyLandingActions.loadAllLoyaltyPoints,
         ),
         errors: state.removeErrorForAction(
-          LoyaltyLandingActions.allLoyaltyPoints,
+          LoyaltyLandingActions.loadAllLoyaltyPoints,
         ),
       ),
     );
@@ -63,30 +64,31 @@ class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
       emit(
         state.copyWith(
           actions: state.removeAction(
-            LoyaltyLandingActions.allLoyaltyPoints,
+            LoyaltyLandingActions.loadAllLoyaltyPoints,
           ),
           loyaltyPoints: loyaltyPoints,
         ),
       );
     } on Exception catch (e) {
       emit(state.copyWith(
-        actions: state.removeAction(LoyaltyLandingActions.allLoyaltyPoints),
+        actions: state.removeAction(LoyaltyLandingActions.loadAllLoyaltyPoints),
         errors: state.addErrorFromException(
-          action: LoyaltyLandingActions.allLoyaltyPoints,
+          action: LoyaltyLandingActions.loadAllLoyaltyPoints,
           exception: e,
         ),
       ));
     }
   }
 
+  /// Loads the current rate of loyalty points
   Future<void> _loadCurrentLoyaltyPointsRate() async {
     emit(
       state.copyWith(
         actions: state.addAction(
-          LoyaltyLandingActions.currentLoyaltyPoints,
+          LoyaltyLandingActions.loadCurrentLoyaltyPoints,
         ),
         errors: state.removeErrorForAction(
-          LoyaltyLandingActions.currentLoyaltyPoints,
+          LoyaltyLandingActions.loadCurrentLoyaltyPoints,
         ),
       ),
     );
@@ -97,32 +99,35 @@ class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
       emit(
         state.copyWith(
           actions: state.removeAction(
-            LoyaltyLandingActions.currentLoyaltyPoints,
+            LoyaltyLandingActions.loadCurrentLoyaltyPoints,
           ),
           loyaltyPointsRate: loyaltyPointsRate,
         ),
       );
     } on Exception catch (e) {
       emit(state.copyWith(
-        actions: state.removeAction(LoyaltyLandingActions.currentLoyaltyPoints),
+        actions: state.removeAction(
+          LoyaltyLandingActions.loadCurrentLoyaltyPoints,
+        ),
         errors: state.addErrorFromException(
-          action: LoyaltyLandingActions.currentLoyaltyPoints,
+          action: LoyaltyLandingActions.loadCurrentLoyaltyPoints,
           exception: e,
         ),
       ));
     }
   }
 
+  /// Loads the expired loyalty point from `expirationDate` param
   Future<void> _loadExpiredLoyaltyPoints({
     required DateTime expirationDate,
   }) async {
     emit(
       state.copyWith(
         actions: state.addAction(
-          LoyaltyLandingActions.expiredLoyaltyPoints,
+          LoyaltyLandingActions.loadExpiredLoyaltyPoints,
         ),
         errors: state.removeErrorForAction(
-          LoyaltyLandingActions.expiredLoyaltyPoints,
+          LoyaltyLandingActions.loadExpiredLoyaltyPoints,
         ),
       ),
     );
@@ -136,22 +141,42 @@ class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
       emit(
         state.copyWith(
           actions: state.removeAction(
-            LoyaltyLandingActions.expiredLoyaltyPoints,
+            LoyaltyLandingActions.loadExpiredLoyaltyPoints,
           ),
           loyaltyPointsExpiration: loyaltyPointsExpiration,
         ),
       );
     } on Exception catch (e) {
       emit(state.copyWith(
-        actions: state.removeAction(LoyaltyLandingActions.expiredLoyaltyPoints),
+        actions: state.removeAction(
+          LoyaltyLandingActions.loadExpiredLoyaltyPoints,
+        ),
         errors: state.addErrorFromException(
-          action: LoyaltyLandingActions.expiredLoyaltyPoints,
+          action: LoyaltyLandingActions.loadExpiredLoyaltyPoints,
           exception: e,
         ),
       ));
     }
   }
 
+  /// Loads the offers
+  ///
+  /// The [loadMore] value will load the next offers page if true.
+  ///
+  /// The [latitudeForDistance] and the [longitudeForDistance] fields are used
+  /// for calculating each offer's distance.
+  ///
+  /// When indicating the [latitudeForDistance] and the [longitudeForDistance]
+  /// fields you can also indicate the [latitude] and [longitude] fields
+  /// which can be used for listing the offers starting from this location.
+  /// So the offers will be sorted from nearest to farthest relative to the
+  /// passed distance fields.
+  ///
+  /// Use cases:
+  ///   - Listing the nearest offers to the camera position in a map.
+  ///
+  /// When not indicated, these fields will be equal to the passed
+  /// distance fields.
   Future<void> _loadOffers({
     bool loadMore = false,
     List<int>? ids,
@@ -166,10 +191,10 @@ class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
     emit(
       state.copyWith(
         actions: state.addAction(
-          LoyaltyLandingActions.offers,
+          LoyaltyLandingActions.loadOffers,
         ),
         errors: state.removeErrorForAction(
-          LoyaltyLandingActions.offers,
+          LoyaltyLandingActions.loadOffers,
         ),
       ),
     );
@@ -200,7 +225,7 @@ class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
       emit(
         state.copyWith(
           actions: state.removeAction(
-            LoyaltyLandingActions.offers,
+            LoyaltyLandingActions.loadOffers,
           ),
           offers: offers,
           pagination: newPage.refreshCanLoadMore(
@@ -210,9 +235,9 @@ class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
       );
     } on Exception catch (e) {
       emit(state.copyWith(
-        actions: state.removeAction(LoyaltyLandingActions.offers),
+        actions: state.removeAction(LoyaltyLandingActions.loadOffers),
         errors: state.addErrorFromException(
-          action: LoyaltyLandingActions.offers,
+          action: LoyaltyLandingActions.loadOffers,
           exception: e,
         ),
       ));

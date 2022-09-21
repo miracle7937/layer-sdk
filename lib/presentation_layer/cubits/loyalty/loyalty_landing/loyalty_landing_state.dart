@@ -4,36 +4,42 @@ import '../../../../domain_layer/models.dart';
 import '../../../cubits.dart';
 import '../../../utils.dart';
 
+/// The available busy actions that the cubit can perform.
 enum LoyaltyLandingActions {
-  allLoyaltyPoints,
+  /// Loading all the loyalty points
+  loadAllLoyaltyPoints,
 
-  currentLoyaltyPoints,
+  /// Loading the current loyalty rate points
+  loadCurrentLoyaltyPoints,
 
-  expiredLoyaltyPoints,
+  /// Loading the expired loyalty points
+  loadExpiredLoyaltyPoints,
 
-  offers,
+  /// Loading the offers
+  loadOffers,
 }
 
-enum LoyaltyLandingEvent { none }
-
-enum LoyaltyLandingValidationErrorCode { none }
-
-class LoyaltyLandingState extends BaseState<LoyaltyLandingActions,
-    LoyaltyLandingEvent, LoyaltyLandingValidationErrorCode> {
+/// The state for the [LoyaltyLandingState].
+class LoyaltyLandingState extends BaseState<LoyaltyLandingActions, void, void> {
+  /// All the [LoyaltyPoints]
   final UnmodifiableListView<LoyaltyPoints> loyaltyPoints;
 
+  /// All the [Offer]s
   final UnmodifiableListView<Offer> offers;
 
+  /// The [LoyaltyPointsRate] object
   final LoyaltyPointsRate? loyaltyPointsRate;
 
+  /// The [LoyaltyPointsExpiration] object
   final LoyaltyPointsExpiration? loyaltyPointsExpiration;
 
+  /// Has all the data needed to handle the list of offers.
   final Pagination pagination;
 
+  /// Creates a new [LoyaltyLandingState] instance
   LoyaltyLandingState({
     super.actions = const <LoyaltyLandingActions>{},
     super.errors = const <CubitError>{},
-    super.events = const <LoyaltyLandingEvent>{},
     Iterable<LoyaltyPoints> loyaltyPoints = const <LoyaltyPoints>{},
     Iterable<Offer> offers = const <Offer>{},
     this.loyaltyPointsRate,
@@ -46,7 +52,6 @@ class LoyaltyLandingState extends BaseState<LoyaltyLandingActions,
   LoyaltyLandingState copyWith({
     Set<LoyaltyLandingActions>? actions,
     Set<CubitError>? errors,
-    Set<LoyaltyLandingEvent>? events,
     Iterable<LoyaltyPoints>? loyaltyPoints,
     Iterable<Offer>? offers,
     LoyaltyPointsRate? loyaltyPointsRate,
@@ -56,7 +61,6 @@ class LoyaltyLandingState extends BaseState<LoyaltyLandingActions,
     return LoyaltyLandingState(
       actions: actions ?? this.actions,
       errors: errors ?? this.errors,
-      events: events ?? this.events,
       loyaltyPoints: loyaltyPoints ?? this.loyaltyPoints,
       loyaltyPointsRate: loyaltyPointsRate ?? this.loyaltyPointsRate,
       loyaltyPointsExpiration:
@@ -70,7 +74,6 @@ class LoyaltyLandingState extends BaseState<LoyaltyLandingActions,
   List<Object?> get props => [
         actions,
         errors,
-        events,
         loyaltyPoints,
         loyaltyPointsRate,
         loyaltyPointsExpiration,
