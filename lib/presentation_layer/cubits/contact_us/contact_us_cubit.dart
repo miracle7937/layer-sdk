@@ -42,6 +42,7 @@ class ContactUsCubit extends Cubit<ContactUsState> {
             codes: [
               'facebook_enabled',
               'facebook_app_id',
+              'facebook_page_id',
               'twitter_enabled',
               'twitter_app_id',
               'email_enabled',
