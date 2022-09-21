@@ -36,17 +36,17 @@ class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
     required DateTime expirationDate,
   }) async {
     await Future.wait([
-      _loadAllLoyaltyPoints(),
-      _loadCurrentLoyaltyPointsRate(),
-      _loadExpiredLoyaltyPoints(
+      loadAllLoyaltyPoints(),
+      loadCurrentLoyaltyPointsRate(),
+      loadExpiredLoyaltyPoints(
         expirationDate: expirationDate,
       ),
-      _loadOffers(),
+      loadOffers(),
     ]);
   }
 
   /// Loads all loyalty points
-  Future<void> _loadAllLoyaltyPoints() async {
+  Future<void> loadAllLoyaltyPoints() async {
     emit(
       state.copyWith(
         actions: state.addAction(
@@ -81,7 +81,7 @@ class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
   }
 
   /// Loads the current rate of loyalty points
-  Future<void> _loadCurrentLoyaltyPointsRate() async {
+  Future<void> loadCurrentLoyaltyPointsRate() async {
     emit(
       state.copyWith(
         actions: state.addAction(
@@ -118,7 +118,7 @@ class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
   }
 
   /// Loads the expired loyalty point from `expirationDate` param
-  Future<void> _loadExpiredLoyaltyPoints({
+  Future<void> loadExpiredLoyaltyPoints({
     required DateTime expirationDate,
   }) async {
     emit(
@@ -177,7 +177,7 @@ class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
   ///
   /// When not indicated, these fields will be equal to the passed
   /// distance fields.
-  Future<void> _loadOffers({
+  Future<void> loadOffers({
     bool loadMore = false,
     List<int>? ids,
     List<int>? categories,
