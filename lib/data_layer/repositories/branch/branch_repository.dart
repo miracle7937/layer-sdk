@@ -13,7 +13,12 @@ class BranchRepository implements BranchRepositoryInterface {
     required BranchProvider provider,
   }) : _provider = provider;
 
-  ///Lists the currencies
+  /// List all branches
+  ///
+  /// Use the `limit` and `offset` parameters to paginate.
+  ///
+  /// Use the `lat` and `long` parameters to load the branches starting from
+  /// this location.
   @override
   Future<List<Branch>> list({
     bool forceRefresh = false,

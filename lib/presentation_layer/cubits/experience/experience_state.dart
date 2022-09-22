@@ -14,6 +14,9 @@ enum ExperienceStateError {
 
   /// Network error.
   network,
+
+  /// Connectivity error.
+  connectivity,
 }
 
 /// A state representing the user experience in the app.
@@ -59,9 +62,10 @@ class ExperienceState extends Equatable {
     bool? busy,
     ExperienceStateError? error,
     String? errorMessage,
+    bool clearExperience = false,
   }) =>
       ExperienceState(
-        experience: experience ?? this.experience,
+        experience: clearExperience ? null : experience ?? this.experience,
         visiblePages: visiblePages ?? this.visiblePages,
         busy: busy ?? this.busy,
         error: error ?? this.error,

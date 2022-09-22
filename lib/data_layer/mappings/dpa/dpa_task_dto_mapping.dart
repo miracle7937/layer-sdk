@@ -22,6 +22,7 @@ extension DPATaskDTOMapping on DPATaskDTO {
         processInstanceId: processInstanceId,
         activityInstanceId: activityInstanceId,
         processDefinitionKey: processDefinitionKey ?? '',
+        processKey: processKey ?? '',
         processDefinitionName: processDefinitionName ?? '',
         previousTasksIds: (previousTasks?.isEmpty ?? true)
             ? <String>[]

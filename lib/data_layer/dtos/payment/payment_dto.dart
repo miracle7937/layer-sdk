@@ -72,6 +72,9 @@ class PaymentDTO {
   /// The recurrence end date of the payment
   DateTime? recurrenceEnd;
 
+  /// Whether the payment is recurring or not
+  bool? recurring;
+
   /// Creates a new [PaymentDTO]
   PaymentDTO({
     this.paymentId,
@@ -96,10 +99,14 @@ class PaymentDTO {
     this.scheduled,
     this.recurrenceStart,
     this.recurrenceEnd,
+    this.recurring,
   });
 
   /// Creates a [PaymentDTO] from a JSON
-  factory PaymentDTO.fromJson(Map<String, dynamic> json) {
+  factory PaymentDTO.fromJson(
+    Map<String, dynamic> json, {
+    bool ignoreRecurrence = false,
+  }) {
     return PaymentDTO(
       paymentId: json['payment_id'],
       paymentTs: JsonParser.parseDate(json['payment_ts']),
@@ -125,15 +132,49 @@ class PaymentDTO {
       secondFactor: SecondFactorTypeDTO.fromRaw(json['second_factor']),
       created: JsonParser.parseDate(json['ts_created']),
       scheduled: JsonParser.parseDate(json['ts_scheduled']),
-      recurrence: RecurrenceDTO.fromRaw(json["recurrence"]),
+      recurrence:
+          ignoreRecurrence ? null : RecurrenceDTO.fromRaw(json["recurrence"]),
       recurrenceStart: JsonParser.parseDate(json["recurrence_start"]),
       recurrenceEnd: JsonParser.parseDate(json["recurrence_end"]),
+      recurring: json['recurring'],
     );
   }
 
+  /// Creates a JSON map from the model data
+  Map<String, dynamic> toJson() {
+    return {
+      'payment_id': paymentId,
+      'payment_ts': paymentTs?.millisecondsSinceEpoch,
+      'bill_id': billId,
+      'bill': bill?.toJson(),
+      'from_account_id': fromAccountId,
+      'from_card_id': fromCardId,
+      'amount': amount,
+      'currency': currency,
+      'otp_id': otpId,
+      'device_uid': deviceUID,
+      'status': status?.value,
+      'second_factor': secondFactor?.value,
+      'ts_created': created?.millisecondsSinceEpoch,
+      'ts_scheduled': scheduled?.millisecondsSinceEpoch,
+      'recurrence': recurrence?.value,
+      'recurrence_start': recurrenceStart?.millisecondsSinceEpoch,
+      'recurrence_end': recurrenceEnd?.millisecondsSinceEpoch,
+      if (recurring != null) 'recurring': recurring,
+    };
+  }
+
   /// Creates a list of [PaymentDTO]s from the given JSON list.
-  static List<PaymentDTO> fromJsonList(List<Map<String, dynamic>> json) =>
-      json.map(PaymentDTO.fromJson).toList();
+  static List<PaymentDTO> fromJsonList(
+    List<Map<String, dynamic>> json, {
+    bool ignoreRecurrence = false,
+  }) =>
+      json
+          .map((e) => PaymentDTO.fromJson(
+                e,
+                ignoreRecurrence: ignoreRecurrence,
+              ))
+          .toList();
 }
 
 /// payment status options
@@ -149,6 +190,9 @@ class PaymentDTOStatus extends EnumDTO {
 
   /// payment status is completed
   static const completed = PaymentDTOStatus._internal('C');
+
+  /// payment status is deleted
+  static const deleted = PaymentDTOStatus._internal('D');
 
   /// payment status is pending approval
   static const pending = PaymentDTOStatus._internal('P');
@@ -176,6 +220,7 @@ class PaymentDTOStatus extends EnumDTO {
     scheduled,
     pendingBank,
     pendingExpired,
+    deleted,
   ];
 
   const PaymentDTOStatus._internal(String value) : super.internal(value);

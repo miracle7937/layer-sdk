@@ -12,14 +12,16 @@ mixin FullScreenLoaderMixin {
     return showDialog(
       context: context,
       useSafeArea: false,
-      useRootNavigator: true,
       barrierDismissible: false,
-      barrierColor: Color(0xFF191A19).withOpacity(0.64),
-      builder: (context) => Center(
-        child: DKLoader(
-          size: 72,
-          startColor: design.basePrimaryWhite,
-          endColor: design.basePrimaryWhite.withOpacity(0),
+      barrierColor: design.basePrimary.withOpacity(0.64),
+      builder: (context) => WillPopScope(
+        onWillPop: () async => false,
+        child: Center(
+          child: DKLoader(
+            size: 72,
+            startColor: design.basePrimaryWhite,
+            endColor: design.basePrimaryWhite.withOpacity(0),
+          ),
         ),
       ),
     );

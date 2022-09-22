@@ -266,6 +266,13 @@ mixin FilePickerMixin {
                 ),
               ),
             ),
+            Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6.0),
+                child: DKButton(
+                  title: translation.translate('cancel'),
+                  onPressed: () => Navigator.pop(context),
+                  type: DKButtonType.baseSecondary,
+                )),
           ],
         ),
       ),

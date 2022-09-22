@@ -39,6 +39,7 @@ class DPAProcessStepProperties extends Equatable {
   final DPAJumioConfig? jumioConfig;
 
   /// The amount of seconds to wait in order to auto finish the task.
+  ///
   /// If not null, the taks is a delay task.
   final int? delay;
 
@@ -50,11 +51,17 @@ class DPAProcessStepProperties extends Equatable {
   /// Defaults to `false`.
   final bool hideAppBar;
 
-  /// The label for the skp button.
+  /// The label for the skip button.
   final String? skipLabel;
 
+  /// The value for the skip button.
+  final bool? skipButton;
+
+  /// The label for the skip button.
+  final String? skipButtonLabel;
+
   /// Creates a new [DPAProcessStepProperties].
-  DPAProcessStepProperties({
+  const DPAProcessStepProperties({
     required this.format,
     required this.screenType,
     required this.alignment,
@@ -71,6 +78,8 @@ class DPAProcessStepProperties extends Equatable {
     this.block = DPAScreenBlock.none,
     this.hideAppBar = false,
     this.skipLabel,
+    this.skipButton = false,
+    this.skipButtonLabel,
   });
 
   @override
@@ -91,6 +100,8 @@ class DPAProcessStepProperties extends Equatable {
         block,
         hideAppBar,
         skipLabel,
+        skipButton,
+        skipButtonLabel,
       ];
 
   /// Creates a new [DPAProcessStepProperties] using another as a base.
@@ -111,6 +122,8 @@ class DPAProcessStepProperties extends Equatable {
     DPAScreenBlock? block,
     bool? hideAppBar,
     String? skipLabel,
+    bool? skipButton,
+    String? skipButtonLabel,
   }) =>
       DPAProcessStepProperties(
         format: format ?? this.format,
@@ -129,6 +142,8 @@ class DPAProcessStepProperties extends Equatable {
         block: block ?? this.block,
         hideAppBar: hideAppBar ?? this.hideAppBar,
         skipLabel: skipLabel ?? this.skipLabel,
+        skipButton: skipButton ?? this.skipButton,
+        skipButtonLabel: skipButtonLabel ?? this.skipButtonLabel,
       );
 }
 
@@ -143,7 +158,7 @@ class DPAJumioConfig extends Equatable {
   final String? dataCenter;
 
   /// Creates a new [DPAJumioConfig].
-  DPAJumioConfig({
+  const DPAJumioConfig({
     this.authorizationToken,
     this.dataCenter,
   });

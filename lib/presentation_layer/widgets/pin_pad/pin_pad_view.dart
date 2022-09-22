@@ -1,8 +1,13 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:design_kit_layer/design_kit_layer.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../layer_sdk.dart';
+import '../../creators.dart';
+import '../../cubits.dart';
+import '../../resources.dart';
+import '../../utils.dart';
 
 /// A view for inputing a pin with a pin pad.
 class PinPadView extends StatelessWidget {
@@ -31,6 +36,10 @@ class PinPadView extends StatelessWidget {
   /// pad.
   final bool showBiometrics;
 
+  /// Callback called when the user has entered the biometrics successfully.
+  /// Must be indicated if the [showBiometrics] is `true`.
+  final VoidCallback? onBiometrics;
+
   /// Creates a new [PinPadView].
   const PinPadView({
     Key? key,
@@ -41,72 +50,98 @@ class PinPadView extends StatelessWidget {
     this.disabled = false,
     required this.title,
     this.showBiometrics = false,
-  }) : super(key: key);
+    this.onBiometrics,
+  }) : assert(!showBiometrics || onBiometrics != null);
 
   /// The buttons that will appear on the pin pad.
-  List<PinButton> get pinButtons => [
-        ...List.generate(
-          9,
-          (index) {
-            final number = (index + 1).toString();
+  List<PinButton> pinButtons(BuildContext context) {
+    final translation = Translation.of(context);
 
-            return PinButton(
-              title: number,
-              onPressed: () => onChanged('$pin$number'),
-              enabled: pin.length < pinLenght,
-            );
-          },
+    return [
+      ...List.generate(
+        9,
+        (index) {
+          final number = (index + 1).toString();
+
+          return PinButton(
+            title: number,
+            onPressed: () => onChanged('$pin$number'),
+            enabled: pin.length < pinLenght,
+          );
+        },
+      ),
+      PinButton(
+        svgPath: FLImages.biometrics,
+        onPressed: () async {
+          final biometricsCubit = context.read<BiometricsCubit>();
+          await biometricsCubit.authenticate(
+            localizedReason: translation.translate(
+              'biometric_dialog_description',
+            ),
+          );
+
+          if (biometricsCubit.state.authenticated ?? false) {
+            onBiometrics!();
+          }
+        },
+        enabled: showBiometrics,
+        visible: showBiometrics,
+      ),
+      PinButton(
+        title: '0',
+        onPressed: () => onChanged('${pin}0'),
+        enabled: pin.length < pinLenght,
+      ),
+      PinButton(
+        svgPath: FLImages.backspace,
+        onPressed: () => onChanged(
+          pin.substring(0, pin.length - 1),
         ),
-        PinButton(
-          /// TODO: replace with correct asset and implement functionality.
-          title: 'biometrics',
-          onPressed: () {},
-          enabled: showBiometrics,
-          visible: showBiometrics,
-        ),
-        PinButton(
-          title: '0',
-          onPressed: () => onChanged('${pin}0'),
-          enabled: pin.length < pinLenght,
-        ),
-        PinButton(
-          svgPath: FLImages.backspace,
-          onPressed: () => onChanged(
-            pin.substring(0, pin.length - 1),
-          ),
-          enabled: pin.isNotEmpty,
-        ),
-      ];
+        enabled: pin.isNotEmpty,
+      ),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
     final layerDesign = DesignSystem.of(context);
 
-    return IgnorePointer(
-      ignoring: disabled,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          vertical: 32.0,
-          horizontal: 16.0,
-        ),
-        child: Column(
-          children: [
-            Container(
-              child: AutoSizeText(
-                title,
-                textAlign: TextAlign.center,
-                style: layerDesign.bodyM(),
-                maxLines: 3,
-                presetFontSizes: [16.0, 13.0, 10.0],
-              ),
+    return BlocProvider<BiometricsCubit>(
+      create: (context) => context.read<BiometricsCreator>().create(),
+      child: Builder(
+        builder: (context) => IgnorePointer(
+          ignoring: disabled,
+          child: Container(
+            margin: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Center(
+                      child: AutoSizeText(
+                        title,
+                        textAlign: TextAlign.center,
+                        style: layerDesign.bodyM(),
+                        maxLines: 3,
+                        maxFontSize: 16.0,
+                        minFontSize: 12.0,
+                      ),
+                    ),
+                    const SizedBox(height: 46.0),
+                    _buildPinDotsIndicator(layerDesign),
+                  ],
+                ),
+                const SizedBox(height: 72.0),
+                Expanded(
+                  child: _buildPinPad(layerDesign),
+                ),
+              ],
             ),
-            const SizedBox(height: 90.0),
-            _buildPinDotsIndicator(layerDesign),
-            const SizedBox(height: 70.0),
-            Expanded(
-              child: _buildPinPad(layerDesign),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -116,7 +151,8 @@ class PinPadView extends StatelessWidget {
   Widget _buildPinDotsIndicator(
     LayerDesign layerDesign,
   ) =>
-      Stack(
+      Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -133,27 +169,28 @@ class PinPadView extends StatelessWidget {
               ),
             ),
           ),
-          Positioned.fill(
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              child: warning == null
-                  ? Container()
-                  : Transform.translate(
-                      offset: Offset(0.0, 30.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            warning!,
-                            style: layerDesign.bodyS(
-                              color: layerDesign.errorPrimary,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    ),
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            transitionBuilder: (child, animation) => FadeTransition(
+              opacity: animation,
+              child: child,
             ),
+            child: warning == null
+                ? const SizedBox.shrink()
+                : Padding(
+                    padding: const EdgeInsets.only(
+                      top: 12.0,
+                    ),
+                    child: AutoSizeText(
+                      warning!,
+                      textAlign: TextAlign.center,
+                      style: layerDesign.titleM(
+                        color: layerDesign.errorPrimary,
+                      ),
+                      maxFontSize: 16.0,
+                      minFontSize: 12.0,
+                    ),
+                  ),
           ),
         ],
       );
@@ -168,7 +205,7 @@ class PinPadView extends StatelessWidget {
           final boxHeight = constraints.maxHeight / 4;
 
           return Wrap(
-            children: pinButtons
+            children: pinButtons(context)
                 .map(
                   (button) => Container(
                     width: boxWidth,
@@ -177,52 +214,49 @@ class PinPadView extends StatelessWidget {
                       vertical: 8.0,
                       horizontal: 14.0,
                     ),
-                    child: Row(
-                      mainAxisAlignment: _calculateButtonAlignment(button),
-                      children: [
-                        LayoutBuilder(
-                          builder: (context, constraints) {
-                            final buttonSize =
-                                constraints.maxHeight > constraints.maxWidth
-                                    ? constraints.maxWidth
-                                    : constraints.maxHeight;
-
-                            return SizedBox(
-                              height: buttonSize,
-                              width: buttonSize,
-                              child: IgnorePointer(
-                                ignoring: !button.enabled,
-                                child: Visibility(
-                                  visible: button.visible,
-                                  maintainAnimation: true,
-                                  maintainSize: true,
-                                  maintainState: true,
-                                  child: button.svgPath == null
-                                      ? DKButton(
-                                          title: button.title!,
-                                          onPressed: button.onPressed,
-                                          type: DKButtonType.baseSecondary,
-                                          shape: BoxShape.circle,
-                                          customTextStyle:
-                                              layerDesign.titleXXXL().copyWith(
-                                                    height: 1,
-                                                    fontSize: buttonSize * 0.3,
-                                                  ),
-                                        )
-                                      : DKButton.icon(
-                                          iconPath: button.svgPath!,
-                                          onPressed: button.onPressed,
-                                          type: DKButtonType.basePlain,
-                                          shape: BoxShape.circle,
-                                          iconColor: layerDesign.baseQuaternary,
-                                          customIconSize: 40.0,
-                                        ),
+                    child: IgnorePointer(
+                      ignoring: !button.enabled,
+                      child: Visibility(
+                        visible: button.visible,
+                        maintainAnimation: true,
+                        maintainSize: true,
+                        maintainState: true,
+                        child: button.svgPath == null
+                            ? DKButton(
+                                customTextWidget: AutoSizeText(
+                                  button.title!,
+                                  textAlign: TextAlign.center,
+                                  style: layerDesign.titleXXXL().copyWith(
+                                        height: 1,
+                                      ),
+                                  maxLines: 1,
+                                  maxFontSize: 32.0,
+                                  minFontSize: 20.0,
                                 ),
+                                onPressed: button.onPressed,
+                                type: DKButtonType.baseSecondary,
+                                shape: BoxShape.circle,
+                                expands: false,
+                              )
+                            : LayoutBuilder(
+                                builder: (context, constraints) {
+                                  final buttonSize = constraints.maxHeight >
+                                          constraints.maxWidth
+                                      ? constraints.maxWidth
+                                      : constraints.maxHeight;
+
+                                  return DKButton.icon(
+                                    iconPath: button.svgPath!,
+                                    onPressed: button.onPressed,
+                                    type: DKButtonType.basePlain,
+                                    shape: BoxShape.circle,
+                                    expands: false,
+                                    iconColor: layerDesign.baseQuaternary,
+                                    customIconSize: buttonSize * 0.5,
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 )
@@ -230,31 +264,6 @@ class PinPadView extends StatelessWidget {
           );
         },
       );
-
-  /// Calculates the [MainAxisAlignment] of the pin buttons in the wrap.
-  ///
-  /// If the button is first in the row the alignemnt will be
-  /// [MainAxisAlignment.end], if it's las in the row, the alignment will be
-  /// [MainAxisAlignment.start], otherwise the alignment will be
-  /// [MainAxisAlignment.center].
-  MainAxisAlignment _calculateButtonAlignment(PinButton button) {
-    final firstInRowItems = [0, 3, 6, 9];
-    final lastInRowItems = [2, 5, 8, 11];
-
-    for (final item in firstInRowItems) {
-      if (pinButtons.elementAt(item) == button) {
-        return MainAxisAlignment.end;
-      }
-    }
-
-    for (final item in lastInRowItems) {
-      if (pinButtons.elementAt(item) == button) {
-        return MainAxisAlignment.start;
-      }
-    }
-
-    return MainAxisAlignment.center;
-  }
 }
 
 /// Represents a button on the pin pad.

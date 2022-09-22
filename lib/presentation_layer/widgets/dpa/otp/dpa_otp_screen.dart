@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:design_kit_layer/design_kit_layer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../data_layer/environment.dart';
@@ -17,6 +16,9 @@ class DPAOTPScreen extends StatefulWidget {
   /// Optional custom DPAHeader widget.
   final Widget? customDPAHeader;
 
+  /// If the screen is onboarding
+  final bool isOnboarding;
+
   /// The amount of time in seconds the user has to wait to request
   /// a new OTP code.
   ///
@@ -28,6 +30,7 @@ class DPAOTPScreen extends StatefulWidget {
     Key? key,
     this.customDPAHeader,
     this.resendInterval = 120,
+    this.isOnboarding = false,
   }) : super(key: key);
 
   @override
@@ -139,7 +142,7 @@ class _DPAOTPScreenState extends State<DPAOTPScreen>
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 12.0),
-                        child: _PinWidgetRow(
+                        child: PinWidgetRow(
                           onPinSet: _onPinSet,
                         ),
                       ),
@@ -166,7 +169,7 @@ class _DPAOTPScreenState extends State<DPAOTPScreen>
                           context.read<DPAProcessCubit>().resendCode();
                         },
                       ),
-                      if (isPhoneOTP)
+                      if (isPhoneOTP && widget.isOnboarding)
                         DKButton(
                           title: translation.translate('change_phone_number'),
                           type: DKButtonType.basePlain,
@@ -243,203 +246,6 @@ class _DPAOTPScreenState extends State<DPAOTPScreen>
           property: DPAVariableProperty(),
         ),
       ],
-    );
-  }
-}
-
-class _PinWidgetRow extends StatefulWidget {
-  final ValueChanged<String> onPinSet;
-
-  const _PinWidgetRow({
-    Key? key,
-    required this.onPinSet,
-  }) : super(key: key);
-
-  @override
-  State<_PinWidgetRow> createState() => _PinWidgetRowState();
-}
-
-class _PinWidgetRowState extends State<_PinWidgetRow>
-    with FullScreenLoaderMixin {
-  /// TODO: This widget should handle multiple OTP lengths
-  /// TODO: This widget should be using the design kit.
-  late final TextEditingController firstPin;
-  late final TextEditingController secondPin;
-  late final TextEditingController thirdPin;
-  late final TextEditingController fourthPin;
-
-  late final FocusNode firstNode;
-  late final FocusNode secondNode;
-  late final FocusNode thirdNode;
-  late final FocusNode fourthNode;
-
-  @override
-  void initState() {
-    super.initState();
-    firstPin = TextEditingController();
-    secondPin = TextEditingController();
-    thirdPin = TextEditingController();
-    fourthPin = TextEditingController();
-
-    firstNode = FocusNode();
-    secondNode = FocusNode();
-    thirdNode = FocusNode();
-    fourthNode = FocusNode();
-  }
-
-  @override
-  void dispose() {
-    firstPin.dispose();
-    secondPin.dispose();
-    thirdPin.dispose();
-    fourthPin.dispose();
-
-    firstNode.dispose();
-    secondNode.dispose();
-    thirdNode.dispose();
-    fourthNode.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocListener<DPAProcessCubit, DPAProcessState>(
-      listenWhen: (previous, current) =>
-          previous.actions.contains(DPAProcessBusyAction.steppingForward) &&
-          !current.actions.contains(DPAProcessBusyAction.steppingForward),
-      listener: (context, state) => _clearPins(),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: _PinWidget(
-              controller: firstPin,
-              onFill: () => _onPinUpdated(
-                next: secondNode,
-                self: firstNode,
-              ),
-              node: firstNode,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: _PinWidget(
-              controller: secondPin,
-              onFill: () => _onPinUpdated(
-                next: thirdNode,
-                self: secondNode,
-              ),
-              node: secondNode,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: _PinWidget(
-              controller: thirdPin,
-              onFill: () => _onPinUpdated(
-                next: fourthNode,
-                self: thirdNode,
-              ),
-              node: thirdNode,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: _PinWidget(
-              controller: fourthPin,
-              node: fourthNode,
-              onFill: () => _onPinUpdated(
-                self: fourthNode,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _onPinUpdated({
-    required FocusNode self,
-    FocusNode? next,
-  }) {
-    final otp = [
-      firstPin.text,
-      secondPin.text,
-      thirdPin.text,
-      fourthPin.text,
-    ].where((e) => e.isNotEmpty).join();
-
-    next?.requestFocus();
-
-    // TODO: Remove this magic number.
-    if (otp.length == 4) {
-      self.unfocus();
-      widget.onPinSet(otp);
-    }
-  }
-
-  void _clearPins() {
-    final pins = [
-      firstPin,
-      secondPin,
-      thirdPin,
-      fourthPin,
-    ];
-
-    for (final pin in pins) {
-      pin.text = '';
-    }
-  }
-}
-
-class _PinWidget extends StatelessWidget {
-  final TextEditingController controller;
-  final FocusNode? node;
-
-  final VoidCallback onFill;
-
-  const _PinWidget({
-    Key? key,
-    required this.onFill,
-    required this.controller,
-    this.node,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final design = DesignSystem.of(context);
-
-    return Container(
-      height: 52,
-      width: 52,
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: design.surfaceSeptenary4,
-          width: 1.0,
-        ),
-        borderRadius: BorderRadius.circular(12.0),
-        color: design.surfaceNonary3,
-      ),
-      child: TextField(
-        controller: controller,
-        focusNode: node,
-        textAlign: TextAlign.center,
-        style: design.bodyXXL(),
-        keyboardType: TextInputType.number,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.zero,
-          border: InputBorder.none,
-        ),
-        onChanged: (v) {
-          if (v.isNotEmpty) {
-            onFill();
-          }
-        },
-        inputFormatters: [
-          LengthLimitingTextInputFormatter(1),
-        ],
-      ),
     );
   }
 }

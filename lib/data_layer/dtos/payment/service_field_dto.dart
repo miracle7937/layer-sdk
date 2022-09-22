@@ -1,10 +1,11 @@
+import '../../../domain_layer/models.dart';
 import '../../helpers.dart';
 
 /// Data transfer object representing Service fields
 /// retrieved from the payment service.
 class ServiceFieldDTO {
   /// A unique identifier for a field
-  String? fieldId;
+  int? fieldId;
 
   /// The id of the service this field belongs to
   int? serviceId;
@@ -38,6 +39,12 @@ class ServiceFieldDTO {
   /// Date this service field was updated.
   DateTime? updated;
 
+  /// The value selected for the service field
+  String? value;
+
+  /// The value of the service field if it was a list field
+  String? valueList;
+
   /// Creates a new [ServiceFieldDTO]
   ServiceFieldDTO({
     this.fieldId,
@@ -51,12 +58,14 @@ class ServiceFieldDTO {
     this.defaultValue,
     this.created,
     this.updated,
+    this.value,
+    this.valueList,
   });
 
   /// Creates a [ServiceFieldDTO] from a JSON
   factory ServiceFieldDTO.fromJson(Map<String, dynamic> json) {
     return ServiceFieldDTO(
-      fieldId: json['field_id']?.toString(),
+      fieldId: json['field_id'],
       serviceId: json['service_id'],
       code: json['code'],
       name: json['name'],
@@ -71,7 +80,28 @@ class ServiceFieldDTO {
       defaultValue: json['default_value'],
       created: JsonParser.parseDate(json['ts_created']),
       updated: JsonParser.parseDate(json['ts_Updated']),
+      value: json['value'],
+      valueList: json['value_list'],
     );
+  }
+
+  /// Creates a JSON map from the model data
+  Map<String, dynamic> toJson() {
+    return {
+      'field_id': fieldId,
+      'service_id': serviceId,
+      'code': code,
+      'name': name,
+      'type': serviceFieldType?.value,
+      'description': description,
+      'options': options,
+      'required': required,
+      'default_value': defaultValue,
+      'ts_created': created?.millisecondsSinceEpoch,
+      'ts_Updated': updated?.millisecondsSinceEpoch,
+      'value': value,
+      if (serviceFieldType == ServiceFieldType.list) 'value_list': value,
+    };
   }
 
   /// Creates a list of [ServiceFieldDTO] from a list of json objects.

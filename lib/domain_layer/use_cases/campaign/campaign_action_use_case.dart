@@ -1,7 +1,10 @@
 import '../../abstract_repositories.dart';
 
-/// The use case that informs the BE analytics service that an action was 
+/// The use case that informs the BE analytics service that an action was
 /// triggered on a campaign.
+///
+/// This use case will be called when the action from the campaign details
+/// is executed
 class CampaignActionUseCase {
   final CampaignRepositoryInterface _repository;
 

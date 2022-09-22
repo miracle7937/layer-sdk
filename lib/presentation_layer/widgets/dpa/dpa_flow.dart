@@ -1,10 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../domain_layer/models.dart';
-import '../../cubits.dart';
-import '../../widgets.dart';
+import '../../../layer_sdk.dart';
 
 /// Signature for [DPAFlow.onError].
 typedef DPAErrorCallback = void Function(
@@ -14,7 +11,7 @@ typedef DPAErrorCallback = void Function(
 );
 
 /// Signature for [DPAFlow.onFinished].
-typedef DPAFinishedCallback = void Function(
+typedef DPAFinishedCallback<T> = void Function(
   BuildContext context,
   DPAProcessState state,
 );
@@ -29,6 +26,7 @@ typedef DPAVariableListBuilder = Widget? Function(
 typedef DPAShowPopUpCallback = void Function(
   BuildContext context,
   DPAProcessCubit cubit,
+  LinkCubit linkCubit,
   DPAProcess popUp,
 );
 
@@ -43,6 +41,12 @@ typedef DPAStartSDKCallback = void Function(
 typedef DPAHidePopUpCallback = void Function(
   BuildContext context,
   DPAProcessCubit cubit,
+);
+
+/// Signature for [DPAFlow.customCarouselScreenBuilder].
+typedef DPACarouselScreenBuilder = Widget? Function(
+  BuildContext context,
+  DPAProcess process,
 );
 
 /// A widget that starts a flow that has been created by a user console.
@@ -120,7 +124,7 @@ typedef DPAHidePopUpCallback = void Function(
 /// );
 /// ```
 /// {@end-tool}
-class DPAFlow extends StatelessWidget {
+class DPAFlow<T> extends StatelessWidget {
   /// A required method to be called when an error occurs.
   ///
   /// This is not the same as errors on a variable (mostly from validations).
@@ -131,11 +135,14 @@ class DPAFlow extends StatelessWidget {
   /// trying to update the DPA process.
   final DPAErrorCallback onError;
 
+  /// If it's during onboarding
+  final bool isOnboarding;
+
   /// A required method to be called when the DPA process finishes.
   ///
   /// Use this to close the DPA window or do any other processing your app
   /// requires.
-  final DPAFinishedCallback onFinished;
+  final DPAFinishedCallback<T> onFinished;
 
   /// A custom widget to be used as the header.
   ///
@@ -199,6 +206,12 @@ class DPAFlow extends StatelessWidget {
   /// Provide a custom padding for the continue button
   final EdgeInsets customContinueButtonPadding;
 
+  /// Asset for logo
+  final String? asset;
+
+  /// Optional callback for creating custom Carousel Screens.
+  final DPACarouselScreenBuilder? customCarouselScreemBuilder;
+
   /// Creates a new [DPAFlow].
   const DPAFlow({
     Key? key,
@@ -213,12 +226,15 @@ class DPAFlow extends StatelessWidget {
     this.showTaskDescription = true,
     this.customEmptySearchBuilder,
     required this.sdkCallback,
+    this.isOnboarding = false,
+    this.asset,
     this.customContinueButtonPadding = const EdgeInsets.fromLTRB(
       16.0,
       0.0,
       16.0,
       42.0,
     ),
+    this.customCarouselScreemBuilder,
   }) : super(key: key);
 
   @override
@@ -231,6 +247,12 @@ class DPAFlow extends StatelessWidget {
       (cubit) => cubit.state.hasPopup,
     );
 
+    final areVariablesValidated = context.select<DPAProcessCubit, bool>(
+      (cubit) => cubit.state.areVariablesValidated,
+    );
+
+    final translation = Translation.of(context);
+    final cubit = context.read<DPAProcessCubit>();
     final isDelayTask = process.stepProperties?.delay != null;
 
     final effectiveContinueButton = process.variables.length == 1 &&
@@ -239,7 +261,7 @@ class DPAFlow extends StatelessWidget {
         : customContinueButton ??
             DPAContinueButton(
               process: process,
-              enabled: !hasPopup,
+              enabled: !hasPopup && areVariablesValidated,
             );
 
     final effectiveHeader = (process.stepProperties?.hideAppBar ?? false)
@@ -274,12 +296,6 @@ class DPAFlow extends StatelessWidget {
         ),
         BlocListener<DPAProcessCubit, DPAProcessState>(
           listenWhen: (oldState, newState) =>
-              oldState.runStatus != newState.runStatus &&
-              newState.runStatus == DPAProcessRunStatus.finished,
-          listener: onFinished,
-        ),
-        BlocListener<DPAProcessCubit, DPAProcessState>(
-          listenWhen: (oldState, newState) =>
               oldState.popUp != null && newState.popUp == null,
           listener: _hidePopUp,
         ),
@@ -287,6 +303,12 @@ class DPAFlow extends StatelessWidget {
           listenWhen: (oldState, newState) =>
               oldState.popUp == null && newState.popUp != null,
           listener: _showPopUp,
+        ),
+        BlocListener<DPAProcessCubit, DPAProcessState>(
+          listenWhen: (oldState, newState) =>
+              oldState.runStatus != newState.runStatus &&
+              newState.runStatus == DPAProcessRunStatus.finished,
+          listener: onFinished,
         ),
       ],
       child: Stack(
@@ -336,12 +358,39 @@ class DPAFlow extends StatelessWidget {
                             process: process,
                           ),
                         ],
+                        if (process.stepProperties?.skipButton ?? false) ...[
+                          const SizedBox(
+                            height: 12.0,
+                          ),
+                          DPACancelButton(
+                            builder: (context, busy, onTap) => DKButton(
+                              size: DKButtonSize.large,
+                              title: process.stepProperties?.skipButtonLabel ??
+                                  translation.translate('cancel'),
+                              onPressed: () => cubit.skipOrFinish(
+                                extraVariables: [
+                                  DPAVariable(
+                                    id: 'skip',
+                                    type: DPAVariableType.boolean,
+                                    property: DPAVariableProperty(),
+                                    value: true,
+                                  )
+                                ],
+                              ),
+                              status: busy
+                                  ? DKButtonStatus.loading
+                                  : DKButtonStatus.idle,
+                              type: DKButtonType.baseSecondary,
+                              expands: true,
+                            ),
+                          )
+                        ],
                       ],
                     ),
                   ),
                 ],
               ),
-          if (isDelayTask) DPAFullscreenLoader(),
+          if (isDelayTask) DPAFullscreenLoader(asset: asset),
         ],
       ),
     );
@@ -361,12 +410,14 @@ class DPAFlow extends StatelessWidget {
           (e) => e.type == DPAVariableType.swipe,
         );
     if (isCarouselScreen) {
-      return DPACarouselScreen();
+      return customCarouselScreemBuilder?.call(context, process) ??
+          DPACarouselScreen();
     }
 
     final isOTPScreen = process.stepProperties?.screenType == DPAScreenType.otp;
     if (isOTPScreen) {
       return DPAOTPScreen(
+        isOnboarding: isOnboarding,
         customDPAHeader: customHeader,
       );
     }
@@ -429,11 +480,13 @@ class DPAFlow extends StatelessWidget {
 
   void _showPopUp(BuildContext context, DPAProcessState state) {
     final processCubit = context.read<DPAProcessCubit>();
+    final linkCubit = context.read<LinkCubit>();
 
     if (customShowPopUp != null) {
       customShowPopUp!.call(
         context,
         processCubit,
+        linkCubit,
         processCubit.state.popUp!,
       );
 
@@ -475,7 +528,9 @@ class _PopUpContents extends StatelessWidget {
         popUp?.stepProperties?.skipLabel?.isNotEmpty ?? false;
 
     if (popUp == null) return const SizedBox.shrink();
-
+    final areVariablesValidated = context.select<DPAProcessCubit, bool>(
+      (cubit) => cubit.state.areVariablesValidated,
+    );
     // TODO: update to use the correct Layer Design Kit design.
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -491,6 +546,7 @@ class _PopUpContents extends StatelessWidget {
         customContinueButton ??
             DPAContinueButton(
               process: popUp,
+              enabled: areVariablesValidated,
             ),
         if (shouldShowSkipButton) ...[
           const SizedBox(height: 12.0),

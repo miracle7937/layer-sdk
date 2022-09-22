@@ -81,6 +81,9 @@ class BeneficiaryDTO {
   /// The beneficiary's Bank image url
   String? bankImageUrl;
 
+  /// Extra data fo this beneficiary.
+  String? extra;
+
   /// Creates a new [BeneficiaryDTO]
   BeneficiaryDTO({
     this.beneficiaryId,
@@ -108,6 +111,7 @@ class BeneficiaryDTO {
     this.routingCode,
     this.secondFactor,
     this.bankImageUrl,
+    this.extra,
   });
 
   /// Creates a [BeneficiaryDTO] from a JSON
@@ -137,11 +141,38 @@ class BeneficiaryDTO {
         routingCode: json['routing_code'],
         secondFactor: SecondFactorTypeDTO.fromRaw(json['second_factor']),
         bankImageUrl: json['bank_image_url'],
+        extra: json['extra'],
       );
 
   /// Returns a list of [BeneficiaryDTO] from a JSON
   static List<BeneficiaryDTO> fromJsonList(List<Map<String, dynamic>> json) =>
       json.map(BeneficiaryDTO.fromJson).toList();
+
+  /// Maps a instance of [BeneficiaryDTO] into a json map
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        if (beneficiaryId != null) 'beneficiary_id': beneficiaryId,
+        if (firstName != null) 'rcpt_first_name': firstName,
+        if (lastName != null) 'rcpt_last_name': lastName,
+        if (nickname != null) 'nickname': nickname,
+        if (type != null) 'type': type!.value,
+        if (currency != null) 'currency': currency,
+        if (accountNumber != null) 'account_number': accountNumber,
+        if (rcptAddress1 != null) 'rcpt_address_1': rcptAddress1,
+        if (rcptAddress2 != null) 'rcpt_address_2': rcptAddress2,
+        if (rcptAddress3 != null) 'rcpt_address_3': rcptAddress3,
+        if (rcptCountryCode != null) 'rcpt_country_code': rcptCountryCode,
+        if (bankAddress1 != null) 'bank_address_1': bankAddress1,
+        if (bankAddress2 != null) 'bank_address_2': bankAddress2,
+        if (bankCountryCode != null) 'bank_country_code': bankCountryCode,
+        if (bankName != null) 'bank_name': bankName,
+        if (bankSwift != null) 'bank_swift': bankSwift,
+        if (description != null) 'description': description,
+        if (routingCode != null) 'routing_code': routingCode,
+        if (bankImageUrl != null) 'bank_image_url': bankImageUrl,
+        if (extra != null) 'extra': extra,
+        'visible': nickname != null,
+        if (otpId != null) 'otp_id': otpId,
+      };
 }
 
 /// The beneficiary status

@@ -278,14 +278,13 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
 
   /// Skips this step and goes to next step, or finishes the process
   /// if at the last one.
-  Future<void> skipOrFinish() async {
+  Future<void> skipOrFinish({List<DPAVariable>? extraVariables}) async {
     assert(state.runStatus == DPAProcessRunStatus.running);
-    assert(state.activeProcess.stepProperties?.skipLabel != null);
 
     emit(
       state.copyWith(
         actions: state.actions.union({
-          DPAProcessBusyAction.steppingForward,
+          DPAProcessBusyAction.skipping,
         }),
         errorStatus: DPAProcessErrorStatus.none,
       ),
@@ -296,6 +295,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
 
       process = await _skipStepUseCase(
         process: process,
+        extraVariables: extraVariables ?? [],
       );
 
       final delay = process.stepProperties?.delay;
@@ -306,9 +306,9 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
           popUp: process.isPopUp() ? process : null,
           clearPopUp: !process.isPopUp(),
           actions: state.actions.difference({
-            DPAProcessBusyAction.steppingForward,
+            DPAProcessBusyAction.skipping,
           }).union({
-            if (delay != null) DPAProcessBusyAction.steppingForward,
+            if (delay != null) DPAProcessBusyAction.skipping,
           }),
           runStatus: process.finished ? DPAProcessRunStatus.finished : null,
           clearProcessingFiles: true,
@@ -317,13 +317,13 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
 
       if (delay != null) {
         await Future.delayed(Duration(seconds: delay));
-        stepOrFinish();
+        stepOrFinish(extraVariables: extraVariables);
       }
     } on NetException {
       emit(
         state.copyWith(
           actions: state.actions.difference({
-            DPAProcessBusyAction.steppingForward,
+            DPAProcessBusyAction.skipping,
           }),
           errorStatus: DPAProcessErrorStatus.network,
         ),

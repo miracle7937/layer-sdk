@@ -68,4 +68,9 @@ class BillerDTO {
       imageUrl: json['image_url'],
     );
   }
+
+  /// Creates a list of [BillerDTO]s from the given JSON list.
+  static List<BillerDTO> fromJsonList(List<Map<String, dynamic>> json) {
+    return json.map(BillerDTO.fromJson).toList(growable: false);
+  }
 }

@@ -39,6 +39,10 @@ extension DPAVariablePropertyDTOMapping on DPAVariablePropertyDTO {
         description: description,
         labelTextProperties: labelTextProperties?.toTextProperties(),
         valueTextProperties: valueTextProperties?.toTextProperties(),
+        currencyFlagCode: currencyFlagCode,
+        characterSplit: characterSplit,
+        picker: picker?.toDPAVariablePicker(),
+        defaultPrefix: defaultPrefix,
       );
 }
 
@@ -59,6 +63,20 @@ extension KeyboardDTOMapping on KeyboardDTO {
           to: DPAVariableKeyboard,
           value: this,
         );
+    }
+  }
+}
+
+/// Extension that provides mappings for [PickerDTO].
+extension PickerDTOMapping on PickerDTO {
+  /// Maps into a [DPAVariablePicker].
+  DPAVariablePicker toDPAVariablePicker() {
+    switch (this) {
+      case PickerDTO.currency:
+        return DPAVariablePicker.currency;
+
+      default:
+        return DPAVariablePicker.none;
     }
   }
 }

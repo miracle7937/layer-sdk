@@ -92,20 +92,23 @@ class DPAVariablesList extends StatelessWidget {
                   ? process.variables[index + 1]
                   : null;
 
-          return builder?.call(
-                context,
-                variable,
-                busy,
-                previousVariable,
-                nextVariable,
-              ) ??
-              _defaultVariableBuilder(
-                context,
-                variable,
-                busy,
-                previousVariable,
-                nextVariable,
-              );
+          return Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: builder?.call(
+                  context,
+                  variable,
+                  busy,
+                  previousVariable,
+                  nextVariable,
+                ) ??
+                _defaultVariableBuilder(
+                  context,
+                  variable,
+                  busy,
+                  previousVariable,
+                  nextVariable,
+                ),
+          );
         },
       ).toList(growable: false),
     );
@@ -146,8 +149,8 @@ class DPAVariablesList extends StatelessWidget {
           key: ValueKey(variable.id),
           variable: variable,
           readonly: variable.constraints.readonly,
-          padding: const EdgeInsets.symmetric(
-            vertical: 12.0,
+          padding: EdgeInsets.symmetric(
+            vertical: variable.constraints.readonly ? 12.0 : 0,
           ),
         );
 

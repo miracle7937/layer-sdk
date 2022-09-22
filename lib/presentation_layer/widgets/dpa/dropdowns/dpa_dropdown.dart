@@ -1,6 +1,7 @@
 import 'package:country_pickers/country_pickers.dart';
 import 'package:design_kit_layer/design_kit_layer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:validators/validators.dart';
 
 import '../../../../domain_layer/models.dart';
@@ -92,28 +93,29 @@ class DPADropdown extends StatefulWidget {
 
 class _DPADropdownState extends State<DPADropdown> {
   late List<DKPickerItem<String>> items;
+  final _pickerController = DKPickerController<String>();
 
   bool get isCountryPicker =>
       widget.variable.property.type == DPAVariablePropertyType.countryPicker;
+  bool get isCurrencyPicker =>
+      widget.variable.property.picker == DPAVariablePicker.currency;
 
   @override
   void initState() {
+    super.initState();
+
     items = widget.variable.availableValues
         .map(
           (e) => DKPickerItem<String>(
             title: e.name,
             value: e.id,
-            iconPath: e.imageUrl ?? e.icon,
+            iconPath: isCurrencyPicker
+                ? DKFlags.currencyFlag(currency: e.id)
+                : e.imageUrl ?? e.icon,
           ),
         )
         .toList();
-    super.initState();
-  }
 
-  @override
-  Widget build(BuildContext context) {
-    final translation = Translation.of(context);
-    final required = widget.variable.constraints.required;
     final value = widget.variable.value;
 
     final List<String> values;
@@ -122,6 +124,23 @@ class _DPADropdownState extends State<DPADropdown> {
     } else {
       values = value is List<String> ? value : [];
     }
+
+    _pickerController.selectedItems = isCurrencyPicker
+        ? {items.first}
+        : items.where((e) => values.contains(e.value)).toSet();
+  }
+
+  @override
+  void dispose() {
+    _pickerController.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final translation = Translation.of(context);
+    final required = widget.variable.constraints.required;
 
     return Padding(
       padding: widget.padding,
@@ -136,7 +155,7 @@ class _DPADropdownState extends State<DPADropdown> {
         warning: widget.variable.translateValidationError(translation),
         bottomSheetPickerTitle: widget.variable.label ?? '',
         pickerType: widget.dropdownType.toPickerType(),
-        initialItems: items.where((e) => values.contains(e.value)).toSet(),
+        controller: _pickerController,
         isMultipicker: widget.isMultipicker,
         selectionButtonTitle: widget.selectionButtonTitle,
         customIconBuilder: (_, item) => _buildImage(item),
@@ -182,7 +201,7 @@ class _DPADropdownState extends State<DPADropdown> {
           ),
         ),
         const SizedBox(width: 8.0),
-        if (widget.showDropdownIndicator)
+        if (!isCurrencyPicker && widget.showDropdownIndicator)
           DKButton.icon(
             type: DKButtonType.basePlain,
             iconPath: DKImages.dropdown,
@@ -195,9 +214,9 @@ class _DPADropdownState extends State<DPADropdown> {
 
   /// Builds the image from the dpa value.
   Widget _buildImage(
-    DKPickerItem<String> item,
+    DKPickerItem item,
   ) {
-    if (isCountryPicker) {
+    if (isCountryPicker || isCurrencyPicker) {
       try {
         final country = CountryPickerUtils.getCountryByIsoCode(item.value);
 
@@ -234,11 +253,10 @@ class _ImageFallback extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.asset(
-      'icons/currency/${currencyId.toLowerCase()}.png',
+    return SvgPicture.asset(
+      DKFlags.currencyFlag(currency: currencyId),
       width: 24.0,
       height: 24.0,
-      package: 'currency_icons',
     );
   }
 }

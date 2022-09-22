@@ -1,12 +1,15 @@
 library layer_sdk;
 
+export 'package:auto_size_text/auto_size_text.dart';
 export 'package:design_kit_layer/design_kit_layer.dart';
 
 /// Old layers
 export '_migration/business_layer/business_layer.dart';
 export '_migration/data_layer/data_layer.dart';
 export '_migration/flutter_layer/flutter_layer.dart';
+export 'data_layer/interfaces.dart';
 export 'features/accounts.dart';
+export 'features/activity.dart';
 export 'features/alert.dart';
 export 'features/beneficiaries.dart';
 export 'features/bills.dart';

@@ -23,58 +23,67 @@ class AccountTypeDTO {
   String? imageUrl;
 
   /// can perform bill payment or do p2p transfers
-  bool canPay = true;
+  bool canPay;
 
   /// can transfer within own accounts
-  bool canTransferOwn = true;
+  bool canTransferOwn;
 
   /// can transfer to other accounts in same bank
-  bool canTransferBank = true;
+  bool canTransferBank;
 
   /// can transfer to other banks in same country
-  bool canTransferDomestic = true;
+  bool canTransferDomestic;
 
   /// can transfer to international banks
-  bool canTransferInternational = true;
+  bool canTransferInternational;
 
   /// can perform bulk transfers
-  bool canTransferBulk = true;
+  bool canTransferBulk;
 
   /// can cardless withdrawal request
-  bool canTransferCardless = true;
+  bool canTransferCardless;
 
   /// can receive transfers from anywhere
-  bool canReceiveTransfer = true;
+  bool canReceiveTransfer;
 
   /// card can be linked to this account
-  bool canRequestCard = true;
+  bool canRequestCard;
 
   /// customer can request checkbooks on this account
-  bool canRequestChkbk = true;
+  bool canRequestChkbk;
 
   /// account is overdraft capable
-  bool canOverdraft = true;
+  bool canOverdraft;
 
   /// can perform a remittance payment(bank,cash,or wallet)
-  bool canTransferRemittance = true;
+  bool canTransferRemittance;
 
   /// customer can request banker check
-  bool canRequestBankerCheck = true;
+  bool canRequestBankerCheck;
 
   /// customer can request offline statement
-  bool canRequestStatement = true;
+  bool canRequestStatement;
 
   /// customer can request certificate account
-  bool canRequestCertificateOfAccount = true;
+  bool canRequestCertificateOfAccount;
 
   /// customer can request certificate deposit
-  bool canRequestCertificateOfDeposit = true;
+  bool canRequestCertificateOfDeposit;
 
   /// customer can p2p (wallet)
-  bool canP2P = true;
+  bool canP2P;
 
   /// account type is displayed on client
-  bool visible = true;
+  bool visible;
+
+  /// customer can stop issued check
+  bool canStopIssuedCheck;
+
+  /// customer has iban
+  bool hasIban;
+
+  /// customer can confirm issued check
+  bool canConfirmIssuedCheck;
 
   /// Creates a new [AccountTypeDTO]
   AccountTypeDTO({
@@ -103,6 +112,9 @@ class AccountTypeDTO {
     this.canRequestCertificateOfDeposit = true,
     this.canP2P = true,
     this.visible = true,
+    this.canStopIssuedCheck = true,
+    this.hasIban = false,
+    this.canConfirmIssuedCheck = true,
   });
 
   /// Creates a [AccountTypeDTO] from a JSON
@@ -134,6 +146,39 @@ class AccountTypeDTO {
       canRequestCertificateOfAccount: json['can_request_cert_account'] ?? true,
       canRequestCertificateOfDeposit: json['can_request_cert_deposit'] ?? true,
     );
+  }
+
+  /// Account to json
+  Map<String, dynamic> toJson() {
+    var json = <String, dynamic>{
+      'account_type_id': id,
+      'type': type?.index,
+      'category': category?.index,
+      'name': name,
+      'description': description,
+      'can_pay': canPay,
+      'can_trf_internal': canTransferOwn,
+      'can_trf_bank': canTransferBank,
+      'can_trf_domestic': canTransferDomestic,
+      'can_trf_intl': canTransferInternational,
+      'can_trf_bulk': canTransferBulk,
+      'can_receive_trf': canReceiveTransfer,
+      'can_trf_cardless': canTransferCardless,
+      'can_overdraft': canOverdraft,
+      'can_trf_remittance': canTransferRemittance,
+      'can_request_card': canRequestCard,
+      'can_request_chkbk': canRequestChkbk,
+      'can_p2p': canP2P,
+      'visible': visible,
+      'can_request_banker_check': canRequestBankerCheck,
+      'can_request_stmt': canRequestStatement,
+      'can_request_cert_account': canRequestCertificateOfAccount,
+      'can_request_cert_deposit': canRequestCertificateOfDeposit,
+      "can_stop_issued_check": canStopIssuedCheck,
+      "can_confirm_issued_check": canConfirmIssuedCheck,
+      "has_iban": hasIban,
+    };
+    return json;
   }
 }
 

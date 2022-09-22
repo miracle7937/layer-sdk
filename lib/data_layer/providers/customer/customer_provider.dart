@@ -68,6 +68,22 @@ class CustomerProvider {
     ];
   }
 
+  /// Returns the customer DTO
+  Future<CustomerDTO> fetchLoggedInCustomer({
+    bool forceRefresh = false,
+  }) async {
+    final response = await netClient.request(
+      netClient.netEndpoints.customer,
+      method: NetRequestMethods.get,
+      forceRefresh: forceRefresh,
+      throwAllErrors: true,
+    );
+
+    return CustomerDTO.fromJson(
+      response.data is List ? response.data.first : response.data,
+    );
+  }
+
   /// Returns the id for the customer that owns the associated account id.
   Future<String> fetchIdFromAccountId({
     required String accountId,
@@ -203,6 +219,27 @@ class CustomerProvider {
     );
 
     return response.success;
+  }
+
+  /// Loads the limits of the customer.
+  ///
+  /// Returns `null` if the customer has no limits set.
+  Future<CustomerLimitDTO?> getCustomerLimits() async {
+    final response = await netClient.request(
+      netClient.netEndpoints.customerLimits,
+      queryParameters: {
+        'module': 'all',
+      },
+    );
+
+    final data = response.data;
+    if (data is Map<String, dynamic>) {
+      final isEmpty = data['total_limits']?.isEmpty ?? true;
+
+      return isEmpty ? null : CustomerLimitDTO.fromJson(data);
+    }
+
+    return null;
   }
 
   /// Returns the prefix URL to access files on the server.

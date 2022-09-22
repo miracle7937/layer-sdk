@@ -21,6 +21,15 @@ enum DPAVariableLabelType {
   bold,
 }
 
+/// How to display the picker
+enum DPAVariablePicker {
+  /// Currency
+  currency,
+
+  /// None
+  none,
+}
+
 /// The type of this DPA Variable property
 enum DPAVariablePropertyType {
   /// Search results type.
@@ -92,6 +101,9 @@ class DPAVariableProperty extends Equatable {
   /// The list of [DPADialCode] associated with this [DPAVariable].
   final UnmodifiableListView<DPADialCode> dialCodes;
 
+  /// The default dial code
+  final String? defaultPrefix;
+
   /// The prefix value.
   final String? prefixValue;
 
@@ -103,6 +115,15 @@ class DPAVariableProperty extends Equatable {
 
   /// The text properties for this variable's value.
   final DPAVariableTextProperties? valueTextProperties;
+
+  /// The currency string for the flag of the variable
+  final String? currencyFlagCode;
+
+  /// For prefilling a code on a pin screen
+  final bool? characterSplit;
+
+  /// Picker Type
+  final DPAVariablePicker? picker;
 
   /// Creates a new [DPAVariableProperty].
   DPAVariableProperty({
@@ -130,6 +151,10 @@ class DPAVariableProperty extends Equatable {
     this.description,
     this.labelTextProperties,
     this.valueTextProperties,
+    this.currencyFlagCode,
+    this.characterSplit,
+    this.picker,
+    this.defaultPrefix,
   })  : allowedTypes = UnmodifiableSetView(allowedTypes?.toSet() ?? <String>{}),
         dialCodes = UnmodifiableListView(dialCodes ?? []);
 
@@ -159,6 +184,9 @@ class DPAVariableProperty extends Equatable {
         description,
         labelTextProperties,
         valueTextProperties,
+        currencyFlagCode,
+        picker,
+        defaultPrefix,
       ];
 
   /// Creates a new [DPAVariableProperty] using another as a base.
@@ -187,6 +215,10 @@ class DPAVariableProperty extends Equatable {
     String? description,
     DPAVariableTextProperties? labelTextProperties,
     DPAVariableTextProperties? valueTextProperties,
+    String? currencyFlagCode,
+    bool? characterSplit,
+    DPAVariablePicker? picker,
+    String? defaultPrefix,
   }) =>
       DPAVariableProperty(
         step: step ?? this.step,
@@ -213,5 +245,9 @@ class DPAVariableProperty extends Equatable {
         description: description ?? this.description,
         labelTextProperties: labelTextProperties ?? this.labelTextProperties,
         valueTextProperties: valueTextProperties ?? this.valueTextProperties,
+        currencyFlagCode: currencyFlagCode ?? this.currencyFlagCode,
+        characterSplit: characterSplit ?? this.characterSplit,
+        picker: picker ?? this.picker,
+        defaultPrefix: defaultPrefix ?? this.defaultPrefix,
       );
 }

@@ -7,13 +7,13 @@ import '../../cubits.dart';
 /// A cubit that keeps a list of device sessions.
 class DeviceSessionCubit extends Cubit<DeviceSessionState> {
   final LoadDeviceSessionsUseCase _loadSessionsUseCase;
-  final DeviceSessionTerminateUseCase _terminateUseCase;
+  final TerminateDeviceSessionUseCase _terminateUseCase;
 
   /// Creates a new cubit using the supplied [CustomerRepository] and
   /// customer id and type.
   DeviceSessionCubit({
     required LoadDeviceSessionsUseCase loadSessionsUseCase,
-    required DeviceSessionTerminateUseCase terminateUseCase,
+    required TerminateDeviceSessionUseCase terminateUseCase,
     required String customerId,
     required CustomerType customerType,
   })  : _loadSessionsUseCase = loadSessionsUseCase,

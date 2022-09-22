@@ -12,6 +12,9 @@ enum BranchActivationError {
 
   /// Network error.
   network,
+
+  /// Incorrect OTP code.
+  incorrectOTPCode,
 }
 
 /// Enum for all the possible actions for the [BranchActivationCubit].
@@ -24,6 +27,9 @@ enum BranchActivationAction {
 
   /// Second factor check.
   otpCheck,
+
+  /// OTP being resent.
+  resendOTP,
 
   /// User retrieval.
   userRetrieval,

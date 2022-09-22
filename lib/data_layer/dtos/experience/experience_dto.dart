@@ -10,13 +10,13 @@ class ExperienceDTO {
   List<ExperiencePageDTO>? pages;
 
   /// Colors to be used within the application.
-  Map? colors;
+  Map<String, String>? colors;
 
   /// Fonts to be used within the application.
-  Map? fonts;
+  Map<String, String>? fonts;
 
   /// Font sizes to be used within the application.
-  Map? fontSizes;
+  Map<String, int>? fontSizes;
 
   /// Unique identifier of the experience.
   String? experienceId;
@@ -39,11 +39,17 @@ class ExperienceDTO {
     experienceId = json['experience_id'];
     final pageList = List<Map<String, dynamic>>.from(json['pages']);
     pages = pageList.map(ExperiencePageDTO.fromJson).toList();
-    colors = json['colors'];
-    fonts = json['fonts'];
+    colors = Map<String, String>.from(
+      json['colors'] ?? const <String, String>{},
+    );
+    fonts = Map<String, String>.from(
+      json['fonts'] ?? const <String, String>{},
+    );
     // TODO: Make sure the BE is returning `font_sizes` field
     // and remove the second mapping.
-    fontSizes = json['font_sizes'] ?? json['fonts_sizes'];
+    fontSizes = Map<String, int>.from(
+      json['font_sizes'] ?? json['fonts_sizes'] ?? const <String, int>{},
+    );
     imageUrl = json['image_url'];
     mainLogoUrl = json['main_logo_url'];
     symbolLogoUrl = json['symbol_logo_url'];

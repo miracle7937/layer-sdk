@@ -12,7 +12,6 @@ class BranchActivationCubit extends Cubit<BranchActivationState> {
   final CheckBranchActivationCodeUseCase _checkBranchActivationCodeUseCase;
   final VerifyOTPForBranchActivationUseCase
       _verifyOTPForBranchActivationUseCase;
-  final ResendOTPUseCase _resendOTPUseCase;
   final LoadUserDetailsFromTokenUseCase _loadUserDetailsFromTokenUseCase;
   final SetAccessPinForUserUseCase _setAccessPinForUserUseCase;
   final int _activationCodeLength;
@@ -35,7 +34,6 @@ class BranchActivationCubit extends Cubit<BranchActivationState> {
     required CheckBranchActivationCodeUseCase checkBranchActivationCodeUseCase,
     required VerifyOTPForBranchActivationUseCase
         verifyOTPForBranchActivationUseCase,
-    required ResendOTPUseCase resendOTPUseCase,
     required LoadUserDetailsFromTokenUseCase loadUserDetailsFromTokenUseCase,
     required SetAccessPinForUserUseCase setAccessPinForUserUseCase,
     int activationCodeLength = 6,
@@ -47,7 +45,6 @@ class BranchActivationCubit extends Cubit<BranchActivationState> {
   })  : _checkBranchActivationCodeUseCase = checkBranchActivationCodeUseCase,
         _verifyOTPForBranchActivationUseCase =
             verifyOTPForBranchActivationUseCase,
-        _resendOTPUseCase = resendOTPUseCase,
         _loadUserDetailsFromTokenUseCase = loadUserDetailsFromTokenUseCase,
         _setAccessPinForUserUseCase = setAccessPinForUserUseCase,
         _activationCodeLength = activationCodeLength,
@@ -100,6 +97,7 @@ class BranchActivationCubit extends Cubit<BranchActivationState> {
           emit(
             state.copyWith(
               activationResponse: activationResponse,
+              action: BranchActivationAction.none,
             ),
           );
 
@@ -158,6 +156,7 @@ class BranchActivationCubit extends Cubit<BranchActivationState> {
       if (activationResponse != null) {
         emit(
           state.copyWith(
+            action: BranchActivationAction.none,
             activationResponse: activationResponse,
           ),
         );
@@ -168,9 +167,12 @@ class BranchActivationCubit extends Cubit<BranchActivationState> {
       emit(
         state.copyWith(
           error: e is NetException
-              ? BranchActivationError.network
+              ? e.code == 'incorrect_value'
+                  ? BranchActivationError.incorrectOTPCode
+                  : BranchActivationError.network
               : BranchActivationError.generic,
           errorMessage: e is NetException ? e.message : null,
+          action: BranchActivationAction.none,
         ),
       );
     }
@@ -182,29 +184,31 @@ class BranchActivationCubit extends Cubit<BranchActivationState> {
       state.copyWith(
         busy: true,
         error: BranchActivationError.none,
-        action: BranchActivationAction.otpCheck,
+        action: BranchActivationAction.resendOTP,
       ),
     );
 
     try {
-      if (state.activationResponse?.secondFactorVerification?.id == null) {
+      final activationResponse = await _checkBranchActivationCodeUseCase(
+        code: state.activationCode,
+        useOTP: useOTP,
+      );
+
+      if (activationResponse == null) {
         emit(
           state.copyWith(
             busy: false,
-            error: BranchActivationError.generic,
+            action: BranchActivationAction.none,
           ),
         );
-
         return;
       }
 
-      await _resendOTPUseCase(
-        otpId: state.activationResponse!.secondFactorVerification!.id!,
-      );
-
       emit(
         state.copyWith(
+          activationResponse: activationResponse,
           busy: false,
+          action: BranchActivationAction.none,
         ),
       );
     } on Exception catch (e) {
@@ -215,6 +219,7 @@ class BranchActivationCubit extends Cubit<BranchActivationState> {
               ? BranchActivationError.network
               : BranchActivationError.generic,
           errorMessage: e is NetException ? e.message : null,
+          action: BranchActivationAction.none,
         ),
       );
     }
@@ -260,6 +265,7 @@ class BranchActivationCubit extends Cubit<BranchActivationState> {
               ? BranchActivationError.network
               : BranchActivationError.generic,
           errorMessage: e is NetException ? e.message : null,
+          action: BranchActivationAction.none,
         ),
       );
     }

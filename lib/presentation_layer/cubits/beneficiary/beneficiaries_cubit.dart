@@ -12,16 +12,14 @@ class BeneficiariesCubit extends Cubit<BeneficiariesState> {
   final int limit;
 
   /// Creates a new cubit using the supplied [LoadCustomerBeneficiariesUseCase]
-  /// and `customerId`.
+  /// and optional `customerId`.
   BeneficiariesCubit({
     required LoadCustomerBeneficiariesUseCase loadCustomerBeneficiariesUseCase,
-    required String customerID,
+    String? customerID,
     this.limit = 50,
   })  : _loadCustomerBeneficiariesUseCase = loadCustomerBeneficiariesUseCase,
         super(
-          BeneficiariesState(
-            customerID: customerID,
-          ),
+          BeneficiariesState(customerID: customerID),
         );
 
   /// Loads a list of beneficiaries, optionally using
@@ -32,6 +30,7 @@ class BeneficiariesCubit extends Cubit<BeneficiariesState> {
     String? searchText,
     bool loadMore = false,
     bool forceRefresh = false,
+    bool activeOnly = false,
   }) async {
     emit(
       state.copyWith(
@@ -49,6 +48,7 @@ class BeneficiariesCubit extends Cubit<BeneficiariesState> {
         offset: offset,
         limit: limit,
         forceRefresh: forceRefresh,
+        activeOnly: activeOnly,
       );
 
       final list = offset > 0

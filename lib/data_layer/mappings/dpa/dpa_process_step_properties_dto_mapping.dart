@@ -30,6 +30,8 @@ extension DPAProcessStepPropertiesDTOMapping on DPAProcessStepPropertiesDTO {
         block: block?.toDPAScreenBlock() ?? DPAScreenBlock.none,
         hideAppBar: hideAppBar ?? false,
         skipLabel: skipLabel,
+        skipButton: skipButton,
+        skipButtonLabel: skipButtonLabel,
       );
 
   /// Checks if this [DPAProcessStepPropertiesDTO] has a valid URL and appends
@@ -42,7 +44,7 @@ extension DPAProcessStepPropertiesDTOMapping on DPAProcessStepPropertiesDTO {
     }
 
     final baseUrl = customData.fileBaseURL;
-    final completeUrl = '$baseUrl/$image';
+    final completeUrl = image![0] != '/' ? '$baseUrl/$image' : '$baseUrl$image';
 
     if (isURL(completeUrl)) {
       return completeUrl;

@@ -30,4 +30,20 @@ class AccountRepository implements AccountRepositoryInterface {
 
     return accountDTOs.map((x) => x.toAccount()).toList(growable: false);
   }
+
+  /// Requests a new Stripe secret key for account top ups.
+  @override
+  Future<AccountTopUpRequest> getAccountTopUpSecret({
+    required String accountId,
+    required String currency,
+    required double amount,
+  }) async {
+    final dto = await _provider.getAccountTopUpSecret(
+      accountId: accountId,
+      currency: currency,
+      amount: amount,
+    );
+
+    return dto.toAccountTopUpRequest();
+  }
 }

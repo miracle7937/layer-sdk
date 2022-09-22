@@ -1,8 +1,13 @@
+import 'package:design_kit_layer/design_kit_layer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../layer_sdk.dart';
+import '../../../features/user.dart';
+import '../../creators.dart';
 import '../../cubits.dart';
+import '../../features.dart';
+import '../../utils.dart';
+import '../../widgets.dart';
 
 /// A screen that allows the user to set an access pin.
 class SetAccessPinScreen extends SetAccessPinBaseWidget {
@@ -163,7 +168,7 @@ class __RepeatAccessPinScreenState
                 title: widget.title,
                 disabled: !state.busy && disabled,
                 warning: state.errorMessage ?? warning,
-                onChanged: (pin) {
+                onChanged: (pin) async {
                   currentPin = pin;
                   if (pin.length == widget.pinLength) {
                     if (pin != widget.pin) {
@@ -173,9 +178,16 @@ class __RepeatAccessPinScreenState
                       );
                     } else {
                       disabled = true;
-                      context.read<SetPinScreenCubit>().setAccesPin(
-                            pin: pin,
-                          );
+
+                      await BottomSheetHelper.showConfirmation(
+                        context: context,
+                        titleKey: 'pass_code_done',
+                        type: BottomSheetType.success,
+                        showDenyButton: false,
+                        confirmKey: 'ok',
+                      );
+
+                      context.read<SetPinScreenCubit>().setAccesPin(pin: pin);
                     }
                   }
                 },
@@ -184,13 +196,13 @@ class __RepeatAccessPinScreenState
           ),
         ),
         if (state.busy)
-
-          /// TODO: change with the correct loader.
           Positioned.fill(
             child: Container(
               color: Colors.black.withOpacity(0.4),
               child: Center(
-                child: Text('Loading...'),
+                child: DKLoader(
+                  size: 40.0,
+                ),
               ),
             ),
           ),

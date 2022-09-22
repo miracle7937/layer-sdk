@@ -32,6 +32,8 @@ class Account extends Equatable {
   final num? currentBalance;
 
   /// Whether the `availableBalance` and `currentBalance` should be shown
+  ///
+  /// Defaults to `true`
   final bool balanceVisible;
 
   /// The account number of this account
@@ -39,6 +41,12 @@ class Account extends Equatable {
 
   /// The formatted account number
   final String? formattedAccountNumber;
+
+  /// The account number provided in the extra data.
+  ///
+  /// In cases of some integrations it should be displayed instead of the
+  /// [accountNumber].
+  final String? extraAccountNumber;
 
   /// Generic bank defined reference for account
   final String? reference;
@@ -59,55 +67,100 @@ class Account extends Equatable {
   final AccountPreferences preferences;
 
   /// can perform bill payment or do p2p transfers
+  ///
+  /// Defaults to `true`
   final bool canPay;
 
   /// can transfer within own accounts
+  ///
+  /// Defaults to `true`
   final bool canTransferOwn;
 
   /// can transfer to other accounts in same bank
+  ///
+  /// Defaults to `true`
   final bool canTransferBank;
 
   /// can transfer to other banks in same country
+  ///
+  /// Defaults to `true`
   final bool canTransferDomestic;
 
   /// can transfer to international banks
+  ///
+  /// Defaults to `true`
   final bool canTransferInternational;
 
   /// can perform bulk transfers
+  ///
+  /// Defaults to `true`
   final bool canTransferBulk;
 
   /// can cardless withdrawal request
+  ///
+  /// Defaults to `true`
   final bool canTransferCardless;
 
   /// can receive transfers from anywhere
+  ///
+  /// Defaults to `true`
   final bool canReceiveTransfer;
 
   /// card can be linked to this account
+  ///
+  /// Defaults to `true`
   final bool canRequestCard;
 
   /// customer can request checkbooks on this account
+  ///
+  /// Defaults to `true`
   final bool canRequestChkbk;
 
   /// account is overdraft capable
+  ///
+  /// Defaults to `true`
   final bool canOverdraft;
 
   /// can perform a remittance payment(bank,cash,or wallet)
+  ///
+  /// Defaults to `true`
   final bool canTransferRemittance;
 
   /// customer can request banker check
+  ///
+  /// Defaults to `true`
   final bool canRequestBankerCheck;
 
   /// customer can request offline statement
+  ///
+  /// Defaults to `true`
   final bool canRequestStatement;
 
   /// customer can request certificate account
+  ///
+  /// Defaults to `true`
   final bool canRequestCertificateOfAccount;
 
   /// customer can request certificate deposit
+  ///
+  /// Defaults to `true`
   final bool canRequestCertificateOfDeposit;
 
+  /// customer can stop issued check
+  ///
+  /// Defaults to `true`
+  final bool canStopIssuedCheck;
+
+  /// customer can confirm issued check
+  ///
+  /// Defaults to `true`
+  final bool canConfirmIssuedCheck;
+
+  /// iban of the account
+  final String? iban;
+
   /// Creates a new immutable [Account]
-  Account({
+  const Account({
     this.id,
     this.currency,
     this.availableBalance,
@@ -115,6 +168,7 @@ class Account extends Equatable {
     this.balanceVisible = true,
     this.accountNumber,
     this.formattedAccountNumber,
+    this.extraAccountNumber,
     this.reference,
     this.status,
     this.accountInfo,
@@ -137,6 +191,9 @@ class Account extends Equatable {
     this.canRequestStatement = true,
     this.canRequestCertificateOfAccount = true,
     this.canRequestCertificateOfDeposit = true,
+    this.canStopIssuedCheck = true,
+    this.canConfirmIssuedCheck = true,
+    this.iban,
   });
 
   @override
@@ -148,6 +205,7 @@ class Account extends Equatable {
         balanceVisible,
         accountNumber,
         formattedAccountNumber,
+        extraAccountNumber,
         reference,
         status,
         accountInfo,
@@ -170,5 +228,6 @@ class Account extends Equatable {
         canRequestStatement,
         canRequestCertificateOfAccount,
         canRequestCertificateOfDeposit,
+        iban,
       ];
 }

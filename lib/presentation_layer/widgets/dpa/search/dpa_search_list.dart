@@ -55,6 +55,8 @@ class _DPASearchListState extends State<DPASearchList> {
 
     final isCountryPicker =
         widget.variable.property.type == DPAVariablePropertyType.countryPicker;
+    final isCurrencyPicker =
+        widget.variable.property.picker == DPAVariablePicker.currency;
 
     return Column(
       children: [
@@ -78,6 +80,7 @@ class _DPASearchListState extends State<DPASearchList> {
                   layerDesign,
                 )
               : ListView.separated(
+                  primary: false,
                   shrinkWrap: true,
                   separatorBuilder: (_, __) => Divider(),
                   itemCount: options.length,
@@ -85,9 +88,10 @@ class _DPASearchListState extends State<DPASearchList> {
                     final value = options[index];
                     var flagSvg;
                     if (isCountryPicker) {
-                      flagSvg = DKFlags.path(countryCode: value.id);
+                      flagSvg = DKFlags.countryFlag(countryCode: value.id);
+                    } else if (isCurrencyPicker) {
+                      flagSvg = DKFlags.currencyFlag(currency: value.id);
                     }
-
                     return _DPASearchListItem(
                       svgPath: flagSvg,
                       dpaValue: options[index],

@@ -203,7 +203,15 @@ class UserProvider {
       forceRefresh: true,
     );
 
-    return UserDTO.fromJson(response.data);
+    final data = response.data;
+
+    final effectiveData = data['user'] as Map<String, dynamic>;
+
+    if (data['device'] != null) {
+      effectiveData.addAll(data['device']!);
+    }
+
+    return UserDTO.fromJson(effectiveData);
   }
 
   /// Patches the list of blocked channels for the provided user id.

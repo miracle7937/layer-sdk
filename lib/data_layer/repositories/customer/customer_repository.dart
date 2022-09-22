@@ -52,6 +52,14 @@ class CustomerRepository implements CustomerRepositoryInterface {
         .toList(growable: false);
   }
 
+  /// Fetches the current logged in customer
+  @override
+  Future<Customer> fetchCurrentCustomer() async {
+    final customerDTOs = await _provider.fetchLoggedInCustomer();
+
+    return customerDTOs.toCustomer(_customerCustomData);
+  }
+
   /// Returns the id for the customer that owns the associated account id.
   @override
   Future<String> fetchIdFromAccountId({
@@ -107,6 +115,18 @@ class CustomerRepository implements CustomerRepositoryInterface {
         customerId: customerId,
         value: value,
       );
+
+  /// Loads the limits of the customer.
+  ///
+  /// Returns `null` if the customer has no limits set.
+  @override
+  Future<CustomerLimit?> getCustomerLimits() async {
+    final dto = await _provider.getCustomerLimits();
+
+    if (dto == null) return null;
+
+    return dto.toCustomerLimit();
+  }
 
   DPAMappingCustomData get _customerCustomData => DPAMappingCustomData(
         token: _provider.netClient.currentToken() ?? '',

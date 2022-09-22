@@ -9,16 +9,34 @@ environment:
   flutter: '>=1.17.0'
 
 dependencies:
+  # hosted
+  biometrics_change_detector:
+    git:
+      url: git@gitlab.ubanquity.com:dart-packages/biometricts_change_detector.git
+      ref: 3a0c7fdf8e602778265e1b284a25e6451bb1d426
+
+  carrier_info:
+    git:
+      url: git@gitlab.ubanquity.com:flutter-apps/carrier-info.git
+      ref: 433beda7e4b7c0249c9877fe09c9bbc4058fee27
+
+  design_kit_layer:
+    git:
+      url: git@gitlab.ubanquity.com:dart-packages/design-kit-layer.git
+      ref: be90693ebda61670a28a051a27fb6449dc194b03
+
+  ocra_authentication:
+    git:
+      url: git@gitlab.ubanquity.com:dart-packages/ocra_authentication.git
+      ref: 3994518ffff10e0dfb9b1864e4d18a3802a8758f
+
+  # pub.dev packages
   asn1lib: ^1.0.1
   auto_size_text: ^3.0.0
   cached_network_image: ^3.1.0
   collection: ^1.15.0
   country_pickers: ^2.0.0
-  currency_icons: ^0.3.0
-  design_kit_layer:
-    git:
-      url: git@gitlab.ubanquity.com:dart-packages/design-kit-layer.git
-      ref: b80e70863ff56665ad4bab71d403c4d03474219f
+
   device_info: ^2.0.2
   dio: ^4.0.4
   equatable: ^2.0.2
@@ -42,12 +60,9 @@ dependencies:
   image_cropper: ^2.0.3
   image_picker: ^0.8.4+6
   intl: ^0.17.0
+  local_auth: ^2.1.0
   location: ^4.2.2
   logging: ^1.0.1
-  ocra_authentication:
-    git:
-      url: git@gitlab.ubanquity.com:dart-packages/ocra_authentication.git
-      ref: 3994518ffff10e0dfb9b1864e4d18a3802a8758f
   open_file: ^3.2.1
   open_mail_app: ^0.2.0
   package_info: ^2.0.2
@@ -58,6 +73,7 @@ dependencies:
   uni_links: ^0.5.1
   url_launcher: ^6.1.0
   validators: ^3.0.0
+  pin_code_fields: ^7.4.0
 
 dev_dependencies:
   # Keep this section alphabetized
@@ -73,4 +89,5 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/
     - assets/svgs/

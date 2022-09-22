@@ -6,6 +6,7 @@ import 'package:location/location.dart' as loc;
 
 import '../../_migration/flutter_layer/src/cubits.dart';
 import '../../_migration/flutter_layer/src/widgets/text_fields/auto_padding_keyboard_view.dart';
+import '../../data_layer/environment.dart';
 import '../../data_layer/interfaces.dart';
 import '../../data_layer/network.dart';
 import '../../data_layer/providers.dart';
@@ -138,12 +139,85 @@ class BankAppState extends State<BankApp> {
 
   /// The creators that are injected by the layer SDK.
   List<CreatorSingleChildWidget> get layerSDKCreators => [
+        CreatorProvider<BiometricsCreator>(
+          create: (_) => BiometricsCreator(
+            getBiometricsEnabledUseCase: GetBiometricsEnabledUseCase(
+              loadGlobalSettingsUseCase: LoadGlobalSettingsUseCase(
+                repository: GlobalSettingRepository(
+                  provider: GlobalSettingProvider(
+                    netClient: widget.netClient,
+                  ),
+                ),
+              ),
+              getDeviceModelUseCase: GetDeviceModelUseCase(),
+            ),
+          ),
+        ),
+        CreatorProvider<OcraAuthenticationCreator>(
+          create: (_) => OcraAuthenticationCreator(
+            ocraSuite: EnvironmentConfiguration.current.ocraSuite ?? '',
+            clientChallengeOcraUseCase: ClientOcraChallengeUseCase(
+              ocraRepository: OcraRepository(
+                provider: OcraProvider(
+                  netClient: widget.netClient,
+                ),
+              ),
+            ),
+            verifyOcraResultUseCase: VerifyOcraResultUseCase(
+              ocraRepository: OcraRepository(
+                provider: OcraProvider(
+                  netClient: widget.netClient,
+                ),
+              ),
+            ),
+          ),
+        ),
         CreatorProvider<SetPinScreenCreator>(
           create: (_) => SetPinScreenCreator(
-            userRepository: UserRepository(
-              userProvider: UserProvider(
-                netClient: widget.netClient,
+            setAccessPinForUserUseCase: SetAccessPinForUserUseCase(
+              repository: UserRepository(
+                userProvider: UserProvider(
+                  netClient: widget.netClient,
+                ),
               ),
+            ),
+          ),
+        ),
+        CreatorProvider<StorageCreator>(
+          create: (_) => StorageCreator(
+            loadLoggedInUsersUseCase: LoadLoggedInUsersUseCase(
+              secureStorage: widget.secureStorage,
+            ),
+            loadLastLoggedUserUseCase: LoadLastLoggedUserUseCase(
+              secureStorage: widget.secureStorage,
+            ),
+            saveUserUseCase: SaveUserUseCase(
+              secureStorage: widget.secureStorage,
+            ),
+            removeUserUseCase: RemoveUserUseCase(
+              secureStorage: widget.secureStorage,
+            ),
+            loadAuthenticationSettingsUseCase:
+                LoadAuthenticationSettingsUseCase(
+              secureStorage: widget.secureStorage,
+            ),
+            saveAuthenticationSettingUseCase: SaveAuthenticationSettingUseCase(
+              secureStorage: widget.secureStorage,
+            ),
+            loadOcraSecretKeyUseCase: LoadOcraSecretKeyUseCase(
+              secureStorage: widget.secureStorage,
+            ),
+            saveOcraSecretKeyUseCase: SaveOcraSecretKeyUseCase(
+              secureStorage: widget.secureStorage,
+            ),
+            setBrightnessUseCase: SetBrightnessUseCase(
+              secureStorage: widget.secureStorage,
+            ),
+            loadBrightnessUseCase: LoadBrightnessUseCase(
+              secureStorage: widget.secureStorage,
+            ),
+            toggleBiometricsUseCase: ToggleBiometricsUseCase(
+              secureStorage: widget.secureStorage,
             ),
           ),
         ),
@@ -221,6 +295,9 @@ class BankAppState extends State<BankApp> {
       ),
       BlocProvider<AuthenticationCubit>(
         create: (context) => AuthenticationCubit(
+          getDeviceModelUseCase: GetDeviceModelUseCase(),
+          shouldGetCustomerObject:
+              widget.appConfiguration.shouldFetchCustomerObject,
           updateUserTokenUseCase: UpdateUserTokenUseCase(
             repository: AuthenticationRepository(
               AuthenticationProvider(
@@ -261,11 +338,15 @@ class BankAppState extends State<BankApp> {
             ),
           )),
           verifyAccessPinUseCase: VerifyAccessPinUseCase(
-              repository: AuthenticationRepository(
-            AuthenticationProvider(
-              netClient: widget.netClient,
+            repository: AuthenticationRepository(
+              AuthenticationProvider(
+                netClient: widget.netClient,
+              ),
             ),
-          )),
+          ),
+          customerUseCase: LoadCurrentCustomerUseCase(
+            repository: CustomerRepository(CustomerProvider(widget.netClient)),
+          ),
           loadDeveloperUserDetailsFromTokenUseCase:
               LoadDeveloperUserDetailsFromTokenUseCase(
             repository: UserRepository(
@@ -333,85 +414,85 @@ class BankAppState extends State<BankApp> {
     ];
   }
 
-  Widget _appBuilder() {
-    return AppBuilder(
-      netClient: widget.netClient,
-      navigatorKey: _navigatorKey,
-      interceptors: widget.appConfiguration.interceptors,
-      builder: (context) {
-        final themeState = context.watch<AppThemeCubit>().state;
-        final selectedLocale = context.select<LocalizationCubit, Locale>(
-          (cubit) => cubit.state.locale,
-        );
-        final languageCode = selectedLocale.languageCode.split('_').first;
-
-        Widget app = AutoLock(
-          enabled: widget.appConfiguration.autoLockEnabled,
-          child: MaterialApp(
-            key: _appKey,
-            navigatorKey: _navigatorKey,
-            title: widget.appConfiguration.title ?? '',
-            theme: themeState.selectedLightTheme.toThemeData(),
-            darkTheme: themeState.selectedDarkTheme?.toThemeData(),
-            themeMode: themeState.mode,
-            useInheritedMediaQuery: widget.useInheritedMediaQuery,
-            locale: Locale(languageCode),
-            navigatorObservers: [
-              FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
-            ],
-            builder: (context, child) {
-              // `child` can't be null, because the `initialRoute` is always
-              // specified
-              final app = widget.appConfiguration.autoKeyboardPaddingEnabled
-                  ? AutoPaddingKeyboard(child: child!)
-                  : child!;
-              return SSLConfigurationBankAppWrapper(
-                appSSLConfiguration: widget.appSSLConfiguration,
-                navigatorKey: _navigatorKey,
-                child: widget.builder != null
-                    ? widget.builder!(context, app, _navigatorKey)
-                    : app,
-              );
-            },
-            // ignore: deprecated_member_use_from_same_package
-            home: widget.home,
-            initialRoute:
-                widget.appConfiguration.appNavigationConfiguration.initialRoute,
-            onGenerateRoute: widget
-                .appConfiguration.appNavigationConfiguration.onGenerateRoute,
-            supportedLocales: widget
-                .appConfiguration.appLocalizationConfiguration.supportedLocales,
-            localizationsDelegates: [
-              widget.appConfiguration.appLocalizationConfiguration
-                  .localizationDelegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            localeResolutionCallback: widget.appConfiguration
-                .appLocalizationConfiguration.localeResolutionCallback,
-          ),
-        );
-
-        if (widget.appConfiguration.designAware) {
-          // Conditional needed to not overwrite the default [DesignAware] sizes
-          app = widget.designAvailableSizes.isEmpty
-              ? DesignAware(child: app)
-              : DesignAware(
-                  availableSizes: widget.designAvailableSizes,
-                  child: app,
-                );
-        }
-
-        if (widget.appConfiguration.listeners.isNotEmpty) {
-          return MultiBlocListener(
-            listeners: widget.appConfiguration.listeners,
-            child: app,
+  Widget _appBuilder() => AppBuilder(
+        key: _appKey,
+        netClient: widget.netClient,
+        navigatorKey: _navigatorKey,
+        interceptors: widget.appConfiguration.interceptors,
+        builder: (context) {
+          final themeState = context.watch<AppThemeCubit>().state;
+          final selectedLocale = context.select<LocalizationCubit, Locale>(
+            (cubit) => cubit.state.locale,
           );
-        }
+          final languageCode = selectedLocale.languageCode.split('_').first;
 
-        return app;
-      },
-    );
-  }
+          Widget app = AutoLock(
+            enabled: widget.appConfiguration.autoLockEnabled,
+            child: MaterialApp(
+              navigatorKey: _navigatorKey,
+              title: widget.appConfiguration.title ?? '',
+              theme: themeState.selectedLightTheme.toThemeData(),
+              darkTheme: themeState.selectedDarkTheme?.toThemeData(),
+              themeMode: themeState.mode,
+              useInheritedMediaQuery: widget.useInheritedMediaQuery,
+              locale: Locale(languageCode),
+              navigatorObservers: [
+                FirebaseAnalyticsObserver(
+                    analytics: FirebaseAnalytics.instance),
+              ],
+              builder: (context, child) {
+                // `child` can't be null, because the `initialRoute` is always
+                // specified
+                final app = widget.appConfiguration.autoKeyboardPaddingEnabled
+                    ? AutoPaddingKeyboard(child: child!)
+                    : child!;
+                return SSLConfigurationBankAppWrapper(
+                  appSSLConfiguration: widget.appSSLConfiguration,
+                  navigatorKey: _navigatorKey,
+                  child: widget.builder != null
+                      ? widget.builder!(context, app, _navigatorKey)
+                      : app,
+                );
+              },
+              // ignore: deprecated_member_use_from_same_package
+              home: widget.home,
+              initialRoute: widget
+                  .appConfiguration.appNavigationConfiguration.initialRoute,
+              onGenerateRoute: widget
+                  .appConfiguration.appNavigationConfiguration.onGenerateRoute,
+              supportedLocales: widget.appConfiguration
+                  .appLocalizationConfiguration.supportedLocales,
+              localizationsDelegates: [
+                widget.appConfiguration.appLocalizationConfiguration
+                    .localizationDelegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              localeResolutionCallback: widget.appConfiguration
+                  .appLocalizationConfiguration.localeResolutionCallback,
+            ),
+          );
+
+          if (widget.appConfiguration.designAware) {
+            // Conditional needed to not overwrite the default
+            // [DesignAware] sizes
+            app = widget.designAvailableSizes.isEmpty
+                ? DesignAware(child: app)
+                : DesignAware(
+                    availableSizes: widget.designAvailableSizes,
+                    child: app,
+                  );
+          }
+
+          if (widget.appConfiguration.listeners.isNotEmpty) {
+            return MultiBlocListener(
+              listeners: widget.appConfiguration.listeners,
+              child: app,
+            );
+          }
+
+          return app;
+        },
+      );
 }

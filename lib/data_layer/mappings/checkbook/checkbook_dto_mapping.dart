@@ -27,24 +27,34 @@ extension CheckbookDTOMapping on CheckbookDTO {
     switch (status) {
       case "O":
         return CheckbookStatus.otp;
+
       case "S":
         return CheckbookStatus.customersScheduled;
+
       case "P":
         return CheckbookStatus.customersInprogress;
+
       case "A":
         return CheckbookStatus.accepted;
+
       case "C":
         return CheckbookStatus.customersComplete;
+
       case "F":
         return CheckbookStatus.customersFailed;
+
       case "X":
         return CheckbookStatus.customersCanceled;
+
       case "R":
         return CheckbookStatus.rejected;
+
       case "E":
         return CheckbookStatus.pendingExpired;
+
       case "T":
         return CheckbookStatus.otpExpired;
+
       default:
         return CheckbookStatus.unknown;
     }

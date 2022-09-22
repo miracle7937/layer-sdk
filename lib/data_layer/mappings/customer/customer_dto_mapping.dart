@@ -36,6 +36,7 @@ extension CustomerDTOMapping on CustomerDTO {
             name: customerInformation?.companyName ?? '',
             type: customerInformation?.companyType ?? '',
           ),
+          billerId: customerInformation?.billerId,
         ),
         corporateData: CorporateCustomerData(
           kyc: toKYC(),
@@ -272,7 +273,6 @@ extension CustomerStringMapping on String {
 
   /// Maps into a [EmploymentType].
   EmploymentType toEmploymentType() {
-    // TODO: review values.
     switch (trim().toUpperCase()) {
       case 'E':
         return EmploymentType.employed;

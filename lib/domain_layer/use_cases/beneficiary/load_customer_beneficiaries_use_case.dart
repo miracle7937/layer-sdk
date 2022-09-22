@@ -10,17 +10,18 @@ class LoadCustomerBeneficiariesUseCase {
     required BeneficiaryRepositoryInterface beneficiaryRepository,
   }) : _beneficiaryRepository = beneficiaryRepository;
 
-  /// Lists the beneficiaries of the provided `customerId`,
-  /// optionally filtering by searchText.
+  /// Lists the beneficiaries.
+  /// Of the provided `customerId`, if passed.
+  /// Optionally filtering by searchText.
   ///
   /// Use [limit] and [offset] to paginate.
   Future<List<Beneficiary>> call({
-    required String customerId,
+    String? customerId,
     String? query,
     int offset = 0,
     int limit = 50,
-    bool loadMore = false,
     bool forceRefresh = false,
+    bool activeOnly = false,
   }) =>
       _beneficiaryRepository.list(
         customerId: customerId,
@@ -28,5 +29,6 @@ class LoadCustomerBeneficiariesUseCase {
         offset: offset,
         forceRefresh: forceRefresh,
         searchText: query,
+        activeOnly: activeOnly,
       );
 }

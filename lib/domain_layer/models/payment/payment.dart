@@ -2,39 +2,6 @@ import 'package:equatable/equatable.dart';
 
 import '../../models.dart';
 
-/// The recurrence a payment can have
-enum Recurrence {
-  /// No recurrence
-  none,
-
-  /// Once
-  once,
-
-  /// Daily
-  daily,
-
-  /// Weekly
-  weekly,
-
-  /// Bi-weekly
-  biweekly,
-
-  /// Monthly
-  monthly,
-
-  /// Bi-monthly
-  bimonthly,
-
-  /// Quarterly
-  quarterly,
-
-  /// Yearly
-  yearly,
-
-  /// End of each month
-  endOfEachMonth,
-}
-
 /// The status a payment can have
 enum PaymentStatus {
   /// OTP
@@ -48,6 +15,9 @@ enum PaymentStatus {
 
   /// Completed
   completed,
+
+  /// Deleted
+  deleted,
 
   /// Pending
   pending,
@@ -75,6 +45,9 @@ class Payment extends Equatable {
 
   ///When the payment was created
   final DateTime? created;
+
+  ///When the payment was updated
+  final DateTime? updated;
 
   ///When the payment was scheduled
   final DateTime? scheduled;
@@ -104,15 +77,34 @@ class Payment extends Equatable {
   /// Defaults to [PaymentStatus.unknown].
   final PaymentStatus status;
 
+  /// Whether the payment is recurring or not
+  final bool recurring;
+
   /// The payment recurrence
   ///
   /// Defaults to [Recurrence.none].
   final Recurrence recurrence;
 
+  /// The recurrence start date of the payment
+  final DateTime? recurrenceStart;
+
+  /// The recurrence end date of the payment
+  final DateTime? recurrenceEnd;
+
+  /// The if of the one time password
+  final int? otpId;
+
+  /// A unique identifier of the payment
+  final String? deviceUID;
+
+  /// The second factor type of the payment
+  final SecondFactorType? secondFactor;
+
   ///Creates a new [Payment] object
   const Payment({
     this.id,
     this.created,
+    this.updated,
     this.scheduled,
     this.bill,
     this.fromAccount,
@@ -122,6 +114,12 @@ class Payment extends Equatable {
     this.amountVisible = true,
     this.status = PaymentStatus.unknown,
     this.recurrence = Recurrence.none,
+    this.recurrenceStart,
+    this.recurrenceEnd,
+    this.otpId,
+    this.deviceUID,
+    this.secondFactor,
+    this.recurring = false,
   });
 
   ///Payment id toString()
@@ -136,6 +134,7 @@ class Payment extends Equatable {
   List<Object?> get props => [
         id,
         created,
+        updated,
         scheduled,
         bill,
         fromAccount,
@@ -145,5 +144,54 @@ class Payment extends Equatable {
         amountVisible,
         status,
         recurrence,
+        recurrenceStart,
+        recurrenceEnd,
+        otpId,
+        deviceUID,
+        secondFactor,
+        recurring,
       ];
+
+  ///Clone and return a new [Payment] object
+  Payment copyWith({
+    int? id,
+    DateTime? created,
+    DateTime? updated,
+    DateTime? scheduled,
+    Bill? bill,
+    Account? fromAccount,
+    BankingCard? fromCard,
+    String? currency,
+    double? amount,
+    bool? amountVisible,
+    PaymentStatus? status,
+    Recurrence? recurrence,
+    DateTime? recurrenceStart,
+    DateTime? recurrenceEnd,
+    int? otpId,
+    String? deviceUID,
+    SecondFactorType? secondFactor,
+    bool? recurring,
+  }) {
+    return Payment(
+      id: id ?? this.id,
+      created: created ?? this.created,
+      updated: updated ?? this.updated,
+      scheduled: scheduled ?? this.scheduled,
+      bill: bill ?? this.bill,
+      fromAccount: fromAccount ?? this.fromAccount,
+      fromCard: fromCard ?? this.fromCard,
+      currency: currency ?? this.currency,
+      amount: amount ?? this.amount,
+      amountVisible: amountVisible ?? this.amountVisible,
+      status: status ?? this.status,
+      recurrence: recurrence ?? this.recurrence,
+      recurrenceStart: recurrenceStart ?? this.recurrenceStart,
+      recurrenceEnd: recurrenceEnd ?? this.recurrenceEnd,
+      otpId: otpId ?? this.otpId,
+      deviceUID: deviceUID ?? this.deviceUID,
+      secondFactor: secondFactor ?? this.secondFactor,
+      recurring: recurring ?? this.recurring,
+    );
+  }
 }

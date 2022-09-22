@@ -16,6 +16,9 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   final ChangePasswordUseCase _changePasswordUseCase;
   final VerifyAccessPinUseCase _verifyAccessPinUseCase;
   final UpdateUserTokenUseCase _updateUserTokenUseCase;
+  final LoadCurrentCustomerUseCase _customerUseCase;
+  final bool _shouldGetCustomerObject;
+  final GetDeviceModelUseCase _getDeviceModelUseCase;
   final LoadDeveloperUserDetailsFromTokenUseCase
       _loadDeveloperUserDetailsFromTokenUseCase;
 
@@ -29,6 +32,9 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     required ChangePasswordUseCase changePasswordUseCase,
     required VerifyAccessPinUseCase verifyAccessPinUseCase,
     required UpdateUserTokenUseCase updateUserTokenUseCase,
+    required LoadCurrentCustomerUseCase customerUseCase,
+    required GetDeviceModelUseCase getDeviceModelUseCase,
+    bool shouldGetCustomerObject = false,
     required LoadDeveloperUserDetailsFromTokenUseCase
         loadDeveloperUserDetailsFromTokenUseCase,
   })  : _loginUseCase = loginUseCase,
@@ -38,6 +44,9 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         _changePasswordUseCase = changePasswordUseCase,
         _verifyAccessPinUseCase = verifyAccessPinUseCase,
         _updateUserTokenUseCase = updateUserTokenUseCase,
+        _shouldGetCustomerObject = shouldGetCustomerObject,
+        _customerUseCase = customerUseCase,
+        _getDeviceModelUseCase = getDeviceModelUseCase,
         _loadDeveloperUserDetailsFromTokenUseCase =
             loadDeveloperUserDetailsFromTokenUseCase,
         super(AuthenticationState());
@@ -47,6 +56,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   /// Configures the [NetClient] token with the user token.
   void setLoggedUser(User user) {
     _updateUserTokenUseCase(token: user.token);
+    if (_shouldGetCustomerObject) loadCustomerObject();
     emit(state.copyWith(user: user));
   }
 
@@ -79,6 +89,40 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
               ? AuthenticationErrorStatus.network
               : AuthenticationErrorStatus.generic,
           errorMessage: e is NetException ? e.message : null,
+        ),
+      );
+
+      rethrow;
+    }
+  }
+
+  /// Loads the customer's object
+  Future<void> loadCustomerObject() async {
+    emit(
+      state.copyWith(
+        busy: true,
+        errorMessage: '',
+        errorStatus: AuthenticationErrorStatus.none,
+      ),
+    );
+
+    try {
+      final customerInfo = await _customerUseCase();
+
+      emit(
+        state.copyWith(
+          busy: false,
+          customer: customerInfo,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          busy: false,
+          errorMessage: e is NetException ? e.message : null,
+          errorStatus: e is NetException
+              ? AuthenticationErrorStatus.network
+              : AuthenticationErrorStatus.generic,
         ),
       );
 
@@ -296,9 +340,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
 
     try {
       final response = await _changePasswordUseCase(
-        userId: int.tryParse(user.id),
         user: user,
-        username: user.username,
         oldPassword: oldPassword,
         newPassword: newPassword,
         confirmPassword: confirmPassword,
@@ -335,7 +377,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   ///
   /// Emits a busy state while checking and a state with verification result
   /// in the `isPinVerified` field.
-  Future<void> verifyAccessPin(String pin) async {
+  Future<void> verifyAccessPin(String pin, {DeviceSession? deviceInfo}) async {
     emit(
       state.copyWith(
         busy: true,
@@ -346,6 +388,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     try {
       final verifyPinResponse = await _verifyAccessPinUseCase(
         pin: pin,
+        deviceInfo: deviceInfo ?? DeviceSession(),
       );
 
       emit(
@@ -420,6 +463,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   /// using biometrics successfully
   void unlock(User user) {
     _updateUserTokenUseCase(token: user.token);
+    if (_shouldGetCustomerObject) loadCustomerObject();
 
     emit(
       state.copyWith(
@@ -427,6 +471,11 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         user: user,
       ),
     );
+  }
+
+  /// Get Device model
+  Future<String> getModelName() {
+    return _getDeviceModelUseCase();
   }
 
   /// Sets the second factor status.

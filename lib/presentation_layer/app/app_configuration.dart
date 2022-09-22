@@ -31,6 +31,11 @@ class AppConfiguration {
   /// Defaults to `true`.
   final bool autoLockEnabled;
 
+  /// True if the application should fetch the customer object
+  ///
+  /// Defaults to `false`.
+  final bool shouldFetchCustomerObject;
+
   /// True if the application should be aware of the design sizes -- in other
   /// words, the [BankApp] will provide a [DesignAware] for the tree.
   ///
@@ -71,6 +76,7 @@ class AppConfiguration {
     Iterable<CreatorProvider>? creators,
     Iterable<BlocListener>? listeners,
     this.autoLockEnabled = true,
+    this.shouldFetchCustomerObject = false,
     this.designAware = true,
     this.autoKeyboardPaddingEnabled = true,
     this.title,

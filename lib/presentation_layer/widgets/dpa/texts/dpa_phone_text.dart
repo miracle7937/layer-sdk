@@ -48,6 +48,7 @@ class _DPAPhoneTextState extends State<DPAPhoneText> {
     }
 
     _selectedDialCode = widget.variable.property.prefixValue ??
+        widget.variable.property.defaultPrefix ??
         widget.variable.property.dialCodes.first.dialCode;
   }
 
@@ -64,6 +65,7 @@ class _DPAPhoneTextState extends State<DPAPhoneText> {
     return Padding(
       padding: widget.padding,
       child: DKPhoneField(
+        searchFieldHint: Translation.of(context).translate('search'),
         initialSelection: _selectedDialCode,
         status: widget.readonly || widget.variable.constraints.readonly
             ? DKTextFieldStatus.disabled
@@ -92,7 +94,7 @@ class _DPAPhoneTextState extends State<DPAPhoneText> {
                 title: dialCode.countryName,
                 description: dialCode.countryCode,
                 value: dialCode.dialCode,
-                iconPath: DKFlags.path(
+                iconPath: DKFlags.countryFlag(
                   countryCode: dialCode.countryCode.toUpperCase(),
                 ),
               ),

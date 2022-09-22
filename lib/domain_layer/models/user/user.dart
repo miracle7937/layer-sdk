@@ -39,6 +39,7 @@ class User extends Equatable {
   final String id;
 
   /// The user's username
+  ///
   /// Can be null if the application does not use usernames.
   final String? username;
 
@@ -69,9 +70,13 @@ class User extends Equatable {
   final String? accessPin;
 
   /// Whether or not this customer consents to email ads
+  ///
+  /// Defaults to `false`
   final bool hasEmailAds;
 
   /// Whether or not this customer consents to sms ads
+  ///
+  /// Defaults to `false`
   final bool hasSmsAds;
 
   /// This customer's device id
@@ -92,13 +97,12 @@ class User extends Equatable {
   final bool isUSSDActive;
 
   /// Whether or not the device of this user should be verified on login
+  ///
+  /// Defaults to `false`
   final bool verifyDevice;
 
   /// The branch this user belongs to.
   final String? branch;
-
-  /// Whether if this user has the biometrics enabled or not.
-  final bool useBiometrics;
 
   /// Returns the full name of the customer.
   String get fullName => [firstName, lastName]
@@ -126,7 +130,6 @@ class User extends Equatable {
     this.permissions = const UserPermissions(),
     this.verifyDevice = false,
     this.branch,
-    this.useBiometrics = false,
   })  : favoriteOffers = UnmodifiableListView(favoriteOffers ?? []),
         roles = UnmodifiableListView(roles ?? <String>[]);
 
@@ -151,7 +154,6 @@ class User extends Equatable {
     bool? isUSSDActive,
     bool? verifyDevice,
     String? branch,
-    bool? useBiometrics,
   }) =>
       User(
         id: id ?? this.id,
@@ -173,7 +175,6 @@ class User extends Equatable {
         isUSSDActive: isUSSDActive ?? this.isUSSDActive,
         verifyDevice: verifyDevice ?? this.verifyDevice,
         branch: branch ?? this.branch,
-        useBiometrics: useBiometrics ?? this.useBiometrics,
       );
 
   @override
@@ -196,6 +197,5 @@ class User extends Equatable {
         permissions,
         verifyDevice,
         branch,
-        useBiometrics,
       ];
 }

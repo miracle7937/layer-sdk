@@ -32,4 +32,58 @@ class PaymentRepository implements PaymentsRepositoryInterface {
 
     return paymentDTOs.map((e) => e.toPayment()).toList(growable: false);
   }
+
+  @override
+  Future<Payment> postPayment({
+    required Payment payment,
+    String? otp,
+  }) async {
+    final paymentDTO = await _provider.postPayment(
+      payment: payment.toPaymentDTO(),
+      otp: otp,
+    );
+
+    return paymentDTO.toPayment();
+  }
+
+  @override
+  Future<Payment> patchPayment({
+    required Payment payment,
+    String? otp,
+    bool resendOtp = false,
+  }) async {
+    final paymentDTO = await _provider.patchPayment(
+      payment: payment.toPaymentDTO(),
+      otp: otp,
+      resendOtp: resendOtp,
+    );
+
+    return paymentDTO.toPayment();
+  }
+
+  @override
+  Future<Payment> resendOTP({
+    required Payment payment,
+  }) async {
+    final paymentDTO = await _provider.resendOTP(
+      payment: payment.toPaymentDTO(),
+    );
+
+    return paymentDTO.toPayment();
+  }
+
+  @override
+  Future<Payment> deletePayment(
+    String id, {
+    String? otpValue,
+    bool resendOTP = false,
+  }) async {
+    final paymentDTO = await _provider.deletePaymentV2(
+      id,
+      otpValue: otpValue,
+      resendOTP: resendOTP,
+    );
+
+    return paymentDTO.toPayment();
+  }
 }

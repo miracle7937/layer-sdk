@@ -119,4 +119,23 @@ class AccountProvider {
 
     return AccountLoanDTO.fromJson(response.data.first);
   }
+
+  /// Requests a new Stripe secret key for account top ups.
+  Future<AccountTopUpRequestDTO> getAccountTopUpSecret({
+    required String accountId,
+    required String currency,
+    required double amount,
+  }) async {
+    final response = await netClient.request(
+      netClient.netEndpoints.topUp,
+      method: NetRequestMethods.post,
+      data: {
+        'amount': amount,
+        'account_id': accountId,
+        'currency': currency,
+      },
+    );
+
+    return AccountTopUpRequestDTO.fromJson(response.data);
+  }
 }

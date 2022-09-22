@@ -15,6 +15,8 @@ class DPAProcess extends Equatable {
   final String stepName;
 
   /// If the process has finished.
+  ///
+  /// Defaults to `false`
   final bool finished;
 
   /// The current status of this process.
@@ -34,6 +36,9 @@ class DPAProcess extends Equatable {
 
   /// The name of this process.
   final String processName;
+
+  /// The variables returned when the process is finished.
+  final UnmodifiableListView<Map<String, dynamic>> returnVariables;
 
   /// If it's clear to proceed to the next step.
   bool get canProceed =>
@@ -61,7 +66,9 @@ class DPAProcess extends Equatable {
     this.task,
     Iterable<DPAVariable>? variables,
     this.processName = '',
-  }) : variables = UnmodifiableListView(variables ?? []);
+    Iterable<Map<String, dynamic>>? returnVariables,
+  })  : variables = UnmodifiableListView(variables ?? []),
+        returnVariables = UnmodifiableListView(returnVariables ?? []);
 
   @override
   List<Object?> get props => [
@@ -75,6 +82,7 @@ class DPAProcess extends Equatable {
         task,
         variables,
         processName,
+        returnVariables,
       ];
 
   /// Creates a new [DPAProcess] using another as a base.
@@ -89,6 +97,7 @@ class DPAProcess extends Equatable {
     int? stepCount,
     String? stepName,
     String? processName,
+    Iterable<Map<String, dynamic>>? returnVariables,
   }) =>
       DPAProcess(
         finished: finished ?? this.finished,
@@ -101,6 +110,7 @@ class DPAProcess extends Equatable {
         stepCount: stepCount ?? this.stepCount,
         stepName: stepName ?? this.stepName,
         processName: processName ?? this.processName,
+        returnVariables: returnVariables ?? this.returnVariables,
       );
 
   /// Returns a new [DPAProcess] validating all variables
