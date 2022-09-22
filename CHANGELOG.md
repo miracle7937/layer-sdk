@@ -1,3 +1,7 @@
+## 0.0.4
+
+- The firebase libraries was upgraded to newer versions.
+
 ## 0.0.3
 
 \* BREAKING CHANGE \*

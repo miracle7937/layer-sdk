@@ -3,7 +3,6 @@ import '../../../../data_layer/providers.dart';
 import '../../../../domain_layer/models.dart';
 import '../../../domain_layer/abstract_repositories.dart';
 import '../../mappings.dart';
-import '../../providers.dart';
 
 /// Handles authentication data
 class AuthenticationRepository implements AuthenticationRepositoryInterface {
