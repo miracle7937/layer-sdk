@@ -8,6 +8,7 @@ export 'cubits/account/customer_accounts_cubit.dart';
 export 'cubits/account/customer_accounts_state.dart';
 export 'cubits/account_loan/account_loan_cubit.dart';
 export 'cubits/account_loan/account_loan_states.dart';
+export 'cubits/account_transaction/account_balance_cubit.dart';
 export 'cubits/account_transaction/account_transactions_cubit.dart';
 export 'cubits/account_transaction/account_transactions_states.dart';
 export 'cubits/activity/activity_cubit.dart';

@@ -32,6 +32,7 @@ class AccountTransactionProvider {
       forceRefresh: forceRefresh,
     );
 
-    return AccountTransactionDTO.fromJsonList(response.data);
+    return AccountTransactionDTO.fromJsonList(
+        List<Map<String, dynamic>>.from(response.data));
   }
 }
