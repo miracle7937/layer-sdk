@@ -437,8 +437,10 @@ class BankAppState extends State<BankApp> {
               useInheritedMediaQuery: widget.useInheritedMediaQuery,
               locale: Locale(languageCode),
               navigatorObservers: [
-                FirebaseAnalyticsObserver(
-                    analytics: FirebaseAnalytics.instance),
+                if (widget.appConfiguration.firebaseAnalyticsEnabled)
+                  FirebaseAnalyticsObserver(
+                    analytics: FirebaseAnalytics.instance,
+                  ),
               ],
               builder: (context, child) {
                 // `child` can't be null, because the `initialRoute` is always
