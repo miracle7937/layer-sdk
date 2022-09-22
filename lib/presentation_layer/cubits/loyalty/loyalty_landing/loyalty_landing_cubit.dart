@@ -28,7 +28,7 @@ class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
         _loadExpiredLoyaltyPointsByDateUseCase =
             loadExpiredLoyaltyPointsByDateUseCase,
         _loadOffersUseCase = loadOffersUseCase,
-        _pagination = Pagination(),
+        _pagination = Pagination(limit: limit),
         super(LoyaltyLandingState());
 
   /// Initialize / loads all necessary data for the landing screen
