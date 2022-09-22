@@ -29,6 +29,9 @@ class MockVerifyAccessPinUseCase extends Mock
 class MockUpdateUserTokenUseCase extends Mock
     implements UpdateUserTokenUseCase {}
 
+class MockLoadDeveloperUserDetailsFromTokenUseCase extends Mock
+    implements LoadDeveloperUserDetailsFromTokenUseCase {}
+
 final _changePasswordUseCase = MockChangePasswordUseCase();
 final _loginUseCase = MockLoginUseCase();
 final _logoutUseCase = MockLogoutUseCase();
@@ -38,6 +41,8 @@ final _verifyAccessPinUseCase = MockVerifyAccessPinUseCase();
 final _updateUserTokenUseCase = MockUpdateUserTokenUseCase();
 final _customerUseCase = MockCustomerUseCase();
 final _getDeviceModelUseCase = MockGetDeviceModelUseCase();
+final _loadDeveloperUserDetailsFromTokenUseCase =
+    MockLoadDeveloperUserDetailsFromTokenUseCase();
 
 void main() {
   EquatableConfig.stringify = true;
@@ -54,6 +59,8 @@ void main() {
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     verify: (c) => expect(c.state, AuthenticationState()),
   ); // starts on empty state
@@ -79,6 +86,12 @@ void _loginFlowTests() {
   final logoutSuccessId = 1;
   final logoutExceptionId = 2;
   final logoutNetExceptionId = 3;
+  final successToken = 'sometoken';
+  final successId = 'successId';
+  final netExceptionToken = 'netExceptionToken';
+  final netExceptionId = 'netExceptionId';
+  final exceptionToken = 'exceptionToken';
+  final exceptionId = 'exceptionId';
 
   final _activeUser = User(
     id: '1',
@@ -171,9 +184,45 @@ void _loginFlowTests() {
 
     when(
       () => _updateUserTokenUseCase(
-        token: 'Token',
+        token: any(named: 'token'),
       ),
     ).thenAnswer((_) async => null);
+
+    when(
+      () => _loadDeveloperUserDetailsFromTokenUseCase(
+        token: successToken,
+        developerId: successId,
+      ),
+    ).thenAnswer(
+      (_) async => _activeUser,
+    );
+
+    when(
+      () => _loadDeveloperUserDetailsFromTokenUseCase(
+        token: successToken,
+        developerId: successId,
+      ),
+    ).thenAnswer(
+      (_) async => _activeUser,
+    );
+
+    when(
+      () => _loadDeveloperUserDetailsFromTokenUseCase(
+        token: netExceptionToken,
+        developerId: netExceptionId,
+      ),
+    ).thenThrow(
+      NetException(),
+    );
+
+    when(
+      () => _loadDeveloperUserDetailsFromTokenUseCase(
+        token: exceptionToken,
+        developerId: exceptionId,
+      ),
+    ).thenThrow(
+      Exception('ayylmao'),
+    );
   });
 
   blocTest<AuthenticationCubit, AuthenticationState>(
@@ -188,6 +237,8 @@ void _loginFlowTests() {
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     act: (c) => c.setLoggedUser(_activeUser),
     expect: () => [
@@ -210,6 +261,8 @@ void _loginFlowTests() {
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     seed: () => AuthenticationState(
       user: _activeUser,
@@ -243,6 +296,8 @@ void _loginFlowTests() {
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     seed: AuthenticationState.new,
     act: (c) => c.login(
@@ -279,6 +334,8 @@ void _loginFlowTests() {
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     act: (c) => c.login(
       username: usernameActive,
@@ -310,6 +367,8 @@ void _loginFlowTests() {
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     act: (c) => c.login(
       username: usernameSuspended,
@@ -342,6 +401,8 @@ void _loginFlowTests() {
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     act: (c) => c.login(
       username: usernameExpired,
@@ -374,6 +435,8 @@ void _loginFlowTests() {
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     act: (c) => c.login(
       username: usernameException,
@@ -411,6 +474,8 @@ void _loginFlowTests() {
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     act: (c) => c.login(
       username: usernameNetException,
@@ -448,6 +513,8 @@ void _loginFlowTests() {
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     seed: () => AuthenticationState(
       user: _exceptionUser,
@@ -486,6 +553,8 @@ void _loginFlowTests() {
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     seed: () => AuthenticationState(
       user: _netExceptionUser,
@@ -508,6 +577,123 @@ void _loginFlowTests() {
     verify: (c) {
       verify(
         () => _logoutUseCase(deviceId: logoutNetExceptionId),
+      ).called(1);
+    },
+  );
+
+  blocTest<AuthenticationCubit, AuthenticationState>(
+    'Developer login should authenticate successfully',
+    build: () => AuthenticationCubit(
+      customerUseCase: _customerUseCase,
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
+    ),
+    act: (c) => c.authenticateDeveloper(
+      token: successToken,
+      developerId: successId,
+    ),
+    expect: () => [
+      AuthenticationState(
+        busy: true,
+      ),
+      AuthenticationState(
+        busy: false,
+        user: _activeUser,
+        validated: true,
+      ),
+    ],
+    verify: (c) {
+      verify(
+        () => _loadDeveloperUserDetailsFromTokenUseCase(
+          token: successToken,
+          developerId: successId,
+        ),
+      ).called(1);
+    },
+  );
+
+  blocTest<AuthenticationCubit, AuthenticationState>(
+    'Developer login should handle network errors gracefully',
+    build: () => AuthenticationCubit(
+      customerUseCase: _customerUseCase,
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
+    ),
+    act: (c) => c.authenticateDeveloper(
+      token: netExceptionToken,
+      developerId: netExceptionId,
+    ),
+    expect: () => [
+      AuthenticationState(
+        busy: true,
+      ),
+      AuthenticationState(
+        busy: false,
+        user: null,
+        errorStatus: AuthenticationErrorStatus.network,
+      ),
+    ],
+    verify: (c) {
+      verify(
+        () => _loadDeveloperUserDetailsFromTokenUseCase(
+          token: netExceptionToken,
+          developerId: netExceptionId,
+        ),
+      ).called(1);
+    },
+  );
+
+  blocTest<AuthenticationCubit, AuthenticationState>(
+    'Developer login should handle exceptions gracefully',
+    build: () => AuthenticationCubit(
+      customerUseCase: _customerUseCase,
+      changePasswordUseCase: _changePasswordUseCase,
+      loginUseCase: _loginUseCase,
+      logoutUseCase: _logoutUseCase,
+      recoverPasswordUseCase: _recoverPasswordUseCase,
+      resetPasswordUseCase: _resetPasswordUseCase,
+      verifyAccessPinUseCase: _verifyAccessPinUseCase,
+      updateUserTokenUseCase: _updateUserTokenUseCase,
+      getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
+    ),
+    act: (c) => c.authenticateDeveloper(
+      token: exceptionToken,
+      developerId: exceptionId,
+    ),
+    expect: () => [
+      AuthenticationState(
+        busy: true,
+      ),
+      AuthenticationState(
+        busy: false,
+        user: null,
+        errorStatus: AuthenticationErrorStatus.generic,
+      ),
+    ],
+    verify: (c) {
+      verify(
+        () => _loadDeveloperUserDetailsFromTokenUseCase(
+          token: exceptionToken,
+          developerId: exceptionId,
+        ),
       ).called(1);
     },
   );
@@ -566,6 +752,8 @@ void _accessPinTests() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     act: (c) => c.verifyAccessPin(correctPin, deviceInfo: DeviceSession()),
     expect: () => [
@@ -593,6 +781,8 @@ void _accessPinTests() {
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     act: (c) => c.verifyAccessPin(incorrectPin, deviceInfo: DeviceSession()),
     expect: () => [
@@ -619,6 +809,8 @@ void _accessPinTests() {
       verifyAccessPinUseCase: _verifyAccessPinUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     seed: () => AuthenticationState(
       verifyPinResponse: VerifyPinResponse(
@@ -647,6 +839,8 @@ void _accessPinTests() {
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     seed: () => AuthenticationState(user: user),
     act: (c) => c.setAccessPin(correctPin),
@@ -667,6 +861,8 @@ void _accessPinTests() {
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     seed: AuthenticationState.new,
     act: (c) => c.lock(),
@@ -685,6 +881,8 @@ void _accessPinTests() {
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     seed: () => AuthenticationState(
       user: user,
@@ -712,6 +910,8 @@ void _accessPinTests() {
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     act: (c) => c.verifyAccessPin(exceptionPin, deviceInfo: DeviceSession()),
     expect: () => [
@@ -742,6 +942,8 @@ void _accessPinTests() {
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     act: (c) => c.verifyAccessPin(netExceptionPin, deviceInfo: DeviceSession()),
     expect: () => [
@@ -774,6 +976,8 @@ void _emptyFieldsTests() {
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     act: (c) => c.login(
       username: '',
@@ -804,6 +1008,8 @@ void _emptyFieldsTests() {
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     act: (c) => c.login(
       username: '',
@@ -834,6 +1040,8 @@ void _emptyFieldsTests() {
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     act: (c) => c.login(
       username: 'superadmin',
@@ -904,6 +1112,8 @@ void _recoverPassword() {
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     act: (c) => c.recoverPassword(username: _successUsername),
     expect: () => [
@@ -931,6 +1141,8 @@ void _recoverPassword() {
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     act: (c) => c.recoverPassword(username: _invalidUsername),
     expect: () => [
@@ -958,6 +1170,8 @@ void _recoverPassword() {
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     act: (c) => c.recoverPassword(username: _suspendedUsername),
     expect: () => [
@@ -985,6 +1199,8 @@ void _recoverPassword() {
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     act: (c) => c.recoverPassword(username: _notAllowedUsername),
     expect: () => [
@@ -1012,6 +1228,8 @@ void _recoverPassword() {
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     act: (c) => c.recoverPassword(username: _exceptionUsername),
     expect: () => [
@@ -1102,6 +1320,8 @@ void _resetPassword() {
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     act: (c) => c.resetPassword(
       username: successUsername,
@@ -1137,6 +1357,8 @@ void _resetPassword() {
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     act: (c) => c.resetPassword(
       username: failureUsername,
@@ -1172,6 +1394,8 @@ void _resetPassword() {
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     act: (c) => c.resetPassword(
       username: exceptionUsername,
@@ -1209,6 +1433,8 @@ void _resetPassword() {
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     act: (c) => c.resetPassword(
       username: netExceptionUsername,
@@ -1260,6 +1486,8 @@ void _unlock() {
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     act: (c) => c.unlock(user),
     expect: () => [
@@ -1287,6 +1515,8 @@ void _unlock() {
       updateUserTokenUseCase: _updateUserTokenUseCase,
       customerUseCase: _customerUseCase,
       getDeviceModelUseCase: _getDeviceModelUseCase,
+      loadDeveloperUserDetailsFromTokenUseCase:
+          _loadDeveloperUserDetailsFromTokenUseCase,
     ),
     act: (c) => c.lock(),
     expect: () => [],
