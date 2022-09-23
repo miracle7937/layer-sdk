@@ -1,3 +1,13 @@
+## 0.0.5
+
+\* BREAKING CHANGE \*
+
+- The `FirebaseAnalyticsObserver` is no longer added by default to the `navigatorObservers` of the `MaterialApp`. The apps that require it to be added should specify `firebaseAnalyticsEnabled: true` in their `AppConfiguration` instance.
+
+## 0.0.4
+
+- The firebase libraries was upgraded to newer versions.
+
 ## 0.0.3
 
 \* BREAKING CHANGE \*

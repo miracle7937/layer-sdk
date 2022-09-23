@@ -103,6 +103,30 @@ class UserProvider {
     throw Exception('User not found');
   }
 
+  /// Returns an user from a `token` and `developerId`.
+  ///
+  /// Throws an exception if the user is not found.
+  Future<UserDTO> getDeveloperUserFromToken({
+    required String token,
+    required String developerId,
+  }) async {
+    final query = {
+      'customer_id': developerId,
+    };
+
+    final response = await netClient.request(
+      (netClient.netEndpoints as ConsoleEndpoints).developerUser,
+      authorizationHeader: 'Bearer $token',
+      queryParameters: query,
+    );
+
+    if (response.data is List && response.data.length > 0) {
+      return UserDTO.fromJson(response.data[0]);
+    }
+
+    throw Exception('User not found');
+  }
+
   /// Used by the console (DBO) to request a change to a user.
   ///
   /// This can be a password reset request, a lock user request, etc.

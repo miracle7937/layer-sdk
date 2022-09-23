@@ -1,3 +1,5 @@
+import 'package:flutter/widgets.dart';
+
 /// Use case for validating an IBAN account code.
 class ValidateIBANUseCase {
   /// Creates a new [ValidateIBANUseCase].
@@ -9,19 +11,15 @@ class ValidateIBANUseCase {
   /// for the [iban].
   bool call({
     required String iban,
-    List<String>? allowedCharacters,
+    String allowedCharacters =
+        'abcedfghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
   }) {
     if (iban.trim().length < 5) {
       return false;
     }
 
-    allowedCharacters ??=
-        'abcedfghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-            .split('');
-
-    final hasInvalidCharacters = iban
-        .split('')
-        .where((character) => !allowedCharacters!.contains(character))
+    final hasInvalidCharacters = iban.characters
+        .where((character) => !allowedCharacters.contains(character))
         .isNotEmpty;
 
     if (hasInvalidCharacters) {
