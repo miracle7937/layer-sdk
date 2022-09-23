@@ -23,10 +23,10 @@ class AccountBalanceProvider {
       netClient.netEndpoints.balance,
       method: NetRequestMethods.get,
       queryParameters: {
-        'interval': 'day', // interval,
-        'from_date': '1632300992000', //fromDate,
-        'to_date': '1663836992000', //toDate,
-        'account_id': 'a15cd2103c6472bcf78ef0ab7d765a9596b25c77', //accountId,
+        'interval': interval,
+        'from_date': fromDate,
+        'to_date': toDate,
+        'account_id': accountId,
       },
     );
 

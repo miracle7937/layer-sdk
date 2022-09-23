@@ -1,19 +1,12 @@
 import 'dart:collection';
-
-import 'package:equatable/equatable.dart';
-
 import '../../../domain_layer/models.dart';
+import '../base_cubit/base_state.dart';
 
 /// Represents the state of [AccountBalanceCubit]
-class AccountBalanceState extends Equatable {
-  /// True if the cubit is processing something
-  final bool busy;
-
+class AccountBalanceState extends BaseState<AccountBalanceAction, void,
+    AccountBalanceValidationErrorCode> {
   /// List of [AccountBalance] of the customer [Account]
   final UnmodifiableListView<AccountBalance> balances;
-
-  /// Error message for the last occurred error
-  final AccountBalanceStateErrors error;
 
   /// [Customer] id which will be used by this cubit
   final String customerId;
@@ -21,39 +14,47 @@ class AccountBalanceState extends Equatable {
   /// [Account] id which will be used by this cubit
   final String accountId;
 
+  ///
+  final DateTime startDate;
+
+  ///
+  final DateTime endDate;
+
   /// Creates a new instance of [AccountBalanceState]
   AccountBalanceState({
     required this.customerId,
     required this.accountId,
+    required this.startDate,
+    required this.endDate,
     Iterable<AccountBalance> balances = const [],
-    this.busy = false,
-    this.error = AccountBalanceStateErrors.none,
   }) : balances = UnmodifiableListView(balances);
 
   @override
   List<Object?> get props => [
-        busy,
         balances,
-        error,
         customerId,
         accountId,
+        endDate,
+        startDate,
       ];
 
   /// Creates a new instance of [AccountBalanceState]
   /// based on the current instance
   AccountBalanceState copyWith({
-    bool? busy,
     Iterable<AccountBalance>? balances,
-    AccountBalanceStateErrors? error,
     String? accountId,
     String? customerId,
+    Set<AccountBalanceAction>? actions,
+    Set<CubitError>? errors,
+    DateTime? startDate,
+    DateTime? endDate,
   }) {
     return AccountBalanceState(
-      busy: busy ?? this.busy,
       balances: balances ?? this.balances,
-      error: error ?? this.error,
       customerId: customerId ?? this.customerId,
       accountId: accountId ?? this.accountId,
+      endDate: endDate ?? this.endDate,
+      startDate: startDate ?? this.startDate,
     );
   }
 
@@ -62,10 +63,16 @@ class AccountBalanceState extends Equatable {
 }
 
 /// Enum for all possible errors for [AccountBalanceCubit]
-enum AccountBalanceStateErrors {
-  /// No errors
-  none,
-
+enum AccountBalanceValidationErrorCode {
   /// Generic error
   generic,
+}
+
+/// Enum for possible actions
+enum AccountBalanceAction {
+  /// Loading the balances
+  loadInitialBalances,
+
+  /// Loading balances after changing the week
+  loadDifferentWeekBalances,
 }

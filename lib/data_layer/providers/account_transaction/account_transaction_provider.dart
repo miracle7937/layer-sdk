@@ -18,6 +18,8 @@ class AccountTransactionProvider {
     int? limit,
     int? offset,
     bool forceRefresh = false,
+    int? fromDate,
+    int? toDate,
   }) async {
     final response = await netClient.request(
       netClient.netEndpoints.transaction,
@@ -28,6 +30,8 @@ class AccountTransactionProvider {
         if (customerId != null) 'customer_id': customerId,
         if (limit != null) 'limit': limit,
         if (offset != null) 'offset': offset,
+        if (fromDate != null) 'from_date': fromDate,
+        if (toDate != null) 'to_date': toDate,
       },
       forceRefresh: forceRefresh,
     );

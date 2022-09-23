@@ -10,5 +10,7 @@ abstract class AccountTransactionRepositoryInterface {
     int? limit,
     int? offset,
     bool forceRefresh = false,
+    int? fromDate,
+    int? toDate,
   });
 }

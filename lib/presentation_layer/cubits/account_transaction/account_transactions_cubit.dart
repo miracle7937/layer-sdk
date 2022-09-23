@@ -32,6 +32,8 @@ class AccountTransactionsCubit extends Cubit<AccountTransactionsState> {
   Future<void> load({
     bool loadMore = false,
     bool forceRefresh = false,
+    int? fromDate,
+    int? toDate,
   }) async {
     emit(
       state.copyWith(
@@ -46,6 +48,8 @@ class AccountTransactionsCubit extends Cubit<AccountTransactionsState> {
       final transactions = await _getCustomerAccountTransactionsUseCase(
         accountId: state.accountId,
         customerId: state.customerId,
+        fromDate: fromDate,
+        toDate: toDate,
         offset: offset,
         limit: limit,
         forceRefresh: forceRefresh,

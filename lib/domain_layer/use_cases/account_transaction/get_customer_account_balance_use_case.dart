@@ -24,7 +24,7 @@ class GetCustomerAccountBalanceUseCase {
   }) =>
       _repository.getBalance(
         accountId: accountId,
-        interval: accountId,
+        interval: interval,
         fromDate: fromDate,
         toDate: toDate,
       );

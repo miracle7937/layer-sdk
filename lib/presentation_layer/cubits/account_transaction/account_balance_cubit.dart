@@ -11,27 +11,34 @@ class AccountBalanceCubit extends Cubit<AccountBalanceState> {
     required GetCustomerAccountBalanceUseCase getCustomerAccountBalanceUseCase,
     required String customerId,
     required String accountId,
+    // required DateTime startDate,
+    // required DateTime endDate,
   })  : _getCustomerAccountBalanceUseCase = getCustomerAccountBalanceUseCase,
         super(
           AccountBalanceState(
             accountId: accountId,
             customerId: customerId,
+            startDate: DateTime.now(),
+            endDate: DateTime.now(),
           ),
         );
 
   /// Loads all account completed account balances of the provided
   /// Customer Id and Account Id
   Future<void> load({
-    bool loadMore = false,
-    bool forceRefresh = false,
+    required String customerId,
+    required String accountId,
+    required int? fromDate,
+    required int? toDate,
+    required String? interval,
   }) async {
     try {
       final balances = await _getCustomerAccountBalanceUseCase(
-        toDate: 1632300992000,
-        fromDate: 1663836992000,
-        interval: 'day',
-        customerId: '62da6415-5244-44fe-8e3c-b6ba7d747f6b',
-        accountId: 'a15cd2103c6472bcf78ef0ab7d765a9596b25c77',
+        toDate: toDate,
+        fromDate: fromDate,
+        interval: interval,
+        customerId: customerId,
+        accountId: accountId,
       );
 
       final list = balances;
@@ -39,14 +46,20 @@ class AccountBalanceCubit extends Cubit<AccountBalanceState> {
       emit(
         state.copyWith(
           balances: list,
-          busy: false,
+          actions: state.removeAction(AccountBalanceAction.loadInitialBalances),
+          errors: state.removeErrorForAction(
+            AccountBalanceAction.loadInitialBalances,
+          ),
         ),
       );
-    } on Exception {
+    } on Exception catch (e) {
       emit(
         state.copyWith(
-          busy: false,
-          error: AccountBalanceStateErrors.generic,
+          actions: state.removeAction(AccountBalanceAction.loadInitialBalances),
+          errors: state.addErrorFromException(
+            action: AccountBalanceAction.loadInitialBalances,
+            exception: e,
+          ),
         ),
       );
     }
