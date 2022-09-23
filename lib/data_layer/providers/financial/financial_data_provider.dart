@@ -13,11 +13,15 @@ class FinancialDataProvider {
 
   /// Returns financial data of a customer
   Future<FinancialDataDTO> financialData({
-    required String customerId,
+    String? customerId,
     bool forceRefresh = false,
   }) async {
+    var requestPath = '${netClient.netEndpoints.financialData}';
+    if (customerId == null) {
+      requestPath = '${netClient.netEndpoints.financialData}/$customerId';
+    }
     final response = await netClient.request(
-      '${netClient.netEndpoints.financialData}/$customerId',
+      requestPath,
       method: NetRequestMethods.get,
       forceRefresh: forceRefresh,
     );
