@@ -73,6 +73,6 @@ enum AccountBalanceAction {
   /// Loading the balances
   loadInitialBalances,
 
-  /// Loading balances after changing the week
-  loadDifferentWeekBalances,
+  /// Changing the date
+  changeDate,
 }
