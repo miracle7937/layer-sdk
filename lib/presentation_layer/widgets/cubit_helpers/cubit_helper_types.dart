@@ -30,3 +30,12 @@ typedef CubitValidationErrorWidgetBuider<CubitValidationErrorCode> = Widget
   BuildContext context,
   Set<CubitValidationErrorCode> validationErrorCodes,
 );
+
+/// Custom callback for the [CubitError]s.
+///
+/// Exposes the context, and the error that was emitted and the state at that
+/// time.
+typedef CubitErrorWidgetBuilder = Widget Function(
+  BuildContext context,
+  Set<CubitError> cubitErrors,
+);
