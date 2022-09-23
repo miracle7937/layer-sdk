@@ -16,10 +16,10 @@ class FinancialDataProvider {
     String? customerId,
     bool forceRefresh = false,
   }) async {
-    var requestPath = '${netClient.netEndpoints.financialData}';
-    if (customerId == null) {
-      requestPath = '${netClient.netEndpoints.financialData}/$customerId';
-    }
+    final requestPath = customerId != null
+        ? '${netClient.netEndpoints.financialData}/$customerId'
+        : '${netClient.netEndpoints.financialData}';
+
     final response = await netClient.request(
       requestPath,
       method: NetRequestMethods.get,
