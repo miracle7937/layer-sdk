@@ -62,9 +62,6 @@ class Customer extends Equatable {
   /// The customer id. Required.
   final String id;
 
-  /// The customer's postalCode
-  final String? postalCode;
-
   /// The current status of the customer.
   ///
   /// Defaults to [CustomerStatus.unknown].
@@ -140,7 +137,6 @@ class Customer extends Equatable {
   /// Creates a new immutable [Customer]
   Customer({
     required this.id,
-    this.postalCode,
     this.status = CustomerStatus.unknown,
     this.type = CustomerType.personal,
     PersonalCustomerData? personalData,
@@ -210,7 +206,6 @@ class Customer extends Equatable {
   @override
   List<Object?> get props => [
         id,
-        postalCode,
         status,
         type,
         personalData,
@@ -235,7 +230,6 @@ class Customer extends Equatable {
   /// Returns a copy of the customer with select different values.
   Customer copyWith({
     String? id,
-    String? postalCode,
     CustomerStatus? status,
     CustomerType? type,
     PersonalCustomerData? personalData,
@@ -258,7 +252,6 @@ class Customer extends Equatable {
   }) =>
       Customer(
         id: id ?? this.id,
-        postalCode: postalCode ?? this.postalCode,
         status: status ?? this.status,
         type: type ?? this.type,
         personalData: personalData ?? this.personalData,
@@ -293,6 +286,9 @@ class PersonalCustomerData extends Equatable {
 
   /// The customer passport information.
   final Passport passport;
+
+  /// The customer's postalCode
+  final String? postalCode;
 
   /// The DOB of the customer.
   final DateTime? dateOfBirth;
@@ -349,6 +345,7 @@ class PersonalCustomerData extends Equatable {
     this.title = '',
     this.isResident = false,
     this.passport = const Passport(),
+    this.postalCode,
     this.dateOfBirth,
     this.placeOfBirth = '',
     this.employment = const EmploymentDetails(),
@@ -378,6 +375,7 @@ class PersonalCustomerData extends Equatable {
         title,
         isResident,
         passport,
+        postalCode,
         dateOfBirth,
         placeOfBirth,
         employment,
@@ -399,6 +397,7 @@ class PersonalCustomerData extends Equatable {
     String? title,
     bool? isResident,
     Passport? passport,
+    String? postalCode,
     DateTime? dateOfBirth,
     String? placeOfBirth,
     EmploymentDetails? employment,
@@ -418,6 +417,7 @@ class PersonalCustomerData extends Equatable {
         title: title ?? this.title,
         isResident: isResident ?? this.isResident,
         passport: passport ?? this.passport,
+        postalCode: postalCode ?? this.postalCode,
         dateOfBirth: dateOfBirth ?? this.dateOfBirth,
         placeOfBirth: placeOfBirth ?? this.placeOfBirth,
         employment: employment ?? this.employment,
