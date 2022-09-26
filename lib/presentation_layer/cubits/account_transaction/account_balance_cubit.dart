@@ -28,13 +28,28 @@ class AccountBalanceCubit extends Cubit<AccountBalanceState> {
     required DateTime startDate,
     required DateTime endDate,
   }) async {
-    emit(state.copyWith(startDate: startDate, endDate: endDate));
+    emit(state.copyWith(
+      startDate: startDate,
+      endDate: endDate,
+      actions: state.addAction(AccountBalanceAction.changeDate),
+      errors: state.removeErrorForAction(
+        AccountBalanceAction.changeDate,
+      ),
+    ));
     load(
       customerId: state.customerId,
       accountId: state.accountId,
       interval: "day",
       loadMore: true,
     );
+    emit(state.copyWith(
+      startDate: startDate,
+      endDate: endDate,
+      actions: state.removeAction(AccountBalanceAction.changeDate),
+      errors: state.removeErrorForAction(
+        AccountBalanceAction.changeDate,
+      ),
+    ));
   }
 
   /// Loads all account completed account balances of the provided
@@ -46,16 +61,18 @@ class AccountBalanceCubit extends Cubit<AccountBalanceState> {
     bool loadMore = false,
   }) async {
     try {
-      if (loadMore) {
-        emit(
-          state.copyWith(
-            actions: state.addAction(AccountBalanceAction.changeDate),
-            errors: state.removeErrorForAction(
-              AccountBalanceAction.changeDate,
-            ),
+      emit(
+        state.copyWith(
+          actions: state.addAction(loadMore
+              ? AccountBalanceAction.changeDate
+              : AccountBalanceAction.loadInitialBalances),
+          errors: state.removeErrorForAction(
+            loadMore
+                ? AccountBalanceAction.changeDate
+                : AccountBalanceAction.loadInitialBalances,
           ),
-        );
-      }
+        ),
+      );
       final balances = await _getCustomerAccountBalanceUseCase(
         toDate: state.endDate.millisecondsSinceEpoch,
         fromDate: state.startDate.millisecondsSinceEpoch,
@@ -65,27 +82,21 @@ class AccountBalanceCubit extends Cubit<AccountBalanceState> {
       );
 
       final list = balances;
-      if (loadMore) {
-        emit(
-          state.copyWith(
-            actions: state.removeAction(AccountBalanceAction.changeDate),
-            errors: state.removeErrorForAction(
-              AccountBalanceAction.changeDate,
-            ),
+      emit(
+        state.copyWith(
+          balances: list,
+          actions: state.removeAction(
+            loadMore
+                ? AccountBalanceAction.changeDate
+                : AccountBalanceAction.loadInitialBalances,
           ),
-        );
-      } else {
-        emit(
-          state.copyWith(
-            balances: list,
-            actions:
-                state.removeAction(AccountBalanceAction.loadInitialBalances),
-            errors: state.removeErrorForAction(
-              AccountBalanceAction.loadInitialBalances,
-            ),
+          errors: state.removeErrorForAction(
+            loadMore
+                ? AccountBalanceAction.changeDate
+                : AccountBalanceAction.loadInitialBalances,
           ),
-        );
-      }
+        ),
+      );
     } on Exception catch (e) {
       emit(
         state.copyWith(

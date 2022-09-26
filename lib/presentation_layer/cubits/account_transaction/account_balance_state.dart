@@ -26,6 +26,9 @@ class AccountBalanceState extends BaseState<AccountBalanceAction, void,
     required this.accountId,
     required this.startDate,
     required this.endDate,
+    super.actions = const <AccountBalanceAction>{},
+    super.errors = const <CubitError>{},
+    super.events = const <AccountBalanceEvent>{},
     Iterable<AccountBalance> balances = const [],
   }) : balances = UnmodifiableListView(balances);
 
@@ -46,10 +49,14 @@ class AccountBalanceState extends BaseState<AccountBalanceAction, void,
     String? customerId,
     Set<AccountBalanceAction>? actions,
     Set<CubitError>? errors,
+    Set<AccountBalanceEvent>? events,
     DateTime? startDate,
     DateTime? endDate,
   }) {
     return AccountBalanceState(
+      actions: actions ?? super.actions,
+      errors: errors ?? super.errors,
+      events: const <AccountBalanceEvent>{},
       balances: balances ?? this.balances,
       customerId: customerId ?? this.customerId,
       accountId: accountId ?? this.accountId,
@@ -75,4 +82,10 @@ enum AccountBalanceAction {
 
   /// Changing the date
   changeDate,
+}
+
+/// Enum for possible events
+enum AccountBalanceEvent {
+  ///
+  event
 }

@@ -27,6 +27,34 @@ class AccountTransactionsCubit extends Cubit<AccountTransactionsState> {
           ),
         );
 
+  ///
+  Future<void> updateDates({
+    required DateTime startDate,
+    required DateTime endDate,
+  }) async {
+    emit(state.copyWith(
+      startDate: startDate,
+      endDate: endDate,
+      actions: state.addAction(AccountTransactionsAction.changeDate),
+      errors: state.removeErrorForAction(
+        AccountTransactionsAction.changeDate,
+      ),
+    ));
+    load(
+      fromDate: startDate.millisecondsSinceEpoch,
+      toDate: endDate.millisecondsSinceEpoch,
+      loadMore: true,
+    );
+    emit(state.copyWith(
+      startDate: startDate,
+      endDate: endDate,
+      actions: state.removeAction(AccountTransactionsAction.changeDate),
+      errors: state.removeErrorForAction(
+        AccountTransactionsAction.changeDate,
+      ),
+    ));
+  }
+
   /// Loads all account completed account transactions of the provided
   /// Customer Id and Account Id
   Future<void> load({
@@ -37,8 +65,14 @@ class AccountTransactionsCubit extends Cubit<AccountTransactionsState> {
   }) async {
     emit(
       state.copyWith(
-        busy: true,
-        error: AccountTransactionsStateErrors.none,
+        actions: state.addAction(loadMore
+            ? AccountTransactionsAction.changeDate
+            : AccountTransactionsAction.loadInitialTransactionss),
+        errors: state.removeErrorForAction(
+          loadMore
+              ? AccountTransactionsAction.changeDate
+              : AccountTransactionsAction.loadInitialTransactionss,
+        ),
       ),
     );
 
@@ -62,18 +96,36 @@ class AccountTransactionsCubit extends Cubit<AccountTransactionsState> {
       emit(
         state.copyWith(
           transactions: list,
-          busy: false,
+          actions: state.removeAction(
+            loadMore
+                ? AccountTransactionsAction.changeDate
+                : AccountTransactionsAction.loadInitialTransactionss,
+          ),
+          errors: state.removeErrorForAction(
+            loadMore
+                ? AccountTransactionsAction.changeDate
+                : AccountTransactionsAction.loadInitialTransactionss,
+          ),
           listData: state.listData.copyWith(
             canLoadMore: transactions.length >= limit,
             offset: offset,
           ),
         ),
       );
-    } on Exception {
+    } on Exception catch (e) {
       emit(
         state.copyWith(
-          busy: false,
-          error: AccountTransactionsStateErrors.generic,
+          actions: state.removeAction(
+            loadMore
+                ? AccountTransactionsAction.changeDate
+                : AccountTransactionsAction.loadInitialTransactionss,
+          ),
+          errors: state.addErrorFromException(
+            action: loadMore
+                ? AccountTransactionsAction.changeDate
+                : AccountTransactionsAction.loadInitialTransactionss,
+            exception: e,
+          ),
         ),
       );
     }

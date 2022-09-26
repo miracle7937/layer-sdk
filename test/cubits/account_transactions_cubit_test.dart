@@ -110,16 +110,14 @@ void main() {
     act: (c) => c.load(),
     expect: () => [
       AccountTransactionsState(
-        busy: true,
         accountId: _loadsAccountTransactionsId,
         customerId: _loadsAccountTransactionsId,
       ),
       AccountTransactionsState(
         customerId: _loadsAccountTransactionsId,
         accountId: _loadsAccountTransactionsId,
-        busy: false,
         transactions: _mockedTransactions.take(_defaultLimit).toList(),
-        error: AccountTransactionsStateErrors.none,
+        errors: {},
         listData: AccountTransactionsListData(
           canLoadMore: true,
         ),
@@ -145,7 +143,6 @@ void main() {
     act: (c) => c.load(loadMore: true),
     expect: () => [
       AccountTransactionsState(
-        busy: true,
         accountId: _loadsAccountTransactionsId,
         customerId: _loadsAccountTransactionsId,
         transactions: _mockedTransactions.take(_defaultLimit).toList(),
@@ -192,7 +189,6 @@ void main() {
     act: (c) => c.load(loadMore: true),
     expect: () => [
       AccountTransactionsState(
-        busy: true,
         accountId: _loadsAccountTransactionsId,
         customerId: _loadsAccountTransactionsId,
         transactions: _mockedTransactions.take(_defaultLimit * 2).toList(),
@@ -234,16 +230,14 @@ void main() {
       AccountTransactionsState(
         customerId: _throwsExceptionId,
         accountId: _throwsExceptionId,
-        busy: true,
         transactions: [],
-        error: AccountTransactionsStateErrors.none,
+        errors: {},
       ),
       AccountTransactionsState(
         customerId: _throwsExceptionId,
         accountId: _throwsExceptionId,
-        busy: false,
         transactions: [],
-        error: AccountTransactionsStateErrors.generic,
+        errors: {},
       ),
     ],
   );

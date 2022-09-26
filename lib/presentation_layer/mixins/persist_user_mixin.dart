@@ -7,7 +7,6 @@ import '../app.dart';
 import '../creators.dart';
 import '../cubits.dart';
 import '../features/enable_biometrics_screen/enable_biometrics_screen.dart';
-import '../widgets.dart';
 
 /// A mixin that exposes a method for persisting the returned user from a
 /// register / login flow.
