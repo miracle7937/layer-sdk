@@ -7,6 +7,7 @@ import '../app.dart';
 import '../creators.dart';
 import '../cubits.dart';
 import '../features/enable_biometrics_screen/enable_biometrics_screen.dart';
+import '../widgets.dart';
 
 /// A mixin that exposes a method for persisting the returned user from a
 /// register / login flow.
@@ -63,33 +64,31 @@ mixin PersistUserMixin {
     assert(ocraSecret.isNotEmpty, 'The ocra secet cannot be empty');
 
     final storageCubit = context.read<StorageCreator>().create();
-
-    // final alreadyLoggedIn = await _isUserLoggedIn(
-    //   storageCubit,
-    //   user,
-    // );
-    // if (alreadyLoggedIn) {
-    //   return BottomSheetHelper.showError(
-    //     context: context,
-    //     titleKey: 'user_already_registered',
-    //   );
-    // } else {
-    await storageCubit.saveOcraSecretKey(ocraSecret);
-
-    storageCubit.toggleBiometric(isBiometricsActive: useBiometrics);
-
-    await storageCubit.saveUser(
-      user: user.copyWith(
-        accessPin: accessPin,
-      ),
+    final alreadyLoggedIn = await _isUserLoggedIn(
+      storageCubit,
+      user,
     );
+    if (alreadyLoggedIn) {
+      return BottomSheetHelper.showError(
+        context: context,
+        titleKey: 'user_already_registered',
+      );
+    } else {
+      await storageCubit.saveOcraSecretKey(ocraSecret);
+      storageCubit.toggleBiometric(isBiometricsActive: useBiometrics);
 
-    await storageCubit.saveAuthenticationSettings(
-      useBiometrics: useBiometrics,
-    );
+      await storageCubit.saveUser(
+        user: user.copyWith(
+          accessPin: accessPin,
+        ),
+      );
 
-    BankApp.restart(context);
-    //  }
+      await storageCubit.saveAuthenticationSettings(
+        useBiometrics: useBiometrics,
+      );
+
+      BankApp.restart(context);
+    }
   }
 
   /// Returns whether if the user is already logged in or not.

@@ -188,6 +188,7 @@ class AuthenticationProvider {
               '${deviceInfo.resolution!.width}x${deviceInfo.resolution!.width}',
       },
     );
+
     return VerifyPinResponseDTO.fromJson(response);
   }
 
