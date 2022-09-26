@@ -236,8 +236,8 @@ class UserProvider {
     return response.success;
   }
 
-  /// Uploads the newly selected image
-  Future patchImage({required String base64}) async {
+  /// Uploads the newly selected image for the customer's profile
+  Future patchCustomerImage({required String base64}) async {
     var data = {
       "image": base64,
     };

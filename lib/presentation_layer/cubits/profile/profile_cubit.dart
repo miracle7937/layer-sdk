@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bloc/bloc.dart';
 
 import '../../../../domain_layer/models.dart';
@@ -95,9 +97,12 @@ class ProfileCubit extends Cubit<ProfileState> {
     );
 
     try {
-      final image = await _loadCustomerImageUseCase(
+      var imageResponse = await _loadCustomerImageUseCase.loadCustomerImage(
         imageURL: imageURL,
       );
+
+      final image =
+          imageResponse is Map ? base64Decode(imageResponse["image"]) : null;
 
       emit(
         state.copyWith(

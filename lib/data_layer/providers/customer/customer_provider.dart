@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:typed_data';
-
 import 'package:collection/collection.dart';
 
 import '../../../../data_layer/network.dart';
@@ -249,18 +246,4 @@ class CustomerProvider {
   String get customerDocumentsURLPrefix =>
       '${EnvironmentConfiguration.current.baseUrl}'
       '${netClient.netEndpoints.automationLink}';
-
-  /// Loads the currently logged in customer
-  /// image
-  Future<Uint8List?> getCustomerImage({
-    required String imageURL,
-  }) async {
-    final response = await netClient.request(
-      netClient.netEndpoints.infobankingLink + imageURL,
-      decodeResponse: true,
-      queryParameters: {"base64": true},
-    );
-
-    return base64Decode(response.data["image"]);
-  }
 }

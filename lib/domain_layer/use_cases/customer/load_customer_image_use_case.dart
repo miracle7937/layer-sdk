@@ -1,19 +1,28 @@
-import 'dart:typed_data';
+import 'package:dio/dio.dart';
 
-import '../../abstract_repositories.dart';
+import '../../../_migration/data_layer/data_layer.dart';
+import '../../../data_layer/network.dart';
 
-/// Use case to get the customer's image
+/// A use case to fetch the customers profile image
 class LoadCustomerImageUseCase {
-  final CustomerRepositoryInterface _repository;
+  final FileRepository _repository;
+  final NetClient _netClient;
 
-  /// Creates a new [LoadCustomerImageUseCase]
+  /// Creates a new [LoadCustomerImageUseCase] instance
   LoadCustomerImageUseCase({
-    required CustomerRepositoryInterface repository,
-  }) : _repository = repository;
+    required FileRepository repository,
+    required NetClient netClient,
+  })  : _repository = repository,
+        _netClient = netClient;
 
-  /// Fetches the currently logged in customer image
-  Future<Uint8List?> call({required String imageURL}) =>
-      _repository.getCustomerImage(
-        imageURL: imageURL,
+  /// Loads the customer's image
+  Future<dynamic> loadCustomerImage({
+    required String imageURL,
+  }) =>
+      _repository.downloadFile(
+        url: _netClient.netEndpoints.infobankingLink + imageURL,
+        decodeResponse: true,
+        responseType: ResponseType.plain,
+        queryParameters: {"base64": true},
       );
 }

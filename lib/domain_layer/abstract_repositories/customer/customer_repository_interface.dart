@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import '../../../data_layer/network/net_request_canceller.dart';
 import '../../models.dart';
 
@@ -65,8 +63,4 @@ abstract class CustomerRepositoryInterface {
   ///
   /// Returns `null` if the customer has no limits set.
   Future<CustomerLimit?> getCustomerLimits();
-
-  /// Loads the currently logged in customer
-  /// image
-  Future<Uint8List?> getCustomerImage({required String imageURL});
 }
