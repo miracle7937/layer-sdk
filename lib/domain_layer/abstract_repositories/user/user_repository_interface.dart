@@ -28,6 +28,12 @@ abstract class UserRepositoryInterface {
     bool forceRefresh = true,
   });
 
+  /// Returns an user from a developer `token` and `developerId`.
+  Future<User> getDeveloperUserFromToken({
+    required String token,
+    required String developerId,
+  });
+
   /// Request the lock of an user.
   ///
   /// Used exclusively by the console (DBO).

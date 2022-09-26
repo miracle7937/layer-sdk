@@ -40,3 +40,7 @@ class NetException implements Exception {
       ' ${statusCode != null ? ' - Status code: $statusCode' : ''}'
       ' ${code != null ? ' - code: $code' : ''}';
 }
+
+/// Exception thrown by the [NetClient] that indicates that there was
+/// a connectivity error while sending the request.
+class ConnectivityException extends NetException {}

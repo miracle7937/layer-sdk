@@ -6,7 +6,7 @@ class ValidateAccountUseCase {
   int _getLengthWithoutWhitespace(String text) =>
       text.replaceAll(RegExp(r"\s+\b|\b\s|\s|\b"), "").length;
 
-  /// check if the string is in a array of allowed values
+  /// Check if the string is in a array of allowed values
   bool _isIn(String? str, values) {
     if (values == null || values.length == 0) {
       return false;
@@ -26,10 +26,13 @@ class ValidateAccountUseCase {
   bool call({
     required String account,
     String? allowedCharacters,
-    int? minAccountChars,
-    int? maxAccountChars,
+    int minAccountChars = 8,
+    int maxAccountChars = 30,
   }) {
-    if (account.isEmpty || _getLengthWithoutWhitespace(account) == 0) {
+    if (account.isEmpty ||
+        _getLengthWithoutWhitespace(account) == 0 ||
+        account.length < minAccountChars ||
+        account.length > maxAccountChars) {
       return false;
     }
 
@@ -38,14 +41,6 @@ class ValidateAccountUseCase {
     for (var rune in (allowedCharacters?.runes ?? Runes('1234567890'))) {
       var character = String.fromCharCode(rune);
       allowedCharactersList.add(character);
-    }
-
-    if (account.length < (minAccountChars ?? 8)) {
-      return false;
-    }
-
-    if (account.length > (maxAccountChars ?? 30)) {
-      return false;
     }
 
     for (var i = 0; i < account.length; i++) {

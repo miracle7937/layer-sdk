@@ -149,6 +149,7 @@ export 'use_cases/transfer/verify_transfer_second_factor_use_case.dart';
 export 'use_cases/upcoming_payment/load_customer_upcoming_payments_use_case.dart';
 export 'use_cases/upcoming_payment/load_upcoming_payments_use_case.dart';
 export 'use_cases/user/change_offer_favorite_status_use_case.dart';
+export 'use_cases/user/load_developer_user_details_from_token_use_case.dart';
 export 'use_cases/user/load_user_by_customer_id_use_case.dart';
 export 'use_cases/user/load_user_details_from_token_use_case.dart';
 export 'use_cases/user/patch_user_blocked_channel_use_case.dart';

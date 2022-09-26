@@ -1,6 +1,6 @@
 name: layer_sdk
 description: A new Flutter package project.
-version: 0.0.3
+version: 0.0.5
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
@@ -23,7 +23,7 @@ dependencies:
   design_kit_layer:
     git:
       url: git@gitlab.ubanquity.com:dart-packages/design-kit-layer.git
-      ref: a3df852362541a51293f286331a1e091051e9856
+      ref: be90693ebda61670a28a051a27fb6449dc194b03
 
   ocra_authentication:
     git:
@@ -41,10 +41,10 @@ dependencies:
   dio: ^4.0.4
   equatable: ^2.0.2
   file_picker: 4.2.6
-  firebase_analytics: ^8.2.0
-  firebase_core: ^1.10.0
-  firebase_messaging: ^11.1.0
-  firebase_messaging_platform_interface: 3.1.6
+  firebase_analytics: ^9.3.3
+  firebase_core: ^1.21.1
+  firebase_messaging: ^13.0.0
+  firebase_messaging_platform_interface: 4.1.3
   flutter:
     sdk: flutter
   flutter_bloc: ^7.0.1
