@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+
 import '../../../../../data_layer/network.dart';
 import '../../../../../domain_layer/models.dart';
 import '../../../data_layer/providers.dart';
@@ -18,6 +19,8 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   final LoadCurrentCustomerUseCase _customerUseCase;
   final bool _shouldGetCustomerObject;
   final GetDeviceModelUseCase _getDeviceModelUseCase;
+  final LoadDeveloperUserDetailsFromTokenUseCase
+      _loadDeveloperUserDetailsFromTokenUseCase;
 
   /// Creates a new cubit with an empty [AuthenticationState] and calls
   /// load settings
@@ -32,6 +35,8 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     required LoadCurrentCustomerUseCase customerUseCase,
     required GetDeviceModelUseCase getDeviceModelUseCase,
     bool shouldGetCustomerObject = false,
+    required LoadDeveloperUserDetailsFromTokenUseCase
+        loadDeveloperUserDetailsFromTokenUseCase,
   })  : _loginUseCase = loginUseCase,
         _logoutUseCase = logoutUseCase,
         _recoverPasswordUseCase = recoverPasswordUseCase,
@@ -42,6 +47,8 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         _shouldGetCustomerObject = shouldGetCustomerObject,
         _customerUseCase = customerUseCase,
         _getDeviceModelUseCase = getDeviceModelUseCase,
+        _loadDeveloperUserDetailsFromTokenUseCase =
+            loadDeveloperUserDetailsFromTokenUseCase,
         super(AuthenticationState());
 
   /// Sets the provided user as the current logged user and emits updated state.
@@ -165,26 +172,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
           user == null ? AuthenticationErrorStatus.wrongCredentials : null;
 
       if (errorStatus == null) {
-        switch (user!.status) {
-          case UserStatus.changePassword:
-            errorStatus = AuthenticationErrorStatus.changePassword;
-            break;
-
-          case UserStatus.suspended:
-            errorStatus = AuthenticationErrorStatus.suspendedUser;
-            break;
-
-          case UserStatus.expired:
-            errorStatus = AuthenticationErrorStatus.expired;
-            break;
-
-          case UserStatus.calendarClosed:
-            errorStatus = AuthenticationErrorStatus.calendarClosed;
-            break;
-
-          default:
-            break;
-        }
+        errorStatus = user?.status?.toAuthenticationError();
       }
 
       final verifyDevice = user?.verifyDevice ?? false;
@@ -505,5 +493,83 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         validated: validated,
       ),
     );
+  }
+
+  /// Authenticates the user with the provided `token` and `developerId` .
+  ///
+  /// Used by the DBO app only.
+  void authenticateDeveloper({
+    required String token,
+    required String developerId,
+  }) async {
+    assert(token.isNotEmpty);
+    assert(developerId.isNotEmpty);
+
+    try {
+      emit(
+        state.copyWith(
+          user: null,
+          errorStatus: AuthenticationErrorStatus.none,
+          authenticationAction: AuthenticationAction.none,
+          busy: true,
+          isLocked: false,
+        ),
+      );
+
+      final user = await _loadDeveloperUserDetailsFromTokenUseCase(
+        token: token,
+        developerId: developerId,
+      );
+
+      final errorStatus = user.status?.toAuthenticationError();
+
+      if (errorStatus == null) {
+        await _updateUserTokenUseCase(
+          token: token,
+        );
+      }
+
+      emit(
+        state.copyWith(
+          user: errorStatus != null ? null : user,
+          errorStatus: errorStatus ?? AuthenticationErrorStatus.none,
+          validated: true,
+          busy: false,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          busy: false,
+          errorStatus: e is NetException
+              ? AuthenticationErrorStatus.network
+              : AuthenticationErrorStatus.generic,
+          errorMessage: e is NetException ? e.message : null,
+        ),
+      );
+    }
+  }
+}
+
+/// Extension that provides mappings for [UserStatus]
+extension UserStatusMapping on UserStatus {
+  /// Maps into a [AuthenticationErrorStatus].
+  AuthenticationErrorStatus? toAuthenticationError() {
+    switch (this) {
+      case UserStatus.changePassword:
+        return AuthenticationErrorStatus.changePassword;
+
+      case UserStatus.suspended:
+        return AuthenticationErrorStatus.suspendedUser;
+
+      case UserStatus.expired:
+        return AuthenticationErrorStatus.expired;
+
+      case UserStatus.calendarClosed:
+        return AuthenticationErrorStatus.calendarClosed;
+
+      default:
+        return null;
+    }
   }
 }

@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../data_layer/network.dart';
 import '../../../../domain_layer/models.dart';
 import '../../../../domain_layer/use_cases.dart';
 import '../../../cubits.dart';
@@ -89,90 +88,18 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     onChanged();
   }
 
-  /// Loads the reasons.
-  Future<void> _loadReasons() async {
-    if (state.reasons.isEmpty ||
-        state.errors.contains(BeneficiaryTransferAction.reasons)) {
-      emit(
-        state.copyWith(
-          actions: _addAction(BeneficiaryTransferAction.reasons),
-          errors: _removeError(BeneficiaryTransferAction.reasons),
-        ),
-      );
-
-      try {
-        final reasons = await _loadMessagesByModuleUseCase(
-          module: state.transfer.type == TransferType.international
-              ? 'transfer_reasons_international'
-              : 'transfer_reasons',
-        );
-
-        emit(
-          state.copyWith(
-            actions: _removeAction(BeneficiaryTransferAction.reasons),
-            reasons: reasons,
-          ),
-        );
-      } on Exception catch (e) {
-        emit(
-          state.copyWith(
-            actions: _removeAction(BeneficiaryTransferAction.reasons),
-            errors: _addError(
-              action: BeneficiaryTransferAction.reasons,
-              errorStatus: e is NetException
-                  ? BeneficiaryTransferErrorStatus.network
-                  : BeneficiaryTransferErrorStatus.generic,
-            ),
-          ),
-        );
-      }
-    }
-  }
-
-  /// Returns an action list that includes the passed action.
-  Set<BeneficiaryTransferAction> _addAction(
-    BeneficiaryTransferAction action,
-  ) =>
-      state.actions.union({action});
-
-  /// Returns an error list that includes the passed action and error status.
-  Set<BeneficiaryTransferError> _addError({
-    required BeneficiaryTransferAction action,
-    required BeneficiaryTransferErrorStatus errorStatus,
-    String? code,
-    String? message,
-  }) =>
-      state.errors.union({
-        BeneficiaryTransferError(
-          action: action,
-          errorStatus: errorStatus,
-          code: code,
-          message: message,
-        )
-      });
-
-  /// Returns an action list containing all the actions but the one that
-  /// coindides with the passed action.
-  Set<BeneficiaryTransferAction> _removeAction(
-    BeneficiaryTransferAction action,
-  ) =>
-      state.actions.difference({action});
-
-  /// Returns an error list containing all the errors but the one that
-  /// coincides with the passed action.
-  Set<BeneficiaryTransferError> _removeError(
-    BeneficiaryTransferAction action,
-  ) =>
-      state.errors.where((error) => error.action != action).toSet();
-
   /// Loads the beneficiary settings.
   Future<void> _loadBeneficiarySettings() async {
     if (state.beneficiarySettings.isEmpty ||
         state.errors.contains(BeneficiaryTransferAction.beneficiarySettings)) {
       emit(
         state.copyWith(
-          actions: _addAction(BeneficiaryTransferAction.beneficiarySettings),
-          errors: _removeError(BeneficiaryTransferAction.beneficiarySettings),
+          actions: state.addAction(
+            BeneficiaryTransferAction.beneficiarySettings,
+          ),
+          errors: state.removeErrorForAction(
+            BeneficiaryTransferAction.beneficiarySettings,
+          ),
         ),
       );
 
@@ -183,93 +110,19 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
         emit(
           state.copyWith(
-            actions:
-                _removeAction(BeneficiaryTransferAction.beneficiarySettings),
+            actions: state
+                .removeAction(BeneficiaryTransferAction.beneficiarySettings),
             beneficiarySettings: beneficiarySettings,
           ),
         );
       } on Exception catch (e) {
         emit(
           state.copyWith(
-            actions:
-                _removeAction(BeneficiaryTransferAction.beneficiarySettings),
-            errors: _addError(
+            actions: state
+                .removeAction(BeneficiaryTransferAction.beneficiarySettings),
+            errors: state.addErrorFromException(
               action: BeneficiaryTransferAction.beneficiarySettings,
-              errorStatus: e is NetException
-                  ? BeneficiaryTransferErrorStatus.network
-                  : BeneficiaryTransferErrorStatus.generic,
-            ),
-          ),
-        );
-      }
-    }
-  }
-
-  /// Loads all the currencies.
-  Future<void> _loadCurrencies() async {
-    if (state.currencies.isEmpty ||
-        state.errors.contains(BeneficiaryTransferAction.currencies)) {
-      emit(
-        state.copyWith(
-          actions: _addAction(BeneficiaryTransferAction.currencies),
-          errors: _removeError(BeneficiaryTransferAction.currencies),
-        ),
-      );
-
-      try {
-        final currencies = await _loadAllCurrenciesUseCase();
-
-        emit(
-          state.copyWith(
-            actions: _removeAction(BeneficiaryTransferAction.currencies),
-            currencies: currencies,
-          ),
-        );
-      } on Exception catch (e) {
-        emit(
-          state.copyWith(
-            actions: _removeAction(BeneficiaryTransferAction.currencies),
-            errors: _addError(
-              action: BeneficiaryTransferAction.currencies,
-              errorStatus: e is NetException
-                  ? BeneficiaryTransferErrorStatus.network
-                  : BeneficiaryTransferErrorStatus.generic,
-            ),
-          ),
-        );
-      }
-    }
-  }
-
-  /// Loads all the countries.
-  Future<void> _loadCountries() async {
-    if (state.countries.isEmpty ||
-        state.errors.contains(BeneficiaryTransferAction.countries)) {
-      emit(
-        state.copyWith(
-          actions: _addAction(BeneficiaryTransferAction.countries),
-          errors: _removeError(BeneficiaryTransferAction.countries),
-        ),
-      );
-
-      try {
-        final countries = await _loadCountriesUseCase();
-
-        emit(
-          state.copyWith(
-            actions: _removeAction(BeneficiaryTransferAction.countries),
-            countries: countries,
-          ),
-        );
-      } on Exception catch (e) {
-        emit(
-          state.copyWith(
-            actions: _removeAction(BeneficiaryTransferAction.countries),
-            errors: _addError(
-              action: BeneficiaryTransferAction.countries,
-              errorStatus: e is NetException
-                  ? BeneficiaryTransferErrorStatus.network
-                  : BeneficiaryTransferErrorStatus.generic,
+              exception: e,
             ),
           ),
         );
@@ -283,8 +136,12 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         state.errors.contains(BeneficiaryTransferAction.accounts)) {
       emit(
         state.copyWith(
-          actions: _addAction(BeneficiaryTransferAction.accounts),
-          errors: _removeError(BeneficiaryTransferAction.accounts),
+          actions: state.addAction(
+            BeneficiaryTransferAction.accounts,
+          ),
+          errors: state.removeErrorForAction(
+            BeneficiaryTransferAction.accounts,
+          ),
         ),
       );
 
@@ -294,28 +151,111 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
         if (accounts.isNotEmpty) {
           onChanged(
-            source: accounts
-                .sortedBy<num>((element) => element.availableBalance ?? 0.0)
-                .reversed
-                .first,
+            source: accounts.first,
           );
         }
 
         emit(
           state.copyWith(
-            actions: _removeAction(BeneficiaryTransferAction.accounts),
+            actions: state.removeAction(
+              BeneficiaryTransferAction.accounts,
+            ),
             accounts: accounts,
           ),
         );
       } on Exception catch (e) {
         emit(
           state.copyWith(
-            actions: _removeAction(BeneficiaryTransferAction.accounts),
-            errors: _addError(
+            actions: state.removeAction(
+              BeneficiaryTransferAction.accounts,
+            ),
+            errors: state.addErrorFromException(
               action: BeneficiaryTransferAction.accounts,
-              errorStatus: e is NetException
-                  ? BeneficiaryTransferErrorStatus.network
-                  : BeneficiaryTransferErrorStatus.generic,
+              exception: e,
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  /// Loads all the currencies.
+  Future<void> _loadCurrencies() async {
+    if (state.currencies.isEmpty ||
+        state.errors.contains(BeneficiaryTransferAction.currencies)) {
+      emit(
+        state.copyWith(
+          actions: state.addAction(
+            BeneficiaryTransferAction.currencies,
+          ),
+          errors: state.removeErrorForAction(
+            BeneficiaryTransferAction.currencies,
+          ),
+        ),
+      );
+
+      try {
+        final currencies = await _loadAllCurrenciesUseCase();
+
+        emit(
+          state.copyWith(
+            actions: state.removeAction(
+              BeneficiaryTransferAction.currencies,
+            ),
+            currencies: currencies,
+          ),
+        );
+      } on Exception catch (e) {
+        emit(
+          state.copyWith(
+            actions: state.removeAction(
+              BeneficiaryTransferAction.currencies,
+            ),
+            errors: state.addErrorFromException(
+              action: BeneficiaryTransferAction.currencies,
+              exception: e,
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  /// Loads all the countries.
+  Future<void> _loadCountries() async {
+    if (state.countries.isEmpty ||
+        state.errors.contains(BeneficiaryTransferAction.countries)) {
+      emit(
+        state.copyWith(
+          actions: state.addAction(
+            BeneficiaryTransferAction.countries,
+          ),
+          errors: state.removeErrorForAction(
+            BeneficiaryTransferAction.countries,
+          ),
+        ),
+      );
+
+      try {
+        final countries = await _loadCountriesUseCase();
+
+        emit(
+          state.copyWith(
+            actions: state.removeAction(
+              BeneficiaryTransferAction.countries,
+            ),
+            countries: countries,
+          ),
+        );
+      } on Exception catch (e) {
+        emit(
+          state.copyWith(
+            actions: state.removeAction(
+              BeneficiaryTransferAction.countries,
+            ),
+            errors: state.addErrorFromException(
+              action: BeneficiaryTransferAction.countries,
+              exception: e,
             ),
           ),
         );
@@ -329,8 +269,12 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         state.errors.contains(BeneficiaryTransferAction.beneficiaries)) {
       emit(
         state.copyWith(
-          actions: _addAction(BeneficiaryTransferAction.beneficiaries),
-          errors: _removeError(BeneficiaryTransferAction.beneficiaries),
+          actions: state.addAction(
+            BeneficiaryTransferAction.beneficiaries,
+          ),
+          errors: state.removeErrorForAction(
+            BeneficiaryTransferAction.beneficiaries,
+          ),
         ),
       );
 
@@ -340,19 +284,66 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
         emit(
           state.copyWith(
-            actions: _removeAction(BeneficiaryTransferAction.beneficiaries),
+            actions:
+                state.removeAction(BeneficiaryTransferAction.beneficiaries),
             beneficiaries: beneficiaries,
           ),
         );
       } on Exception catch (e) {
         emit(
           state.copyWith(
-            actions: _removeAction(BeneficiaryTransferAction.beneficiaries),
-            errors: _addError(
+            actions: state.removeAction(
+              BeneficiaryTransferAction.beneficiaries,
+            ),
+            errors: state.addErrorFromException(
               action: BeneficiaryTransferAction.beneficiaries,
-              errorStatus: e is NetException
-                  ? BeneficiaryTransferErrorStatus.network
-                  : BeneficiaryTransferErrorStatus.generic,
+              exception: e,
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  /// Loads the reasons.
+  Future<void> _loadReasons() async {
+    if (state.reasons.isEmpty ||
+        state.errors.contains(BeneficiaryTransferAction.reasons)) {
+      emit(
+        state.copyWith(
+          actions: state.addAction(
+            BeneficiaryTransferAction.reasons,
+          ),
+          errors: state.removeErrorForAction(
+            BeneficiaryTransferAction.reasons,
+          ),
+        ),
+      );
+
+      try {
+        final reasons = await _loadMessagesByModuleUseCase(
+          module: state.transfer.type == TransferType.international
+              ? 'transfer_reasons_international'
+              : 'transfer_reasons',
+        );
+
+        emit(
+          state.copyWith(
+            actions: state.removeAction(
+              BeneficiaryTransferAction.reasons,
+            ),
+            reasons: reasons,
+          ),
+        );
+      } on Exception catch (e) {
+        emit(
+          state.copyWith(
+            actions: state.removeAction(
+              BeneficiaryTransferAction.reasons,
+            ),
+            errors: state.addErrorFromException(
+              action: BeneficiaryTransferAction.reasons,
+              exception: e,
             ),
           ),
         );
@@ -371,8 +362,12 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
     emit(
       state.copyWith(
-        actions: _addAction(BeneficiaryTransferAction.banks),
-        errors: _removeError(BeneficiaryTransferAction.banks),
+        actions: state.addAction(
+          BeneficiaryTransferAction.banks,
+        ),
+        errors: state.removeErrorForAction(
+          BeneficiaryTransferAction.banks,
+        ),
         banks: loadMore ? state.banks : {},
       ),
     );
@@ -396,7 +391,9 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
       emit(
         state.copyWith(
-          actions: _removeAction(BeneficiaryTransferAction.banks),
+          actions: state.removeAction(
+            BeneficiaryTransferAction.banks,
+          ),
           banks: banks,
           banksPagination: newPage.refreshCanLoadMore(
             loadedCount: resultList.length,
@@ -406,12 +403,12 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     } on Exception catch (e) {
       emit(
         state.copyWith(
-          actions: _removeAction(BeneficiaryTransferAction.banks),
-          errors: _addError(
+          actions: state.removeAction(
+            BeneficiaryTransferAction.banks,
+          ),
+          errors: state.addErrorFromException(
             action: BeneficiaryTransferAction.banks,
-            errorStatus: e is NetException
-                ? BeneficiaryTransferErrorStatus.network
-                : BeneficiaryTransferErrorStatus.generic,
+            exception: e,
           ),
         ),
       );
@@ -439,6 +436,17 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     );
 
     final currentCountry = state.transfer.newBeneficiary?.country;
+
+    if (scheduleDetails != null) {
+      emit(
+        state.copyWith(
+          errors: state.removeValidationError(
+            BeneficiaryTransferValidationErrorCode
+                .scheduleDetailsValidationError,
+          ),
+        ),
+      );
+    }
 
     emit(
       state.copyWith(
@@ -479,16 +487,217 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
   Future<void> evaluate() async {
     emit(
       state.copyWith(
-        actions: _addAction(BeneficiaryTransferAction.evaluate),
+        actions: state.addAction(
+          BeneficiaryTransferAction.evaluate,
+        ),
         errors: {},
+        events: state.removeEvent(
+          BeneficiaryTransferEvent.showConfirmationView,
+        ),
         evaluation: TransferEvaluation(),
       ),
     );
 
-    final beneficiaryType = state.transfer.beneficiaryType;
+    final validationErrors = _validateTransfer();
+    if (validationErrors.isNotEmpty) {
+      emit(
+        state.copyWith(
+          actions: state.removeAction(BeneficiaryTransferAction.evaluate),
+          errors: state.addValidationErrors(validationErrors: validationErrors),
+        ),
+      );
+
+      return;
+    }
+
+    try {
+      final evaluation = await _evaluateTransferUseCase(
+        transfer: state.transfer,
+      );
+
+      emit(
+        state.copyWith(
+          actions: state.removeAction(
+            BeneficiaryTransferAction.evaluate,
+          ),
+          events: state.addEvent(
+            BeneficiaryTransferEvent.showConfirmationView,
+          ),
+          evaluation: evaluation,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          actions: state.removeAction(
+            BeneficiaryTransferAction.evaluate,
+          ),
+          errors: state.addErrorFromException(
+            action: BeneficiaryTransferAction.evaluate,
+            exception: e,
+          ),
+        ),
+      );
+    }
+  }
+
+  /// Validates the new transfer and returns the validation errors.
+  Set<CubitValidationError<BeneficiaryTransferValidationErrorCode>>
+      _validateTransfer() {
+    final validationErrors =
+        <CubitValidationError<BeneficiaryTransferValidationErrorCode>>{};
+
+    final transfer = state.transfer;
+    final beneficiaryType = transfer.beneficiaryType;
+
+    if (transfer.source?.account == null) {
+      validationErrors.add(
+        CubitValidationError<BeneficiaryTransferValidationErrorCode>(
+          validationErrorCode: BeneficiaryTransferValidationErrorCode
+              .sourceAccountValidationError,
+        ),
+      );
+    }
+
+    if ((transfer.amount ?? 0.0) <= 0.0) {
+      validationErrors.add(
+        CubitValidationError<BeneficiaryTransferValidationErrorCode>(
+          validationErrorCode:
+              BeneficiaryTransferValidationErrorCode.amountValidationError,
+        ),
+      );
+    }
+
+    if ((transfer.amount ?? 0.0) >
+        (transfer.source?.account?.availableBalance ?? 0.0)) {
+      validationErrors.add(
+        CubitValidationError<BeneficiaryTransferValidationErrorCode>(
+          validationErrorCode: BeneficiaryTransferValidationErrorCode
+              .insufficientBalanceValidationError,
+        ),
+      );
+    }
+
+    if (transfer.saveToShortcut &&
+        (transfer.shortcutName ?? '').toString().isEmpty) {
+      validationErrors.add(
+        CubitValidationError<BeneficiaryTransferValidationErrorCode>(
+          validationErrorCode: BeneficiaryTransferValidationErrorCode
+              .shortcutNameValidationError,
+        ),
+      );
+    }
+
+    if (transfer.scheduleDetails.recurrence != Recurrence.none &&
+        transfer.scheduleDetails.startDate == null) {
+      validationErrors.add(
+        CubitValidationError<BeneficiaryTransferValidationErrorCode>(
+          validationErrorCode: BeneficiaryTransferValidationErrorCode
+              .scheduleDetailsValidationError,
+        ),
+      );
+    }
+
+    if (beneficiaryType == DestinationBeneficiaryType.newBeneficiary) {
+      validationErrors.addAll(_validateNewBeneficiary());
+    } else if (transfer.destination?.beneficiary == null) {
+      validationErrors.add(
+        CubitValidationError<BeneficiaryTransferValidationErrorCode>(
+          validationErrorCode: BeneficiaryTransferValidationErrorCode
+              .selectedBeneficiaryValidationError,
+        ),
+      );
+    }
+
+    return validationErrors;
+  }
+
+  /// Validates the new beneficiary and retruns a list of validation errors.
+  Set<CubitValidationError<BeneficiaryTransferValidationErrorCode>>
+      _validateNewBeneficiary() {
+    final validationErrors =
+        <CubitValidationError<BeneficiaryTransferValidationErrorCode>>{};
+
+    final newBeneficiary = state.transfer.newBeneficiary;
+
+    if ((newBeneficiary?.firstName ?? '').trim().isEmpty) {
+      validationErrors.add(
+        CubitValidationError<BeneficiaryTransferValidationErrorCode>(
+          validationErrorCode:
+              BeneficiaryTransferValidationErrorCode.firstNameValidationError,
+        ),
+      );
+    }
+
+    if ((newBeneficiary?.lastName ?? '').isEmpty) {
+      validationErrors.add(
+        CubitValidationError<BeneficiaryTransferValidationErrorCode>(
+          validationErrorCode:
+              BeneficiaryTransferValidationErrorCode.lastNameValidationError,
+        ),
+      );
+    }
+
+    if (newBeneficiary?.country == null) {
+      validationErrors.add(
+        CubitValidationError<BeneficiaryTransferValidationErrorCode>(
+          validationErrorCode:
+              BeneficiaryTransferValidationErrorCode.countryValidationError,
+        ),
+      );
+    }
+
+    if (newBeneficiary?.currency == null) {
+      validationErrors.add(
+        CubitValidationError<BeneficiaryTransferValidationErrorCode>(
+          validationErrorCode:
+              BeneficiaryTransferValidationErrorCode.currencyValidationError,
+        ),
+      );
+    }
+
+    if ((newBeneficiary?.ibanOrAccountNO ?? '').trim().isEmpty) {
+      validationErrors.add(
+        CubitValidationError<BeneficiaryTransferValidationErrorCode>(
+          validationErrorCode: BeneficiaryTransferValidationErrorCode
+              .ibanOrAccountValidationError,
+        ),
+      );
+    }
+
+    if ((newBeneficiary?.routingCode ?? '').trim().isEmpty &&
+        (newBeneficiary?.routingCodeIsRequired ?? false)) {
+      validationErrors.add(
+        CubitValidationError<BeneficiaryTransferValidationErrorCode>(
+          validationErrorCode:
+              BeneficiaryTransferValidationErrorCode.routingCodeValidationError,
+        ),
+      );
+    }
+
+    if (newBeneficiary?.bank == null) {
+      validationErrors.add(
+        CubitValidationError<BeneficiaryTransferValidationErrorCode>(
+          validationErrorCode:
+              BeneficiaryTransferValidationErrorCode.bankValidationError,
+        ),
+      );
+    }
+
+    if ((newBeneficiary?.shouldSave ?? false) &&
+        (newBeneficiary?.nickname ?? '').trim().isEmpty) {
+      validationErrors.add(
+        CubitValidationError<BeneficiaryTransferValidationErrorCode>(
+          validationErrorCode:
+              BeneficiaryTransferValidationErrorCode.nicknameValidationError,
+        ),
+      );
+    }
+
     final shouldValidateIBAN =
-        beneficiaryType == DestinationBeneficiaryType.newBeneficiary &&
-            state.transfer.newBeneficiary?.routingCode == null;
+        !(newBeneficiary?.routingCodeIsRequired ?? false) &&
+            (newBeneficiary?.ibanOrAccountNO?.isNotEmpty ?? false);
+
     if (shouldValidateIBAN) {
       final isValid = _validateIBANUseCase(
         iban: state.transfer.newBeneficiary?.ibanOrAccountNO ?? '',
@@ -500,66 +709,46 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
       );
 
       if (!isValid) {
-        emit(
-          state.copyWith(
-            actions: _removeAction(BeneficiaryTransferAction.evaluate),
-            errors: _addError(
-              action: BeneficiaryTransferAction.evaluate,
-              errorStatus: BeneficiaryTransferErrorStatus.invalidIBAN,
-            ),
+        validationErrors.add(
+          CubitValidationError<BeneficiaryTransferValidationErrorCode>(
+            validationErrorCode:
+                BeneficiaryTransferValidationErrorCode.invalidIBAN,
           ),
         );
-
-        return;
       }
     }
 
-    try {
-      final evaluation = await _evaluateTransferUseCase(
-        transfer: state.transfer,
-      );
-
-      emit(
-        state.copyWith(
-          actions: _removeAction(BeneficiaryTransferAction.evaluate),
-          evaluation: evaluation,
-        ),
-      );
-    } on Exception catch (e) {
-      emit(
-        state.copyWith(
-          actions: _removeAction(BeneficiaryTransferAction.evaluate),
-          errors: _addError(
-            action: BeneficiaryTransferAction.evaluate,
-            errorStatus: e is NetException
-                ? BeneficiaryTransferErrorStatus.network
-                : BeneficiaryTransferErrorStatus.generic,
-            code: e is NetException ? e.code : null,
-            message: e is NetException ? e.message : null,
-          ),
-        ),
-      );
-    }
+    return validationErrors;
   }
 
   /// Submits the transfer.
   Future<void> submit() async {
     emit(
       state.copyWith(
-        actions: _addAction(BeneficiaryTransferAction.submit),
-        errors: _removeError(BeneficiaryTransferAction.submit),
+        actions: state.addAction(
+          BeneficiaryTransferAction.submit,
+        ),
+        errors: state.removeErrorForAction(
+          BeneficiaryTransferAction.submit,
+        ),
+        events: state.removeEvents(
+          {
+            BeneficiaryTransferEvent.showResultView,
+            BeneficiaryTransferEvent.inputOTPCode,
+          },
+        ),
       ),
     );
 
     if (state.transfer.saveToShortcut) {
       await _createShortcut();
 
-      if (state.errors
-          .where((error) => error.action == BeneficiaryTransferAction.shortcut)
-          .isNotEmpty) {
+      if (state.actionHasErrors(BeneficiaryTransferAction.shortcut)) {
         emit(
           state.copyWith(
-            actions: _removeAction(BeneficiaryTransferAction.submit),
+            actions: state.removeAction(
+              BeneficiaryTransferAction.submit,
+            ),
           ),
         );
 
@@ -573,29 +762,65 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         editMode: state.editMode,
       );
 
-      emit(
-        state.copyWith(
-          actions: _removeAction(BeneficiaryTransferAction.submit),
-          transferResult: transferResult,
-        ),
-      );
+      switch (transferResult.status) {
+        case TransferStatus.completed:
+        case TransferStatus.pending:
+        case TransferStatus.scheduled:
+          emit(
+            state.copyWith(
+              actions: state.removeAction(
+                BeneficiaryTransferAction.submit,
+              ),
+              transferResult: transferResult,
+              events: state.addEvent(
+                BeneficiaryTransferEvent.showResultView,
+              ),
+            ),
+          );
+          break;
+
+        case TransferStatus.failed:
+          emit(
+            state.copyWith(
+              actions: state.removeAction(
+                BeneficiaryTransferAction.submit,
+              ),
+              errors: state.addCustomCubitError(
+                action: BeneficiaryTransferAction.submit,
+                code: CubitErrorCode.transferFailed,
+              ),
+            ),
+          );
+          break;
+
+        case TransferStatus.otp:
+          emit(
+            state.copyWith(
+              actions: state.removeAction(
+                BeneficiaryTransferAction.submit,
+              ),
+              transferResult: transferResult,
+              events: state.addEvent(
+                BeneficiaryTransferEvent.inputOTPCode,
+              ),
+            ),
+          );
+          break;
+
+        default:
+          throw Exception(
+            'Unhandled transfer status -> ${transferResult.status}',
+          );
+      }
     } on Exception catch (e) {
       emit(
         state.copyWith(
-          actions: _removeAction(BeneficiaryTransferAction.submit),
-          errors: _addError(
+          actions: state.removeAction(
+            BeneficiaryTransferAction.submit,
+          ),
+          errors: state.addErrorFromException(
             action: BeneficiaryTransferAction.submit,
-            errorStatus: e is NetException
-                ? e.code == 'insufficient_balance'
-                    ? BeneficiaryTransferErrorStatus.insufficientBalance
-                    : BeneficiaryTransferErrorStatus.network
-                : BeneficiaryTransferErrorStatus.generic,
-            code: e is NetException
-                ? e.statusCode == null
-                    ? 'connectivity_error'
-                    : e.code
-                : null,
-            message: e is NetException ? e.message : null,
+            exception: e,
           ),
         ),
       );
@@ -609,7 +834,9 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
   }) async {
     emit(
       state.copyWith(
-        actions: _addAction(BeneficiaryTransferAction.verifySecondFactor),
+        actions: state.addAction(
+          BeneficiaryTransferAction.verifySecondFactor,
+        ),
         errors: {},
       ),
     );
@@ -624,27 +851,34 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
       emit(
         state.copyWith(
-          actions: _removeAction(BeneficiaryTransferAction.verifySecondFactor),
+          actions: state.removeAction(
+            BeneficiaryTransferAction.verifySecondFactor,
+          ),
+        ),
+      );
+
+      emit(
+        state.copyWith(
           transferResult: transferResult,
+          events: state.addEvent(
+            BeneficiaryTransferEvent.closeOTPView,
+          ),
         ),
       );
     } on Exception catch (e) {
       emit(
         state.copyWith(
-          actions: _removeAction(BeneficiaryTransferAction.verifySecondFactor),
-          errors: _addError(
+          actions: state.removeAction(
+            BeneficiaryTransferAction.verifySecondFactor,
+          ),
+        ),
+      );
+
+      emit(
+        state.copyWith(
+          errors: state.addErrorFromException(
             action: BeneficiaryTransferAction.verifySecondFactor,
-            errorStatus: e is NetException
-                ? e.code == 'incorrect_value'
-                    ? BeneficiaryTransferErrorStatus.incorrectOTPCode
-                    : BeneficiaryTransferErrorStatus.network
-                : BeneficiaryTransferErrorStatus.generic,
-            code: e is NetException
-                ? e.statusCode == null
-                    ? 'connectivity_error'
-                    : e.code
-                : null,
-            message: e is NetException ? e.message : null,
+            exception: e,
           ),
         ),
       );
@@ -656,7 +890,9 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
   Future<void> resendSecondFactor() async {
     emit(
       state.copyWith(
-        actions: _addAction(BeneficiaryTransferAction.resendSecondFactor),
+        actions: state.addAction(
+          BeneficiaryTransferAction.resendSecondFactor,
+        ),
         errors: {},
       ),
     );
@@ -668,25 +904,31 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
       emit(
         state.copyWith(
-          actions: _removeAction(BeneficiaryTransferAction.resendSecondFactor),
+          actions: state.removeAction(
+            BeneficiaryTransferAction.resendSecondFactor,
+          ),
+        ),
+      );
+
+      emit(
+        state.copyWith(
           transferResult: transferResult,
         ),
       );
     } on Exception catch (e) {
       emit(
         state.copyWith(
-          actions: _removeAction(BeneficiaryTransferAction.resendSecondFactor),
-          errors: _addError(
+          actions: state.removeAction(
+            BeneficiaryTransferAction.resendSecondFactor,
+          ),
+        ),
+      );
+
+      emit(
+        state.copyWith(
+          errors: state.addErrorFromException(
             action: BeneficiaryTransferAction.resendSecondFactor,
-            errorStatus: e is NetException
-                ? BeneficiaryTransferErrorStatus.network
-                : BeneficiaryTransferErrorStatus.generic,
-            code: e is NetException
-                ? e.statusCode == null
-                    ? 'connectivity_error'
-                    : e.code
-                : null,
-            message: e is NetException ? e.message : null,
+            exception: e,
           ),
         ),
       );
@@ -697,8 +939,12 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
   Future<void> _createShortcut() async {
     emit(
       state.copyWith(
-        actions: _addAction(BeneficiaryTransferAction.shortcut),
-        errors: _removeError(BeneficiaryTransferAction.shortcut),
+        actions: state.addAction(
+          BeneficiaryTransferAction.shortcut,
+        ),
+        errors: state.removeErrorForAction(
+          BeneficiaryTransferAction.shortcut,
+        ),
       ),
     );
 
@@ -713,24 +959,20 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
       emit(
         state.copyWith(
-          actions: _removeAction(BeneficiaryTransferAction.shortcut),
+          actions: state.removeAction(
+            BeneficiaryTransferAction.shortcut,
+          ),
         ),
       );
     } on Exception catch (e) {
       emit(
         state.copyWith(
-          actions: _removeAction(BeneficiaryTransferAction.shortcut),
-          errors: _addError(
+          actions: state.removeAction(
+            BeneficiaryTransferAction.shortcut,
+          ),
+          errors: state.addErrorFromException(
             action: BeneficiaryTransferAction.shortcut,
-            errorStatus: e is NetException
-                ? BeneficiaryTransferErrorStatus.network
-                : BeneficiaryTransferErrorStatus.generic,
-            code: e is NetException
-                ? e.statusCode == null
-                    ? 'connectivity_error'
-                    : e.code
-                : null,
-            message: e is NetException ? e.message : null,
+            exception: e,
           ),
         ),
       );
