@@ -10,8 +10,6 @@ class MockAccountTransaction extends Mock implements AccountTransaction {}
 late MockAccounTransactionRepository _repository;
 late GetCustomerAccountTransactionsUseCase _useCase;
 late List<MockAccountTransaction> _mockAccountTransactionList;
-
-final _customerId = '1';
 final _accountId = '2';
 
 void main() {
@@ -26,7 +24,6 @@ void main() {
 
     when(
       () => _repository.listCustomerAccountTransactions(
-        customerId: any(named: 'customerId'),
         accountId: any(named: 'accountId'),
       ),
     ).thenAnswer((_) async => _mockAccountTransactionList);
@@ -34,7 +31,6 @@ void main() {
 
   test('Should return an account transaction list', () async {
     final result = await _useCase(
-      customerId: _customerId,
       accountId: _accountId,
     );
 
@@ -42,7 +38,6 @@ void main() {
 
     verify(
       () => _repository.listCustomerAccountTransactions(
-        customerId: _customerId,
         accountId: _accountId,
       ),
     ).called(1);
