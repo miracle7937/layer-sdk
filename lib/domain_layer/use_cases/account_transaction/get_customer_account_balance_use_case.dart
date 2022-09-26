@@ -16,7 +16,6 @@ class GetCustomerAccountBalanceUseCase {
   ///
   /// Use the `limit` and `offset` parameters to paginate.
   Future<List<AccountBalance>> call({
-    required String customerId,
     required String accountId,
     required int? fromDate,
     required int? toDate,

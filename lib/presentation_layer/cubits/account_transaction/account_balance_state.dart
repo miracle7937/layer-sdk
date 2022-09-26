@@ -8,21 +8,17 @@ class AccountBalanceState extends BaseState<AccountBalanceAction, void,
   /// List of [AccountBalance] of the customer [Account]
   final UnmodifiableListView<AccountBalance> balances;
 
-  /// [Customer] id which will be used by this cubit
-  final String customerId;
-
   /// [Account] id which will be used by this cubit
   final String accountId;
 
-  ///
+  /// The week start date for fetching the balances
   final DateTime startDate;
 
-  ///
+  /// The week end date for fetching the balances
   final DateTime endDate;
 
   /// Creates a new instance of [AccountBalanceState]
   AccountBalanceState({
-    required this.customerId,
     required this.accountId,
     required this.startDate,
     required this.endDate,
@@ -35,7 +31,6 @@ class AccountBalanceState extends BaseState<AccountBalanceAction, void,
   @override
   List<Object?> get props => [
         balances,
-        customerId,
         accountId,
         endDate,
         startDate,
@@ -46,7 +41,6 @@ class AccountBalanceState extends BaseState<AccountBalanceAction, void,
   AccountBalanceState copyWith({
     Iterable<AccountBalance>? balances,
     String? accountId,
-    String? customerId,
     Set<AccountBalanceAction>? actions,
     Set<CubitError>? errors,
     Set<AccountBalanceEvent>? events,
@@ -58,7 +52,6 @@ class AccountBalanceState extends BaseState<AccountBalanceAction, void,
       errors: errors ?? super.errors,
       events: const <AccountBalanceEvent>{},
       balances: balances ?? this.balances,
-      customerId: customerId ?? this.customerId,
       accountId: accountId ?? this.accountId,
       endDate: endDate ?? this.endDate,
       startDate: startDate ?? this.startDate,
@@ -86,6 +79,6 @@ enum AccountBalanceAction {
 
 /// Enum for possible events
 enum AccountBalanceEvent {
-  ///
-  event
+  /// No events 
+  none,
 }

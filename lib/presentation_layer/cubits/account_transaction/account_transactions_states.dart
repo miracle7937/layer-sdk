@@ -11,9 +11,6 @@ class AccountTransactionsState extends BaseState<AccountTransactionsAction,
   /// List of [AccountTransactions] of the customer [Account]
   final UnmodifiableListView<AccountTransaction> transactions;
 
-  /// [Customer] id which will be used by this cubit
-  final String customerId;
-
   /// [Account] id which will be used by this cubit
   final String accountId;
 
@@ -28,7 +25,6 @@ class AccountTransactionsState extends BaseState<AccountTransactionsAction,
 
   /// Creates a new instance of [AccountTransactionsState]
   AccountTransactionsState({
-    required this.customerId,
     required this.accountId,
     Iterable<AccountTransaction> transactions = const [],
     this.startDate,
@@ -42,7 +38,6 @@ class AccountTransactionsState extends BaseState<AccountTransactionsAction,
   @override
   List<Object?> get props => [
         transactions,
-        customerId,
         accountId,
         listData,
         startDate,
@@ -57,14 +52,12 @@ class AccountTransactionsState extends BaseState<AccountTransactionsAction,
     Set<CubitError>? errors,
     Set<AccountTransactionsEvent>? events,
     String? accountId,
-    String? customerId,
     AccountTransactionsListData? listData,
     DateTime? startDate,
     DateTime? endDate,
   }) {
     return AccountTransactionsState(
       transactions: transactions ?? this.transactions,
-      customerId: customerId ?? this.customerId,
       actions: actions ?? super.actions,
       errors: errors ?? super.errors,
       events: const <AccountTransactionsEvent>{},
@@ -96,8 +89,8 @@ enum AccountTransactionsAction {
 
 /// Enum for possible events
 enum AccountTransactionsEvent {
-  ///
-  event
+  /// No events
+  none,
 }
 
 /// Keeps all the pagination data for [BankingCard]

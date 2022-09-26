@@ -15,7 +15,6 @@ class AccountTransactionsCubit extends Cubit<AccountTransactionsState> {
   AccountTransactionsCubit({
     required GetCustomerAccountTransactionsUseCase
         getCustomerAccountTransactionsUseCase,
-    required String customerId,
     required String accountId,
     this.limit = 50,
   })  : _getCustomerAccountTransactionsUseCase =
@@ -23,11 +22,10 @@ class AccountTransactionsCubit extends Cubit<AccountTransactionsState> {
         super(
           AccountTransactionsState(
             accountId: accountId,
-            customerId: customerId,
           ),
         );
 
-  ///
+  /// Updating the dates and loading again
   Future<void> updateDates({
     required DateTime startDate,
     required DateTime endDate,
@@ -56,7 +54,6 @@ class AccountTransactionsCubit extends Cubit<AccountTransactionsState> {
   }
 
   /// Loads all account completed account transactions of the provided
-  /// Customer Id and Account Id
   Future<void> load({
     bool loadMore = false,
     bool forceRefresh = false,
@@ -81,7 +78,6 @@ class AccountTransactionsCubit extends Cubit<AccountTransactionsState> {
 
       final transactions = await _getCustomerAccountTransactionsUseCase(
         accountId: state.accountId,
-        customerId: state.customerId,
         fromDate: fromDate,
         toDate: toDate,
         offset: offset,

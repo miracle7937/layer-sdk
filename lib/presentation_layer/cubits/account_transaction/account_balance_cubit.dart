@@ -9,7 +9,6 @@ class AccountBalanceCubit extends Cubit<AccountBalanceState> {
   /// Creates a new instance of [AccountBalanceCubit]
   AccountBalanceCubit({
     required GetCustomerAccountBalanceUseCase getCustomerAccountBalanceUseCase,
-    required String customerId,
     required String accountId,
     required DateTime startDate,
     required DateTime endDate,
@@ -17,13 +16,12 @@ class AccountBalanceCubit extends Cubit<AccountBalanceState> {
         super(
           AccountBalanceState(
             accountId: accountId,
-            customerId: customerId,
             startDate: startDate,
             endDate: endDate,
           ),
         );
 
-  ///
+  /// Updating the dates and loading again for different weeks
   Future<void> updateDates({
     required DateTime startDate,
     required DateTime endDate,
@@ -37,7 +35,6 @@ class AccountBalanceCubit extends Cubit<AccountBalanceState> {
       ),
     ));
     load(
-      customerId: state.customerId,
       accountId: state.accountId,
       interval: "day",
       loadMore: true,
@@ -55,7 +52,6 @@ class AccountBalanceCubit extends Cubit<AccountBalanceState> {
   /// Loads all account completed account balances of the provided
   /// Customer Id and Account Id
   Future<void> load({
-    required String customerId,
     required String accountId,
     required String? interval,
     bool loadMore = false,
@@ -77,7 +73,6 @@ class AccountBalanceCubit extends Cubit<AccountBalanceState> {
         toDate: state.endDate.millisecondsSinceEpoch,
         fromDate: state.startDate.millisecondsSinceEpoch,
         interval: interval,
-        customerId: customerId,
         accountId: accountId,
       );
 

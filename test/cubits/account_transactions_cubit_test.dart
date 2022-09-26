@@ -33,7 +33,6 @@ void main() {
     when(
       () => _repo.listCustomerAccountTransactions(
         accountId: _loadsAccountTransactionsId,
-        customerId: _loadsAccountTransactionsId,
         limit: _defaultLimit,
         offset: 0,
         forceRefresh: any(named: 'forceRefresh'),
@@ -47,7 +46,6 @@ void main() {
         limit: _defaultLimit,
         offset: _defaultLimit,
         accountId: _loadsAccountTransactionsId,
-        customerId: _loadsAccountTransactionsId,
         forceRefresh: any(named: 'forceRefresh'),
       ),
     ).thenAnswer(
@@ -62,7 +60,6 @@ void main() {
         limit: _defaultLimit,
         offset: _defaultLimit * 2,
         accountId: _loadsAccountTransactionsId,
-        customerId: _loadsAccountTransactionsId,
         forceRefresh: any(named: 'forceRefresh'),
       ),
     ).thenAnswer(
@@ -73,7 +70,6 @@ void main() {
     when(
       () => _repo.listCustomerAccountTransactions(
         accountId: _throwsExceptionId,
-        customerId: _throwsExceptionId,
         limit: any(named: 'limit'),
         offset: any(named: 'offset'),
         forceRefresh: any(named: 'forceRefresh'),
@@ -87,12 +83,10 @@ void main() {
       getCustomerAccountTransactionsUseCase:
           _getCustomerAccountTransactionsUseCase,
       accountId: _loadsAccountTransactionsId,
-      customerId: _loadsAccountTransactionsId,
     ),
     verify: (c) => expect(
       c.state,
       AccountTransactionsState(
-        customerId: _loadsAccountTransactionsId,
         accountId: _loadsAccountTransactionsId,
       ),
     ),
@@ -104,17 +98,14 @@ void main() {
       getCustomerAccountTransactionsUseCase:
           _getCustomerAccountTransactionsUseCase,
       accountId: _loadsAccountTransactionsId,
-      customerId: _loadsAccountTransactionsId,
       limit: _defaultLimit,
     ),
     act: (c) => c.load(),
     expect: () => [
       AccountTransactionsState(
         accountId: _loadsAccountTransactionsId,
-        customerId: _loadsAccountTransactionsId,
       ),
       AccountTransactionsState(
-        customerId: _loadsAccountTransactionsId,
         accountId: _loadsAccountTransactionsId,
         transactions: _mockedTransactions.take(_defaultLimit).toList(),
         errors: {},
@@ -131,12 +122,10 @@ void main() {
       getCustomerAccountTransactionsUseCase:
           _getCustomerAccountTransactionsUseCase,
       accountId: _loadsAccountTransactionsId,
-      customerId: _loadsAccountTransactionsId,
       limit: _defaultLimit,
     ),
     seed: () => AccountTransactionsState(
       transactions: _mockedTransactions.take(_defaultLimit).toList(),
-      customerId: _loadsAccountTransactionsId,
       accountId: _loadsAccountTransactionsId,
       listData: AccountTransactionsListData(canLoadMore: true),
     ),
@@ -144,12 +133,10 @@ void main() {
     expect: () => [
       AccountTransactionsState(
         accountId: _loadsAccountTransactionsId,
-        customerId: _loadsAccountTransactionsId,
         transactions: _mockedTransactions.take(_defaultLimit).toList(),
         listData: AccountTransactionsListData(canLoadMore: true),
       ),
       AccountTransactionsState(
-        customerId: _loadsAccountTransactionsId,
         accountId: _loadsAccountTransactionsId,
         transactions: _mockedTransactions.take(_defaultLimit * 2).toList(),
         listData: AccountTransactionsListData(
@@ -161,7 +148,6 @@ void main() {
     verify: (c) {
       verify(() => _repo.listCustomerAccountTransactions(
             accountId: _loadsAccountTransactionsId,
-            customerId: _loadsAccountTransactionsId,
             limit: _defaultLimit,
             offset: _defaultLimit,
           )).called(1);
@@ -174,12 +160,10 @@ void main() {
       getCustomerAccountTransactionsUseCase:
           _getCustomerAccountTransactionsUseCase,
       accountId: _loadsAccountTransactionsId,
-      customerId: _loadsAccountTransactionsId,
       limit: _defaultLimit,
     ),
     seed: () => AccountTransactionsState(
       transactions: _mockedTransactions.take(_defaultLimit * 2).toList(),
-      customerId: _loadsAccountTransactionsId,
       accountId: _loadsAccountTransactionsId,
       listData: AccountTransactionsListData(
         canLoadMore: true,
@@ -190,7 +174,6 @@ void main() {
     expect: () => [
       AccountTransactionsState(
         accountId: _loadsAccountTransactionsId,
-        customerId: _loadsAccountTransactionsId,
         transactions: _mockedTransactions.take(_defaultLimit * 2).toList(),
         listData: AccountTransactionsListData(
           canLoadMore: true,
@@ -198,7 +181,6 @@ void main() {
         ),
       ),
       AccountTransactionsState(
-        customerId: _loadsAccountTransactionsId,
         accountId: _loadsAccountTransactionsId,
         transactions: _mockedTransactions,
         listData: AccountTransactionsListData(
@@ -210,7 +192,6 @@ void main() {
     verify: (c) {
       verify(() => _repo.listCustomerAccountTransactions(
             accountId: _loadsAccountTransactionsId,
-            customerId: _loadsAccountTransactionsId,
             limit: _defaultLimit,
             offset: _defaultLimit * 2,
           )).called(1);
@@ -223,18 +204,15 @@ void main() {
       getCustomerAccountTransactionsUseCase:
           _getCustomerAccountTransactionsUseCase,
       accountId: _throwsExceptionId,
-      customerId: _throwsExceptionId,
     ),
     act: (c) => c.load(),
     expect: () => [
       AccountTransactionsState(
-        customerId: _throwsExceptionId,
         accountId: _throwsExceptionId,
         transactions: [],
         errors: {},
       ),
       AccountTransactionsState(
-        customerId: _throwsExceptionId,
         accountId: _throwsExceptionId,
         transactions: [],
         errors: {},

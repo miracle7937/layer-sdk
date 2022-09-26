@@ -25,7 +25,6 @@ class AccountTransactionRepository
     final accountTransactionsDTOs =
         await _provider.listCustomerAccountTransactions(
       accountId: accountId,
-      customerId: customerId,
       limit: limit,
       offset: offset,
       forceRefresh: forceRefresh,

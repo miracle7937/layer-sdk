@@ -14,7 +14,6 @@ class AccountTransactionProvider {
   /// Returns all completed transactions of the supplied customer account
   Future<List<AccountTransactionDTO>> listCustomerAccountTransactions({
     required String accountId,
-    String? customerId,
     int? limit,
     int? offset,
     bool forceRefresh = false,
@@ -27,7 +26,6 @@ class AccountTransactionProvider {
       queryParameters: {
         'account_id': accountId,
         'status': 'C',
-        if (customerId != null) 'customer_id': customerId,
         if (limit != null) 'limit': limit,
         if (offset != null) 'offset': offset,
         if (fromDate != null) 'from_date': fromDate,
