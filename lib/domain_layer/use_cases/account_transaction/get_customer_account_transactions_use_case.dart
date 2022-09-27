@@ -15,19 +15,17 @@ class GetCustomerAccountTransactionsUseCase {
   ///
   /// Use the `limit` and `offset` parameters to paginate.
   Future<List<AccountTransaction>> call({
+    required String customerId,
     required String accountId,
     bool forceRefresh = false,
     int? limit,
     int? offset,
-    int? fromDate,
-    int? toDate,
   }) =>
       _repository.listCustomerAccountTransactions(
         accountId: accountId,
+        customerId: customerId,
         forceRefresh: forceRefresh,
         limit: limit,
         offset: offset,
-        fromDate: fromDate,
-        toDate: toDate,
       );
 }

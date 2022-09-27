@@ -3,13 +3,20 @@ import 'dart:collection';
 import 'package:equatable/equatable.dart';
 
 import '../../../domain_layer/models.dart';
-import '../base_cubit/base_state.dart';
 
 /// Represents the state of [AccountTransactionsCubit]
-class AccountTransactionsState extends BaseState<AccountTransactionsAction,
-    void, AccountTransactionsValidationErrorCode> {
+class AccountTransactionsState extends Equatable {
+  /// True if the cubit is processing something
+  final bool busy;
+
   /// List of [AccountTransactions] of the customer [Account]
   final UnmodifiableListView<AccountTransaction> transactions;
+
+  /// Error message for the last occurred error
+  final AccountTransactionsStateErrors error;
+
+  /// [Customer] id which will be used by this cubit
+  final String customerId;
 
   /// [Account] id which will be used by this cubit
   final String accountId;
@@ -17,54 +24,43 @@ class AccountTransactionsState extends BaseState<AccountTransactionsAction,
   /// Has all the data needed to handle the list of [BankingCard].
   final AccountTransactionsListData listData;
 
-  ///
-  final DateTime? startDate;
-
-  ///
-  final DateTime? endDate;
-
   /// Creates a new instance of [AccountTransactionsState]
   AccountTransactionsState({
+    required this.customerId,
     required this.accountId,
     Iterable<AccountTransaction> transactions = const [],
-    this.startDate,
-    super.actions = const <AccountTransactionsAction>{},
-    super.errors = const <CubitError>{},
-    super.events = const <AccountTransactionsEvent>{},
-    this.endDate,
+    this.busy = false,
+    this.error = AccountTransactionsStateErrors.none,
     this.listData = const AccountTransactionsListData(),
   }) : transactions = UnmodifiableListView(transactions);
 
   @override
   List<Object?> get props => [
+        busy,
         transactions,
+        error,
+        customerId,
         accountId,
         listData,
-        startDate,
-        endDate,
       ];
 
   /// Creates a new instance of [AccountTransactionsState]
   /// based on the current instance
   AccountTransactionsState copyWith({
+    bool? busy,
     Iterable<AccountTransaction>? transactions,
-    Set<AccountTransactionsAction>? actions,
-    Set<CubitError>? errors,
-    Set<AccountTransactionsEvent>? events,
+    AccountTransactionsStateErrors? error,
     String? accountId,
+    String? customerId,
     AccountTransactionsListData? listData,
-    DateTime? startDate,
-    DateTime? endDate,
   }) {
     return AccountTransactionsState(
+      busy: busy ?? this.busy,
       transactions: transactions ?? this.transactions,
-      actions: actions ?? super.actions,
-      errors: errors ?? super.errors,
-      events: const <AccountTransactionsEvent>{},
+      error: error ?? this.error,
+      customerId: customerId ?? this.customerId,
       accountId: accountId ?? this.accountId,
       listData: listData ?? this.listData,
-      startDate: startDate ?? this.startDate,
-      endDate: endDate ?? this.endDate,
     );
   }
 
@@ -73,24 +69,12 @@ class AccountTransactionsState extends BaseState<AccountTransactionsAction,
 }
 
 /// Enum for all possible errors for [AccountTransactionsCubit]
-enum AccountTransactionsValidationErrorCode {
+enum AccountTransactionsStateErrors {
+  /// No errors
+  none,
+
   /// Generic error
   generic,
-}
-
-/// Enum for possible actions
-enum AccountTransactionsAction {
-  /// Loading the balances
-  loadInitialTransactionss,
-
-  /// Changing the date
-  changeDate,
-}
-
-/// Enum for possible events
-enum AccountTransactionsEvent {
-  /// No events
-  none,
 }
 
 /// Keeps all the pagination data for [BankingCard]

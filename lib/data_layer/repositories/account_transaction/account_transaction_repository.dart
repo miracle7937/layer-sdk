@@ -19,17 +19,14 @@ class AccountTransactionRepository
     int? limit,
     int? offset,
     bool forceRefresh = false,
-    int? fromDate,
-    int? toDate,
   }) async {
     final accountTransactionsDTOs =
         await _provider.listCustomerAccountTransactions(
       accountId: accountId,
+      customerId: customerId,
       limit: limit,
       offset: offset,
       forceRefresh: forceRefresh,
-      fromDate: fromDate,
-      toDate: toDate,
     );
 
     return accountTransactionsDTOs
@@ -37,3 +34,4 @@ class AccountTransactionRepository
         .toList(growable: false);
   }
 }
+

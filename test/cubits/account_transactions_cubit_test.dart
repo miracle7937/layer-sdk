@@ -33,6 +33,7 @@ void main() {
     when(
       () => _repo.listCustomerAccountTransactions(
         accountId: _loadsAccountTransactionsId,
+        customerId: _loadsAccountTransactionsId,
         limit: _defaultLimit,
         offset: 0,
         forceRefresh: any(named: 'forceRefresh'),
@@ -46,6 +47,7 @@ void main() {
         limit: _defaultLimit,
         offset: _defaultLimit,
         accountId: _loadsAccountTransactionsId,
+        customerId: _loadsAccountTransactionsId,
         forceRefresh: any(named: 'forceRefresh'),
       ),
     ).thenAnswer(
@@ -60,6 +62,7 @@ void main() {
         limit: _defaultLimit,
         offset: _defaultLimit * 2,
         accountId: _loadsAccountTransactionsId,
+        customerId: _loadsAccountTransactionsId,
         forceRefresh: any(named: 'forceRefresh'),
       ),
     ).thenAnswer(
@@ -70,6 +73,7 @@ void main() {
     when(
       () => _repo.listCustomerAccountTransactions(
         accountId: _throwsExceptionId,
+        customerId: _throwsExceptionId,
         limit: any(named: 'limit'),
         offset: any(named: 'offset'),
         forceRefresh: any(named: 'forceRefresh'),
@@ -83,10 +87,12 @@ void main() {
       getCustomerAccountTransactionsUseCase:
           _getCustomerAccountTransactionsUseCase,
       accountId: _loadsAccountTransactionsId,
+      customerId: _loadsAccountTransactionsId,
     ),
     verify: (c) => expect(
       c.state,
       AccountTransactionsState(
+        customerId: _loadsAccountTransactionsId,
         accountId: _loadsAccountTransactionsId,
       ),
     ),
@@ -98,17 +104,22 @@ void main() {
       getCustomerAccountTransactionsUseCase:
           _getCustomerAccountTransactionsUseCase,
       accountId: _loadsAccountTransactionsId,
+      customerId: _loadsAccountTransactionsId,
       limit: _defaultLimit,
     ),
     act: (c) => c.load(),
     expect: () => [
       AccountTransactionsState(
+        busy: true,
         accountId: _loadsAccountTransactionsId,
+        customerId: _loadsAccountTransactionsId,
       ),
       AccountTransactionsState(
+        customerId: _loadsAccountTransactionsId,
         accountId: _loadsAccountTransactionsId,
+        busy: false,
         transactions: _mockedTransactions.take(_defaultLimit).toList(),
-        errors: {},
+        error: AccountTransactionsStateErrors.none,
         listData: AccountTransactionsListData(
           canLoadMore: true,
         ),
@@ -122,21 +133,26 @@ void main() {
       getCustomerAccountTransactionsUseCase:
           _getCustomerAccountTransactionsUseCase,
       accountId: _loadsAccountTransactionsId,
+      customerId: _loadsAccountTransactionsId,
       limit: _defaultLimit,
     ),
     seed: () => AccountTransactionsState(
       transactions: _mockedTransactions.take(_defaultLimit).toList(),
+      customerId: _loadsAccountTransactionsId,
       accountId: _loadsAccountTransactionsId,
       listData: AccountTransactionsListData(canLoadMore: true),
     ),
     act: (c) => c.load(loadMore: true),
     expect: () => [
       AccountTransactionsState(
+        busy: true,
         accountId: _loadsAccountTransactionsId,
+        customerId: _loadsAccountTransactionsId,
         transactions: _mockedTransactions.take(_defaultLimit).toList(),
         listData: AccountTransactionsListData(canLoadMore: true),
       ),
       AccountTransactionsState(
+        customerId: _loadsAccountTransactionsId,
         accountId: _loadsAccountTransactionsId,
         transactions: _mockedTransactions.take(_defaultLimit * 2).toList(),
         listData: AccountTransactionsListData(
@@ -148,6 +164,7 @@ void main() {
     verify: (c) {
       verify(() => _repo.listCustomerAccountTransactions(
             accountId: _loadsAccountTransactionsId,
+            customerId: _loadsAccountTransactionsId,
             limit: _defaultLimit,
             offset: _defaultLimit,
           )).called(1);
@@ -160,10 +177,12 @@ void main() {
       getCustomerAccountTransactionsUseCase:
           _getCustomerAccountTransactionsUseCase,
       accountId: _loadsAccountTransactionsId,
+      customerId: _loadsAccountTransactionsId,
       limit: _defaultLimit,
     ),
     seed: () => AccountTransactionsState(
       transactions: _mockedTransactions.take(_defaultLimit * 2).toList(),
+      customerId: _loadsAccountTransactionsId,
       accountId: _loadsAccountTransactionsId,
       listData: AccountTransactionsListData(
         canLoadMore: true,
@@ -173,7 +192,9 @@ void main() {
     act: (c) => c.load(loadMore: true),
     expect: () => [
       AccountTransactionsState(
+        busy: true,
         accountId: _loadsAccountTransactionsId,
+        customerId: _loadsAccountTransactionsId,
         transactions: _mockedTransactions.take(_defaultLimit * 2).toList(),
         listData: AccountTransactionsListData(
           canLoadMore: true,
@@ -181,6 +202,7 @@ void main() {
         ),
       ),
       AccountTransactionsState(
+        customerId: _loadsAccountTransactionsId,
         accountId: _loadsAccountTransactionsId,
         transactions: _mockedTransactions,
         listData: AccountTransactionsListData(
@@ -192,6 +214,7 @@ void main() {
     verify: (c) {
       verify(() => _repo.listCustomerAccountTransactions(
             accountId: _loadsAccountTransactionsId,
+            customerId: _loadsAccountTransactionsId,
             limit: _defaultLimit,
             offset: _defaultLimit * 2,
           )).called(1);
@@ -204,19 +227,25 @@ void main() {
       getCustomerAccountTransactionsUseCase:
           _getCustomerAccountTransactionsUseCase,
       accountId: _throwsExceptionId,
+      customerId: _throwsExceptionId,
     ),
     act: (c) => c.load(),
     expect: () => [
       AccountTransactionsState(
+        customerId: _throwsExceptionId,
         accountId: _throwsExceptionId,
+        busy: true,
         transactions: [],
-        errors: {},
+        error: AccountTransactionsStateErrors.none,
       ),
       AccountTransactionsState(
+        customerId: _throwsExceptionId,
         accountId: _throwsExceptionId,
+        busy: false,
         transactions: [],
-        errors: {},
+        error: AccountTransactionsStateErrors.generic,
       ),
     ],
   );
 }
+
