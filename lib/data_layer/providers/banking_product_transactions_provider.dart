@@ -34,6 +34,7 @@ class BankingProductTransactionProvider {
       forceRefresh: forceRefresh,
     );
 
-    return BankingProductTransactionDTO.fromJsonList(response.data);
+    return BankingProductTransactionDTO.fromJsonList(
+        List<Map<String, dynamic>>.from(response.data));
   }
 }

@@ -3,7 +3,8 @@ import 'package:bloc/bloc.dart';
 import '../../domain_layer/use_cases/banking_product_transactions_use_case.dart';
 import 'banking_product_transactions_state.dart';
 
-/// Cubit responsible for retrieving the list of customer [BankingProductTransaction]
+/// Cubit responsible for retrieving the list of
+/// customer [BankingProductTransaction]
 class BankingProductTransactionsCubit
     extends Cubit<BankingProductTransactionsState> {
   final GetCustomerBankingProductTransactionsUseCase
@@ -62,6 +63,8 @@ class BankingProductTransactionsCubit
     bool forceRefresh = false,
     int? fromDate,
     int? toDate,
+    String? cardId,
+    String? accountId,
   }) async {
     emit(
       state.copyWith(
@@ -80,8 +83,8 @@ class BankingProductTransactionsCubit
       final offset = loadMore ? state.listData.offset + limit : 0;
 
       final transactions = await _getCustomerBankingProductTransactionsUseCase(
-        accountId: state.accountId,
-        cardId: state.cardId,
+        accountId: accountId ?? state.accountId,
+        cardId: cardId ?? state.cardId,
         fromDate: fromDate,
         toDate: toDate,
         offset: offset,

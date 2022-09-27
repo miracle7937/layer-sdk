@@ -11,7 +11,8 @@ class BankingProductTransactionRepository
   /// Creates a new [BankingProductTransactionRepository] instance
   BankingProductTransactionRepository(this._provider);
 
-  /// Returns all completed transactions of the supplied customer banking product
+  /// Returns all completed transactions of the supplied customer
+  /// banking product
   @override
   Future<List<BankingProductTransaction>>
       listCustomerBankingProductTransactions({

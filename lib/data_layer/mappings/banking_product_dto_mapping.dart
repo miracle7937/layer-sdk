@@ -3,7 +3,8 @@ import '../dtos/banking_product_transaction_dto.dart';
 
 /// Extension that provides mapping for [BankingProductTransactionDTO]
 extension BankingProductTransactionDTOMapping on BankingProductTransactionDTO {
-  /// Maps a [BankingProductTransactionDTO] instance to a [BankingProductTransaction] model
+  /// Maps a [BankingProductTransactionDTO] instance to
+  ///  a [BankingProductTransaction] model
   BankingProductTransaction toBankingProductTransaction() =>
       BankingProductTransaction(
         amount: amount,
