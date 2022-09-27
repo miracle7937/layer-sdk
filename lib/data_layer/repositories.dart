@@ -8,6 +8,7 @@ export 'repositories/alert/alert_repository.dart';
 export 'repositories/audit/audit_repository.dart';
 export 'repositories/authentication/authentication_repository.dart';
 export 'repositories/bank/bank_repository.dart';
+export 'repositories/banking_product_transactions_repository.dart';
 export 'repositories/beneficiary/beneficiary_repository.dart';
 export 'repositories/bill/bill_repository.dart';
 export 'repositories/branch/branch_repository.dart';

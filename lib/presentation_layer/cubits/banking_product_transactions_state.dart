@@ -1,0 +1,138 @@
+import 'dart:collection';
+
+import 'package:equatable/equatable.dart';
+
+import '../../../domain_layer/models.dart';
+import '../../domain_layer/models/banking_product_transaction.dart';
+import 'base_cubit/base_state.dart';
+
+/// Represents the state of [BankingProductTransactionsCubit]
+class BankingProductTransactionsState extends BaseState<
+    BankingProductTransactionsAction,
+    void,
+    BankingProductTransactionsValidationErrorCode> {
+  /// List of [BankingProductTransactions] of the customer [BankingProduct]
+  final UnmodifiableListView<BankingProductTransaction> transactions;
+
+  /// [BankingProduct] id which will be used by this cubit
+  final String? accountId;
+
+  /// [BankingProduct] id which will be used by this cubit
+  final String? cardId;
+
+  /// Has all the data needed to handle the list of [BankingCard].
+  final BankingProductTransactionsListData listData;
+
+  ///
+  final DateTime? startDate;
+
+  ///
+  final DateTime? endDate;
+
+  /// Creates a new instance of [BankingProductTransactionsState]
+  BankingProductTransactionsState({
+    this.accountId,
+    this.cardId,
+    Iterable<BankingProductTransaction> transactions = const [],
+    this.startDate,
+    super.actions = const <BankingProductTransactionsAction>{},
+    super.errors = const <CubitError>{},
+    super.events = const <BankingProductTransactionsEvent>{},
+    this.endDate,
+    this.listData = const BankingProductTransactionsListData(),
+  }) : transactions = UnmodifiableListView(transactions);
+
+  @override
+  List<Object?> get props => [
+        transactions,
+        accountId,
+        cardId,
+        listData,
+        startDate,
+        endDate,
+      ];
+
+  /// Creates a new instance of [BankingProductTransactionsState]
+  /// based on the current instance
+  BankingProductTransactionsState copyWith({
+    Iterable<BankingProductTransaction>? transactions,
+    Set<BankingProductTransactionsAction>? actions,
+    Set<CubitError>? errors,
+    Set<BankingProductTransactionsEvent>? events,
+    String? accountId,
+    String? cardId,
+    BankingProductTransactionsListData? listData,
+    DateTime? startDate,
+    DateTime? endDate,
+  }) {
+    return BankingProductTransactionsState(
+      transactions: transactions ?? this.transactions,
+      actions: actions ?? super.actions,
+      errors: errors ?? super.errors,
+      events: const <BankingProductTransactionsEvent>{},
+      accountId: accountId ?? this.accountId,
+      cardId: cardId ?? this.cardId,
+      listData: listData ?? this.listData,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
+    );
+  }
+
+  @override
+  bool get stringify => true;
+}
+
+/// Enum for all possible errors for [BankingProductTransactionsCubit]
+enum BankingProductTransactionsValidationErrorCode {
+  /// Generic error
+  generic,
+}
+
+/// Enum for possible actions
+enum BankingProductTransactionsAction {
+  /// Loading the balances
+  loadInitialTransactionss,
+
+  /// Changing the date
+  changeDate,
+}
+
+/// Enum for possible events
+enum BankingProductTransactionsEvent {
+  /// No events
+  none,
+}
+
+/// Keeps all the pagination data for [BankingCard]
+class BankingProductTransactionsListData extends Equatable {
+  /// If there is more data to be loaded.
+  final bool canLoadMore;
+
+  /// The current offset for the loaded list.
+  final int offset;
+
+  /// Creates a new [CustomerListData] with the default values.
+  const BankingProductTransactionsListData({
+    this.canLoadMore = false,
+    this.offset = 0,
+  });
+
+  @override
+  List<Object?> get props => [
+        canLoadMore,
+        offset,
+      ];
+
+  /// Creates a new object based on this one.
+  BankingProductTransactionsListData copyWith({
+    bool? canLoadMore,
+    int? offset,
+  }) =>
+      BankingProductTransactionsListData(
+        canLoadMore: canLoadMore ?? this.canLoadMore,
+        offset: offset ?? this.offset,
+      );
+
+  @override
+  bool get stringify => true;
+}
