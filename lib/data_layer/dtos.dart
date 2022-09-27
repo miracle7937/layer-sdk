@@ -6,6 +6,7 @@ export 'dtos/account/account_top_up_request_dto.dart';
 export 'dtos/account/account_type_dto.dart';
 export 'dtos/account_loan/account_loan_dto.dart';
 export 'dtos/account_loan/account_loan_payment_dto.dart';
+export 'dtos/account_transfaction/account_balance_dto.dart';
 export 'dtos/account_transfaction/account_transaction_dto.dart';
 export 'dtos/activity/activity_action_type_dto.dart';
 export 'dtos/activity/activity_dto.dart';
