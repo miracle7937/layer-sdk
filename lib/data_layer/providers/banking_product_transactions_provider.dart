@@ -20,6 +20,12 @@ class BankingProductTransactionProvider {
     int? limit,
     int? offset,
     bool forceRefresh = false,
+    String? searchString,
+    bool? credit,
+    int? amountFrom,
+    int? amountTo,
+    DateTime? startDate,
+    DateTime? endDate,
   }) async {
     final response = await netClient.request(
       netClient.netEndpoints.transaction,
@@ -30,6 +36,13 @@ class BankingProductTransactionProvider {
         if (cardId != null) 'card_id': cardId,
         if (limit != null) 'limit': limit,
         if (offset != null) 'offset': offset,
+        if (amountFrom != null) 'from_amount': amountFrom,
+        if (amountTo != null) 'to_amount': amountTo,
+        if (startDate != null) 'ts_from': startDate.millisecondsSinceEpoch,
+        if (endDate != null) 'ts_to': endDate.millisecondsSinceEpoch,
+        if (credit != null && credit) 'credit': true,
+        if (credit != null && !credit) 'debit': true,
+        if (searchString != null) 'q': searchString,
       },
       forceRefresh: forceRefresh,
     );

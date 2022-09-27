@@ -20,8 +20,12 @@ class GetCustomerBankingProductTransactionsUseCase {
     bool forceRefresh = false,
     int? limit,
     int? offset,
-    int? fromDate,
-    int? toDate,
+    String? searchString,
+    bool? credit,
+    int? amountFrom,
+    int? amountTo,
+    DateTime? startDate,
+    DateTime? endDate,
   }) =>
       _repository.listCustomerBankingProductTransactions(
         accountId: accountId,
@@ -29,5 +33,11 @@ class GetCustomerBankingProductTransactionsUseCase {
         forceRefresh: forceRefresh,
         limit: limit,
         offset: offset,
+        searchString: searchString,
+        credit: credit,
+        amountFrom: amountFrom,
+        amountTo: amountTo,
+        startDate: startDate,
+        endDate: endDate,
       );
 }

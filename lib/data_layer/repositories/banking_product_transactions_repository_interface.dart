@@ -11,5 +11,11 @@ abstract class BankingProductTransactionRepositoryInterface {
     int? limit,
     int? offset,
     bool forceRefresh = false,
+    String? searchString,
+    bool? credit,
+    int? amountFrom,
+    int? amountTo,
+    DateTime? startDate,
+    DateTime? endDate,
   });
 }

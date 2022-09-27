@@ -21,6 +21,12 @@ class BankingProductTransactionRepository
     int? limit,
     int? offset,
     bool forceRefresh = false,
+    String? searchString,
+    bool? credit,
+    int? amountFrom,
+    int? amountTo,
+    DateTime? startDate,
+    DateTime? endDate,
   }) async {
     final accountTransactionsDTOs =
         await _provider.listCustomerBankingProductTransactions(
@@ -29,6 +35,12 @@ class BankingProductTransactionRepository
       limit: limit,
       offset: offset,
       forceRefresh: forceRefresh,
+      searchString: searchString,
+      credit: credit,
+      amountFrom: amountFrom,
+      amountTo: amountTo,
+      startDate: startDate,
+      endDate: endDate,
     );
 
     return accountTransactionsDTOs

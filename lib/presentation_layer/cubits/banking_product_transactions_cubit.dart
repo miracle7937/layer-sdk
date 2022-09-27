@@ -43,8 +43,8 @@ class BankingProductTransactionsCubit
       ),
     ));
     load(
-      fromDate: startDate.millisecondsSinceEpoch,
-      toDate: endDate.millisecondsSinceEpoch,
+      fromDate: startDate,
+      toDate: endDate,
       loadMore: true,
     );
     emit(state.copyWith(
@@ -61,10 +61,14 @@ class BankingProductTransactionsCubit
   Future<void> load({
     bool loadMore = false,
     bool forceRefresh = false,
-    int? fromDate,
-    int? toDate,
+    DateTime? fromDate,
+    DateTime? toDate,
     String? cardId,
     String? accountId,
+    String? searchString,
+    bool? credit,
+    int? amountFrom,
+    int? amountTo,
   }) async {
     emit(
       state.copyWith(
@@ -85,11 +89,15 @@ class BankingProductTransactionsCubit
       final transactions = await _getCustomerBankingProductTransactionsUseCase(
         accountId: accountId ?? state.accountId,
         cardId: cardId ?? state.cardId,
-        fromDate: fromDate,
-        toDate: toDate,
+        startDate: fromDate,
+        endDate: toDate,
         offset: offset,
         limit: limit,
         forceRefresh: forceRefresh,
+        searchString: searchString,
+        credit: credit,
+        amountFrom: amountFrom,
+        amountTo: amountTo,
       );
 
       final list = offset > 0
