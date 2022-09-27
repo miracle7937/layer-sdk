@@ -26,27 +26,13 @@ class AccountBalanceCubit extends Cubit<AccountBalanceState> {
     required DateTime startDate,
     required DateTime endDate,
   }) async {
-    emit(state.copyWith(
-      startDate: startDate,
-      endDate: endDate,
-      actions: state.addAction(AccountBalanceAction.changeDate),
-      errors: state.removeErrorForAction(
-        AccountBalanceAction.changeDate,
-      ),
-    ));
-    await load(
+    load(
       accountId: state.accountId,
       interval: "day",
       loadMore: true,
-    );
-    emit(state.copyWith(
       startDate: startDate,
       endDate: endDate,
-      actions: state.removeAction(AccountBalanceAction.changeDate),
-      errors: state.removeErrorForAction(
-        AccountBalanceAction.changeDate,
-      ),
-    ));
+    );
   }
 
   /// Loads all account completed account balances of the provided
@@ -55,10 +41,14 @@ class AccountBalanceCubit extends Cubit<AccountBalanceState> {
     required String accountId,
     required String? interval,
     bool loadMore = false,
+    DateTime? startDate,
+    DateTime? endDate,
   }) async {
     try {
       emit(
         state.copyWith(
+          startDate: startDate,
+          endDate: endDate,
           actions: state.addAction(loadMore
               ? AccountBalanceAction.changeDate
               : AccountBalanceAction.loadInitialBalances),
@@ -76,10 +66,9 @@ class AccountBalanceCubit extends Cubit<AccountBalanceState> {
         accountId: accountId,
       );
 
-      final list = balances;
       emit(
         state.copyWith(
-          balances: list,
+          balances: balances,
           actions: state.removeAction(
             loadMore
                 ? AccountBalanceAction.changeDate
