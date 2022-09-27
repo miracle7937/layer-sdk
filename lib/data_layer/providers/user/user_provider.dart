@@ -259,6 +259,23 @@ class UserProvider {
 
     return response.success;
   }
+
+  /// Uploads the newly selected image for the customer's profile
+  Future patchCustomerImage({required String base64}) async {
+    var data = {
+      "image": base64,
+    };
+
+    final response = await netClient.request(
+      netClient.netEndpoints.user,
+      data: [
+        data,
+      ],
+      method: NetRequestMethods.patch,
+    );
+
+    return response.data;
+  }
 }
 
 /// The available request change types.
