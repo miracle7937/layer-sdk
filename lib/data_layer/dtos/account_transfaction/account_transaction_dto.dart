@@ -78,7 +78,6 @@ class AccountTransactionDTO {
 
   /// Creates a list of [AccountTransactionDTO] from a JSON list
   static List<AccountTransactionDTO> fromJsonList(
-      List<Map<String, dynamic>> json) {
-    return json.map(AccountTransactionDTO.fromJson).toList();
-  }
+          List<Map<String, dynamic>> json) =>
+      json.map(AccountTransactionDTO.fromJson).toList(growable: false);
 }

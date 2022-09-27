@@ -12,4 +12,3 @@ abstract class AccountTransactionRepositoryInterface {
     bool forceRefresh = false,
   });
 }
-

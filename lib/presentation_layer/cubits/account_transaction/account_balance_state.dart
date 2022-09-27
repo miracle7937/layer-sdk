@@ -3,8 +3,7 @@ import '../../../domain_layer/models.dart';
 import '../base_cubit/base_state.dart';
 
 /// Represents the state of [AccountBalanceCubit]
-class AccountBalanceState extends BaseState<AccountBalanceAction, void,
-    AccountBalanceValidationErrorCode> {
+class AccountBalanceState extends BaseState<AccountBalanceAction, void, void> {
   /// List of [AccountBalance] of the customer [Account]
   final UnmodifiableListView<AccountBalance> balances;
 
@@ -24,7 +23,6 @@ class AccountBalanceState extends BaseState<AccountBalanceAction, void,
     required this.endDate,
     super.actions = const <AccountBalanceAction>{},
     super.errors = const <CubitError>{},
-    super.events = const <AccountBalanceEvent>{},
     Iterable<AccountBalance> balances = const [],
   }) : balances = UnmodifiableListView(balances);
 
@@ -43,14 +41,12 @@ class AccountBalanceState extends BaseState<AccountBalanceAction, void,
     String? accountId,
     Set<AccountBalanceAction>? actions,
     Set<CubitError>? errors,
-    Set<AccountBalanceEvent>? events,
     DateTime? startDate,
     DateTime? endDate,
   }) {
     return AccountBalanceState(
       actions: actions ?? super.actions,
       errors: errors ?? super.errors,
-      events: const <AccountBalanceEvent>{},
       balances: balances ?? this.balances,
       accountId: accountId ?? this.accountId,
       endDate: endDate ?? this.endDate,
@@ -62,12 +58,6 @@ class AccountBalanceState extends BaseState<AccountBalanceAction, void,
   bool get stringify => true;
 }
 
-/// Enum for all possible errors for [AccountBalanceCubit]
-enum AccountBalanceValidationErrorCode {
-  /// Generic error
-  generic,
-}
-
 /// Enum for possible actions
 enum AccountBalanceAction {
   /// Loading the balances
@@ -75,10 +65,4 @@ enum AccountBalanceAction {
 
   /// Changing the date
   changeDate,
-}
-
-/// Enum for possible events
-enum AccountBalanceEvent {
-  /// No events 
-  none,
 }
