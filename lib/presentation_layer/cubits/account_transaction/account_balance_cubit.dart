@@ -34,7 +34,7 @@ class AccountBalanceCubit extends Cubit<AccountBalanceState> {
         AccountBalanceAction.changeDate,
       ),
     ));
-    load(
+    await load(
       accountId: state.accountId,
       interval: "day",
       loadMore: true,

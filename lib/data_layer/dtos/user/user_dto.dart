@@ -172,8 +172,7 @@ class UserDTO {
     username = json['username'];
     firstName = json['first_name'];
     lastName = json['last_name'];
-    token =
-        'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE4OTg4MDg5NTUsIlVzZXIiOiI2MmRhNjQxNS01MjQ0LTQ0ZmUtOGUzYy1iNmJhN2Q3NDdmNmIvdXNlcjkzIiwiVHlwZSI6ImN1c3RvbWVyIiwiRGV2aWNlX2lkIjpudWxsLCJBcHBfaWQiOiIiLCJBX1VzZXJfaWQiOm51bGwsIlRlbmFudElEIjpudWxsLCJVc2xJRCI6IiJ9.T9j0DLxGBIMoloskgua8e7jTmuSUFge8D5n-FmUoKYZGPJAlBOF6LdWfNYUUhruTY_pv8TF2N7EU68FQsx5kxBwySiXKAoZxv75WiD_mGRWOqcykByXdnEMiPfW9mv_uXpzZeEuDlcZ_tFncwGD4TG0WGUHRtR_4ILagOY5O94N82p-uQer4DZftvm6jcMb53ZyB0bXF5RF8dkYNGQhscDcNGyDUWBBfTfv26BOwLAO1F4K-44sLzTpDkEiXz8mcLK-11k-jngNLEul7QHJeWHlHsTY3wMC_zCYZlT3QMnpMZ9E-XzCtm3M936LKqn0TmLyl8H60qkpK5E6y8qf9fA';
+    token = json['token'];
     mobileNumber = json['mobile_number'];
     email = json['email'];
     imageUrl = json['image_url'];
