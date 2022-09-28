@@ -22,6 +22,10 @@ class BankingProductTransactionsCubit
     this.limit = 50,
   })  : _getCustomerBankingProductTransactionsUseCase =
             getCustomerBankingProductTransactionsUseCase,
+        assert(
+          accountId == null || cardId == null,
+          'Pass either account Id or card Id',
+        ),
         super(
           BankingProductTransactionsState(
             accountId: accountId,
@@ -34,26 +38,21 @@ class BankingProductTransactionsCubit
     required DateTime startDate,
     required DateTime endDate,
   }) async {
-    emit(state.copyWith(
-      startDate: startDate,
-      endDate: endDate,
-      actions: state.addAction(BankingProductTransactionsAction.filtering),
-      errors: state.removeErrorForAction(
-        BankingProductTransactionsAction.filtering,
-      ),
-    ));
     load(
       fromDate: startDate,
       toDate: endDate,
       loadMore: true,
     );
+  }
+
+  /// Reset the state
+  Future<void> reset() async {
     emit(state.copyWith(
-      startDate: startDate,
-      endDate: endDate,
-      actions: state.removeAction(BankingProductTransactionsAction.filtering),
-      errors: state.removeErrorForAction(
-        BankingProductTransactionsAction.filtering,
-      ),
+      actions: state.addAction(BankingProductTransactionsAction.reset),
+    ));
+    emit(BankingProductTransactionsState(
+      accountId: state.accountId,
+      cardId: state.cardId,
     ));
   }
 
@@ -72,9 +71,15 @@ class BankingProductTransactionsCubit
   }) async {
     emit(
       state.copyWith(
-        actions: state.addAction(loadMore
-            ? BankingProductTransactionsAction.filtering
-            : BankingProductTransactionsAction.loadInitialTransactions),
+        cardId: cardId,
+        accountId: accountId,
+        startDate: fromDate,
+        endDate: toDate,
+        actions: state.addAction(state.listData.canLoadMore
+            ? BankingProductTransactionsAction.loadingMore
+            : (loadMore
+                ? BankingProductTransactionsAction.filtering
+                : BankingProductTransactionsAction.loadInitialTransactions)),
         errors: state.removeErrorForAction(
           loadMore
               ? BankingProductTransactionsAction.filtering
@@ -108,9 +113,11 @@ class BankingProductTransactionsCubit
         state.copyWith(
           transactions: list,
           actions: state.removeAction(
-            loadMore
-                ? BankingProductTransactionsAction.filtering
-                : BankingProductTransactionsAction.loadInitialTransactions,
+            state.listData.canLoadMore
+                ? BankingProductTransactionsAction.loadingMore
+                : loadMore
+                    ? BankingProductTransactionsAction.filtering
+                    : BankingProductTransactionsAction.loadInitialTransactions,
           ),
           errors: state.removeErrorForAction(
             loadMore

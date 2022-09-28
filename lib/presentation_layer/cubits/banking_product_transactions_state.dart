@@ -84,6 +84,12 @@ enum BankingProductTransactionsAction {
 
   /// Changing the date
   filtering,
+
+  /// Resetting the filters
+  reset,
+
+  /// Loading More once limit reached
+  loadingMore,
 }
 
 /// Keeps all the pagination data for [BankingCard]
