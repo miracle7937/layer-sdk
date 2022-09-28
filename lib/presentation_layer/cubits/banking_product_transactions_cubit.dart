@@ -68,8 +68,8 @@ class BankingProductTransactionsCubit
     String? accountId,
     String? searchString,
     bool? credit,
-    int? amountFrom,
-    int? amountTo,
+    double? amountFrom,
+    double? amountTo,
   }) async {
     emit(
       state.copyWith(

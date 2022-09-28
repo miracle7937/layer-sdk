@@ -23,8 +23,8 @@ class BankingProductTransactionRepository
     bool forceRefresh = false,
     String? searchString,
     bool? credit,
-    int? amountFrom,
-    int? amountTo,
+    double? amountFrom,
+    double? amountTo,
     DateTime? startDate,
     DateTime? endDate,
   }) async {

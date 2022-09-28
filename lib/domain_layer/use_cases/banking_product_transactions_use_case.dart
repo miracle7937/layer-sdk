@@ -22,8 +22,8 @@ class GetCustomerBankingProductTransactionsUseCase {
     int? offset,
     String? searchString,
     bool? credit,
-    int? amountFrom,
-    int? amountTo,
+    double? amountFrom,
+    double? amountTo,
     DateTime? startDate,
     DateTime? endDate,
   }) =>
