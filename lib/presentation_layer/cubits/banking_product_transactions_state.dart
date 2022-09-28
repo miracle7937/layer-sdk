@@ -7,10 +7,8 @@ import '../../domain_layer/models/banking_product_transaction.dart';
 import 'base_cubit/base_state.dart';
 
 /// Represents the state of [BankingProductTransactionsCubit]
-class BankingProductTransactionsState extends BaseState<
-    BankingProductTransactionsAction,
-    void,
-    BankingProductTransactionsValidationErrorCode> {
+class BankingProductTransactionsState
+    extends BaseState<BankingProductTransactionsAction, void, void> {
   /// List of [BankingProductTransactions] of the customer [BankingProduct]
   final UnmodifiableListView<BankingProductTransaction> transactions;
 
@@ -37,7 +35,6 @@ class BankingProductTransactionsState extends BaseState<
     this.startDate,
     super.actions = const <BankingProductTransactionsAction>{},
     super.errors = const <CubitError>{},
-    super.events = const <BankingProductTransactionsEvent>{},
     this.endDate,
     this.listData = const BankingProductTransactionsListData(),
   }) : transactions = UnmodifiableListView(transactions);
@@ -58,7 +55,6 @@ class BankingProductTransactionsState extends BaseState<
     Iterable<BankingProductTransaction>? transactions,
     Set<BankingProductTransactionsAction>? actions,
     Set<CubitError>? errors,
-    Set<BankingProductTransactionsEvent>? events,
     String? accountId,
     String? cardId,
     BankingProductTransactionsListData? listData,
@@ -69,7 +65,6 @@ class BankingProductTransactionsState extends BaseState<
       transactions: transactions ?? this.transactions,
       actions: actions ?? super.actions,
       errors: errors ?? super.errors,
-      events: const <BankingProductTransactionsEvent>{},
       accountId: accountId ?? this.accountId,
       cardId: cardId ?? this.cardId,
       listData: listData ?? this.listData,
@@ -82,25 +77,13 @@ class BankingProductTransactionsState extends BaseState<
   bool get stringify => true;
 }
 
-/// Enum for all possible errors for [BankingProductTransactionsCubit]
-enum BankingProductTransactionsValidationErrorCode {
-  /// Generic error
-  generic,
-}
-
 /// Enum for possible actions
 enum BankingProductTransactionsAction {
   /// Loading the balances
-  loadInitialTransactionss,
+  loadInitialTransactions,
 
   /// Changing the date
-  changeDate,
-}
-
-/// Enum for possible events
-enum BankingProductTransactionsEvent {
-  /// No events
-  none,
+  filtering,
 }
 
 /// Keeps all the pagination data for [BankingCard]

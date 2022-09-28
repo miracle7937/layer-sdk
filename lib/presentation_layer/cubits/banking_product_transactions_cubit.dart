@@ -37,9 +37,9 @@ class BankingProductTransactionsCubit
     emit(state.copyWith(
       startDate: startDate,
       endDate: endDate,
-      actions: state.addAction(BankingProductTransactionsAction.changeDate),
+      actions: state.addAction(BankingProductTransactionsAction.filtering),
       errors: state.removeErrorForAction(
-        BankingProductTransactionsAction.changeDate,
+        BankingProductTransactionsAction.filtering,
       ),
     ));
     load(
@@ -50,9 +50,9 @@ class BankingProductTransactionsCubit
     emit(state.copyWith(
       startDate: startDate,
       endDate: endDate,
-      actions: state.removeAction(BankingProductTransactionsAction.changeDate),
+      actions: state.removeAction(BankingProductTransactionsAction.filtering),
       errors: state.removeErrorForAction(
-        BankingProductTransactionsAction.changeDate,
+        BankingProductTransactionsAction.filtering,
       ),
     ));
   }
@@ -73,12 +73,12 @@ class BankingProductTransactionsCubit
     emit(
       state.copyWith(
         actions: state.addAction(loadMore
-            ? BankingProductTransactionsAction.changeDate
-            : BankingProductTransactionsAction.loadInitialTransactionss),
+            ? BankingProductTransactionsAction.filtering
+            : BankingProductTransactionsAction.loadInitialTransactions),
         errors: state.removeErrorForAction(
           loadMore
-              ? BankingProductTransactionsAction.changeDate
-              : BankingProductTransactionsAction.loadInitialTransactionss,
+              ? BankingProductTransactionsAction.filtering
+              : BankingProductTransactionsAction.loadInitialTransactions,
         ),
       ),
     );
@@ -109,13 +109,13 @@ class BankingProductTransactionsCubit
           transactions: list,
           actions: state.removeAction(
             loadMore
-                ? BankingProductTransactionsAction.changeDate
-                : BankingProductTransactionsAction.loadInitialTransactionss,
+                ? BankingProductTransactionsAction.filtering
+                : BankingProductTransactionsAction.loadInitialTransactions,
           ),
           errors: state.removeErrorForAction(
             loadMore
-                ? BankingProductTransactionsAction.changeDate
-                : BankingProductTransactionsAction.loadInitialTransactionss,
+                ? BankingProductTransactionsAction.filtering
+                : BankingProductTransactionsAction.loadInitialTransactions,
           ),
           listData: state.listData.copyWith(
             canLoadMore: transactions.length >= limit,
@@ -128,13 +128,13 @@ class BankingProductTransactionsCubit
         state.copyWith(
           actions: state.removeAction(
             loadMore
-                ? BankingProductTransactionsAction.changeDate
-                : BankingProductTransactionsAction.loadInitialTransactionss,
+                ? BankingProductTransactionsAction.filtering
+                : BankingProductTransactionsAction.loadInitialTransactions,
           ),
           errors: state.addErrorFromException(
             action: loadMore
-                ? BankingProductTransactionsAction.changeDate
-                : BankingProductTransactionsAction.loadInitialTransactionss,
+                ? BankingProductTransactionsAction.filtering
+                : BankingProductTransactionsAction.loadInitialTransactions,
             exception: e,
           ),
         ),
