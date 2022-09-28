@@ -23,7 +23,8 @@ class BankingProductTransactionsCubit
   })  : _getCustomerBankingProductTransactionsUseCase =
             getCustomerBankingProductTransactionsUseCase,
         assert(
-          accountId == null || cardId == null,
+          (accountId == null && cardId != null) ||
+              (cardId == null && accountId != null),
           'Pass either account Id or card Id',
         ),
         super(
@@ -47,13 +48,14 @@ class BankingProductTransactionsCubit
 
   /// Reset the state
   Future<void> reset() async {
-    emit(state.copyWith(
-      actions: state.addAction(BankingProductTransactionsAction.reset),
-    ));
     emit(BankingProductTransactionsState(
       accountId: state.accountId,
       cardId: state.cardId,
     ));
+    await load(
+      accountId: state.accountId,
+      cardId: state.cardId,
+    );
   }
 
   /// Loads all account completed account transactions of the provided
