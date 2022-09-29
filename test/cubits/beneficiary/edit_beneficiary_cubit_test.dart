@@ -6,13 +6,12 @@ import 'package:layer_sdk/features/beneficiaries.dart';
 import 'package:layer_sdk/presentation_layer/cubits.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockBeneficiaryRepositoryInterface extends Mock
-    implements BeneficiaryRepositoryInterface {}
+class MockEditBeneficiaryUseCase extends Mock
+    implements EditBeneficiaryUseCase {}
 
-late MockBeneficiaryRepositoryInterface _repo;
 late Beneficiary _benef;
 late EditBeneficiaryCubit _cubit;
-late EditBeneficiaryUseCase _useCase;
+late MockEditBeneficiaryUseCase _useCase;
 late EditBeneficiaryState _baseState;
 
 String _newNickName = 'New Banco';
@@ -45,8 +44,7 @@ void main() {
       },
     );
 
-    _repo = MockBeneficiaryRepositoryInterface();
-    _useCase = EditBeneficiaryUseCase(beneficiaryRepository: _repo);
+    _useCase = MockEditBeneficiaryUseCase();
     _cubit = EditBeneficiaryCubit(
       editBeneficiariesUseCase: _useCase,
       editingBeneficiary: _benef,
@@ -55,8 +53,10 @@ void main() {
     registerFallbackValue(_benef);
 
     when(
-      () => _repo.edit(
-          beneficiary: any(named: 'beneficiary'), forceRefresh: false),
+      () => _useCase(
+        beneficiary: any(named: 'beneficiary'),
+        forceRefresh: false,
+      ),
     ).thenAnswer(
       (_) async => _benef,
     );
@@ -139,8 +139,10 @@ void main() {
   group('Test Edit', () {
     setUp(() {
       when(
-        () => _repo.edit(
-            beneficiary: any(named: 'beneficiary'), forceRefresh: false),
+        () => _useCase(
+          beneficiary: any(named: 'beneficiary'),
+          forceRefresh: false,
+        ),
       ).thenAnswer(
         (_) async => _benef,
       );
@@ -188,7 +190,7 @@ void main() {
       ],
       verify: (a) {
         verify(
-          () => _repo.edit(
+          () => _useCase(
             beneficiary: any(named: 'beneficiary'),
             forceRefresh: false,
           ),
@@ -199,7 +201,7 @@ void main() {
   group('Test Exception', () {
     setUp(() {
       when(
-        () => _repo.edit(
+        () => _useCase(
           beneficiary: any(named: 'beneficiary'),
           forceRefresh: false,
         ),
@@ -254,7 +256,7 @@ void main() {
       ],
       verify: (a) {
         verify(
-          () => _repo.edit(
+          () => _useCase(
             beneficiary: any(named: 'beneficiary'),
             forceRefresh: false,
           ),
@@ -265,7 +267,7 @@ void main() {
   group('Test NetException', () {
     setUp(() {
       when(
-        () => _repo.edit(
+        () => _useCase(
           beneficiary: any(named: 'beneficiary'),
           forceRefresh: false,
         ),
@@ -321,7 +323,7 @@ void main() {
       ],
       verify: (a) {
         verify(
-          () => _repo.edit(
+          () => _useCase(
             beneficiary: any(named: 'beneficiary'),
             forceRefresh: false,
           ),
