@@ -1,9 +1,10 @@
+import '../../../domain_layer/abstract_repositories.dart';
 import '../../../domain_layer/models.dart';
 import '../../mappings.dart';
 import '../../providers.dart';
 
 /// Handles all the categories data
-class CategoryRepository {
+class CategoryRepository implements CategoryRepositoryInterface {
   ///The provider
   final CategoryProvider provider;
 
