@@ -43,6 +43,8 @@ export 'cubits/branch_activation/branch_activation_state.dart';
 export 'cubits/branding/branding_cubit.dart';
 export 'cubits/branding/branding_states.dart';
 export 'cubits/card/card_cubit.dart';
+export 'cubits/card/card_dashboard_cubit.dart';
+export 'cubits/card/card_dashboard_state.dart';
 export 'cubits/card/card_states.dart';
 export 'cubits/card/card_transactions_cubit.dart';
 export 'cubits/card/card_transactions_states.dart';
