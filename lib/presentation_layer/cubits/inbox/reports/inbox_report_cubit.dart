@@ -15,10 +15,10 @@ class InboxReportCubit extends Cubit<InboxReportState> {
   })  : _listInboxUseCase = listInboxUseCase,
         super(InboxReportState());
 
-  /// Adds a list of [InboxReport]s on the state.
+  /// Loads a list of [InboxReport]s and adds them to the state.
   ///
   /// Use the [limit] and [offset] parameters for pagination purposes.
-  /// The [query] parameter can be used for filtering the results.
+  /// The [searchQuery] parameter can be used for filtering the results.
   Future<void> load({
     int? offset,
     int? limit,
@@ -71,8 +71,6 @@ class InboxReportCubit extends Cubit<InboxReportState> {
           errorMessage: e is NetException ? e.message : null,
         ),
       );
-
-      rethrow;
     }
   }
 }
