@@ -4,7 +4,7 @@ import '../../../features/financial_data.dart';
 abstract class FinancialDataRepositoryInterface {
   /// Retrieves the financial data of the supplied `customerId`
   Future<FinancialData> loadFinancialData({
-    required String customerId,
+    String? customerId,
     bool forceRefresh = false,
   });
 }

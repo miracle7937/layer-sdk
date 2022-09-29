@@ -27,13 +27,16 @@ void main() {
   });
 
   blocTest<CreateInboxReportCubit, CreateInboxReportState>(
-      "Should test initial state",
-      build: () => createReportCubit,
-      verify: (c) => expect(
-          c.state,
-          CreateInboxReportState(
-              action: CreateInboxReportAction.none,
-              error: CreateReportErrorStatus.none)));
+    "Should test initial state",
+    build: () => createReportCubit,
+    verify: (c) => expect(
+      c.state,
+      CreateInboxReportState(
+        action: CreateInboxReportAction.none,
+        error: CreateReportErrorStatus.none,
+      ),
+    ),
+  );
 
   blocTest<CreateInboxReportCubit, CreateInboxReportState>(
     "Should create report",
@@ -85,8 +88,9 @@ void main() {
     act: (c) => c.createReport(categoryId: _category),
     expect: () => [
       CreateInboxReportState(
-          action: CreateInboxReportAction.creating,
-          error: CreateReportErrorStatus.none),
+        action: CreateInboxReportAction.creating,
+        error: CreateReportErrorStatus.none,
+      ),
       CreateInboxReportState(
         action: CreateInboxReportAction.none,
         error: CreateReportErrorStatus.generic,

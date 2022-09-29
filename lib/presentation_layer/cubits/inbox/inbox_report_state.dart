@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'package:equatable/equatable.dart';
 
 import '../../../../domain_layer/models.dart';
-import '../../utils/pagination.dart';
+import '../../utils.dart';
 
 ///  The available error status
 enum InboxReportErrorStatus {

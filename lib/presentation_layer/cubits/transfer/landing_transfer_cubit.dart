@@ -7,15 +7,12 @@ import '../../../layer_sdk.dart';
 /// A cubit that handles the [User] transfers
 class LandingTransferCubit extends Cubit<LandingTransferState> {
   final LoadFrequentTransfersUseCase _loadFrequentTransfersUseCase;
-  final LoadAllCurrenciesUseCase _loadAllCurrenciesUseCase;
 
   /// Creates a new cubit using the supplied [LoadFrequentTransfersUseCase].
   LandingTransferCubit({
     required LoadFrequentTransfersUseCase loadFrequentTransfersUseCase,
-    required LoadAllCurrenciesUseCase loadAllCurrenciesUseCase,
     int limit = 10,
   })  : _loadFrequentTransfersUseCase = loadFrequentTransfersUseCase,
-        _loadAllCurrenciesUseCase = loadAllCurrenciesUseCase,
         super(LandingTransferState(pagination: Pagination(limit: limit)));
 
   /// Loads the list of frequent transfers
@@ -44,14 +41,9 @@ class LandingTransferCubit extends Cubit<LandingTransferState> {
         ],
       );
 
-      /// TODO: cubit_issue | For me it seems wrong to load the currencies all
-      /// the time. Shouldn't we only load them once?
-      final currencies = await _loadAllCurrenciesUseCase();
-
       emit(
         state.copyWith(
           frequentTransfers: frequentTransfers,
-          currencies: currencies,
           busy: false,
         ),
       );

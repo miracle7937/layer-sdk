@@ -13,7 +13,7 @@ class FinancialDataRepository implements FinancialDataRepositoryInterface {
   /// Retrieves the financial data of the supplied `customerId`
   @override
   Future<FinancialData> loadFinancialData({
-    required String customerId,
+     String? customerId,
     bool forceRefresh = false,
   }) async {
     final financialDataDTO = await _provider.financialData(

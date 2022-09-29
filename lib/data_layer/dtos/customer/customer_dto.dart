@@ -283,8 +283,10 @@ class CustomerDTO {
                 ? json['extra']['account_nos']
                 : null,
         cbsCreated: JsonParser.parseDate(json['cbs_created']),
-        iqamaExpiry: null, //TODO: Read the field from BE
-        iqamaNumber: '', //TODO: Read the field from BE
+        iqamaExpiry: null,
+        //TODO: Read the field from BE
+        iqamaNumber: '',
+        //TODO: Read the field from BE
         nationality: json['nationalities'],
         motherName: json['mother_name'],
         maritalStatus: json['marital_status'],
@@ -358,6 +360,9 @@ class CustomerInformationDTO {
   /// The customer's salary
   String? salary;
 
+  /// The customer's postalCode
+  String? postalCode;
+
   /// The customer's source of funds
   String? sourceOfFunds;
 
@@ -419,6 +424,7 @@ class CustomerInformationDTO {
     this.passportCountryIssuance,
     this.passportCountryIssuanceDescription,
     this.passportNumber,
+    this.postalCode,
     this.salary,
     this.sourceOfFunds,
     this.isResident,
@@ -455,6 +461,7 @@ class CustomerInformationDTO {
         passportCountryIssuanceDescription:
             json['passport_country_of_issuance_description'],
         passportNumber: json['passport_number'],
+        postalCode: json['address_postal_code'],
         sourceOfFunds: json['source_funds'],
         isResident: json['is_resident'],
         addresses: json['address_details'] == null
@@ -498,6 +505,7 @@ class CustomerInformationDTO {
   CustomerInformationDTO copyWith({
     String? employerName,
     String? employerAddress,
+    String? postalCode,
     String? nextKinMobile,
     String? nextKinName,
     String? occupation,
@@ -528,6 +536,7 @@ class CustomerInformationDTO {
       CustomerInformationDTO(
         employerName: employerName ?? this.employerName,
         employerAddress: employerAddress ?? this.employerAddress,
+        postalCode: postalCode ?? this.postalCode,
         nextKinMobile: nextKinMobile ?? this.nextKinMobile,
         nextKinName: nextKinName ?? this.nextKinName,
         occupation: occupation ?? this.occupation,
