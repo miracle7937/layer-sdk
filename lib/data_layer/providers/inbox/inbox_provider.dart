@@ -13,6 +13,10 @@ class InboxProvider {
   });
 
   /// Returns a list of all [InboxReportDTO]
+  ///
+  /// [searchQuery] Filter the results based on a search query
+  /// [limit] The total number of reports to fetch (Used for pagination)
+  /// [offset] The number of reports to skip (Used for pagination)
   Future<List<InboxReportDTO>> listAllReports({
     String? searchQuery,
     int? limit,
