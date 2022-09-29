@@ -20,7 +20,9 @@ void main() {
 
   setUp(() {
     _repository = MockReportRepository();
-    _createReportUseCase = CreateInboxReportUseCase(repository: _repository);
+    _createReportUseCase = CreateInboxReportUseCase(
+      repository: _repository,
+    );
   });
 
   test("Should create report", () async {

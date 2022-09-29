@@ -37,7 +37,9 @@ class InboxProvider {
         List<Map<String, dynamic>>.from(response.data));
   }
 
-  /// Create a new report
+  /// Create a new inbox report
+  ///
+  /// [categoryId] The category id for the new report
   Future<InboxReportDTO> createReport(
     String categoryId,
   ) async {

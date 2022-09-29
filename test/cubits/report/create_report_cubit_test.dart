@@ -23,17 +23,22 @@ void main() {
 
   setUp(() {
     createReportUseCase = MockCreateReportUseCase();
-    createReportCubit =
-        CreateReportCubit(createReportUseCase: createReportUseCase);
+    createReportCubit = CreateReportCubit(
+      createReportUseCase: createReportUseCase,
+    );
   });
 
-  blocTest<CreateReportCubit, CreateReportState>("Should test initial state",
-      build: () => createReportCubit,
-      verify: (c) => expect(
-          c.state,
-          CreateReportState(
-              action: CreateReportAction.none,
-              error: CreateReportErrorStatus.none)));
+  blocTest<CreateReportCubit, CreateReportState>(
+    "Should test initial state",
+    build: () => createReportCubit,
+    verify: (c) => expect(
+      c.state,
+      CreateReportState(
+        action: CreateReportAction.none,
+        error: CreateReportErrorStatus.none,
+      ),
+    ),
+  );
 
   blocTest<CreateReportCubit, CreateReportState>(
     "Should create report",
@@ -85,8 +90,9 @@ void main() {
     act: (c) => c.createReport(categoryId: _category),
     expect: () => [
       CreateReportState(
-          action: CreateReportAction.creating,
-          error: CreateReportErrorStatus.none),
+        action: CreateReportAction.creating,
+        error: CreateReportErrorStatus.none,
+      ),
       CreateReportState(
         action: CreateReportAction.none,
         error: CreateReportErrorStatus.generic,
