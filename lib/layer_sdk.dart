@@ -16,6 +16,7 @@ export 'features/bills.dart';
 export 'features/branch.dart';
 export 'features/branding.dart';
 export 'features/cards.dart';
+export 'features/category.dart';
 export 'features/certificate.dart';
 export 'features/checkbook.dart';
 export 'features/config.dart';

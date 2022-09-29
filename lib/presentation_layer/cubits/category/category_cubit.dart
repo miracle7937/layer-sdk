@@ -1,18 +1,18 @@
 import 'package:bloc/bloc.dart';
 
 import '../../../../../../data_layer/network.dart';
-import '../../../data_layer/data_layer.dart';
-import '../../business_layer.dart';
+import '../../../domain_layer/use_cases.dart';
+import 'category_state.dart';
 
 ///A cubit that holds the categories data
 class CategoryCubit extends Cubit<CategoryState> {
-  ///The repository
-  final CategoryRepository repository;
+  final LoadCategoriesUseCase _loadCategoriesUseCase;
 
-  ///Crates a new [CategoryCubit] providing an [CategoryState]
+  ///Crates a new [CategoryCubit] providing an [LoadCategoriesUseCase]
   CategoryCubit({
-    required this.repository,
-  }) : super(CategoryState());
+    required LoadCategoriesUseCase loadCategoriesUseCase,
+  })  : _loadCategoriesUseCase = loadCategoriesUseCase,
+        super(CategoryState());
 
   ///Loads all the categories
   Future<void> loadCategories({
@@ -26,7 +26,7 @@ class CategoryCubit extends Cubit<CategoryState> {
     );
 
     try {
-      final categories = await repository.list(
+      final categories = await _loadCategoriesUseCase(
         forceRefresh: forceRefresh,
       );
 
