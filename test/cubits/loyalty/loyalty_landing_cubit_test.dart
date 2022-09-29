@@ -1,8 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:layer_sdk/layer_sdk.dart';
-import 'package:layer_sdk/presentation_layer/cubits/loyalty/loyalty_landing/loyalty_landing_cubit.dart';
-import 'package:layer_sdk/presentation_layer/cubits/loyalty/loyalty_landing/loyalty_landing_state.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockLoadAllLoyaltyPointsUseCase extends Mock

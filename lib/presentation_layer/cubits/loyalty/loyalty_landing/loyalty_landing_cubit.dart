@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../layer_sdk.dart';
-import 'loyalty_landing_state.dart';
 
 /// Cubit responsible for Landing loyalty page
 class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
