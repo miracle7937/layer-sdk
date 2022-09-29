@@ -4,7 +4,7 @@ import '../../helpers.dart';
 class InboxReportCategoryDTO extends EnumDTO {
   const InboxReportCategoryDTO._internal(String value) : super.internal(value);
 
-  /// AppointmentReview category
+  /// Appointment Review category
   static const appointmentReview =
       InboxReportCategoryDTO._internal('appointment_review');
 
@@ -42,7 +42,9 @@ class InboxReportCategoryDTO extends EnumDTO {
 
   /// Return a [InboxReportCategoryDTO] based on a string
   static InboxReportCategoryDTO fromRaw(String? value) {
-    return values.firstWhere((it) => it.value == value,
-        orElse: () => InboxReportCategoryDTO.other);
+    return values.firstWhere(
+      (it) => it.value == value,
+      orElse: () => InboxReportCategoryDTO.other,
+    );
   }
 }

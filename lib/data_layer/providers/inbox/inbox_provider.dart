@@ -36,4 +36,21 @@ class InboxProvider {
     return InboxReportDTO.fromJsonList(
         List<Map<String, dynamic>>.from(response.data));
   }
+
+  /// Create a new inbox report
+  ///
+  /// [categoryId] The category id for the new report
+  Future<InboxReportDTO> createReport(
+    String categoryId,
+  ) async {
+    final result = await netClient.request(
+      netClient.netEndpoints.report,
+      method: NetRequestMethods.post,
+      data: {
+        'category': categoryId,
+      },
+    );
+
+    return InboxReportDTO.fromJson(result.data);
+  }
 }
