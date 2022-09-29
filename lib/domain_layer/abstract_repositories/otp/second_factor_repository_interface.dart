@@ -1,5 +1,4 @@
 import '../../../../domain_layer/models.dart';
-import '../../models.dart';
 
 /// A repository that can be used to handle the 2FA.
 abstract class SecondFactorRepositoryInterface {

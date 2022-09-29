@@ -68,6 +68,12 @@ class AppConfiguration {
   /// A list of [FLInterceptor] for the [NetClient].
   final UnmodifiableListView<FLInterceptor> interceptors;
 
+  /// Whether the `FirebaseAnalyticsObserver` should be added to the
+  /// `navigatorObservers` of the `MaterialApp`.
+  ///
+  /// Defaults to `false`.
+  final bool firebaseAnalyticsEnabled;
+
   /// Creates the [AppConfiguration] object.
   AppConfiguration({
     required this.appThemeConfiguration,
@@ -80,6 +86,7 @@ class AppConfiguration {
     this.designAware = true,
     this.autoKeyboardPaddingEnabled = true,
     this.title,
+    this.firebaseAnalyticsEnabled = false,
     Iterable<FLInterceptor>? interceptors,
   })  : creators = UnmodifiableListView(creators ?? []),
         listeners = UnmodifiableListView(listeners ?? []),

@@ -12,7 +12,7 @@ class LoadFinancialDataUseCase {
 
   /// Callable method to load all financial data of the supplied `customerId`
   Future<FinancialData> call({
-    required String customerId,
+     String? customerId,
     bool forceRefresh = false,
   }) =>
       _repository.loadFinancialData(

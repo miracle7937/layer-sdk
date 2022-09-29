@@ -9,7 +9,7 @@ class FinancialDataCubit extends Cubit<FinancialDataState> {
 
   /// Creates a new instance of [FinancialDataCubit]
   FinancialDataCubit({
-    required String customerId,
+     String? customerId,
     required LoadFinancialDataUseCase loadFinancialDataUseCase,
   })  : _loadFinancialDataUseCase = loadFinancialDataUseCase,
         super(

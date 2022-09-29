@@ -131,6 +131,9 @@ class Customer extends Equatable {
   /// The Foreign Account Tax Compliance Act (FATCA) status.
   final bool fatcaStatus;
 
+  /// The day of birth of the customer.
+  final DateTime? dob;
+
   /// Creates a new immutable [Customer]
   Customer({
     required this.id,
@@ -144,6 +147,7 @@ class Customer extends Equatable {
     Iterable<Address>? addresses,
     Iterable<String>? nationalities,
     this.created,
+    this.dob,
     this.eStatement = false,
     this.cpr = const CPR(),
     this.isStaff = false,
@@ -283,6 +287,9 @@ class PersonalCustomerData extends Equatable {
   /// The customer passport information.
   final Passport passport;
 
+  /// The customer's postalCode
+  final String? postalCode;
+
   /// The DOB of the customer.
   final DateTime? dateOfBirth;
 
@@ -338,6 +345,7 @@ class PersonalCustomerData extends Equatable {
     this.title = '',
     this.isResident = false,
     this.passport = const Passport(),
+    this.postalCode,
     this.dateOfBirth,
     this.placeOfBirth = '',
     this.employment = const EmploymentDetails(),
@@ -367,6 +375,7 @@ class PersonalCustomerData extends Equatable {
         title,
         isResident,
         passport,
+        postalCode,
         dateOfBirth,
         placeOfBirth,
         employment,
@@ -388,6 +397,7 @@ class PersonalCustomerData extends Equatable {
     String? title,
     bool? isResident,
     Passport? passport,
+    String? postalCode,
     DateTime? dateOfBirth,
     String? placeOfBirth,
     EmploymentDetails? employment,
@@ -407,6 +417,7 @@ class PersonalCustomerData extends Equatable {
         title: title ?? this.title,
         isResident: isResident ?? this.isResident,
         passport: passport ?? this.passport,
+        postalCode: postalCode ?? this.postalCode,
         dateOfBirth: dateOfBirth ?? this.dateOfBirth,
         placeOfBirth: placeOfBirth ?? this.placeOfBirth,
         employment: employment ?? this.employment,

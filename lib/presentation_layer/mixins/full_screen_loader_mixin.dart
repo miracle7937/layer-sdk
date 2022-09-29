@@ -12,7 +12,6 @@ mixin FullScreenLoaderMixin {
     return showDialog(
       context: context,
       useSafeArea: false,
-      useRootNavigator: true,
       barrierDismissible: false,
       barrierColor: design.basePrimary.withOpacity(0.64),
       builder: (context) => WillPopScope(

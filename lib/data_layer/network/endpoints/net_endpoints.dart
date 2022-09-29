@@ -340,4 +340,7 @@ class NetEndpoints {
 
   /// Endpoint for handling inbox calls
   String get report => '$_engagement/v1/report';
+
+  /// Endpoint for getting the balance
+  String get balance => '$_infoBanking/v2/balance/periodical_balance';
 }
