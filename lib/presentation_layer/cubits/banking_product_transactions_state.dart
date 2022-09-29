@@ -27,6 +27,15 @@ class BankingProductTransactionsState
   ///
   final DateTime? endDate;
 
+  ///
+  final double? amountFrom;
+
+  ///
+  final double? amountTo;
+
+  ///
+  final bool? credit;
+
   /// Creates a new instance of [BankingProductTransactionsState]
   BankingProductTransactionsState({
     this.accountId,
@@ -36,6 +45,9 @@ class BankingProductTransactionsState
     super.actions = const <BankingProductTransactionsAction>{},
     super.errors = const <CubitError>{},
     this.endDate,
+    this.amountFrom,
+    this.amountTo,
+    this.credit,
     this.listData = const BankingProductTransactionsListData(),
   }) : transactions = UnmodifiableListView(transactions);
 
@@ -47,6 +59,9 @@ class BankingProductTransactionsState
         listData,
         startDate,
         endDate,
+        amountFrom,
+        amountTo,
+        credit,
       ];
 
   /// Creates a new instance of [BankingProductTransactionsState]
@@ -60,6 +75,9 @@ class BankingProductTransactionsState
     BankingProductTransactionsListData? listData,
     DateTime? startDate,
     DateTime? endDate,
+    double? amountFrom,
+    double? amountTo,
+    bool? credit,
   }) {
     return BankingProductTransactionsState(
       transactions: transactions ?? this.transactions,
@@ -70,6 +88,9 @@ class BankingProductTransactionsState
       listData: listData ?? this.listData,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
+      amountFrom: amountFrom ?? this.amountFrom,
+      amountTo: amountTo ?? this.amountTo,
+      credit: credit ?? this.credit,
     );
   }
 

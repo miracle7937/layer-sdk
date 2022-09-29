@@ -77,6 +77,9 @@ class BankingProductTransactionsCubit
         accountId: accountId,
         startDate: fromDate,
         endDate: toDate,
+        amountFrom: amountFrom,
+        amountTo: amountTo,
+        credit: credit,
         actions: state.addAction(state.listData.canLoadMore
             ? BankingProductTransactionsAction.loadingMore
             : (loadMore
@@ -92,19 +95,18 @@ class BankingProductTransactionsCubit
 
     try {
       final offset = loadMore ? state.listData.offset + limit : 0;
-
       final transactions = await _getCustomerBankingProductTransactionsUseCase(
         accountId: accountId ?? state.accountId,
         cardId: cardId ?? state.cardId,
-        startDate: fromDate,
-        endDate: toDate,
+        startDate: fromDate ?? state.startDate,
+        endDate: toDate ?? state.endDate,
         offset: offset,
         limit: limit,
         forceRefresh: forceRefresh,
         searchString: searchString,
-        credit: credit,
-        amountFrom: amountFrom,
-        amountTo: amountTo,
+        credit: credit ?? state.credit,
+        amountFrom: amountFrom ?? state.amountFrom,
+        amountTo: amountTo ?? state.amountTo,
       );
 
       final list = offset > 0
