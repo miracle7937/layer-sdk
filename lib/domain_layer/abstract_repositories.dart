@@ -2,6 +2,7 @@ library abstract_repositories;
 
 export 'abstract_repositories/account/account_repository_interface.dart';
 export 'abstract_repositories/account_loan/account_loan_repository_interface.dart';
+export 'abstract_repositories/account_transaction/account_balance_repository_interface.dart';
 export 'abstract_repositories/account_transaction/account_transaction_repository_interface.dart';
 export 'abstract_repositories/activity/activity_repository_interface.dart';
 export 'abstract_repositories/alert/alert_repository_interface.dart';
@@ -26,6 +27,7 @@ export 'abstract_repositories/dpa/dpa_repository_interface.dart';
 export 'abstract_repositories/experience/experience_repository_interface.dart';
 export 'abstract_repositories/experience_preferences/experience_preferences_repository_interface.dart';
 export 'abstract_repositories/financial/financial_data_repository_interface.dart';
+export 'abstract_repositories/inbox/inbox_repository_interface.dart';
 export 'abstract_repositories/loyalty/cashback_history/cashback_history_repository_interface.dart';
 export 'abstract_repositories/loyalty/loyalty_points/loyalty_points_repository_interface.dart';
 export 'abstract_repositories/loyalty/loyalty_points_exchange/loyalty_points_exchange_repository_interface.dart';
