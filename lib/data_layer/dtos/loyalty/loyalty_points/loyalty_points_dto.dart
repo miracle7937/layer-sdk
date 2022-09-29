@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+
 import '../../../helpers.dart';
 
 /// DTO used to used for parsing Loyalty points data
@@ -63,8 +64,7 @@ class LoyaltyPointsDTO {
       );
 
   /// Return a list of [LoyaltyPointsDTO] from a json list
-  static Future<List<LoyaltyPointsDTO>> fromJsonList(
-          List<Map<String, dynamic>> json) async =>
+  static List<LoyaltyPointsDTO> fromJsonList(List<Map<String, dynamic>> json) =>
       json.map(LoyaltyPointsDTO.fromJson).toList();
 }
 
