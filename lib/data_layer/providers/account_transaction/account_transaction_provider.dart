@@ -35,3 +35,4 @@ class AccountTransactionProvider {
     return AccountTransactionDTO.fromJsonList(response.data);
   }
 }
+

@@ -201,12 +201,29 @@ class BottomSheetHelper {
     bool showDenyButton = true,
     bool isDismissible = true,
     Color? backgroundColor,
+    bool blurBackground = false,
+    bool enableDrag = true,
+    DKButtonType denyButtonType = DKButtonType.baseSecondary,
   }) async {
+    final design = DesignSystem.of(context);
+
+    final radius = BorderRadius.only(
+      topLeft: Radius.circular(
+        24.0,
+      ),
+      topRight: Radius.circular(
+        24.0,
+      ),
+    );
+
     final result = await showModalBottomSheet(
+      enableDrag: enableDrag,
       isDismissible: isDismissible,
       context: context,
       barrierColor: DesignSystem.of(context).basePrimary.withOpacity(0.64),
-      backgroundColor: backgroundColor,
+      backgroundColor: blurBackground
+          ? Colors.transparent
+          : (backgroundColor ?? design.surfaceNonary2),
       isScrollControlled: isScrollControlled,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -218,14 +235,33 @@ class BottomSheetHelper {
           ),
         ),
       ),
-      builder: (context) => _ConfirmationBottomSheet(
-        titleKey: titleKey,
-        confirmKey: confirmKey,
-        dismissKey: denyKey,
-        type: type,
-        descriptionKey: descriptionKey,
-        showDenyButton: showDenyButton,
-      ),
+      builder: (context) {
+        final content = _ConfirmationBottomSheet(
+          titleKey: titleKey,
+          confirmKey: confirmKey,
+          dismissKey: denyKey,
+          type: type,
+          descriptionKey: descriptionKey,
+          showDenyButton: showDenyButton,
+          denyButtonType: denyButtonType,
+        );
+
+        return blurBackground
+            ? BackdropFilter(
+                filter: ImageFilter.blur(
+                  sigmaX: 2.0,
+                  sigmaY: 2.0,
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: backgroundColor ?? design.surfaceNonary2,
+                    borderRadius: radius,
+                  ),
+                  child: content,
+                ),
+              )
+            : content;
+      },
     );
 
     return result ?? false;
@@ -300,6 +336,7 @@ class _ConfirmationBottomSheet extends StatelessWidget {
   final String dismissKey;
   final BottomSheetType type;
   final bool showDenyButton;
+  final DKButtonType denyButtonType;
 
   const _ConfirmationBottomSheet({
     Key? key,
@@ -307,6 +344,7 @@ class _ConfirmationBottomSheet extends StatelessWidget {
     required this.confirmKey,
     required this.dismissKey,
     required this.type,
+    required this.denyButtonType,
     this.descriptionKey,
     this.showDenyButton = true,
   }) : super(key: key);
@@ -357,7 +395,7 @@ class _ConfirmationBottomSheet extends StatelessWidget {
             const SizedBox(height: 12.0),
             DKButton(
               title: translation.translate(dismissKey),
-              type: DKButtonType.baseSecondary,
+              type: denyButtonType,
               onPressed: () => Navigator.pop(context, false),
             ),
           ],

@@ -1,6 +1,5 @@
 import '../../dtos.dart';
-import '../../helpers/dto_helpers.dart';
-import '../../helpers/json_parser.dart';
+import '../../helpers.dart';
 
 /// Class that contains data for Inbox messages
 class InboxReportMessageDTO {

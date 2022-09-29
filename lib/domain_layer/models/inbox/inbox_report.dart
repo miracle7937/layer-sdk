@@ -64,7 +64,7 @@ class InboxReport extends Equatable {
   final bool read;
 
   /// a Json map for holding extra data
-  final Map<String, Object>? extra;
+  final Map<String, dynamic>? extra;
 
   /// [InboxReport] constructor
   InboxReport({

@@ -41,10 +41,11 @@ class PaymentProvider {
     required PaymentDTO payment,
     String? otp,
   }) async {
+    final json = payment.toJson();
     final response = await netClient.request(
       netClient.netEndpoints.paymentV2,
       method: NetRequestMethods.post,
-      data: payment.toJson(),
+      data: json,
       forceRefresh: true,
       queryParameters: {
         if (otp?.isNotEmpty ?? false) 'otp_value': otp,
@@ -95,6 +96,7 @@ class PaymentProvider {
 
     return PaymentDTO.fromJsonList(
       List.from(response.data),
+      ignoreRecurrence: true,
     );
   }
 

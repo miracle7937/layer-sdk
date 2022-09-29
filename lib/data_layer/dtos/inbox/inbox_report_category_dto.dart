@@ -1,4 +1,4 @@
-import '../../helpers/enum_dto.dart';
+import '../../helpers.dart';
 
 /// Enum that holds what is the category of a report
 class InboxReportCategoryDTO extends EnumDTO {
@@ -42,6 +42,7 @@ class InboxReportCategoryDTO extends EnumDTO {
 
   /// Return a [InboxReportCategoryDTO] based on a string
   static InboxReportCategoryDTO fromRaw(String? value) {
-    return values.firstWhere((it) => it.value == value);
+    return values.firstWhere((it) => it.value == value,
+        orElse: () => InboxReportCategoryDTO.other);
   }
 }

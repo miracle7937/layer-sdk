@@ -1,5 +1,5 @@
 import '../../dtos.dart';
-import '../../extensions/map/map_extensions.dart';
+import '../../extensions.dart';
 import '../../network.dart';
 
 /// Provider that handles calls to the Inbox endpoint
@@ -13,6 +13,10 @@ class InboxProvider {
   });
 
   /// Returns a list of all [InboxReportDTO]
+  ///
+  /// [searchQuery] Filter the results based on a search query
+  /// [limit] The total number of reports to fetch (Used for pagination)
+  /// [offset] The number of reports to skip (Used for pagination)
   Future<List<InboxReportDTO>> listAllReports({
     String? searchQuery,
     int? limit,
@@ -29,7 +33,8 @@ class InboxProvider {
       queryParameters: params,
     );
 
-    return InboxReportDTO.fromJsonList(response.data);
+    return InboxReportDTO.fromJsonList(
+        List<Map<String, dynamic>>.from(response.data));
   }
 
   /// Create a new report
