@@ -38,7 +38,9 @@ class InboxProvider {
   }
 
   /// Create a new report
-  Future<InboxReportDTO> createReport(String categoryId) async {
+  Future<InboxReportDTO> createReport(
+    String categoryId,
+  ) async {
     final result = await netClient.request(
       netClient.netEndpoints.report,
       method: NetRequestMethods.post,
