@@ -104,6 +104,8 @@ export 'models/ocra/ocra_challenge_result.dart';
 export 'models/ocra/ocra_challenge_result_response.dart';
 export 'models/otp/otp_status.dart';
 export 'models/otp/second_factor_verification.dart';
+export 'models/pay_to_mobile_transfer/new_pay_to_mobile_transfer.dart';
+export 'models/pay_to_mobile_transfer/pay_to_mobile_transfer_request_type.dart';
 export 'models/payment/biller.dart';
 export 'models/payment/biller_category.dart';
 export 'models/payment/payment.dart';

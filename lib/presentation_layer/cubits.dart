@@ -107,6 +107,8 @@ export 'cubits/new_transfer/beneficiary_transfer/beneficiary_transfer_cubit.dart
 export 'cubits/new_transfer/beneficiary_transfer/beneficiary_transfer_state.dart';
 export 'cubits/new_transfer/own_transfer/own_transfer_cubit.dart';
 export 'cubits/new_transfer/own_transfer/own_transfer_state.dart';
+export 'cubits/new_transfer/pay_to_mobile/pay_to_mobile_transfer_cubit.dart';
+export 'cubits/new_transfer/pay_to_mobile/pay_to_mobile_transfer_state.dart';
 export 'cubits/ocra/ocra_authentication_cubit.dart';
 export 'cubits/ocra/ocra_authentication_state.dart';
 export 'cubits/payments/frequent_payments_cubit.dart';

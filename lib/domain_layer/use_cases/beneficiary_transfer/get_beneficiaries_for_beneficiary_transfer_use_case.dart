@@ -1,4 +1,4 @@
-import '../../../features/beneficiaries.dart';
+import '../../../../features/beneficiaries.dart';
 
 /// A use case that returns the list of beneficiaries to be used as the transfer
 /// destination.

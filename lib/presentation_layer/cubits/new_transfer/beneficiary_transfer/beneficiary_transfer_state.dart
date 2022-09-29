@@ -63,9 +63,6 @@ enum BeneficiaryTransferValidationErrorCode {
   /// Invalid IBAN.
   invalidIBAN,
 
-  /// Incorrect OTP code.
-  incorrectOTPCode,
-
   /// Source account validation error.
   sourceAccountValidationError,
 
@@ -159,9 +156,9 @@ class BeneficiaryTransferState extends BaseState<BeneficiaryTransferAction,
     super.actions = const <BeneficiaryTransferAction>{},
     super.errors = const <CubitError>{},
     super.events = const <BeneficiaryTransferEvent>{},
-    Iterable<GlobalSetting> beneficiarySettings = const <GlobalSetting>{},
-    Iterable<Country> countries = const <Country>{},
-    Iterable<Currency> currencies = const <Currency>{},
+    Iterable<GlobalSetting> beneficiarySettings = const <GlobalSetting>[],
+    Iterable<Country> countries = const <Country>[],
+    Iterable<Currency> currencies = const <Currency>[],
     Iterable<Account> accounts = const <Account>[],
     Iterable<Beneficiary> beneficiaries = const <Beneficiary>[],
     Iterable<Message> reasons = const <Message>[],

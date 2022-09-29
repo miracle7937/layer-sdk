@@ -9,8 +9,8 @@ import '../../../utils.dart';
 /// A Cubit that handles the state for the beneficiary transfer flow.
 class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
   final LoadGlobalSettingsUseCase _loadGlobalSettingsUseCase;
-  final GetSourceAccountsForBeneficiaryTransferUseCase
-      _getSourceAccountsForBeneficiaryTransferUseCase;
+  final GetActiveAccountsSortedByAvailableBalance
+      _getActiveAccountsSortedByAvailableBalance;
   final GetDestinationBeneficiariesForBeneficiariesTransferUseCase
       _getDestinationBeneficiariesForBeneficiariesTransferUseCase;
   final LoadCountriesUseCase _loadCountriesUseCase;
@@ -32,8 +32,8 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     bool editMode = false,
     required LoadGlobalSettingsUseCase loadGlobalSettingsUseCase,
     required BeneficiaryTransfer transfer,
-    required GetSourceAccountsForBeneficiaryTransferUseCase
-        getSourceAccountsForBeneficiaryTransferUseCase,
+    required GetActiveAccountsSortedByAvailableBalance
+        getActiveAccountsSortedByAvailableBalance,
     required GetDestinationBeneficiariesForBeneficiariesTransferUseCase
         getDestinationBeneficiariesForBeneficiariesTransferUseCase,
     required LoadCountriesUseCase loadCountriesUseCase,
@@ -50,8 +50,8 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     required CreateShortcutUseCase createShortcutUseCase,
     int banksPaginationLimit = 20,
   })  : _loadGlobalSettingsUseCase = loadGlobalSettingsUseCase,
-        _getSourceAccountsForBeneficiaryTransferUseCase =
-            getSourceAccountsForBeneficiaryTransferUseCase,
+        _getActiveAccountsSortedByAvailableBalance =
+            getActiveAccountsSortedByAvailableBalance,
         _getDestinationBeneficiariesForBeneficiariesTransferUseCase =
             getDestinationBeneficiariesForBeneficiariesTransferUseCase,
         _loadCountriesUseCase = loadCountriesUseCase,
@@ -146,8 +146,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
       );
 
       try {
-        final accounts =
-            await _getSourceAccountsForBeneficiaryTransferUseCase();
+        final accounts = await _getActiveAccountsSortedByAvailableBalance();
 
         if (accounts.isNotEmpty) {
           onChanged(

@@ -2,6 +2,7 @@ library use_cases;
 
 export 'use_cases/account/get_account_top_up_secret_use_case.dart';
 export 'use_cases/account/get_accounts_by_status_use_case.dart';
+export 'use_cases/account/get_active_accounts_sorted_by_available_balance.dart';
 export 'use_cases/account/get_customer_accounts_use_case.dart';
 export 'use_cases/account_loan/get_account_loan_by_id_use_case.dart';
 export 'use_cases/account_loan/get_account_loans_use_case.dart';
@@ -30,7 +31,6 @@ export 'use_cases/beneficiary/load_customer_beneficiaries_use_case.dart';
 export 'use_cases/beneficiary/resend_beneficiary_second_factor_use_case.dart';
 export 'use_cases/beneficiary/verify_beneficiary_second_factor_use_case.dart';
 export 'use_cases/beneficiary_transfer/get_beneficiaries_for_beneficiary_transfer_use_case.dart';
-export 'use_cases/beneficiary_transfer/get_source_accounts_for_beneficiary_transfer_use_case.dart';
 export 'use_cases/bill/load_customer_bills_use_case.dart';
 export 'use_cases/biometrics/get_biometrics_enabled_use_case.dart';
 export 'use_cases/branch/load_branch_by_id_use_case.dart';
