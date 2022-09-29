@@ -40,6 +40,7 @@ export 'providers/message/message_provider.dart';
 export 'providers/more_info/more_info_provider.dart';
 export 'providers/ocra/ocra_provider.dart';
 export 'providers/otp/otp_provider.dart';
+export 'providers/pay_to_mobile/pay_to_mobile_receiver_provider.dart';
 export 'providers/payments/biller_provider.dart';
 export 'providers/payments/payment_provider.dart';
 export 'providers/payments/service_provider.dart';
