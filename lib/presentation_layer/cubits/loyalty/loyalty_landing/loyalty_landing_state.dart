@@ -17,6 +17,9 @@ enum LoyaltyLandingActions {
 
   /// Loading the offers
   loadOffers,
+
+  /// Loading the categories
+  loadCategories,
 }
 
 /// The state for the [LoyaltyLandingState].
@@ -26,6 +29,9 @@ class LoyaltyLandingState extends BaseState<LoyaltyLandingActions, void, void> {
 
   /// All the [Offer]s
   final UnmodifiableListView<Offer> offers;
+
+  /// All the [Categories]
+  final UnmodifiableListView<Category> categories;
 
   /// The [LoyaltyPointsRate] object
   final LoyaltyPointsRate? loyaltyPointsRate;
@@ -39,10 +45,12 @@ class LoyaltyLandingState extends BaseState<LoyaltyLandingActions, void, void> {
     super.errors = const <CubitError>{},
     Iterable<LoyaltyPoints> loyaltyPoints = const <LoyaltyPoints>{},
     Iterable<Offer> offers = const <Offer>{},
+    Iterable<Category> categories = const <Category>{},
     this.loyaltyPointsRate,
     this.loyaltyPointsExpiration,
   })  : loyaltyPoints = UnmodifiableListView(loyaltyPoints),
-        offers = UnmodifiableListView(offers);
+        offers = UnmodifiableListView(offers),
+        categories = UnmodifiableListView(categories);
 
   @override
   LoyaltyLandingState copyWith({
@@ -50,6 +58,7 @@ class LoyaltyLandingState extends BaseState<LoyaltyLandingActions, void, void> {
     Set<CubitError>? errors,
     Iterable<LoyaltyPoints>? loyaltyPoints,
     Iterable<Offer>? offers,
+    Iterable<Category>? categories,
     LoyaltyPointsRate? loyaltyPointsRate,
     LoyaltyPointsExpiration? loyaltyPointsExpiration,
     Pagination? pagination,
@@ -59,6 +68,7 @@ class LoyaltyLandingState extends BaseState<LoyaltyLandingActions, void, void> {
       errors: errors ?? this.errors,
       loyaltyPoints: loyaltyPoints ?? this.loyaltyPoints,
       loyaltyPointsRate: loyaltyPointsRate ?? this.loyaltyPointsRate,
+      categories: categories ?? this.categories,
       loyaltyPointsExpiration:
           loyaltyPointsExpiration ?? this.loyaltyPointsExpiration,
       offers: offers ?? this.offers,
@@ -73,5 +83,6 @@ class LoyaltyLandingState extends BaseState<LoyaltyLandingActions, void, void> {
         loyaltyPointsRate,
         loyaltyPointsExpiration,
         offers,
+        categories,
       ];
 }
