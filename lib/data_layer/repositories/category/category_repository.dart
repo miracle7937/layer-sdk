@@ -1,5 +1,5 @@
-import '../../../../data_layer/mappings.dart';
-import '../../../../domain_layer/models.dart';
+import '../../../domain_layer/models.dart';
+import '../../mappings.dart';
 import '../../providers.dart';
 
 /// Handles all the categories data
