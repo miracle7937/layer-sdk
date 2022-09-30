@@ -5,15 +5,17 @@ class BalanceAlertPreference extends UserPreference<double> {
   ///Creates a new [BalanceAlertPreference]
   BalanceAlertPreference({
     required double value,
-  }) : super('pref_lowbal', value);
+    required String key,
+  }) : super(key, value);
 
   @override
   Map<String, dynamic> toJson() => {
-        'pref_lowbal': value,
+        key: value,
       };
 
   @override
   List<Object?> get props => [
+        key,
         value,
       ];
 }

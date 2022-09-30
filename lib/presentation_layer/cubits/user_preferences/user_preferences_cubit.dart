@@ -73,7 +73,8 @@ class UserPreferencesCubit extends Cubit<UserPreferencesState> {
   }
 
   ///Adds / Removes a low balance alert
-  Future<void> setLowBalanceAlert({required double lowBalanceValue}) async {
+  Future<void> setLowBalanceAlert(
+      {required double lowBalanceValue, accountId}) async {
     emit(
       state.copyWith(
         busy: true,
@@ -81,6 +82,7 @@ class UserPreferencesCubit extends Cubit<UserPreferencesState> {
         action: UserPreferencesAction.none,
       ),
     );
+    var rootJsonPath = "customer_account.$accountId.pref_lowbal";
 
     try {
       UserPreferencesAction action;
@@ -88,6 +90,7 @@ class UserPreferencesCubit extends Cubit<UserPreferencesState> {
 
       final response = await _setLowBalanceAlertUseCase(
         lowBalanceValue: lowBalanceValue,
+        path: rootJsonPath,
       );
 
       emit(

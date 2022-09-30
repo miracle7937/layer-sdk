@@ -14,8 +14,10 @@ class SetLowBalanceAlertUseCase {
   /// Patches an user preference with different low balance alerts
   Future<User> call({
     required double lowBalanceValue,
+    required String path,
   }) async =>
       _repository.patchUserPreference(
-        userPreference: BalanceAlertPreference(value: lowBalanceValue),
+        userPreference:
+            BalanceAlertPreference(value: lowBalanceValue, key: path),
       );
 }
