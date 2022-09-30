@@ -22,6 +22,8 @@ class BankingProductTransactionsCubit
     this.limit = 50,
   })  : _getCustomerBankingProductTransactionsUseCase =
             getCustomerBankingProductTransactionsUseCase,
+        assert(((cardId != null) && (accountId == null)) ||
+            ((cardId == null) && (accountId != null))),
         super(
           BankingProductTransactionsState(
             accountId: accountId,
