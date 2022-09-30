@@ -1,19 +1,19 @@
-import '../dtos/min_max_transaction_amount_dto.dart';
+import '../dtos/transactions_filters_dto.dart';
 import '../network/net_client.dart';
 import '../network/net_request_methods.dart';
 
 /// Returns the filters for an account id or card id
-class MinMaxTransactionAmountProvider {
+class TransactionFiltersProvider {
   ///
   final NetClient netClient;
 
-  /// Creates a new [MinMaxTransactionAmountProvider] instance
-  MinMaxTransactionAmountProvider(
+  /// Creates a new [TransactionFiltersProvider] instance
+  TransactionFiltersProvider(
     this.netClient,
   );
 
   /// Returns the filters for an account id or card id
-  Future<MinMaxTransactionAmountDTO> getMinMax({
+  Future<TransactionFiltersDTO> getMinMax({
     String? accountId,
     String? cardId,
   }) async {
@@ -27,7 +27,7 @@ class MinMaxTransactionAmountProvider {
       },
     );
 
-    return MinMaxTransactionAmountDTO.fromJson(
+    return TransactionFiltersDTO.fromJson(
         Map<String, dynamic>.from(response.data));
   }
 }

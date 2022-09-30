@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 /// the filters object for the transactions
-class MinMaxTransactionAmount extends Equatable {
+class TransactionFilters extends Equatable {
   /// the list of currencies
   final List<String>? currencies;
 
@@ -11,8 +11,8 @@ class MinMaxTransactionAmount extends Equatable {
   /// the max amount for the slider
   final double? maxAmount;
 
-  /// Creates a new immutable instance of [MinMaxTransactionAmount]
-  MinMaxTransactionAmount({
+  /// Creates a new immutable instance of [TransactionFilters]
+  TransactionFilters({
     this.currencies,
     this.minAmount,
     this.maxAmount,

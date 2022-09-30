@@ -39,7 +39,7 @@ export 'providers/loyalty/offers/offer_provider.dart';
 export 'providers/mandates/mandates_payment_provider.dart';
 export 'providers/mandates/mandates_provider.dart';
 export 'providers/message/message_provider.dart';
-export 'providers/min_max_amount_transaction_provider.dart';
+export 'providers/transactions_filters_provider.dart';
 export 'providers/more_info/more_info_provider.dart';
 export 'providers/ocra/ocra_provider.dart';
 export 'providers/otp/otp_provider.dart';

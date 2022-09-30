@@ -77,7 +77,7 @@ export 'dtos/mandates/mandate_dto.dart';
 export 'dtos/mandates/mandate_payment_dto.dart';
 export 'dtos/mandates/mandate_status_dto.dart';
 export 'dtos/message/message_dto.dart';
-export 'dtos/min_max_transaction_amount_dto.dart';
+export 'dtos/transactions_filters_dto.dart';
 export 'dtos/more_info/more_info_field_dto.dart';
 export 'dtos/new_transfer/new_transfer_payload_dto.dart';
 export 'dtos/ocra/ocra_challenge_dto.dart';

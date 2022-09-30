@@ -90,7 +90,7 @@ export 'models/mandates/mandate.dart';
 export 'models/mandates/mandate_status.dart';
 export 'models/mandates/payment/mandate_payment.dart';
 export 'models/message/message.dart';
-export 'models/min_max_transaction_amount.dart';
+export 'models/transactions_filters.dart';
 export 'models/more_info/more_info_field.dart';
 export 'models/new_transfer/beneficiary_transfer/beneficiary_transfer.dart';
 export 'models/new_transfer/beneficiary_transfer/new_beneficiary.dart';

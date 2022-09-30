@@ -3,7 +3,6 @@ import 'dart:collection';
 import 'package:equatable/equatable.dart';
 
 import '../../../domain_layer/models.dart';
-import '../../domain_layer/models/banking_product_transaction.dart';
 import 'base_cubit/base_state.dart';
 
 /// Represents the state of [BankingProductTransactionsCubit]
