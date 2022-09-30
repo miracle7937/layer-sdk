@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 import '../../domain_layer/models.dart';
 import '../../presentation_layer/extensions.dart';
-import '../extensions.dart';
 
 /// Flutter Extension for [Branding]
 extension BrandingFlutterExtension on Branding {
