@@ -16,6 +16,7 @@ export 'providers/branch_activation/branch_activation_provider.dart';
 export 'providers/branding/branding_provider.dart';
 export 'providers/campaign/campaign_provider.dart';
 export 'providers/card/card_provider.dart';
+export 'providers/category/category_provider.dart';
 export 'providers/certificate/certificate_provider.dart';
 export 'providers/checkbook/checkbook_provider.dart';
 export 'providers/config/config_provider.dart';
