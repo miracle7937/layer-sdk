@@ -23,7 +23,10 @@ enum UserPreferencesAction {
   favoriteRemoved,
 
   /// A new favorite was added
-  favoriteAdded
+  favoriteAdded,
+
+  /// A new low balance was added
+  lowBalanceAdded,
 }
 
 ///The state for the [UserPreferencesCubit]
@@ -43,18 +46,23 @@ class UserPreferencesState extends Equatable {
   /// The last action performed by the user.
   final UserPreferencesAction action;
 
+  /// A new low balance was added
+  final double? lowBalanceValue;
+
   ///Creates a new [UserPreferencesState]
   UserPreferencesState({
     Iterable<int> favoriteOffers = const <int>[],
     this.busy = false,
     this.error = UserPreferencesError.none,
     this.errorMessage,
+    this.lowBalanceValue,
     this.action = UserPreferencesAction.none,
   }) : favoriteOffers = UnmodifiableListView(favoriteOffers);
 
   ///Copies this state with different values
   UserPreferencesState copyWith({
     Iterable<int>? favoriteOffers,
+    double? lowBalanceValue,
     bool? busy,
     UserPreferencesError? error,
     String? errorMessage,
@@ -62,6 +70,7 @@ class UserPreferencesState extends Equatable {
   }) =>
       UserPreferencesState(
         favoriteOffers: favoriteOffers ?? this.favoriteOffers,
+        lowBalanceValue: lowBalanceValue ?? this.lowBalanceValue,
         busy: busy ?? this.busy,
         error: error ?? this.error,
         errorMessage: error == UserPreferencesError.none
@@ -77,5 +86,6 @@ class UserPreferencesState extends Equatable {
         error,
         errorMessage,
         action,
+        lowBalanceValue,
       ];
 }
