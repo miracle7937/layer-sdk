@@ -2,7 +2,7 @@ import '../dtos/min_max_transaction_amount_dto.dart';
 import '../network/net_client.dart';
 import '../network/net_request_methods.dart';
 
-///
+/// Returns the filters for an account id or card id
 class MinMaxTransactionAmountProvider {
   ///
   final NetClient netClient;
@@ -12,7 +12,7 @@ class MinMaxTransactionAmountProvider {
     this.netClient,
   );
 
-  ///
+  /// Returns the filters for an account id or card id
   Future<MinMaxTransactionAmountDTO> getMinMax({
     String? accountId,
     String? cardId,

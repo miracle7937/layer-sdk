@@ -1,13 +1,12 @@
-/// Represents a customer's BankingProduct transaction
-/// as provided by the infobanking service
+/// Represents a transaction filters object
 class MinMaxTransactionAmountDTO {
-  ///
+  /// the list of currencies
   List<String>? currencies;
 
-  ///
+  /// the min amount for the  slider
   double? minAmount;
 
-  ///
+  /// the max amount for the slider
   double? maxAmount;
 
   /// Creates a new [MinMaxTransactionAmountDTO]
