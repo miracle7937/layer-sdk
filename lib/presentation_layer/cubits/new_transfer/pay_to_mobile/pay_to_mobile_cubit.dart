@@ -6,15 +6,15 @@ import '../../../../domain_layer/use_cases.dart';
 import '../../../cubits.dart';
 
 /// A cubit that handles the state for a pay to mobile transfer flow.
-class PayToMobileTransferCubit extends Cubit<PayToMobileState> {
+class PayToMobileCubit extends Cubit<PayToMobileState> {
   final GetActiveAccountsSortedByAvailableBalance
       _getActiveAccountsSortedByAvailableBalance;
   final LoadAllCurrenciesUseCase _loadAllCurrenciesUseCase;
   final LoadCountriesUseCase _loadCountriesUseCase;
 
-  /// Creates a new [PayToMobileTransferCubit].
-  PayToMobileTransferCubit({
-    required NewPayToMobileTransfer transfer,
+  /// Creates a new [PayToMobileCubit].
+  PayToMobileCubit({
+    required NewPayToMobile payToMobile,
     required GetActiveAccountsSortedByAvailableBalance
         getActiveAccountsSortedByAvailableBalance,
     required LoadAllCurrenciesUseCase loadAllCurrenciesUseCase,
@@ -24,7 +24,7 @@ class PayToMobileTransferCubit extends Cubit<PayToMobileState> {
         _loadAllCurrenciesUseCase = loadAllCurrenciesUseCase,
         _loadCountriesUseCase = loadCountriesUseCase,
         super(PayToMobileState(
-          transfer: transfer,
+          payToMobile: payToMobile,
         ));
 
   /// Initializes the cubit with the needed data required for the pay to mobile
@@ -36,15 +36,26 @@ class PayToMobileTransferCubit extends Cubit<PayToMobileState> {
       _loadCountries(),
     ]);
 
-    if (state.accounts.isNotEmpty) {
+    /// Initializes a new flow
+    if (state.accounts.isNotEmpty && state.payToMobile.accountId == null) {
       final account = state.accounts.first;
       final currency = state.currencies.singleWhereOrNull(
         (currency) => currency.code == account.currency,
       );
 
-      onChanged(
-        source: state.accounts.first,
+      await onChanged(
+        account: state.accounts.first,
         currency: currency,
+      );
+    }
+
+    if (state.errors.isEmpty) {
+      emit(
+        state.copyWith(
+          events: state.addEvent(
+            PayToMobileEvent.initializeFlow,
+          ),
+        ),
       );
     }
   }
@@ -52,14 +63,14 @@ class PayToMobileTransferCubit extends Cubit<PayToMobileState> {
   /// Loads the accounts.
   Future<void> _loadAccounts() async {
     if (state.accounts.isEmpty ||
-        state.errors.contains(PayToMobileTransferAction.accounts)) {
+        state.errors.contains(PayToMobileAction.accounts)) {
       emit(
         state.copyWith(
           actions: state.addAction(
-            PayToMobileTransferAction.accounts,
+            PayToMobileAction.accounts,
           ),
           errors: state.removeErrorForAction(
-            PayToMobileTransferAction.accounts,
+            PayToMobileAction.accounts,
           ),
         ),
       );
@@ -70,7 +81,7 @@ class PayToMobileTransferCubit extends Cubit<PayToMobileState> {
         emit(
           state.copyWith(
             actions: state.removeAction(
-              PayToMobileTransferAction.accounts,
+              PayToMobileAction.accounts,
             ),
             accounts: accounts,
           ),
@@ -79,10 +90,10 @@ class PayToMobileTransferCubit extends Cubit<PayToMobileState> {
         emit(
           state.copyWith(
             actions: state.removeAction(
-              PayToMobileTransferAction.accounts,
+              PayToMobileAction.accounts,
             ),
             errors: state.addErrorFromException(
-              action: PayToMobileTransferAction.accounts,
+              action: PayToMobileAction.accounts,
               exception: e,
             ),
           ),
@@ -94,14 +105,14 @@ class PayToMobileTransferCubit extends Cubit<PayToMobileState> {
   /// Loads all the currencies.
   Future<void> _loadCurrencies() async {
     if (state.currencies.isEmpty ||
-        state.errors.contains(PayToMobileTransferAction.currencies)) {
+        state.errors.contains(PayToMobileAction.currencies)) {
       emit(
         state.copyWith(
           actions: state.addAction(
-            PayToMobileTransferAction.currencies,
+            PayToMobileAction.currencies,
           ),
           errors: state.removeErrorForAction(
-            PayToMobileTransferAction.currencies,
+            PayToMobileAction.currencies,
           ),
         ),
       );
@@ -112,7 +123,7 @@ class PayToMobileTransferCubit extends Cubit<PayToMobileState> {
         emit(
           state.copyWith(
             actions: state.removeAction(
-              PayToMobileTransferAction.currencies,
+              PayToMobileAction.currencies,
             ),
             currencies: currencies,
           ),
@@ -121,10 +132,10 @@ class PayToMobileTransferCubit extends Cubit<PayToMobileState> {
         emit(
           state.copyWith(
             actions: state.removeAction(
-              PayToMobileTransferAction.currencies,
+              PayToMobileAction.currencies,
             ),
             errors: state.addErrorFromException(
-              action: PayToMobileTransferAction.currencies,
+              action: PayToMobileAction.currencies,
               exception: e,
             ),
           ),
@@ -136,14 +147,14 @@ class PayToMobileTransferCubit extends Cubit<PayToMobileState> {
   /// Loads all the countries.
   Future<void> _loadCountries() async {
     if (state.countries.isEmpty ||
-        state.errors.contains(PayToMobileTransferAction.countries)) {
+        state.errors.contains(PayToMobileAction.countries)) {
       emit(
         state.copyWith(
           actions: state.addAction(
-            PayToMobileTransferAction.countries,
+            PayToMobileAction.countries,
           ),
           errors: state.removeErrorForAction(
-            PayToMobileTransferAction.countries,
+            PayToMobileAction.countries,
           ),
         ),
       );
@@ -154,7 +165,7 @@ class PayToMobileTransferCubit extends Cubit<PayToMobileState> {
         emit(
           state.copyWith(
             actions: state.removeAction(
-              PayToMobileTransferAction.countries,
+              PayToMobileAction.countries,
             ),
             countries: countries,
           ),
@@ -163,10 +174,10 @@ class PayToMobileTransferCubit extends Cubit<PayToMobileState> {
         emit(
           state.copyWith(
             actions: state.removeAction(
-              PayToMobileTransferAction.countries,
+              PayToMobileAction.countries,
             ),
             errors: state.addErrorFromException(
-              action: PayToMobileTransferAction.countries,
+              action: PayToMobileAction.countries,
               exception: e,
             ),
           ),
@@ -177,31 +188,56 @@ class PayToMobileTransferCubit extends Cubit<PayToMobileState> {
 
   /// Updates the transfer object.
   Future<void> onChanged({
-    Account? source,
-    String? destinationPhoneMobile,
+    Account? account,
+    String? dialCode,
+    String? phoneNumber,
     double? amount,
     Currency? currency,
     String? transactionCode,
     bool? saveToShortcut,
     String? shortcutName,
-  }) async =>
+  }) async {
+    if (account != null && currency == null) {
+      currency = state.currencies.singleWhereOrNull(
+        (currency) => currency.code == account.currency,
+      );
+    }
+
+    if (saveToShortcut != null &&
+        saveToShortcut == false &&
+        state.payToMobile.saveToShortcut) {
       emit(
         state.copyWith(
-          transfer: state.transfer.copyWith(
-            source: source == null
-                ? null
-                : NewTransferSource(
-                    account: source,
-                  ),
-            destinationPhoneNumber: destinationPhoneMobile,
-            amount: amount,
-            currency: currency,
-            transactionCode: transactionCode,
-            saveToShortcut: saveToShortcut,
-            shortcutName: shortcutName,
+          events: state.addEvent(
+            PayToMobileEvent.clearShortcutName,
           ),
         ),
       );
+    } else {
+      emit(
+        state.copyWith(
+          events: state.removeEvent(
+            PayToMobileEvent.clearShortcutName,
+          ),
+        ),
+      );
+    }
+
+    emit(
+      state.copyWith(
+        payToMobile: state.payToMobile.copyWith(
+          accountId: account?.id,
+          dialCode: dialCode,
+          phoneNumber: phoneNumber,
+          amount: amount,
+          currencyCode: currency?.code,
+          transactionCode: transactionCode,
+          saveToShortcut: saveToShortcut,
+          shortcutName: shortcutName,
+        ),
+      ),
+    );
+  }
 
   /// Validates the pay to mobile transfer.
   Future<void> validate() async {
@@ -209,12 +245,12 @@ class PayToMobileTransferCubit extends Cubit<PayToMobileState> {
       state.copyWith(
         errors: {},
         events: state.removeEvent(
-          PayToMobileTransferEvent.showConfirmationView,
+          PayToMobileEvent.showConfirmationView,
         ),
       ),
     );
 
-    final validationErrors = _validateTransfer();
+    final validationErrors = _validate();
     if (validationErrors.isNotEmpty) {
       emit(
         state.copyWith(
@@ -228,58 +264,90 @@ class PayToMobileTransferCubit extends Cubit<PayToMobileState> {
     emit(
       state.copyWith(
         events: state.addEvent(
-          PayToMobileTransferEvent.showConfirmationView,
+          PayToMobileEvent.showConfirmationView,
         ),
       ),
     );
   }
 
   /// Validates the new transfer and returns the validation errors.
-  Set<CubitValidationError<PayToMobileTransferValidationErrorCode>>
-      _validateTransfer() {
+  Set<CubitValidationError<PayToMobileValidationErrorCode>> _validate() {
     final validationErrors =
-        <CubitValidationError<PayToMobileTransferValidationErrorCode>>{};
+        <CubitValidationError<PayToMobileValidationErrorCode>>{};
 
-    final transfer = state.transfer;
+    final transfer = state.payToMobile;
+    final account = state.accounts.singleWhereOrNull(
+      (account) => account.id == transfer.accountId,
+    );
 
-    if (transfer.source?.account == null) {
+    if (account == null) {
       validationErrors.add(
-        CubitValidationError<PayToMobileTransferValidationErrorCode>(
-          validationErrorCode: PayToMobileTransferValidationErrorCode
-              .sourceAccountValidationError,
+        CubitValidationError<PayToMobileValidationErrorCode>(
+          validationErrorCode:
+              PayToMobileValidationErrorCode.sourceAccountValidationError,
         ),
       );
     }
 
-    /// TODO: add destination phone number validation.
+    if ((transfer.dialCode ?? '').trim().isEmpty) {
+      validationErrors.add(
+        CubitValidationError<PayToMobileValidationErrorCode>(
+          validationErrorCode:
+              PayToMobileValidationErrorCode.dialCodeValidationError,
+        ),
+      );
+    }
+
+    if ((transfer.phoneNumber ?? '').trim().isEmpty) {
+      validationErrors.add(
+        CubitValidationError<PayToMobileValidationErrorCode>(
+          validationErrorCode:
+              PayToMobileValidationErrorCode.phoneNumberValidationError,
+        ),
+      );
+    }
 
     if ((transfer.amount ?? 0.0) <= 0.0) {
       validationErrors.add(
-        CubitValidationError<PayToMobileTransferValidationErrorCode>(
+        CubitValidationError<PayToMobileValidationErrorCode>(
           validationErrorCode:
-              PayToMobileTransferValidationErrorCode.amountValidationError,
+              PayToMobileValidationErrorCode.amountValidationError,
         ),
       );
     }
 
-    if ((transfer.amount ?? 0.0) >
-        (transfer.source?.account?.availableBalance ?? 0.0)) {
+    if ((transfer.amount ?? 0.0) > (account?.availableBalance ?? 0.0)) {
       validationErrors.add(
-        CubitValidationError<PayToMobileTransferValidationErrorCode>(
-          validationErrorCode: PayToMobileTransferValidationErrorCode
-              .insufficientBalanceValidationError,
+        CubitValidationError<PayToMobileValidationErrorCode>(
+          validationErrorCode:
+              PayToMobileValidationErrorCode.insufficientBalanceValidationError,
         ),
       );
     }
 
-    /// TODO: add transaction code validation.
+    final transactionCode = (transfer.transactionCode ?? '').trim();
+    if (transactionCode.isEmpty) {
+      validationErrors.add(
+        CubitValidationError<PayToMobileValidationErrorCode>(
+          validationErrorCode: PayToMobileValidationErrorCode
+              .transactionCodeEmptyValidationError,
+        ),
+      );
+    } else if (transactionCode.length < 4) {
+      validationErrors.add(
+        CubitValidationError<PayToMobileValidationErrorCode>(
+          validationErrorCode: PayToMobileValidationErrorCode
+              .transactionCodeLengthValidationError,
+        ),
+      );
+    }
 
     if (transfer.saveToShortcut &&
-        (transfer.shortcutName ?? '').toString().isEmpty) {
+        (transfer.shortcutName ?? '').trim().isEmpty) {
       validationErrors.add(
-        CubitValidationError<PayToMobileTransferValidationErrorCode>(
-          validationErrorCode: PayToMobileTransferValidationErrorCode
-              .shortcutNameValidationError,
+        CubitValidationError<PayToMobileValidationErrorCode>(
+          validationErrorCode:
+              PayToMobileValidationErrorCode.shortcutNameValidationError,
         ),
       );
     }

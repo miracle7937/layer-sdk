@@ -4,7 +4,7 @@ import '../../../../domain_layer/models.dart';
 import '../../../cubits.dart';
 
 /// The available actions.
-enum PayToMobileTransferAction {
+enum PayToMobileAction {
   /// Loading the accounts.
   accounts,
 
@@ -16,31 +16,49 @@ enum PayToMobileTransferAction {
 }
 
 /// The available events.
-enum PayToMobileTransferEvent {
+enum PayToMobileEvent {
+  /// Initialize flow.
+  initializeFlow,
+
+  /// Clear shortcut name.
+  clearShortcutName,
+
   /// Event for showing the confirmation view.
   showConfirmationView,
 }
 
 /// The available validation error codes.
-enum PayToMobileTransferValidationErrorCode {
+enum PayToMobileValidationErrorCode {
   /// Source account validation error.
   sourceAccountValidationError,
 
-  /// New beneficiary amount validation error.
-  amountValidationError,
+  /// Dial code validation error.
+  dialCodeValidationError,
 
-  /// Shortcut name validation error.
-  shortcutNameValidationError,
+  /// Phone number validation error.
+  phoneNumberValidationError,
+
+  /// Amount validation error.
+  amountValidationError,
 
   /// Insufficient balance validation error.
   insufficientBalanceValidationError,
+
+  /// Transaction code empty validation error.
+  transactionCodeEmptyValidationError,
+
+  /// Transaction code length validation error.
+  transactionCodeLengthValidationError,
+
+  /// Shortcut name validation error.
+  shortcutNameValidationError,
 }
 
-/// The state for the [PayToMobileTransferCubit].
-class PayToMobileState extends BaseState<PayToMobileTransferAction,
-    PayToMobileTransferEvent, PayToMobileTransferValidationErrorCode> {
-  /// The new pay to mobile transfer object.
-  final NewPayToMobileTransfer transfer;
+/// The state for the [PayToMobileCubit].
+class PayToMobileState extends BaseState<PayToMobileAction, PayToMobileEvent,
+    PayToMobileValidationErrorCode> {
+  /// The new pay to mobile object.
+  final NewPayToMobile payToMobile;
 
   /// All the currencies.
   final UnmodifiableListView<Currency> currencies;
@@ -51,12 +69,12 @@ class PayToMobileState extends BaseState<PayToMobileTransferAction,
   /// List of source [Account]s.
   final UnmodifiableListView<Account> accounts;
 
-  /// Creates a new [BeneficiaryTransferState].
+  /// Creates a new [PayToMobileState].
   PayToMobileState({
-    required this.transfer,
-    super.actions = const <PayToMobileTransferAction>{},
+    required this.payToMobile,
+    super.actions = const <PayToMobileAction>{},
     super.errors = const <CubitError>{},
-    super.events = const <PayToMobileTransferEvent>{},
+    super.events = const <PayToMobileEvent>{},
     Iterable<Account> accounts = const <Account>[],
     Iterable<Currency> currencies = const <Currency>[],
     Iterable<Country> countries = const <Country>[],
@@ -66,16 +84,16 @@ class PayToMobileState extends BaseState<PayToMobileTransferAction,
 
   @override
   PayToMobileState copyWith({
-    NewPayToMobileTransfer? transfer,
-    Set<PayToMobileTransferAction>? actions,
+    NewPayToMobile? payToMobile,
+    Set<PayToMobileAction>? actions,
     Set<CubitError>? errors,
-    Set<PayToMobileTransferEvent>? events,
+    Set<PayToMobileEvent>? events,
     Iterable<Account>? accounts,
     Iterable<Currency>? currencies,
     Iterable<Country>? countries,
   }) =>
       PayToMobileState(
-        transfer: transfer ?? this.transfer,
+        payToMobile: payToMobile ?? this.payToMobile,
         actions: actions ?? super.actions,
         errors: errors ?? super.errors,
         events: events ?? super.events,
@@ -86,7 +104,7 @@ class PayToMobileState extends BaseState<PayToMobileTransferAction,
 
   @override
   List<Object?> get props => [
-        transfer,
+        payToMobile,
         errors,
         actions,
         events,

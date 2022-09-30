@@ -578,7 +578,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     }
 
     if (transfer.saveToShortcut &&
-        (transfer.shortcutName ?? '').toString().isEmpty) {
+        (transfer.shortcutName ?? '').trim().isEmpty) {
       validationErrors.add(
         CubitValidationError<BeneficiaryTransferValidationErrorCode>(
           validationErrorCode: BeneficiaryTransferValidationErrorCode

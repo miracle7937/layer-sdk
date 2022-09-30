@@ -2,16 +2,19 @@ import 'package:equatable/equatable.dart';
 
 import '../../models.dart';
 
-/// Model representing a new pay to mobile transfer.
-class NewPayToMobileTransfer extends Equatable {
-  /// The source for this pay to mobile transfer.
-  final NewTransferSource? source;
+/// Model representing a new pay to mobile.
+class NewPayToMobile extends Equatable {
+  /// The source account identifier for this pay to mobile.
+  final String? accountId;
+
+  /// The destination dial code.
+  final String? dialCode;
 
   /// The destination phone number.
-  final String? destinationPhoneNumber;
+  final String? phoneNumber;
 
-  /// The currency.
-  final Currency? currency;
+  /// The currency code.
+  final String? currencyCode;
 
   /// The amount of the transfer.
   final double? amount;
@@ -19,8 +22,8 @@ class NewPayToMobileTransfer extends Equatable {
   /// The transaction code created by the sender.
   final String? transactionCode;
 
-  /// The [PayToMobileTransferRequestType].
-  final PayToMobileTransferRequestType? requestType;
+  /// The [PayToMobileRequestType].
+  final PayToMobileRequestType? requestType;
 
   /// Whether if this should be saved into shortcuts.
   final bool saveToShortcut;
@@ -28,11 +31,12 @@ class NewPayToMobileTransfer extends Equatable {
   /// The shortcut name;
   final String? shortcutName;
 
-  /// Creates a new [NewPayToMobileTransfer].
-  NewPayToMobileTransfer({
-    this.source,
-    this.destinationPhoneNumber,
-    this.currency,
+  /// Creates a new [NewPayToMobile].
+  NewPayToMobile({
+    this.accountId,
+    this.dialCode,
+    this.phoneNumber,
+    this.currencyCode,
     this.amount,
     this.transactionCode,
     this.requestType,
@@ -41,21 +45,22 @@ class NewPayToMobileTransfer extends Equatable {
   });
 
   /// Creates a copy with the passed values.
-  NewPayToMobileTransfer copyWith({
-    NewTransferSource? source,
-    String? destinationPhoneNumber,
-    Currency? currency,
+  NewPayToMobile copyWith({
+    String? accountId,
+    String? dialCode,
+    String? phoneNumber,
+    String? currencyCode,
     double? amount,
     String? transactionCode,
-    PayToMobileTransferRequestType? requestType,
+    PayToMobileRequestType? requestType,
     bool? saveToShortcut,
     String? shortcutName,
   }) =>
-      NewPayToMobileTransfer(
-        source: source ?? this.source,
-        destinationPhoneNumber:
-            destinationPhoneNumber ?? this.destinationPhoneNumber,
-        currency: currency ?? this.currency,
+      NewPayToMobile(
+        accountId: accountId ?? this.accountId,
+        dialCode: dialCode ?? this.dialCode,
+        phoneNumber: phoneNumber ?? this.phoneNumber,
+        currencyCode: currencyCode ?? this.currencyCode,
         amount: amount ?? this.amount,
         transactionCode: transactionCode ?? this.transactionCode,
         requestType: requestType ?? this.requestType,
@@ -65,9 +70,10 @@ class NewPayToMobileTransfer extends Equatable {
 
   @override
   List<Object?> get props => [
-        source,
-        destinationPhoneNumber,
-        currency,
+        accountId,
+        dialCode,
+        phoneNumber,
+        currencyCode,
         amount,
         transactionCode,
         requestType,
