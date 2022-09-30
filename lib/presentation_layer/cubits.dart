@@ -101,6 +101,8 @@ export 'cubits/mandates/payments/mandate_payments_cubit.dart';
 export 'cubits/mandates/payments/mandate_payments_state.dart';
 export 'cubits/message/message_cubit.dart';
 export 'cubits/message/message_state.dart';
+export 'cubits/min_max_amount_transaction_cubit.dart';
+export 'cubits/min_max_amount_transaction_state.dart';
 export 'cubits/new_transfer/beneficiary_transfer/beneficiary_transfer_cubit.dart';
 export 'cubits/new_transfer/beneficiary_transfer/beneficiary_transfer_state.dart';
 export 'cubits/new_transfer/own_transfer/own_transfer_cubit.dart';

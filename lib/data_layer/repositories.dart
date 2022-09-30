@@ -39,6 +39,7 @@ export 'repositories/loyalty/offers/offer_repository.dart';
 export 'repositories/mandates/mandate_payment_repository.dart';
 export 'repositories/mandates/mandates_repository.dart';
 export 'repositories/message/message_repository.dart';
+export 'repositories/min_max_amount_transaction_repository.dart';
 export 'repositories/ocra/ocra_repository.dart';
 export 'repositories/otp/otp_repository.dart';
 export 'repositories/otp/second_factor_repository.dart';
