@@ -1,4 +1,5 @@
 import '../../../../data_layer/network.dart';
+import '../../../_migration/data_layer/src/helpers/dto_helpers.dart';
 import '../../dtos.dart';
 
 /// Provides data related to Cards
@@ -21,7 +22,7 @@ class CardProvider {
       netClient.netEndpoints.card,
       method: NetRequestMethods.get,
       queryParameters: {
-        'customer_id': customerId,
+        if (isNotEmpty(customerId)) 'customer_id': customerId,
         'include_details': includeDetails,
       },
       forceRefresh: forceRefresh,

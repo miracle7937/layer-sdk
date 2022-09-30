@@ -34,10 +34,7 @@ class CardDashboardCubit extends Cubit<CardDashboardState> {
   }) async {
     emit(
       state.copyWith(
-          actions: state.addActions({
-            CardDashboardAction.loadCards,
-          }),
-          errors: state.removeErrorForAction(CardDashboardAction.loadCards)),
+          actions: state.addAction(CardDashboardAction.loadCards), errors: {}),
     );
 
     try {
@@ -70,9 +67,7 @@ class CardDashboardCubit extends Cubit<CardDashboardState> {
   }) async {
     emit(
       state.copyWith(
-          actions: state.addActions({
-            CardDashboardAction.loadFinancialData,
-          }),
+          actions: state.addAction(CardDashboardAction.loadFinancialData),
           errors: {}),
     );
 
