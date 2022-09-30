@@ -149,6 +149,18 @@ void main() {
     });
 
     blocTest<EditBeneficiaryCubit, EditBeneficiaryState>(
+      'should load with empty state',
+      build: () => _cubit,
+      verify: (c) => expect(
+        c.state,
+        EditBeneficiaryState(
+          oldBeneficiary: _benef,
+          beneficiary: _benef.copyWith(),
+        ),
+      ),
+    );
+
+    blocTest<EditBeneficiaryCubit, EditBeneficiaryState>(
       'should edit a beneficiary',
       seed: () => _baseState.copyWith(
         beneficiary: _benef,
