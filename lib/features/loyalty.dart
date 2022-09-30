@@ -40,6 +40,7 @@ export '../domain_layer/models/loyalty/offer/offer_rule/rule_decision.dart';
 export '../domain_layer/models/loyalty/offer/offer_rule/rule_reward.dart';
 export '../domain_layer/models/loyalty/offer/offer_transaction.dart';
 export '../domain_layer/use_cases/account/get_accounts_by_status_use_case.dart';
+export '../domain_layer/use_cases/category/load_categories_use_case.dart';
 export '../domain_layer/use_cases/loyalty/cashback_history/load_cashback_history_use_case.dart';
 export '../domain_layer/use_cases/loyalty/loyalty_points/load_all_loyalty_points_use_case.dart';
 export '../domain_layer/use_cases/loyalty/loyalty_points_exchange/confirm_second_factor_for_loyalty_points_exchange_use_case.dart';
