@@ -117,6 +117,8 @@ export 'cubits/payments/recurring_payments_cubit.dart';
 export 'cubits/payments/recurring_payments_states.dart';
 export 'cubits/product/product_cubit.dart';
 export 'cubits/product/product_state.dart';
+export 'cubits/profile/profile_cubit.dart';
+export 'cubits/profile/profile_state.dart';
 export 'cubits/queue/queue_request_cubit.dart';
 export 'cubits/queue/queue_request_states.dart';
 export 'cubits/receipt/receipt_cubit.dart';

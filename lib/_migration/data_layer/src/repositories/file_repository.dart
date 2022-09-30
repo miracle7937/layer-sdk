@@ -1,3 +1,5 @@
+import 'package:dio/dio.dart';
+
 import '../../../../data_layer/network.dart';
 import '../../providers.dart';
 
@@ -15,6 +17,8 @@ class FileRepository {
     required String url,
     Map<String, dynamic> queryParameters = const <String, dynamic>{},
     bool forceRefresh = false,
+    bool decodeResponse = false,
+    ResponseType responseType = ResponseType.bytes,
     NetProgressCallback? onReceiveProgress,
     NetRequestMethods method = NetRequestMethods.get,
     Map<String, dynamic> body = const <String, dynamic>{},
@@ -25,6 +29,8 @@ class FileRepository {
       body: body,
       queryParameters: queryParameters,
       forceRefresh: forceRefresh,
+      decodeResponse: decodeResponse,
+      responseType: responseType,
       onReceiveProgress: onReceiveProgress,
     );
   }

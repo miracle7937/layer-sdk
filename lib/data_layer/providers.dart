@@ -28,6 +28,7 @@ export 'providers/dpa/dpa_provider.dart';
 export 'providers/experience/experience_provider.dart';
 export 'providers/experience_preferences/experience_preferences_provider.dart';
 export 'providers/financial/financial_data_provider.dart';
+export 'providers/inbox/inbox_provider.dart';
 export 'providers/loyalty/loyalty_points/loyalty_points_provider.dart';
 export 'providers/loyalty/loyalty_points_exchange/loyalty_points_exchange_provider.dart';
 export 'providers/loyalty/loyalty_points_expiration/loyalty_points_expiration_provider.dart';

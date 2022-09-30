@@ -206,9 +206,19 @@ class UserProvider {
     final data = response.data;
 
     final effectiveData = data['user'] as Map<String, dynamic>;
+    final userId = effectiveData['a_user_id'];
 
     if (data['device'] != null) {
       effectiveData.addAll(data['device']!);
+    }
+
+    /// We are checking the user id and adding again to `effectiveData` cause
+    /// `effectiveData.addAll(data['device']!)` is overriding the real user id.
+    ///
+    /// This is because `data['device']` also have a `a_user_id` param but the
+    /// value is null.
+    if (effectiveData['a_user_id'] == null) {
+      effectiveData['a_user_id'] = userId;
     }
 
     return UserDTO.fromJson(effectiveData);
@@ -258,6 +268,23 @@ class UserProvider {
     );
 
     return response.success;
+  }
+
+  /// Uploads the newly selected image for the customer's profile
+  Future patchCustomerImage({required String base64}) async {
+    var data = {
+      "image": base64,
+    };
+
+    final response = await netClient.request(
+      netClient.netEndpoints.user,
+      data: [
+        data,
+      ],
+      method: NetRequestMethods.patch,
+    );
+
+    return response.data;
   }
 }
 
