@@ -22,11 +22,6 @@ class BankingProductTransactionsCubit
     this.limit = 50,
   })  : _getCustomerBankingProductTransactionsUseCase =
             getCustomerBankingProductTransactionsUseCase,
-        assert(
-          (accountId == null && cardId != null) ||
-              (cardId == null && accountId != null),
-          'Pass either account Id or card Id',
-        ),
         super(
           BankingProductTransactionsState(
             accountId: accountId,
@@ -73,8 +68,8 @@ class BankingProductTransactionsCubit
   }) async {
     emit(
       state.copyWith(
-        cardId: cardId,
-        accountId: accountId,
+        cardId: cardId ?? state.cardId,
+        accountId: accountId ?? state.accountId,
         startDate: fromDate,
         endDate: toDate,
         amountFrom: amountFrom,

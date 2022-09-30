@@ -1,7 +1,7 @@
 import '../../data_layer/repositories/banking_product_transactions_repository_interface.dart';
 import '../models/banking_product_transaction.dart';
 
-/// Use case for the account transactions from a customer.
+/// Use case for the banking product transactions from a customer.
 class GetCustomerBankingProductTransactionsUseCase {
   final BankingProductTransactionRepositoryInterface _repository;
 
@@ -10,8 +10,7 @@ class GetCustomerBankingProductTransactionsUseCase {
     required BankingProductTransactionRepositoryInterface repository,
   }) : _repository = repository;
 
-  /// Returns the accounts transactions of the provided customer id and account
-  /// id.
+  /// Returns the banking product transactions
   ///
   /// Use the `limit` and `offset` parameters to paginate.
   Future<List<BankingProductTransaction>> call({
