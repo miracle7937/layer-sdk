@@ -12,14 +12,14 @@ class UserPreferencesCubit extends Cubit<UserPreferencesState> {
 
   ///Creates a new [UserPreferencesCubit]
   UserPreferencesCubit({
-    required User user,
+    User? user,
     required ChangeOfferFavoriteStatusUseCase changeOfferFavoriteStatusUseCase,
     required SetLowBalanceAlertUseCase setLowBalanceAlertUseCase,
   })  : _changeOfferFavoriteStatusUseCase = changeOfferFavoriteStatusUseCase,
         _setLowBalanceAlertUseCase = setLowBalanceAlertUseCase,
         super(
           UserPreferencesState(
-            favoriteOffers: user.favoriteOffers.toList(),
+            favoriteOffers: user != null ? user.favoriteOffers.toList() : [],
           ),
         );
 
@@ -72,9 +72,9 @@ class UserPreferencesCubit extends Cubit<UserPreferencesState> {
     }
   }
 
-  ///Adds / Removes a low balance alert
+  ///Adds a low balance alert
   Future<void> setLowBalanceAlert(
-      {required double lowBalanceValue, accountId}) async {
+      {required double lowBalanceValue, required String accountId}) async {
     emit(
       state.copyWith(
         busy: true,
@@ -82,7 +82,8 @@ class UserPreferencesCubit extends Cubit<UserPreferencesState> {
         action: UserPreferencesAction.none,
       ),
     );
-    var rootJsonPath = "customer_account.$accountId.pref_lowbal";
+    var keyLowBalance = "customer_account.$accountId.pref_lowbal";
+    var keyAlerted = "customer_account.$accountId.alerted";
 
     try {
       UserPreferencesAction action;
@@ -90,7 +91,8 @@ class UserPreferencesCubit extends Cubit<UserPreferencesState> {
 
       final response = await _setLowBalanceAlertUseCase(
         lowBalanceValue: lowBalanceValue,
-        path: rootJsonPath,
+        keyLowBalance: keyLowBalance,
+        keyAlerted: keyAlerted,
       );
 
       emit(

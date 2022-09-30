@@ -1,5 +1,5 @@
 import '../../../features/user.dart';
-import '../../models/user/balance_alert_preference.dart';
+import '../../../features/user_preferences.dart';
 
 /// Use case that adds / removes a low balance alert from the user preferences
 /// of a customer.
@@ -14,10 +14,14 @@ class SetLowBalanceAlertUseCase {
   /// Patches an user preference with different low balance alerts
   Future<User> call({
     required double lowBalanceValue,
-    required String path,
+    required String keyLowBalance,
+    required String keyAlerted,
   }) async =>
       _repository.patchUserPreference(
-        userPreference:
-            BalanceAlertPreference(value: lowBalanceValue, key: path),
+        userPreference: BalanceAlertPreference(
+            valueLowBalance: lowBalanceValue,
+            keyLowBalance: keyLowBalance,
+            keyAlerted: keyAlerted,
+            valueAlerted: false),
       );
 }
