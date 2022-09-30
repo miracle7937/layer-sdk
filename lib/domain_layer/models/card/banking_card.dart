@@ -94,7 +94,7 @@ class BankingCard extends Equatable {
   final CardPreferences preferences;
 
   /// Whether its a virtual card or not
-  final bool? isVirtual;
+  final bool isVirtual;
 
   /// Creates a new immutable [BankingCard]
   BankingCard({
@@ -115,7 +115,7 @@ class BankingCard extends Equatable {
     this.type = const CardType(),
     required this.preferences,
     Iterable<String> accountIds = const [],
-    this.isVirtual,
+    this.isVirtual = false,
   }) : accountID = UnmodifiableListView(accountIds);
 
   @override

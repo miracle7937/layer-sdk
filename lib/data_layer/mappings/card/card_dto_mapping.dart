@@ -22,7 +22,7 @@ extension CardDTOMapping on CardDTO {
         status: status?.toCardStatus(),
         accountIds: accountID ?? [],
         preferences: preferences?.toCardPreferences() ?? CardPreferences(),
-        isVirtual: isVirtual,
+        isVirtual: isVirtual ?? false,
       );
 }
 
