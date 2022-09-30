@@ -1,5 +1,7 @@
 import 'dart:collection';
 
+import 'package:collection/collection.dart';
+
 import '../../../../domain_layer/models.dart';
 import '../../../cubits.dart';
 
@@ -29,17 +31,11 @@ enum LoyaltyRedemptionAction {
 
 /// The available events that the cubit can emit.
 enum LoyaltyRedemptionEvent {
-  /// Event for showing the confirmation view.
-  showConfirmationView,
+  /// Points being entered.
+  point,
 
-  /// Event for inputing the OTP code.
-  inputOTPCode,
-
-  /// Event for showing the transfer result view.
-  showResultView,
-
-  /// Event for closing the OTP code.
-  closeOTPView,
+  /// Cash being entered.
+  cash,
 }
 
 /// The available validation error codes.
@@ -105,11 +101,25 @@ class LoyaltyRedemptionState extends BaseState<LoyaltyRedemptionAction,
   // /// Rate of exchange
   // final num rate;
 
+  /// Entered points for exchanging.
+  final int? points;
+
+  /// Points converted to cash.
+  final double? cash;
+
   /// Loyalty points.
   final LoyaltyPoints loyaltyPoints;
 
+  /// Base currency code.
+  final String baseCurrencyCode;
+
   /// Base currency.
-  final String baseCurrency;
+  Currency? get baseCurrency =>
+      baseCurrencyCode.isNotEmpty && currencies.isNotEmpty
+          ? currencies.firstWhereOrNull(
+              (currencyCode) => currencyCode.code == baseCurrencyCode,
+            )
+          : null;
 
   /// Creates a new [LoyaltyRedemptionState].
   LoyaltyRedemptionState({
@@ -118,9 +128,10 @@ class LoyaltyRedemptionState extends BaseState<LoyaltyRedemptionAction,
     super.events = const <LoyaltyRedemptionEvent>{},
     Iterable<Currency> currencies = const <Currency>{},
     Iterable<Account> accounts = const <Account>[],
-    // this.rate = 0.0,
     this.loyaltyPoints = const LoyaltyPoints(id: -1),
-    this.baseCurrency = '',
+    this.baseCurrencyCode = '',
+    this.points,
+    this.cash,
   })  : currencies = UnmodifiableListView(currencies),
         accounts = UnmodifiableListView(accounts);
 
@@ -131,9 +142,10 @@ class LoyaltyRedemptionState extends BaseState<LoyaltyRedemptionAction,
     Set<LoyaltyRedemptionEvent>? events,
     Iterable<Currency>? currencies,
     Iterable<Account>? accounts,
-    // num? rate,
     LoyaltyPoints? loyaltyPoints,
-    String? baseCurrency,
+    String? baseCurrencyCode,
+    int? points,
+    double? cash,
   }) =>
       LoyaltyRedemptionState(
         actions: actions ?? super.actions,
@@ -141,9 +153,10 @@ class LoyaltyRedemptionState extends BaseState<LoyaltyRedemptionAction,
         events: events ?? super.events,
         currencies: currencies ?? this.currencies,
         accounts: accounts ?? this.accounts,
-        // rate: rate ?? this.rate,
         loyaltyPoints: loyaltyPoints ?? this.loyaltyPoints,
-        baseCurrency: baseCurrency ?? this.baseCurrency,
+        baseCurrencyCode: baseCurrencyCode ?? this.baseCurrencyCode,
+        points: points ?? this.points,
+        cash: cash ?? this.cash,
       );
 
   @override
@@ -153,8 +166,9 @@ class LoyaltyRedemptionState extends BaseState<LoyaltyRedemptionAction,
         events,
         currencies,
         accounts,
-        // rate,
         loyaltyPoints,
-        baseCurrency,
+        baseCurrencyCode,
+        points,
+        cash,
       ];
 }
