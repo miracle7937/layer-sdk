@@ -5,9 +5,20 @@ import 'package:equatable/equatable.dart';
 import '../../../domain_layer/models.dart';
 import 'base_cubit/base_state.dart';
 
+/// enum for error codes
+enum BankingProductTransactionsErrorCode {
+  /// loading error
+  loadError,
+
+  /// filter error
+  filterError,
+}
+
 /// Represents the state of [BankingProductTransactionsCubit]
-class BankingProductTransactionsState
-    extends BaseState<BankingProductTransactionsAction, void, void> {
+class BankingProductTransactionsState extends BaseState<
+    BankingProductTransactionsAction,
+    void,
+    BankingProductTransactionsErrorCode> {
   /// List of [BankingProductTransactions] of the customer [BankingProduct]
   final UnmodifiableListView<BankingProductTransaction> transactions;
 

@@ -82,10 +82,10 @@ class BankingProductTransactionsCubit
             : (loadMore
                 ? BankingProductTransactionsAction.filtering
                 : BankingProductTransactionsAction.loadInitialTransactions)),
-        errors: state.removeErrorForAction(
+        errors: state.removeValidationError(
           loadMore
-              ? BankingProductTransactionsAction.filtering
-              : BankingProductTransactionsAction.loadInitialTransactions,
+              ? BankingProductTransactionsErrorCode.filterError
+              : BankingProductTransactionsErrorCode.loadError,
         ),
       ),
     );
@@ -120,10 +120,10 @@ class BankingProductTransactionsCubit
                     ? BankingProductTransactionsAction.filtering
                     : BankingProductTransactionsAction.loadInitialTransactions,
           ),
-          errors: state.removeErrorForAction(
+          errors: state.removeValidationError(
             loadMore
-                ? BankingProductTransactionsAction.filtering
-                : BankingProductTransactionsAction.loadInitialTransactions,
+                ? BankingProductTransactionsErrorCode.filterError
+                : BankingProductTransactionsErrorCode.loadError,
           ),
           listData: state.listData.copyWith(
             canLoadMore: transactions.length >= limit,
@@ -131,7 +131,7 @@ class BankingProductTransactionsCubit
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception {
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -139,11 +139,10 @@ class BankingProductTransactionsCubit
                 ? BankingProductTransactionsAction.filtering
                 : BankingProductTransactionsAction.loadInitialTransactions,
           ),
-          errors: state.addErrorFromException(
-            action: loadMore
-                ? BankingProductTransactionsAction.filtering
-                : BankingProductTransactionsAction.loadInitialTransactions,
-            exception: e,
+          errors: state.addValidationError(
+            validationErrorCode: loadMore
+                ? BankingProductTransactionsErrorCode.filterError
+                : BankingProductTransactionsErrorCode.loadError,
           ),
         ),
       );
