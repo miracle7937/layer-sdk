@@ -6,11 +6,8 @@ import '../../../providers.dart';
 
 /// Handles Loyalty points data
 class MockLoyaltyPointsRepository implements LoyaltyPointsRepositoryInterface {
-  final LoyaltyPointsProvider _provider;
-
   ///  Creates a new repository with the supplied [MockLoyaltyPointsRepository]
-  MockLoyaltyPointsRepository(LoyaltyPointsProvider provider)
-      : _provider = provider;
+  MockLoyaltyPointsRepository(LoyaltyPointsProvider provider);
 
   /// Fetches loyalty points data and parses to [LoyaltyPoints] models
   @override

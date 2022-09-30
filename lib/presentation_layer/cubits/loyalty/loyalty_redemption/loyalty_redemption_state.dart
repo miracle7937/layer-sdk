@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:collection/collection.dart';
 
 import '../../../../domain_layer/models.dart';
@@ -36,57 +34,15 @@ enum LoyaltyRedemptionEvent {
 
   /// Cash being entered.
   cash,
+
+  /// Event for showing the result view.
+  showResultView,
 }
 
 /// The available validation error codes.
 enum LoyaltyRedemptionValidationErrorCode {
-  /// Invalid IBAN.
-  invalidIBAN,
-
-  /// Incorrect OTP code.
-  incorrectOTPCode,
-
-  /// Source account validation error.
-  sourceAccountValidationError,
-
-  /// Selected beneficiary validation error.
-  selectedBeneficiaryValidationError,
-
-  /// New beneficiary first name validation error.
-  firstNameValidationError,
-
-  /// New beneficiary last name validation error.
-  lastNameValidationError,
-
-  /// New beneficiary country validation error.
-  countryValidationError,
-
-  /// New beneficiary currency validation error.
-  currencyValidationError,
-
-  /// New beneficiary IBAN/Account number validation error.
-  ibanOrAccountValidationError,
-
-  /// New beneficiary routing code validation error.
-  routingCodeValidationError,
-
-  /// New beneficiary bank validation error.
-  bankValidationError,
-
-  /// New beneficiary amount validation error.
-  amountValidationError,
-
-  /// New beneficiary nickname validation error.
-  nicknameValidationError,
-
-  /// Shortcut name validation error.
-  shortcutNameValidationError,
-
-  /// Schedule details validation error.
-  scheduleDetailsValidationError,
-
-  /// Insufficient balance validation error.
-  insufficientBalanceValidationError,
+  /// Amount of entered points exceeds available ones.
+  invalidPoints,
 }
 
 /// The state for the [LoyaltyRedemptionCubit].
@@ -97,9 +53,6 @@ class LoyaltyRedemptionState extends BaseState<LoyaltyRedemptionAction,
 
   /// List of [Account]s.
   final UnmodifiableListView<Account> accounts;
-
-  // /// Rate of exchange
-  // final num rate;
 
   /// Entered points for exchanging.
   final int? points;
@@ -112,6 +65,13 @@ class LoyaltyRedemptionState extends BaseState<LoyaltyRedemptionAction,
 
   /// Base currency code.
   final String baseCurrencyCode;
+
+  /// Exchange result.
+  final LoyaltyPointsExchange? exchangeResult;
+
+  /// If selected points can be exchanged.
+  bool get canExchange =>
+      (points ?? 0) > 0 && (points ?? 0) <= loyaltyPoints.balance;
 
   /// Base currency.
   Currency? get baseCurrency =>
@@ -132,6 +92,7 @@ class LoyaltyRedemptionState extends BaseState<LoyaltyRedemptionAction,
     this.baseCurrencyCode = '',
     this.points,
     this.cash,
+    this.exchangeResult,
   })  : currencies = UnmodifiableListView(currencies),
         accounts = UnmodifiableListView(accounts);
 
@@ -146,6 +107,7 @@ class LoyaltyRedemptionState extends BaseState<LoyaltyRedemptionAction,
     String? baseCurrencyCode,
     int? points,
     double? cash,
+    LoyaltyPointsExchange? exchangeResult,
   }) =>
       LoyaltyRedemptionState(
         actions: actions ?? super.actions,
@@ -157,6 +119,7 @@ class LoyaltyRedemptionState extends BaseState<LoyaltyRedemptionAction,
         baseCurrencyCode: baseCurrencyCode ?? this.baseCurrencyCode,
         points: points ?? this.points,
         cash: cash ?? this.cash,
+        exchangeResult: exchangeResult ?? this.exchangeResult,
       );
 
   @override
@@ -170,5 +133,6 @@ class LoyaltyRedemptionState extends BaseState<LoyaltyRedemptionAction,
         baseCurrencyCode,
         points,
         cash,
+        exchangeResult,
       ];
 }

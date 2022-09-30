@@ -7,12 +7,9 @@ import '../../../providers.dart';
 /// Handles expirated loyalty points data
 class MockLoyaltyPointsExpirationRepository
     implements LoyaltyPointsExpirationRepositoryInterface {
-  final LoyaltyPointsExpirationProvider _provider;
-
   ///  Creates a new repository with the supplied [LoyaltyPointsProvider]
   MockLoyaltyPointsExpirationRepository(
-    LoyaltyPointsExpirationProvider provider,
-  ) : _provider = provider;
+      LoyaltyPointsExpirationProvider provider);
 
   /// Fetches the amount of loyalty points to expire by the set date
   @override

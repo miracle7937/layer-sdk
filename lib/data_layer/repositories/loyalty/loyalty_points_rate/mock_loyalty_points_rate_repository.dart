@@ -9,7 +9,7 @@ class MockLoyaltyPointsRateRepository
     implements LoyaltyPointsRateRepositoryInterface {
   final LoyaltyPointsRateProvider _provider;
 
-  ///  Creates a new repository with the supplied [MockLoyaltyPointsRateRepository]
+  ///  Creates a new repository with the supplied [LoyaltyPointsRateProvider]
   MockLoyaltyPointsRateRepository(LoyaltyPointsRateProvider provider)
       : _provider = provider;
 
