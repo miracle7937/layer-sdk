@@ -46,7 +46,7 @@ class CategoryDTO {
         name: json['category_name'],
         color: json['color'],
         description: json['descritpion'],
-        iconURL: json['iconURL'],
+        iconURL: json['icon_url'],
         created: JsonParser.parseDate(json['ts_created']),
         updated: JsonParser.parseDate(json['ts_updated']),
         type: CategoryTypeDTO.fromRaw(json['type']),

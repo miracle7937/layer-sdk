@@ -44,6 +44,7 @@ export 'use_cases/campaign/load_public_campaigns_use_case.dart';
 export 'use_cases/campaign/open_campaign_use_case.dart';
 export 'use_cases/card/load_customer_card_transactions_use_case.dart';
 export 'use_cases/card/load_customer_cards_use_case.dart';
+export 'use_cases/category/load_categories_use_case.dart';
 export 'use_cases/certificate/request_account_certificate_use_case.dart';
 export 'use_cases/certificate/request_bank_statement_use_case.dart';
 export 'use_cases/certificate/request_certificate_of_deposit_use_case.dart';
