@@ -68,6 +68,20 @@ class UserRepository implements UserRepositoryInterface {
     return userDTO.toUser();
   }
 
+  /// Returns an user from a developer `token` and `developerId`.
+  @override
+  Future<User> getDeveloperUserFromToken({
+    required String token,
+    required String developerId,
+  }) async {
+    final userDTO = await _userProvider.getDeveloperUserFromToken(
+      token: token,
+      developerId: developerId,
+    );
+
+    return userDTO.toUser();
+  }
+
   /// Request the lock of an user.
   ///
   /// Used exclusively by the console (DBO).
@@ -212,5 +226,12 @@ class UserRepository implements UserRepositoryInterface {
       _userProvider.patchUserRoles(
         userId: userId,
         roles: roles,
+      );
+
+  /// Uploads the newly selected image
+  @override
+  Future patchImage({required String base64}) =>
+      _userProvider.patchCustomerImage(
+        base64: base64,
       );
 }

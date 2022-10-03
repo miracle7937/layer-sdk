@@ -1,8 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:layer_sdk/layer_sdk.dart';
-import 'package:layer_sdk/presentation_layer/cubits/loyalty/loyalty_landing/loyalty_landing_cubit.dart';
-import 'package:layer_sdk/presentation_layer/cubits/loyalty/loyalty_landing/loyalty_landing_state.dart';
+import 'package:layer_sdk/features/loyalty.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockLoadAllLoyaltyPointsUseCase extends Mock
@@ -16,6 +14,8 @@ class MockLoadExpiredLoyaltyPointsByDateUseCase extends Mock
 
 class MockLoadOffersUseCase extends Mock implements LoadOffersUseCase {}
 
+class MockLoadCategoriesUseCase extends Mock implements LoadCategoriesUseCase {}
+
 late LoadAllLoyaltyPointsUseCase _loadAllLoyaltyPointsUseCase;
 
 late LoadCurrentLoyaltyPointsRateUseCase _loadCurrentLoyaltyPointsRateUseCase;
@@ -25,6 +25,8 @@ late LoadExpiredLoyaltyPointsByDateUseCase
 
 late LoadOffersUseCase _loadOffersUseCase;
 
+late LoadCategoriesUseCase _loadCategoriesUseCase;
+
 late LoyaltyLandingCubit _cubit;
 
 void main() {
@@ -33,6 +35,11 @@ void main() {
     (index) => LoyaltyPoints(
       id: 0,
     ),
+  );
+
+  final _mockedCategories = List.generate(
+    3,
+    (index) => Category(),
   );
 
   final _mockedLoyaltyPointsRate = LoyaltyPointsRate(
@@ -70,12 +77,15 @@ void main() {
 
     _loadOffersUseCase = MockLoadOffersUseCase();
 
+    _loadCategoriesUseCase = MockLoadCategoriesUseCase();
+
     _cubit = LoyaltyLandingCubit(
       loadAllLoyaltyPointsUseCase: _loadAllLoyaltyPointsUseCase,
       loadCurrentLoyaltyPointsRateUseCase: _loadCurrentLoyaltyPointsRateUseCase,
       loadExpiredLoyaltyPointsByDateUseCase:
           _loadExpiredLoyaltyPointsByDateUseCase,
       loadOffersUseCase: _loadOffersUseCase,
+      loadCategoriesUseCase: _loadCategoriesUseCase,
     );
 
     when(() => _loadAllLoyaltyPointsUseCase()).thenAnswer(
@@ -102,6 +112,12 @@ void main() {
     ).thenAnswer(
       (_) async => _mockedOffer,
     );
+
+    when(
+      () => _loadCategoriesUseCase(),
+    ).thenAnswer(
+      (_) async => _mockedCategories,
+    );
   });
 
   blocTest<LoyaltyLandingCubit, LoyaltyLandingState>(
@@ -114,6 +130,7 @@ void main() {
         errors: {},
         loyaltyPoints: {},
         offers: {},
+        categories: {},
         loyaltyPointsRate: null,
         loyaltyPointsExpiration: null,
       ),
@@ -131,6 +148,7 @@ void main() {
         offers: _mockedOffer.offers,
         loyaltyPointsRate: _mockedLoyaltyPointsRate,
         loyaltyPointsExpiration: _mockedLoyaltyPointsExpiration,
+        categories: _mockedCategories,
       ),
     ),
   );
@@ -222,6 +240,28 @@ void main() {
           limit: any(named: 'limit'),
           offset: any(named: 'offset'),
         ),
+      ).called(1);
+    },
+  );
+
+  blocTest<LoyaltyLandingCubit, LoyaltyLandingState>(
+    'Should return a list of categories',
+    build: () => _cubit,
+    act: (c) => c.loadCategories(),
+    expect: () => [
+      LoyaltyLandingState(
+        actions: {LoyaltyLandingActions.loadCategories},
+        errors: {},
+      ),
+      LoyaltyLandingState(
+        actions: {},
+        errors: {},
+        categories: _mockedCategories,
+      ),
+    ],
+    verify: (c) {
+      verify(
+        () => _loadCategoriesUseCase(),
       ).called(1);
     },
   );

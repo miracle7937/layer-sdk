@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../layer_sdk.dart';
+import '../../../../domain_layer/use_cases.dart';
+import '../../../utils.dart';
 import 'loyalty_landing_state.dart';
 
 /// Cubit responsible for Landing loyalty page
@@ -11,6 +12,7 @@ class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
   final LoadExpiredLoyaltyPointsByDateUseCase
       _loadExpiredLoyaltyPointsByDateUseCase;
   final LoadOffersUseCase _loadOffersUseCase;
+  final LoadCategoriesUseCase _loadCategoriesUseCase;
   final Pagination _pagination;
 
   /// Creates a new [LoyaltyLandingCubit] using the suplied use cases
@@ -21,6 +23,7 @@ class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
     required LoadExpiredLoyaltyPointsByDateUseCase
         loadExpiredLoyaltyPointsByDateUseCase,
     required LoadOffersUseCase loadOffersUseCase,
+    required LoadCategoriesUseCase loadCategoriesUseCase,
     int limit = 20,
   })  : _loadAllLoyaltyPointsUseCase = loadAllLoyaltyPointsUseCase,
         _loadCurrentLoyaltyPointsRateUseCase =
@@ -28,6 +31,7 @@ class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
         _loadExpiredLoyaltyPointsByDateUseCase =
             loadExpiredLoyaltyPointsByDateUseCase,
         _loadOffersUseCase = loadOffersUseCase,
+        _loadCategoriesUseCase = loadCategoriesUseCase,
         _pagination = Pagination(limit: limit),
         super(LoyaltyLandingState());
 
@@ -42,6 +46,7 @@ class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
         expirationDate: expirationDate,
       ),
       loadOffers(),
+      loadCategories(),
     ]);
   }
 
@@ -238,6 +243,41 @@ class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
         actions: state.removeAction(LoyaltyLandingActions.loadOffers),
         errors: state.addErrorFromException(
           action: LoyaltyLandingActions.loadOffers,
+          exception: e,
+        ),
+      ));
+    }
+  }
+
+  /// Loads all categories
+  Future<void> loadCategories() async {
+    emit(
+      state.copyWith(
+        actions: state.addAction(
+          LoyaltyLandingActions.loadCategories,
+        ),
+        errors: state.removeErrorForAction(
+          LoyaltyLandingActions.loadCategories,
+        ),
+      ),
+    );
+
+    try {
+      final categories = await _loadCategoriesUseCase();
+
+      emit(
+        state.copyWith(
+          actions: state.removeAction(
+            LoyaltyLandingActions.loadCategories,
+          ),
+          categories: categories,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(state.copyWith(
+        actions: state.removeAction(LoyaltyLandingActions.loadCategories),
+        errors: state.addErrorFromException(
+          action: LoyaltyLandingActions.loadCategories,
           exception: e,
         ),
       ));
