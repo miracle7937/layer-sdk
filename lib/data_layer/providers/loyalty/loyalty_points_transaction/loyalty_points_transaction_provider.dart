@@ -31,6 +31,10 @@ class LoyaltyPointsTransactionProvider {
       forceRefresh: forceRefresh,
     );
 
-    return LoyaltyPointsTransactionDTO.fromJsonList(response.data);
+    return LoyaltyPointsTransactionDTO.fromJsonList(
+      List<Map<String, dynamic>>.from(
+        response.data,
+      ),
+    );
   }
 }
