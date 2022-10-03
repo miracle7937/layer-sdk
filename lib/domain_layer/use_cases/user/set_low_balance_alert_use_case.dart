@@ -15,6 +15,7 @@ class SetLowBalanceAlertUseCase {
   Future<User> call({
     required double lowBalanceValue,
     required String keyLowBalance,
+    required bool valueAlerted,
     required String keyAlerted,
   }) async =>
       _repository.patchUserPreference(
@@ -22,6 +23,6 @@ class SetLowBalanceAlertUseCase {
             valueLowBalance: lowBalanceValue,
             keyLowBalance: keyLowBalance,
             keyAlerted: keyAlerted,
-            valueAlerted: false),
+            valueAlerted: valueAlerted),
       );
 }

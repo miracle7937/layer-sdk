@@ -74,7 +74,9 @@ class UserPreferencesCubit extends Cubit<UserPreferencesState> {
 
   ///Adds a low balance alert
   Future<void> setLowBalanceAlert(
-      {required double lowBalanceValue, required String accountId}) async {
+      {required double lowBalanceValue,
+      required String accountId,
+      bool? valueAlert}) async {
     emit(
       state.copyWith(
         busy: true,
@@ -93,6 +95,53 @@ class UserPreferencesCubit extends Cubit<UserPreferencesState> {
         lowBalanceValue: lowBalanceValue,
         keyLowBalance: keyLowBalance,
         keyAlerted: keyAlerted,
+        valueAlerted: valueAlert ?? false,
+      );
+
+      emit(
+        state.copyWith(
+          lowBalanceValue: response.lowBalanceValue,
+          busy: false,
+          action: action,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          busy: false,
+          error: e is NetException
+              ? UserPreferencesError.network
+              : UserPreferencesError.generic,
+          errorMessage: e is NetException ? e.message : null,
+        ),
+      );
+    }
+  }
+
+  ///Adds a low balance alert
+  Future<void> removeBalanceAlert(
+      {required double lowBalanceValue,
+      required String accountId,
+      bool? valueAlert}) async {
+    emit(
+      state.copyWith(
+        busy: true,
+        error: UserPreferencesError.none,
+        action: UserPreferencesAction.none,
+      ),
+    );
+    var keyLowBalance = "customer_account.$accountId.pref_lowbal";
+    var keyAlerted = "customer_account.$accountId.pref_alert_lowbal";
+
+    try {
+      UserPreferencesAction action;
+      action = UserPreferencesAction.lowBalanceAdded;
+
+      final response = await _setLowBalanceAlertUseCase(
+        lowBalanceValue: lowBalanceValue,
+        keyLowBalance: keyLowBalance,
+        keyAlerted: keyAlerted,
+        valueAlerted: valueAlert ?? true,
       );
 
       emit(
