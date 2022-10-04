@@ -11,6 +11,7 @@ class PayToMobileCubit extends Cubit<PayToMobileState> {
       _getActiveAccountsSortedByAvailableBalance;
   final LoadAllCurrenciesUseCase _loadAllCurrenciesUseCase;
   final LoadCountriesUseCase _loadCountriesUseCase;
+  final SubmitPayToMobileUseCase _submitPayToMobileUseCase;
 
   /// Creates a new [PayToMobileCubit].
   PayToMobileCubit({
@@ -19,10 +20,12 @@ class PayToMobileCubit extends Cubit<PayToMobileState> {
         getActiveAccountsSortedByAvailableBalance,
     required LoadAllCurrenciesUseCase loadAllCurrenciesUseCase,
     required LoadCountriesUseCase loadCountriesUseCase,
+    required SubmitPayToMobileUseCase submitPayToMobileUseCase,
   })  : _getActiveAccountsSortedByAvailableBalance =
             getActiveAccountsSortedByAvailableBalance,
         _loadAllCurrenciesUseCase = loadAllCurrenciesUseCase,
         _loadCountriesUseCase = loadCountriesUseCase,
+        _submitPayToMobileUseCase = submitPayToMobileUseCase,
         super(PayToMobileState(
           payToMobile: payToMobile,
         ));
@@ -353,5 +356,88 @@ class PayToMobileCubit extends Cubit<PayToMobileState> {
     }
 
     return validationErrors;
+  }
+
+  /// Submits the pay to mobile transfer.
+  Future<void> submit() async {
+    emit(
+      state.copyWith(
+        actions: state.addAction(
+          PayToMobileAction.submit,
+        ),
+        errors: state.removeErrorForAction(
+          PayToMobileAction.submit,
+        ),
+      ),
+    );
+
+    try {
+      final payToMobileResult = await _submitPayToMobileUseCase(
+        newPayToMobile: state.payToMobile,
+      );
+
+      switch (payToMobileResult.status) {
+        case PayToMobileStatus.completed:
+        case PayToMobileStatus.pending:
+        case PayToMobileStatus.bankPending:
+          emit(
+            state.copyWith(
+              actions: state.removeAction(
+                PayToMobileAction.submit,
+              ),
+              payToMobileResult: payToMobileResult,
+              events: state.addEvent(
+                PayToMobileEvent.showResultView,
+              ),
+            ),
+          );
+          break;
+
+        case PayToMobileStatus.failed:
+          emit(
+            state.copyWith(
+              actions: state.removeAction(
+                PayToMobileAction.submit,
+              ),
+              errors: state.addCustomCubitError(
+                action: PayToMobileAction.submit,
+                code: CubitErrorCode.transferFailed,
+              ),
+            ),
+          );
+          break;
+
+        case PayToMobileStatus.pendingSecondFactor:
+          emit(
+            state.copyWith(
+              actions: state.removeAction(
+                PayToMobileAction.submit,
+              ),
+              payToMobileResult: payToMobileResult,
+              events: state.addEvent(
+                PayToMobileEvent.showSecondFactor,
+              ),
+            ),
+          );
+          break;
+
+        default:
+          throw Exception(
+            'Unhandled pay to mobile status -> ${payToMobileResult.status}',
+          );
+      }
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          actions: state.removeAction(
+            PayToMobileAction.submit,
+          ),
+          errors: state.addErrorFromException(
+            action: PayToMobileAction.submit,
+            exception: e,
+          ),
+        ),
+      );
+    }
   }
 }

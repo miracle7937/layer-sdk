@@ -13,6 +13,9 @@ enum PayToMobileAction {
 
   /// Loading the countries.
   countries,
+
+  /// Submitting the new pay to mobile.
+  submit,
 }
 
 /// The available events.
@@ -25,6 +28,12 @@ enum PayToMobileEvent {
 
   /// Event for showing the confirmation view.
   showConfirmationView,
+
+  /// Show second factor.
+  showSecondFactor,
+
+  /// Show result view.
+  showResultView,
 }
 
 /// The available validation error codes.
@@ -69,6 +78,9 @@ class PayToMobileState extends BaseState<PayToMobileAction, PayToMobileEvent,
   /// List of source [Account]s.
   final UnmodifiableListView<Account> accounts;
 
+  /// The pay to mobile result.
+  final PayToMobile? payToMobileResult;
+
   /// Creates a new [PayToMobileState].
   PayToMobileState({
     required this.payToMobile,
@@ -78,6 +90,7 @@ class PayToMobileState extends BaseState<PayToMobileAction, PayToMobileEvent,
     Iterable<Account> accounts = const <Account>[],
     Iterable<Currency> currencies = const <Currency>[],
     Iterable<Country> countries = const <Country>[],
+    this.payToMobileResult,
   })  : accounts = UnmodifiableListView(accounts),
         currencies = UnmodifiableListView(currencies),
         countries = UnmodifiableListView(countries);
@@ -91,6 +104,7 @@ class PayToMobileState extends BaseState<PayToMobileAction, PayToMobileEvent,
     Iterable<Account>? accounts,
     Iterable<Currency>? currencies,
     Iterable<Country>? countries,
+    PayToMobile? payToMobileResult,
   }) =>
       PayToMobileState(
         payToMobile: payToMobile ?? this.payToMobile,
@@ -100,6 +114,7 @@ class PayToMobileState extends BaseState<PayToMobileAction, PayToMobileEvent,
         accounts: accounts ?? this.accounts,
         currencies: currencies ?? this.currencies,
         countries: countries ?? this.countries,
+        payToMobileResult: payToMobileResult ?? this.payToMobileResult,
       );
 
   @override
@@ -111,5 +126,6 @@ class PayToMobileState extends BaseState<PayToMobileAction, PayToMobileEvent,
         accounts,
         currencies,
         countries,
+        payToMobileResult,
       ];
 }

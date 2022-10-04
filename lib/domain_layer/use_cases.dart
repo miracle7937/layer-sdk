@@ -115,6 +115,7 @@ export 'use_cases/otp/verify_console_user_otp_use_case.dart';
 export 'use_cases/own_transfer/get_destination_accounts_for_own_transfer_use_case.dart';
 export 'use_cases/own_transfer/get_preselected_account_for_own_transfer_use_case.dart';
 export 'use_cases/own_transfer/get_source_accounts_for_own_transfer_use_case.dart';
+export 'use_cases/pay_to_mobile/submit_pay_to_mobile_use_case.dart';
 export 'use_cases/payments/load_customer_payments_use_case.dart';
 export 'use_cases/payments/load_frequent_payments_use_case.dart';
 export 'use_cases/payments/patch_payment_use_case.dart';
