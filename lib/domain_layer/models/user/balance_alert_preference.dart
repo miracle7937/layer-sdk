@@ -4,23 +4,18 @@ import '../../models.dart';
 class BalanceAlertPreference extends UserPreference<Object> {
   ///Creates a new [BalanceAlertPreference]
   BalanceAlertPreference({
-    required double valueLowBalance,
-    required String keyLowBalance,
-    required bool valueAlerted,
-    required String keyAlerted,
-  }) : super(keyLowBalance, valueLowBalance, keyAlerted, valueAlerted);
+    required var preferenceKey,
+    required var preferenceValue,
+  }) : super(preferenceKey, preferenceValue);
 
   @override
   Map<String, dynamic> toJson() => {
         key: value,
-        secondKey!: secondValue,
       };
 
   @override
   List<Object?> get props => [
         key,
         value,
-        secondKey,
-        secondValue,
       ];
 }

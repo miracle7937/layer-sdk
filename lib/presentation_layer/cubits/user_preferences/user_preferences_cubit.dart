@@ -73,10 +73,11 @@ class UserPreferencesCubit extends Cubit<UserPreferencesState> {
   }
 
   ///Adds a low balance alert
-  Future<void> setLowBalanceAlert(
-      {required double lowBalanceValue,
-      required String accountId,
-      bool? valueAlert}) async {
+  Future<void> setLowBalanceAlert({
+    required double lowBalanceValue,
+    required String accountId,
+    bool? valueAlert,
+  }) async {
     emit(
       state.copyWith(
         busy: true,
@@ -119,10 +120,11 @@ class UserPreferencesCubit extends Cubit<UserPreferencesState> {
   }
 
   ///Adds a low balance alert
-  Future<void> removeBalanceAlert(
-      {required double lowBalanceValue,
-      required String accountId,
-      bool? valueAlert}) async {
+  Future<void> removeBalanceAlert({
+    required double lowBalanceValue,
+    required String accountId,
+    bool? valueAlert,
+  }) async {
     emit(
       state.copyWith(
         busy: true,

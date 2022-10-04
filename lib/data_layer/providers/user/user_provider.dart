@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../../../_migration/data_layer/src/mappings.dart';
 import '../../../domain_layer/models.dart';
 import '../../dtos.dart';
@@ -70,6 +72,29 @@ class UserProvider {
         {
           'pref': {
             'keys': userPreference.toJson(),
+          }
+        },
+      ],
+      method: NetRequestMethods.patch,
+    );
+
+    if (response.data is List && response.data.length > 0) {
+      return UserDTO.fromJson(response.data[0]);
+    }
+
+    throw Exception('User not found');
+  }
+
+  /// Patches multiple user preferences with different data
+  Future<UserDTO> patchUserPreferences({
+    required List<UserPreference> userPreferences,
+  }) async {
+    final response = await netClient.request(
+      netClient.netEndpoints.user,
+      data: [
+        {
+          'pref': {
+            'keys': jsonEncode(userPreferences),
           }
         },
       ],

@@ -53,6 +53,17 @@ class UserRepository implements UserRepositoryInterface {
 
     return userDTO.toUser();
   }
+  /// Patches an user preference with different data
+  @override
+  Future<User> patchUserPreferences({
+    required List<UserPreference> userPreferences,
+  }) async {
+    final userDTO = await _userProvider.patchUserPreferences(
+      userPreferences: userPreferences,
+    );
+
+    return userDTO.toUser();
+  }
 
   ///Gets a [User] from a token
   @override

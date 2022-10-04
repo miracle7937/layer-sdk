@@ -5,7 +5,7 @@ class FavoriteOffersPreference extends UserPreference<List<int>> {
   ///Creates a new [FavoriteOffersPreference]
   FavoriteOffersPreference({
     required List<int> value,
-  }) : super('favorite_offers', value, null, null);
+  }) : super('favorite_offers', value);
 
   @override
   Map<String, dynamic> toJson() => {
