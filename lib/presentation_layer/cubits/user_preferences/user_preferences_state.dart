@@ -1,6 +1,5 @@
 import 'dart:collection';
 
-import 'package:equatable/equatable.dart';
 
 import '../../../features/user_preferences.dart';
 import '../base_cubit/base_state.dart';
