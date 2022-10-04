@@ -19,10 +19,13 @@ class SetLowBalanceAlertUseCase {
     required String keyAlerted,
   }) async =>
       _repository.patchUserPreferences(
-        userPreferences: [BalanceAlertPreference(
-            preferenceKey: lowBalanceValue,
-            preferenceValue: keyLowBalance,
-           ), BalanceAlertPreference(preferenceKey:  keyAlerted,
-           preferenceValue: valueAlerted)]
+        userPreferences: [
+          BalanceAlertPreference(
+            preferenceKey: keyLowBalance,
+            preferenceValue: lowBalanceValue,
+          ),
+          BalanceAlertPreference(
+              preferenceKey: keyAlerted, preferenceValue: valueAlerted)
+        ],
       );
 }
