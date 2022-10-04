@@ -86,6 +86,7 @@ class UserPreferencesCubit extends Cubit<UserPreferencesState> {
       ),
     );
     var keyLowBalance = "customer_account.$accountId.pref_lowbal";
+    var keyAlertLowBalance = "customer_account.$accountId.pref_alert_lowbal";
     var keyAlerted = "customer_account.$accountId.alerted";
 
     try {
@@ -93,10 +94,11 @@ class UserPreferencesCubit extends Cubit<UserPreferencesState> {
       action = UserPreferencesAction.lowBalanceAdded;
 
       final response = await _setLowBalanceAlertUseCase(
-        lowBalanceValue: lowBalanceValue,
+        valueLowBalance: lowBalanceValue,
         keyLowBalance: keyLowBalance,
+        valueAlertLowBalance: valueAlert,
         keyAlerted: keyAlerted,
-        valueAlerted: valueAlert ?? false,
+        keyAlertLowBalance: keyAlertLowBalance,
       );
 
       emit(
@@ -140,10 +142,9 @@ class UserPreferencesCubit extends Cubit<UserPreferencesState> {
       action = UserPreferencesAction.lowBalanceAdded;
 
       final response = await _setLowBalanceAlertUseCase(
-        lowBalanceValue: lowBalanceValue,
+        valueLowBalance: lowBalanceValue,
         keyLowBalance: keyLowBalance,
-        keyAlerted: keyAlerted,
-        valueAlerted: valueAlert ?? true,
+        keyAlertLowBalance: keyAlerted,
       );
 
       emit(
