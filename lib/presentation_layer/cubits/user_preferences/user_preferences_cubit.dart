@@ -78,11 +78,17 @@ class UserPreferencesCubit extends Cubit<UserPreferencesState> {
     required String accountId,
     bool? valueAlert,
   }) async {
+    UserPreferencesAction action;
+    action = UserPreferencesAction.lowBalanceAdded;
     emit(
       state.copyWith(
         busy: true,
-        error: UserPreferencesError.none,
-        action: UserPreferencesAction.none,
+        actions: state.addAction(
+          action,
+        ),
+        errors: state.removeErrorForAction(
+          action,
+        ),
       ),
     );
     var keyLowBalance = "customer_account.$accountId.pref_lowbal";
@@ -90,9 +96,6 @@ class UserPreferencesCubit extends Cubit<UserPreferencesState> {
     var keyAlerted = "customer_account.$accountId.alerted";
 
     try {
-      UserPreferencesAction action;
-      action = UserPreferencesAction.lowBalanceAdded;
-
       final response = await _setLowBalanceAlertUseCase(
         valueLowBalance: lowBalanceValue,
         keyLowBalance: keyLowBalance,
@@ -105,16 +108,18 @@ class UserPreferencesCubit extends Cubit<UserPreferencesState> {
         state.copyWith(
           lowBalanceValue: response.lowBalanceValue,
           busy: false,
-          action: action,
+          actions: state.removeAction(action),
         ),
       );
     } on Exception catch (e) {
       emit(
         state.copyWith(
           busy: false,
-          error: e is NetException
-              ? UserPreferencesError.network
-              : UserPreferencesError.generic,
+          actions: state.removeAction(action),
+          errors: state.addErrorFromException(
+            action: action,
+            exception: e,
+          ),
           errorMessage: e is NetException ? e.message : null,
         ),
       );
@@ -127,20 +132,23 @@ class UserPreferencesCubit extends Cubit<UserPreferencesState> {
     required String accountId,
     bool? valueAlert,
   }) async {
+    UserPreferencesAction action;
+    action = UserPreferencesAction.alertRemoved;
     emit(
       state.copyWith(
         busy: true,
-        error: UserPreferencesError.none,
-        action: UserPreferencesAction.none,
+        actions: state.addAction(
+          action,
+        ),
+        errors: state.removeErrorForAction(
+          action,
+        ),
       ),
     );
     var keyLowBalance = "customer_account.$accountId.pref_lowbal";
     var keyAlerted = "customer_account.$accountId.pref_alert_lowbal";
 
     try {
-      UserPreferencesAction action;
-      action = UserPreferencesAction.lowBalanceAdded;
-
       final response = await _setLowBalanceAlertUseCase(
         valueLowBalance: lowBalanceValue,
         keyLowBalance: keyLowBalance,
@@ -151,16 +159,18 @@ class UserPreferencesCubit extends Cubit<UserPreferencesState> {
         state.copyWith(
           lowBalanceValue: response.lowBalanceValue,
           busy: false,
-          action: action,
+          actions: state.removeAction(action),
         ),
       );
     } on Exception catch (e) {
       emit(
         state.copyWith(
           busy: false,
-          error: e is NetException
-              ? UserPreferencesError.network
-              : UserPreferencesError.generic,
+          actions: state.removeAction(action),
+          errors: state.addErrorFromException(
+            action: action,
+            exception: e,
+          ),
           errorMessage: e is NetException ? e.message : null,
         ),
       );

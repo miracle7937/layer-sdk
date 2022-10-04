@@ -2,6 +2,9 @@ import 'dart:collection';
 
 import 'package:equatable/equatable.dart';
 
+import '../../../features/user_preferences.dart';
+import '../base_cubit/base_state.dart';
+
 /// The available errors.
 enum UserPreferencesError {
   /// No errors reported.
@@ -27,10 +30,14 @@ enum UserPreferencesAction {
 
   /// A new low balance was added
   lowBalanceAdded,
+
+  /// The low balance alert was deleted
+  alertRemoved,
 }
 
 ///The state for the [UserPreferencesCubit]
-class UserPreferencesState extends Equatable {
+class UserPreferencesState
+    extends BaseState<UserPreferencesAction, void, void> {
   /// The list of favorite offer ids.
   final UnmodifiableListView<int> favoriteOffers;
 
@@ -51,6 +58,8 @@ class UserPreferencesState extends Equatable {
 
   ///Creates a new [UserPreferencesState]
   UserPreferencesState({
+    super.actions = const <UserPreferencesAction>{},
+    super.errors = const <CubitError>{},
     Iterable<int> favoriteOffers = const <int>[],
     this.busy = false,
     this.error = UserPreferencesError.none,
@@ -61,6 +70,8 @@ class UserPreferencesState extends Equatable {
 
   ///Copies this state with different values
   UserPreferencesState copyWith({
+    Set<UserPreferencesAction>? actions,
+    Set<CubitError>? errors,
     Iterable<int>? favoriteOffers,
     double? lowBalanceValue,
     bool? busy,
@@ -69,6 +80,8 @@ class UserPreferencesState extends Equatable {
     UserPreferencesAction? action,
   }) =>
       UserPreferencesState(
+        actions: actions ?? super.actions,
+        errors: errors ?? super.errors,
         favoriteOffers: favoriteOffers ?? this.favoriteOffers,
         lowBalanceValue: lowBalanceValue ?? this.lowBalanceValue,
         busy: busy ?? this.busy,
@@ -87,5 +100,7 @@ class UserPreferencesState extends Equatable {
         errorMessage,
         action,
         lowBalanceValue,
+        errors,
+        actions,
       ];
 }
