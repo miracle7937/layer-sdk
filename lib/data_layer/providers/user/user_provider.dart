@@ -89,12 +89,17 @@ class UserProvider {
   Future<UserDTO> patchUserPreferences({
     required List<UserPreference> userPreferences,
   }) async {
+    var json = {};
+    for (var prefence in userPreferences) {
+      json.addAll(prefence.toJson());
+    }
+
     final response = await netClient.request(
       netClient.netEndpoints.user,
       data: [
         {
           'pref': {
-            'keys': jsonEncode(userPreferences),
+            'keys': json,
           }
         },
       ],
