@@ -46,6 +46,7 @@ class LandingTransferCubit extends Cubit<LandingTransferState> {
       emit(
         state.copyWith(
           frequentTransfers: frequentTransfers,
+          actions: state.removeAction(LandingTransferAction.loading),
         ),
       );
     } on Exception catch (e) {
