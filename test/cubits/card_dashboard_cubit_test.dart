@@ -16,6 +16,7 @@ void main() {
   late CardRepositoryInterface _cardRepository;
   late FinancialDataRepositoryInterface _financialDataRepository;
   late LoadCustomerCardsUseCase _getCustomerCardsUseCase;
+  late LoadCustomerCardInfoUseCase _getCustomerCardInfoUseCase;
   late LoadFinancialDataUseCase _getFinancialDataUseCase;
   late CardDashboardCubit _cubit;
   late List<BankingCard> _mockedCards;
@@ -46,9 +47,13 @@ void main() {
       _getFinancialDataUseCase = LoadFinancialDataUseCase(
         repository: _financialDataRepository,
       );
+      _getCustomerCardInfoUseCase = LoadCustomerCardInfoUseCase(
+        repository: _cardRepository,
+      );
       _cubit = CardDashboardCubit(
         getCustomerCardsUseCase: _getCustomerCardsUseCase,
         getFinancialDataUseCase: _getFinancialDataUseCase,
+        getCustomerCardInfoUseCase: _getCustomerCardInfoUseCase,
       );
     },
   );
