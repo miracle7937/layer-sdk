@@ -170,4 +170,73 @@ class ActivityProvider {
       method: NetRequestMethods.delete,
     );
   }
+
+  /// Read the current [Alert] by `id`
+  Future<void> readAlert(int id) async {
+    await netClient.request(
+      netClient.netEndpoints.alert,
+      method: NetRequestMethods.patch,
+      data: [
+        {'alert_id': id, 'read': true}
+      ],
+    );
+  }
+
+  /// Read the current [Request] by `id`
+  Future<void> readRequest(String id) async {
+    await netClient.request(
+      '${netClient.netEndpoints.request}/$id/read',
+      method: NetRequestMethods.patch,
+    );
+  }
+
+  /// Delete the current [Alert] by `id`
+  Future<void> deleteAlert(int id) async {
+    await netClient.request(
+      '${netClient.netEndpoints.alert}/$id',
+      method: NetRequestMethods.delete,
+    );
+  }
+
+  /// Delete the current [Request] by `id`
+  Future<void> deleteRequest(String id) async {
+    await netClient.request(
+      '${netClient.netEndpoints.request}/$id',
+      method: NetRequestMethods.delete,
+    );
+  }
+
+  /// Read all the [Alert]'s
+  Future<void> readAllAlerts() async {
+    await netClient.request(
+      '${netClient.netEndpoints.alert}/read_all',
+      method: NetRequestMethods.post,
+      data: [],
+    );
+  }
+
+  /// Read all the [Request]'s
+  Future<void> readAllRequests() async {
+    await netClient.request(
+      '${netClient.netEndpoints.request}/read',
+      method: NetRequestMethods.patch,
+      data: {},
+    );
+  }
+
+  /// Delete all the [Alert]'s
+  Future<void> deleteAllAlerts() async {
+    await netClient.request(
+      netClient.netEndpoints.alert,
+      method: NetRequestMethods.delete,
+    );
+  }
+
+  /// Delete all the [Request]'s
+  Future<void> deleteAllRequests() async {
+    await netClient.request(
+      netClient.netEndpoints.request,
+      method: NetRequestMethods.delete,
+    );
+  }
 }

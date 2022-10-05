@@ -92,4 +92,68 @@ class ActivityRepository implements ActivityRepositoryInterface {
 
     return result;
   }
+
+  /// Read the current [Alert] by respective `id`
+  @override
+  Future<void> readAlert(int id) {
+    final result = _provider.readAlert(id);
+
+    return result;
+  }
+
+  /// Read the current [Request] by respective `id`
+  @override
+  Future<void> readRequest(String id) {
+    final result = _provider.readRequest(id);
+
+    return result;
+  }
+
+  /// Delete the current [Alert] by respective `id`
+  @override
+  Future<void> deleteAlert(int id) {
+    final result = _provider.deleteAlert(id);
+
+    return result;
+  }
+
+  /// Delete the current [Request] by respective `id`
+  @override
+  Future<void> deleteRequest(String id) {
+    final result = _provider.deleteRequest(id);
+
+    return result;
+  }
+
+  /// Read all the [Alert]'s
+  @override
+  Future<void> readAllAlerts() {
+    final result = _provider.readAllAlerts();
+
+    return result;
+  }
+
+  /// Read all the [Request]'s
+  @override
+  Future<void> readAllRequests() {
+    final result = _provider.readAllRequests();
+
+    return result;
+  }
+
+  /// Delete all the [Alert]'s
+  @override
+  Future<void> deleteAllAlerts() {
+    final result = _provider.deleteAllAlerts();
+
+    return result;
+  }
+
+  /// Delete all the [Request]'s
+  @override
+  Future<void> deleteAllRequests() {
+    final result = _provider.deleteAllRequests();
+
+    return result;
+  }
 }

@@ -14,6 +14,10 @@ class ActivityCubit extends Cubit<ActivityState> {
   final CreateShortcutUseCase _createShortcutUseCase;
   final CancelRecurringTransferUseCase _cancelRecurringTransferUseCase;
   final CancelRecurringPaymentUseCase _cancelRecurrPaymentUseCase;
+  final ReadAlertUseCase _readAlertUseCase;
+  final DeleteAlertUseCase _deleteAlertUseCase;
+  final ReadAllAlertsUseCase _readAllAlertsUseCase;
+  final DeleteAllAlertsUseCase _deleteAllAlertsUseCase;
 
   /// Creates a new [ActivityCubit] instance
   ActivityCubit({
@@ -23,6 +27,10 @@ class ActivityCubit extends Cubit<ActivityState> {
     required CreateShortcutUseCase createShortcutUseCase,
     required CancelRecurringTransferUseCase cancelRecurringTransferUseCase,
     required CancelRecurringPaymentUseCase cancelRecurrPaymentUseCase,
+    required ReadAlertUseCase readAlertUseCase,
+    required DeleteAlertUseCase deleteAlertUseCase,
+    required ReadAllAlertsUseCase readAllAlertsUseCase,
+    required DeleteAllAlertsUseCase deleteAllAlertsUseCase,
     int limit = 20,
   })  : _loadActivitiesUseCase = loadActivitiesUseCase,
         _deleteActivityUseCase = deleteActivityUseCase,
@@ -30,6 +38,10 @@ class ActivityCubit extends Cubit<ActivityState> {
         _createShortcutUseCase = createShortcutUseCase,
         _cancelRecurringTransferUseCase = cancelRecurringTransferUseCase,
         _cancelRecurrPaymentUseCase = cancelRecurrPaymentUseCase,
+        _readAlertUseCase = readAlertUseCase,
+        _deleteAlertUseCase = deleteAlertUseCase,
+        _readAllAlertsUseCase = readAllAlertsUseCase,
+        _deleteAllAlertsUseCase = deleteAllAlertsUseCase,
         super(ActivityState(
           pagination: Pagination(limit: limit),
         ));
@@ -187,4 +199,16 @@ class ActivityCubit extends Cubit<ActivityState> {
           shortcutName: shortcutName,
         ),
       );
+
+  /// Read the current alert by the respective [Activity]
+  Future<void> readAlert(Activity activity) => _readAlertUseCase(activity);
+
+  /// Delete the current alert by the respective [Activity]
+  Future<void> deleteAlert(Activity activity) => _deleteAlertUseCase(activity);
+
+  /// Read all the alerts
+  Future<void> readAllAlerts() => _readAllAlertsUseCase();
+
+  /// Delete all the alerts
+  Future<void> deleteAllAlerts() => _deleteAllAlertsUseCase();
 }
