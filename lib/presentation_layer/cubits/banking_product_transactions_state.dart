@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:equatable/equatable.dart';
 
 import '../../../domain_layer/models.dart';
@@ -20,7 +18,7 @@ class BankingProductTransactionsState extends BaseState<
     void,
     BankingProductTransactionsErrorCode> {
   /// List of [BankingProductTransactions] of the customer [BankingProduct]
-  final UnmodifiableListView<BankingProductTransaction> transactions;
+  final List<BankingProductTransaction>? transactions;
 
   /// [BankingProduct] id which will be used by this cubit
   final String? accountId;
@@ -50,7 +48,7 @@ class BankingProductTransactionsState extends BaseState<
   BankingProductTransactionsState({
     this.accountId,
     this.cardId,
-    Iterable<BankingProductTransaction> transactions = const [],
+    this.transactions,
     this.startDate,
     super.actions = const <BankingProductTransactionsAction>{},
     super.errors = const <CubitError>{},
@@ -59,7 +57,7 @@ class BankingProductTransactionsState extends BaseState<
     this.amountTo,
     this.credit,
     this.listData = const BankingProductTransactionsListData(),
-  }) : transactions = UnmodifiableListView(transactions);
+  });
 
   @override
   List<Object?> get props => [
@@ -77,7 +75,7 @@ class BankingProductTransactionsState extends BaseState<
   /// Creates a new instance of [BankingProductTransactionsState]
   /// based on the current instance
   BankingProductTransactionsState copyWith({
-    Iterable<BankingProductTransaction>? transactions,
+    List<BankingProductTransaction>? transactions,
     Set<BankingProductTransactionsAction>? actions,
     Set<CubitError>? errors,
     String? accountId,
