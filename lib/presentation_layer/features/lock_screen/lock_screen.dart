@@ -190,9 +190,9 @@ class _LockScreenState extends SetAccessPinBaseWidgetState<_LockScreen> {
                   await context.read<OcraAuthenticationCubit>().generateToken(
                         password: currentPin,
                       );
-                  /*final session = await _getDeviceSession();
+                  final session = await _getDeviceSession();
                   await authenticationCubit.verifyAccessPin(pin,
-                      deviceInfo: session);*/
+                      deviceInfo: session);
                 }
               },
               showBiometrics: widget.useBiometrics,
@@ -237,8 +237,8 @@ class _LockScreenState extends SetAccessPinBaseWidgetState<_LockScreen> {
     context.read<OcraAuthenticationCubit>().generateToken(
           password: storageCubit.state.currentUser?.accessPin,
         );
-    /* final session = await _getDeviceSession();
+    final session = await _getDeviceSession();
     final authenticationCubit = context.read<AuthenticationCubit>();
-    await authenticationCubit.verifyAccessPin(currentPin, deviceInfo: session);*/
+    await authenticationCubit.verifyAccessPin(currentPin, deviceInfo: session);
   }
 }
