@@ -185,6 +185,9 @@ class NetEndpoints {
   /// The transactions endpoint
   String get transaction => '$_infoBanking/v1/transaction';
 
+  /// The filter transactions endpoint
+  String get filterTransaction => '$_infoBanking/v1/filter/transaction';
+
   /// The message endpoint
   String get message => '$_infoBanking/v1/message';
 
