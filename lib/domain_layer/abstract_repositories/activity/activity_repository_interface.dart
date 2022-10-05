@@ -51,10 +51,10 @@ abstract class ActivityRepositoryInterface {
   Future<void> deleteRequest(String id);
 
   /// Read all the [Alert]'s
-  Future<void> readAllAlerts();
+  Future<void> markAllAlertsAsRead();
 
   /// Read all the [Request]'s
-  Future<void> readAllRequests();
+  Future<void> markAllRequestsAsRead();
 
   /// Delete all the [Alert]'s
   Future<void> deleteAllAlerts();

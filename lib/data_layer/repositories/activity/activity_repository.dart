@@ -127,16 +127,16 @@ class ActivityRepository implements ActivityRepositoryInterface {
 
   /// Read all the [Alert]'s
   @override
-  Future<void> readAllAlerts() {
-    final result = _provider.readAllAlerts();
+  Future<void> markAllAlertsAsRead() {
+    final result = _provider.markAllAlertsAsRead();
 
     return result;
   }
 
   /// Read all the [Request]'s
   @override
-  Future<void> readAllRequests() {
-    final result = _provider.readAllRequests();
+  Future<void> markAllRequestsAsRead() {
+    final result = _provider.markAllRequestsAsRead();
 
     return result;
   }

@@ -16,7 +16,7 @@ export 'use_cases/activity/delete_alert_use_case.dart';
 export 'use_cases/activity/delete_all_alerts_use_case.dart';
 export 'use_cases/activity/load_activities_use_case.dart';
 export 'use_cases/activity/mark_alert_as_read_use_case.dart';
-export 'use_cases/activity/read_all_alerts_use_case.dart';
+export 'use_cases/activity/mark_all_alerts_as_read_use_case.dart';
 export 'use_cases/alert/load_unread_alerts_count_use_case.dart';
 export 'use_cases/audit/load_customer_audits_use_case.dart';
 export 'use_cases/authentication/change_password_use_case.dart';

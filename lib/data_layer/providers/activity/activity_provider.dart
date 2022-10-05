@@ -207,7 +207,7 @@ class ActivityProvider {
   }
 
   /// Read all the [Alert]'s
-  Future<void> readAllAlerts() async {
+  Future<void> markAllAlertsAsRead() async {
     await netClient.request(
       '${netClient.netEndpoints.alert}/read_all',
       method: NetRequestMethods.post,
@@ -216,7 +216,7 @@ class ActivityProvider {
   }
 
   /// Read all the [Request]'s
-  Future<void> readAllRequests() async {
+  Future<void> markAllRequestsAsRead() async {
     await netClient.request(
       '${netClient.netEndpoints.request}/read',
       method: NetRequestMethods.patch,

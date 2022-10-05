@@ -16,7 +16,7 @@ class ActivityCubit extends Cubit<ActivityState> {
   final CancelRecurringPaymentUseCase _cancelRecurrPaymentUseCase;
   final MarkAlertAsReadUseCase _markAlertAsReadUseCase;
   final DeleteAlertUseCase _deleteAlertUseCase;
-  final ReadAllAlertsUseCase _readAllAlertsUseCase;
+  final MarkAllAlertsAsReadUseCase _markAllAlertsAsReadUseCase;
   final DeleteAllAlertsUseCase _deleteAllAlertsUseCase;
 
   /// Creates a new [ActivityCubit] instance
@@ -29,7 +29,7 @@ class ActivityCubit extends Cubit<ActivityState> {
     required CancelRecurringPaymentUseCase cancelRecurrPaymentUseCase,
     required MarkAlertAsReadUseCase markAlertAsReadUseCase,
     required DeleteAlertUseCase deleteAlertUseCase,
-    required ReadAllAlertsUseCase readAllAlertsUseCase,
+    required MarkAllAlertsAsReadUseCase markAllAlertsAsReadUseCase,
     required DeleteAllAlertsUseCase deleteAllAlertsUseCase,
     int limit = 20,
   })  : _loadActivitiesUseCase = loadActivitiesUseCase,
@@ -40,7 +40,7 @@ class ActivityCubit extends Cubit<ActivityState> {
         _cancelRecurrPaymentUseCase = cancelRecurrPaymentUseCase,
         _markAlertAsReadUseCase = markAlertAsReadUseCase,
         _deleteAlertUseCase = deleteAlertUseCase,
-        _readAllAlertsUseCase = readAllAlertsUseCase,
+        _markAllAlertsAsReadUseCase = markAllAlertsAsReadUseCase,
         _deleteAllAlertsUseCase = deleteAllAlertsUseCase,
         super(ActivityState(
           pagination: Pagination(limit: limit),
@@ -209,7 +209,7 @@ class ActivityCubit extends Cubit<ActivityState> {
   Future<void> deleteAlert(Activity activity) => _deleteAlertUseCase(activity);
 
   /// Read all the alerts
-  Future<void> readAllAlerts() => _readAllAlertsUseCase();
+  Future<void> markAllAlertsAsRead() => _markAllAlertsAsReadUseCase();
 
   /// Delete all the alerts
   Future<void> deleteAllAlerts() => _deleteAllAlertsUseCase();
