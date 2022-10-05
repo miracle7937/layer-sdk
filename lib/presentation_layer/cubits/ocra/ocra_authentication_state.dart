@@ -36,12 +36,16 @@ class OcraAuthenticationState extends Equatable {
   /// The remaining attempts before the device will be deactivated.
   final int? remainingAttempts;
 
+  /// Generated OCRA challenge.
+  final String? ocraChallenge;
+
   /// Creates new [OcraAuthenticationState].
   OcraAuthenticationState({
     this.busy = false,
     this.token,
     this.error = OcraAuthenticationError.none,
     this.remainingAttempts,
+    this.ocraChallenge,
   });
 
   /// Creates a new state based on this one.
@@ -50,12 +54,14 @@ class OcraAuthenticationState extends Equatable {
     String? token,
     OcraAuthenticationError? error,
     int? remainingAttempts,
+    String? ocraChallenge,
   }) {
     return OcraAuthenticationState(
       busy: busy ?? this.busy,
       token: token ?? this.token,
       error: error ?? this.error,
       remainingAttempts: remainingAttempts ?? this.remainingAttempts,
+      ocraChallenge: ocraChallenge ?? this.ocraChallenge,
     );
   }
 
@@ -65,5 +71,6 @@ class OcraAuthenticationState extends Equatable {
         token,
         error,
         remainingAttempts,
+        ocraChallenge,
       ];
 }

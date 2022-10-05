@@ -132,4 +132,59 @@ class OcraAuthenticationCubit extends Cubit<OcraAuthenticationState> {
       }
     }
   }
+
+  /// Generates an OCRA challenge
+  Future<void> generateOCRAChallenge({
+    String? password,
+  }) async {
+    emit(
+      OcraAuthenticationState(
+        busy: true,
+      ),
+    );
+
+    try {
+      final challenge = _generateOcraChallengeUseCase();
+      final timestamp = _generateOcraTimestampUseCase();
+      final response = await _clientChallengeOcraUseCase(
+        challenge: OcraChallenge(
+          deviceId: _deviceId,
+          challenge: challenge,
+        ),
+      );
+
+      final expectedResult = _solveOcraChallengeUseCase(
+        question: challenge + response.serverChallenge,
+        timestamp: timestamp,
+      );
+
+      if (expectedResult != response.serverResponse) {
+        throw OcraWrongResultException();
+      }
+
+      final serverChallengeResult = _solveOcraChallengeUseCase(
+        question: response.serverChallenge + challenge,
+        timestamp: timestamp,
+        password: password,
+      );
+
+      emit(
+        state.copyWith(
+          busy: false,
+          ocraChallenge: serverChallengeResult,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          busy: false,
+          error: e is OcraWrongResultException
+              ? OcraAuthenticationError.serverAuthenticationFailed
+              : e is NetException && e.statusCode == 401
+                  ? OcraAuthenticationError.deviceInactive
+                  : OcraAuthenticationError.generic,
+        ),
+      );
+    }
+  }
 }

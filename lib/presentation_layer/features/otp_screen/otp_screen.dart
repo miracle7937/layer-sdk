@@ -8,7 +8,7 @@ import '../../cubits.dart';
 import '../../widgets/header/sdk_header.dart';
 
 /// A screen for validating an OTP.
-class OTPScreen extends StatefulWidget {
+class OTPScreen extends StatelessWidget {
   /// The title for the header.
   final String title;
 
@@ -53,6 +53,17 @@ class OTPScreen extends StatefulWidget {
   /// Defaults to `true`.
   final bool showMobileNumber;
 
+  /// Whether if the biometrics should be shown (if enabled).
+  ///
+  /// This will trigger the OCRA authentication for generating a OCRA challenge
+  /// and this challenge will be sent back using the [onOCRAChallenge] callback.
+  ///
+  /// Default is `false`.
+  final bool showBiometrics;
+
+  /// The callback called when the OCRA challenge is generated.
+  final ValueSetter<String>? onOCRAChallenge;
+
   /// Creates a new [OTPScreen].
   const OTPScreen({
     Key? key,
@@ -66,45 +77,173 @@ class OTPScreen extends StatefulWidget {
     required this.onResend,
     this.isResending = false,
     this.showMobileNumber = true,
-  }) : super(key: key);
+    this.showBiometrics = false,
+    this.onOCRAChallenge,
+  })  : assert(
+          !showBiometrics || onOCRAChallenge != null,
+          'Biometrics should show but the OCRA challenge '
+          'callback was not indicated',
+        ),
+        super(key: key);
 
   @override
-  State<OTPScreen> createState() => _OTPScreenState();
+  Widget build(BuildContext context) => MultiBlocProvider(
+        providers: [
+          BlocProvider<StorageCubit>(
+            create: (context) => context.read<StorageCreator>().create()
+              ..loadLastLoggedUser()
+              ..loadAuthenticationSettings()
+              ..loadOcraSecretKey(),
+          ),
+          BlocProvider<BiometricsCubit>(
+            create: (context) => context.read<BiometricsCreator>().create(),
+          ),
+        ],
+        child: Builder(
+          builder: (context) {
+            final storageState = context.read<StorageCubit>().state;
+
+            return BlocProvider<OcraAuthenticationCubit>(
+              create: (context) =>
+                  context.read<OcraAuthenticationCreator>().create(
+                        deviceId: storageState.currentUser!.deviceId!,
+                        ocraSecret: storageState.ocraSecretKey!,
+                      ),
+              child: Builder(
+                builder: (context) => _OTPScreen(
+                  title: title,
+                  resendInterval: resendInterval,
+                  imageBuilder: imageBuilder,
+                  onOTPCode: onOTPCode,
+                  isVerifying: isVerifying,
+                  verificationError: verificationError,
+                  shouldClearCode: shouldClearCode,
+                  onResend: onResend,
+                  isResending: isResending,
+                  showMobileNumber: showMobileNumber,
+                  showBiometrics: showBiometrics,
+                  onOCRAChallenge: onOCRAChallenge,
+                ),
+              ),
+            );
+          },
+        ),
+      );
 }
 
-class _OTPScreenState extends State<OTPScreen> with FullScreenLoaderMixin {
+/// A screen for validating an OTP.
+class _OTPScreen extends StatefulWidget {
+  /// The title for the header.
+  final String title;
+
+  /// The amount of time in seconds the user has to wait to request
+  /// a new OTP code.
+  ///
+  /// Defaults to `120` seconds.
+  final int resendInterval;
+
+  /// Optional image builder.
+  final WidgetBuilder? imageBuilder;
+
+  /// Callback called when the OTP code has been set by the user.
+  final ValueSetter<String> onOTPCode;
+
+  /// Whether if the OTP code is being verfied.
+  /// Default is `false`.
+  final bool isVerifying;
+
+  /// The verification error.
+  final String? verificationError;
+
+  /// Callback called when the user has pressed the resend OTP code button.
+  final VoidCallback onResend;
+
+  /// Whether if the OTP code is being resent.
+  /// Default is `false`.
+  final bool isResending;
+
+  /// Used for clearing the otp code input.
+  ///
+  /// If `true` and the previous time this widget was build, this parameter
+  /// was `false` the controllers for the otp code will clear the current value.
+  /// Usually used for clearing the previous code when there was an error.
+  final bool shouldClearCode;
+
+  /// Whether or not the mobile number should be shown.
+  ///
+  /// Use this parameter when the OTP screen is being used on a unauthenticated
+  /// state where the application doesn't have the customer information.
+  ///
+  /// Defaults to `true`.
+  final bool showMobileNumber;
+
+  /// Whether if the biometrics should be shown (if enabled).
+  ///
+  /// This will trigger the OCRA authentication for generating a OCRA challenge
+  /// and this challenge will be sent back using the [onOCRAChallenge] callback.
+  ///
+  /// Default is `false`.
+  final bool showBiometrics;
+
+  /// The callback called when the OCRA challenge is generated.
+  final ValueSetter<String>? onOCRAChallenge;
+
+  /// Creates a new [_OTPScreen].
+  const _OTPScreen({
+    Key? key,
+    required this.title,
+    this.resendInterval = 120,
+    this.imageBuilder,
+    required this.onOTPCode,
+    this.isVerifying = false,
+    this.verificationError,
+    this.shouldClearCode = false,
+    required this.onResend,
+    this.isResending = false,
+    this.showMobileNumber = true,
+    this.showBiometrics = false,
+    this.onOCRAChallenge,
+  })  : assert(
+          !showBiometrics || onOCRAChallenge != null,
+          'Biometrics should show but the OCRA challenge '
+          'callback was not indicated',
+        ),
+        super(key: key);
+
+  @override
+  State<_OTPScreen> createState() => _OTPScreenState();
+}
+
+class _OTPScreenState extends State<_OTPScreen> with FullScreenLoaderMixin {
   late int _remainingTime;
   Timer? _timer;
 
   bool get resendEnabled => _remainingTime <= 0;
 
   late bool _isVerifying;
-
   bool get isVerifying => _isVerifying;
-
   set isVerifying(bool isVerifying) =>
       setState(() => _isVerifying = isVerifying);
 
   String? _verificationError;
-
   String? get verificationError => _verificationError;
-
   set verificationError(String? verificationError) =>
       setState(() => _verificationError = verificationError);
 
   late bool _isResending;
-
   bool get isResending => _isResending;
-
   set isResending(bool isResending) =>
       setState(() => _isResending = isResending);
 
   late bool _shouldClearCode;
-
   bool get shouldClearCode => _shouldClearCode;
-
   set shouldClearCode(bool shouldClearCode) =>
       setState(() => _shouldClearCode = shouldClearCode);
+
+  late bool _showBiometricsButton;
+  bool get showBiometricsButton => _showBiometricsButton;
+  set showBiometricsButton(bool showBiometricsButton) =>
+      setState(() => _showBiometricsButton = showBiometricsButton);
 
   @override
   void initState() {
@@ -116,10 +255,49 @@ class _OTPScreenState extends State<OTPScreen> with FullScreenLoaderMixin {
 
     _remainingTime = widget.resendInterval;
     _startTimer();
+
+    if (widget.showBiometrics) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        final biometricsCubit = context.read<BiometricsCubit>();
+        await biometricsCubit.initialize();
+
+        final canUseBiometrics =
+            biometricsCubit.state.canUseBiometrics ?? false;
+
+        showBiometricsButton = canUseBiometrics;
+
+        if (canUseBiometrics) {
+          _authenticateBiometrics();
+        }
+      });
+    }
+  }
+
+  /// Preforms a biometrics authentication. If successful, it generates an
+  /// OCRA challenge.
+  void _authenticateBiometrics() async {
+    final biometricsCubit = context.read<BiometricsCubit>();
+
+    await biometricsCubit.authenticate(
+      localizedReason: Translation.of(context).translate(
+        'biometric_dialog_description',
+      ),
+    );
+
+    if (biometricsCubit.state.authenticated ?? false) {
+      final ocraAuthenticationCubit = context.read<OcraAuthenticationCubit>();
+
+      await ocraAuthenticationCubit.generateOCRAChallenge();
+
+      final ocraChallenge = ocraAuthenticationCubit.state.ocraChallenge;
+      if (ocraChallenge != null) {
+        widget.onOCRAChallenge!(ocraChallenge);
+      }
+    }
   }
 
   @override
-  void didUpdateWidget(covariant OTPScreen oldWidget) {
+  void didUpdateWidget(covariant _OTPScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.isVerifying != widget.isVerifying) {
@@ -243,6 +421,13 @@ class _OTPScreenState extends State<OTPScreen> with FullScreenLoaderMixin {
                   if (!resendEnabled) return;
                   widget.onResend();
                 },
+              ),
+              Spacer(),
+              DKButton(
+                type: DKButtonType.baseTertiary,
+                title: translation.translate('proceed_with_biometrics'),
+                iconPath: FLImages.biometrics,
+                onPressed: _authenticateBiometrics,
               ),
             ],
           ),
