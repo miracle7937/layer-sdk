@@ -51,7 +51,6 @@ class LoyaltyRedemptionCubit extends Cubit<LoyaltyRedemptionState> {
       _loadLoyaltyPointsExpiration(),
       _loadBaseCurrency(),
     ]);
-    // onChanged();
   }
 
   /// Loads all currencies.
