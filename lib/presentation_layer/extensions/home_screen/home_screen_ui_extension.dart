@@ -73,15 +73,12 @@ extension HomeScreenUIExtension on Experience {
         );
 
       case ExperienceMenuType.tabBarBottomWithFocusAndMore:
-        final shouldShowMoreItem = visiblePages.length > 3;
-        final homePage = visiblePages.singleWhere(
-          (page) => page.title?.toLowerCase() == 'dashboard',
-        );
-
+        final shouldShowMoreItem = visiblePages.length > 4;
+        final homePage = visiblePages.first;
+        final pagesToShow = visiblePages.sublist(1, visiblePages.length);
         return DKBottomBarMenuWithHomeAndMore<ExperiencePage>(
           initialSelectedItem: initialSelectedItem,
-          items: visiblePages
-              .where((page) => page.title != 'dashboard')
+          items: pagesToShow
               .take(3)
               .map(
                 (page) => DKMenuItem<ExperiencePage>(
@@ -100,12 +97,7 @@ extension HomeScreenUIExtension on Experience {
           moreItem: !shouldShowMoreItem ? null : moreItem,
           onMoreItemPressed: !shouldShowMoreItem
               ? null
-              : (_) => onMorePageChanged(
-                    visiblePages
-                        .where((page) => page.title != 'dashboard')
-                        .skip(3)
-                        .toSet(),
-                  ),
+              : (_) => onMorePageChanged(pagesToShow.skip(3).toSet()),
         );
 
       default:

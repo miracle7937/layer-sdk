@@ -4,6 +4,7 @@ import '../../../domain_layer/models.dart';
 import '../../cubits.dart';
 import '../../extensions.dart';
 import '../../widgets.dart';
+import '../../widgets/custom_builders/layer_page_builder.dart';
 
 /// Custom type created for building an [ExperiencePage].
 ///
@@ -112,6 +113,15 @@ class HomeScreen extends StatefulWidget {
   /// The [ExperiencePageBuilder] for when the menu [ExperiencePage] changes.
   final ExperiencePageBuilder pageBuilder;
 
+  ///
+  final CardBuilder cardsBuilder;
+
+  ///
+  final ExtraCardBuilder extraCardsBuilder;
+
+  ///
+  final List<ExtraContainer> extraContainers;
+
   /// The [MorePageBuilder] for when the more page get's pressed.
   final MorePageBuilder morePageBuilder;
 
@@ -133,7 +143,10 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({
     Key? key,
     required this.pageBuilder,
+    required this.cardsBuilder,
+    required this.extraCardsBuilder,
     required this.morePageBuilder,
+    this.extraContainers = const [],
     this.initialPageCallback,
     required this.fullscreenLoader,
     this.moreMenuItemTitle,
@@ -146,7 +159,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   /// The current page widget.
   Widget? _pageWidget;
+
   Widget? get pageWidget => _pageWidget;
+
   set pageWidget(Widget? pageWidget) =>
       setState(() => _pageWidget = pageWidget);
 
@@ -160,6 +175,25 @@ class _HomeScreenState extends State<HomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => context.read<ExperienceCubit>().load(public: false),
     );
+  }
+
+  void _updatePageWidget(ExperiencePage page) {
+    final containers = page.containers;
+    if (containers.isEmpty) {
+      pageWidget = SizedBox.shrink();
+    } else if (containers.length == 1) {
+      pageWidget = widget.pageBuilder(
+        context,
+        page,
+      );
+    } else {
+      pageWidget = LayerPageBuilder(
+        page: page,
+        containerBuilder: widget.cardsBuilder,
+        extraContainerBuilder: widget.extraCardsBuilder,
+        extraContainers: widget.extraContainers,
+      );
+    }
   }
 
   @override
@@ -182,10 +216,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ? await widget.initialPageCallback!(state.visiblePages)
                 : state.visiblePages.first;
 
-            pageWidget = widget.pageBuilder(
-              context,
-              _initialPage,
-            );
+            _updatePageWidget(_initialPage);
           },
         ),
         BlocListener<ExperienceCubit, ExperienceState>(
@@ -224,8 +255,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       visiblePages:
                           context.watch<ExperienceCubit>().state.visiblePages,
                       moreMenuItemTitle: widget.moreMenuItemTitle,
-                      onSinglePageChanged: (page) =>
-                          pageWidget = widget.pageBuilder(context, page),
+                      onSinglePageChanged: _updatePageWidget,
+                      // pageWidget = widget.pageBuilder(context, page),
                       onMorePageChanged: (morePages) => pageWidget =
                           widget.morePageBuilder(context, morePages),
                     ),
@@ -242,4 +273,39 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+}
+
+///
+class ExtraContainer {
+  ///
+  final int pageIndex;
+
+  ///
+  final String id;
+
+  ///
+  final bool visible;
+
+  ///
+  final ExtraContainerPosition position;
+
+  ///
+  ExtraContainer({
+    required this.pageIndex,
+    required this.id,
+    required this.visible,
+    required this.position,
+  });
+}
+
+///
+enum ExtraContainerPosition {
+  ///
+  top,
+
+  ///
+  center,
+
+  ///
+  bottom,
 }
