@@ -310,70 +310,10 @@ class LoyaltyRedemptionCubit extends Cubit<LoyaltyRedemptionState> {
     }
   }
 
-  Set<CubitValidationError<LoyaltyRedemptionValidationErrorCode>>
-      _validatePoints(int points) {
-    final validationErrors =
-        <CubitValidationError<LoyaltyRedemptionValidationErrorCode>>{};
-    if ((points) > state.loyaltyPoints.balance) {
-      validationErrors.add(
-        CubitValidationError<LoyaltyRedemptionValidationErrorCode>(
-          validationErrorCode:
-              LoyaltyRedemptionValidationErrorCode.invalidPoints,
-        ),
-      );
-    }
-    return validationErrors;
-  }
-
-  /// Changing of points value event.
-  void onPointsChange(String text) {
-    final points = int.tryParse(text);
-    final validationErrors = _validatePoints(points ?? 0);
-    emit(
-      state.copyWith(
-        points: points,
-        cash: (points ?? 0) / state.loyaltyPoints.rate,
-        events: state
-            .addEvent(LoyaltyRedemptionEvent.point)
-            .difference({LoyaltyRedemptionEvent.cash}),
-        errors: validationErrors.isEmpty
-            ? state.removeValidationError(
-                LoyaltyRedemptionValidationErrorCode.invalidPoints)
-            : state.addValidationErrors(validationErrors: validationErrors),
-      ),
-    );
-  }
-
-  /// Changing of cash value event.
-  void onCashChange(String text) {
-    final cash = double.tryParse(text);
-    final points = ((cash ?? 0) * state.loyaltyPoints.rate).floor();
-    final validationErrors = _validatePoints(points);
-    emit(
-      state.copyWith(
-        points: points,
-        cash: cash,
-        events: state
-            .addEvent(LoyaltyRedemptionEvent.cash)
-            .difference({LoyaltyRedemptionEvent.point}),
-        errors: validationErrors.isEmpty
-            ? state.removeValidationError(
-                LoyaltyRedemptionValidationErrorCode.invalidPoints)
-            : state.addValidationErrors(validationErrors: validationErrors),
-      ),
-    );
-  }
-
   /// Do a loyalty points redemption
   Future<void> exchange() async {
     emit(
       state.copyWith(
-        events: state.removeEvents(
-          {
-            LoyaltyRedemptionEvent.point,
-            LoyaltyRedemptionEvent.cash,
-          },
-        ),
         actions: state.addAction(
           LoyaltyRedemptionAction.exchange,
         ),
@@ -385,7 +325,7 @@ class LoyaltyRedemptionCubit extends Cubit<LoyaltyRedemptionState> {
 
     try {
       final exchangeResult = await _exchangeLoyaltyPointsUseCase(
-        amount: state.points ?? 0,
+        amount: state.loyaltyPoints.balance,
         accountId: state.accounts.first.id ?? '',
       );
       emit(

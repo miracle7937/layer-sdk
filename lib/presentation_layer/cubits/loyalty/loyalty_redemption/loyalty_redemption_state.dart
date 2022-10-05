@@ -29,36 +29,21 @@ enum LoyaltyRedemptionAction {
 
 /// The available events that the cubit can emit.
 enum LoyaltyRedemptionEvent {
-  /// Points being entered.
-  point,
-
-  /// Cash being entered.
-  cash,
-
   /// Event for showing the result view.
   showResultView,
 }
 
-/// The available validation error codes.
-enum LoyaltyRedemptionValidationErrorCode {
-  /// Amount of entered points exceeds available ones.
-  invalidPoints,
-}
-
 /// The state for the [LoyaltyRedemptionCubit].
-class LoyaltyRedemptionState extends BaseState<LoyaltyRedemptionAction,
-    LoyaltyRedemptionEvent, LoyaltyRedemptionValidationErrorCode> {
+class LoyaltyRedemptionState
+    extends BaseState<LoyaltyRedemptionAction, LoyaltyRedemptionEvent, void> {
   /// All the currencies.
   final UnmodifiableListView<Currency> currencies;
 
   /// List of [Account]s.
   final UnmodifiableListView<Account> accounts;
 
-  /// Entered points for exchanging.
-  final int? points;
-
   /// Points converted to cash.
-  final double? cash;
+  double get cash => loyaltyPoints.balance / loyaltyPoints.rate;
 
   /// Loyalty points.
   final LoyaltyPoints loyaltyPoints;
@@ -70,8 +55,7 @@ class LoyaltyRedemptionState extends BaseState<LoyaltyRedemptionAction,
   final LoyaltyPointsExchange? exchangeResult;
 
   /// If selected points can be exchanged.
-  bool get canExchange =>
-      (points ?? 0) > 0 && (points ?? 0) <= loyaltyPoints.balance;
+  bool get canExchange => loyaltyPoints.balance > 0 && loyaltyPoints.rate > 0;
 
   /// Base currency.
   Currency? get baseCurrency =>
@@ -90,8 +74,6 @@ class LoyaltyRedemptionState extends BaseState<LoyaltyRedemptionAction,
     Iterable<Account> accounts = const <Account>[],
     this.loyaltyPoints = const LoyaltyPoints(id: -1),
     this.baseCurrencyCode = '',
-    this.points,
-    this.cash,
     this.exchangeResult,
   })  : currencies = UnmodifiableListView(currencies),
         accounts = UnmodifiableListView(accounts);
@@ -105,8 +87,6 @@ class LoyaltyRedemptionState extends BaseState<LoyaltyRedemptionAction,
     Iterable<Account>? accounts,
     LoyaltyPoints? loyaltyPoints,
     String? baseCurrencyCode,
-    int? points,
-    double? cash,
     LoyaltyPointsExchange? exchangeResult,
   }) =>
       LoyaltyRedemptionState(
@@ -117,8 +97,6 @@ class LoyaltyRedemptionState extends BaseState<LoyaltyRedemptionAction,
         accounts: accounts ?? this.accounts,
         loyaltyPoints: loyaltyPoints ?? this.loyaltyPoints,
         baseCurrencyCode: baseCurrencyCode ?? this.baseCurrencyCode,
-        points: points ?? this.points,
-        cash: cash ?? this.cash,
         exchangeResult: exchangeResult ?? this.exchangeResult,
       );
 
@@ -131,8 +109,6 @@ class LoyaltyRedemptionState extends BaseState<LoyaltyRedemptionAction,
         accounts,
         loyaltyPoints,
         baseCurrencyCode,
-        points,
-        cash,
         exchangeResult,
       ];
 }

@@ -367,153 +367,7 @@ void main() {
     ),
   );
 
-  final exchangePoint = loyaltyPoints.balance;
-  final exchangePointString = '$exchangePoint';
-  final exchangeCash = exchangePoint / loyaltyPoints.rate;
-
-  blocTest<LoyaltyRedemptionCubit, LoyaltyRedemptionState>(
-    'Entered points being changed: '
-    'emits points and exchanged cash value',
-    build: () => _cubit,
-    seed: () => LoyaltyRedemptionState(
-      currencies: currencies,
-      accounts: accounts,
-      loyaltyPoints: loyaltyPoints.copyWith(
-        rate: pointsRate.rate.toDouble(),
-        dueExpiryPoints: loyaltyPointsExpiration.amount,
-      ),
-      baseCurrencyCode: baseCurrencyCode,
-    ),
-    act: (c) => c.onPointsChange(exchangePointString),
-    verify: (c) => expect(
-      c.state,
-      LoyaltyRedemptionState(
-        points: exchangePoint,
-        cash: exchangeCash,
-        events: {LoyaltyRedemptionEvent.point},
-        currencies: currencies,
-        accounts: accounts,
-        loyaltyPoints: loyaltyPoints.copyWith(
-          rate: pointsRate.rate.toDouble(),
-          dueExpiryPoints: loyaltyPointsExpiration.amount,
-        ),
-        baseCurrencyCode: baseCurrencyCode,
-      ),
-    ),
-  );
-
-  blocTest<LoyaltyRedemptionCubit, LoyaltyRedemptionState>(
-    'Entered cash being changed: '
-    'emits cash and exchanged points value',
-    build: () => _cubit,
-    seed: () => LoyaltyRedemptionState(
-      currencies: currencies,
-      accounts: accounts,
-      loyaltyPoints: loyaltyPoints.copyWith(
-        rate: pointsRate.rate.toDouble(),
-        dueExpiryPoints: loyaltyPointsExpiration.amount,
-      ),
-      baseCurrencyCode: baseCurrencyCode,
-    ),
-    act: (c) => c.onCashChange('$exchangeCash'),
-    verify: (c) => expect(
-      c.state,
-      LoyaltyRedemptionState(
-        points: exchangePoint,
-        cash: exchangeCash,
-        events: {LoyaltyRedemptionEvent.cash},
-        currencies: currencies,
-        accounts: accounts,
-        loyaltyPoints: loyaltyPoints.copyWith(
-          rate: pointsRate.rate.toDouble(),
-          dueExpiryPoints: loyaltyPointsExpiration.amount,
-        ),
-        baseCurrencyCode: baseCurrencyCode,
-      ),
-    ),
-  );
-
-  final invalidExchangePoint = loyaltyPoints.balance + 1;
-  final invalidExchangePointString = '$invalidExchangePoint';
-  final invalidExchangeCash = invalidExchangePoint / loyaltyPoints.rate;
-
-  blocTest<LoyaltyRedemptionCubit, LoyaltyRedemptionState>(
-    'Entered points being changed, value exceed available points: '
-    'emits points, exchanged cash value and validation error',
-    build: () => _cubit,
-    seed: () => LoyaltyRedemptionState(
-      currencies: currencies,
-      accounts: accounts,
-      loyaltyPoints: loyaltyPoints.copyWith(
-        rate: pointsRate.rate.toDouble(),
-        dueExpiryPoints: loyaltyPointsExpiration.amount,
-      ),
-      baseCurrencyCode: baseCurrencyCode,
-    ),
-    act: (c) => c.onPointsChange(invalidExchangePointString),
-    verify: (c) => expect(
-      c.state,
-      LoyaltyRedemptionState(
-        points: invalidExchangePoint,
-        cash: invalidExchangeCash,
-        events: {LoyaltyRedemptionEvent.point},
-        errors: {
-          CubitValidationError<LoyaltyRedemptionValidationErrorCode>(
-            validationErrorCode:
-                LoyaltyRedemptionValidationErrorCode.invalidPoints,
-          )
-        },
-        currencies: currencies,
-        accounts: accounts,
-        loyaltyPoints: loyaltyPoints.copyWith(
-          rate: pointsRate.rate.toDouble(),
-          dueExpiryPoints: loyaltyPointsExpiration.amount,
-        ),
-        baseCurrencyCode: baseCurrencyCode,
-      ),
-    ),
-  );
-
-  blocTest<LoyaltyRedemptionCubit, LoyaltyRedemptionState>(
-    'Entered cash being changed, points value exceed available points: '
-    'emits exchanged points, cash value and validation error',
-    build: () => _cubit,
-    seed: () => LoyaltyRedemptionState(
-      currencies: currencies,
-      accounts: accounts,
-      loyaltyPoints: loyaltyPoints.copyWith(
-        rate: pointsRate.rate.toDouble(),
-        dueExpiryPoints: loyaltyPointsExpiration.amount,
-      ),
-      baseCurrencyCode: baseCurrencyCode,
-    ),
-    act: (c) => c.onCashChange('$invalidExchangeCash'),
-    verify: (c) => expect(
-      c.state,
-      LoyaltyRedemptionState(
-        points: invalidExchangePoint,
-        cash: invalidExchangeCash,
-        events: {LoyaltyRedemptionEvent.cash},
-        errors: {
-          CubitValidationError<LoyaltyRedemptionValidationErrorCode>(
-            validationErrorCode:
-                LoyaltyRedemptionValidationErrorCode.invalidPoints,
-          )
-        },
-        currencies: currencies,
-        accounts: accounts,
-        loyaltyPoints: loyaltyPoints.copyWith(
-          rate: pointsRate.rate.toDouble(),
-          dueExpiryPoints: loyaltyPointsExpiration.amount,
-        ),
-        baseCurrencyCode: baseCurrencyCode,
-      ),
-    ),
-  );
-
   final preExchangeState = LoyaltyRedemptionState(
-    points: exchangePoint,
-    cash: exchangeCash,
     currencies: currencies,
     accounts: accounts,
     loyaltyPoints: loyaltyPoints.copyWith(
@@ -529,16 +383,14 @@ void main() {
     'Exchanges points, emits result',
     setUp: () => when(
       () => _exchangeLoyaltyPointsUseCase(
-        amount: exchangePoint,
+        amount: loyaltyPoints.balance,
         accountId: account1.id,
       ),
     ).thenAnswer(
       (_) async => exchangeResult,
     ),
     build: () => _cubit,
-    seed: () => preExchangeState.copyWith(
-      events: {LoyaltyRedemptionEvent.point},
-    ),
+    seed: () => preExchangeState,
     act: (c) => c.exchange(),
     expect: () => [
       preExchangeState.copyWith(
