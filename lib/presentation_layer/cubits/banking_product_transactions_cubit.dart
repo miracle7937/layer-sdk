@@ -1,3 +1,4 @@
+import 'package:async/async.dart';
 import 'package:bloc/bloc.dart';
 
 import '../../domain_layer/models/banking_product_transaction.dart';
@@ -13,6 +14,8 @@ class BankingProductTransactionsCubit
 
   /// Maximum number of transactions to load at a time.
   final int limit;
+
+  CancelableOperation? _transactionsCancelableOperation;
 
   /// Creates a new instance of [BankingProductTransactionsCubit]
   BankingProductTransactionsCubit({
@@ -51,6 +54,7 @@ class BankingProductTransactionsCubit
       accountId: state.accountId,
       cardId: state.cardId,
     ));
+    load();
   }
 
   /// Loads all account completed account transactions of the provided
@@ -92,19 +96,25 @@ class BankingProductTransactionsCubit
 
     try {
       final offset = loadMore ? state.listData.offset + limit : 0;
-      final transactions = await _getCustomerBankingProductTransactionsUseCase(
-        accountId: accountId ?? state.accountId,
-        cardId: cardId ?? state.cardId,
-        startDate: fromDate ?? state.startDate,
-        endDate: toDate ?? state.endDate,
-        offset: offset,
-        limit: limit,
-        forceRefresh: forceRefresh,
-        searchString: searchString,
-        credit: credit ?? state.credit,
-        amountFrom: amountFrom ?? state.amountFrom,
-        amountTo: amountTo ?? state.amountTo,
+      if (!(_transactionsCancelableOperation?.isCanceled ?? true)) {
+        await _transactionsCancelableOperation!.cancel();
+      }
+      _transactionsCancelableOperation = CancelableOperation.fromFuture(
+        _getCustomerBankingProductTransactionsUseCase(
+          accountId: accountId ?? state.accountId,
+          cardId: cardId ?? state.cardId,
+          startDate: fromDate ?? state.startDate,
+          endDate: toDate ?? state.endDate,
+          offset: offset,
+          limit: limit,
+          forceRefresh: forceRefresh,
+          searchString: searchString,
+          credit: credit ?? state.credit,
+          amountFrom: amountFrom ?? state.amountFrom,
+          amountTo: amountTo ?? state.amountTo,
+        ),
       );
+      final transactions = await _transactionsCancelableOperation!.value;
 
       // ignore: omit_local_variable_types
       final List<BankingProductTransaction> list = offset > 0
