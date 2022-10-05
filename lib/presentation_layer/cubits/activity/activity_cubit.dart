@@ -14,7 +14,7 @@ class ActivityCubit extends Cubit<ActivityState> {
   final CreateShortcutUseCase _createShortcutUseCase;
   final CancelRecurringTransferUseCase _cancelRecurringTransferUseCase;
   final CancelRecurringPaymentUseCase _cancelRecurrPaymentUseCase;
-  final ReadAlertUseCase _readAlertUseCase;
+  final MarkAlertAsReadUseCase _markAlertAsReadUseCase;
   final DeleteAlertUseCase _deleteAlertUseCase;
   final ReadAllAlertsUseCase _readAllAlertsUseCase;
   final DeleteAllAlertsUseCase _deleteAllAlertsUseCase;
@@ -27,7 +27,7 @@ class ActivityCubit extends Cubit<ActivityState> {
     required CreateShortcutUseCase createShortcutUseCase,
     required CancelRecurringTransferUseCase cancelRecurringTransferUseCase,
     required CancelRecurringPaymentUseCase cancelRecurrPaymentUseCase,
-    required ReadAlertUseCase readAlertUseCase,
+    required MarkAlertAsReadUseCase markAlertAsReadUseCase,
     required DeleteAlertUseCase deleteAlertUseCase,
     required ReadAllAlertsUseCase readAllAlertsUseCase,
     required DeleteAllAlertsUseCase deleteAllAlertsUseCase,
@@ -38,7 +38,7 @@ class ActivityCubit extends Cubit<ActivityState> {
         _createShortcutUseCase = createShortcutUseCase,
         _cancelRecurringTransferUseCase = cancelRecurringTransferUseCase,
         _cancelRecurrPaymentUseCase = cancelRecurrPaymentUseCase,
-        _readAlertUseCase = readAlertUseCase,
+        _markAlertAsReadUseCase = markAlertAsReadUseCase,
         _deleteAlertUseCase = deleteAlertUseCase,
         _readAllAlertsUseCase = readAllAlertsUseCase,
         _deleteAllAlertsUseCase = deleteAllAlertsUseCase,
@@ -201,7 +201,9 @@ class ActivityCubit extends Cubit<ActivityState> {
       );
 
   /// Read the current alert by the respective [Activity]
-  Future<void> readAlert(Activity activity) => _readAlertUseCase(activity);
+  Future<void> markAlertAsRead(Activity activity) => _markAlertAsReadUseCase(
+        activity,
+      );
 
   /// Delete the current alert by the respective [Activity]
   Future<void> deleteAlert(Activity activity) => _deleteAlertUseCase(activity);

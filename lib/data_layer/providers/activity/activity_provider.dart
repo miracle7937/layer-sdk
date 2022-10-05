@@ -172,7 +172,7 @@ class ActivityProvider {
   }
 
   /// Read the current [Alert] by `id`
-  Future<void> readAlert(int id) async {
+  Future<void> markAlertAsRead(int id) async {
     await netClient.request(
       netClient.netEndpoints.alert,
       method: NetRequestMethods.patch,
@@ -183,7 +183,7 @@ class ActivityProvider {
   }
 
   /// Read the current [Request] by `id`
-  Future<void> readRequest(String id) async {
+  Future<void> markRequestAsRead(String id) async {
     await netClient.request(
       '${netClient.netEndpoints.request}/$id/read',
       method: NetRequestMethods.patch,

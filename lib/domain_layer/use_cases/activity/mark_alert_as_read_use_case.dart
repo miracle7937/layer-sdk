@@ -2,11 +2,11 @@ import '../../abstract_repositories.dart';
 import '../../models.dart';
 
 /// Use case to read the alert
-class ReadAlertUseCase {
+class MarkAlertAsReadUseCase {
   final ActivityRepositoryInterface _repository;
 
-  /// Creates a new [ReadAlertUseCase] instance
-  ReadAlertUseCase({
+  /// Creates a new [MarkAlertAsReadUseCase] instance
+  MarkAlertAsReadUseCase({
     required ActivityRepositoryInterface repository,
   }) : _repository = repository;
 
@@ -30,9 +30,9 @@ class ReadAlertUseCase {
   /// [int] type will be passed as parameter through the repository.
   Future<void> call(Activity activity) {
     if (activity.id.isNotEmpty) {
-      return _repository.readRequest(activity.id);
+      return _repository.markRequestAsRead(activity.id);
     }
 
-    return _repository.readAlert(activity.alertID);
+    return _repository.markAlertAsRead(activity.alertID);
   }
 }

@@ -95,16 +95,16 @@ class ActivityRepository implements ActivityRepositoryInterface {
 
   /// Read the current [Alert] by respective `id`
   @override
-  Future<void> readAlert(int id) {
-    final result = _provider.readAlert(id);
+  Future<void> markAlertAsRead(int id) {
+    final result = _provider.markAlertAsRead(id);
 
     return result;
   }
 
   /// Read the current [Request] by respective `id`
   @override
-  Future<void> readRequest(String id) {
-    final result = _provider.readRequest(id);
+  Future<void> markRequestAsRead(String id) {
+    final result = _provider.markRequestAsRead(id);
 
     return result;
   }
