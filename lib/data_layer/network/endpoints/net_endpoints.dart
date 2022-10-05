@@ -137,6 +137,9 @@ class NetEndpoints {
   /// The cards endpoint
   String get card => '$_infoBanking/v1/card';
 
+  /// The card info endpoint
+  String get cardInfo => '$_infoBanking/v2/card_info';
+
   /// The beneficiaries endpoint
   String get beneficiary => '$_txnBanking/v1/beneficiary';
 
