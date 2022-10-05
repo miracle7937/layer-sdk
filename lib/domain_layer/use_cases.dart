@@ -169,3 +169,4 @@ export 'use_cases/user/request_password_reset_use_case.dart';
 export 'use_cases/user/request_pin_reset_use_case.dart';
 export 'use_cases/user/request_unlock_use_case.dart';
 export 'use_cases/user/set_access_pin_for_user_use_case.dart';
+export 'use_cases/user/set_low_balance_alert_use_case.dart';

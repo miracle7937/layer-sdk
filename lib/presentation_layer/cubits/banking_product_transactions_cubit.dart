@@ -1,5 +1,7 @@
+import 'package:async/async.dart';
 import 'package:bloc/bloc.dart';
 
+import '../../domain_layer/models/banking_product_transaction.dart';
 import '../../domain_layer/use_cases/banking_product_transactions_use_case.dart';
 import 'banking_product_transactions_state.dart';
 
@@ -12,6 +14,8 @@ class BankingProductTransactionsCubit
 
   /// Maximum number of transactions to load at a time.
   final int limit;
+
+  CancelableOperation? _transactionsCancelableOperation;
 
   /// Creates a new instance of [BankingProductTransactionsCubit]
   BankingProductTransactionsCubit({
@@ -33,14 +37,15 @@ class BankingProductTransactionsCubit
 
   /// Updating the dates and loading again
   Future<void> updateDates({
-    required DateTime startDate,
-    required DateTime endDate,
+    DateTime? startDate,
+    DateTime? endDate,
   }) async {
-    load(
-      fromDate: startDate,
-      toDate: endDate,
-      loadMore: true,
-    );
+    emit(state.copyWith(
+      cardId: state.cardId,
+      accountId: state.accountId,
+      startDate: startDate,
+      endDate: endDate,
+    ));
   }
 
   /// Reset the state
@@ -49,15 +54,12 @@ class BankingProductTransactionsCubit
       accountId: state.accountId,
       cardId: state.cardId,
     ));
-    await load(
-      accountId: state.accountId,
-      cardId: state.cardId,
-    );
+    load();
   }
 
   /// Loads all account completed account transactions of the provided
   Future<void> load({
-    bool loadMore = false,
+    bool changeDate = false,
     bool forceRefresh = false,
     DateTime? fromDate,
     DateTime? toDate,
@@ -67,6 +69,7 @@ class BankingProductTransactionsCubit
     bool? credit,
     double? amountFrom,
     double? amountTo,
+    bool loadMore = false,
   }) async {
     emit(
       state.copyWith(
@@ -74,16 +77,17 @@ class BankingProductTransactionsCubit
         accountId: accountId ?? state.accountId,
         startDate: fromDate,
         endDate: toDate,
-        amountFrom: amountFrom,
-        amountTo: amountTo,
-        credit: credit,
-        actions: state.addAction(state.listData.canLoadMore
+        amountFrom: amountFrom ?? state.amountFrom,
+        amountTo: amountTo ?? state.amountTo,
+        listData: BankingProductTransactionsListData(),
+        credit: credit ?? state.credit,
+        actions: state.addAction(loadMore
             ? BankingProductTransactionsAction.loadingMore
-            : (loadMore
+            : (changeDate
                 ? BankingProductTransactionsAction.filtering
                 : BankingProductTransactionsAction.loadInitialTransactions)),
         errors: state.removeValidationError(
-          loadMore
+          changeDate
               ? BankingProductTransactionsErrorCode.filterError
               : BankingProductTransactionsErrorCode.loadError,
         ),
@@ -92,36 +96,45 @@ class BankingProductTransactionsCubit
 
     try {
       final offset = loadMore ? state.listData.offset + limit : 0;
-      final transactions = await _getCustomerBankingProductTransactionsUseCase(
-        accountId: accountId ?? state.accountId,
-        cardId: cardId ?? state.cardId,
-        startDate: fromDate ?? state.startDate,
-        endDate: toDate ?? state.endDate,
-        offset: offset,
-        limit: limit,
-        forceRefresh: forceRefresh,
-        searchString: searchString,
-        credit: credit ?? state.credit,
-        amountFrom: amountFrom ?? state.amountFrom,
-        amountTo: amountTo ?? state.amountTo,
+      if (!(_transactionsCancelableOperation?.isCanceled ?? true)) {
+        await _transactionsCancelableOperation!.cancel();
+      }
+      _transactionsCancelableOperation = CancelableOperation.fromFuture(
+        _getCustomerBankingProductTransactionsUseCase(
+          accountId: accountId ?? state.accountId,
+          cardId: cardId ?? state.cardId,
+          startDate: fromDate ?? state.startDate,
+          endDate: toDate ?? state.endDate,
+          offset: offset,
+          limit: limit,
+          forceRefresh: forceRefresh,
+          searchString: searchString,
+          credit: credit ?? state.credit,
+          amountFrom: amountFrom ?? state.amountFrom,
+          amountTo: amountTo ?? state.amountTo,
+        ),
       );
+      final transactions = await _transactionsCancelableOperation!.value;
 
-      final list = offset > 0
-          ? [...state.transactions.take(offset).toList(), ...transactions]
+      // ignore: omit_local_variable_types
+      final List<BankingProductTransaction> list = offset > 0
+          ? [
+              ...state.transactions?.take(offset).toList() ?? [],
+              ...transactions
+            ]
           : transactions;
-
       emit(
         state.copyWith(
           transactions: list,
           actions: state.removeAction(
-            state.listData.canLoadMore
+            loadMore
                 ? BankingProductTransactionsAction.loadingMore
-                : loadMore
+                : changeDate
                     ? BankingProductTransactionsAction.filtering
                     : BankingProductTransactionsAction.loadInitialTransactions,
           ),
           errors: state.removeValidationError(
-            loadMore
+            changeDate
                 ? BankingProductTransactionsErrorCode.filterError
                 : BankingProductTransactionsErrorCode.loadError,
           ),
@@ -135,12 +148,12 @@ class BankingProductTransactionsCubit
       emit(
         state.copyWith(
           actions: state.removeAction(
-            loadMore
+            changeDate
                 ? BankingProductTransactionsAction.filtering
                 : BankingProductTransactionsAction.loadInitialTransactions,
           ),
           errors: state.addValidationError(
-            validationErrorCode: loadMore
+            validationErrorCode: changeDate
                 ? BankingProductTransactionsErrorCode.filterError
                 : BankingProductTransactionsErrorCode.loadError,
           ),

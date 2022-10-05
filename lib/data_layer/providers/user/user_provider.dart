@@ -83,6 +83,34 @@ class UserProvider {
     throw Exception('User not found');
   }
 
+  /// Patches multiple user preferences with different data
+  Future<UserDTO> patchUserPreferences({
+    required List<UserPreference> userPreferences,
+  }) async {
+    var json = {};
+    for (var prefence in userPreferences) {
+      json.addAll(prefence.toJson());
+    }
+
+    final response = await netClient.request(
+      netClient.netEndpoints.user,
+      data: [
+        {
+          'pref': {
+            'keys': json,
+          }
+        },
+      ],
+      method: NetRequestMethods.patch,
+    );
+
+    if (response.data is List && response.data.length > 0) {
+      return UserDTO.fromJson(response.data[0]);
+    }
+
+    throw Exception('User not found');
+  }
+
   /// Returns an user from a token.
   ///
   /// Throws an exception if the user is not found.

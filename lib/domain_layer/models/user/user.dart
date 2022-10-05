@@ -104,6 +104,9 @@ class User extends Equatable {
   /// The branch this user belongs to.
   final String? branch;
 
+  /// The low balance
+  final double? lowBalanceValue;
+
   /// Returns the full name of the customer.
   String get fullName => [firstName, lastName]
       .where((element) => element != null && element.isNotEmpty)
@@ -121,6 +124,7 @@ class User extends Equatable {
     this.lastName,
     this.accessPin,
     this.deviceId,
+    this.lowBalanceValue,
     this.hasEmailAds = false,
     this.hasSmsAds = false,
     this.isUSSDActive = false,
@@ -154,6 +158,7 @@ class User extends Equatable {
     bool? isUSSDActive,
     bool? verifyDevice,
     String? branch,
+    double? lowBalanceValue,
   }) =>
       User(
         id: id ?? this.id,
@@ -175,6 +180,7 @@ class User extends Equatable {
         isUSSDActive: isUSSDActive ?? this.isUSSDActive,
         verifyDevice: verifyDevice ?? this.verifyDevice,
         branch: branch ?? this.branch,
+        lowBalanceValue: lowBalanceValue ?? this.lowBalanceValue,
       );
 
   @override
@@ -197,5 +203,6 @@ class User extends Equatable {
         permissions,
         verifyDevice,
         branch,
+        lowBalanceValue,
       ];
 }
