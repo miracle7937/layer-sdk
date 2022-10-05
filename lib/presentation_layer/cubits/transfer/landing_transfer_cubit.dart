@@ -21,14 +21,16 @@ class LandingTransferCubit extends Cubit<LandingTransferState> {
   }) async {
     emit(
       state.copyWith(
-        busy: true,
-        error: LandingTransferErrorStatus.none,
+        actions: state.addAction(LandingTransferAction.loading),
+        errors: state.removeValidationError(
+            state.errors.contains(LandingTransferErrorCode.generic)
+                ? LandingTransferErrorCode.generic
+                : LandingTransferErrorCode.network),
       ),
     );
 
     try {
       final newPage = state.pagination.paginate(loadMore: loadMore);
-
       final frequentTransfers = await _loadFrequentTransfersUseCase(
         offset: newPage.offset,
         limit: newPage.limit,
@@ -44,17 +46,17 @@ class LandingTransferCubit extends Cubit<LandingTransferState> {
       emit(
         state.copyWith(
           frequentTransfers: frequentTransfers,
-          busy: false,
         ),
       );
     } on Exception catch (e) {
       emit(
         state.copyWith(
-          error: e is NetException
-              ? LandingTransferErrorStatus.network
-              : LandingTransferErrorStatus.generic,
-          busy: false,
-        ),
+            actions: state.removeAction(LandingTransferAction.loading),
+            errors: state.addValidationError(
+              validationErrorCode: e is NetException
+                  ? LandingTransferErrorCode.network
+                  : LandingTransferErrorCode.generic,
+            )),
       );
 
       rethrow;
