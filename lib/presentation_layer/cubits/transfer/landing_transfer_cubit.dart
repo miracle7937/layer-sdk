@@ -1,6 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../data_layer/network.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../../layer_sdk.dart';
 
@@ -22,10 +20,7 @@ class LandingTransferCubit extends Cubit<LandingTransferState> {
     emit(
       state.copyWith(
         actions: state.addAction(LandingTransferAction.loading),
-        errors: state.removeValidationError(
-            state.errors.contains(LandingTransferErrorCode.generic)
-                ? LandingTransferErrorCode.generic
-                : LandingTransferErrorCode.network),
+        errors: state.removeErrorForAction(LandingTransferAction.loading),
       ),
     );
 
@@ -53,11 +48,8 @@ class LandingTransferCubit extends Cubit<LandingTransferState> {
       emit(
         state.copyWith(
             actions: state.removeAction(LandingTransferAction.loading),
-            errors: state.addValidationError(
-              validationErrorCode: e is NetException
-                  ? LandingTransferErrorCode.network
-                  : LandingTransferErrorCode.generic,
-            )),
+            errors: state.addErrorFromException(
+                exception: e, action: LandingTransferAction.loading)),
       );
 
       rethrow;
