@@ -55,6 +55,7 @@ typedef ExperiencePageBuilder = Widget Function(
 typedef MorePageBuilder = Widget Function(
   BuildContext context,
   Set<ExperiencePage> pages,
+  ValueSetter<ExperiencePage> onSingleMorePageSelected,
 );
 
 /// A screen that fetches the authenticated experience and builds the
@@ -256,9 +257,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           context.watch<ExperienceCubit>().state.visiblePages,
                       moreMenuItemTitle: widget.moreMenuItemTitle,
                       onSinglePageChanged: _updatePageWidget,
-                      // pageWidget = widget.pageBuilder(context, page),
-                      onMorePageChanged: (morePages) => pageWidget =
-                          widget.morePageBuilder(context, morePages),
+                      onMorePageChanged: (morePages) =>
+                          pageWidget = widget.morePageBuilder(
+                        context,
+                        morePages,
+                        _updatePageWidget,
+                      ),
                     ),
                   ],
                 ],
