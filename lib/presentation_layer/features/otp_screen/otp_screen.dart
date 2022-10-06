@@ -61,8 +61,11 @@ class OTPScreen extends StatelessWidget {
   /// Default is `false`.
   final bool showBiometrics;
 
-  /// The callback called when the OCRA challenge is generated.
-  final ValueSetter<String>? onOCRAChallenge;
+  /// The callback called when the OCRA client response is generated.
+  final ValueSetter<String>? onOCRAClientResponse;
+
+  /// The callback called when the send OTP code gets pressed.
+  final Future<bool> Function()? onSendOTPCode;
 
   /// Creates a new [OTPScreen].
   const OTPScreen({
@@ -78,55 +81,34 @@ class OTPScreen extends StatelessWidget {
     this.isResending = false,
     this.showMobileNumber = true,
     this.showBiometrics = false,
-    this.onOCRAChallenge,
+    this.onOCRAClientResponse,
+    this.onSendOTPCode,
   })  : assert(
-          !showBiometrics || onOCRAChallenge != null,
-          'Biometrics should show but the OCRA challenge '
+          !showBiometrics || onOCRAClientResponse != null,
+          'Biometrics should show but the OCRA client response '
           'callback was not indicated',
         ),
         super(key: key);
 
   @override
-  Widget build(BuildContext context) => MultiBlocProvider(
-        providers: [
-          BlocProvider<StorageCubit>(
-            create: (context) => context.read<StorageCreator>().create()
-              ..loadLastLoggedUser()
-              ..loadAuthenticationSettings()
-              ..loadOcraSecretKey(),
-          ),
-          BlocProvider<BiometricsCubit>(
-            create: (context) => context.read<BiometricsCreator>().create(),
-          ),
-        ],
+  Widget build(BuildContext context) => BlocProvider<BiometricsCubit>(
+        create: (context) => context.read<BiometricsCreator>().create(),
         child: Builder(
-          builder: (context) {
-            final storageState = context.read<StorageCubit>().state;
-
-            return BlocProvider<OcraAuthenticationCubit>(
-              create: (context) =>
-                  context.read<OcraAuthenticationCreator>().create(
-                        deviceId: storageState.currentUser!.deviceId!,
-                        ocraSecret: storageState.ocraSecretKey!,
-                      ),
-              child: Builder(
-                builder: (context) => _OTPScreen(
-                  title: title,
-                  resendInterval: resendInterval,
-                  imageBuilder: imageBuilder,
-                  onOTPCode: onOTPCode,
-                  isVerifying: isVerifying,
-                  verificationError: verificationError,
-                  shouldClearCode: shouldClearCode,
-                  onResend: onResend,
-                  isResending: isResending,
-                  showMobileNumber: showMobileNumber,
-                  showBiometrics: showBiometrics,
-                  onOCRAChallenge: onOCRAChallenge,
-                ),
-              ),
-            );
-          },
+          builder: (context) => _OTPScreen(
+            title: title,
+            resendInterval: resendInterval,
+            imageBuilder: imageBuilder,
+            onOTPCode: onOTPCode,
+            isVerifying: isVerifying,
+            verificationError: verificationError,
+            shouldClearCode: shouldClearCode,
+            onResend: onResend,
+            isResending: isResending,
+            showMobileNumber: showMobileNumber,
+            showBiometrics: showBiometrics,
+            onOCRAClientResponse: onOCRAClientResponse,
+            onSendOTPCode: onSendOTPCode,
+          ),
         ),
       );
 }
@@ -185,8 +167,11 @@ class _OTPScreen extends StatefulWidget {
   /// Default is `false`.
   final bool showBiometrics;
 
-  /// The callback called when the OCRA challenge is generated.
-  final ValueSetter<String>? onOCRAChallenge;
+  /// The callback called when the OCRA client response is generated.
+  final ValueSetter<String>? onOCRAClientResponse;
+
+  /// The callback called when the send OTP code gets pressed.
+  final Future<bool> Function()? onSendOTPCode;
 
   /// Creates a new [_OTPScreen].
   const _OTPScreen({
@@ -202,10 +187,11 @@ class _OTPScreen extends StatefulWidget {
     this.isResending = false,
     this.showMobileNumber = true,
     this.showBiometrics = false,
-    this.onOCRAChallenge,
+    this.onOCRAClientResponse,
+    this.onSendOTPCode,
   })  : assert(
-          !showBiometrics || onOCRAChallenge != null,
-          'Biometrics should show but the OCRA challenge '
+          !showBiometrics || onOCRAClientResponse != null,
+          'Biometrics should show but the OCRA client response '
           'callback was not indicated',
         ),
         super(key: key);
@@ -245,6 +231,16 @@ class _OTPScreenState extends State<_OTPScreen> with FullScreenLoaderMixin {
   set showBiometricsButton(bool showBiometricsButton) =>
       setState(() => _showBiometricsButton = showBiometricsButton);
 
+  bool _isSendingOTPCode = false;
+  bool get isSendingOTPCode => _isSendingOTPCode;
+  set isSendingOTPCode(bool isSendingOTPCode) =>
+      setState(() => _isSendingOTPCode = isSendingOTPCode);
+
+  late bool _showOTPCodeInput;
+  bool get showOTPCodeInput => _showOTPCodeInput;
+  set showOTPCodeInput(bool showOTPCodeInput) =>
+      setState(() => _showOTPCodeInput = showOTPCodeInput);
+
   @override
   void initState() {
     super.initState();
@@ -252,6 +248,7 @@ class _OTPScreenState extends State<_OTPScreen> with FullScreenLoaderMixin {
     _isVerifying = widget.isVerifying;
     _isResending = widget.isResending;
     _shouldClearCode = widget.shouldClearCode;
+    _showOTPCodeInput = widget.onSendOTPCode == null;
 
     _remainingTime = widget.resendInterval;
     _startTimer();
@@ -285,13 +282,29 @@ class _OTPScreenState extends State<_OTPScreen> with FullScreenLoaderMixin {
     );
 
     if (biometricsCubit.state.authenticated ?? false) {
-      final ocraAuthenticationCubit = context.read<OcraAuthenticationCubit>();
+      final storageCubit = context.read<StorageCreator>().create();
 
-      await ocraAuthenticationCubit.generateOCRAChallenge();
+      await storageCubit.loadLastLoggedUser();
+      await storageCubit.loadOcraSecretKey();
 
-      final ocraChallenge = ocraAuthenticationCubit.state.ocraChallenge;
-      if (ocraChallenge != null) {
-        widget.onOCRAChallenge!(ocraChallenge);
+      final deviceId = storageCubit.state.currentUser!.deviceId!;
+      final ocraSecret = storageCubit.state.ocraSecretKey!;
+      final accessPin = storageCubit.state.currentUser!.accessPin!;
+
+      final ocraAuthenticationCubit =
+          context.read<OcraAuthenticationCreator>().create(
+                deviceId: deviceId,
+                ocraSecret: ocraSecret,
+              );
+
+      await ocraAuthenticationCubit.generateOCRAClientResponse(
+        password: accessPin,
+      );
+
+      final ocraClientResponse =
+          ocraAuthenticationCubit.state.ocraClientResponse;
+      if (ocraClientResponse != null) {
+        widget.onOCRAClientResponse!(ocraClientResponse);
       }
     }
   }
@@ -344,6 +357,7 @@ class _OTPScreenState extends State<_OTPScreen> with FullScreenLoaderMixin {
     }
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: SDKHeader(
         title: widget.title,
         prefixSvgIcon: DKImages.arrowLeft,
@@ -352,84 +366,124 @@ class _OTPScreenState extends State<_OTPScreen> with FullScreenLoaderMixin {
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              if (widget.imageBuilder != null) ...[
-                widget.imageBuilder!(context),
-                const SizedBox(height: 24.0),
-              ],
-              Text(
-                translation
-                    .translate('enter_code_sent_to_placeholder')
-                    .replaceAll(
-                      '{phone}',
-                      widget.showMobileNumber ? maskedNumber : '',
-                    ),
-                style: design.bodyM(),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24.0),
-              PinWidgetRow(
-                onPinSet: widget.onOTPCode,
-                hasError: verificationError != null,
-                shouldClearCode: shouldClearCode,
-              ),
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 200),
-                transitionBuilder: (child, animation) => SizeTransition(
-                  sizeFactor: animation,
-                  child: child,
+          child: Container(
+            height: MediaQuery.of(context).size.height - 32.0,
+            padding: const EdgeInsets.only(top: 120.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                if (widget.imageBuilder != null) ...[
+                  widget.imageBuilder!(context),
+                  const SizedBox(height: 24.0),
+                ],
+                Text(
+                  translation
+                      .translate('enter_code_sent_to_placeholder')
+                      .replaceAll(
+                        '{phone}',
+                        widget.showMobileNumber ? maskedNumber : '',
+                      ),
+                  style: design.bodyM(),
+                  textAlign: TextAlign.center,
                 ),
-                child: verificationError != null
-                    ? SizedBox(
-                        width: double.maxFinite,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const SizedBox(height: 16.0),
-                            Text(
-                              verificationError!,
-                              style: design.bodyM(
-                                color: design.errorPrimary,
+                const SizedBox(height: 24.0),
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  transitionBuilder: (child, animation) => SizeTransition(
+                    sizeFactor: animation,
+                    child: child,
+                  ),
+                  child: showOTPCodeInput
+                      ? PinWidgetRow(
+                          onPinSet: widget.onOTPCode,
+                          hasError: verificationError != null,
+                          shouldClearCode: shouldClearCode,
+                        )
+                      : Center(
+                          child: DKButton(
+                            title: translation.translate('send'),
+                            type: DKButtonType.brandPlain,
+                            status: isSendingOTPCode
+                                ? DKButtonStatus.loading
+                                : DKButtonStatus.idle,
+                            expands: false,
+                            onPressed: () async {
+                              assert(widget.onSendOTPCode != null);
+
+                              isSendingOTPCode = true;
+                              showOTPCodeInput = await widget.onSendOTPCode!();
+                              isSendingOTPCode = false;
+                            },
+                          ),
+                        ),
+                ),
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  transitionBuilder: (child, animation) => SizeTransition(
+                    sizeFactor: animation,
+                    child: child,
+                  ),
+                  child: verificationError != null
+                      ? SizedBox(
+                          width: double.maxFinite,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const SizedBox(height: 16.0),
+                              Text(
+                                verificationError!,
+                                style: design.bodyM(
+                                  color: design.errorPrimary,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      )
-                    : const SizedBox.shrink(),
-              ),
-              const SizedBox(height: 34.0),
-              DKButton(
-                title: resendEnabled
-                    ? translation.translate('resend')
-                    : translation
-                        .translate('resend_code_in_placeholder')
-                        .replaceAll(
-                          '{time}',
-                          _remainingTime.toMinutesTimestamp(),
-                        ),
-                type: DKButtonType.brandPlain,
-                status: isResending
-                    ? DKButtonStatus.loading
-                    : resendEnabled
-                        ? DKButtonStatus.idle
-                        : DKButtonStatus.disabled,
-                expands: false,
-                onPressed: () {
-                  if (!resendEnabled) return;
-                  widget.onResend();
-                },
-              ),
-              Spacer(),
-              DKButton(
-                type: DKButtonType.baseTertiary,
-                title: translation.translate('proceed_with_biometrics'),
-                iconPath: FLImages.biometrics,
-                onPressed: _authenticateBiometrics,
-              ),
-            ],
+                            ],
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+                ),
+                const SizedBox(height: 34.0),
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  transitionBuilder: (child, animation) => SizeTransition(
+                    sizeFactor: animation,
+                    child: child,
+                  ),
+                  child: showOTPCodeInput
+                      ? Center(
+                          child: DKButton(
+                            title: resendEnabled
+                                ? translation.translate('resend')
+                                : translation
+                                    .translate('resend_code_in_placeholder')
+                                    .replaceAll(
+                                      '{time}',
+                                      _remainingTime.toMinutesTimestamp(),
+                                    ),
+                            type: DKButtonType.brandPlain,
+                            status: isResending
+                                ? DKButtonStatus.loading
+                                : resendEnabled
+                                    ? DKButtonStatus.idle
+                                    : DKButtonStatus.disabled,
+                            expands: false,
+                            onPressed: () {
+                              if (!resendEnabled) return;
+                              widget.onResend();
+                            },
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+                ),
+                Spacer(),
+                DKButton(
+                  type: DKButtonType.basePlain,
+                  title: translation.translate('proceed_with_biometrics'),
+                  iconPath: FLImages.biometrics,
+                  onPressed: _authenticateBiometrics,
+                ),
+              ],
+            ),
           ),
         ),
       ),

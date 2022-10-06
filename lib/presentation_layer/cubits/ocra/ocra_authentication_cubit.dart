@@ -133,9 +133,9 @@ class OcraAuthenticationCubit extends Cubit<OcraAuthenticationState> {
     }
   }
 
-  /// Generates an OCRA challenge
-  Future<void> generateOCRAChallenge({
-    String? password,
+  /// Generates an OCRA client response
+  Future<void> generateOCRAClientResponse({
+    required String password,
   }) async {
     emit(
       OcraAuthenticationState(
@@ -162,7 +162,7 @@ class OcraAuthenticationCubit extends Cubit<OcraAuthenticationState> {
         throw OcraWrongResultException();
       }
 
-      final serverChallengeResult = _solveOcraChallengeUseCase(
+      final ocraClientResponse = _solveOcraChallengeUseCase(
         question: response.serverChallenge + challenge,
         timestamp: timestamp,
         password: password,
@@ -171,7 +171,7 @@ class OcraAuthenticationCubit extends Cubit<OcraAuthenticationState> {
       emit(
         state.copyWith(
           busy: false,
-          ocraChallenge: serverChallengeResult,
+          ocraClientResponse: ocraClientResponse,
         ),
       );
     } on Exception catch (e) {

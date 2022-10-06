@@ -35,6 +35,9 @@ class OcraOtpConfiguration<LayerCubitAction> extends Equatable {
   /// The image widget to show for the OTP.
   final Widget otpImageWidget;
 
+  /// The callback called when the send otp code button gets pressed.
+  final Future<bool> Function()? onSendOTPCode;
+
   /// The callback called when the user presses on the resend button.
   final VoidCallback onResend;
 
@@ -43,6 +46,7 @@ class OcraOtpConfiguration<LayerCubitAction> extends Equatable {
     required this.verifyAction,
     required this.resendAction,
     required this.otpImageWidget,
+    this.onSendOTPCode,
     required this.onResend,
   });
 
@@ -51,6 +55,8 @@ class OcraOtpConfiguration<LayerCubitAction> extends Equatable {
         verifyAction,
         resendAction,
         otpImageWidget,
+        onSendOTPCode,
+        onResend,
       ];
 }
 
@@ -59,8 +65,8 @@ enum SecondFactorInputType {
   /// OTP Code.
   otpCode,
 
-  /// OCRA Challenge.
-  ocraChallenge,
+  /// OCRA client response.
+  ocraClientResponse,
 }
 
 /// Model that represents a value inputed on the second factor screen.
@@ -139,12 +145,21 @@ class SecondFactorScreen<LayerCubit extends Cubit<BaseState>, LayerCubitAction>
     BuildContext context,
   ) {
     switch (secondFactorType) {
-      case SecondFactorType.biometricsOrOTP:
+      case SecondFactorType.ocraOrOTP:
       case SecondFactorType.otp:
         assert(
           secondFactorScreenConfiguration.ocraOtpConfiguration != null,
-          'The second factor type is OTP but the configuration for this '
-          'type is null',
+          'The second factor type is $secondFactorType but the '
+          'ocraOtpConfiguration is null',
+        );
+
+        assert(
+          secondFactorType == SecondFactorType.otp ||
+              secondFactorScreenConfiguration
+                      .ocraOtpConfiguration?.onSendOTPCode !=
+                  null,
+          'The second factor type is $secondFactorType but the callback for '
+          'sendign an OTP code is null',
         );
 
         return LayerOcraOtpScreen<LayerCubit, LayerCubitAction>(
@@ -158,10 +173,10 @@ class SecondFactorScreen<LayerCubit extends Cubit<BaseState>, LayerCubitAction>
             inputType: SecondFactorInputType.otpCode,
             value: code,
           ),
-          onOCRAChallenge: (challenge) => _onValueInputed(
+          onOCRAClientResponse: (clientResponse) => _onValueInputed(
             context,
-            inputType: SecondFactorInputType.ocraChallenge,
-            value: challenge,
+            inputType: SecondFactorInputType.ocraClientResponse,
+            value: clientResponse,
           ),
         );
 
@@ -200,38 +215,32 @@ class SecondFactorScreen<LayerCubit extends Cubit<BaseState>, LayerCubitAction>
     BuildContext context,
     CubitError error,
   ) {
-    switch (error.runtimeType) {
-      case CubitConnectivityError:
-        _showErrorBottomSheet(context, titleKey: 'connectivity_error');
-        break;
+    if (error is CubitConnectivityError) {
+      _showErrorBottomSheet(context, titleKey: 'connectivity_error');
+    } else if (error is CubitAPIError || error is CubitCustomError) {
+      final apiError = error is CubitAPIError
+          ? error as CubitAPIError<LayerCubitAction>
+          : null;
 
-      case CubitAPIError:
-      case CubitCustomError:
-        final apiError = error is CubitAPIError
-            ? error as CubitAPIError<LayerCubitAction>
-            : null;
+      final customError = error is CubitCustomError
+          ? error as CubitCustomError<LayerCubitAction>
+          : null;
 
-        final customError = error is CubitCustomError
-            ? error as CubitCustomError<LayerCubitAction>
-            : null;
+      final code = apiError?.code ?? customError?.code;
+      final message = apiError?.message ?? customError?.message;
 
-        final code = apiError?.code ?? customError?.code;
-        final message = apiError?.message ?? customError?.message;
-
-        if (code != CubitErrorCode.incorrectOTPCode) {
-          _showErrorBottomSheet(
-            context,
-            titleKey: code?.value ?? 'generic_error',
-            descriptionKey: message,
-          );
-        }
-        break;
-
-      default:
-        throw Exception(
-          '$runtimeType | Unhandled CubitError runtimeType: '
-          '${error.runtimeType}',
+      if (code != CubitErrorCode.incorrectOTPCode) {
+        _showErrorBottomSheet(
+          context,
+          titleKey: code?.value ?? 'generic_error',
+          descriptionKey: message,
         );
+      }
+    } else {
+      throw Exception(
+        '$runtimeType | Unhandled CubitError type: '
+        '${error.runtimeType}',
+      );
     }
   }
 
@@ -275,7 +284,7 @@ class LayerOcraOtpScreen<LayerCubit extends Cubit<BaseState>, LayerCubitAction>
 
   /// The callback called when the biometrics are introduced and the
   /// OCRA challenge is obtained.
-  final ValueSetter<String> onOCRAChallenge;
+  final ValueSetter<String> onOCRAClientResponse;
 
   /// Creates a new [LayerOcraOtpScreen].
   LayerOcraOtpScreen({
@@ -285,7 +294,7 @@ class LayerOcraOtpScreen<LayerCubit extends Cubit<BaseState>, LayerCubitAction>
     required this.incorrectValueErrorAction,
     required this.ocraOtpConfiguration,
     required this.onOTPCode,
-    required this.onOCRAChallenge,
+    required this.onOCRAClientResponse,
   })  : errorActions = UnmodifiableSetView(errorActions),
         super(key: key);
 
@@ -344,8 +353,9 @@ class LayerOcraOtpScreen<LayerCubit extends Cubit<BaseState>, LayerCubitAction>
               shouldClearCode: cubitErrors.isNotEmpty,
               onResend: ocraOtpConfiguration.onResend,
               isResending: isResending,
-              showBiometrics:
-                  secondFactorType == SecondFactorType.biometricsOrOTP,
+              showBiometrics: secondFactorType == SecondFactorType.ocraOrOTP,
+              onOCRAClientResponse: onOCRAClientResponse,
+              onSendOTPCode: ocraOtpConfiguration.onSendOTPCode,
             );
           },
         );

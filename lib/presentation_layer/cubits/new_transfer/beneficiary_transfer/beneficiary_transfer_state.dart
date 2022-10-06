@@ -30,6 +30,9 @@ enum BeneficiaryTransferAction {
   /// Transfer being evaluated.
   evaluate,
 
+  /// Sending the OTP code for the transfer.
+  sendOTPCode,
+
   /// Transfer is being submitted.
   submit,
 
@@ -48,14 +51,17 @@ enum BeneficiaryTransferEvent {
   /// Event for showing the confirmation view.
   showConfirmationView,
 
-  /// Event for inputing the OTP code.
-  inputOTPCode,
+  /// Event for opening the second factor.
+  openSecondFactor,
+
+  /// Event for showing the OTP code inputing view.
+  showOTPCodeView,
+
+  /// Event for closing the second factor.
+  closeSecondFactor,
 
   /// Event for showing the transfer result view.
   showResultView,
-
-  /// Event for closing the OTP code.
-  closeOTPView,
 }
 
 /// The available validation error codes.

@@ -17,8 +17,11 @@ extension SecondFactorDTOMapping on SecondFactorTypeDTO {
       case SecondFactorTypeDTO.hardwareToken:
         return SecondFactorType.hardwareToken;
 
-      case SecondFactorTypeDTO.biometricsOrOTP:
-        return SecondFactorType.biometricsOrOTP;
+      case SecondFactorTypeDTO.ocraOrOTP:
+        return SecondFactorType.ocraOrOTP;
+
+      case SecondFactorTypeDTO.ocra:
+        return SecondFactorType.ocra;
 
       default:
         throw MappingException(
@@ -45,8 +48,11 @@ extension SecondFactorMapping on SecondFactorType {
       case SecondFactorType.hardwareToken:
         return SecondFactorTypeDTO.hardwareToken;
 
-      case SecondFactorType.biometricsOrOTP:
-        return SecondFactorTypeDTO.biometricsOrOTP;
+      case SecondFactorType.ocraOrOTP:
+        return SecondFactorTypeDTO.ocraOrOTP;
+
+      case SecondFactorType.ocra:
+        return SecondFactorTypeDTO.ocra;
 
       default:
         throw MappingException(

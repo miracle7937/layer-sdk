@@ -1,7 +1,10 @@
 /// The type of the second factor authorization.
 enum SecondFactorType {
-  /// Biometrics and OTP.
-  biometricsOrOTP,
+  /// OCRA and OTP.
+  ocraOrOTP,
+
+  /// OCRA.
+  ocra,
 
   /// One time sms password.
   otp,

@@ -19,6 +19,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
   final LoadBanksByCountryCodeUseCase _loadBanksByCountryCodeUseCase;
   final ValidateIBANUseCase _validateIBANUseCase;
   final EvaluateTransferUseCase _evaluateTransferUseCase;
+  final SendOTPCodeForTransferUseCase _sendOTPCodeForTransferUseCase;
   final SubmitTransferUseCase _submitTransferUseCase;
   final VerifyTransferSecondFactorUseCase _verifyTransferSecondFactorUseCase;
   final ResendTransferSecondFactorUseCase _resendTransferSecondFactorUseCase;
@@ -42,6 +43,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     required LoadBanksByCountryCodeUseCase loadBanksByCountryCodeUseCase,
     required ValidateIBANUseCase validateIBANUseCase,
     required EvaluateTransferUseCase evaluateTransferUseCase,
+    required SendOTPCodeForTransferUseCase sendOTPCodeForTransferUseCase,
     required SubmitTransferUseCase submitTransferUseCase,
     required VerifyTransferSecondFactorUseCase
         verifyTransferSecondFactorUseCase,
@@ -60,6 +62,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         _loadBanksByCountryCodeUseCase = loadBanksByCountryCodeUseCase,
         _validateIBANUseCase = validateIBANUseCase,
         _evaluateTransferUseCase = evaluateTransferUseCase,
+        _sendOTPCodeForTransferUseCase = sendOTPCodeForTransferUseCase,
         _submitTransferUseCase = submitTransferUseCase,
         _verifyTransferSecondFactorUseCase = verifyTransferSecondFactorUseCase,
         _resendTransferSecondFactorUseCase = resendTransferSecondFactorUseCase,
@@ -733,7 +736,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         events: state.removeEvents(
           {
             BeneficiaryTransferEvent.showResultView,
-            BeneficiaryTransferEvent.inputOTPCode,
+            BeneficiaryTransferEvent.openSecondFactor,
           },
         ),
       ),
@@ -800,7 +803,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
               ),
               transferResult: transferResult,
               events: state.addEvent(
-                BeneficiaryTransferEvent.inputOTPCode,
+                BeneficiaryTransferEvent.openSecondFactor,
               ),
             ),
           );
@@ -826,11 +829,68 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     }
   }
 
+  /// Send the OTP code for the current transfer result.
+  Future<void> sendOTPCode() async {
+    assert(state.transferResult != null);
+
+    emit(
+      state.copyWith(
+        actions: state.addAction(
+          BeneficiaryTransferAction.sendOTPCode,
+        ),
+        errors: state.removeErrorForAction(
+          BeneficiaryTransferAction.sendOTPCode,
+        ),
+        events: state.removeEvent(
+          BeneficiaryTransferEvent.showOTPCodeView,
+        ),
+      ),
+    );
+
+    try {
+      final transferResult = await _sendOTPCodeForTransferUseCase(
+        transferId: state.transferResult?.id ?? 0,
+        editMode: state.editMode,
+      );
+
+      emit(
+        state.copyWith(
+          actions: state.removeAction(
+            BeneficiaryTransferAction.sendOTPCode,
+          ),
+          transferResult: transferResult,
+          events: state.addEvent(
+            BeneficiaryTransferEvent.showOTPCodeView,
+          ),
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          actions: state.removeAction(
+            BeneficiaryTransferAction.sendOTPCode,
+          ),
+          errors: state.addErrorFromException(
+            action: BeneficiaryTransferAction.sendOTPCode,
+            exception: e,
+          ),
+        ),
+      );
+    }
+  }
+
   /// Verifies the second factor for the transfer retrievied on the [submit]
   /// method.
   Future<void> verifySecondFactor({
-    required String otpValue,
+    String? otpCode,
+    String? ocraClientResponse,
   }) async {
+    assert(
+      otpCode != null || ocraClientResponse != null,
+      'An OTP code or OCRA client response must be provided in order for '
+      'verifying the second factor',
+    );
+
     emit(
       state.copyWith(
         actions: state.addAction(
@@ -843,9 +903,9 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     try {
       final transferResult = await _verifyTransferSecondFactorUseCase(
         transferId: state.transferResult?.id ?? 0,
-        otpValue: otpValue,
+        value: otpCode ?? ocraClientResponse ?? '',
         secondFactorType:
-            state.transferResult?.secondFactorType ?? SecondFactorType.otp,
+            otpCode != null ? SecondFactorType.otp : SecondFactorType.ocra,
       );
 
       emit(
@@ -860,7 +920,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         state.copyWith(
           transferResult: transferResult,
           events: state.addEvent(
-            BeneficiaryTransferEvent.closeOTPView,
+            BeneficiaryTransferEvent.closeSecondFactor,
           ),
         ),
       );
