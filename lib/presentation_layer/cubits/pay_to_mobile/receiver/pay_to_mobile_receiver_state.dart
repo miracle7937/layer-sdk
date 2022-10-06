@@ -11,68 +11,17 @@ enum PayToMobileReceiverActions {
 
   /// Is posting the payment
   submit,
-
-  /// Is Verifying second factor
-  verifySecondFactor,
-
-  /// Is resending second factor
-  resendSecondFactor,
 }
 
-/// Available Events emmited by the cubit
-enum PayToMobileReceiverEvents {
-  /// Event for showing a confirmation view
-  showConfirmationView,
-
-  /// Event for inputing the otpCode
-  inputOTPCode,
-
-  /// Event for closing the opt view
-  closeOTPView,
-
+/// The available events that the cubit can emit.
+enum PayToMobileReceiverEvent {
   /// Event for showing a success dialog
   showSuccessDialog,
-
-  /// Show Pin screen
-  showWithdrawalPinScreen,
-
-  /// Show Pin screen
-  showWithdrawalPinScreenWithError,
-
-  /// Show Code screen
-  showWithdrawalCodeScreen,
-
-  /// Show Code screen
-  showWithdrawalCodeScreenWithError,
-}
-
-/// The available validation errors
-enum PayToMobileReceiverErrors {
-  /// The user didn't selected an [Account]
-  noAccountSelectedError,
-
-  /// The withdrawal code is wrong
-  emptyWithdrawalCode,
-
-  /// Withdrawal pin number is wrong
-  emptyWithdrawalPin,
-
-  /// Insufficient funds from the sender
-  noFundsAvailable,
-
-  /// SendMoneyId is null or empty
-  sendMoneyIdNotFilled,
-
-  /// Withdrawal pin is invalid
-  invalidWithdrawalPin,
-
-  /// Withdrawal code is invalid
-  invalidWithdrawalCode,
 }
 
 /// Class that holds the state used in [PayToMobileReceiverCubit]
 class PayToMobileReceiverState extends BaseState<PayToMobileReceiverActions,
-    PayToMobileReceiverEvents, PayToMobileReceiverErrors> {
+    PayToMobileReceiverEvent, void> {
   /// Id of the sendMoney request
   final String sendMoneyId;
 
@@ -101,7 +50,7 @@ class PayToMobileReceiverState extends BaseState<PayToMobileReceiverActions,
   PayToMobileReceiverState({
     super.actions = const <PayToMobileReceiverActions>{},
     super.errors = const <CubitError>{},
-    super.events = const <PayToMobileReceiverEvents>{},
+    super.events = const <PayToMobileReceiverEvent>{},
     Iterable<Account> accounts = const [],
     this.sendMoneyId = '',
     this.accountId = '',
@@ -124,7 +73,7 @@ class PayToMobileReceiverState extends BaseState<PayToMobileReceiverActions,
     Account? selectedAccount,
     Set<PayToMobileReceiverActions>? actions,
     Set<CubitError>? errors,
-    Set<PayToMobileReceiverEvents>? events,
+    Set<PayToMobileReceiverEvent>? events,
   }) {
     return PayToMobileReceiverState(
       sendMoneyId: sendMoneyId ?? this.sendMoneyId,

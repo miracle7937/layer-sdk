@@ -4,11 +4,11 @@ import '../../../models.dart';
 /// Use case for posting a received mobile payment
 class PostReceivedPaymentUseCase {
   /// Repository that handles serve calls
-  final PayToMobileReceiverRepository _repository;
+  final PayToMobileReceiverRepositoryInterface _repository;
 
   /// Creates a new [PostReceivedPaymentUseCase]
   PostReceivedPaymentUseCase({
-    required PayToMobileReceiverRepository repository,
+    required PayToMobileReceiverRepositoryInterface repository,
   }) : _repository = repository;
 
   /// Post the mobile payment

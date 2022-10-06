@@ -30,7 +30,7 @@ class PayToMobileReceiverProvider {
       'withdrawal_pin': withdrawalPin,
     };
     data.addIfNotNull('reason', reason);
-    data.addIfNotNull('beneficiary', beneficiary!.toJson());
+    data.addIfNotNull('beneficiary', beneficiary?.toJson());
 
     final response = await _netClient.request(
       _netClient.netEndpoints.transferV2,

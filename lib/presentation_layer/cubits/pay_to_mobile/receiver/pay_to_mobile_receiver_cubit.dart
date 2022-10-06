@@ -1,9 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../data_layer/helpers/dto_helpers.dart';
 import '../../../../features/accounts.dart';
 import '../../../../features/pay_to_mobile_receiver.dart';
-import '../../base_cubit/base_state.dart';
 
 /// Cubit that handles the receiving of PayToMobile/Cardless payments
 class PayToMobileReceiverCubit extends Cubit<PayToMobileReceiverState> {
@@ -81,26 +79,18 @@ class PayToMobileReceiverCubit extends Cubit<PayToMobileReceiverState> {
   Future<void> postPayment({
     required String fromSendMoneyId,
   }) async {
-    emit(state.copyWith(
-      actions: state.addAction(PayToMobileReceiverActions.submit),
-      errors: {},
-    ));
-
-    final validationErrors = _validatePayment(fromSendMoneyId);
-
-    if (validationErrors.isNotEmpty) {
-      emit(
-        state.copyWith(
-          actions: state.removeAction(PayToMobileReceiverActions.submit),
-          errors: state.addValidationErrors(validationErrors: validationErrors),
+    emit(
+      state.copyWith(
+        actions: state.addAction(PayToMobileReceiverActions.submit),
+        errors: {},
+        events: state.removeEvent(
+          PayToMobileReceiverEvent.showSuccessDialog,
         ),
-      );
-
-      return;
-    }
+      ),
+    );
 
     try {
-      final result = await _postPaymentUseCase(
+      await _postPaymentUseCase(
         fromSendMoneyId: fromSendMoneyId,
         accountId: state.selectedAccount!.accountNumber!,
         withdrawalCode: state.withdrawalCode,
@@ -110,13 +100,11 @@ class PayToMobileReceiverCubit extends Cubit<PayToMobileReceiverState> {
       emit(
         state.copyWith(
           actions: state.removeAction(PayToMobileReceiverActions.submit),
-          events:
-              state.addEvent(PayToMobileReceiverEvents.showConfirmationView),
+          events: state.addEvent(PayToMobileReceiverEvent.showSuccessDialog),
           errors: {},
         ),
       );
     } on Exception catch (e) {
-      // TODO - check error codes for withdrawal code and transfer code
       emit(
         state.copyWith(
           actions: state.removeAction(PayToMobileReceiverActions.submit),
@@ -127,49 +115,5 @@ class PayToMobileReceiverCubit extends Cubit<PayToMobileReceiverState> {
         ),
       );
     }
-  }
-
-  /// Catch all validations
-  Set<CubitValidationError<PayToMobileReceiverErrors>> _validatePayment(
-    String? sendMoneyId,
-  ) {
-    final validationErrors =
-        <CubitValidationError<PayToMobileReceiverErrors>>{};
-
-    if (state.selectedAccount == null) {
-      validationErrors.addError(
-        PayToMobileReceiverErrors.noAccountSelectedError,
-      );
-    }
-
-    if (isEmpty(state.withdrawalPin)) {
-      validationErrors.addError(
-        PayToMobileReceiverErrors.emptyWithdrawalPin,
-      );
-    }
-
-    if (isEmpty(state.withdrawalCode)) {
-      validationErrors.addError(
-        PayToMobileReceiverErrors.emptyWithdrawalCode,
-      );
-    }
-
-    if (isEmpty(sendMoneyId)) {
-      validationErrors.addError(PayToMobileReceiverErrors.sendMoneyIdNotFilled);
-    }
-
-    return validationErrors;
-  }
-}
-
-extension _ValidationHelper
-    on Set<CubitValidationError<PayToMobileReceiverErrors>> {
-  ///Adds a validation error to the set
-  void addError(PayToMobileReceiverErrors error) {
-    add(
-      CubitValidationError(
-        validationErrorCode: error,
-      ),
-    );
   }
 }
