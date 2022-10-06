@@ -3,6 +3,7 @@ library widgets;
 export 'widgets/authentication/auto_lock.dart';
 export 'widgets/bottomsheet/bottomsheet_helper.dart';
 export 'widgets/carousel/carousel_page_view.dart';
+export 'widgets/container/extra_container.dart';
 export 'widgets/container/network_image_container.dart';
 export 'widgets/creators/creator_provider.dart';
 export 'widgets/creators/cubit_creator.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../domain_layer/models.dart';
-import '../../features/home_screen/home_screen.dart';
+import '../../widgets.dart';
 
 /// The widget gets a context and experience container as a parameter
 typedef CardBuilder = Widget Function(BuildContext, ExperienceContainer);
