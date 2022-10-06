@@ -2,27 +2,27 @@ import 'package:flutter/material.dart';
 import '../../../domain_layer/models.dart';
 import '../../features/home_screen/home_screen.dart';
 
-///
+/// The widget gets a context and experience container as a parameter
 typedef CardBuilder = Widget Function(BuildContext, ExperienceContainer);
 
-///
+/// The widget gets a context and extra container as a parameter
 typedef ExtraCardBuilder = Widget Function(BuildContext, ExtraContainer);
 
-///
+/// The Layer Page Builder
 class LayerPageBuilder extends StatelessWidget {
-  ///
+  /// A page configured in the Experience Studio.
   final ExperiencePage page;
 
-  ///
+  /// The container builder for the cards
   final CardBuilder containerBuilder;
 
-  ///
+  /// The extra card builder in addition the other cards
   final ExtraCardBuilder? extraContainerBuilder;
 
-  ///
+  /// The extra container list to put the page with position
   final List<ExtraContainer> extraContainers;
 
-  ///
+  /// Creates a new [LayerPageBuilder]
   const LayerPageBuilder({
     Key? key,
     required this.page,
