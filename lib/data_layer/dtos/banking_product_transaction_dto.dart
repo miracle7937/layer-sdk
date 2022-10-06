@@ -10,7 +10,7 @@ class BankingProductTransactionDTO {
   String? description;
 
   /// Card id
-  String? cardId;
+  int? cardId;
 
   /// Account id
   String? accountId;

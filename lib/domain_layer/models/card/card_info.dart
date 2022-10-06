@@ -11,13 +11,13 @@ class CardInfo extends Equatable {
   final SecondFactorType? secondFactorType;
 
   /// The card pin
-  final String cardPin;
+  final String? cardPin;
 
   /// The card expiry date
-  final String expiryDate;
+  final String? expiryDate;
 
   /// The unmasked card number
-  final String unmaskedCardNumber;
+  final String? unmaskedCardNumber;
 
   /// Creates a new immutable [CardInfo]
   CardInfo({

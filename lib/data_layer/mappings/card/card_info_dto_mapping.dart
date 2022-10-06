@@ -6,9 +6,9 @@ import '../../mappings.dart';
 extension CardInfoDTOMapping on CardInfoDTO {
   /// Maps a [CardInfoDTO] instance to a [CardInfo] model
   CardInfo toCardInfo() => CardInfo(
-        cardPin: cardPin ?? "",
-        expiryDate: expiryDate ?? "",
-        unmaskedCardNumber: unmaskedCardNumber ?? "",
+        cardPin: cardPin,
+        expiryDate: expiryDate,
+        unmaskedCardNumber: unmaskedCardNumber,
         otpId: otpId,
         secondFactorType: secondFactorType?.toSecondFactorType(),
       );
