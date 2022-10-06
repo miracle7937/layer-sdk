@@ -1,6 +1,5 @@
-
-/// Extra container for the widget extra to cards 
-class ExtraContainer {
+/// Extra container for the widget extra to cards
+class ExtraCard {
   /// The index of the page
   final int pageIndex;
 
@@ -11,10 +10,10 @@ class ExtraContainer {
   final bool visible;
 
   /// Widget position in the page
-  final ExtraContainerPosition position;
+  final ExtraCardPosition position;
 
-  /// Creates [ExtraContainer]
-  ExtraContainer({
+  /// Creates [ExtraCard]
+  ExtraCard({
     required this.pageIndex,
     required this.id,
     required this.visible,
@@ -23,7 +22,7 @@ class ExtraContainer {
 }
 
 /// The extra container position where to placed on the page
-enum ExtraContainerPosition {
+enum ExtraCardPosition {
   /// To put the widget to top position
   top,
 
