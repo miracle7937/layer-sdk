@@ -114,13 +114,13 @@ class HomeScreen extends StatefulWidget {
   final ExperiencePageBuilder pageBuilder;
 
   /// The container builder for the cards
-  final CardBuilder cardsBuilder;
+  final ContainerBuilder cardsBuilder;
 
   /// The extra card builder in addition the other cards
-  final ExtraCardBuilder extraCardsBuilder;
+  final ExtraCardBuilder? extraCardsBuilder;
 
   /// The extra container list to put the page with position
-  final List<ExtraContainer> extraContainers;
+  final List<ExtraCard> extraContainers;
 
   /// The [MorePageBuilder] for when the more page get's pressed.
   final MorePageBuilder morePageBuilder;
@@ -144,13 +144,14 @@ class HomeScreen extends StatefulWidget {
     Key? key,
     required this.pageBuilder,
     required this.cardsBuilder,
-    required this.extraCardsBuilder,
     required this.morePageBuilder,
+    this.extraCardsBuilder,
     this.extraContainers = const [],
     this.initialPageCallback,
     required this.fullscreenLoader,
     this.moreMenuItemTitle,
-  }) : super(key: key);
+  })  : assert(extraContainers.length == 0 || extraCardsBuilder != null),
+        super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -190,8 +191,8 @@ class _HomeScreenState extends State<HomeScreen> {
       pageWidget = LayerPageBuilder(
         page: page,
         containerBuilder: widget.cardsBuilder,
-        extraContainerBuilder: widget.extraCardsBuilder,
-        extraContainers: widget.extraContainers,
+        extraCardBuilder: widget.extraCardsBuilder,
+        extraCards: widget.extraContainers,
       );
     }
   }
