@@ -4,7 +4,6 @@ import '../../../domain_layer/models.dart';
 import '../../cubits.dart';
 import '../../extensions.dart';
 import '../../widgets.dart';
-import '../../widgets/custom_builders/layer_page_builder.dart';
 
 /// Custom type created for building an [ExperiencePage].
 ///
