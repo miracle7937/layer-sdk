@@ -3,15 +3,6 @@ import '../../../domain_layer/models.dart';
 import '../../utils.dart';
 import '../base_cubit/base_state.dart';
 
-/// The available error status
-enum LandingTransferErrorCode {
-  /// Generic error
-  generic,
-
-  /// Network error
-  network,
-}
-
 /// Enum for the actions
 enum LandingTransferAction {
   /// Loading frequent transfers
@@ -20,7 +11,7 @@ enum LandingTransferAction {
 
 /// The state for [LandingTransferCubit ]
 class LandingTransferState
-    extends BaseState<LandingTransferAction, void, LandingTransferErrorCode> {
+    extends BaseState<LandingTransferAction, void, void> {
   /// Has all the data needed to handle the list of frequent transfers.
   final Pagination pagination;
 
