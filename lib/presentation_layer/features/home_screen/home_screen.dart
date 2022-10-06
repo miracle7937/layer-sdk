@@ -274,38 +274,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-///
-class ExtraContainer {
-  /// The index of the page
-  final int pageIndex;
-
-  /// The if of the container
-  final String id;
-
-  /// If the container is visible
-  final bool visible;
-
-  /// Widget position in the page
-  final ExtraContainerPosition position;
-
-  /// Creates [ExtraContainer]
-  ExtraContainer({
-    required this.pageIndex,
-    required this.id,
-    required this.visible,
-    required this.position,
-  });
-}
-
-///
-enum ExtraContainerPosition {
-  /// To put the widget to top position
-  top,
-
-  /// To put the widget to center position
-  center,
-
-  /// To put the widget to bottom position
-  bottom,
-}
