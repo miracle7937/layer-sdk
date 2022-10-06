@@ -10,25 +10,13 @@ class CardDashboardCubit extends Cubit<CardDashboardState> {
   final LoadCustomerCardsUseCase _getCustomerCardsUseCase;
   final LoadCustomerCardInfoUseCase _getCustomerCardInfoUseCase;
   final LoadFinancialDataUseCase _getFinancialDataUseCase;
-  // final GenerateOcraChallengeUseCase _generateOcraChallengeUseCase;
-  // final GenerateOcraTimestampUseCase _generateOcraTimestampUseCase;
-  // final ClientOcraChallengeUseCase _clientChallengeOcraUseCase;
-  // final SolveOcraChallengeUseCase _solveOcraChallengeUseCase;
 
   /// Creates a new instance of [CardCubit]
   CardDashboardCubit({
     required LoadCustomerCardsUseCase getCustomerCardsUseCase,
     required LoadCustomerCardInfoUseCase getCustomerCardInfoUseCase,
     required LoadFinancialDataUseCase getFinancialDataUseCase,
-    // required SolveOcraChallengeUseCase solveOcraChallengeUseCase,
-    // required ClientOcraChallengeUseCase clientChallengeOcraUseCase,
-    // required GenerateOcraChallengeUseCase generateOcraChallengeUseCase,
-    // required GenerateOcraTimestampUseCase generateOcraTimestampUseCase,
   })  : _getCustomerCardsUseCase = getCustomerCardsUseCase,
-        // _solveOcraChallengeUseCase = solveOcraChallengeUseCase,
-        // _clientChallengeOcraUseCase = clientChallengeOcraUseCase,
-        // _generateOcraChallengeUseCase = generateOcraChallengeUseCase,
-        // _generateOcraTimestampUseCase = generateOcraTimestampUseCase,
         _getCustomerCardInfoUseCase = getCustomerCardInfoUseCase,
         _getFinancialDataUseCase = getFinancialDataUseCase,
         super(
