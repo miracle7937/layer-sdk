@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../domain_layer/models.dart';
 import '../../../../domain_layer/use_cases.dart';
@@ -134,6 +135,7 @@ class AccountStatementCubit extends Cubit<AccountStatementState> {
         customerId: _customerId,
         fromDate: state.startDate!,
         toDate: state.endDate!,
+        type: FileType.pdf,
       );
 
       emit(
@@ -160,11 +162,15 @@ class AccountStatementCubit extends Cubit<AccountStatementState> {
     }
   }
 
+  String _formattedDate(DateTime? dateTime) =>
+      dateTime == null ? '' : DateFormat('yyyyMMdd').format(dateTime);
+
   /// Share statement.
   void shareStatement() {
     _shareReceiptUseCase(
       filename: 'statement_${state.account?.id}'
-          '${state.startDate}${state.endDate}.pdf',
+          '${_formattedDate(state.startDate)}${_formattedDate(state.endDate)}'
+          '.pdf',
       bytes: state.statementBytes,
     );
   }
