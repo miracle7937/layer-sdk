@@ -10,6 +10,9 @@ enum BankingProductTransactionsErrorCode {
 
   /// filter error
   filterError,
+
+  /// receipt
+  receipt
 }
 
 /// Represents the state of [BankingProductTransactionsCubit]
@@ -44,6 +47,9 @@ class BankingProductTransactionsState extends BaseState<
   ///
   final bool? credit;
 
+  ///
+  final List<int>? receipt;
+
   /// Creates a new instance of [BankingProductTransactionsState]
   BankingProductTransactionsState({
     this.accountId,
@@ -56,6 +62,7 @@ class BankingProductTransactionsState extends BaseState<
     this.amountFrom,
     this.amountTo,
     this.credit,
+    this.receipt,
     this.listData = const BankingProductTransactionsListData(),
   });
 
@@ -70,6 +77,7 @@ class BankingProductTransactionsState extends BaseState<
         amountFrom,
         amountTo,
         credit,
+        receipt,
       ];
 
   /// Creates a new instance of [BankingProductTransactionsState]
@@ -86,6 +94,7 @@ class BankingProductTransactionsState extends BaseState<
     double? amountFrom,
     double? amountTo,
     bool? credit,
+    List<int>? receipt,
   }) {
     return BankingProductTransactionsState(
       transactions: transactions ?? this.transactions,
@@ -99,6 +108,7 @@ class BankingProductTransactionsState extends BaseState<
       amountFrom: amountFrom ?? this.amountFrom,
       amountTo: amountTo ?? this.amountTo,
       credit: credit ?? this.credit,
+      receipt: receipt ?? this.receipt,
     );
   }
 
@@ -116,6 +126,9 @@ enum BankingProductTransactionsAction {
 
   /// Loading More once limit reached
   loadingMore,
+
+  /// Getting the receipt
+  receipt,
 }
 
 /// Keeps all the pagination data for [BankingCard]

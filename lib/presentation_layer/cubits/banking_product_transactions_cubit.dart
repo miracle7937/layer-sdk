@@ -1,8 +1,8 @@
 import 'package:async/async.dart';
 import 'package:bloc/bloc.dart';
-
 import '../../domain_layer/models/banking_product_transaction.dart';
 import '../../domain_layer/use_cases/banking_product_transactions_use_case.dart';
+import '../../domain_layer/use_cases/transaction_receipt_usecase.dart';
 import 'banking_product_transactions_state.dart';
 
 /// Cubit responsible for retrieving the list of
@@ -11,6 +11,7 @@ class BankingProductTransactionsCubit
     extends Cubit<BankingProductTransactionsState> {
   final GetCustomerBankingProductTransactionsUseCase
       _getCustomerBankingProductTransactionsUseCase;
+  final TransactionReceiptUseCase _getReceiptUseCase;
 
   /// Maximum number of transactions to load at a time.
   final int limit;
@@ -21,11 +22,13 @@ class BankingProductTransactionsCubit
   BankingProductTransactionsCubit({
     required GetCustomerBankingProductTransactionsUseCase
         getCustomerBankingProductTransactionsUseCase,
+    required TransactionReceiptUseCase getReceiptUseCase,
     String? accountId,
     String? cardId,
     this.limit = 50,
   })  : _getCustomerBankingProductTransactionsUseCase =
             getCustomerBankingProductTransactionsUseCase,
+        _getReceiptUseCase = getReceiptUseCase,
         assert(((cardId != null) && (accountId == null)) ||
             ((cardId == null) && (accountId != null))),
         super(
@@ -55,6 +58,43 @@ class BankingProductTransactionsCubit
       cardId: state.cardId,
     ));
     load();
+  }
+
+  /// Exports transaction receipt
+  Future<void> getTransactionDetails(
+      BankingProductTransaction transaction) async {
+    emit(
+      state.copyWith(
+        actions: state.addAction(BankingProductTransactionsAction.receipt),
+        errors: state.removeValidationError(
+          BankingProductTransactionsErrorCode.receipt,
+        ),
+      ),
+    );
+    try {
+      final bytes = await _getReceiptUseCase(transaction);
+      emit(
+        state.copyWith(
+          receipt: bytes,
+          actions: state.removeAction(BankingProductTransactionsAction.receipt),
+          errors: state.removeValidationError(
+            BankingProductTransactionsErrorCode.receipt,
+          ),
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          actions: state.removeAction(
+            BankingProductTransactionsAction.receipt,
+          ),
+          errors: state.addErrorFromException(
+            exception: e,
+            action: BankingProductTransactionsAction.receipt,
+          ),
+        ),
+      );
+    }
   }
 
   /// Loads all account completed account transactions of the provided

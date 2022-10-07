@@ -57,7 +57,7 @@ class BankingProductTransactionDTO {
       BankingProductTransactionDTO(
         transactionId: map['txn_id'],
         description: map['bank_desc'],
-        cardId: map['card_id'],
+        cardId: map['card_id'].toString(),
         accountId: map['account_id'],
         currency: map['currency'],
         reference: map['reference'],
