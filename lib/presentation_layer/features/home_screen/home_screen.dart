@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../domain_layer/models.dart';
 import '../../cubits.dart';
 import '../../extensions.dart';
+import '../../utils/translation.dart';
 import '../../widgets.dart';
 
 /// Custom type created for building an [ExperiencePage].
@@ -206,6 +207,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final experience = context.select<ExperienceCubit, Experience?>(
       (cubit) => cubit.state.experience,
     );
+    final translation = Translation.of(context);
 
     return MultiBlocListener(
       listeners: [
@@ -241,7 +243,7 @@ class _HomeScreenState extends State<HomeScreen> {
         appBar: (experience?.pages != null && experience!.pages.isNotEmpty)
             ? experience.pages.first.order == 1
                 ? AppBar(
-                    title: Text("Home"),
+                    title: Text(translation.translate('home')),
                   )
                 : experience.topBarMenu
             : null,
