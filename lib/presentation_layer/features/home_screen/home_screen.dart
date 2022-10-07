@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../domain_layer/models.dart';
 import '../../cubits.dart';
 import '../../extensions.dart';
+import '../../utils/translation.dart';
 import '../../widgets.dart';
 
 /// Custom type created for building an [ExperiencePage].
@@ -54,6 +55,7 @@ typedef ExperiencePageBuilder = Widget Function(
 typedef MorePageBuilder = Widget Function(
   BuildContext context,
   Set<ExperiencePage> pages,
+  ValueSetter<ExperiencePage> onSingleMorePageSelected,
 );
 
 /// A screen that fetches the authenticated experience and builds the
@@ -112,6 +114,15 @@ class HomeScreen extends StatefulWidget {
   /// The [ExperiencePageBuilder] for when the menu [ExperiencePage] changes.
   final ExperiencePageBuilder pageBuilder;
 
+  /// The container builder for the cards
+  final ContainerBuilder cardsBuilder;
+
+  /// The extra card builder in addition the other cards
+  final ExtraCardBuilder? extraCardsBuilder;
+
+  /// The extra container list to put the page with position
+  final List<ExtraCard> extraContainers;
+
   /// The [MorePageBuilder] for when the more page get's pressed.
   final MorePageBuilder morePageBuilder;
 
@@ -133,11 +144,15 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({
     Key? key,
     required this.pageBuilder,
+    required this.cardsBuilder,
     required this.morePageBuilder,
+    this.extraCardsBuilder,
+    this.extraContainers = const [],
     this.initialPageCallback,
     required this.fullscreenLoader,
     this.moreMenuItemTitle,
-  }) : super(key: key);
+  })  : assert(extraContainers.length == 0 || extraCardsBuilder != null),
+        super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -146,7 +161,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   /// The current page widget.
   Widget? _pageWidget;
+
   Widget? get pageWidget => _pageWidget;
+
   set pageWidget(Widget? pageWidget) =>
       setState(() => _pageWidget = pageWidget);
 
@@ -162,6 +179,25 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void _updatePageWidget(ExperiencePage page) {
+    final containers = page.containers;
+    if (containers.isEmpty) {
+      pageWidget = SizedBox.shrink();
+    } else if (containers.length == 1) {
+      pageWidget = widget.pageBuilder(
+        context,
+        page,
+      );
+    } else {
+      pageWidget = LayerPageBuilder(
+        page: page,
+        containerBuilder: widget.cardsBuilder,
+        extraCardBuilder: widget.extraCardsBuilder,
+        extraCards: widget.extraContainers,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final busy = context.select<ExperienceCubit, bool>(
@@ -171,6 +207,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final experience = context.select<ExperienceCubit, Experience?>(
       (cubit) => cubit.state.experience,
     );
+    final translation = Translation.of(context);
 
     return MultiBlocListener(
       listeners: [
@@ -182,10 +219,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ? await widget.initialPageCallback!(state.visiblePages)
                 : state.visiblePages.first;
 
-            pageWidget = widget.pageBuilder(
-              context,
-              _initialPage,
-            );
+            _updatePageWidget(_initialPage);
           },
         ),
         BlocListener<ExperienceCubit, ExperienceState>(
@@ -206,7 +240,13 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
       child: Scaffold(
         drawer: experience?.sideDrawerMenu,
-        appBar: experience?.topBarMenu,
+        appBar: (experience?.pages != null && experience!.pages.isNotEmpty)
+            ? experience.pages.first.order == 1
+                ? AppBar(
+                    title: Text(translation.translate('home')),
+                  )
+                : experience.topBarMenu
+            : null,
         body: Stack(
           children: [
             SizedBox(
@@ -224,10 +264,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       visiblePages:
                           context.watch<ExperienceCubit>().state.visiblePages,
                       moreMenuItemTitle: widget.moreMenuItemTitle,
-                      onSinglePageChanged: (page) =>
-                          pageWidget = widget.pageBuilder(context, page),
-                      onMorePageChanged: (morePages) => pageWidget =
-                          widget.morePageBuilder(context, morePages),
+                      onSinglePageChanged: _updatePageWidget,
+                      onMorePageChanged: (morePages) =>
+                          pageWidget = widget.morePageBuilder(
+                        context,
+                        morePages,
+                        _updatePageWidget,
+                      ),
                     ),
                   ],
                 ],

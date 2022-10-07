@@ -22,6 +22,7 @@ void main() {
             order: 3,
             settings: [],
             messages: {},
+            type: ExperienceContainerType.accounts,
           ),
           ExperienceContainer(
             id: 2,
@@ -32,6 +33,7 @@ void main() {
             order: 1,
             settings: [],
             messages: {},
+            type: ExperienceContainerType.accounts,
           ),
           ExperienceContainer(
             id: 3,
@@ -42,6 +44,7 @@ void main() {
             order: 2,
             settings: [],
             messages: {},
+            type: ExperienceContainerType.accounts,
           ),
         ];
 
