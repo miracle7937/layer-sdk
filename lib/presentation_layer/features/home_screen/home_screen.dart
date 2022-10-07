@@ -170,6 +170,8 @@ class _HomeScreenState extends State<HomeScreen> {
   /// The initial page index.
   late ExperiencePage _initialPage;
 
+  ExperiencePage? _selectedPage;
+
   @override
   void initState() {
     super.initState();
@@ -180,6 +182,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _updatePageWidget(ExperiencePage page) {
+    _selectedPage = page;
     final containers = page.containers;
     if (containers.isEmpty) {
       pageWidget = SizedBox.shrink();
@@ -241,10 +244,8 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
         drawer: experience?.sideDrawerMenu,
         appBar: (experience?.pages != null && experience!.pages.isNotEmpty)
-            ? experience.pages.first.order == 1
-                ? AppBar(
-                    title: Text(translation.translate('home')),
-                  )
+            ? _selectedPage?.order == 1
+                ? AppBar(title: Text(translation.translate('home')))
                 : experience.topBarMenu
             : null,
         body: Stack(
@@ -265,12 +266,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           context.watch<ExperienceCubit>().state.visiblePages,
                       moreMenuItemTitle: widget.moreMenuItemTitle,
                       onSinglePageChanged: _updatePageWidget,
-                      onMorePageChanged: (morePages) =>
-                          pageWidget = widget.morePageBuilder(
-                        context,
-                        morePages,
-                        _updatePageWidget,
-                      ),
+                      onMorePageChanged: (morePages) {
+                        _selectedPage = null;
+                        pageWidget = widget.morePageBuilder(
+                          context,
+                          morePages,
+                          _updatePageWidget,
+                        );
+                      },
                     ),
                   ],
                 ],
