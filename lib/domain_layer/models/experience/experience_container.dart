@@ -18,6 +18,9 @@ class ExperienceContainer extends Equatable {
   /// Name of the container type as defined in the experience sheet.
   final String typeName;
 
+  /// Name of the type for getting the container type enum
+  final ExperienceContainerType type;
+
   /// Title of the container.
   final String title;
 
@@ -40,6 +43,7 @@ class ExperienceContainer extends Equatable {
     required this.name,
     required this.typeCode,
     required this.typeName,
+    required this.type,
     required this.title,
     required this.order,
     required Iterable<ExperienceSetting> settings,
@@ -52,6 +56,7 @@ class ExperienceContainer extends Equatable {
     int? id,
     String? name,
     String? typeCode,
+    ExperienceContainerType? type,
     String? typeName,
     String? title,
     int? order,
@@ -63,6 +68,7 @@ class ExperienceContainer extends Equatable {
         name: name ?? this.name,
         typeCode: typeCode ?? this.typeCode,
         typeName: typeName ?? this.typeName,
+        type: type ?? this.type,
         title: title ?? this.title,
         order: order ?? this.order,
         settings: settings ?? this.settings,
@@ -75,8 +81,124 @@ class ExperienceContainer extends Equatable {
         name,
         typeCode,
         typeName,
+        type,
         title,
         order,
         settings,
       ];
+}
+
+/// The type code of experience container
+enum ExperienceContainerType {
+  /// The activity type
+  activity,
+
+  /// The campaign type
+  campaign,
+
+  /// The appointments type
+  appointments,
+
+  /// The inquiries type
+  inquiries,
+
+  /// The instant transfer type
+
+  instant,
+
+  /// The transfer type
+  transfer,
+
+  /// The bill type
+  bill,
+
+  /// The dpa type
+  dpa,
+
+  /// The settings type
+  settings,
+
+  /// The trade finance type
+  tradeFinance,
+
+  /// The zakat type
+  zakat,
+
+  /// The alerts type
+  alerts,
+
+  /// The forex type
+  forex,
+
+  /// The locate us type
+  locateUs,
+
+  /// The loyalty type
+  loyalty,
+
+  /// The donation type
+  donation,
+
+  /// The accounts type
+  accounts,
+
+  /// The cards type
+  cards,
+
+  /// The finance calculator type
+  financeCalculator,
+
+  /// The pfm type
+  pfm,
+
+  /// The inbox type
+  inbox,
+
+  /// The prayers type
+  prayers,
+
+  /// The contact us type
+  contactUs,
+
+  /// The qr type
+  qr,
+
+  /// The topup type
+  topup,
+
+  /// The upcoming payments type
+  upcomingPayments,
+
+  /// The dashboard type
+  dashboard,
+
+  /// The wallet type
+  wallet,
+
+  /// The link wallet type
+  walletLinking,
+
+  /// The profile type
+  profile,
+
+  /// The vault type
+  vault,
+
+  /// The instant transfer type
+  instantTransfer,
+
+  /// The appointment type
+  appointment,
+
+  /// The payment type
+  payment,
+
+  /// The mastercard type
+  mastercard,
+
+  /// The chat bot type
+  chatbot,
+
+  /// The ar campaign type
+  arCampaigns,
 }

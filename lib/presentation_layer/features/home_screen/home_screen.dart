@@ -238,7 +238,13 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
       child: Scaffold(
         drawer: experience?.sideDrawerMenu,
-        appBar: experience?.topBarMenu,
+        appBar: (experience?.pages != null && experience!.pages.isNotEmpty)
+            ? experience.pages.first.order == 1
+                ? AppBar(
+                    title: Text("Home"),
+                  )
+                : experience.topBarMenu
+            : null,
         body: Stack(
           children: [
             SizedBox(
