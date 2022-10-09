@@ -120,8 +120,10 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
       );
 
       final inboxReportMessage = InboxReportMessage(
+        text: message,
         reportId: state.report?.id ?? 0,
         senderType: InboxReportSenderType.customer,
+        tsCreated: DateTime.now(),
       );
 
       final inboxChatMessage = InboxChatMessage(
@@ -136,8 +138,8 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
           busyAction: InboxConversationBusyAction.postingMessage,
           errorStatus: InboxConversationErrorStatus.none,
           messages: [
-            inboxChatMessage,
             ...state.messages,
+            inboxChatMessage,
           ],
         ),
       );
@@ -157,7 +159,7 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
             ],
           ),
           messages: [
-            ...state.messages,
+            ...(state.messages.sublist(0, state.messages.length - 1)),
             inboxChatMessage.copyWith(
               message: inboxMessage,
               status: InboxChatMessageStatus.uploaded,
@@ -166,10 +168,12 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
         ),
       );
     } on Exception catch (e) {
+      /// TODO - catch if the exception is a failedToSend exception, and add the last item as a failed message
       emit(
         state.copyWith(
           busy: false,
           busyAction: InboxConversationBusyAction.idle,
+          messages: state.messages,
           errorStatus: e is NetException
               ? InboxConversationErrorStatus.network
               : InboxConversationErrorStatus.generic,
@@ -198,7 +202,7 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
 
       /// Removes [InboxFile]s that don't have a base64 value
       /// and has uploading status
-      final _displayFiles = state.uploadedFiles
+      final _displayFiles = state.filesToUpload
           .where(
             (f) =>
                 f.fileBinary != null &&
@@ -208,7 +212,7 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
 
       final message = InboxReportMessage(
         reportId: state.report?.id! ?? 0,
-        text: state.errorMessage,
+        text: state.messageText,
         senderType: InboxReportSenderType.customer,
         files: _displayFiles,
       );
@@ -233,6 +237,7 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
 
       emit(
         state.copyWith(
+          filesToUpload: [],
           messages: [
             chatMessage.copyWith(
               message: sentMessage,

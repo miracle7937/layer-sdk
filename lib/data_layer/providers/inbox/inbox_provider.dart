@@ -58,6 +58,7 @@ class InboxProvider {
   }) async {
     final response = await netClient.request(
       netClient.netEndpoints.reportMessage,
+      method: NetRequestMethods.post,
       data: {
         "report_id": reportId,
         "text": messageText,
@@ -65,7 +66,11 @@ class InboxProvider {
       },
     );
 
-    return InboxReportMessageDTO.fromJson(response.data.first);
+    if (response.data is List) {
+      return InboxReportMessageDTO.fromJson(response.data.first);
+    }
+
+    return InboxReportMessageDTO.fromJson(response.data);
   }
 
   /// Posts a list of
