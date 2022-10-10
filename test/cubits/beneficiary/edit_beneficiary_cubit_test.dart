@@ -10,7 +10,6 @@ class MockEditBeneficiaryUseCase extends Mock
     implements EditBeneficiaryUseCase {}
 
 late Beneficiary _benef;
-late EditBeneficiaryCubit _cubit;
 late MockEditBeneficiaryUseCase _useCase;
 late EditBeneficiaryState _baseState;
 
@@ -45,10 +44,6 @@ void main() {
     );
 
     _useCase = MockEditBeneficiaryUseCase();
-    _cubit = EditBeneficiaryCubit(
-      editBeneficiariesUseCase: _useCase,
-      editingBeneficiary: _benef,
-    );
 
     registerFallbackValue(_benef);
 
@@ -65,7 +60,10 @@ void main() {
   group('Test setters', () {
     blocTest<EditBeneficiaryCubit, EditBeneficiaryState>(
       'Should change beneficiary nickname',
-      build: () => _cubit,
+      build: () => EditBeneficiaryCubit(
+        editBeneficiariesUseCase: _useCase,
+        editingBeneficiary: _benef,
+      ),
       act: (b) => b.onNicknameChange(_newNickName),
       expect: () => [
         EditBeneficiaryState(
@@ -83,7 +81,10 @@ void main() {
     );
     blocTest<EditBeneficiaryCubit, EditBeneficiaryState>(
       'Should change beneficiary address1',
-      build: () => _cubit,
+      build: () => EditBeneficiaryCubit(
+        editBeneficiariesUseCase: _useCase,
+        editingBeneficiary: _benef,
+      ),
       act: (b) => b.onAddress1Change(_onAddress1Change),
       expect: () => [
         EditBeneficiaryState(
@@ -101,7 +102,10 @@ void main() {
     );
     blocTest<EditBeneficiaryCubit, EditBeneficiaryState>(
       'Should change beneficiary address2',
-      build: () => _cubit,
+      build: () => EditBeneficiaryCubit(
+        editBeneficiariesUseCase: _useCase,
+        editingBeneficiary: _benef,
+      ),
       act: (b) => b.onAddress2Change(_onAddress2Change),
       expect: () => [
         EditBeneficiaryState(
@@ -119,7 +123,10 @@ void main() {
     );
     blocTest<EditBeneficiaryCubit, EditBeneficiaryState>(
       'Should change beneficiary address3',
-      build: () => _cubit,
+      build: () => EditBeneficiaryCubit(
+        editBeneficiariesUseCase: _useCase,
+        editingBeneficiary: _benef,
+      ),
       act: (b) => b.onAddress3Change(_onAddress3Change),
       expect: () => [
         EditBeneficiaryState(
@@ -150,7 +157,10 @@ void main() {
 
     blocTest<EditBeneficiaryCubit, EditBeneficiaryState>(
       'should load with empty state',
-      build: () => _cubit,
+      build: () => EditBeneficiaryCubit(
+        editBeneficiariesUseCase: _useCase,
+        editingBeneficiary: _benef,
+      ),
       verify: (c) => expect(
         c.state,
         EditBeneficiaryState(
@@ -165,7 +175,10 @@ void main() {
       seed: () => _baseState.copyWith(
         beneficiary: _benef,
       ),
-      build: () => _cubit,
+      build: () => EditBeneficiaryCubit(
+        editBeneficiariesUseCase: _useCase,
+        editingBeneficiary: _benef,
+      ),
       act: (c) => c.onEdit(),
       expect: () => [
         _baseState.copyWith(
@@ -224,7 +237,10 @@ void main() {
       seed: () => _baseState.copyWith(
         beneficiary: _benef,
       ),
-      build: () => _cubit,
+      build: () => EditBeneficiaryCubit(
+        editBeneficiariesUseCase: _useCase,
+        editingBeneficiary: _benef,
+      ),
       act: (c) => c.onEdit(),
       expect: () => [
         _baseState.copyWith(
@@ -290,7 +306,10 @@ void main() {
       seed: () => _baseState.copyWith(
         beneficiary: _benef,
       ),
-      build: () => _cubit,
+      build: () => EditBeneficiaryCubit(
+        editBeneficiariesUseCase: _useCase,
+        editingBeneficiary: _benef,
+      ),
       act: (c) => c.onEdit(),
       expect: () => [
         _baseState.copyWith(
