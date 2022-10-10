@@ -36,7 +36,6 @@ dependencies:
   cached_network_image: ^3.1.0
   collection: ^1.15.0
   country_pickers: ^2.0.0
-
   device_info: ^2.0.2
   dio: ^4.0.4
   equatable: ^2.0.2
