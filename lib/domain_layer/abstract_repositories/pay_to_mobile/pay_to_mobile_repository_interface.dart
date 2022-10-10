@@ -6,4 +6,21 @@ abstract class PayToMobileRepositoryInterface {
   Future<PayToMobile> submit({
     required NewPayToMobile newPayToMobile,
   });
+
+  /// Sends the OTP code for the provided pay to mobile request ID.
+  Future<PayToMobile> sendOTPCode({
+    required String requestId,
+  });
+
+  /// Verifies the second factor for the passed pay to mobile request ID.
+  Future<PayToMobile> verifySecondFactor({
+    required String requestId,
+    required String value,
+    required SecondFactorType secondFactorType,
+  });
+
+  /// Resends the second factor for the passed pay to mobile ID.
+  Future<PayToMobile> resendSecondFactor({
+    required NewPayToMobile newPayToMobile,
+  });
 }

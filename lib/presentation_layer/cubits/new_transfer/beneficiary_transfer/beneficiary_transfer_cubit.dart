@@ -994,7 +994,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     }
   }
 
-  /// Creates the shortcut (if enabled) once the transfer has succeded.
+  /// Creates the shortcut (if enabled).
   Future<void> _createShortcut() async {
     emit(
       state.copyWith(

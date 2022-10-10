@@ -23,4 +23,44 @@ class PayToMobileRepository implements PayToMobileRepositoryInterface {
 
     return payToMobileDTO.toPayToMobile();
   }
+
+  /// Sends the OTP code for the provided pay to mobile request ID.
+  @override
+  Future<PayToMobile> sendOTPCode({
+    required String requestId,
+  }) async {
+    final payToMobileDTO = await _provider.sendOTPCode(
+      requestId: requestId,
+    );
+
+    return payToMobileDTO.toPayToMobile();
+  }
+
+  /// Verifies the second factor for the passed pay to mobile request ID.
+  @override
+  Future<PayToMobile> verifySecondFactor({
+    required String requestId,
+    required String value,
+    required SecondFactorType secondFactorType,
+  }) async {
+    final payToMobileDTO = await _provider.verifySecondFactor(
+      requestId: requestId,
+      value: value,
+      secondFactorTypeDTO: secondFactorType.toSecondFactorTypeDTO(),
+    );
+
+    return payToMobileDTO.toPayToMobile();
+  }
+
+  /// Resends the second factor for the passed pay to mobile ID.
+  @override
+  Future<PayToMobile> resendSecondFactor({
+    required NewPayToMobile newPayToMobile,
+  }) async {
+    final payToMobileDTO = await _provider.resendSecondFactor(
+      newPayToMobileDTO: newPayToMobile.toDTO(),
+    );
+
+    return payToMobileDTO.toPayToMobile();
+  }
 }

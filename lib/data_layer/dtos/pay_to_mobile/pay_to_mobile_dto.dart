@@ -93,4 +93,26 @@ class PayToMobileDTO {
         created: JsonParser.parseDate(json['ts_created']),
         updated: JsonParser.parseDate(json['ts_updated']),
       );
+
+  /// Returns a json map with the provided values.
+  Map<String, dynamic> toJson() {
+    return {
+      if (requestId != null) 'request_id': requestId,
+      if (customerId != null) 'customer_id': customerId,
+      if (account != null) 'from_account_details': account?.toJson(),
+      if (toCustomer != null) 'to_customer': toCustomer,
+      if (toMobile != null) 'to_mobile': toMobile,
+      if (requestTypeDTO != null) 'request_type': requestTypeDTO?.value,
+      if (amount != null) 'amount': amount,
+      if (currencyCode != null) 'currency': currencyCode,
+      if (statusDTO != null) 'status': statusDTO?.value,
+      if (withdrawalCode != null) 'withdrawal_code': withdrawalCode,
+      if (transactionCode != null) 'withdrawal_pin': transactionCode,
+      if (secondFactorTypeDTO != null)
+        'second_factor': secondFactorTypeDTO?.value,
+      if (expiry != null) 'ts_expiry': expiry?.millisecondsSinceEpoch,
+      if (created != null) 'ts_created': created?.millisecondsSinceEpoch,
+      if (updated != null) 'ts_updated': updated?.millisecondsSinceEpoch,
+    };
+  }
 }

@@ -4,6 +4,9 @@ import '../../models.dart';
 
 /// Model representing a pay to mobile element.
 class PayToMobile extends Equatable {
+  /// The request id.
+  final String? requestId;
+
   /// Source account.
   final Account? account;
 
@@ -36,6 +39,7 @@ class PayToMobile extends Equatable {
 
   /// Creates a new [PayToMobile].
   PayToMobile({
+    this.requestId,
     this.account,
     this.toMobile,
     this.requestType,
@@ -50,6 +54,7 @@ class PayToMobile extends Equatable {
 
   @override
   List<Object?> get props => [
+        requestId,
         account,
         toMobile,
         requestType,
