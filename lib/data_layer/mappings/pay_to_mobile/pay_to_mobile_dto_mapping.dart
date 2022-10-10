@@ -32,7 +32,7 @@ extension PayToMobileRequestTypeDTOExtension on PayToMobileRequestTypeDTO {
         return PayToMobileRequestType.atmCash;
 
       case PayToMobileRequestTypeDTO.accountTransfer:
-        return PayToMobileRequestType.selfCash;
+        return PayToMobileRequestType.accountTransfer;
 
       case PayToMobileRequestTypeDTO.unknown:
         throw MappingException(
