@@ -58,6 +58,22 @@ typedef MorePageBuilder = Widget Function(
   ValueSetter<ExperiencePage> onSingleMorePageSelected,
 );
 
+/// Custom type created for building the app bar for the currently selected page
+///
+/// This example uses the [HomeScreen.appBarBuilder] parameter:
+///
+/// ```dart
+/// HomeScreen(
+///   appBarBuilder: (context, page) => AppBar(
+///     title: Text(page.title),
+///   ),
+/// );
+/// ```
+typedef AppBarBuilder = PreferredSizeWidget Function(
+  BuildContext context,
+  ExperiencePage currenctPage,
+);
+
 /// A screen that fetches the authenticated experience and builds the
 /// corresponding menu and their available pages with the result.
 ///
@@ -92,6 +108,7 @@ typedef MorePageBuilder = Widget Function(
 ///
 /// {@tool snippet}
 /// ```dart
+/// TODO: Update docs
 /// HomeScreen(
 ///   pageBuilder: (experiencePage, context) {
 ///     /// Check which view corresponds to the experience page.
@@ -126,6 +143,9 @@ class HomeScreen extends StatefulWidget {
   /// The [MorePageBuilder] for when the more page get's pressed.
   final MorePageBuilder morePageBuilder;
 
+  /// The [AppBarBuilder] for building the app bar of the selected page.
+  final AppBarBuilder? appBarBuilder;
+
   /// A [Future] method for deciding the initial page based on the
   /// retrieved [ExperiencePage] list.
   ///
@@ -146,6 +166,7 @@ class HomeScreen extends StatefulWidget {
     required this.pageBuilder,
     required this.cardsBuilder,
     required this.morePageBuilder,
+    this.appBarBuilder,
     this.extraCardsBuilder,
     this.extraContainers = const [],
     this.initialPageCallback,
@@ -243,9 +264,10 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
       child: Scaffold(
         drawer: experience?.sideDrawerMenu,
+        // TODO: appbar builder
         appBar: (experience?.pages != null && experience!.pages.isNotEmpty)
-            ? _selectedPage?.order == 1
-                ? AppBar(title: Text(translation.translate('home')))
+            ? (widget.appBarBuilder != null && _selectedPage != null)
+                ? widget.appBarBuilder!(context, _selectedPage!)
                 : experience.topBarMenu
             : null,
         body: Stack(
