@@ -65,23 +65,23 @@ class BankingProductTransactionsCubit
       BankingProductTransaction transaction) async {
     emit(
       state.copyWith(
+        currentTransaction: transaction,
+        receipt: [],
         actions: state.addAction(BankingProductTransactionsAction.receipt),
-        errors: state.removeValidationError(
-          BankingProductTransactionsErrorCode.receipt,
+        errors: state.removeErrorForAction(
+          BankingProductTransactionsAction.receipt,
         ),
       ),
     );
     try {
       final bytes = await _getReceiptUseCase(transaction);
-      emit(
-        state.copyWith(
-          receipt: bytes,
-          actions: state.removeAction(BankingProductTransactionsAction.receipt),
-          errors: state.removeValidationError(
-            BankingProductTransactionsErrorCode.receipt,
-          ),
+      emit(state.copyWith(
+        receipt: bytes,
+        currentTransaction: null,
+        actions: state.removeAction(
+          BankingProductTransactionsAction.receipt,
         ),
-      );
+      ));
     } on Exception catch (e) {
       emit(
         state.copyWith(
@@ -126,10 +126,10 @@ class BankingProductTransactionsCubit
             : (changeDate
                 ? BankingProductTransactionsAction.filtering
                 : BankingProductTransactionsAction.loadInitialTransactions)),
-        errors: state.removeValidationError(
+        errors: state.removeErrorForAction(
           changeDate
-              ? BankingProductTransactionsErrorCode.filterError
-              : BankingProductTransactionsErrorCode.loadError,
+              ? BankingProductTransactionsAction.filtering
+              : BankingProductTransactionsAction.loadInitialTransactions,
         ),
       ),
     );
@@ -163,6 +163,7 @@ class BankingProductTransactionsCubit
               ...transactions
             ]
           : transactions;
+
       emit(
         state.copyWith(
           transactions: list,
@@ -173,10 +174,10 @@ class BankingProductTransactionsCubit
                     ? BankingProductTransactionsAction.filtering
                     : BankingProductTransactionsAction.loadInitialTransactions,
           ),
-          errors: state.removeValidationError(
+          errors: state.removeErrorForAction(
             changeDate
-                ? BankingProductTransactionsErrorCode.filterError
-                : BankingProductTransactionsErrorCode.loadError,
+                ? BankingProductTransactionsAction.filtering
+                : BankingProductTransactionsAction.loadInitialTransactions,
           ),
           listData: state.listData.copyWith(
             canLoadMore: transactions.length >= limit,
@@ -184,7 +185,7 @@ class BankingProductTransactionsCubit
           ),
         ),
       );
-    } on Exception {
+    } on Exception catch (e) {
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -192,10 +193,11 @@ class BankingProductTransactionsCubit
                 ? BankingProductTransactionsAction.filtering
                 : BankingProductTransactionsAction.loadInitialTransactions,
           ),
-          errors: state.addValidationError(
-            validationErrorCode: changeDate
-                ? BankingProductTransactionsErrorCode.filterError
-                : BankingProductTransactionsErrorCode.loadError,
+          errors: state.addErrorFromException(
+            exception: e,
+            action: changeDate
+                ? BankingProductTransactionsAction.filtering
+                : BankingProductTransactionsAction.loadInitialTransactions,
           ),
         ),
       );

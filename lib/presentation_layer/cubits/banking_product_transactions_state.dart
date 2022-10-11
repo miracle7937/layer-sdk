@@ -3,23 +3,9 @@ import 'package:equatable/equatable.dart';
 import '../../../domain_layer/models.dart';
 import 'base_cubit/base_state.dart';
 
-/// enum for error codes
-enum BankingProductTransactionsErrorCode {
-  /// loading error
-  loadError,
-
-  /// filter error
-  filterError,
-
-  /// receipt
-  receipt
-}
-
 /// Represents the state of [BankingProductTransactionsCubit]
-class BankingProductTransactionsState extends BaseState<
-    BankingProductTransactionsAction,
-    void,
-    BankingProductTransactionsErrorCode> {
+class BankingProductTransactionsState
+    extends BaseState<BankingProductTransactionsAction, void, void> {
   /// List of [BankingProductTransactions] of the customer [BankingProduct]
   final List<BankingProductTransaction>? transactions;
 
@@ -32,23 +18,26 @@ class BankingProductTransactionsState extends BaseState<
   /// Has all the data needed to handle the list of [BankingCard].
   final BankingProductTransactionsListData listData;
 
-  ///
+  /// Start date filter
   final DateTime? startDate;
 
-  ///
+  /// End date filter
   final DateTime? endDate;
 
-  ///
+  /// Amount from filter
   final double? amountFrom;
 
-  ///
+  /// Amount to filter
   final double? amountTo;
 
-  ///
+  /// Credit and debit filter
   final bool? credit;
 
-  ///
+  /// Receipt of the transaction
   final List<int>? receipt;
+
+  /// For the receipt loading
+  final BankingProductTransaction? currentTransaction;
 
   /// Creates a new instance of [BankingProductTransactionsState]
   BankingProductTransactionsState({
@@ -63,6 +52,7 @@ class BankingProductTransactionsState extends BaseState<
     this.amountTo,
     this.credit,
     this.receipt,
+    this.currentTransaction,
     this.listData = const BankingProductTransactionsListData(),
   });
 
@@ -78,6 +68,7 @@ class BankingProductTransactionsState extends BaseState<
         amountTo,
         credit,
         receipt,
+        currentTransaction,
       ];
 
   /// Creates a new instance of [BankingProductTransactionsState]
@@ -95,6 +86,7 @@ class BankingProductTransactionsState extends BaseState<
     double? amountTo,
     bool? credit,
     List<int>? receipt,
+    BankingProductTransaction? currentTransaction,
   }) {
     return BankingProductTransactionsState(
       transactions: transactions ?? this.transactions,
@@ -109,6 +101,7 @@ class BankingProductTransactionsState extends BaseState<
       amountTo: amountTo ?? this.amountTo,
       credit: credit ?? this.credit,
       receipt: receipt ?? this.receipt,
+      currentTransaction: currentTransaction ?? this.currentTransaction,
     );
   }
 
