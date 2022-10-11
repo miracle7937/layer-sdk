@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../domain_layer/models.dart';
 import '../../cubits.dart';
 import '../../extensions.dart';
+import '../../utils/translation.dart';
 import '../../widgets.dart';
 
 /// Custom type created for building an [ExperiencePage].
@@ -54,6 +55,23 @@ typedef ExperiencePageBuilder = Widget Function(
 typedef MorePageBuilder = Widget Function(
   BuildContext context,
   Set<ExperiencePage> pages,
+  ValueSetter<ExperiencePage> onSingleMorePageSelected,
+);
+
+/// Custom type created for building the app bar for the currently selected page
+///
+/// This example uses the [HomeScreen.appBarBuilder] parameter:
+///
+/// ```dart
+/// HomeScreen(
+///   appBarBuilder: (context, page) => AppBar(
+///     title: Text(page.title),
+///   ),
+/// );
+/// ```
+typedef AppBarBuilder = PreferredSizeWidget Function(
+  BuildContext context,
+  ExperiencePage currenctPage,
 );
 
 /// A screen that fetches the authenticated experience and builds the
@@ -90,6 +108,7 @@ typedef MorePageBuilder = Widget Function(
 ///
 /// {@tool snippet}
 /// ```dart
+/// TODO: Update docs
 /// HomeScreen(
 ///   pageBuilder: (experiencePage, context) {
 ///     /// Check which view corresponds to the experience page.
@@ -112,8 +131,20 @@ class HomeScreen extends StatefulWidget {
   /// The [ExperiencePageBuilder] for when the menu [ExperiencePage] changes.
   final ExperiencePageBuilder pageBuilder;
 
+  /// The container builder for the cards
+  final ContainerBuilder cardsBuilder;
+
+  /// The extra card builder in addition the other cards
+  final ExtraCardBuilder? extraCardsBuilder;
+
+  /// The extra container list to put the page with position
+  final List<ExtraCard> extraContainers;
+
   /// The [MorePageBuilder] for when the more page get's pressed.
   final MorePageBuilder morePageBuilder;
+
+  /// The [AppBarBuilder] for building the app bar of the selected page.
+  final AppBarBuilder? appBarBuilder;
 
   /// A [Future] method for deciding the initial page based on the
   /// retrieved [ExperiencePage] list.
@@ -133,11 +164,16 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({
     Key? key,
     required this.pageBuilder,
+    required this.cardsBuilder,
     required this.morePageBuilder,
+    this.appBarBuilder,
+    this.extraCardsBuilder,
+    this.extraContainers = const [],
     this.initialPageCallback,
     required this.fullscreenLoader,
     this.moreMenuItemTitle,
-  }) : super(key: key);
+  })  : assert(extraContainers.length == 0 || extraCardsBuilder != null),
+        super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -146,12 +182,16 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   /// The current page widget.
   Widget? _pageWidget;
+
   Widget? get pageWidget => _pageWidget;
+
   set pageWidget(Widget? pageWidget) =>
       setState(() => _pageWidget = pageWidget);
 
   /// The initial page index.
   late ExperiencePage _initialPage;
+
+  ExperiencePage? _selectedPage;
 
   @override
   void initState() {
@@ -160,6 +200,26 @@ class _HomeScreenState extends State<HomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => context.read<ExperienceCubit>().load(public: false),
     );
+  }
+
+  void _updatePageWidget(ExperiencePage page) {
+    _selectedPage = page;
+    final containers = page.containers;
+    if (containers.isEmpty) {
+      pageWidget = SizedBox.shrink();
+    } else if (containers.length == 1) {
+      pageWidget = widget.pageBuilder(
+        context,
+        page,
+      );
+    } else {
+      pageWidget = LayerPageBuilder(
+        page: page,
+        containerBuilder: widget.cardsBuilder,
+        extraCardBuilder: widget.extraCardsBuilder,
+        extraCards: widget.extraContainers,
+      );
+    }
   }
 
   @override
@@ -182,10 +242,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ? await widget.initialPageCallback!(state.visiblePages)
                 : state.visiblePages.first;
 
-            pageWidget = widget.pageBuilder(
-              context,
-              _initialPage,
-            );
+            _updatePageWidget(_initialPage);
           },
         ),
         BlocListener<ExperienceCubit, ExperienceState>(
@@ -206,7 +263,12 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
       child: Scaffold(
         drawer: experience?.sideDrawerMenu,
-        appBar: experience?.topBarMenu,
+        // TODO: appbar builder
+        appBar: (experience?.pages != null && experience!.pages.isNotEmpty)
+            ? (widget.appBarBuilder != null && _selectedPage != null)
+                ? widget.appBarBuilder!(context, _selectedPage!)
+                : experience.topBarMenu
+            : null,
         body: Stack(
           children: [
             SizedBox(
@@ -224,10 +286,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       visiblePages:
                           context.watch<ExperienceCubit>().state.visiblePages,
                       moreMenuItemTitle: widget.moreMenuItemTitle,
-                      onSinglePageChanged: (page) =>
-                          pageWidget = widget.pageBuilder(context, page),
-                      onMorePageChanged: (morePages) => pageWidget =
-                          widget.morePageBuilder(context, morePages),
+                      onSinglePageChanged: _updatePageWidget,
+                      onMorePageChanged: (morePages) {
+                        _selectedPage = null;
+                        pageWidget = widget.morePageBuilder(
+                          context,
+                          morePages,
+                          _updatePageWidget,
+                        );
+                      },
                     ),
                   ],
                 ],
