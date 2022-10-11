@@ -17,7 +17,7 @@ abstract class InboxRepositoryInterface {
   /// and a list of [InboxFile]s containing files to be sent to the server
   Future<InboxReportMessage> postNewMessage(
     Map<String, Object> body,
-    List<MultipartFile> files,
+    List<InboxFile> files,
   );
 
   /// Send a new report chat message

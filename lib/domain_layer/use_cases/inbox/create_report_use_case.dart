@@ -25,7 +25,6 @@ class CreateReportUseCase {
       }
     };
 
-    final _files = files.map((file) => file.toMultipartFile()).toList();
-    return _repository.postNewMessage(body, _files);
+    return _repository.postNewMessage(body, files);
   }
 }

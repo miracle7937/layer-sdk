@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
+
 import '../../abstract_repositories.dart';
 import '../../models.dart';
 
@@ -17,7 +19,7 @@ class PostInboxFilesUseCase {
     required int reportId,
     required List<InboxFile> files,
     required String messageText,
-  }) {
+  }) async {
     final requestBody = {
       "report_id": reportId,
       "text": messageText,
@@ -25,7 +27,14 @@ class PostInboxFilesUseCase {
 
     return _repository.postInboxFileList(
       body: requestBody,
-      files: files.map((f) => f.toMultipartFile()).toList(),
+      files: [
+        for (final f in files)
+          MultipartFile.fromFileSync(f.name, filename: f.name)
+        // await MultipartFile.fromBytes(
+        //   f.fileBinary!,
+        //   filename: f.name,
+        // ),
+      ],
     );
   }
 }

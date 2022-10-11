@@ -35,9 +35,15 @@ class InboxRepository implements InboxRepositoryInterface {
   @override
   Future<InboxReportMessage> postNewMessage(
     Map<String, Object> body,
-    List<MultipartFile> files,
+    List<InboxFile> files,
   ) async {
-    final result = await _provider.postMessage(body, files);
+    final result = await _provider.postMessage(body, [
+      for (final f in files)
+        await MultipartFile.fromBytes(
+          f.fileBinary!,
+          filename: f.name,
+        ),
+    ]);
     return result.toInboxReportMessage();
   }
 

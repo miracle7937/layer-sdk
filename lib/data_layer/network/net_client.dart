@@ -409,26 +409,29 @@ class NetClient {
     final effectiveLanguage =
         addLanguage ? (language ?? defaultLanguage) : null;
 
+    // final formData = FormData.fromMap({
+    //   ...fields,
+    //   'files': files.asMap().map(
+    //     (key, value) {
+    //       return MapEntry("$key", "${value.filename} - ${value.length} bytes");
+    //     },
+    //   ),
+    // });
+    fields.forEach((key, value) => fields[key] = jsonEncode(value));
+
     final formData = FormData.fromMap({
-      'files': files.asMap().map(
-        (key, value) {
-          return MapEntry(key, "${value.filename} - ${value.length} bytes");
-        },
-      )
+      ...fields,
+      'files': files,
     });
 
     for (var f in files) {
       formData.files.add(MapEntry<String, MultipartFile>(f.filename ?? '', f));
     }
 
-    fields.forEach((key, value) => fields[key] = jsonEncode(value));
     try {
       final response = await client.request(
         effectivePath,
-        data: {
-          ...fields,
-          'files': formData,
-        },
+        data: formData,
         queryParameters: {
           if (queryParameters != null) ...queryParameters,
           if (effectiveLanguage != null) 'language': effectiveLanguage,
@@ -445,7 +448,7 @@ class NetClient {
           cachePrimaryKey: cachePrimaryKey,
           cacheSubKey: cacheSubKey,
           responseType: responseType,
-          contentType: ContentType.parse('multipart/form-data'),
+          // contentType: ContentType.parse('multipart/form-data; boundary--asas--'),
         ),
       );
 

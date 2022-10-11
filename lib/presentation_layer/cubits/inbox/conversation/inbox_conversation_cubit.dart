@@ -26,7 +26,10 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
     emit(
       state.copyWith(
         filesToUpload: [
-          file.copyWith(fileCount: state.filesToUpload.length + 1),
+          file.copyWith(
+            fileCount: state.filesToUpload.length + 1,
+            status: InboxChatMessageStatus.uploading,
+          ),
           ...state.filesToUpload
         ],
       ),
@@ -189,7 +192,7 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
   Future<void> uploadInboxFiles() async {
     try {
       if (state.filesToUpload.isEmpty) {
-        throw Exception('Files to upload list is empty');
+        return;
       }
 
       emit(
@@ -201,7 +204,7 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
       );
 
       /// Removes [InboxFile]s that don't have a base64 value
-      /// and has uploading status
+      /// and has uploaded status
       final _displayFiles = state.filesToUpload
           .where(
             (f) =>
@@ -239,15 +242,17 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
         state.copyWith(
           filesToUpload: [],
           messages: [
+            ...state.messages,
             chatMessage.copyWith(
+              // message: message,
               message: sentMessage,
               status: InboxChatMessageStatus.uploaded,
             ),
-            ...state.messages,
           ],
           report: state.report?.copyWith(
             messages: [
               ...state.report!.messages,
+              // message,
               sentMessage,
             ],
           ),
