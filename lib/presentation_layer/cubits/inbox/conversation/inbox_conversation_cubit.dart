@@ -22,7 +22,7 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
         super(InboxConversationState());
 
   /// Include a [InboxFile]
-  Future<void> addInboxFile(InboxFile file) async {
+  void addInboxFile(InboxFile file) {
     emit(
       state.copyWith(
         filesToUpload: [
@@ -37,7 +37,7 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
   }
 
   /// Remove the [InboxFile]
-  Future<void> removeInboxFile(InboxFile file) async {
+  void removeInboxFile(InboxFile file) {
     emit(
       state.copyWith(
         filesToUpload: [...state.filesToUpload]..removeWhere((f) => f == file),
@@ -53,7 +53,7 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
   }
 
   /// Loads the categories
-  Future<void> load({
+  void load({
     required InboxReport report,
   }) async {
     try {
@@ -109,7 +109,7 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
   }
 
   /// Posts a new inbox chat message
-  Future<void> sendMessage({
+  void sendMessage({
     required String message,
     String? fileURL,
   }) async {
@@ -189,7 +189,7 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
   }
 
   /// Upload a list of [InboxFiles]
-  Future<void> uploadInboxFiles() async {
+  void uploadInboxFiles() async {
     try {
       if (state.filesToUpload.isEmpty) {
         return;

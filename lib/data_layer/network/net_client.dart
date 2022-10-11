@@ -415,23 +415,17 @@ class NetClient {
     final effectiveLanguage =
         addLanguage ? (language ?? defaultLanguage) : null;
 
-    // final formData = FormData.fromMap({
-    //   ...fields,
-    //   'files': files.asMap().map(
-    //     (key, value) {
-    //       return MapEntry("$key", "${value.filename} - ${value.length} bytes");
-    //     },
-    //   ),
-    // });
     fields.forEach((key, value) => fields[key] = jsonEncode(value));
 
-    final formData = FormData.fromMap({
-      ...fields,
-      'files': files,
-    });
+    final formData = FormData.fromMap(fields);
 
     for (var f in files) {
-      formData.files.add(MapEntry<String, MultipartFile>(f.filename ?? '', f));
+      formData.files.add(
+        MapEntry<String, MultipartFile>(
+          'message_attachment',
+          f,
+        ),
+      );
     }
 
     try {
@@ -454,7 +448,7 @@ class NetClient {
           cachePrimaryKey: cachePrimaryKey,
           cacheSubKey: cacheSubKey,
           responseType: responseType,
-          // contentType: ContentType.parse('multipart/form-data; boundary--asas--'),
+          contentType: ContentType.parse('multipart/form-data;'),
         ),
       );
 

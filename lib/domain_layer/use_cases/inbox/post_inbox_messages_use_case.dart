@@ -29,11 +29,10 @@ class PostInboxFilesUseCase {
       body: requestBody,
       files: [
         for (final f in files)
-          MultipartFile.fromFileSync(f.name, filename: f.name)
-        // await MultipartFile.fromBytes(
-        //   f.fileBinary!,
-        //   filename: f.name,
-        // ),
+          await MultipartFile.fromBytes(
+            f.fileBinary!,
+            filename: f.name,
+          ),
       ],
     );
   }
