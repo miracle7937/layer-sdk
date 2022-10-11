@@ -47,6 +47,7 @@ class AccountBalanceCubit extends Cubit<AccountBalanceState> {
     try {
       emit(
         state.copyWith(
+          accountId: accountId,
           startDate: startDate,
           endDate: endDate,
           actions: state.addAction(loadMore
