@@ -231,7 +231,6 @@ class _HomeScreenState extends State<HomeScreen> {
     final experience = context.select<ExperienceCubit, Experience?>(
       (cubit) => cubit.state.experience,
     );
-    final translation = Translation.of(context);
 
     return MultiBlocListener(
       listeners: [
