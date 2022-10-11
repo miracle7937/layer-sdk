@@ -15,6 +15,10 @@ class InboxProvider {
   });
 
   /// Returns a list of all [InboxReportDTO]
+  ///
+  /// [searchQuery] Filter the results based on a search query
+  /// [limit] The total number of reports to fetch (Used for pagination)
+  /// [offset] The number of reports to skip (Used for pagination)
   Future<List<InboxReportDTO>> listAllReports({
     String? searchQuery,
     int? limit,
@@ -91,8 +95,12 @@ class InboxProvider {
     return InboxReportMessageDTO.fromJson(response.data);
   }
 
-  /// Create a new report
-  Future<InboxReportDTO> createReport(String categoryId) async {
+  /// Create a new inbox report
+  ///
+  /// [categoryId] The category id for the new report
+  Future<InboxReportDTO> createReport(
+    String categoryId,
+  ) async {
     final result = await netClient.request(
       netClient.netEndpoints.report,
       method: NetRequestMethods.post,

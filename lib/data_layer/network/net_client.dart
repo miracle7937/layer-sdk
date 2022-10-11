@@ -318,10 +318,16 @@ class NetClient {
         }
       }
 
-      exception ??= NetException(
-        details: e.message,
-        statusCode: e.response?.statusCode,
-      );
+      exception ??= {
+        DioErrorType.connectTimeout,
+        DioErrorType.sendTimeout,
+        DioErrorType.receiveTimeout,
+      }.contains(e.type)
+          ? ConnectivityException()
+          : NetException(
+              details: e.message,
+              statusCode: e.response?.statusCode,
+            );
 
       throw exception;
     }

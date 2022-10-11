@@ -1,5 +1,4 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -128,13 +127,12 @@ class BankApp extends StatefulWidget {
 /// The state of the [BankApp] widget.
 class BankAppState extends State<BankApp> {
   Key _appKey = UniqueKey();
-  GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 
   /// Resets the [Key] passed to the [MaterialApp] to restart the application.
   void restart() {
     setState(() {
       _appKey = UniqueKey();
-      _navigatorKey = GlobalKey<NavigatorState>();
     });
   }
 
@@ -348,6 +346,14 @@ class BankAppState extends State<BankApp> {
           customerUseCase: LoadCurrentCustomerUseCase(
             repository: CustomerRepository(CustomerProvider(widget.netClient)),
           ),
+          loadDeveloperUserDetailsFromTokenUseCase:
+              LoadDeveloperUserDetailsFromTokenUseCase(
+            repository: UserRepository(
+              userProvider: UserProvider(
+                netClient: widget.netClient,
+              ),
+            ),
+          ),
         ),
       ),
       BlocProvider<CurrencyCubit>(
@@ -430,7 +436,10 @@ class BankAppState extends State<BankApp> {
               useInheritedMediaQuery: widget.useInheritedMediaQuery,
               locale: Locale(languageCode),
               navigatorObservers: [
-                FirebaseAnalyticsObserver(analytics: FirebaseAnalytics()),
+                if (widget.appConfiguration.firebaseAnalyticsEnabled)
+                  FirebaseAnalyticsObserver(
+                    analytics: FirebaseAnalytics.instance,
+                  ),
               ],
               builder: (context, child) {
                 // `child` can't be null, because the `initialRoute` is always

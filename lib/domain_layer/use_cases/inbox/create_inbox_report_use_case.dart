@@ -12,7 +12,11 @@ class CreateInboxReportUseCase {
   }) : _repository = repository;
 
   /// Create a new report
-  Future<InboxReport> call(String categoryId) {
-    return _repository.createReport(categoryId);
+  Future<InboxReport> call(
+    String categoryId,
+  ) {
+    return _repository.createReport(
+      categoryId,
+    );
   }
 }

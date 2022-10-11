@@ -185,11 +185,9 @@ class __RepeatAccessPinScreenState
                         type: BottomSheetType.success,
                         showDenyButton: false,
                         confirmKey: 'ok',
-                      ).then(
-                        (_) => context
-                            .read<SetPinScreenCubit>()
-                            .setAccesPin(pin: pin),
                       );
+
+                      context.read<SetPinScreenCubit>().setAccesPin(pin: pin);
                     }
                   }
                 },

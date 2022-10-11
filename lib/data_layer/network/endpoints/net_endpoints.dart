@@ -182,6 +182,9 @@ class NetEndpoints {
   /// The transactions endpoint
   String get transaction => '$_infoBanking/v1/transaction';
 
+  /// The filter transactions endpoint
+  String get filterTransaction => '$_infoBanking/v1/filter/transaction';
+
   /// The message endpoint
   String get message => '$_infoBanking/v1/message';
 
@@ -346,4 +349,7 @@ class NetEndpoints {
 
   /// Endpoint for sending chat report messages
   String get reportMessage => '$_engagement/v1/message';
+
+  /// Endpoint for getting the balance
+  String get balance => '$_infoBanking/v2/balance/periodical_balance';
 }

@@ -83,6 +83,34 @@ class UserProvider {
     throw Exception('User not found');
   }
 
+  /// Patches multiple user preferences with different data
+  Future<UserDTO> patchUserPreferences({
+    required List<UserPreference> userPreferences,
+  }) async {
+    var json = {};
+    for (var prefence in userPreferences) {
+      json.addAll(prefence.toJson());
+    }
+
+    final response = await netClient.request(
+      netClient.netEndpoints.user,
+      data: [
+        {
+          'pref': {
+            'keys': json,
+          }
+        },
+      ],
+      method: NetRequestMethods.patch,
+    );
+
+    if (response.data is List && response.data.length > 0) {
+      return UserDTO.fromJson(response.data[0]);
+    }
+
+    throw Exception('User not found');
+  }
+
   /// Returns an user from a token.
   ///
   /// Throws an exception if the user is not found.
@@ -94,6 +122,30 @@ class UserProvider {
       netClient.netEndpoints.user,
       forceRefresh: forceRefresh,
       authorizationHeader: 'Bearer $token',
+    );
+
+    if (response.data is List && response.data.length > 0) {
+      return UserDTO.fromJson(response.data[0]);
+    }
+
+    throw Exception('User not found');
+  }
+
+  /// Returns an user from a `token` and `developerId`.
+  ///
+  /// Throws an exception if the user is not found.
+  Future<UserDTO> getDeveloperUserFromToken({
+    required String token,
+    required String developerId,
+  }) async {
+    final query = {
+      'customer_id': developerId,
+    };
+
+    final response = await netClient.request(
+      (netClient.netEndpoints as ConsoleEndpoints).developerUser,
+      authorizationHeader: 'Bearer $token',
+      queryParameters: query,
     );
 
     if (response.data is List && response.data.length > 0) {
@@ -182,9 +234,19 @@ class UserProvider {
     final data = response.data;
 
     final effectiveData = data['user'] as Map<String, dynamic>;
+    final userId = effectiveData['a_user_id'];
 
     if (data['device'] != null) {
       effectiveData.addAll(data['device']!);
+    }
+
+    /// We are checking the user id and adding again to `effectiveData` cause
+    /// `effectiveData.addAll(data['device']!)` is overriding the real user id.
+    ///
+    /// This is because `data['device']` also have a `a_user_id` param but the
+    /// value is null.
+    if (effectiveData['a_user_id'] == null) {
+      effectiveData['a_user_id'] = userId;
     }
 
     return UserDTO.fromJson(effectiveData);
@@ -234,6 +296,23 @@ class UserProvider {
     );
 
     return response.success;
+  }
+
+  /// Uploads the newly selected image for the customer's profile
+  Future patchCustomerImage({required String base64}) async {
+    var data = {
+      "image": base64,
+    };
+
+    final response = await netClient.request(
+      netClient.netEndpoints.user,
+      data: [
+        data,
+      ],
+      method: NetRequestMethods.patch,
+    );
+
+    return response.data;
   }
 }
 

@@ -36,13 +36,13 @@ class AppBuilder extends StatefulWidget {
 class _AppBuilderState extends State<AppBuilder> {
   @override
   void initState() {
+    super.initState();
+
     _updateInterceptorsKey();
 
     for (final interceptor in widget.interceptors) {
       widget.netClient.addInterceptor(interceptor);
     }
-
-    super.initState();
   }
 
   @override

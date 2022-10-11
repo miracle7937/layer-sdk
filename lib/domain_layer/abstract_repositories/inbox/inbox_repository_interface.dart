@@ -33,6 +33,8 @@ abstract class InboxRepositoryInterface {
     required List<MultipartFile> files,
   });
 
-  /// Create a new Report
+  /// Create a new [InboxReport]
+  ///
+  /// [categoryId] The category id for the new report
   Future<InboxReport> createReport(String category);
 }
