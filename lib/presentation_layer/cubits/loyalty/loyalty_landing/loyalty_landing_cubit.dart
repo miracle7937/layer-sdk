@@ -71,7 +71,7 @@ class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
           actions: state.removeAction(
             LoyaltyLandingActions.loadAllLoyaltyPoints,
           ),
-          loyaltyPoints: loyaltyPoints,
+          loyaltyPoints: loyaltyPoints.isNotEmpty ? loyaltyPoints.first : null,
         ),
       );
     } on Exception catch (e) {
