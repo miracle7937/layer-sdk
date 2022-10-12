@@ -38,9 +38,7 @@ class LayerPageBuilder extends StatelessWidget {
     // page. The page order starts from 1, so we have to subtract 1 to get the
     // index.
     final filteredExtraCards = extraCards
-        .where((extraContainer) =>
-            extraContainer.visible &&
-            extraContainer.pageIndex == (page.order - 1))
+        .where((extraContainer) => extraContainer.visible(page))
         .toList();
 
     // Filter the top extra containers
@@ -49,44 +47,42 @@ class LayerPageBuilder extends StatelessWidget {
             extraContainer.position == ExtraCardPosition.top)
         .toList();
 
-    // Filter the center extra containers
-    final centerExtraCards = filteredExtraCards
-        .where((extraContainer) =>
-            extraContainer.position == ExtraCardPosition.center)
-        .toList();
-
     // Filter the bottom extra containers
     final bottomExtraCards = filteredExtraCards
         .where((extraContainer) =>
             extraContainer.position == ExtraCardPosition.bottom)
         .toList();
 
-    // Get the middle upper index
-    final middle = (page.containers.length / 2).ceil();
-
-    // Build the items list
-    final items = [
-      ...topExtraCards,
-      if (centerExtraCards.isEmpty) ...page.containers,
-      if (centerExtraCards.isNotEmpty && page.containers.isNotEmpty) ...[
-        ...page.containers.sublist(0, middle),
-        ...centerExtraCards,
-        ...page.containers.sublist(middle, page.containers.length),
+    return CustomScrollView(
+      slivers: [
+        ...topExtraCards
+            .map(
+              (e) => e.isSliver
+                  ? extraCardBuilder!(context, e)
+                  : SliverToBoxAdapter(
+                      child: extraCardBuilder!(context, e),
+                    ),
+            )
+            .toList(growable: false),
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) => containerBuilder(
+              context,
+              page.containers[index],
+            ),
+            childCount: page.containers.length,
+          ),
+        ),
+        ...bottomExtraCards
+            .map(
+              (e) => e.isSliver
+                  ? extraCardBuilder!(context, e)
+                  : SliverToBoxAdapter(
+                      child: extraCardBuilder!(context, e),
+                    ),
+            )
+            .toList(growable: false),
       ],
-      if (centerExtraCards.isNotEmpty && page.containers.isEmpty)
-        ...centerExtraCards,
-      ...bottomExtraCards,
-    ];
-    return ListView.builder(
-      itemCount: items.length,
-      itemBuilder: (context, index) {
-        final item = items[index];
-        if (item is ExperienceContainer) {
-          return containerBuilder(context, item);
-        } else {
-          return extraCardBuilder!(context, item as ExtraCard);
-        }
-      },
     );
   }
 }
