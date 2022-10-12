@@ -39,7 +39,7 @@ enum ContactUsType {
 
 /// A model representing the contact us data
 class ContactUsItem extends Equatable {
-  /// The item id
+  /// The item type
   final ContactUsType? type;
 
   /// The item title
