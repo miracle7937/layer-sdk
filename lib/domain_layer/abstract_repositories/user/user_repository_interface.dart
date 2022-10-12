@@ -22,10 +22,21 @@ abstract class UserRepositoryInterface {
     required UserPreference userPreference,
   });
 
+  /// Patches multiple user preferences with different data
+  Future<User> patchUserPreferences({
+    required List<UserPreference> userPreferences,
+  });
+
   ///Gets a [User] from a token
   Future<User> getUserFromToken({
     required String token,
     bool forceRefresh = true,
+  });
+
+  /// Returns an user from a developer `token` and `developerId`.
+  Future<User> getDeveloperUserFromToken({
+    required String token,
+    required String developerId,
   });
 
   /// Request the lock of an user.
@@ -111,4 +122,7 @@ abstract class UserRepositoryInterface {
     required String userId,
     required List<String> roles,
   });
+
+  /// Patches the newly selected image
+  Future patchImage({required String base64});
 }

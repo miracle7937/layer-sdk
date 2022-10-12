@@ -1,42 +1,10 @@
 import 'dart:collection';
 
-import 'package:equatable/equatable.dart';
-
 import '../../../../domain_layer/models.dart';
+import '../../../cubits.dart';
 import '../../../utils.dart';
 
-/// Model used for the errors.
-class BeneficiaryTransferError extends Equatable {
-  /// The action.
-  final BeneficiaryTransferAction action;
-
-  /// The error.
-  final BeneficiaryTransferErrorStatus errorStatus;
-
-  /// The error code.
-  final String? code;
-
-  /// The error message.
-  final String? message;
-
-  /// Creates a new [BeneficiaryTransferError].
-  const BeneficiaryTransferError({
-    required this.action,
-    required this.errorStatus,
-    this.code,
-    this.message,
-  });
-
-  @override
-  List<Object?> get props => [
-        action,
-        errorStatus,
-        code,
-        message,
-      ];
-}
-
-/// The available actions for the cubit.
+/// The available busy actions that the cubit can perform.
 enum BeneficiaryTransferAction {
   /// Loading the beneficiary settings.
   beneficiarySettings,
@@ -75,34 +43,77 @@ enum BeneficiaryTransferAction {
   shortcut,
 }
 
-/// The available error status.
-enum BeneficiaryTransferErrorStatus {
-  /// Generic.
-  generic,
+/// The available events that the cubit can emit.
+enum BeneficiaryTransferEvent {
+  /// Event for showing the confirmation view.
+  showConfirmationView,
 
-  /// Network.
-  network,
+  /// Event for inputing the OTP code.
+  inputOTPCode,
 
-  /// Insuficient balance.
-  insufficientBalance,
+  /// Event for showing the transfer result view.
+  showResultView,
 
+  /// Event for closing the OTP code.
+  closeOTPView,
+}
+
+/// The available validation error codes.
+enum BeneficiaryTransferValidationErrorCode {
   /// Invalid IBAN.
   invalidIBAN,
 
   /// Incorrect OTP code.
   incorrectOTPCode,
+
+  /// Source account validation error.
+  sourceAccountValidationError,
+
+  /// Selected beneficiary validation error.
+  selectedBeneficiaryValidationError,
+
+  /// New beneficiary first name validation error.
+  firstNameValidationError,
+
+  /// New beneficiary last name validation error.
+  lastNameValidationError,
+
+  /// New beneficiary country validation error.
+  countryValidationError,
+
+  /// New beneficiary currency validation error.
+  currencyValidationError,
+
+  /// New beneficiary IBAN/Account number validation error.
+  ibanOrAccountValidationError,
+
+  /// New beneficiary routing code validation error.
+  routingCodeValidationError,
+
+  /// New beneficiary bank validation error.
+  bankValidationError,
+
+  /// New beneficiary amount validation error.
+  amountValidationError,
+
+  /// New beneficiary nickname validation error.
+  nicknameValidationError,
+
+  /// Shortcut name validation error.
+  shortcutNameValidationError,
+
+  /// Schedule details validation error.
+  scheduleDetailsValidationError,
+
+  /// Insufficient balance validation error.
+  insufficientBalanceValidationError,
 }
 
 /// The state for the [BeneficiaryTransferCubit].
-class BeneficiaryTransferState extends Equatable {
+class BeneficiaryTransferState extends BaseState<BeneficiaryTransferAction,
+    BeneficiaryTransferEvent, BeneficiaryTransferValidationErrorCode> {
   /// The transfer object.
   final BeneficiaryTransfer transfer;
-
-  /// The actions that the cubit is performing.
-  final UnmodifiableSetView<BeneficiaryTransferAction> actions;
-
-  /// The errors.
-  final UnmodifiableSetView<BeneficiaryTransferError> errors;
 
   /// The beneficiary settings.
   final UnmodifiableListView<GlobalSetting> beneficiarySettings;
@@ -145,9 +156,9 @@ class BeneficiaryTransferState extends Equatable {
   /// Creates a new [BeneficiaryTransferState].
   BeneficiaryTransferState({
     required this.transfer,
-    Set<BeneficiaryTransferAction> actions =
-        const <BeneficiaryTransferAction>{},
-    Set<BeneficiaryTransferError> errors = const <BeneficiaryTransferError>{},
+    super.actions = const <BeneficiaryTransferAction>{},
+    super.errors = const <CubitError>{},
+    super.events = const <BeneficiaryTransferEvent>{},
     Iterable<GlobalSetting> beneficiarySettings = const <GlobalSetting>{},
     Iterable<Country> countries = const <Country>{},
     Iterable<Currency> currencies = const <Currency>{},
@@ -160,9 +171,7 @@ class BeneficiaryTransferState extends Equatable {
     this.transferResult,
     this.bankQuery,
     required this.editMode,
-  })  : actions = UnmodifiableSetView(actions),
-        errors = UnmodifiableSetView(errors),
-        beneficiarySettings = UnmodifiableListView(beneficiarySettings),
+  })  : beneficiarySettings = UnmodifiableListView(beneficiarySettings),
         countries = UnmodifiableListView(countries),
         currencies = UnmodifiableListView(currencies),
         accounts = UnmodifiableListView(accounts),
@@ -170,28 +179,12 @@ class BeneficiaryTransferState extends Equatable {
         reasons = UnmodifiableListView(reasons),
         banks = UnmodifiableListView(banks);
 
-  /// Whether if the cubit is loading something.
-  bool get busy => actions.isNotEmpty;
-
-  /// Whether if the cubit is initializing.
-  bool get initializing => actions
-      .where(
-        (action) => [
-          BeneficiaryTransferAction.beneficiarySettings,
-          BeneficiaryTransferAction.accounts,
-          BeneficiaryTransferAction.beneficiaries,
-          BeneficiaryTransferAction.currencies,
-          BeneficiaryTransferAction.countries,
-          BeneficiaryTransferAction.reasons,
-        ].contains(action),
-      )
-      .isNotEmpty;
-
-  /// Creates a copy of the current state with the passed values.
+  @override
   BeneficiaryTransferState copyWith({
     BeneficiaryTransfer? transfer,
     Set<BeneficiaryTransferAction>? actions,
-    Set<BeneficiaryTransferError>? errors,
+    Set<CubitError>? errors,
+    Set<BeneficiaryTransferEvent>? events,
     Iterable<GlobalSetting>? beneficiarySettings,
     Iterable<Country>? countries,
     Iterable<Currency>? currencies,
@@ -207,8 +200,9 @@ class BeneficiaryTransferState extends Equatable {
   }) =>
       BeneficiaryTransferState(
         transfer: transfer ?? this.transfer,
-        actions: actions ?? this.actions,
-        errors: errors ?? this.errors,
+        actions: actions ?? super.actions,
+        errors: errors ?? super.errors,
+        events: events ?? super.events,
         beneficiarySettings: beneficiarySettings ?? this.beneficiarySettings,
         countries: countries ?? this.countries,
         currencies: currencies ?? this.currencies,
@@ -226,8 +220,9 @@ class BeneficiaryTransferState extends Equatable {
   @override
   List<Object?> get props => [
         transfer,
-        actions,
         errors,
+        actions,
+        events,
         beneficiarySettings,
         countries,
         currencies,

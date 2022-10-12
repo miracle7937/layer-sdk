@@ -200,7 +200,7 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         AddBeneficiaryErrorStatus.invalidIBAN,
       );
 
-  /// Emits state with beneficiary and removed [errorStatus] if provided.
+  /// Emits state with beneficiary and removes [errorStatus] if provided.
   void _emitBeneficiary(
     Beneficiary? beneficiary, [
     AddBeneficiaryErrorStatus? errorStatus,
@@ -358,15 +358,15 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
                 (element) => element.code == 'benef_acc_num_allowed_characters')
             ?.value,
         minAccountChars:
-            minChars is int ? minChars : int.tryParse(minChars ?? ''),
+            minChars is int ? minChars : (int.tryParse(minChars ?? '') ?? 8),
         maxAccountChars:
-            maxChars is int ? maxChars : int.tryParse(maxChars ?? ''),
+            maxChars is int ? maxChars : (int.tryParse(maxChars ?? '') ?? 30),
       );
       if (!isAccountValid) {
         emit(
           state.copyWith(
             errors: _addError(
-              action: AddBeneficiaryAction.editAction,
+              action: AddBeneficiaryAction.add,
               errorStatus: AddBeneficiaryErrorStatus.invalidAccount,
             ),
           ),
@@ -379,14 +379,13 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         allowedCharacters: state.beneficiarySettings
             .singleWhereOrNull(
                 (element) => element.code == 'benef_iban_allowed_characters')
-            ?.value
-            ?.split(''),
+            ?.value,
       );
       if (!isIbanValid) {
         emit(
           state.copyWith(
             errors: _addError(
-              action: AddBeneficiaryAction.editAction,
+              action: AddBeneficiaryAction.add,
               errorStatus: AddBeneficiaryErrorStatus.invalidIBAN,
             ),
           ),

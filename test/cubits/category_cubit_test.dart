@@ -1,17 +1,16 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
-import 'package:layer_sdk/_migration/business_layer/src/cubits/category_cubit.dart';
-import 'package:layer_sdk/_migration/business_layer/src/cubits/category_state.dart';
-import 'package:layer_sdk/_migration/data_layer/repositories.dart';
 import 'package:layer_sdk/data_layer/network.dart';
 import 'package:layer_sdk/domain_layer/models.dart';
+import 'package:layer_sdk/domain_layer/use_cases.dart';
+import 'package:layer_sdk/presentation_layer/cubits.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockCategoryRepository extends Mock implements CategoryRepository {}
+class MockLoadCategoryUseCase extends Mock implements LoadCategoriesUseCase {}
 
-late MockCategoryRepository _repo;
-late MockCategoryRepository _errorHandlingRepo;
+late MockLoadCategoryUseCase _loadCategoryUseCase;
+late MockLoadCategoryUseCase _errorLoadCategoryUseCase;
 
 final _netException = NetException(message: 'Server timed out');
 final _genericException = Exception();
@@ -27,11 +26,11 @@ void main() {
   );
 
   setUp(() {
-    _repo = MockCategoryRepository();
-    _errorHandlingRepo = MockCategoryRepository();
+    _loadCategoryUseCase = MockLoadCategoryUseCase();
+    _errorLoadCategoryUseCase = MockLoadCategoryUseCase();
 
     when(
-      () => _repo.list(
+      () => _loadCategoryUseCase(
         forceRefresh: false,
       ),
     ).thenAnswer(
@@ -39,13 +38,13 @@ void main() {
     );
 
     when(
-      () => _errorHandlingRepo.list(
+      () => _errorLoadCategoryUseCase(
         forceRefresh: true,
       ),
     ).thenThrow(_netException);
 
     when(
-      () => _errorHandlingRepo.list(
+      () => _errorLoadCategoryUseCase(
         forceRefresh: false,
       ),
     ).thenThrow(_genericException);
@@ -53,7 +52,7 @@ void main() {
 
   blocTest<CategoryCubit, CategoryState>(
     'Starts with empty state',
-    build: () => CategoryCubit(repository: _repo),
+    build: () => CategoryCubit(loadCategoriesUseCase: _loadCategoryUseCase),
     verify: (c) => expect(
       c.state,
       CategoryState(),
@@ -62,7 +61,9 @@ void main() {
 
   blocTest<CategoryCubit, CategoryState>(
     'Handles Exception when loading the categories',
-    build: () => CategoryCubit(repository: _errorHandlingRepo),
+    build: () => CategoryCubit(
+      loadCategoriesUseCase: _errorLoadCategoryUseCase,
+    ),
     act: (c) => c.loadCategories(forceRefresh: false),
     expect: () => [
       CategoryState(
@@ -75,16 +76,18 @@ void main() {
       ),
     ],
     verify: (c) {
-      verify(() => _errorHandlingRepo.list(
+      verify(() => _errorLoadCategoryUseCase(
             forceRefresh: false,
           )).called(1);
-      verifyNoMoreInteractions(_errorHandlingRepo);
+      verifyNoMoreInteractions(_errorLoadCategoryUseCase);
     },
   );
 
   blocTest<CategoryCubit, CategoryState>(
     'Handles NetException when loading the categories',
-    build: () => CategoryCubit(repository: _errorHandlingRepo),
+    build: () => CategoryCubit(
+      loadCategoriesUseCase: _errorLoadCategoryUseCase,
+    ),
     act: (c) => c.loadCategories(forceRefresh: true),
     expect: () => [
       CategoryState(
@@ -98,16 +101,18 @@ void main() {
       ),
     ],
     verify: (c) {
-      verify(() => _errorHandlingRepo.list(
+      verify(() => _errorLoadCategoryUseCase(
             forceRefresh: true,
           )).called(1);
-      verifyNoMoreInteractions(_errorHandlingRepo);
+      verifyNoMoreInteractions(_errorLoadCategoryUseCase);
     },
   );
 
   blocTest<CategoryCubit, CategoryState>(
     'Check if the error is successfully cleared after a failure',
-    build: () => CategoryCubit(repository: _errorHandlingRepo),
+    build: () => CategoryCubit(
+      loadCategoriesUseCase: _errorLoadCategoryUseCase,
+    ),
     seed: () => CategoryState(
       isBusy: false,
       error: CategoryStateError.network,
@@ -127,16 +132,16 @@ void main() {
       ),
     ],
     verify: (c) {
-      verify(() => _errorHandlingRepo.list(
+      verify(() => _errorLoadCategoryUseCase(
             forceRefresh: true,
           )).called(1);
-      verifyNoMoreInteractions(_errorHandlingRepo);
+      verifyNoMoreInteractions(_errorLoadCategoryUseCase);
     },
   );
 
   blocTest<CategoryCubit, CategoryState>(
     'Retrieves the categories successfully',
-    build: () => CategoryCubit(repository: _repo),
+    build: () => CategoryCubit(loadCategoriesUseCase: _loadCategoryUseCase),
     act: (c) => c.loadCategories(forceRefresh: false),
     expect: () => [
       CategoryState(
@@ -149,10 +154,10 @@ void main() {
       ),
     ],
     verify: (c) {
-      verify(() => _repo.list(
+      verify(() => _loadCategoryUseCase(
             forceRefresh: false,
           )).called(1);
-      verifyNoMoreInteractions(_repo);
+      verifyNoMoreInteractions(_loadCategoryUseCase);
     },
   );
 }

@@ -78,6 +78,7 @@ class _LockScreen extends SetAccessPinBaseWidget {
   final VoidCallback onAuthenticated;
 
   /// Whether if the biometrics should be used or not.
+  ///
   /// Default is `false`.
   final bool useBiometrics;
 
@@ -162,7 +163,9 @@ class _LockScreenState extends SetAccessPinBaseWidgetState<_LockScreen> {
           listenWhen: (previous, current) =>
               previous.error != current.error &&
               current.error != OcraAuthenticationError.none,
-          listener: (context, state) => currentPin = '',
+          listener: (context, state) {
+            currentPin = '';
+          },
         ),
       ],
       child: Scaffold(

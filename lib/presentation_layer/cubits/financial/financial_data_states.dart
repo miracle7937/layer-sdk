@@ -14,7 +14,7 @@ enum FinancialDataStateErrors {
 /// Represents the state of [FinancialDataCubit]
 class FinancialDataState extends Equatable {
   /// [Customer] id which will be used by this cubit
-  final String customerId;
+  final String? customerId;
 
   /// Financial Data received
   final FinancialData financialData;

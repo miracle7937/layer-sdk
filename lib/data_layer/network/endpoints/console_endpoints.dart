@@ -7,6 +7,7 @@ class ConsoleEndpoints extends NetEndpoints {
   static const String _consoleAAA = '/console-aaa';
   static const String _console = 'admin/console';
   static const String _customer = '/customer-aaa';
+  static const String _developer = '/developer-aaa';
 
   /// The internal request URL used by some requests like change_status on the
   /// auth-engine.
@@ -77,4 +78,7 @@ class ConsoleEndpoints extends NetEndpoints {
 
   @override
   String get verifyDeviceLogin => '$_consoleAAA/v1/verify_device_login';
+
+  /// The developer user endpoint.
+  String get developerUser => '$_developer/v1/user';
 }

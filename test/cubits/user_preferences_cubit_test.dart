@@ -9,7 +9,11 @@ import 'package:test/test.dart';
 class MockChangeOfferFavoriteStatusUseCase extends Mock
     implements ChangeOfferFavoriteStatusUseCase {}
 
+class MockSetLowBalanceAlertUseCase extends Mock
+    implements SetLowBalanceAlertUseCase {}
+
 late MockChangeOfferFavoriteStatusUseCase _useCase;
+late MockSetLowBalanceAlertUseCase _balanceAlertUseCase;
 
 final _exception = NetException(message: 'there was an exception');
 
@@ -42,6 +46,7 @@ void main() {
 
   setUp(() {
     _useCase = MockChangeOfferFavoriteStatusUseCase();
+    _balanceAlertUseCase = MockSetLowBalanceAlertUseCase();
 
     when(
       () => _useCase(
@@ -71,6 +76,7 @@ void main() {
     build: () => UserPreferencesCubit(
       user: mockedUser,
       changeOfferFavoriteStatusUseCase: _useCase,
+      setLowBalanceAlertUseCase: _balanceAlertUseCase,
     ),
     verify: (c) => expect(
       c.state,
@@ -83,6 +89,7 @@ void main() {
     build: () => UserPreferencesCubit(
       user: exceptionMockedUser,
       changeOfferFavoriteStatusUseCase: _useCase,
+      setLowBalanceAlertUseCase: _balanceAlertUseCase,
     ),
     act: (c) => c.changeOfferFavoriteStatus(offerId: 140),
     expect: () => [
@@ -111,6 +118,7 @@ void main() {
     build: () => UserPreferencesCubit(
       user: exceptionMockedUser,
       changeOfferFavoriteStatusUseCase: _useCase,
+      setLowBalanceAlertUseCase: _balanceAlertUseCase,
     ),
     seed: () => UserPreferencesState(
       error: UserPreferencesError.network,
@@ -144,6 +152,7 @@ void main() {
     build: () => UserPreferencesCubit(
       user: mockedUser,
       changeOfferFavoriteStatusUseCase: _useCase,
+      setLowBalanceAlertUseCase: _balanceAlertUseCase,
     ),
     act: (c) => c.changeOfferFavoriteStatus(offerId: 130),
     expect: () => [
@@ -170,6 +179,7 @@ void main() {
     build: () => UserPreferencesCubit(
       user: mockedUser,
       changeOfferFavoriteStatusUseCase: _useCase,
+      setLowBalanceAlertUseCase: _balanceAlertUseCase,
     ),
     act: (c) => c.changeOfferFavoriteStatus(offerId: 120),
     expect: () => [
