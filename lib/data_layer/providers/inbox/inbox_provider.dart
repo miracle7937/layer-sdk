@@ -24,11 +24,12 @@ class InboxProvider {
     int? limit,
     int? offset,
   }) async {
-    final params = <String, dynamic>{}
+    final params = <String, dynamic>{
+      'include_details': true,
+    }
       ..addIfNotNull('q', searchQuery)
       ..addIfNotNull('limit', limit)
       ..addIfNotNull('offset', offset);
-    // params['include_details'] = true;
 
     final response = await netClient.request(
       netClient.netEndpoints.report,

@@ -59,16 +59,19 @@ class InboxReportMessageDTO {
       senderType: InboxReportSenderTypeDTO.fromRaw(json['sender_type']),
       files: json['files'],
       read: json['read'],
-      attachmentUrls: json['attachment_url'],
+      attachmentUrls: json['attachment_url'] != null
+          ? (json['attachment_url'] as String).split(',')
+          : null,
     );
   }
 
   /// Parses a list of json into a list of [InboxReportMessageDTO]
   static List<InboxReportMessageDTO> fromJsonList(
-    List<Map<String, dynamic>> jsonList,
+    List<dynamic> jsonList,
   ) {
     return jsonList
-        .map(InboxReportMessageDTO.fromJson)
+        // ignore: unnecessary_lambdas
+        .map((r) => InboxReportMessageDTO.fromJson(r))
         .where(
           (m) => isNotEmpty(m.text) || (m.attachmentUrls?.isNotEmpty ?? false),
         )
