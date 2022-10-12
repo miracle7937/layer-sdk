@@ -39,6 +39,15 @@ abstract class DPARepositoryInterface {
     bool forceRefresh = false,
   });
 
+  /// Returns true/false whether the user has a
+  /// verification sent to the bank or not
+  Future<bool> userHasVerificationSent({
+    String? processKey,
+    String? variable,
+    String? variableValue,
+    bool forceRefresh = false,
+  });
+
   /// Lists all tasks assigned to the user.
   ///
   /// If the [customerId] is passed, this will return only the tasks related

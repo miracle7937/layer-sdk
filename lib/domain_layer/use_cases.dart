@@ -64,6 +64,7 @@ export 'use_cases/device_session/activate_session_use_case.dart';
 export 'use_cases/device_session/load_device_sessions_use_case.dart';
 export 'use_cases/device_session/terminate_device_session_use_case.dart';
 export 'use_cases/dpa/cancel_dpa_process_use_case.dart';
+export 'use_cases/dpa/check_verification_step_use_case.dart';
 export 'use_cases/dpa/claim_dpa_task_use_case.dart';
 export 'use_cases/dpa/delete_dpa_file_use_case.dart';
 export 'use_cases/dpa/download_dpa_file_use_case.dart';

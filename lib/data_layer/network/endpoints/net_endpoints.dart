@@ -68,6 +68,9 @@ class NetEndpoints {
   /// The experience images endpoint
   String get experienceImage => '$images/xstudio';
 
+  /// DPA - Gets the user task details
+  String get userTaskDetails => '$_automation/v1/user_task_details';
+
   /// DPA - Lists all processes and all their version.
   String get listProcessesWithVersions => '$_automation/v1/list_processes';
 

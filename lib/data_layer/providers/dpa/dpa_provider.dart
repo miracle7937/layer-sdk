@@ -31,6 +31,31 @@ class DPAProvider {
         .toList();
   }
 
+  /// Returns an array, if the array is not empty, then the
+  /// user has a visa verification application already sent
+  /// to the bank
+  Future<bool> userHasVerificationSent({
+    String? processKey,
+    String? variable,
+    String? variableValue,
+    bool forceRefresh = false,
+  }) async {
+    final response = await netClient.request(
+      netClient.netEndpoints.userTaskDetails,
+      method: NetRequestMethods.get,
+      queryParameters: {
+        if (processKey != null) 'process_key': processKey,
+        if (variable != null) 'variable': variable,
+        if (variableValue != null) 'variable_value': variableValue,
+      },
+      forceRefresh: forceRefresh,
+    );
+
+    if (response.data! is List) return false;
+
+    return (response.data as List).isNotEmpty;
+  }
+
   /// Returns the list of processes in their latests versions
   /// that can be started by the user.
   Future<List<DPAProcessDefinitionDTO>> listLatestProcesses({
