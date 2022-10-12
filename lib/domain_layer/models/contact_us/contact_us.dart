@@ -38,9 +38,9 @@ enum ContactUsType {
 }
 
 /// A model representing the contact us data
-class ContactUs extends Equatable {
+class ContactUsItem extends Equatable {
   /// The item id
-  final ContactUsType? id;
+  final ContactUsType? type;
 
   /// The item title
   final String? title;
@@ -51,9 +51,9 @@ class ContactUs extends Equatable {
   /// On tap callback
   final VoidCallback? onTap;
 
-  /// Creates new [ContactUs].
-  const ContactUs({
-    this.id,
+  /// Creates new [ContactUsItem].
+  const ContactUsItem({
+    this.type,
     this.title,
     this.subtitle,
     this.onTap,
@@ -61,7 +61,7 @@ class ContactUs extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
+        type,
         title,
         subtitle,
         onTap,

@@ -40,7 +40,7 @@ class ContactUsState extends Equatable {
   final UnmodifiableListView<GlobalSetting?> globalSettings;
 
   /// The contact us list
-  final UnmodifiableListView<ContactUs> contactUsList;
+  final UnmodifiableListView<ContactUsItem> contactUsList;
 
   /// Creates a new contact us state
   ContactUsState({
@@ -48,7 +48,7 @@ class ContactUsState extends Equatable {
     this.error = ContactUsErrorStatus.none,
     Set<ContactUsBusyAction> actions = const <ContactUsBusyAction>{},
     Iterable<GlobalSetting?>? globalSettings = const <GlobalSetting>{},
-    Iterable<ContactUs> contactUsList = const <ContactUs>{},
+    Iterable<ContactUsItem> contactUsList = const <ContactUsItem>{},
   })  : actions = UnmodifiableSetView(actions),
         globalSettings = UnmodifiableListView(globalSettings ?? []),
         contactUsList = UnmodifiableListView(contactUsList);
@@ -68,7 +68,7 @@ class ContactUsState extends Equatable {
     Set<ContactUsBusyAction>? actions,
     ContactUsErrorStatus? error,
     Iterable<GlobalSetting?>? globalSettings,
-    Iterable<ContactUs>? contactUsList,
+    Iterable<ContactUsItem>? contactUsList,
   }) =>
       ContactUsState(
         experience: experience ?? this.experience,

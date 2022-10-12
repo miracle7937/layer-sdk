@@ -12,7 +12,7 @@ class ContactUsCubit extends Cubit<ContactUsState> {
   final LoadGlobalSettingsUseCase _loadGlobalSettingsUseCase;
   final OpenLinkUseCase _openLinkUseCase;
 
-  /// Creates a new cubit [ContactUs] cubit.
+  /// Creates a new cubit [ContactUsItem] cubit.
   ContactUsCubit({
     required GetExperienceAndConfigureItUseCase
         getExperienceAndConfigureItUseCase,
@@ -90,7 +90,7 @@ class ContactUsCubit extends Cubit<ContactUsState> {
   }
 
   void _setupContactUsItems() {
-    var items = <ContactUs>[];
+    var items = <ContactUsItem>[];
 
     if (_settingsAvailable("facebook_enabled", "facebook_app_id")) {
       var fbPage = getGlobalSettingValue(
@@ -104,8 +104,8 @@ class ContactUsCubit extends Cubit<ContactUsState> {
           "";
 
       items.add(
-        ContactUs(
-          id: ContactUsType.facebook,
+        ContactUsItem(
+          type: ContactUsType.facebook,
           title: getContainerMessage(message: "facebook_title"),
           subtitle: "https://www.facebook.com/$fbPage",
           onTap: () => _openLinkUseCase.openFacebookProfile(
@@ -123,8 +123,8 @@ class ContactUsCubit extends Cubit<ContactUsState> {
       var link = "twitter://user?screen_name=$twitterSettings";
 
       items.add(
-        ContactUs(
-          id: ContactUsType.twitter,
+        ContactUsItem(
+          type: ContactUsType.twitter,
           title: getContainerMessage(message: "twitter_title"),
           subtitle: "https://www.twitter.com/$twitterSettings",
           onTap: () => _openLinkUseCase.openLink(
@@ -142,8 +142,8 @@ class ContactUsCubit extends Cubit<ContactUsState> {
       );
 
       items.add(
-        ContactUs(
-          id: ContactUsType.email,
+        ContactUsItem(
+          type: ContactUsType.email,
           title: getContainerMessage(message: "email_title"),
           subtitle: subTitle,
           onTap: () => _openLinkUseCase.openLink(
@@ -161,8 +161,8 @@ class ContactUsCubit extends Cubit<ContactUsState> {
       );
 
       items.add(
-        ContactUs(
-          id: ContactUsType.complaintsEmail,
+        ContactUsItem(
+          type: ContactUsType.complaintsEmail,
           title: getContainerMessage(message: "complaints_email_title"),
           subtitle: subTitle,
           onTap: () => _openLinkUseCase.openLink(
@@ -180,8 +180,8 @@ class ContactUsCubit extends Cubit<ContactUsState> {
       );
 
       items.add(
-        ContactUs(
-          id: ContactUsType.linkedin,
+        ContactUsItem(
+          type: ContactUsType.linkedin,
           title: getContainerMessage(message: "linkedin_title"),
           subtitle: "https://www.linkedin.com/company/$settings",
           onTap: () => _openLinkUseCase.openLinkedIn(
@@ -201,8 +201,8 @@ class ContactUsCubit extends Cubit<ContactUsState> {
       var link = "instagram://user?username=$settings";
 
       items.add(
-        ContactUs(
-          id: ContactUsType.instagram,
+        ContactUsItem(
+          type: ContactUsType.instagram,
           title: getContainerMessage(message: "instagram_title"),
           subtitle: subTitle,
           onTap: () => _openLinkUseCase.openLink(
@@ -220,8 +220,8 @@ class ContactUsCubit extends Cubit<ContactUsState> {
       );
 
       items.add(
-        ContactUs(
-          id: ContactUsType.website,
+        ContactUsItem(
+          type: ContactUsType.website,
           title: getContainerMessage(message: "website_title"),
           subtitle: subTitle,
           onTap: () => _openLinkUseCase.openLink(
@@ -240,8 +240,8 @@ class ContactUsCubit extends Cubit<ContactUsState> {
       );
 
       items.add(
-        ContactUs(
-          id: ContactUsType.local,
+        ContactUsItem(
+          type: ContactUsType.local,
           title: getContainerMessage(message: "call_local_number_title"),
           subtitle: subTitle,
           onTap: () => _openLinkUseCase.openLink(
@@ -260,8 +260,8 @@ class ContactUsCubit extends Cubit<ContactUsState> {
       );
 
       items.add(
-        ContactUs(
-          id: ContactUsType.international,
+        ContactUsItem(
+          type: ContactUsType.international,
           title:
               getContainerMessage(message: "call_international_number_title"),
           subtitle: subTitle,
@@ -280,8 +280,8 @@ class ContactUsCubit extends Cubit<ContactUsState> {
       );
 
       items.add(
-        ContactUs(
-          id: ContactUsType.whatsapp,
+        ContactUsItem(
+          type: ContactUsType.whatsapp,
           title: getContainerMessage(message: "whatsapp_title"),
           subtitle: subTitle,
           onTap: () => _openLinkUseCase.openLink(
@@ -300,8 +300,8 @@ class ContactUsCubit extends Cubit<ContactUsState> {
       );
 
       items.add(
-        ContactUs(
-          id: ContactUsType.complaintsNumber,
+        ContactUsItem(
+          type: ContactUsType.complaintsNumber,
           title: getContainerMessage(message: "call_complaints_number_title"),
           subtitle: subTitle,
           onTap: () => _openLinkUseCase.openLink(
