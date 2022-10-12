@@ -60,7 +60,7 @@ class CardRepository implements CardRepositoryInterface {
       cardId: cardId,
       otpId: otpId,
       otpValue: otpValue,
-      secondFactorType: secondFactorType,
+      secondFactorType: secondFactorType?.toSecondFactorTypeDTO(),
       clientResponse: clientResponse,
       forceRefresh: forceRefresh,
     );

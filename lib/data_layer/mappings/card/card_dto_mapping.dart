@@ -52,8 +52,8 @@ extension CardTypeDTOMapping on CardTypeDTO {
     return CardType(
       category: category,
       name: type,
-      canFreezeCard: canFreezeCard,
-      canStopCard: canStopCard,
+      canFreezeCard: canFreezeCard ?? true,
+      canStopCard: canStopCard ?? true,
       image: image,
     );
   }

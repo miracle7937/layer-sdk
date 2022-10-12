@@ -19,27 +19,6 @@ enum CardStatus {
   frozen,
 }
 
-/// The [BankingCard] provider
-enum BankingCardProvider {
-  /// American Express
-  americanExpress,
-
-  /// Diners club
-  dinersClub,
-
-  /// Visa
-  visa,
-
-  /// Mastercard
-  mastercard,
-
-  /// DiscoverCard
-  discoverCard,
-
-  /// Unknown
-  unknown,
-}
-
 /// A card owned by a [Customer]
 class BankingCard extends Equatable {
   /// Unique card identifier
@@ -142,28 +121,4 @@ class BankingCard extends Equatable {
 
   /// Returns the account related to this card
   String? getCardAccount() => (accountID.isNotEmpty) ? accountID[0] : null;
-
-  /// Returns the card provider
-  BankingCardProvider getCardProvider() {
-    if (maskedCardNumber?.isEmpty ?? true) return BankingCardProvider.unknown;
-    switch (maskedCardNumber![0]) {
-      case '3':
-        if (maskedCardNumber!.length < 2) return BankingCardProvider.unknown;
-        switch (maskedCardNumber![1]) {
-          case '7':
-            return BankingCardProvider.americanExpress;
-          case '8':
-            return BankingCardProvider.dinersClub;
-        }
-        return BankingCardProvider.unknown;
-      case '4':
-        return BankingCardProvider.visa;
-      case '5':
-        return BankingCardProvider.mastercard;
-      case '6':
-        return BankingCardProvider.discoverCard;
-      default:
-        return BankingCardProvider.unknown;
-    }
-  }
 }
