@@ -1,6 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
 import 'package:layer_sdk/data_layer/network.dart';
+import 'package:layer_sdk/domain_layer/use_cases/dpa/check_verification_step_use_case.dart';
 import 'package:layer_sdk/features/dpa.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
@@ -41,6 +42,9 @@ class MockDPARequestManualVerificationUseCase extends Mock
 
 class MockDPASkipStepUseCase extends Mock implements DPASkipStepUseCase {}
 
+class MockCheckVerificationStepUseCase extends Mock
+    implements CheckVerificationStepUseCase {}
+
 final _startUseCase = MockStartDPAProcessUseCase();
 final _resumeUseCase = MockResumeDPAProcessUsecase();
 final _loadTaskUseCase = MockLoadTaskByIdUseCase();
@@ -56,6 +60,7 @@ final _changeEmailAddressuseCase = MockChangeEmailAddressUseCase();
 final _requestManualVerificationUseCase =
     MockDPARequestManualVerificationUseCase();
 final _skipStepUseCase = MockDPASkipStepUseCase();
+final _checkVerificationStepUseCase = MockCheckVerificationStepUseCase();
 
 final _successId = '1';
 final _successKey = 'success';
@@ -129,6 +134,7 @@ DPAProcessCubit create() => DPAProcessCubit(
       changeEmailAddressUseCase: _changeEmailAddressuseCase,
       manualVerificationUseCase: _requestManualVerificationUseCase,
       skipStepUseCase: _skipStepUseCase,
+      checkVerificationStepUseCase: _checkVerificationStepUseCase,
     );
 
 void main() {
