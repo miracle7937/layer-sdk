@@ -26,10 +26,10 @@ class CardType extends Equatable {
   final String? name;
 
   /// If the user can stop card
-  final bool? canStopCard;
+  final bool canStopCard;
 
   /// If the user can freeze card
-  final bool? canFreezeCard;
+  final bool canFreezeCard;
 
   /// The customer's card image
   final String? image;
@@ -38,8 +38,8 @@ class CardType extends Equatable {
   const CardType({
     this.category = CardCategory.unknown,
     this.name,
-    this.canStopCard,
-    this.canFreezeCard,
+    this.canStopCard = true,
+    this.canFreezeCard = true,
     this.image,
   });
 

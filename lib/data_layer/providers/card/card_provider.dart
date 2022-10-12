@@ -83,7 +83,7 @@ class CardProvider {
     required int cardId,
     int? otpId,
     String? otpValue,
-    SecondFactorType? secondFactorType,
+    SecondFactorTypeDTO? secondFactorType,
     String? clientResponse,
     bool forceRefresh = false,
   }) async {
@@ -97,10 +97,8 @@ class CardProvider {
       data: {
         "card_id": cardId,
         "key": _key,
-        if (secondFactorType != null)
-          "second_factor":
-              secondFactorType == SecondFactorType.otp ? "OTP" : "OCRA",
-        if (clientResponse != null && secondFactorType != SecondFactorType.otp)
+        if (secondFactorType != null) "second_factor": secondFactorType.value,
+        if (clientResponse != null && secondFactorType == SecondFactorType.ocra)
           "client_response": clientResponse,
         if (otpId != null && secondFactorType == SecondFactorType.otp)
           "otp_id": otpId,
