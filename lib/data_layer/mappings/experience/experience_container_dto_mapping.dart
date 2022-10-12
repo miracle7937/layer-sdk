@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:logging/logging.dart';
 
 import '../../../domain_layer/models.dart';
 import '../../dtos.dart';
@@ -164,7 +165,7 @@ extension ExperienceContainerTypeMapping on String {
       case "locateUs":
         return ExperienceContainerType.locateUs;
 
-      case "loyalty":
+      case "merchant_offers":
         return ExperienceContainerType.loyalty;
 
       case "donation":
@@ -234,9 +235,12 @@ extension ExperienceContainerTypeMapping on String {
         return ExperienceContainerType.arCampaigns;
 
       default:
+        final _log = Logger('ExperienceContainerTypeMapping');
+        _log.info('Error parsing $this experience');
+
         throw MappingException(
           from: String,
-          to: ExperienceSettingType,
+          to: ExperienceContainerType,
           value: this,
         );
     }
