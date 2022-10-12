@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../../domain_layer/models/user/pref_alert.dart';
 import '../../dtos.dart';
 import '../../helpers.dart';
 
@@ -54,7 +55,7 @@ class UserDTO {
   /// The password for this user.
   String? password;
 
-  //PrefAlerts prefAlerts;
+  PrefAlerts? prefAlerts;
 
   // PrefPfm prefPfm;
   // PrefSettings prefSettings;
@@ -163,6 +164,7 @@ class UserDTO {
     this.hasSmsAds,
     this.verifyDevice,
     this.branch,
+    this.prefAlerts,
   });
 
   /// Creates an [UserDTO] from the supplied JSON.
@@ -185,11 +187,12 @@ class UserDTO {
     hasEmailAds = JsonParser.jsonLookup(json['pref'], ['ad_consent_email']);
     hasSmsAds = JsonParser.jsonLookup(json['pref'], ['ad_consent_sms']);
 
-    // if (jsonLookup(json, ['pref', 'alert']) != null) {
-    //   prefAlerts = PrefAlerts.fromJson(jsonLookup(json, ['pref', 'alert']));
-    // } else {
-    //   prefAlerts = PrefAlerts();
-    // }
+    if (JsonParser.jsonLookup(json, ['pref', 'alert']) != null) {
+      prefAlerts =
+          PrefAlerts.fromJson(JsonParser.jsonLookup(json, ['pref', 'alert']));
+    } else {
+      prefAlerts = PrefAlerts();
+    }
 
     trackedCurrencies = [];
     if (JsonParser.jsonLookup(json['pref'], ['tracked_currencies']) != null) {

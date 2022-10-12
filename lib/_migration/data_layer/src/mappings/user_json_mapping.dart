@@ -18,6 +18,7 @@ extension UserJsonMapping on User {
         'accessPin': accessPin,
         'pref': {
           'favorite_offers': favoriteOffers,
+          'alert': prefAlerts?.toJson(),
         },
         'device_id': deviceId,
         'roles': roles,
@@ -39,5 +40,8 @@ extension UserJsonMapping on User {
             ? json['pref']['favorite_offers'].cast<int>()
             : [],
         deviceId: json['device_id'],
+        prefAlerts: json['pref'] != null
+            ? PrefAlerts.fromJson(json['pref']['alert'])
+            : PrefAlerts(),
       );
 }

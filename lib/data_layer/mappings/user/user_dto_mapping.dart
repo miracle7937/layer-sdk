@@ -30,6 +30,7 @@ extension UserDTOMapping on UserDTO {
         verifyDevice: verifyDevice ?? false,
         branch: branch,
         accessPin: accessPin,
+        prefAlerts: prefAlerts,
       );
 }
 
