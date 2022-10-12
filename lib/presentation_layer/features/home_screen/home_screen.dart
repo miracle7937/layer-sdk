@@ -205,9 +205,13 @@ class _HomeScreenState extends State<HomeScreen> {
   void _updatePageWidget(ExperiencePage page) {
     _selectedPage = page;
     final containers = page.containers;
+    final extraContainersForPage = widget.extraContainers
+        .where((element) => element.visible(page))
+        .toList();
+    final containerCount = containers.length + extraContainersForPage.length;
     if (containers.isEmpty) {
       pageWidget = SizedBox.shrink();
-    } else if (containers.length == 1) {
+    } else if (containerCount == 1) {
       pageWidget = widget.pageBuilder(
         context,
         page,
