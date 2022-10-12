@@ -166,6 +166,7 @@ extension ExperienceContainerTypeMapping on String {
         return ExperienceContainerType.locateUs;
 
       case "merchant_offers":
+      case "loyalty":
         return ExperienceContainerType.loyalty;
 
       case "donation":
@@ -236,7 +237,7 @@ extension ExperienceContainerTypeMapping on String {
 
       default:
         final _log = Logger('ExperienceContainerTypeMapping');
-        _log.info('Error parsing $this experience');
+        _log.severe('Error parsing $this experience');
 
         throw MappingException(
           from: String,
