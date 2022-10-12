@@ -110,6 +110,7 @@ export 'use_cases/ocra/generate_ocra_challenge_use_case.dart';
 export 'use_cases/ocra/generate_ocra_timestamp_use_case.dart';
 export 'use_cases/ocra/solve_ocra_challenge_use_case.dart';
 export 'use_cases/ocra/verify_ocra_result_use_case.dart';
+export 'use_cases/open_link/open_link_use_case.dart';
 export 'use_cases/otp/request_console_user_otp_use_case.dart';
 export 'use_cases/otp/resend_otp_use_case.dart';
 export 'use_cases/otp/verify_console_user_otp_use_case.dart';

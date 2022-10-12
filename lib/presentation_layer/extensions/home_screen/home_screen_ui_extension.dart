@@ -66,22 +66,26 @@ extension HomeScreenUIExtension on Experience {
               ? null
               : (_) => onMorePageChanged(
                     visiblePages
-                        .where((page) => page.title != 'dashboard')
-                        .skip(4)
+                        // .where((page) => page.title != 'dashboard')
+                        // What we did above is wrong; instead, we are assuming
+                        // that the dashboard is always the first page of the
+                        // experience, and we are skipping it with the other 4
+                        // tabs, so we are skipping 5 in total.
+                        .skip(5)
                         .toSet(),
                   ),
         );
 
       case ExperienceMenuType.tabBarBottomWithFocusAndMore:
-        final shouldShowMoreItem = visiblePages.length > 3;
-        final homePage = visiblePages.singleWhere(
-          (page) => page.title?.toLowerCase() == 'dashboard',
-        );
+        final shouldShowMoreItem = visiblePages.length > 4;
 
+        // We are making the assumption here that the dashboard screen
+        // (home page) is always the first page in the experience
+        final homePage = visiblePages.first;
+        final pagesToShow = visiblePages.sublist(1, visiblePages.length);
         return DKBottomBarMenuWithHomeAndMore<ExperiencePage>(
           initialSelectedItem: initialSelectedItem,
-          items: visiblePages
-              .where((page) => page.title != 'dashboard')
+          items: pagesToShow
               .take(3)
               .map(
                 (page) => DKMenuItem<ExperiencePage>(
@@ -100,12 +104,7 @@ extension HomeScreenUIExtension on Experience {
           moreItem: !shouldShowMoreItem ? null : moreItem,
           onMoreItemPressed: !shouldShowMoreItem
               ? null
-              : (_) => onMorePageChanged(
-                    visiblePages
-                        .where((page) => page.title != 'dashboard')
-                        .skip(3)
-                        .toSet(),
-                  ),
+              : (_) => onMorePageChanged(pagesToShow.skip(3).toSet()),
         );
 
       default:

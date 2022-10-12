@@ -59,6 +59,8 @@ export 'cubits/checkbook/checkbook_cubit.dart';
 export 'cubits/checkbook/checkbook_state.dart';
 export 'cubits/config/config_cubit.dart';
 export 'cubits/config/config_state.dart';
+export 'cubits/contact_us/contact_us_cubit.dart';
+export 'cubits/contact_us/contact_us_state.dart';
 export 'cubits/country/country_cubit.dart';
 export 'cubits/country/country_states.dart';
 export 'cubits/currency/currency_cubit.dart';
