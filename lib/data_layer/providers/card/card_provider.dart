@@ -6,7 +6,6 @@ import 'package:pointycastle/pointycastle.dart';
 import '../../../../data_layer/network.dart';
 import '../../../_migration/data_layer/src/encryption/rsa_cipher.dart';
 import '../../../_migration/data_layer/src/helpers/dto_helpers.dart';
-import '../../../domain_layer/models/second_factor/second_factor_type.dart';
 import '../../dtos.dart';
 
 /// Provides data related to Cards
@@ -98,11 +97,12 @@ class CardProvider {
         "card_id": cardId,
         "key": _key,
         if (secondFactorType != null) "second_factor": secondFactorType.value,
-        if (clientResponse != null && secondFactorType == SecondFactorType.ocra)
+        if (clientResponse != null &&
+            secondFactorType == SecondFactorTypeDTO.ocra)
           "client_response": clientResponse,
-        if (otpId != null && secondFactorType == SecondFactorType.otp)
+        if (otpId != null && secondFactorType == SecondFactorTypeDTO.otp)
           "otp_id": otpId,
-        if (otpValue != null && secondFactorType == SecondFactorType.otp)
+        if (otpValue != null && secondFactorType == SecondFactorTypeDTO.otp)
           "otp_value": otpValue,
       },
       forceRefresh: forceRefresh,
