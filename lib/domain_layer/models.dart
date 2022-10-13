@@ -143,7 +143,6 @@ export 'models/transfer/transfer_evaluation.dart';
 export 'models/upcoming_payment/upcoming_payment.dart';
 export 'models/upcoming_payment/upcoming_payment_group.dart';
 export 'models/user/favorite_offers_preference.dart';
-export 'models/user/pref_alert.dart';
 export 'models/user/user.dart';
 export 'models/user/user_permissions.dart';
 export 'models/user/user_preference.dart';

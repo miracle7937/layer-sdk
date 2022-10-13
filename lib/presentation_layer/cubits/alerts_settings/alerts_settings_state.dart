@@ -1,3 +1,5 @@
+import 'package:collection/collection.dart';
+
 import '../../../../domain_layer/models.dart';
 import '../../cubits.dart';
 
@@ -19,14 +21,17 @@ enum AlertsSettingsEvent {
 /// The state for the [AlertsSettingsCubit].
 class AlertsSettingsState
     extends BaseState<AlertsSettingsAction, AlertsSettingsEvent, void> {
-  /// Base currency code.
+  /// Old user.
   final User? oldUser;
 
-  /// Base currency code.
+  /// New user.
   final User? newUser;
 
-  /// Exchange result.
-  final LoyaltyPointsExchange? exchangeResult;
+  /// If settings were changed.
+  bool get settingsChanged => ListEquality().equals(
+        oldUser?.enabledAlerts,
+        newUser?.enabledAlerts,
+      );
 
   /// Creates a new [AlertsSettingsState].
   AlertsSettingsState({
@@ -35,7 +40,6 @@ class AlertsSettingsState
     super.events = const <AlertsSettingsEvent>{},
     this.oldUser,
     this.newUser,
-    this.exchangeResult,
   });
 
   @override
@@ -43,7 +47,6 @@ class AlertsSettingsState
     Set<AlertsSettingsAction>? actions,
     Set<CubitError>? errors,
     Set<AlertsSettingsEvent>? events,
-    LoyaltyPointsExchange? exchangeResult,
     User? oldUser,
     User? newUser,
   }) =>
@@ -60,7 +63,6 @@ class AlertsSettingsState
         errors,
         actions,
         events,
-        exchangeResult,
         oldUser,
         newUser,
       ];

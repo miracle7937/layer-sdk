@@ -107,7 +107,8 @@ class User extends Equatable {
   /// The low balance
   final double? lowBalanceValue;
 
-  final PrefAlerts? prefAlerts;
+  /// List of activity types for which user receives alerts.
+  final List<ActivityType> enabledAlerts;
 
   /// Returns the full name of the customer.
   String get fullName => [firstName, lastName]
@@ -136,7 +137,7 @@ class User extends Equatable {
     this.permissions = const UserPermissions(),
     this.verifyDevice = false,
     this.branch,
-    this.prefAlerts,
+    this.enabledAlerts = const [],
   })  : favoriteOffers = UnmodifiableListView(favoriteOffers ?? []),
         roles = UnmodifiableListView(roles ?? <String>[]);
 
@@ -162,7 +163,7 @@ class User extends Equatable {
     bool? verifyDevice,
     String? branch,
     double? lowBalanceValue,
-    PrefAlerts? prefAlerts,
+    List<ActivityType>? enabledAlerts,
   }) =>
       User(
         id: id ?? this.id,
@@ -185,7 +186,7 @@ class User extends Equatable {
         verifyDevice: verifyDevice ?? this.verifyDevice,
         branch: branch ?? this.branch,
         lowBalanceValue: lowBalanceValue ?? this.lowBalanceValue,
-        prefAlerts: prefAlerts ?? this.prefAlerts,
+        enabledAlerts: enabledAlerts ?? this.enabledAlerts,
       );
 
   @override
@@ -209,6 +210,6 @@ class User extends Equatable {
         verifyDevice,
         branch,
         lowBalanceValue,
-        prefAlerts,
+        enabledAlerts,
       ];
 }

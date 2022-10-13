@@ -1,6 +1,7 @@
 import '../../../_migration/data_layer/src/mappings.dart';
 import '../../../domain_layer/models.dart';
 import '../../dtos.dart';
+import '../../mappings.dart';
 
 /// Extension that provides mappings for [UserDTO]
 extension UserDTOMapping on UserDTO {
@@ -30,7 +31,12 @@ extension UserDTOMapping on UserDTO {
         verifyDevice: verifyDevice ?? false,
         branch: branch,
         accessPin: accessPin,
-        prefAlerts: prefAlerts,
+        enabledAlerts: enabledAlerts
+                ?.map(
+                  (activityTypeDTO) => activityTypeDTO.toType(),
+                )
+                .toList() ??
+            [],
       );
 }
 

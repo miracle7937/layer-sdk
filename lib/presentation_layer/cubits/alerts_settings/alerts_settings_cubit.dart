@@ -4,29 +4,26 @@ import '../../../../domain_layer/models.dart';
 import '../../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
 
-/// A Cubit that handles the state for the loyalty redemption.
+/// A Cubit that handles the state for the alerts settings.
 class AlertsSettingsCubit extends Cubit<AlertsSettingsState> {
-  final ChangeAlertPreferencesStatusUseCase
-      _changeAlertPreferencesStatusUseCase;
+  final ChangeAlertsSettingsUseCase _changeAlertsSettingsUseCase;
 
   /// Creates a new [AlertsSettingsCubit].
   AlertsSettingsCubit({
-    required ChangeAlertPreferencesStatusUseCase
-        changeAlertPreferencesStatusUseCase,
+    required ChangeAlertsSettingsUseCase changeAlertsSettingsUseCase,
     required User user,
-  })  : _changeAlertPreferencesStatusUseCase =
-            changeAlertPreferencesStatusUseCase,
+  })  : _changeAlertsSettingsUseCase = changeAlertsSettingsUseCase,
         super(AlertsSettingsState(
           oldUser: user,
           newUser: user,
         ));
 
   /// Changing of settings event
-  void onSettingsChanged(PrefAlerts settings) {
+  void onSettingsChanged(List<ActivityType> enabledAlerts) {
     emit(
       state.copyWith(
         newUser: state.newUser?.copyWith(
-          prefAlerts: settings,
+          enabledAlerts: enabledAlerts,
         ),
         events: state.addEvent(
           AlertsSettingsEvent.changeSettings,
@@ -35,7 +32,7 @@ class AlertsSettingsCubit extends Cubit<AlertsSettingsState> {
     );
   }
 
-  /// Do a loyalty points redemption
+  /// Saving alerts settings
   Future<void> saveSettings() async {
     emit(
       state.copyWith(
@@ -49,8 +46,8 @@ class AlertsSettingsCubit extends Cubit<AlertsSettingsState> {
     );
 
     try {
-      final userResult = await _changeAlertPreferencesStatusUseCase(
-        prefAlerts: state.newUser!.prefAlerts!,
+      final userResult = await _changeAlertsSettingsUseCase(
+        alertsTypes: state.newUser!.enabledAlerts,
       );
       emit(
         state.copyWith(
