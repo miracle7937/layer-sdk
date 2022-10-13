@@ -32,6 +32,9 @@ extension ShortcutTypeDTOMapping on ShortcutType {
 
       case ShortcutType.payment:
         return ShortcutTypeDTO.bill;
+
+      case ShortcutType.payToMobile:
+        return ShortcutTypeDTO.payToMobile;
     }
   }
 }
