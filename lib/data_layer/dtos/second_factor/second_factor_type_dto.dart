@@ -39,8 +39,6 @@ class SecondFactorTypeDTO extends EnumDTO {
     ocraOrOTP,
     ocra,
     otpPinHardwareToken,
-    ocraOrOTP,
-    ocra,
   ];
 
   const SecondFactorTypeDTO._internal(String value) : super.internal(value);
