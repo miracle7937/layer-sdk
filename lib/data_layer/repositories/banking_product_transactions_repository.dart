@@ -11,6 +11,14 @@ class BankingProductTransactionRepository
   /// Creates a new [BankingProductTransactionRepository] instance
   BankingProductTransactionRepository(this._provider);
 
+  Future<List<int>> getTransactionReceipt(
+      BankingProductTransaction transaction) async {
+    final receipt = await _provider.getTransactionReceipt(
+      transaction,
+    );
+    return receipt;
+  }
+
   /// Returns all completed transactions of the supplied customer
   /// banking product
   @override

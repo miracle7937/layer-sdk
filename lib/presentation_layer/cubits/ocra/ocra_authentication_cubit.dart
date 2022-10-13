@@ -133,13 +133,18 @@ class OcraAuthenticationCubit extends Cubit<OcraAuthenticationState> {
     }
   }
 
-  /// Generates an OCRA client response
-  Future<void> generateOCRAClientResponse({
-    required String password,
+  /// Generates a new client response to be send on
+  /// 2fa request in case of biometrics
+  Future<void> generateClientResponse({
+    String? password,
+    bool shouldRethrow = false,
   }) async {
     emit(
-      OcraAuthenticationState(
-        busy: true,
+      state.copyWith(
+        actions: state.addAction(
+          OcraAuthenticationAction.gettingServerChallenge,
+        ),
+        errors: {},
       ),
     );
 
@@ -162,7 +167,7 @@ class OcraAuthenticationCubit extends Cubit<OcraAuthenticationState> {
         throw OcraWrongResultException();
       }
 
-      final ocraClientResponse = _solveOcraChallengeUseCase(
+      final serverChallengeResult = _solveOcraChallengeUseCase(
         question: response.serverChallenge + challenge,
         timestamp: timestamp,
         password: password,
@@ -170,21 +175,28 @@ class OcraAuthenticationCubit extends Cubit<OcraAuthenticationState> {
 
       emit(
         state.copyWith(
-          busy: false,
-          ocraClientResponse: ocraClientResponse,
+          actions: state.removeAction(
+            OcraAuthenticationAction.gettingServerChallenge,
+          ),
+          clientResponse: serverChallengeResult,
         ),
       );
     } on Exception catch (e) {
       emit(
         state.copyWith(
-          busy: false,
-          error: e is OcraWrongResultException
-              ? OcraAuthenticationError.serverAuthenticationFailed
-              : e is NetException && e.statusCode == 401
-                  ? OcraAuthenticationError.deviceInactive
-                  : OcraAuthenticationError.generic,
+          actions: state.removeAction(
+            OcraAuthenticationAction.gettingServerChallenge,
+          ),
+          errors: state.addErrorFromException(
+            action: OcraAuthenticationAction.gettingServerChallenge,
+            exception: e,
+          ),
         ),
       );
+
+      if (shouldRethrow) {
+        rethrow;
+      }
     }
   }
 }

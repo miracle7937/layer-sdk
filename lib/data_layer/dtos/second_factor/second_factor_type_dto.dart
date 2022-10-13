@@ -19,6 +19,12 @@ class SecondFactorTypeDTO extends EnumDTO {
   /// second factor is pin + hardware token
   static const pinHardwareToken = SecondFactorTypeDTO._internal("PIN,HW_TOKEN");
 
+  /// second factor is ocra OR pin
+  static const ocraOrOTP = SecondFactorTypeDTO._internal("OCRA,OTP");
+
+  /// second factor is ocra
+  static const ocra = SecondFactorTypeDTO._internal("OCRA");
+
   /// second factor is otp + hardware token
   static const otpPinHardwareToken =
       SecondFactorTypeDTO._internal("OTP_PIN,HW_TOKEN");
@@ -36,6 +42,8 @@ class SecondFactorTypeDTO extends EnumDTO {
     hardwareToken,
     otpPin,
     pinHardwareToken,
+    ocraOrOTP,
+    ocra,
     otpPinHardwareToken,
     ocraOrOTP,
     ocra,

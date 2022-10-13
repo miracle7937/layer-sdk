@@ -1,6 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../data_layer/network.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../../layer_sdk.dart';
 
@@ -21,14 +19,13 @@ class LandingTransferCubit extends Cubit<LandingTransferState> {
   }) async {
     emit(
       state.copyWith(
-        busy: true,
-        error: LandingTransferErrorStatus.none,
+        actions: state.addAction(LandingTransferAction.loading),
+        errors: state.removeErrorForAction(LandingTransferAction.loading),
       ),
     );
 
     try {
       final newPage = state.pagination.paginate(loadMore: loadMore);
-
       final frequentTransfers = await _loadFrequentTransfersUseCase(
         offset: newPage.offset,
         limit: newPage.limit,
@@ -44,17 +41,15 @@ class LandingTransferCubit extends Cubit<LandingTransferState> {
       emit(
         state.copyWith(
           frequentTransfers: frequentTransfers,
-          busy: false,
+          actions: state.removeAction(LandingTransferAction.loading),
         ),
       );
     } on Exception catch (e) {
       emit(
         state.copyWith(
-          error: e is NetException
-              ? LandingTransferErrorStatus.network
-              : LandingTransferErrorStatus.generic,
-          busy: false,
-        ),
+            actions: state.removeAction(LandingTransferAction.loading),
+            errors: state.addErrorFromException(
+                exception: e, action: LandingTransferAction.loading)),
       );
 
       rethrow;
