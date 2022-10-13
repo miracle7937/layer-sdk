@@ -113,6 +113,8 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
     required String message,
     String? fileURL,
   }) async {
+    InboxChatMessage? inboxChatMessage;
+
     try {
       emit(
         state.copyWith(
@@ -157,7 +159,8 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
         state.copyWith(
           report: state.report!.copyWith(
             messages: [
-              ...state.report!.messages,
+              ...state.report!.messages
+                  .sublist(0, state.report!.messages.length - 1),
               inboxMessage,
             ],
           ),
@@ -171,12 +174,26 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
         ),
       );
     } on Exception catch (e) {
-      /// TODO - catch if the exception is a failedToSend exception, and add the last item as a failed message
+      final failedInboxMessage = InboxReportMessage(
+        text: message,
+        reportId: state.report?.id ?? 0,
+      );
+
       emit(
         state.copyWith(
           busy: false,
           busyAction: InboxConversationBusyAction.idle,
-          messages: state.messages,
+          report: state.report!.copyWith(
+            messages: [...state.report?.messages ?? [], failedInboxMessage],
+          ),
+          messages: [
+            ...(state.messages.sublist(0, state.messages.length - 1)),
+            InboxChatMessage(
+              message: failedInboxMessage,
+              status: InboxChatMessageStatus.failed,
+              sentTime: DateTime.now(),
+            ),
+          ],
           errorStatus: e is NetException
               ? InboxConversationErrorStatus.network
               : InboxConversationErrorStatus.generic,
@@ -190,6 +207,9 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
 
   /// Upload a list of [InboxFiles]
   void uploadInboxFiles() async {
+    InboxReportMessage? inboxMessage;
+    InboxChatMessage? inboxChatMessage;
+
     try {
       if (state.filesToUpload.isEmpty) {
         return;
@@ -213,22 +233,25 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
           )
           .toList();
 
-      final message = InboxReportMessage(
+      inboxMessage = InboxReportMessage(
         reportId: state.report?.id! ?? 0,
         text: state.messageText,
         senderType: InboxReportSenderType.customer,
         files: _displayFiles,
       );
 
-      final chatMessage = InboxChatMessage(
-        message: message,
+      inboxChatMessage = InboxChatMessage(
+        message: inboxMessage,
         status: InboxChatMessageStatus.uploading,
         sentTime: DateTime.now(),
       );
 
       emit(
         state.copyWith(
-          messages: [chatMessage, ...state.messages],
+          messages: [
+            ...state.messages,
+            inboxChatMessage,
+          ],
         ),
       );
 
@@ -241,9 +264,10 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
       emit(
         state.copyWith(
           filesToUpload: [],
+          uploadedFiles: [],
           messages: [
             ...state.messages,
-            chatMessage.copyWith(
+            inboxChatMessage.copyWith(
               // message: message,
               message: sentMessage,
               status: InboxChatMessageStatus.uploaded,
@@ -252,7 +276,6 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
           report: state.report?.copyWith(
             messages: [
               ...state.report!.messages,
-              // message,
               sentMessage,
             ],
           ),
@@ -263,6 +286,86 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
         state.copyWith(
           busy: false,
           busyAction: InboxConversationBusyAction.idle,
+          errorStatus: e is NetException
+              ? InboxConversationErrorStatus.network
+              : InboxConversationErrorStatus.generic,
+          errorMessage: e is NetException ? e.message : e.toString(),
+        ),
+      );
+
+      rethrow;
+    }
+  }
+
+  /// Resend a failed message
+  void resendMessage({
+    required InboxChatMessage failedMessage,
+  }) async {
+    try {
+      emit(
+        state.copyWith(
+          busy: true,
+          busyAction: InboxConversationBusyAction.postingInboxFiles,
+          errorStatus: InboxConversationErrorStatus.none,
+          messages: [
+            ...state.messages.sublist(0, state.messages.length - 1),
+            failedMessage.copyWith(
+              sentTime: DateTime.now(),
+              status: InboxChatMessageStatus.uploading,
+            ),
+          ],
+        ),
+      );
+
+      final sentMessage = await _postInboxFilesUseCase(
+        reportId: state.report?.id! ?? 0,
+        files: state.filesToUpload,
+        messageText: failedMessage.message.text,
+      );
+
+      emit(
+        state.copyWith(
+          filesToUpload: [],
+          uploadedFiles: [],
+          messages: [
+            ...state.messages.sublist(0, state.messages.length - 1),
+            failedMessage.copyWith(
+              message: sentMessage,
+              status: InboxChatMessageStatus.uploaded,
+            ),
+          ],
+          report: state.report?.copyWith(
+            messages: [
+              ...state.report!.messages.sublist(
+                0,
+                state.report!.messages.length - 1,
+              ),
+              sentMessage,
+            ],
+          ),
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          busy: false,
+          busyAction: InboxConversationBusyAction.idle,
+          report: state.report!.copyWith(
+            messages: [
+              ...state.report!.messages.sublist(
+                0,
+                state.report!.messages.length - 1,
+              ),
+              failedMessage.message,
+            ],
+          ),
+          messages: [
+            ...(state.messages.sublist(0, state.messages.length - 1)),
+            failedMessage.copyWith(
+              message: failedMessage.message,
+              status: InboxChatMessageStatus.failed,
+            ),
+          ],
           errorStatus: e is NetException
               ? InboxConversationErrorStatus.network
               : InboxConversationErrorStatus.generic,
