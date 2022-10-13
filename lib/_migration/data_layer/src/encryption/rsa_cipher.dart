@@ -30,6 +30,14 @@ class RSACipher {
     return new String.fromCharCodes(decrypted);
   }
 
+  String decryptBase64(Uint8List bytes, RSAPrivateKey privateKey) {
+    _cipher.init(false, new PrivateKeyParameter<RSAPrivateKey>(privateKey));
+
+    var decrypted = _cipher.process(bytes);
+
+    return new String.fromCharCodes(decrypted);
+  }
+
   AsymmetricKeyPair<PublicKey, PrivateKey> generateKeyPair() {
     var keyParams =
         new RSAKeyGeneratorParameters(BigInt.parse('65537'), 2048, 12);

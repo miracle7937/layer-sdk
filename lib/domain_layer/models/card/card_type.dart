@@ -25,15 +25,30 @@ class CardType extends Equatable {
   /// Name of the card
   final String? name;
 
+  /// If the user can stop card
+  final bool canStopCard;
+
+  /// If the user can freeze card
+  final bool canFreezeCard;
+
+  /// The customer's card image
+  final String? image;
+
   /// Creates a new [CardType] instance
   const CardType({
     this.category = CardCategory.unknown,
     this.name,
+    this.canStopCard = true,
+    this.canFreezeCard = true,
+    this.image,
   });
 
   @override
   List<Object?> get props => [
         category,
         name,
+        canStopCard,
+        canFreezeCard,
+        image,
       ];
 }

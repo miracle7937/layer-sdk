@@ -6,7 +6,7 @@ class BankingProductTransaction extends Equatable {
   final String? transactionId;
 
   /// Card on which transaction was made: if on account then it's sent as null
-  final String? cardId;
+  final int? cardId;
 
   /// Account on which transaction was made: if on card then it's sent as null
   final String? accountId;
