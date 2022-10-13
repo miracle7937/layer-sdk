@@ -1,3 +1,6 @@
+import 'package:dio/dio.dart';
+
+import '../../domain_layer/models/banking_product_transaction.dart';
 import '../dtos/banking_product_transaction_dto.dart';
 import '../network/net_client.dart';
 import '../network/net_request_methods.dart';
@@ -11,6 +14,27 @@ class BankingProductTransactionProvider {
   BankingProductTransactionProvider(
     this.netClient,
   );
+
+  ///  Exports transaction receipt
+  Future<List<int>> getTransactionReceipt(
+    BankingProductTransaction transaction,
+  ) async {
+    final response = await netClient.request(
+      '${netClient.netEndpoints.transaction}/${transaction.transactionId}/export',
+      method: NetRequestMethods.post,
+      decodeResponse: false,
+      responseType: ResponseType.bytes,
+      data: {
+        "account_id": transaction.accountId,
+        "card_id": transaction.cardId,
+        "send_by": "response",
+        "form_id": "pdf_transaction_detail",
+        "format": "pdf"
+      },
+    );
+
+    return response.data;
+  }
 
   /// Returns all completed transactions of the supplied customer account
   Future<List<BankingProductTransactionDTO>>

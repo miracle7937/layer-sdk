@@ -36,6 +36,8 @@ class SecondFactorTypeDTO extends EnumDTO {
     hardwareToken,
     otpPin,
     pinHardwareToken,
+    ocraOrOTP,
+    ocra,
     otpPinHardwareToken,
     ocraOrOTP,
     ocra,
