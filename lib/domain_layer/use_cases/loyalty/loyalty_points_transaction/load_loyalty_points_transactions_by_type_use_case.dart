@@ -14,11 +14,13 @@ class LoadLoyaltyPointsTransactionsByTypeUseCase {
   /// Loads loyalty points transactions related to the passed
   /// transaction type.
   Future<List<LoyaltyPointsTransaction>> call({
-    required LoyaltyPointsTransactionType transactionType,
+    required LoyaltyPointsTransactionType? transactionType,
     int? limit,
     int? offset,
     String? searchQuery,
     bool forceRefresh = false,
+    DateTime? startDate,
+    DateTime? endDate,
   }) =>
       _repository.listTransactions(
         transactionType: transactionType,
@@ -26,5 +28,7 @@ class LoadLoyaltyPointsTransactionsByTypeUseCase {
         offset: offset,
         searchQuery: searchQuery,
         forceRefresh: forceRefresh,
+        startDate: startDate,
+        endDate: endDate,
       );
 }
