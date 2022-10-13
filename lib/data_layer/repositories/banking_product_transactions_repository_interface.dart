@@ -18,4 +18,9 @@ abstract class BankingProductTransactionRepositoryInterface {
     DateTime? startDate,
     DateTime? endDate,
   });
+
+  /// Exports transaction receipt
+  Future<List<int>> getTransactionReceipt(
+    BankingProductTransaction transaction,
+  );
 }
