@@ -87,6 +87,9 @@ class ShortcutTypeDTO extends EnumDTO {
   /// A shortcut for card topup.
   static const cardTopup = ShortcutTypeDTO._internal('cardTopup');
 
+  /// A shortcut for pay to mobile.
+  static const payToMobile = ShortcutTypeDTO._internal('payToMobile');
+
   const ShortcutTypeDTO._internal(String value) : super.internal(value);
 
   /// All the available values.
@@ -104,6 +107,7 @@ class ShortcutTypeDTO extends EnumDTO {
     benefitPay,
     benefitGateway,
     cardTopup,
+    payToMobile,
   ];
 
   /// Creates [ShortcutTypeDTO] from raw value.

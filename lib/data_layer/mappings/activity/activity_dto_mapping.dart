@@ -37,6 +37,9 @@ extension ActivityDTOMapping on ActivityDTO {
       case ActivityTypeDTO.recurringTopup:
         return (item as PaymentDTO).toPayment();
 
+      case ActivityTypeDTO.sendMoney:
+        return (item as PayToMobileDTO).toPayToMobile();
+
       default:
         return item;
     }
@@ -307,6 +310,12 @@ extension ActivityActionTypeDTOMapping on ActivityActionTypeDTO {
 
       case ActivityActionTypeDTO.unknown:
         return ActivityActionType.unknown;
+
+      case ActivityActionTypeDTO.resendWithdrawalCode:
+        return ActivityActionType.resendWithdrawalCode;
+
+      case ActivityActionTypeDTO.shareTransactionCode:
+        return ActivityActionType.shareTransactionCode;
 
       default:
         throw MappingException(
