@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logging/logging.dart';
 
 import '../../../../domain_layer/models.dart';
 import '../../../../domain_layer/use_cases.dart';
@@ -7,6 +8,8 @@ import '../../../cubits.dart';
 
 /// A cubit that handles the state for a pay to mobile transfer flow.
 class PayToMobileCubit extends Cubit<PayToMobileState> {
+  final _logger = Logger('PayToMobileCubit');
+
   final GetActiveAccountsSortedByAvailableBalance
       _getActiveAccountsSortedByAvailableBalance;
   final LoadAllCurrenciesUseCase _loadAllCurrenciesUseCase;
@@ -462,6 +465,9 @@ class PayToMobileCubit extends Cubit<PayToMobileState> {
           break;
 
         default:
+          _logger.severe(
+            'Unhandled pay to mobile status -> ${payToMobileResult.status}',
+          );
           throw Exception(
             'Unhandled pay to mobile status -> ${payToMobileResult.status}',
           );

@@ -279,7 +279,7 @@ class LayerOcraOtpScreen<LayerCubit extends Cubit<BaseState>, LayerCubitAction>
   /// The configuration for this second factor view.
   final OcraOtpConfiguration<LayerCubitAction> ocraOtpConfiguration;
 
-  /// The callback called when an OTP code is setted.
+  /// The callback called when an OTP code is set.
   final ValueSetter<String> onOTPCode;
 
   /// The callback called when the biometrics are introduced and the

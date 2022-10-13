@@ -1,8 +1,7 @@
 import '../../abstract_repositories.dart';
 import '../../models.dart';
 
-/// A use case that verifies the second factor for deleting a pay to mobile
-/// request ID.
+/// A use case that sends the OTP code for deleting a pay to mobile transaction.
 class SendOTPCodeForDeletePayToMobileUseCase {
   final PayToMobileRepositoryInterface _repository;
 

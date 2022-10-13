@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logging/logging.dart';
 
 import '../../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
@@ -7,6 +8,8 @@ import '../../cubits.dart';
 /// A cubit that handles the state for the actions that the user
 /// can perform on the transaction details for a [PayToMobile] item.
 class PayToMobileTransactionCubit extends Cubit<PayToMobileTransactionState> {
+  final _logger = Logger('PayToMobileTransactionCubit');
+
   /// The pay to mobile transaction.
   final PayToMobile _payToMobile;
 
@@ -135,6 +138,10 @@ class PayToMobileTransactionCubit extends Cubit<PayToMobileTransactionState> {
             break;
 
           default:
+            _logger.severe(
+              'Unhandled pay to mobile status -> '
+              '${deletePayToMobileResult.status}',
+            );
             throw Exception(
               'Unhandled pay to mobile status -> '
               '${deletePayToMobileResult.status}',

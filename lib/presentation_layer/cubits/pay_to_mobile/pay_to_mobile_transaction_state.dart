@@ -37,7 +37,7 @@ enum PayToMobileTransactionEvent {
 /// Holds the state for the [PayToMobileTransactionCubit].
 class PayToMobileTransactionState extends BaseState<
     PayToMobileTransactionAction, PayToMobileTransactionEvent, void> {
-  /// The pay to movile obtained while deleting a pay to mobile.
+  /// The pay to mobile obtained while deleting a pay to mobile.
   final PayToMobile? deletePayToMobileResult;
 
   /// Creates a new [PayToMobileTransactionState].

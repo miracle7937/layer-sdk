@@ -27,7 +27,7 @@ class ContactPhoneField extends StatelessWidget with ContactPickerMixin {
   /// Callback called when the phone field changes.
   final ValueChanged<String> onChanged;
 
-  /// Callback called when the country code is setted.
+  /// Callback called when the country code is set.
   final ValueSetter<String> onCountryCodeChanged;
 
   /// The warning message for the field.
