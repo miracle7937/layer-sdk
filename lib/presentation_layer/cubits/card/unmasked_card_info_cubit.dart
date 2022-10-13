@@ -37,7 +37,10 @@ class UnmaskCardInfoCubit extends Cubit<UnmaskCardInfoState> {
             UnmaskCardInfoEvent.inputSecondFactor,
           },
         ),
-        otpId: null,
+        otpId:
+            secondFactorType != null && secondFactorType != SecondFactorType.otp
+                ? null
+                : state.otpId,
         errors: {},
       ),
     );
