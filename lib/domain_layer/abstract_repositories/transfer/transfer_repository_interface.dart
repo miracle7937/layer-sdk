@@ -37,10 +37,16 @@ abstract class TransferRepositoryInterface {
     required bool editMode,
   });
 
+  /// Sends the otp code for the passed transfer id.
+  Future<Transfer> sendOTPCode({
+    required int transferId,
+    required bool editMode,
+  });
+
   /// Verifies the second factor for the passed transfer id.
   Future<Transfer> verifySecondFactor({
     required int transferId,
-    required String otpValue,
+    required String value,
     required SecondFactorType secondFactorType,
   });
 

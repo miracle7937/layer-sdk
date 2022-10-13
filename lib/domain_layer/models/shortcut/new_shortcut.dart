@@ -7,6 +7,9 @@ enum ShortcutType {
 
   /// The shortcut for making a payment.
   payment,
+
+  /// The shortcut for making a pay to mobile.
+  payToMobile,
 }
 
 /// A model representing a new shortcut data.

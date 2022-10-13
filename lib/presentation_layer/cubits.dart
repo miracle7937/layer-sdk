@@ -113,8 +113,12 @@ export 'cubits/new_transfer/beneficiary_transfer/beneficiary_transfer_cubit.dart
 export 'cubits/new_transfer/beneficiary_transfer/beneficiary_transfer_state.dart';
 export 'cubits/new_transfer/own_transfer/own_transfer_cubit.dart';
 export 'cubits/new_transfer/own_transfer/own_transfer_state.dart';
+export 'cubits/new_transfer/pay_to_mobile/pay_to_mobile_cubit.dart';
+export 'cubits/new_transfer/pay_to_mobile/pay_to_mobile_state.dart';
 export 'cubits/ocra/ocra_authentication_cubit.dart';
 export 'cubits/ocra/ocra_authentication_state.dart';
+export 'cubits/pay_to_mobile/pay_to_mobile_transaction_cubit.dart';
+export 'cubits/pay_to_mobile/pay_to_mobile_transaction_state.dart';
 export 'cubits/payments/frequent_payments_cubit.dart';
 export 'cubits/payments/frequent_payments_state.dart';
 export 'cubits/payments/patch_payment_cubit.dart';

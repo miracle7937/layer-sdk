@@ -9,6 +9,7 @@ class FLImages {
   static const String biometrics = '$_path/biometrics.svg';
   static const String camera = '$_path/camera.svg';
   static const String close = '$_path/close.svg';
+  static const String contacts = '$_path/contacts.svg';
   static const String error = '$_path/error.svg';
   static const String info = '$_path/info.svg';
   static const String success = '$_path/success.svg';
