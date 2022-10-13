@@ -11,11 +11,11 @@ class ResendPayToMobileSecondFactorUseCase {
   }) : _repository = repository;
 
   /// Returns a [PayToMobile] resulting on resending the second factor for the
-  /// passed [NewPayToMobile].
+  /// passed [PayToMobile].
   Future<PayToMobile> call({
-    required NewPayToMobile newPayToMobile,
+    required PayToMobile payToMobile,
   }) =>
       _repository.resendSecondFactor(
-        newPayToMobile: newPayToMobile,
+        payToMobile: payToMobile,
       );
 }

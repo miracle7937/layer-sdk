@@ -37,6 +37,9 @@ class PayToMobile extends Equatable {
   /// Created time of the request.
   final DateTime? created;
 
+  /// Time the request expires.
+  final DateTime? expiry;
+
   /// Creates a new [PayToMobile].
   PayToMobile({
     this.requestId,
@@ -50,6 +53,7 @@ class PayToMobile extends Equatable {
     this.transactionCode,
     this.secondFactorType,
     this.created,
+    this.expiry,
   });
 
   @override
@@ -65,5 +69,6 @@ class PayToMobile extends Equatable {
         transactionCode,
         secondFactorType,
         created,
+        expiry,
       ];
 }

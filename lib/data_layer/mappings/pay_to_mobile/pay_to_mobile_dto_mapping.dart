@@ -18,6 +18,7 @@ extension PayToMobileDTOExtension on PayToMobileDTO {
         transactionCode: transactionCode,
         secondFactorType: secondFactorTypeDTO?.toSecondFactorType(),
         created: created,
+        expiry: expiry,
       );
 }
 
@@ -158,5 +159,6 @@ extension PayToMobileExtension on PayToMobile {
         transactionCode: transactionCode,
         secondFactorTypeDTO: secondFactorType?.toSecondFactorTypeDTO(),
         created: created,
+        expiry: expiry,
       );
 }

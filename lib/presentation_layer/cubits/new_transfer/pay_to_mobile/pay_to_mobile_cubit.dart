@@ -599,6 +599,8 @@ class PayToMobileCubit extends Cubit<PayToMobileState> {
   /// Resends the second factor for the [PayToMobile] retrievied on
   /// the [submit] method.
   Future<void> resendSecondFactor() async {
+    assert(state.payToMobileResult != null);
+
     emit(
       state.copyWith(
         actions: state.addAction(
@@ -610,7 +612,7 @@ class PayToMobileCubit extends Cubit<PayToMobileState> {
 
     try {
       final payToMobileResult = await _resendPayToMobileSecondFactorUseCase(
-        newPayToMobile: state.payToMobile,
+        payToMobile: state.payToMobileResult!,
       );
 
       emit(

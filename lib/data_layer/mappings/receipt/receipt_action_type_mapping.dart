@@ -19,7 +19,7 @@ extension ReceiptActionTypeMapping on ReceiptActionType {
         return 'payment_intent_receipt';
 
       case ReceiptActionType.payToMobile:
-        throw Exception('Unhandled toQueryData for $this');
+        return 'send_money';
     }
   }
 
@@ -39,7 +39,7 @@ extension ReceiptActionTypeMapping on ReceiptActionType {
         return netEndpoints.topUpReceipt;
 
       case ReceiptActionType.payToMobile:
-        throw Exception('Unhandled toQueryString for $this');
+        return netEndpoints.sendMoneyReceipt;
     }
   }
 }

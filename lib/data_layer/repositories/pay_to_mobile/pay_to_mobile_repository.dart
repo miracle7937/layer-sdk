@@ -52,15 +52,79 @@ class PayToMobileRepository implements PayToMobileRepositoryInterface {
     return payToMobileDTO.toPayToMobile();
   }
 
-  /// Resends the second factor for the passed pay to mobile ID.
+  /// Resends the second factor for the passed pay to mobile.
   @override
   Future<PayToMobile> resendSecondFactor({
-    required NewPayToMobile newPayToMobile,
+    required PayToMobile payToMobile,
   }) async {
     final payToMobileDTO = await _provider.resendSecondFactor(
-      newPayToMobileDTO: newPayToMobile.toDTO(),
+      payToMobileDTO: payToMobile.toPayToMobileDTO(),
     );
 
     return payToMobileDTO.toPayToMobile();
   }
+
+  /// Deletes a pay to mobile using a request ID and returns the pay to mobile
+  /// that was deleted.
+  ///
+  /// If the request succeded (no second factor was returned) `null` will be
+  /// returned.
+  @override
+  Future<PayToMobile?> delete({
+    required String requestId,
+  }) async {
+    final payToMobileDTO = await _provider.delete(
+      requestId: requestId,
+    );
+
+    return payToMobileDTO == null ? null : payToMobileDTO.toPayToMobile();
+  }
+
+  /// Resends the withdrawal code from the passed pay to mobile request ID.
+  @override
+  Future<void> resendWithdrawalCode({
+    required String requestId,
+  }) =>
+      _provider.resendWithdrawalCode(
+        requestId: requestId,
+      );
+
+  /// Sends the OTP code for deleting the provided pay to mobile request ID.
+  @override
+  Future<PayToMobile> sendOTPCodeForDeleting({
+    required String requestId,
+  }) async {
+    final payToMobileDTO = await _provider.sendOTPCodeForDeleting(
+      requestId: requestId,
+    );
+
+    return payToMobileDTO.toPayToMobile();
+  }
+
+  /// Resends the second factor for deleting the passed pay to mobile
+  /// request ID.
+  @override
+  Future<PayToMobile> resendSecondFactorForDeleting({
+    required PayToMobile payToMobile,
+  }) async {
+    final payToMobileDTO = await _provider.resendSecondFactorForDeleting(
+      payToMobileDTO: payToMobile.toPayToMobileDTO(),
+    );
+
+    return payToMobileDTO.toPayToMobile();
+  }
+
+  /// Verifies the second factor for the deleting passed pay to mobile
+  /// request ID.
+  @override
+  Future<void> verifySecondFactorForDeleting({
+    required String requestId,
+    required String value,
+    required SecondFactorType secondFactorType,
+  }) =>
+      _provider.verifySecondFactorForDeleting(
+        requestId: requestId,
+        value: value,
+        secondFactorTypeDTO: secondFactorType.toSecondFactorTypeDTO(),
+      );
 }
