@@ -29,6 +29,9 @@ class FinancialData extends Equatable {
   /// Whether or not the values of this [FinancialData] should be hidden.
   final bool hideValues;
 
+  /// Current balance
+  final num? currentBalance;
+
   /// Creates a new [FinancialData]
   FinancialData({
     Map<AccountType, double> accountTypeBalances =
@@ -40,6 +43,7 @@ class FinancialData extends Equatable {
     this.upcomingPayments,
     this.cardBalance,
     this.prefCurrency,
+    this.currentBalance,
     this.hideValues = false,
   })  : accountTypeBalances = UnmodifiableMapView(accountTypeBalances),
         cardCategoryBalances = UnmodifiableMapView(cardCategoryBalances);
@@ -54,6 +58,7 @@ class FinancialData extends Equatable {
     double? cardBalance,
     String? prefCurrency,
     bool? hideValues,
+    num? currentBalance,
   }) {
     return FinancialData(
       accountTypeBalances: accountTypeBalances ?? this.accountTypeBalances,
@@ -64,6 +69,7 @@ class FinancialData extends Equatable {
       cardBalance: cardBalance ?? this.cardBalance,
       prefCurrency: prefCurrency ?? this.prefCurrency,
       hideValues: hideValues ?? this.hideValues,
+      currentBalance: currentBalance ?? this.currentBalance,
     );
   }
 
@@ -77,5 +83,6 @@ class FinancialData extends Equatable {
         cardBalance,
         prefCurrency,
         hideValues,
+        currentBalance,
       ];
 }
