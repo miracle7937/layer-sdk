@@ -137,6 +137,9 @@ class NetEndpoints {
   /// The cards endpoint
   String get card => '$_infoBanking/v1/card';
 
+  /// The card info endpoint
+  String get cardInfo => '$_infoBanking/v2/card_info';
+
   /// The beneficiaries endpoint
   String get beneficiary => '$_txnBanking/v1/beneficiary';
 
@@ -181,6 +184,9 @@ class NetEndpoints {
 
   /// The transactions endpoint
   String get transaction => '$_infoBanking/v1/transaction';
+
+  /// The filter transactions endpoint
+  String get filterTransaction => '$_infoBanking/v1/filter/transaction';
 
   /// The message endpoint
   String get message => '$_infoBanking/v1/message';
@@ -337,4 +343,10 @@ class NetEndpoints {
 
   /// Endpoint for the customer limits
   String get customerLimits => '$_txnBanking/v2/customer_limit';
+
+  /// Endpoint for handling inbox report calls
+  String get report => '$_engagement/v1/report';
+
+  /// Endpoint for getting the balance
+  String get balance => '$_infoBanking/v2/balance/periodical_balance';
 }

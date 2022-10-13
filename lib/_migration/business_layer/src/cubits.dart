@@ -10,8 +10,6 @@ export 'cubits/appointments/appointment_branch_cubit.dart';
 export 'cubits/appointments/appointment_branch_state.dart';
 export 'cubits/appointments/appointment_cubit.dart';
 export 'cubits/appointments/appointment_states.dart';
-export 'cubits/category_cubit.dart';
-export 'cubits/category_state.dart';
 export 'cubits/registration/registration_cubit.dart';
 export 'cubits/registration/registration_state.dart';
 export 'cubits/registration/steps/authentication_registration_step.dart';

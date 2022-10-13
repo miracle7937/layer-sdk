@@ -54,8 +54,12 @@ class CustomerRepository implements CustomerRepositoryInterface {
 
   /// Fetches the current logged in customer
   @override
-  Future<Customer> fetchCurrentCustomer() async {
-    final customerDTOs = await _provider.fetchLoggedInCustomer();
+  Future<Customer> fetchCurrentCustomer({
+    bool forceRefresh = false,
+  }) async {
+    final customerDTOs = await _provider.fetchLoggedInCustomer(
+      forceRefresh: forceRefresh,
+    );
 
     return customerDTOs.toCustomer(_customerCustomData);
   }
