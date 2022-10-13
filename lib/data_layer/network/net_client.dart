@@ -317,11 +317,14 @@ class NetClient {
         }
       }
 
-      exception ??= {
-        DioErrorType.connectTimeout,
-        DioErrorType.sendTimeout,
-        DioErrorType.receiveTimeout,
-      }.contains(e.type)
+      final isConnectivityError = {
+            DioErrorType.connectTimeout,
+            DioErrorType.sendTimeout,
+            DioErrorType.receiveTimeout,
+          }.contains(e.type) ||
+          (e.type == DioErrorType.other && e.error is SocketException);
+
+      exception ??= isConnectivityError
           ? ConnectivityException()
           : NetException(
               details: e.message,
