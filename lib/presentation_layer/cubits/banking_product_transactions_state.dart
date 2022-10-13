@@ -58,6 +58,7 @@ class BankingProductTransactionsState
 
   @override
   List<Object?> get props => [
+        actions,
         transactions,
         accountId,
         cardId,

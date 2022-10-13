@@ -26,6 +26,7 @@ export 'models/branding/layer_branding.dart';
 export 'models/campaign/campaign_response.dart';
 export 'models/campaign/customer_campaign.dart';
 export 'models/card/banking_card.dart';
+export 'models/card/card_info.dart';
 export 'models/card/card_preferences.dart';
 export 'models/card/card_transaction.dart';
 export 'models/card/card_type.dart';
