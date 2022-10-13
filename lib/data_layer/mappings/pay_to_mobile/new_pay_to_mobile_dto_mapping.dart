@@ -1,5 +1,6 @@
 import '../../../domain_layer/models.dart';
 import '../../dtos.dart';
+import '../../mappings.dart';
 
 /// Extensions on [NewPayToMobile].
 extension NewPayToMobileExtension on NewPayToMobile {
@@ -11,23 +12,6 @@ extension NewPayToMobileExtension on NewPayToMobile {
         currencyCode: currencyCode,
         amount: amount,
         transactionCode: transactionCode,
-        requestTypeDTO: requestType?.toDTO(),
+        requestTypeDTO: requestType?.toRequestTypeDTO(),
       );
-}
-
-/// Extensions on [PayToMobileRequestType].
-extension PayToMobileRequestTypeExtension on PayToMobileRequestType {
-  /// Maps a [PayToMobileRequestType] into its DTO.
-  PayToMobileRequestTypeDTO toDTO() {
-    switch (this) {
-      case PayToMobileRequestType.accountTransfer:
-        return PayToMobileRequestTypeDTO.accountTransfer;
-
-      case PayToMobileRequestType.atmCash:
-        return PayToMobileRequestTypeDTO.atmCash;
-
-      case PayToMobileRequestType.selfCash:
-        return PayToMobileRequestTypeDTO.selfCash;
-    }
-  }
 }

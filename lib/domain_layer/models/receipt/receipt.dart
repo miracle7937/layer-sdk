@@ -20,4 +20,7 @@ enum ReceiptActionType {
 
   /// Top up action
   topUp,
+
+  /// Pay to mobile.
+  payToMobile,
 }

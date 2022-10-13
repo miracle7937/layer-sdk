@@ -4,6 +4,9 @@ import '../../models.dart';
 
 /// Model representing a pay to mobile element.
 class PayToMobile extends Equatable {
+  /// The request id.
+  final String? requestId;
+
   /// Source account.
   final Account? account;
 
@@ -34,8 +37,12 @@ class PayToMobile extends Equatable {
   /// Created time of the request.
   final DateTime? created;
 
+  /// Time the request expires.
+  final DateTime? expiry;
+
   /// Creates a new [PayToMobile].
   PayToMobile({
+    this.requestId,
     this.account,
     this.toMobile,
     this.requestType,
@@ -46,10 +53,12 @@ class PayToMobile extends Equatable {
     this.transactionCode,
     this.secondFactorType,
     this.created,
+    this.expiry,
   });
 
   @override
   List<Object?> get props => [
+        requestId,
         account,
         toMobile,
         requestType,
@@ -60,5 +69,6 @@ class PayToMobile extends Equatable {
         transactionCode,
         secondFactorType,
         created,
+        expiry,
       ];
 }

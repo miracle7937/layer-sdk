@@ -16,6 +16,18 @@ enum PayToMobileAction {
 
   /// Submitting the new pay to mobile.
   submit,
+
+  /// Sending the OTP code for the pay to mobile.
+  sendOTPCode,
+
+  /// The second factor is being verified.
+  verifySecondFactor,
+
+  /// The second factor is being resent.
+  resendSecondFactor,
+
+  /// The shortcut is being created.
+  shortcut,
 }
 
 /// The available events.
@@ -29,10 +41,16 @@ enum PayToMobileEvent {
   /// Event for showing the confirmation view.
   showConfirmationView,
 
-  /// Show second factor.
-  showSecondFactor,
+  /// Event for opening the second factor.
+  openSecondFactor,
 
-  /// Show result view.
+  /// Event for showing the OTP code inputing view.
+  showOTPCodeView,
+
+  /// Event for closing the second factor.
+  closeSecondFactor,
+
+  /// Event for showing the transfer result view.
   showResultView,
 }
 

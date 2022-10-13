@@ -17,6 +17,9 @@ extension ReceiptActionTypeMapping on ReceiptActionType {
 
       case ReceiptActionType.topUp:
         return 'payment_intent_receipt';
+
+      case ReceiptActionType.payToMobile:
+        return 'send_money';
     }
   }
 
@@ -34,6 +37,9 @@ extension ReceiptActionTypeMapping on ReceiptActionType {
 
       case ReceiptActionType.topUp:
         return netEndpoints.topUpReceipt;
+
+      case ReceiptActionType.payToMobile:
+        return netEndpoints.sendMoneyReceipt;
     }
   }
 }

@@ -7,6 +7,7 @@ import '../../mappings.dart';
 extension PayToMobileDTOExtension on PayToMobileDTO {
   /// Maps [PayToMobileDTO] into its model.
   PayToMobile toPayToMobile() => PayToMobile(
+        requestId: requestId,
         account: account?.toAccount(),
         toMobile: toMobile,
         requestType: requestTypeDTO?.toRequestType(),
@@ -17,6 +18,7 @@ extension PayToMobileDTOExtension on PayToMobileDTO {
         transactionCode: transactionCode,
         secondFactorType: secondFactorTypeDTO?.toSecondFactorType(),
         created: created,
+        expiry: expiry,
       );
 }
 
@@ -38,6 +40,29 @@ extension PayToMobileRequestTypeDTOExtension on PayToMobileRequestTypeDTO {
         throw MappingException(
           from: PayToMobileRequestTypeDTO,
           to: PayToMobileRequestType,
+        );
+    }
+  }
+}
+
+/// Extension on [PayToMobileRequestType].
+extension PayToMobileRequestTypeExtension on PayToMobileRequestType {
+  /// Maps [PayToMobileRequestType] into [PayToMobileRequestTypeDTO].
+  PayToMobileRequestTypeDTO? toRequestTypeDTO() {
+    switch (this) {
+      case PayToMobileRequestType.selfCash:
+        return PayToMobileRequestTypeDTO.selfCash;
+
+      case PayToMobileRequestType.atmCash:
+        return PayToMobileRequestTypeDTO.atmCash;
+
+      case PayToMobileRequestType.accountTransfer:
+        return PayToMobileRequestTypeDTO.accountTransfer;
+
+      default:
+        throw MappingException(
+          from: PayToMobileRequestType,
+          to: PayToMobileRequestTypeDTO,
         );
     }
   }
@@ -79,4 +104,61 @@ extension PayToMobileStatusDTOExtension on PayToMobileStatusDTO {
         );
     }
   }
+}
+
+/// Extension on [PayToMobileStatus].
+extension PayToMobileStatusExtension on PayToMobileStatus {
+  /// Maps [PayToMobileStatus] into [PayToMobileStatusDTO].
+  PayToMobileStatusDTO? toStatusDTO() {
+    switch (this) {
+      case PayToMobileStatus.completed:
+        return PayToMobileStatusDTO.completed;
+
+      case PayToMobileStatus.rejected:
+        return PayToMobileStatusDTO.rejected;
+
+      case PayToMobileStatus.pending:
+        return PayToMobileStatusDTO.pending;
+
+      case PayToMobileStatus.failed:
+        return PayToMobileStatusDTO.failed;
+
+      case PayToMobileStatus.deleted:
+        return PayToMobileStatusDTO.deleted;
+
+      case PayToMobileStatus.expired:
+        return PayToMobileStatusDTO.expired;
+
+      case PayToMobileStatus.pendingSecondFactor:
+        return PayToMobileStatusDTO.pendingSecondFactor;
+
+      case PayToMobileStatus.bankPending:
+        return PayToMobileStatusDTO.bankPending;
+
+      default:
+        throw MappingException(
+          from: PayToMobileStatus,
+          to: PayToMobileStatusDTO,
+        );
+    }
+  }
+}
+
+/// Extension on [PayToMobile].
+extension PayToMobileExtension on PayToMobile {
+  /// Maps a [PayToMobile] into a [PayToMobileDTO].
+  PayToMobileDTO toPayToMobileDTO() => PayToMobileDTO(
+        requestId: requestId,
+        account: account?.toAccountDTO(),
+        toMobile: toMobile,
+        requestTypeDTO: requestType?.toRequestTypeDTO(),
+        amount: amount,
+        currencyCode: currencyCode,
+        statusDTO: status?.toStatusDTO(),
+        withdrawalCode: withdrawalCode,
+        transactionCode: transactionCode,
+        secondFactorTypeDTO: secondFactorType?.toSecondFactorTypeDTO(),
+        created: created,
+        expiry: expiry,
+      );
 }
