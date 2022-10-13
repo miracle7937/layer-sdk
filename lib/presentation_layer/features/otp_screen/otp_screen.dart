@@ -297,12 +297,11 @@ class _OTPScreenState extends State<_OTPScreen> with FullScreenLoaderMixin {
                 ocraSecret: ocraSecret,
               );
 
-      await ocraAuthenticationCubit.generateOCRAClientResponse(
+      await ocraAuthenticationCubit.generateClientResponse(
         password: accessPin,
       );
 
-      final ocraClientResponse =
-          ocraAuthenticationCubit.state.ocraClientResponse;
+      final ocraClientResponse = ocraAuthenticationCubit.state.clientResponse;
       if (ocraClientResponse != null) {
         widget.onOCRAClientResponse!(ocraClientResponse);
       }

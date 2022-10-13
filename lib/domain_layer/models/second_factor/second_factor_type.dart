@@ -14,10 +14,4 @@ enum SecondFactorType {
 
   /// Hardware token
   hardwareToken,
-
-  /// Ocra or OTP
-  ocraOrOTP,
-
-  /// Ocra
-  ocra,
 }
