@@ -37,6 +37,7 @@ enum OcraAuthenticationActionErrorCode {
   generic
 }
 
+/// TODO: Migrate to BaseState and remove old stuff
 /// The state of the `OcraAuthenticationCubit`
 class OcraAuthenticationState extends BaseState<OcraAuthenticationAction, void,
     OcraAuthenticationActionErrorCode> {

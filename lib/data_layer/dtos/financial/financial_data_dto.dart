@@ -24,6 +24,9 @@ class FinancialDataDTO {
   /// Pref currency
   String? prefCurrency;
 
+  /// Current balance
+  num? currentBalance;
+
   ///Creates a new [FinancialDataDTO] object
   FinancialDataDTO({
     this.accountTypeBalances,
@@ -33,6 +36,7 @@ class FinancialDataDTO {
     this.upcomingPayments,
     this.cardBalance,
     this.prefCurrency,
+    this.currentBalance,
   });
 
   /// Creates a new [FinancialDataDTO] from json
@@ -80,6 +84,10 @@ class FinancialDataDTO {
     availableCredit = json['available_credit'] is String
         ? json['available_credit']
         : json['available_credit']?.toDouble();
+
+    currentBalance = json['balance_current'] is num?
+        ? JsonParser.parseDouble(json['balance_current'])
+        : 0.0;
 
     remainingBalance = json['remaining_balance'] is String
         ? json['remaining_balance']

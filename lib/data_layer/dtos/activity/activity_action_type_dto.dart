@@ -61,6 +61,12 @@ class ActivityActionTypeDTO extends EnumDTO {
   /// activity action type is renewal
   static const renewal = ActivityActionTypeDTO._internal('RN');
 
+  /// Activity action is resend withdrawal code.
+  static const resendWithdrawalCode = ActivityActionTypeDTO._internal('RESWC');
+
+  /// Activity action is share transaction code.
+  static const shareTransactionCode = ActivityActionTypeDTO._internal('SHARTC');
+
   /// All possible activity action type values
   static const List<ActivityActionTypeDTO> values = [
     unknown,
@@ -82,6 +88,8 @@ class ActivityActionTypeDTO extends EnumDTO {
     patchPayment,
     editAppointment,
     renewal,
+    resendWithdrawalCode,
+    shareTransactionCode,
   ];
 
   const ActivityActionTypeDTO._internal(String value) : super.internal(value);
