@@ -93,22 +93,20 @@ class OTPScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) => BlocProvider<BiometricsCubit>(
         create: (context) => context.read<BiometricsCreator>().create(),
-        child: Builder(
-          builder: (context) => _OTPScreen(
-            title: title,
-            resendInterval: resendInterval,
-            imageBuilder: imageBuilder,
-            onOTPCode: onOTPCode,
-            isVerifying: isVerifying,
-            verificationError: verificationError,
-            shouldClearCode: shouldClearCode,
-            onResend: onResend,
-            isResending: isResending,
-            showMobileNumber: showMobileNumber,
-            showBiometrics: showBiometrics,
-            onOCRAClientResponse: onOCRAClientResponse,
-            onSendOTPCode: onSendOTPCode,
-          ),
+        child: _OTPScreen(
+          title: title,
+          resendInterval: resendInterval,
+          imageBuilder: imageBuilder,
+          onOTPCode: onOTPCode,
+          isVerifying: isVerifying,
+          verificationError: verificationError,
+          shouldClearCode: shouldClearCode,
+          onResend: onResend,
+          isResending: isResending,
+          showMobileNumber: showMobileNumber,
+          showBiometrics: showBiometrics,
+          onOCRAClientResponse: onOCRAClientResponse,
+          onSendOTPCode: onSendOTPCode,
         ),
       );
 }
@@ -284,8 +282,10 @@ class _OTPScreenState extends State<_OTPScreen> with FullScreenLoaderMixin {
     if (biometricsCubit.state.authenticated ?? false) {
       final storageCubit = context.read<StorageCreator>().create();
 
-      await storageCubit.loadLastLoggedUser();
-      await storageCubit.loadOcraSecretKey();
+      await Future.wait([
+        storageCubit.loadLastLoggedUser(),
+        storageCubit.loadOcraSecretKey(),
+      ]);
 
       final deviceId = storageCubit.state.currentUser!.deviceId!;
       final ocraSecret = storageCubit.state.ocraSecretKey!;

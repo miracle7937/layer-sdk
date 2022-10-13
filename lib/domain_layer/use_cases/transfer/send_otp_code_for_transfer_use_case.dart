@@ -1,6 +1,6 @@
 import '../../../features/transfer.dart';
 
-/// A use case that verifies the second factor for a transfer id.
+/// A use case that sends the OTP code for a transfer ID.
 class SendOTPCodeForTransferUseCase {
   final TransferRepositoryInterface _transferRepository;
 

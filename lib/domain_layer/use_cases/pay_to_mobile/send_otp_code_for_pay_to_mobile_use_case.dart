@@ -1,7 +1,7 @@
 import '../../abstract_repositories.dart';
 import '../../models.dart';
 
-/// A use case that verifies the second factor for a pay to mobile request ID.
+/// A use case that sends the OTP code for a pay to mobile request ID.
 class SendOTPCodeForPayToMobileUseCase {
   final PayToMobileRepositoryInterface _repository;
 
