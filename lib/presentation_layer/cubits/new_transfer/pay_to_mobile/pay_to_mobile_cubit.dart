@@ -203,9 +203,7 @@ class PayToMobileCubit extends Cubit<PayToMobileState> {
       );
     }
 
-    if (saveToShortcut != null &&
-        saveToShortcut == false &&
-        state.payToMobile.saveToShortcut) {
+    if (saveToShortcut == false && state.payToMobile.saveToShortcut) {
       emit(
         state.copyWith(
           events: state.addEvent(

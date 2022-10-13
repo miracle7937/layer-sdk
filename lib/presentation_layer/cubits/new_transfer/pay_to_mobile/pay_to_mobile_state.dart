@@ -18,6 +18,9 @@ enum PayToMobileAction {
 /// The available events.
 enum PayToMobileEvent {
   /// Initialize flow.
+  ///
+  /// This event should be handled by the UI for initializing the UI components
+  /// with the retrieved info from the API.
   initializeFlow,
 
   /// Clear shortcut name.
