@@ -40,6 +40,9 @@ class PinPadView extends StatelessWidget {
   /// Must be indicated if the [showBiometrics] is `true`.
   final VoidCallback? onBiometrics;
 
+  /// Whether to scramble the pin code or not
+  final bool scramblePin;
+
   /// Creates a new [PinPadView].
   const PinPadView({
     Key? key,
@@ -51,25 +54,32 @@ class PinPadView extends StatelessWidget {
     required this.title,
     this.showBiometrics = false,
     this.onBiometrics,
+    this.scramblePin = false,
   }) : assert(!showBiometrics || onBiometrics != null);
 
   /// The buttons that will appear on the pin pad.
   List<PinButton> pinButtons(BuildContext context) {
     final translation = Translation.of(context);
 
-    return [
-      ...List.generate(
-        9,
-        (index) {
-          final number = (index + 1).toString();
+    var pinValues = List<int>.generate(9, (i) => i + 1)..add(0);
 
-          return PinButton(
-            title: number,
-            onPressed: () => onChanged('$pin$number'),
-            enabled: pin.length < pinLenght,
-          );
-        },
-      ),
+    if (scramblePin) {
+      pinValues.shuffle();
+    }
+
+    var pinWidgets = <PinButton>[];
+
+    for (var index = 0; index < pinValues.length - 1; index++) {
+
+      pinWidgets.add(PinButton(
+        title: pinValues[index].toString(),
+        onPressed: () => onChanged('$pin${pinValues[index]}'),
+        enabled: pin.length < pinLenght,
+      ));
+    }
+
+    return [
+      ...pinWidgets,
       PinButton(
         svgPath: FLImages.biometrics,
         onPressed: () async {
@@ -88,8 +98,8 @@ class PinPadView extends StatelessWidget {
         visible: showBiometrics,
       ),
       PinButton(
-        title: '0',
-        onPressed: () => onChanged('${pin}0'),
+        title: pinValues[9].toString(),
+        onPressed: () => onChanged('$pin${pinValues[9]}'),
         enabled: pin.length < pinLenght,
       ),
       PinButton(
