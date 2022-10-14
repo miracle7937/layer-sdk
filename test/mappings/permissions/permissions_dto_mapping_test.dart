@@ -89,9 +89,6 @@ void main() {
         _nothingAllowed.copyWith(
           banks: _createBasePermission(
             defaultValue: true,
-          ).copyWith(
-            publish: false,
-            edit: false,
           ),
         ),
       );
@@ -135,9 +132,9 @@ void main() {
         ].toUserPermissions(),
         _allAllowed.copyWith(
           sendMoney: SendMoneyPermissionData(
-            domestic: false,
+            domestic: true,
             bank: true,
-            own: false,
+            own: true,
           ),
         ),
       );
@@ -313,6 +310,13 @@ UserPermissions _createPermissions({
     ),
     sysadmin: base,
     transfer: TransferPermissionData(
+      view: base.view,
+      edit: base.edit,
+      modify: base.modify,
+      publish: base.publish,
+      executeAction: base.executeAction,
+      createAction: base.createAction,
+      decrypt: base.decrypt,
       allowedCurrencies: base,
       bank: defaultBase,
       bulk: defaultBase,
