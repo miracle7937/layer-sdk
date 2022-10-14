@@ -14,6 +14,7 @@ class CategoryRepository implements CategoryRepositoryInterface {
   });
 
   ///Lists the categories
+  @override
   Future<List<Category>> list({
     bool forceRefresh = false,
   }) async {

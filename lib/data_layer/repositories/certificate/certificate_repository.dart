@@ -1,4 +1,5 @@
 import '../../../domain_layer/abstract_repositories.dart';
+import '../../../domain_layer/models.dart';
 import '../../providers.dart';
 
 /// Customer certificates repository
@@ -45,12 +46,14 @@ class CertificateRepository implements CertificateRepositoryInterface {
     required String accountId,
     required DateTime fromDate,
     required DateTime toDate,
+    FileType type = FileType.image,
   }) {
     return _provider.requestBankStatement(
       accountId: accountId,
       customerId: customerId,
       fromDate: fromDate,
       toDate: toDate,
+      type: type,
     );
   }
 }
