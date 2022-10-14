@@ -70,31 +70,30 @@ class OfferDTO {
   });
 
   ///Creates a [OfferDTO] form a JSON object
-  factory OfferDTO.fromJson(Map<String, dynamic> json) {
-    return OfferDTO(
-      id: JsonParser.parseInt(json['offer_id']),
-      consoleName: json['console_name'],
-      customerName: json['customer_name'],
-      starts: JsonParser.parseStringDate(json['ts_start']['Time']),
-      ends: JsonParser.parseStringDate(json['ts_end']['Time']),
-      imageURL: json['image_url'],
-      description: json['description'],
-      shortDescription: json['short_description'],
-      tncURL: json['tnc_url'],
-      tncText: json['tnc_text'],
-      status: OfferStatusDTO.fromRaw(json['status']),
-      merchant: json['merchant_offer'] == null || json['merchant_offer'].isEmpty
-          ? null
-          : MerchantDTO.fromJson(json['merchant_offer'].first),
-      rules: json['rule_offer'] == null
-          ? null
-          : OfferRuleDTO.fromJsonList(List<Map<String, dynamic>>.from(
-              json['rule_offer'].where((rule) => rule['reward'] != null),
-            )),
-      type: OfferTypeDTO.fromRaw(json['type']),
-      currency: json['currency'],
-    );
-  }
+  factory OfferDTO.fromJson(Map<String, dynamic> json) => OfferDTO(
+        id: JsonParser.parseInt(json['offer_id']),
+        consoleName: json['console_name'],
+        customerName: json['customer_name'],
+        starts: JsonParser.parseStringDate(json['ts_start']['Time']),
+        ends: JsonParser.parseStringDate(json['ts_end']['Time']),
+        imageURL: json['image_url'],
+        description: json['description'],
+        shortDescription: json['short_description'],
+        tncURL: json['tnc_url'],
+        tncText: json['tnc_text'],
+        status: OfferStatusDTO.fromRaw(json['status']),
+        merchant:
+            json['merchant_offer'] == null || json['merchant_offer'].isEmpty
+                ? null
+                : MerchantDTO.fromJson(json['merchant_offer'].first),
+        rules: json['rule_offer'] == null
+            ? null
+            : OfferRuleDTO.fromJsonList(List<Map<String, dynamic>>.from(
+                json['rule_offer'].where((rule) => rule['reward'] != null),
+              )),
+        type: OfferTypeDTO.fromRaw(json['type']),
+        currency: json['currency'],
+      );
 
   /// Creates a list of [OfferDTO]s from the given JSON list.
   static List<OfferDTO> fromJsonList(List<Map<String, dynamic>> json) =>
