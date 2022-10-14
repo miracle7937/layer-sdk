@@ -7,66 +7,21 @@ import '../../cubits.dart';
 
 /// A Cubit that handles the state for the loyalty redemption.
 class AccountStatementCubit extends Cubit<AccountStatementState> {
-  final GetAccountsByStatusUseCase _getAccountsByStatusUseCase;
   final RequestBankStatementUseCase _requestBankStatementUseCase;
   final ShareReceiptUseCase _shareReceiptUseCase;
 
   final String _customerId;
+  final String _accountId;
 
   /// Creates a new [AccountStatementCubit].
   AccountStatementCubit(
-    this._customerId, {
-    required GetAccountsByStatusUseCase getAccountsByStatusUseCase,
+    this._customerId,
+    this._accountId, {
     required RequestBankStatementUseCase requestBankStatementUseCase,
     required ShareReceiptUseCase shareReceiptUseCase,
-  })  : _getAccountsByStatusUseCase = getAccountsByStatusUseCase,
-        _requestBankStatementUseCase = requestBankStatementUseCase,
+  })  : _requestBankStatementUseCase = requestBankStatementUseCase,
         _shareReceiptUseCase = shareReceiptUseCase,
         super(AccountStatementState());
-
-  /// Initializes the [AccountStatementCubit].
-  Future<void> initialize() async {
-    if (state.accounts.isEmpty ||
-        state.errors.contains(AccountStatementAction.accounts)) {
-      emit(
-        state.copyWith(
-          actions: state.addAction(
-            AccountStatementAction.accounts,
-          ),
-          errors: state.removeErrorForAction(
-            AccountStatementAction.accounts,
-          ),
-        ),
-      );
-
-      try {
-        final accounts = await _getAccountsByStatusUseCase(
-          statuses: [AccountStatus.active],
-        );
-
-        emit(
-          state.copyWith(
-            actions: state.removeAction(
-              AccountStatementAction.accounts,
-            ),
-            accounts: accounts,
-          ),
-        );
-      } on Exception catch (e) {
-        emit(
-          state.copyWith(
-            actions: state.removeAction(
-              AccountStatementAction.accounts,
-            ),
-            errors: state.addErrorFromException(
-              action: AccountStatementAction.accounts,
-              exception: e,
-            ),
-          ),
-        );
-      }
-    }
-  }
 
   /// Changing the start date of statement.
   void onChangeStartDate(
@@ -126,12 +81,9 @@ class AccountStatementCubit extends Cubit<AccountStatementState> {
       ),
     );
 
-    final accountId = 'f6de0f2695443dbaf3a7470163164300aa1c065b';
-
     try {
       final bytes = await _requestBankStatementUseCase(
-        accountId: accountId,
-        // accountId: state.account!.id!,
+        accountId: _accountId,
         customerId: _customerId,
         fromDate: state.startDate!,
         toDate: state.endDate!,
@@ -141,10 +93,10 @@ class AccountStatementCubit extends Cubit<AccountStatementState> {
       emit(
         state.copyWith(
           actions: state.removeAction(
-            AccountStatementAction.accounts,
+            AccountStatementAction.statement,
           ),
           events: state.addEvent(AccountStatementEvent.showResultView),
-          certificateBytes: bytes,
+          statementBytes: bytes,
         ),
       );
     } on Exception catch (e) {
@@ -168,7 +120,7 @@ class AccountStatementCubit extends Cubit<AccountStatementState> {
   /// Share statement.
   void shareStatement() {
     _shareReceiptUseCase(
-      filename: 'statement_${state.account?.id}'
+      filename: 'statement_$_accountId'
           '${_formattedDate(state.startDate)}${_formattedDate(state.endDate)}'
           '.pdf',
       bytes: state.statementBytes,
