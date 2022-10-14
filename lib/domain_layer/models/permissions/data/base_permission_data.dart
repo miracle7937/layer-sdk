@@ -27,6 +27,9 @@ class BasePermissionData extends Equatable {
   /// User can decrypt data.
   final bool decrypt;
 
+  /// Getter that checks if the user has enough permissions to view the feature.
+  bool get isFeatureVisible => view || edit;
+
   /// Creates a [BasePermissionData] object.
   const BasePermissionData({
     this.view = false,
