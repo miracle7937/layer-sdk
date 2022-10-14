@@ -71,10 +71,12 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
 
     emit(
       state.copyWith(
-        actions: state.actions.union({
+        actions: state.addAction(
           DPAProcessBusyAction.starting,
-        }),
-        errorStatus: DPAProcessErrorStatus.none,
+        ),
+        errors: state.removeErrorForAction(
+          DPAProcessBusyAction.starting,
+        ),
       ),
     );
 
@@ -96,11 +98,20 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
             process: process.isPopUp() ? null : process,
             popUp: process.isPopUp() ? process : null,
             clearPopUp: !process.isPopUp(),
-            actions: state.actions.difference({
+            actions: state.removeActions({
               DPAProcessBusyAction.starting,
-            }).union({
               if (delay != null) DPAProcessBusyAction.steppingForward,
             }),
+            errors: !(delay != null)
+                ? state.removeErrorForAction(
+                    DPAProcessBusyAction.starting,
+                  )
+                : state
+                    .removeErrorForAction(
+                      DPAProcessBusyAction.starting,
+                    )
+                    .union(state.removeErrorForAction(
+                        DPAProcessBusyAction.steppingForward)),
             runStatus: process.finished
                 ? DPAProcessRunStatus.finished
                 : DPAProcessRunStatus.running,
@@ -120,22 +131,20 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
           stepOrFinish();
         }
       } else {
-        emit(
-          state.copyWith(
-            actions: state.actions.difference({
-              DPAProcessBusyAction.starting,
-            }),
-            errorStatus: DPAProcessErrorStatus.network,
+        emit(state.copyWith(
+          actions: state.removeAction(
+            DPAProcessBusyAction.starting,
           ),
-        );
+        ));
       }
-    } on NetException {
+    } on NetException catch (e) {
       emit(
         state.copyWith(
-          actions: state.actions.difference({
+          actions: state.removeAction(
             DPAProcessBusyAction.starting,
-          }),
-          errorStatus: DPAProcessErrorStatus.network,
+          ),
+          errors: state.addErrorFromException(
+              action: DPAProcessBusyAction.starting, exception: e),
         ),
       );
     }
@@ -179,10 +188,12 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
 
     emit(
       state.copyWith(
-        actions: state.actions.union({
+        actions: state.addAction(
           DPAProcessBusyAction.steppingBack,
-        }),
-        errorStatus: DPAProcessErrorStatus.none,
+        ),
+        errors: state.removeErrorForAction(
+          DPAProcessBusyAction.steppingBack,
+        ),
       ),
     );
 
@@ -196,19 +207,22 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
           process: process.isPopUp() ? null : process,
           popUp: process.isPopUp() ? process : null,
           clearPopUp: !process.isPopUp(),
-          actions: state.actions.difference({
+          actions: state.removeAction(
             DPAProcessBusyAction.steppingBack,
-          }),
+          ),
           clearProcessingFiles: true,
         ),
       );
-    } on NetException {
+    } on NetException catch (e) {
       emit(
         state.copyWith(
-          actions: state.actions.difference({
+          actions: state.removeAction(
             DPAProcessBusyAction.steppingBack,
-          }),
-          errorStatus: DPAProcessErrorStatus.network,
+          ),
+          errors: state.addErrorFromException(
+            action: DPAProcessBusyAction.steppingBack,
+            exception: e,
+          ),
         ),
       );
     }
@@ -226,10 +240,12 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
 
     emit(
       state.copyWith(
-        actions: state.actions.union({
+        actions: state.addAction(
           DPAProcessBusyAction.steppingForward,
-        }),
-        errorStatus: DPAProcessErrorStatus.none,
+        ),
+        errors: state.removeErrorForAction(
+          DPAProcessBusyAction.steppingForward,
+        ),
       ),
     );
 
@@ -250,9 +266,8 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
           process: process.isPopUp() ? null : process,
           popUp: process.isPopUp() ? process : null,
           clearPopUp: !process.isPopUp(),
-          actions: state.actions.difference({
+          actions: state.removeActions({
             DPAProcessBusyAction.steppingForward,
-          }).union({
             if (delay != null) DPAProcessBusyAction.steppingForward,
           }),
           runStatus: process.finished ? DPAProcessRunStatus.finished : null,
@@ -264,13 +279,14 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
         await Future.delayed(Duration(seconds: delay));
         stepOrFinish();
       }
-    } on NetException {
+    } on NetException catch (e) {
       emit(
         state.copyWith(
-          actions: state.actions.difference({
+          actions: state.removeAction(
             DPAProcessBusyAction.steppingForward,
-          }),
-          errorStatus: DPAProcessErrorStatus.network,
+          ),
+          errors: state.addErrorFromException(
+              action: DPAProcessBusyAction.steppingForward, exception: e),
         ),
       );
     }
@@ -283,11 +299,12 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
 
     emit(
       state.copyWith(
-        actions: state.actions.union({
-          DPAProcessBusyAction.skipping,
-        }),
-        errorStatus: DPAProcessErrorStatus.none,
-      ),
+          actions: state.addAction(
+            DPAProcessBusyAction.skipping,
+          ),
+          errors: state.removeErrorForAction(
+            DPAProcessBusyAction.skipping,
+          )),
     );
 
     try {
@@ -305,10 +322,9 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
           process: process.isPopUp() ? null : process,
           popUp: process.isPopUp() ? process : null,
           clearPopUp: !process.isPopUp(),
-          actions: state.actions.difference({
+          actions: state.addActions({
             DPAProcessBusyAction.skipping,
-          }).union({
-            if (delay != null) DPAProcessBusyAction.skipping,
+            if (delay != null) DPAProcessBusyAction.steppingForward,
           }),
           runStatus: process.finished ? DPAProcessRunStatus.finished : null,
           clearProcessingFiles: true,
@@ -319,13 +335,14 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
         await Future.delayed(Duration(seconds: delay));
         stepOrFinish(extraVariables: extraVariables);
       }
-    } on NetException {
+    } on NetException catch (e) {
       emit(
         state.copyWith(
-          actions: state.actions.difference({
+          actions: state.removeAction(
             DPAProcessBusyAction.skipping,
-          }),
-          errorStatus: DPAProcessErrorStatus.network,
+          ),
+          errors: state.addErrorFromException(
+              action: DPAProcessBusyAction.skipping, exception: e),
         ),
       );
     }
@@ -339,10 +356,12 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
 
     emit(
       state.copyWith(
-        actions: state.actions.union({
+        actions: state.addAction(
           DPAProcessBusyAction.cancelling,
-        }),
-        errorStatus: DPAProcessErrorStatus.none,
+        ),
+        errors: state.removeErrorForAction(
+          DPAProcessBusyAction.cancelling,
+        ),
       ),
     );
 
@@ -361,22 +380,22 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
           DPAProcessState().copyWith(
             process: state.activeProcess.isPopUp() ? null : cancelledProcess,
             popUp: state.activeProcess.isPopUp() ? cancelledProcess : null,
-            actions: state.actions.difference({
+            actions: state.removeAction(
               DPAProcessBusyAction.cancelling,
-            }),
+            ),
             runStatus: DPAProcessRunStatus.finished,
             clearProcessingFiles: true,
           ),
         );
       }
-    } on NetException {
+    } on NetException catch (e) {
       emit(
         state.copyWith(
-          actions: state.actions.difference({
-            DPAProcessBusyAction.cancelling,
-          }),
-          errorStatus: DPAProcessErrorStatus.network,
-        ),
+            actions: state.removeAction(
+              DPAProcessBusyAction.cancelling,
+            ),
+            errors: state.addErrorFromException(
+                action: DPAProcessBusyAction.cancelling, exception: e)),
       );
     }
   }
@@ -390,11 +409,12 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
 
     emit(
       state.copyWith(
-        actions: state.actions.union({
-          DPAProcessBusyAction.updatingValue,
-        }),
-        errorStatus: DPAProcessErrorStatus.none,
-      ),
+          actions: state.addAction(
+            DPAProcessBusyAction.updatingValue,
+          ),
+          errors: state.removeErrorForAction(
+            DPAProcessBusyAction.updatingValue,
+          )),
     );
 
     _log.info(
@@ -416,13 +436,14 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
 
     emit(
       state.copyWith(
-        process: updatedProcess.isPopUp() ? null : updatedProcess,
-        popUp: updatedProcess.isPopUp() ? updatedProcess : null,
-        actions: state.actions.difference({
-          DPAProcessBusyAction.updatingValue,
-        }),
-        errorStatus: DPAProcessErrorStatus.none,
-      ),
+          process: updatedProcess.isPopUp() ? null : updatedProcess,
+          popUp: updatedProcess.isPopUp() ? updatedProcess : null,
+          actions: state.removeAction(
+            DPAProcessBusyAction.updatingValue,
+          ),
+          errors: state.removeErrorForAction(
+            DPAProcessBusyAction.updatingValue,
+          )),
     );
   }
 
@@ -452,15 +473,19 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
 
     emit(
       state.copyWith(
-        processingFiles: state.processingFiles.union({
-          DPAProcessingFileData(
-            fileName: filename,
-            action: DPAProcessingFileAction.uploading,
-            variableKey: variable.key,
+          processingFiles: state.processingFiles.union({
+            DPAProcessingFileData(
+              fileName: filename,
+              action: DPAProcessingFileAction.uploading,
+              variableKey: variable.key,
+            ),
+          }),
+          actions: state.addAction(
+            DPAProcessBusyAction.updatingValue,
           ),
-        }),
-        errorStatus: DPAProcessErrorStatus.none,
-      ),
+          errors: state.removeErrorForAction(
+            DPAProcessBusyAction.updatingValue,
+          )),
     );
 
     try {
@@ -487,6 +512,9 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
 
       emit(
         state.copyWith(
+          actions: state.removeAction(
+            DPAProcessBusyAction.updatingValue,
+          ),
           process: updatedProcess.isPopUp() ? null : updatedProcess,
           popUp: updatedProcess.isPopUp() ? updatedProcess : null,
           processingFiles: state.processingFiles
@@ -497,14 +525,16 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
     } on Exception catch (e) {
       emit(
         state.copyWith(
-          processingFiles: state.processingFiles
-              .where((d) => d.variableKey != variable.key)
-              .toSet(),
-          errorStatus: e is NetException
-              ? DPAProcessErrorStatus.network
-              : DPAProcessErrorStatus.generic,
-          errorMessage: e is NetException ? e.message : null,
-        ),
+            processingFiles: state.processingFiles
+                .where((d) => d.variableKey != variable.key)
+                .toSet(),
+            actions: state.removeAction(
+              DPAProcessBusyAction.updatingValue,
+            ),
+            errors: state.addErrorFromException(
+              exception: e,
+              action: DPAProcessBusyAction.updatingValue,
+            )),
       );
     }
   }
@@ -554,7 +584,12 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
             variableKey: variable.key,
           ),
         }),
-        errorStatus: DPAProcessErrorStatus.none,
+        actions: state.addAction(
+          DPAProcessBusyAction.updatingValue,
+        ),
+        errors: state.removeErrorForAction(
+          DPAProcessBusyAction.updatingValue,
+        ),
       ),
     );
 
@@ -577,6 +612,9 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
 
       emit(
         state.copyWith(
+          actions: state.removeAction(
+            DPAProcessBusyAction.updatingValue,
+          ),
           process: updatedProcess.isPopUp() ? null : updatedProcess,
           popUp: updatedProcess.isPopUp() ? updatedProcess : null,
           processingFiles: state.processingFiles
@@ -590,8 +628,13 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
           processingFiles: state.processingFiles
               .where((d) => d.variableKey != variable.key)
               .toSet(),
-          errorStatus: DPAProcessErrorStatus.network,
-          errorMessage: e.message,
+          actions: state.removeAction(
+            DPAProcessBusyAction.updatingValue,
+          ),
+          errors: state.addErrorFromException(
+            exception: e,
+            action: DPAProcessBusyAction.updatingValue,
+          ),
         ),
       );
     }
@@ -604,10 +647,12 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
 
     emit(
       state.copyWith(
-        actions: state.actions.union({
+        actions: state.addAction(
           DPAProcessBusyAction.resendingCode,
-        }),
-        errorStatus: DPAProcessErrorStatus.none,
+        ),
+        errors: state.removeErrorForAction(
+          DPAProcessBusyAction.resendingCode,
+        ),
       ),
     );
 
@@ -623,20 +668,23 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
           process: process.isPopUp() ? null : process,
           popUp: process.isPopUp() ? process : null,
           clearPopUp: !process.isPopUp(),
-          actions: state.actions.difference({
+          actions: state.removeAction(
             DPAProcessBusyAction.resendingCode,
-          }),
+          ),
           runStatus: process.finished ? DPAProcessRunStatus.finished : null,
           clearProcessingFiles: true,
         ),
       );
-    } on NetException {
+    } on NetException catch (e) {
       emit(
         state.copyWith(
-          actions: state.actions.difference({
+          actions: state.removeAction(
             DPAProcessBusyAction.resendingCode,
-          }),
-          errorStatus: DPAProcessErrorStatus.network,
+          ),
+          errors: state.addErrorFromException(
+            exception: e,
+            action: DPAProcessBusyAction.resendingCode,
+          ),
         ),
       );
     }
@@ -649,10 +697,12 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
 
     emit(
       state.copyWith(
-        actions: state.actions.union({
+        actions: state.addAction(
           DPAProcessBusyAction.requestingPhoneChange,
-        }),
-        errorStatus: DPAProcessErrorStatus.none,
+        ),
+        errors: state.removeErrorForAction(
+          DPAProcessBusyAction.requestingPhoneChange,
+        ),
       ),
     );
 
@@ -668,20 +718,23 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
           process: process.isPopUp() ? null : process,
           popUp: process.isPopUp() ? process : null,
           clearPopUp: !process.isPopUp(),
-          actions: state.actions.difference({
+          actions: state.removeAction(
             DPAProcessBusyAction.requestingPhoneChange,
-          }),
+          ),
           runStatus: process.finished ? DPAProcessRunStatus.finished : null,
           clearProcessingFiles: true,
         ),
       );
-    } on NetException {
+    } on NetException catch (e) {
       emit(
         state.copyWith(
-          actions: state.actions.difference({
+          actions: state.removeAction(
             DPAProcessBusyAction.requestingPhoneChange,
-          }),
-          errorStatus: DPAProcessErrorStatus.network,
+          ),
+          errors: state.addErrorFromException(
+            exception: e,
+            action: DPAProcessBusyAction.requestingPhoneChange,
+          ),
         ),
       );
     }
@@ -694,10 +747,12 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
 
     emit(
       state.copyWith(
-        actions: state.actions.union({
+        actions: state.addAction(
           DPAProcessBusyAction.requestingEmailChange,
-        }),
-        errorStatus: DPAProcessErrorStatus.none,
+        ),
+        errors: state.removeErrorForAction(
+          DPAProcessBusyAction.requestingEmailChange,
+        ),
       ),
     );
 
@@ -713,21 +768,23 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
           process: process.isPopUp() ? null : process,
           popUp: process.isPopUp() ? process : null,
           clearPopUp: !process.isPopUp(),
-          actions: state.actions.difference({
+          actions: state.removeAction(
             DPAProcessBusyAction.requestingEmailChange,
-          }),
+          ),
           runStatus: process.finished ? DPAProcessRunStatus.finished : null,
           clearProcessingFiles: true,
         ),
       );
-    } on NetException {
+    } on NetException catch (e) {
       emit(
         state.copyWith(
-          actions: state.actions.difference({
-            DPAProcessBusyAction.requestingEmailChange,
-          }),
-          errorStatus: DPAProcessErrorStatus.network,
-        ),
+            actions: state.removeAction(
+              DPAProcessBusyAction.requestingEmailChange,
+            ),
+            errors: state.addErrorFromException(
+              exception: e,
+              action: DPAProcessBusyAction.requestingEmailChange,
+            )),
       );
     }
   }
@@ -739,10 +796,12 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
 
     emit(
       state.copyWith(
-        actions: state.actions.union({
+        actions: state.addAction(
           DPAProcessBusyAction.requestingManualVerification,
-        }),
-        errorStatus: DPAProcessErrorStatus.none,
+        ),
+        errors: state.removeErrorForAction(
+          DPAProcessBusyAction.requestingManualVerification,
+        ),
       ),
     );
 
@@ -758,21 +817,22 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
           process: process.isPopUp() ? null : process,
           popUp: process.isPopUp() ? process : null,
           clearPopUp: !process.isPopUp(),
-          actions: state.actions.difference({
+          actions: state.removeAction(
             DPAProcessBusyAction.requestingManualVerification,
-          }),
+          ),
           runStatus: process.finished ? DPAProcessRunStatus.finished : null,
           clearProcessingFiles: true,
         ),
       );
-    } on NetException {
+    } on NetException catch (e) {
       emit(
         state.copyWith(
-          actions: state.actions.difference({
-            DPAProcessBusyAction.requestingManualVerification,
-          }),
-          errorStatus: DPAProcessErrorStatus.network,
-        ),
+            actions: state.removeAction(
+              DPAProcessBusyAction.requestingManualVerification,
+            ),
+            errors: state.addErrorFromException(
+                action: DPAProcessBusyAction.requestingManualVerification,
+                exception: e)),
       );
     }
   }

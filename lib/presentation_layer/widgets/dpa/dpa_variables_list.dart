@@ -71,47 +71,47 @@ class DPAVariablesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final busy = context.select<DPAProcessCubit, bool>(
-      (cubit) => cubit.state.busy,
-    );
+    return CubitActionBuilder<DPAProcessCubit, DPAProcessBusyAction>(
+        actions: DPAProcessBusyAction.values.toSet(),
+        builder: (context, loadingActions) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: crossAxisAlignment,
+            children: process.variables.mapIndexed(
+              (index, variable) {
+                if (debugLog) _debugLog(variable);
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: crossAxisAlignment,
-      children: process.variables.mapIndexed(
-        (index, variable) {
-          if (debugLog) _debugLog(variable);
+                final previousVariable =
+                    (index > 0 && index < process.variables.length)
+                        ? process.variables[index - 1]
+                        : null;
 
-          final previousVariable =
-              (index > 0 && index < process.variables.length)
-                  ? process.variables[index - 1]
-                  : null;
+                final nextVariable =
+                    (index >= 0 && index < process.variables.length - 1)
+                        ? process.variables[index + 1]
+                        : null;
 
-          final nextVariable =
-              (index >= 0 && index < process.variables.length - 1)
-                  ? process.variables[index + 1]
-                  : null;
-
-          return Align(
-            alignment: AlignmentDirectional.centerStart,
-            child: builder?.call(
-                  context,
-                  variable,
-                  busy,
-                  previousVariable,
-                  nextVariable,
-                ) ??
-                _defaultVariableBuilder(
-                  context,
-                  variable,
-                  busy,
-                  previousVariable,
-                  nextVariable,
-                ),
+                return Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: builder?.call(
+                        context,
+                        variable,
+                        loadingActions.isNotEmpty,
+                        previousVariable,
+                        nextVariable,
+                      ) ??
+                      _defaultVariableBuilder(
+                        context,
+                        variable,
+                        loadingActions.isNotEmpty,
+                        previousVariable,
+                        nextVariable,
+                      ),
+                );
+              },
+            ).toList(growable: false),
           );
-        },
-      ).toList(growable: false),
-    );
+        });
   }
 
   Widget _defaultVariableBuilder(

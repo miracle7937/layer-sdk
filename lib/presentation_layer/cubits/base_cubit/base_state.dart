@@ -183,6 +183,10 @@ abstract class BaseState<CubitAction, CubitEvent, ValidationErrorCode>
   Set<CubitAction> removeAction(CubitAction action) =>
       actions.difference({action});
 
+  /// Removed the passed errors from all the errors
+  Set<CubitError> removeErrors(Set<CubitError> errors) =>
+      errors.difference(errors);
+
   /// Removes the passed actions from the current actions and returns the
   /// new set.
   Set<CubitAction> removeActions(Set<CubitAction> actions) =>

@@ -2,13 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../layer_sdk.dart';
-
-/// Signature for [DPAFlow.onError].
-typedef DPAErrorCallback = void Function(
-  BuildContext context,
-  DPAProcessErrorStatus errorStatus,
-  String? errorMessage,
-);
+import '../../cubits/base_cubit/base_state.dart';
 
 /// Signature for [DPAFlow.onFinished].
 typedef DPAFinishedCallback<T> = void Function(
@@ -125,16 +119,6 @@ typedef DPACarouselScreenBuilder = Widget? Function(
 /// ```
 /// {@end-tool}
 class DPAFlow<T> extends StatelessWidget {
-  /// A required method to be called when an error occurs.
-  ///
-  /// This is not the same as errors on a variable (mostly from validations).
-  /// These errors are treated when building the variable on the
-  /// [DPAVariablesList].
-  ///
-  /// The error here is a more encompassing error, like a network error when
-  /// trying to update the DPA process.
-  final DPAErrorCallback onError;
-
   /// If it's during onboarding
   final bool isOnboarding;
 
@@ -215,7 +199,6 @@ class DPAFlow<T> extends StatelessWidget {
   /// Creates a new [DPAFlow].
   const DPAFlow({
     Key? key,
-    required this.onError,
     required this.onFinished,
     this.customHeader,
     this.customVariableListBuilder,
@@ -251,6 +234,14 @@ class DPAFlow<T> extends StatelessWidget {
       (cubit) => cubit.state.areVariablesValidated,
     );
 
+    /// Whether if the error that happened for the action was while initializing
+    /// the needed data for the pay to mobile flow.
+    bool isRetryError(DPAProcessBusyAction action) => [
+          DPAProcessBusyAction.values.toSet(),
+        ].contains(action);
+
+    /// Whether if a error is showing or not;
+    var _isErrorShowing = false;
     final translation = Translation.of(context);
     final cubit = context.read<DPAProcessCubit>();
     final isDelayTask = process.stepProperties?.delay != null;
@@ -271,129 +262,221 @@ class DPAFlow<T> extends StatelessWidget {
     final shouldShowSkipButton =
         process.stepProperties?.skipLabel?.isNotEmpty ?? false;
 
+    /// Shows the transfer error bottom sheet.
+    Future<void> _showRetryError({
+      required String titleKey,
+      required DPAProcessBusyAction action,
+    }) async {
+      if (!_isErrorShowing) {
+        _isErrorShowing = true;
+
+        await BottomSheetHelper.showError(
+          context: context,
+          titleKey: titleKey,
+          descriptionKey: 'retry_loading_data_transfer',
+          dismissKey: 'retry',
+          blurBackground: true,
+        );
+
+        _isErrorShowing = false;
+      }
+    }
+
+    /// Shows the transfer error bottom sheet.
+    Future<void> _showErrorBottomSheet({
+      required String titleKey,
+      String? descriptionKey,
+    }) async {
+      if (!_isErrorShowing) {
+        _isErrorShowing = true;
+
+        await BottomSheetHelper.showError(
+          context: context,
+          titleKey: titleKey,
+          descriptionKey: descriptionKey,
+          dismissKey: 'done',
+          blurBackground: true,
+        );
+
+        _isErrorShowing = false;
+      }
+    }
+
+    /// Called when a new connectivity error is emitted by the cubit.
+    void _showConnectivityError(
+      CubitConnectivityError<DPAProcessBusyAction> error,
+    ) {
+      if (isRetryError(error.action)) {
+        _showRetryError(
+          titleKey: 'connectivity_error',
+          action: error.action,
+        );
+        return;
+      }
+
+      _showErrorBottomSheet(
+        titleKey: 'connectivity_error',
+      );
+    }
+
+    /// Called when a new api error is emitted by the cubit.
+    void _showAPIError(
+      CubitAPIError<DPAProcessBusyAction> error,
+    ) {
+      if (isRetryError(error.action)) {
+        _showRetryError(
+          titleKey: error.code?.value ?? 'generic_error',
+          action: error.action,
+        );
+        return;
+      }
+
+      if (error.code == CubitErrorCode.insufficientBalance) {
+        Navigator.pop(context);
+      }
+
+      _showErrorBottomSheet(
+        titleKey: error.code?.value ?? 'generic_error',
+        descriptionKey: error.message,
+      );
+    }
+
+    /// Called when a custom error is emitted by the cubit.
+    void _showCustomError(
+      CubitCustomError<DPAProcessBusyAction> error,
+    ) {
+      switch (error.code) {
+        case CubitErrorCode.transferFailed:
+          _showErrorBottomSheet(
+            titleKey: ' transfer_failed',
+            descriptionKey: 'try_again',
+          );
+          break;
+
+        default:
+          return;
+      }
+    }
+
     return MultiBlocListener(
-      listeners: [
-        BlocListener<DPAProcessCubit, DPAProcessState>(
-          listenWhen: (oldState, newState) =>
-              oldState.errorStatus != newState.errorStatus &&
-              newState.errorStatus != DPAProcessErrorStatus.none,
-          // TODO: see if we can have a default LDK error.
-          listener: (context, state) => onError(
-            context,
-            state.errorStatus,
-            state.errorMessage,
+        listeners: [
+          BlocListener<DPAProcessCubit, DPAProcessState>(
+            listenWhen: (oldState, newState) =>
+                oldState.process.stepProperties?.jumioConfig !=
+                    newState.process.stepProperties?.jumioConfig &&
+                newState.process.stepProperties?.jumioConfig != null,
+            listener: (context, state) {
+              final dpaProcessCubit = context.read<DPAProcessCubit>();
+              sdkCallback(context, dpaProcessCubit, state.process);
+            },
           ),
-        ),
-        BlocListener<DPAProcessCubit, DPAProcessState>(
-          listenWhen: (oldState, newState) =>
-              oldState.process.stepProperties?.jumioConfig !=
-                  newState.process.stepProperties?.jumioConfig &&
-              newState.process.stepProperties?.jumioConfig != null,
-          listener: (context, state) {
-            final dpaProcessCubit = context.read<DPAProcessCubit>();
-            sdkCallback(context, dpaProcessCubit, state.process);
-          },
-        ),
-        BlocListener<DPAProcessCubit, DPAProcessState>(
-          listenWhen: (oldState, newState) =>
-              oldState.popUp != null && newState.popUp == null,
-          listener: _hidePopUp,
-        ),
-        BlocListener<DPAProcessCubit, DPAProcessState>(
-          listenWhen: (oldState, newState) =>
-              oldState.popUp == null && newState.popUp != null,
-          listener: _showPopUp,
-        ),
-        BlocListener<DPAProcessCubit, DPAProcessState>(
-          listenWhen: (oldState, newState) =>
-              oldState.runStatus != newState.runStatus &&
-              newState.runStatus == DPAProcessRunStatus.finished,
-          listener: onFinished,
-        ),
-      ],
-      child: Stack(
-        children: [
-          _getEffectiveCustomChild(context) ??
-              // TODO: update to use the correct Layer Design Kit design.
-              // TODO: update to handle the different pages
-              Column(
-                children: [
-                  if (effectiveHeader != null) effectiveHeader,
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          if (showTaskDescription)
-                            DPATaskDescription(
-                              process: process,
-                              showTitle: effectiveHeader == null,
-                            ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16.0,
-                            ),
-                            child: customVariableListBuilder?.call(
-                                  context,
-                                  process,
-                                ) ??
-                                DPAVariablesList(
-                                  process: process,
-                                  customEmptySearchBuilder:
-                                      customEmptySearchBuilder,
-                                ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: customContinueButtonPadding,
-                    child: Column(
-                      children: [
-                        if (effectiveContinueButton != null)
-                          effectiveContinueButton,
-                        if (shouldShowSkipButton) ...[
-                          const SizedBox(height: 12.0),
-                          DPASkipButton(
-                            process: process,
-                          ),
-                        ],
-                        if (process.stepProperties?.skipButton ?? false) ...[
-                          const SizedBox(
-                            height: 12.0,
-                          ),
-                          DPACancelButton(
-                            builder: (context, busy, onTap) => DKButton(
-                              size: DKButtonSize.large,
-                              title: process.stepProperties?.skipButtonLabel ??
-                                  translation.translate('cancel'),
-                              onPressed: () => cubit.skipOrFinish(
-                                extraVariables: [
-                                  DPAVariable(
-                                    id: 'skip',
-                                    type: DPAVariableType.boolean,
-                                    property: DPAVariableProperty(),
-                                    value: true,
-                                  )
-                                ],
-                              ),
-                              status: busy
-                                  ? DKButtonStatus.loading
-                                  : DKButtonStatus.idle,
-                              type: DKButtonType.baseSecondary,
-                              expands: true,
-                            ),
-                          )
-                        ],
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-          if (isDelayTask) DPAFullscreenLoader(asset: asset),
+          BlocListener<DPAProcessCubit, DPAProcessState>(
+            listenWhen: (oldState, newState) =>
+                oldState.popUp != null && newState.popUp == null,
+            listener: _hidePopUp,
+          ),
+          BlocListener<DPAProcessCubit, DPAProcessState>(
+            listenWhen: (oldState, newState) =>
+                oldState.popUp == null && newState.popUp != null,
+            listener: _showPopUp,
+          ),
+          BlocListener<DPAProcessCubit, DPAProcessState>(
+            listenWhen: (oldState, newState) =>
+                oldState.runStatus != newState.runStatus &&
+                newState.runStatus == DPAProcessRunStatus.finished,
+            listener: onFinished,
+          ),
         ],
-      ),
-    );
+        child: CubitErrorListener<DPAProcessCubit, DPAProcessBusyAction>(
+          actions: DPAProcessBusyAction.values.toSet(),
+          onConnectivityError: _showConnectivityError,
+          onAPIError: _showAPIError,
+          onCustomError: _showCustomError,
+          child: Stack(
+            children: [
+              _getEffectiveCustomChild(context) ??
+                  // TODO: update to use the correct Layer Design Kit design.
+                  // TODO: update to handle the different pages
+                  Column(
+                    children: [
+                      if (effectiveHeader != null) effectiveHeader,
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              if (showTaskDescription)
+                                DPATaskDescription(
+                                  process: process,
+                                  showTitle: effectiveHeader == null,
+                                ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0,
+                                ),
+                                child: customVariableListBuilder?.call(
+                                      context,
+                                      process,
+                                    ) ??
+                                    DPAVariablesList(
+                                      process: process,
+                                      customEmptySearchBuilder:
+                                          customEmptySearchBuilder,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: customContinueButtonPadding,
+                        child: Column(
+                          children: [
+                            if (effectiveContinueButton != null)
+                              effectiveContinueButton,
+                            if (shouldShowSkipButton) ...[
+                              const SizedBox(height: 12.0),
+                              DPASkipButton(
+                                process: process,
+                              ),
+                            ],
+                            if (process.stepProperties?.skipButton ??
+                                false) ...[
+                              const SizedBox(
+                                height: 12.0,
+                              ),
+                              DPACancelButton(
+                                builder: (context, busy, onTap) => DKButton(
+                                  size: DKButtonSize.large,
+                                  title:
+                                      process.stepProperties?.skipButtonLabel ??
+                                          translation.translate('cancel'),
+                                  onPressed: () => cubit.skipOrFinish(
+                                    extraVariables: [
+                                      DPAVariable(
+                                        id: 'skip',
+                                        type: DPAVariableType.boolean,
+                                        property: DPAVariableProperty(),
+                                        value: true,
+                                      )
+                                    ],
+                                  ),
+                                  status: busy
+                                      ? DKButtonStatus.loading
+                                      : DKButtonStatus.idle,
+                                  type: DKButtonType.baseSecondary,
+                                  expands: true,
+                                ),
+                              )
+                            ],
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+              if (isDelayTask) DPAFullscreenLoader(asset: asset),
+            ],
+          ),
+        ));
   }
 
   Widget? _getEffectiveCustomChild(BuildContext context) {

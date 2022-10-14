@@ -1,11 +1,9 @@
-import 'dart:collection';
-
-import 'package:equatable/equatable.dart';
-
 import '../../../domain_layer/models.dart';
+import '../base_cubit/base_state.dart';
 
 /// The state of the bill payment cubit
-class PayBillState extends Equatable {
+class PayBillState
+    extends BaseState<PayBillBusyAction, PayBillEvent, PayBillErrorStatus> {
   /// The amount to be paid
   final double amount;
 
@@ -17,15 +15,6 @@ class PayBillState extends Equatable {
 
   /// A unique identifier of the payment.
   final String? deviceUID;
-
-  /// True if the cubit is processing something.
-  final bool busy;
-
-  /// Which busy action is the cubit doing
-  final PayBillBusyAction busyAction;
-
-  /// The errors.
-  final UnmodifiableSetView<PayBillError> errors;
 
   /// A list of biller categories for the user to filter the billers with.
   final List<BillerCategory> billerCategories;
@@ -65,12 +54,12 @@ class PayBillState extends Equatable {
   /// Creates a new state.
   PayBillState({
     this.amount = 0,
+    super.actions = const <PayBillBusyAction>{},
+    super.errors = const <CubitError>{},
+    super.events = const <PayBillEvent>{},
     this.fromAccounts = const [],
     this.selectedAccount,
     this.deviceUID,
-    this.busy = true,
-    this.busyAction = PayBillBusyAction.loading,
-    Set<PayBillError> errors = const <PayBillError>{},
     this.billerCategories = const [],
     this.selectedBiller,
     this.selectedCategory,
@@ -82,17 +71,16 @@ class PayBillState extends Equatable {
     this.scheduleDetails,
     this.saveToShortcut = false,
     this.shortcutName,
-  })  : errors = UnmodifiableSetView(errors),
-        _billers = billers;
+  }) : _billers = billers;
 
   @override
   List<Object?> get props => [
         amount,
         fromAccounts,
         selectedAccount,
+        actions,
+        events,
         deviceUID,
-        busy,
-        busyAction,
         errors,
         billerCategories,
         selectedBiller,
@@ -116,8 +104,8 @@ class PayBillState extends Equatable {
     Account? selectedAccount,
     String? deviceUID,
     bool? busy,
-    Set<PayBillError>? errors,
-    PayBillBusyAction? busyAction,
+    Set<CubitError>? errors,
+    Set<PayBillBusyAction>? actions,
     List<BillerCategory>? billerCategories,
     Biller? selectedBiller,
     BillerCategory? selectedCategory,
@@ -129,15 +117,16 @@ class PayBillState extends Equatable {
     ScheduleDetails? scheduleDetails,
     bool? saveToShortcut,
     String? shortcutName,
+    Set<PayBillEvent>? events,
   }) {
     return PayBillState(
       amount: amount ?? this.amount,
       fromAccounts: fromAccounts ?? this.fromAccounts,
       selectedAccount: selectedAccount ?? this.selectedAccount,
       deviceUID: deviceUID ?? this.deviceUID,
-      busy: busy ?? this.busy,
-      busyAction: busyAction ?? this.busyAction,
-      errors: errors ?? this.errors,
+      errors: errors ?? super.errors,
+      events: events ?? super.events,
+      actions: actions ?? super.actions,
       billerCategories: billerCategories ?? this.billerCategories,
       selectedBiller: selectedBiller ?? this.selectedBiller,
       selectedCategory: selectedCategory ?? this.selectedCategory,
@@ -169,7 +158,6 @@ class PayBillState extends Equatable {
 
   /// Wether the user can subit the form or not
   bool get canSubmit =>
-      !busy &&
       selectedAccount != null &&
       selectedCategory != null &&
       selectedBiller != null &&
@@ -235,37 +223,6 @@ class PayBillState extends Equatable {
       );
 }
 
-/// Model used for the errors.
-class PayBillError extends Equatable {
-  /// The action.
-  final PayBillBusyAction action;
-
-  /// The error.
-  final PayBillErrorStatus errorStatus;
-
-  /// The error code.
-  final String? code;
-
-  /// The error message.
-  final String? message;
-
-  /// Creates a new [PayBillError].
-  const PayBillError({
-    required this.action,
-    required this.errorStatus,
-    this.code,
-    this.message,
-  });
-
-  @override
-  List<Object?> get props => [
-        action,
-        errorStatus,
-        code,
-        message,
-      ];
-}
-
 /// Which loading action the cubit is doing
 enum PayBillBusyAction {
   /// No errors
@@ -288,6 +245,15 @@ enum PayBillBusyAction {
 
   /// Validating user input
   validating,
+}
+
+/// Possible events
+enum PayBillEvent {
+  /// Event for inputing the OTP code.
+  inputOTPCode,
+
+  /// Show confirmation view
+  showConfirmationView,
 }
 
 /// The available error status

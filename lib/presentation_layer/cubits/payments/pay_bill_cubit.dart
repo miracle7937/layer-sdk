@@ -1,9 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../data_layer/mappings/payment/biller_dto_mapping.dart';
-import '../../../data_layer/network.dart';
-import '../../../data_layer/network/net_exceptions.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../../domain_layer/use_cases/payments/generate_device_uid_use_case.dart';
@@ -58,9 +55,12 @@ class PayBillCubit extends Cubit<PayBillState> {
   void load() async {
     emit(
       state.copyWith(
-        busy: true,
-        errors: {},
-      ),
+          actions: state.addAction(
+            PayBillBusyAction.loading,
+          ),
+          errors: state.removeErrorForAction(
+            PayBillBusyAction.loading,
+          )),
     );
     try {
       final responses = await Future.wait([
@@ -78,7 +78,7 @@ class PayBillCubit extends Cubit<PayBillState> {
 
       emit(
         state.copyWith(
-          busy: false,
+          actions: state.removeAction(PayBillBusyAction.loading),
           billers: billers,
           fromAccounts: accounts
               .where((element) => element.canPay)
@@ -121,14 +121,12 @@ class PayBillCubit extends Cubit<PayBillState> {
     } on Exception catch (e) {
       emit(
         state.copyWith(
-          busy: false,
-          errors: _addError(
+          actions: state.removeAction(
+            PayBillBusyAction.loading,
+          ),
+          errors: state.addErrorFromException(
             action: PayBillBusyAction.loading,
-            errorStatus: e is NetException
-                ? PayBillErrorStatus.network
-                : PayBillErrorStatus.generic,
-            code: e is NetException ? e.code : null,
-            message: e is NetException ? e.message : null,
+            exception: e,
           ),
         ),
       );
@@ -136,51 +134,61 @@ class PayBillCubit extends Cubit<PayBillState> {
   }
 
   /// Validates user input and returns the bill object
-  Future<Bill> validateBill() async {
+  Future<void> validateBill() async {
     try {
       emit(
         state.copyWith(
-          busy: true,
-          busyAction: PayBillBusyAction.validating,
+          actions: state.addAction(
+            PayBillBusyAction.validating,
+          ),
+          errors: state.removeErrorForAction(
+            PayBillBusyAction.validating,
+          ),
         ),
       );
       final validatedBill = await _validateBillUseCase(bill: state.bill);
       emit(
         state.copyWith(
-          busy: false,
           validatedBill: validatedBill,
+          actions: state.removeAction(
+            PayBillBusyAction.validating,
+          ),
         ),
       );
-
-      /// TODO: cubit_issue | this should be handled by the state, not directly
-      /// returned.
-      return validatedBill;
-    } on Exception catch (_) {
-      /// TODO: cubit_issue | Empty catch clause, should we handle the errors?
+    } on Exception catch (e) {
       emit(
         state.copyWith(
-          busy: false,
+          actions: state.removeAction(
+            PayBillBusyAction.validating,
+          ),
+          errors: state.addErrorFromException(
+            action: PayBillBusyAction.validating,
+            exception: e,
+          ),
         ),
       );
-
       rethrow;
     }
   }
 
   /// Submits the payment
-  Future<Payment> submit({
+  Future<void> submit({
     String? otp,
     Payment? payment,
   }) async {
     try {
       emit(
         state.copyWith(
-          busy: true,
-          busyAction: otp != null
+          actions: state.addAction(otp != null
               ? PayBillBusyAction.validatingSecondFactor
-              : PayBillBusyAction.submitting,
+              : PayBillBusyAction.submitting),
+          errors: state.removeErrorForAction(otp != null
+              ? PayBillBusyAction.validatingSecondFactor
+              : PayBillBusyAction.submitting),
           deviceUID: _generateDeviceUIDUseCase(30),
-          errors: {},
+          events: state.removeEvent(otp != null
+              ? PayBillEvent.inputOTPCode
+              : PayBillEvent.showConfirmationView),
         ),
       );
 
@@ -199,31 +207,27 @@ class PayBillCubit extends Cubit<PayBillState> {
         await _createShortcut(res);
       }
 
-      emit(
-        state.copyWith(
-          busy: false,
-          busyAction: PayBillBusyAction.none,
-        ),
-      );
-
-      /// TODO: cubit_issue | this should be handled by the cubit state.
-      return res;
+      emit(state.copyWith(
+        actions: state.removeAction(otp != null
+            ? PayBillBusyAction.validatingSecondFactor
+            : PayBillBusyAction.submitting),
+        events: state.removeEvent(otp != null
+            ? PayBillEvent.inputOTPCode
+            : PayBillEvent.showConfirmationView),
+      ));
     } on Exception catch (e) {
       emit(
         state.copyWith(
-          busy: false,
-          busyAction: PayBillBusyAction.none,
-          errors: _addError(
+          actions: state.removeAction(
+            otp != null
+                ? PayBillBusyAction.validatingSecondFactor
+                : PayBillBusyAction.submitting,
+          ),
+          errors: state.addErrorFromException(
             action: otp != null
                 ? PayBillBusyAction.validatingSecondFactor
                 : PayBillBusyAction.submitting,
-            errorStatus: e is NetException
-                ? e.code == 'incorrect_value'
-                    ? PayBillErrorStatus.incorrectOTPCode
-                    : PayBillErrorStatus.network
-                : PayBillErrorStatus.generic,
-            code: e is NetException ? e.code : null,
-            message: e is NetException ? e.message : null,
+            exception: e,
           ),
         ),
       );
@@ -239,8 +243,12 @@ class PayBillCubit extends Cubit<PayBillState> {
     try {
       emit(
         state.copyWith(
-          busy: true,
-          busyAction: PayBillBusyAction.resendingOTP,
+          actions: state.addAction(
+            PayBillBusyAction.resendingOTP,
+          ),
+          errors: state.removeErrorForAction(
+            PayBillBusyAction.resendingOTP,
+          ),
         ),
       );
 
@@ -250,14 +258,21 @@ class PayBillCubit extends Cubit<PayBillState> {
 
       emit(
         state.copyWith(
-          busy: false,
+          actions: state.removeAction(
+            PayBillBusyAction.resendingOTP,
+          ),
         ),
       );
-    } on Exception catch (_) {
-      /// TODO: cubit_issue | Empty catch clause, should we handle the errors?
+    } on Exception catch (e) {
       emit(
         state.copyWith(
-          busy: false,
+          actions: state.removeAction(
+            PayBillBusyAction.resendingOTP,
+          ),
+          errors: state.addErrorFromException(
+            action: PayBillBusyAction.resendingOTP,
+            exception: e,
+          ),
         ),
       );
       rethrow;
@@ -323,9 +338,12 @@ class PayBillCubit extends Cubit<PayBillState> {
     emit(
       state.copyWith(
         selectedBiller: biller,
-        busy: true,
-        busyAction: PayBillBusyAction.loadingServices,
-        errors: {},
+        actions: state.addAction(
+          PayBillBusyAction.loadingServices,
+        ),
+        errors: state.removeErrorForAction(
+          PayBillBusyAction.loadingServices,
+        ),
       ),
     );
 
@@ -337,23 +355,22 @@ class PayBillCubit extends Cubit<PayBillState> {
 
       emit(
         state.copyWith(
-          busy: false,
-          services: services,
-          selectedService: services.firstOrNull,
-          serviceFields: services.firstOrNull?.serviceFields,
-        ),
+            services: services,
+            selectedService: services.firstOrNull,
+            serviceFields: services.firstOrNull?.serviceFields,
+            actions: state.removeAction(
+              PayBillBusyAction.loadingServices,
+            )),
       );
     } on Exception catch (e) {
       emit(
         state.copyWith(
-          busy: false,
-          errors: _addError(
+          actions: state.removeAction(
+            PayBillBusyAction.loadingServices,
+          ),
+          errors: state.addErrorFromException(
             action: PayBillBusyAction.loadingServices,
-            errorStatus: e is NetException
-                ? PayBillErrorStatus.network
-                : PayBillErrorStatus.generic,
-            code: e is NetException ? e.code : null,
-            message: e is NetException ? e.message : null,
+            exception: e,
           ),
         ),
       );
@@ -432,22 +449,4 @@ class PayBillCubit extends Cubit<PayBillState> {
       ),
     );
   }
-
-  /// Returns an error list that includes the passed action and error status.
-  Set<PayBillError> _addError({
-    required PayBillBusyAction action,
-    required PayBillErrorStatus errorStatus,
-    String? code,
-    String? message,
-  }) =>
-      state.errors.union(
-        {
-          PayBillError(
-            action: action,
-            errorStatus: errorStatus,
-            code: code,
-            message: message,
-          )
-        },
-      );
 }
