@@ -63,9 +63,9 @@ import '../../../errors.dart';
 /// }
 /// ```
 ///
-/// This will set `true` only for the edit property of the inbox module, setting
-/// all the other properties to `false` on the inbox module, as they are not
-/// explicitly specified.
+/// This will set `true` only for the `edit` object id of the `inbox` module,
+/// setting all the other properties to `false` on the inbox module, as they
+/// are not explicitly specified.
 ///
 /// ### General default value
 ///
@@ -78,13 +78,42 @@ import '../../../errors.dart';
 /// }
 /// ```
 ///
-/// This sets the default value for all modules and all properties that are not
-/// specified.
+/// This sets the default value for all modules and all properties to `true`.
 ///
-/// So, in this case, first we look if the permission is set for a module_id
-/// and object_id. If not, we'll try to set the default value based on the
-/// module_id. If there's none, we fallback to general default value, in the
-/// case above, everything will be set to `true` if not specified.
+/// ### Permission value calculation
+///
+/// Consider the following example:
+/// ```json
+/// {
+///   "permission_id": 51,
+///   "module_id": "*",
+///   "object_id": "*",
+///   "value": "T"
+/// },
+/// {
+///   "permission_id": 71,
+///   "module_id": "inbox",
+///   "object_id": "view",
+///   "value": "F"
+/// },
+/// {
+///   "permission_id": 71,
+///   "module_id": "inbox",
+///   "object_id": "edit",
+///   "value": "F"
+/// }
+/// ```
+///
+/// In the scenario above, we have a broad permission that sets the value for
+/// all modules and objects to true, even though there's also permissions
+/// specifying that `inbox.view` and `inbox.edit` are `false`.
+///
+/// This happens because the value calculation for a permission is done by
+/// checking if there's a match with any of the following cases:
+/// ```
+/// direct match || same module with star || same module with edit ||
+/// star with star || star with edit.
+/// ```
 ///
 /// ## Non-boolean values
 ///
@@ -174,7 +203,7 @@ extension PermissionDTOListMapping on Iterable<PermissionDTO> {
   }) {
     final items = where(
       (e) => e.moduleId == moduleId,
-    );
+    ).toList();
 
     final moduleDefaultValue = items._moduleDefaultValue();
 
@@ -210,31 +239,32 @@ extension PermissionDTOListMapping on Iterable<PermissionDTO> {
 
   /// Calculates the value of an object.
   ///
-  /// If the value is explicitly defined on the DTO, use it. If not,
-  /// try to use the module default value, the default for this kind of
-  /// object, the general default, and, if nothing is set, return false.
+  /// The `broadPermissions` parameter contains the list of permissions that
+  /// affects multiple `modules` and/or `objectIds`.
+  ///
+  /// The value is returned as `true` if one of the following cases occurs:
+  /// - The value is explicitly defined as `true` in the DTO
+  /// - The `moduleFallbackValue` parameter is set to `true`.
+  /// - A `broadPermission` for that specific object id is found and its value
+  /// is `true`.
+  /// - A `broadPermission` for all object ids is found and its value is `true`.
   bool _calculateValue(
     String objectId,
-    List<_Default>? defaults,
-    bool? moduleDefaultValue,
+    List<_Default>? broadPermissions,
+    bool? moduleFallbackValue,
   ) {
     final value = firstWhereOrNull(
       (e) => e.moduleObjectId == objectId,
     )?.value;
 
-    final result = (value == null ? null : value == PermissionDTO.trueValue) ??
-        moduleDefaultValue ??
-        defaults
-            ?.firstWhereOrNull(
-              (e) => e.objectId == objectId,
-            )
-            ?.value ??
-        defaults
-            ?.firstWhereOrNull(
-              (e) => e.objectId == null,
-            )
-            ?.value ??
-        false;
+    final result = value == PermissionDTO.trueValue ||
+        (moduleFallbackValue ?? false) ||
+        (broadPermissions
+                ?.firstWhereOrNull((e) => e.objectId == objectId)
+                ?.value ??
+            false) ||
+        (broadPermissions?.firstWhereOrNull((e) => e.objectId == null)?.value ??
+            false);
 
     return result;
   }
@@ -486,69 +516,79 @@ extension PermissionDTOListMapping on Iterable<PermissionDTO> {
   /// Creates a new permission data related to the transfers.
   TransferPermissionData _toTransferPermissionData(
     List<_Default> defaults,
-  ) =>
-      TransferPermissionData(
-        allowedCurrencies: toBasePermissionData(
-          'trf_allowed_currencies',
-          defaults,
-        ),
-        bank: toBasePermissionData(
-          'transfer',
-          defaults,
-          suffix: 'bnk',
-          useSuffixForView: true,
-        ),
-        bulk: toBasePermissionData(
-          'transfer',
-          defaults,
-          suffix: 'blk',
-          useSuffixForView: true,
-        ),
-        card: toBasePermissionData(
-          'transfer',
-          defaults,
-          suffix: 'crd',
-          useSuffixForView: true,
-        ),
-        domestic: toBasePermissionData(
-          'transfer',
-          defaults,
-          suffix: 'dom',
-          useSuffixForView: true,
-        ),
-        instant: toBasePermissionData(
-          'transfer',
-          defaults,
-          suffix: 'instant',
-          useSuffixForView: true,
-        ),
-        international: toBasePermissionData(
-          'transfer',
-          defaults,
-          suffix: 'int',
-          useSuffixForView: true,
-        ),
-        limits: toBasePermissionData('trf_limits', defaults),
-        merchant: toBasePermissionData(
-          'transfer',
-          defaults,
-          suffix: 'merchant',
-          useSuffixForView: true,
-        ),
-        mobile: toBasePermissionData(
-          'transfer',
-          defaults,
-          suffix: 'mobile',
-          useSuffixForView: true,
-        ),
-        own: toBasePermissionData(
-          'transfer',
-          defaults,
-          suffix: 'own',
-          useSuffixForView: true,
-        ),
-        reason: toBasePermissionData('trf_reasons', defaults),
-      );
+  ) {
+    final base = toBasePermissionData('transfer', defaults);
+
+    return TransferPermissionData(
+      view: base.view,
+      edit: base.edit,
+      createAction: base.createAction,
+      decrypt: base.decrypt,
+      executeAction: base.executeAction,
+      modify: base.modify,
+      publish: base.publish,
+      allowedCurrencies: toBasePermissionData(
+        'trf_allowed_currencies',
+        defaults,
+      ),
+      bank: toBasePermissionData(
+        'transfer',
+        defaults,
+        suffix: 'bnk',
+        useSuffixForView: true,
+      ),
+      bulk: toBasePermissionData(
+        'transfer',
+        defaults,
+        suffix: 'blk',
+        useSuffixForView: true,
+      ),
+      card: toBasePermissionData(
+        'transfer',
+        defaults,
+        suffix: 'crd',
+        useSuffixForView: true,
+      ),
+      domestic: toBasePermissionData(
+        'transfer',
+        defaults,
+        suffix: 'dom',
+        useSuffixForView: true,
+      ),
+      instant: toBasePermissionData(
+        'transfer',
+        defaults,
+        suffix: 'instant',
+        useSuffixForView: true,
+      ),
+      international: toBasePermissionData(
+        'transfer',
+        defaults,
+        suffix: 'int',
+        useSuffixForView: true,
+      ),
+      limits: toBasePermissionData('trf_limits', defaults),
+      merchant: toBasePermissionData(
+        'transfer',
+        defaults,
+        suffix: 'merchant',
+        useSuffixForView: true,
+      ),
+      mobile: toBasePermissionData(
+        'transfer',
+        defaults,
+        suffix: 'mobile',
+        useSuffixForView: true,
+      ),
+      own: toBasePermissionData(
+        'transfer',
+        defaults,
+        suffix: 'own',
+        useSuffixForView: true,
+      ),
+      reason: toBasePermissionData('trf_reasons', defaults),
+    );
+  }
 }
 
 /// A class that holds a default boolean value for a module object or an entire
