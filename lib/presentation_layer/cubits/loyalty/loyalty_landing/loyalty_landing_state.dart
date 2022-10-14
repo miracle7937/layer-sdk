@@ -25,7 +25,7 @@ enum LoyaltyLandingActions {
 /// The state for the [LoyaltyLandingState].
 class LoyaltyLandingState extends BaseState<LoyaltyLandingActions, void, void> {
   /// All the [LoyaltyPoints]
-  final UnmodifiableListView<LoyaltyPoints> loyaltyPoints;
+  final LoyaltyPoints? loyaltyPoints;
 
   /// All the [Offer]s
   final UnmodifiableListView<Offer> offers;
@@ -43,22 +43,21 @@ class LoyaltyLandingState extends BaseState<LoyaltyLandingActions, void, void> {
   LoyaltyLandingState({
     super.actions = const <LoyaltyLandingActions>{},
     super.errors = const <CubitError>{},
-    Iterable<LoyaltyPoints> loyaltyPoints = const <LoyaltyPoints>{},
     Iterable<Offer> offers = const <Offer>{},
     Iterable<Category> categories = const <Category>{},
+    this.loyaltyPoints,
     this.loyaltyPointsRate,
     this.loyaltyPointsExpiration,
-  })  : loyaltyPoints = UnmodifiableListView(loyaltyPoints),
-        offers = UnmodifiableListView(offers),
+  })  : offers = UnmodifiableListView(offers),
         categories = UnmodifiableListView(categories);
 
   @override
   LoyaltyLandingState copyWith({
     Set<LoyaltyLandingActions>? actions,
     Set<CubitError>? errors,
-    Iterable<LoyaltyPoints>? loyaltyPoints,
     Iterable<Offer>? offers,
     Iterable<Category>? categories,
+    LoyaltyPoints? loyaltyPoints,
     LoyaltyPointsRate? loyaltyPointsRate,
     LoyaltyPointsExpiration? loyaltyPointsExpiration,
     Pagination? pagination,

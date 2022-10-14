@@ -128,9 +128,9 @@ void main() {
       LoyaltyLandingState(
         actions: {},
         errors: {},
-        loyaltyPoints: {},
         offers: {},
         categories: {},
+        loyaltyPoints: null,
         loyaltyPointsRate: null,
         loyaltyPointsExpiration: null,
       ),
@@ -144,7 +144,7 @@ void main() {
     verify: (c) => expect(
       c.state,
       LoyaltyLandingState(
-        loyaltyPoints: _mockedPoints,
+        loyaltyPoints: _mockedPoints.first,
         offers: _mockedOffer.offers,
         loyaltyPointsRate: _mockedLoyaltyPointsRate,
         loyaltyPointsExpiration: _mockedLoyaltyPointsExpiration,
@@ -165,7 +165,7 @@ void main() {
       LoyaltyLandingState(
         actions: {},
         errors: {},
-        loyaltyPoints: _mockedPoints,
+        loyaltyPoints: _mockedPoints.first,
       ),
     ],
     verify: (c) {
