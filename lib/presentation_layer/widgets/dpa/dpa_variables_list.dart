@@ -155,6 +155,8 @@ class DPAVariablesList extends StatelessWidget {
         );
 
       case DPAVariableType.dropdown:
+      case DPAVariableType.radioButton:
+      case DPAVariableType.horizontalPicker:
         final isMultipicker = variable.property.multipleValues;
         final hasSearchBar = variable.property.searchBar;
 
