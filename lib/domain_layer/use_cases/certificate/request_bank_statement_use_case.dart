@@ -1,4 +1,5 @@
 import '../../abstract_repositories.dart';
+import '../../models/file_type.dart';
 
 /// Use case to request bank statement
 class RequestBankStatementUseCase {
@@ -17,11 +18,13 @@ class RequestBankStatementUseCase {
     required String accountId,
     required DateTime fromDate,
     required DateTime toDate,
+    FileType type = FileType.image,
   }) =>
       _repository.requestBankStatement(
         customerId: customerId,
         accountId: accountId,
         fromDate: fromDate,
         toDate: toDate,
+        type: type,
       );
 }
