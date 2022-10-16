@@ -50,7 +50,7 @@ class InboxConversationState extends Equatable {
   final String errorMessage;
 
   /// The report returned from the server
-  final InboxReport? report;
+  final InboxReport report;
 
   /// The list of messages to be rendered in the view
   final UnmodifiableListView<InboxChatMessage> messages;
@@ -61,16 +61,25 @@ class InboxConversationState extends Equatable {
   /// A list of files that still need to be uploaded
   final UnmodifiableListView<InboxFile> filesToUpload;
 
+  /// A text message
   final String messageText;
+
+  /// The maximum amount of characters that can be sent in the message
+  final int maxCharactersPerMessage;
+
+  /// The maximum size of a file to be selected
+  final int maxFileSizeLimit;
 
   /// Creates a new instance of [InboxConversationState]
   InboxConversationState({
-    this.report,
+    required this.report,
     this.errorStatus = InboxConversationErrorStatus.none,
     this.busyAction = InboxConversationBusyAction.idle,
     this.busy = false,
     this.errorMessage = '',
     this.messageText = '',
+    this.maxCharactersPerMessage = 800,
+    this.maxFileSizeLimit = 20480,
     Iterable<InboxChatMessage> messages = const [],
     Iterable<InboxFile> uploadedFiles = const [],
     Iterable<InboxFile> filesToUpload = const [],
@@ -90,6 +99,8 @@ class InboxConversationState extends Equatable {
       uploadedFiles,
       filesToUpload,
       messageText,
+      maxCharactersPerMessage,
+      maxFileSizeLimit,
     ];
   }
 
@@ -101,6 +112,8 @@ class InboxConversationState extends Equatable {
     String? errorMessage,
     InboxReport? report,
     String? messageText,
+    int? maxCharactersPerMessage,
+    int? maxFileSizeLimit,
     Iterable<InboxChatMessage>? messages,
     Iterable<InboxFile>? uploadedFiles,
     Iterable<InboxFile>? filesToUpload,
@@ -115,6 +128,9 @@ class InboxConversationState extends Equatable {
       uploadedFiles: uploadedFiles ?? this.uploadedFiles,
       filesToUpload: filesToUpload ?? this.filesToUpload,
       messageText: messageText ?? this.messageText,
+      maxCharactersPerMessage:
+          maxCharactersPerMessage ?? this.maxCharactersPerMessage,
+      maxFileSizeLimit: maxFileSizeLimit ?? this.maxFileSizeLimit,
     );
   }
 }

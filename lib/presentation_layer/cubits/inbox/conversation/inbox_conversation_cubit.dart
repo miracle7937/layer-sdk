@@ -12,14 +12,21 @@ import 'inbox_conversation_state.dart';
 class InboxConversationCubit extends Cubit<InboxConversationState> {
   final SendReportChatMessageUseCase _sendChatMessageUseCase;
   final PostInboxFilesUseCase _postInboxFilesUseCase;
+  final LoadGlobalSettingsUseCase _loadGlobalSettingsUseCase;
 
   /// Creates a new [InboxConversationCubit]
   InboxConversationCubit({
     required SendReportChatMessageUseCase sendChatMessageUseCase,
     required PostInboxFilesUseCase postInboxFilesUseCase,
+    required LoadGlobalSettingsUseCase loadGlobalSettingsUseCase,
   })  : _postInboxFilesUseCase = postInboxFilesUseCase,
         _sendChatMessageUseCase = sendChatMessageUseCase,
-        super(InboxConversationState());
+        _loadGlobalSettingsUseCase = loadGlobalSettingsUseCase,
+        super(
+          InboxConversationState(
+            report: InboxReport(),
+          ),
+        );
 
   /// Include a [InboxFile]
   void addInboxFile(InboxFile file) {
@@ -65,6 +72,18 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
         ),
       );
 
+      final settings = await _loadGlobalSettingsUseCase(
+        codes: [
+          'max_inbox_message_chars',
+          'max_file_limit',
+        ],
+      );
+
+      final maxCharacters =
+          settings.firstWhere((it) => it.code == 'max_inbox_message_chars');
+      final maxFileSize =
+          settings.firstWhere((it) => it.code == 'max_file_limit');
+
       final files = [
         for (final f in report.files)
           InboxFile(
@@ -82,14 +101,19 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
           )
       ];
 
+      messages
+          .sort((o, n) => n.message.tsUpdated!.compareTo(o.message.tsUpdated!));
+
       emit(
         state.copyWith(
-          busy: true,
+          busy: false,
           busyAction: InboxConversationBusyAction.idle,
           errorStatus: InboxConversationErrorStatus.none,
           uploadedFiles: files,
           messages: messages,
           report: report,
+          maxCharactersPerMessage: maxCharacters.value,
+          maxFileSizeLimit: maxFileSize.value,
         ),
       );
     } on Exception catch (e) {
@@ -113,8 +137,6 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
     required String message,
     String? fileURL,
   }) async {
-    InboxChatMessage? inboxChatMessage;
-
     try {
       emit(
         state.copyWith(
@@ -126,7 +148,7 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
 
       final inboxReportMessage = InboxReportMessage(
         text: message,
-        reportId: state.report?.id ?? 0,
+        reportId: state.report.id ?? 0,
         senderType: InboxReportSenderType.customer,
         tsCreated: DateTime.now(),
       );
@@ -139,60 +161,63 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
 
       emit(
         state.copyWith(
-          busy: true,
+          busy: false,
           busyAction: InboxConversationBusyAction.postingMessage,
           errorStatus: InboxConversationErrorStatus.none,
           messages: [
+            // inboxChatMessage,
             ...state.messages,
-            inboxChatMessage,
           ],
         ),
       );
 
       final inboxMessage = await _sendChatMessageUseCase(
-        reportId: state.report!.id ?? 0,
+        reportId: state.report.id ?? 0,
         messageText: message,
         fileUrl: fileURL,
       );
 
       emit(
         state.copyWith(
-          report: state.report!.copyWith(
+          report: state.report.copyWith(
             messages: [
-              ...state.report!.messages
-                  .sublist(0, state.report!.messages.length - 1),
               inboxMessage,
+              ...state.report.messages
+                  .sublist(0, state.report.messages.length - 1),
             ],
           ),
           messages: [
-            ...(state.messages.sublist(0, state.messages.length - 1)),
             inboxChatMessage.copyWith(
               message: inboxMessage,
               status: InboxChatMessageStatus.uploaded,
             ),
+            ...(state.messages.sublist(0, state.messages.length - 1)),
           ],
         ),
       );
     } on Exception catch (e) {
       final failedInboxMessage = InboxReportMessage(
         text: message,
-        reportId: state.report?.id ?? 0,
+        reportId: state.report.id ?? 0,
       );
 
       emit(
         state.copyWith(
           busy: false,
           busyAction: InboxConversationBusyAction.idle,
-          report: state.report!.copyWith(
-            messages: [...state.report?.messages ?? [], failedInboxMessage],
+          report: state.report.copyWith(
+            messages: [
+              failedInboxMessage,
+              ...state.report.messages.sublist(0, state.messages.length - 1),
+            ],
           ),
           messages: [
-            ...(state.messages.sublist(0, state.messages.length - 1)),
             InboxChatMessage(
               message: failedInboxMessage,
               status: InboxChatMessageStatus.failed,
               sentTime: DateTime.now(),
             ),
+            ...(state.messages.sublist(0, state.messages.length - 1)),
           ],
           errorStatus: e is NetException
               ? InboxConversationErrorStatus.network
@@ -207,9 +232,6 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
 
   /// Upload a list of [InboxFiles]
   void uploadInboxFiles() async {
-    InboxReportMessage? inboxMessage;
-    InboxChatMessage? inboxChatMessage;
-
     try {
       if (state.filesToUpload.isEmpty) {
         return;
@@ -233,55 +255,75 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
           )
           .toList();
 
-      inboxMessage = InboxReportMessage(
-        reportId: state.report?.id! ?? 0,
+      final inboxMessage = InboxReportMessage(
+        reportId: state.report.id ?? 0,
         text: state.messageText,
         senderType: InboxReportSenderType.customer,
         files: _displayFiles,
       );
 
-      inboxChatMessage = InboxChatMessage(
+      final inboxChatMessage = InboxChatMessage(
         message: inboxMessage,
         status: InboxChatMessageStatus.uploading,
         sentTime: DateTime.now(),
       );
 
-      emit(
-        state.copyWith(
-          messages: [
-            ...state.messages,
-            inboxChatMessage,
-          ],
-        ),
-      );
-
       final sentMessage = await _postInboxFilesUseCase(
-        reportId: state.report?.id! ?? 0,
+        reportId: state.report.id ?? 0,
         files: state.filesToUpload,
         messageText: state.messageText,
       );
 
       emit(
         state.copyWith(
+          busy: false,
           filesToUpload: [],
           uploadedFiles: [],
           messages: [
-            ...state.messages,
             inboxChatMessage.copyWith(
-              // message: message,
               message: sentMessage,
               status: InboxChatMessageStatus.uploaded,
             ),
+            ...state.messages.sublist(0, state.messages.length - 1),
           ],
-          report: state.report?.copyWith(
+          report: state.report.copyWith(
             messages: [
-              ...state.report!.messages,
               sentMessage,
+              ...state.report.messages.sublist(0, state.messages.length - 1),
             ],
           ),
         ),
       );
     } on Exception catch (e) {
+      final failedInboxMessage = InboxReportMessage(
+        text: state.messageText,
+        reportId: state.report.id ?? 0,
+      );
+      emit(
+        state.copyWith(
+          busy: false,
+          busyAction: InboxConversationBusyAction.idle,
+          report: state.report.copyWith(
+            messages: [
+              failedInboxMessage,
+              ...state.report.messages.sublist(state.messages.length - 1),
+            ],
+          ),
+          messages: [
+            InboxChatMessage(
+              message: failedInboxMessage,
+              status: InboxChatMessageStatus.failed,
+              sentTime: DateTime.now(),
+            ),
+            ...(state.messages.sublist(0, state.messages.length - 1)),
+          ],
+          errorStatus: e is NetException
+              ? InboxConversationErrorStatus.network
+              : InboxConversationErrorStatus.generic,
+          errorMessage: e is NetException ? e.message : e.toString(),
+        ),
+      );
+
       emit(
         state.copyWith(
           busy: false,
@@ -297,10 +339,8 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
     }
   }
 
-  /// Resend a failed message
-  void resendMessage({
-    required InboxChatMessage failedMessage,
-  }) async {
+  /// Method that handles if should resend the files or just the text message
+  void resendMessage({required InboxChatMessage failedMessage}) async {
     try {
       emit(
         state.copyWith(
@@ -308,23 +348,30 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
           busyAction: InboxConversationBusyAction.postingInboxFiles,
           errorStatus: InboxConversationErrorStatus.none,
           messages: [
-            ...state.messages.sublist(0, state.messages.length - 1),
             failedMessage.copyWith(
               sentTime: DateTime.now(),
               status: InboxChatMessageStatus.uploading,
             ),
+            ...state.messages.sublist(0, state.messages.length - 1),
           ],
+          report: state.report.copyWith(
+            messages: [
+              failedMessage.message,
+              ...state.report.messages.sublist(0, state.messages.length - 1)
+            ],
+          ),
         ),
       );
 
       final sentMessage = await _postInboxFilesUseCase(
-        reportId: state.report?.id! ?? 0,
+        reportId: state.report.id ?? 0,
         files: state.filesToUpload,
         messageText: failedMessage.message.text,
       );
 
       emit(
         state.copyWith(
+          busy: false,
           filesToUpload: [],
           uploadedFiles: [],
           messages: [
@@ -334,13 +381,11 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
               status: InboxChatMessageStatus.uploaded,
             ),
           ],
-          report: state.report?.copyWith(
+          report: state.report.copyWith(
             messages: [
-              ...state.report!.messages.sublist(
-                0,
-                state.report!.messages.length - 1,
-              ),
               sentMessage,
+              ...state.report.messages
+                  .sublist(0, state.report.messages.length - 1),
             ],
           ),
         ),
@@ -350,21 +395,21 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
         state.copyWith(
           busy: false,
           busyAction: InboxConversationBusyAction.idle,
-          report: state.report!.copyWith(
+          report: state.report.copyWith(
             messages: [
-              ...state.report!.messages.sublist(
-                0,
-                state.report!.messages.length - 1,
-              ),
               failedMessage.message,
+              ...state.report.messages.sublist(
+                0,
+                state.report.messages.length - 1,
+              ),
             ],
           ),
           messages: [
-            ...(state.messages.sublist(0, state.messages.length - 1)),
             failedMessage.copyWith(
               message: failedMessage.message,
               status: InboxChatMessageStatus.failed,
             ),
+            ...(state.messages.sublist(0, state.messages.length - 1)),
           ],
           errorStatus: e is NetException
               ? InboxConversationErrorStatus.network
@@ -375,5 +420,23 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
 
       rethrow;
     }
+  }
+
+  /// Removes a failed message from the list
+  void deleteFailedMessage(InboxChatMessage failedMessage) {
+    final successfulMessages = [...state.messages]..remove(failedMessage);
+
+    final reportMessages = [...state.report.messages]
+      ..remove(failedMessage.message);
+
+    final hasAttachments = failedMessage.message.files.isNotEmpty;
+
+    emit(
+      state.copyWith(
+        messages: successfulMessages,
+        report: state.report.copyWith(messages: reportMessages),
+        filesToUpload: hasAttachments ? [] : state.filesToUpload,
+      ),
+    );
   }
 }
