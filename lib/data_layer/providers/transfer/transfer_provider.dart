@@ -101,20 +101,40 @@ class TransferProvider {
     return TransferDTO.fromJson(response.data);
   }
 
-  /// Returns trhe transfer dto resulting on verifying the second factor for
+  /// Returns the transfer dto resulting on sending the OTP code for the
+  /// passed transfer id.
+  Future<TransferDTO> sendOTPCode({
+    required int transferId,
+    required bool editMode,
+  }) async {
+    final response = await netClient.request(
+      netClient.netEndpoints.submitTransfer,
+      method: editMode ? NetRequestMethods.patch : NetRequestMethods.post,
+      data: {
+        'transfer_id': transferId,
+        'second_factor': SecondFactorTypeDTO.otp.value,
+      },
+    );
+
+    return TransferDTO.fromJson(response.data);
+  }
+
+  /// Returns the transfer dto resulting on verifying the second factor for
   /// the passed transfer id.
   Future<TransferDTO> verifySecondFactor({
     required int transferId,
-    required String otpValue,
+    required String value,
     required SecondFactorTypeDTO secondFactorTypeDTO,
   }) async {
     final response = await netClient.request(
       netClient.netEndpoints.submitTransfer,
       method: NetRequestMethods.post,
-      queryParameters: {'otp_value': otpValue},
       data: {
         'transfer_id': transferId,
         'second_factor': secondFactorTypeDTO.value,
+        if (secondFactorTypeDTO == SecondFactorTypeDTO.ocra)
+          'client_response': value,
+        if (secondFactorTypeDTO == SecondFactorTypeDTO.otp) 'otp_value': value,
       },
     );
 

@@ -29,6 +29,9 @@ enum CubitErrorCode {
   /// Incorrect OTP code.
   incorrectOTPCode('incorrect_value'),
 
+  /// Invalid second factor.
+  invalidSecondFactor('invalid_second_factor'),
+
   /// The transfer failed.
   transferFailed('transfer_failed'),
 

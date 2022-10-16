@@ -15,7 +15,7 @@ class LoadReceiptUseCase {
   Future<List<int>> call({
     required String objectId,
     required ReceiptActionType actionType,
-    ReceiptType type = ReceiptType.image,
+    FileType type = FileType.image,
   }) async =>
       _repository.getReceipt(
         objectId: objectId,

@@ -20,29 +20,33 @@ class PaymentPermissionData extends BasePermissionData {
   /// Top up providers specific permissions.
   final BasePermissionData topUpProviders;
 
+  /// Checks if any of the underlying permissions are visible.
+  bool get canDoAnyPayment => [
+        bill,
+        billers,
+        settings,
+        topUp,
+        topUpProviders,
+      ].any((e) => e.isFeatureVisible);
+
+  @override
+  bool get isFeatureVisible => canDoAnyPayment || (view || edit);
+
   /// Creates a [PaymentPermissionData] object.
   const PaymentPermissionData({
-    bool view = false,
-    bool edit = false,
-    bool modify = false,
-    bool publish = false,
-    bool executeAction = false,
-    bool createAction = false,
-    bool decrypt = false,
+    super.view = false,
+    super.edit = false,
+    super.modify = false,
+    super.publish = false,
+    super.executeAction = false,
+    super.createAction = false,
+    super.decrypt = false,
     this.bill = const BasePermissionData(),
     this.billers = const BasePermissionData(),
     this.settings = const BasePermissionData(),
     this.topUp = const BasePermissionData(),
     this.topUpProviders = const BasePermissionData(),
-  }) : super(
-          view: view,
-          edit: edit,
-          modify: modify,
-          publish: publish,
-          executeAction: executeAction,
-          createAction: createAction,
-          decrypt: decrypt,
-        );
+  });
 
   @override
   List<Object> get props => super.props

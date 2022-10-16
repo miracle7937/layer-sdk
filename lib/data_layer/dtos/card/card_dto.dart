@@ -58,6 +58,9 @@ class CardDTO {
   /// Contains all preferences related to this card
   CardPreferencesDTO? preferences;
 
+  /// Whether its a virtual card or not
+  bool? isVirtual;
+
   /// Creates a new [CardDTO]
   CardDTO({
     this.cardId,
@@ -77,6 +80,7 @@ class CardDTO {
     this.cardType,
     this.accountID,
     this.preferences,
+    this.isVirtual,
   });
 
   /// Creates a [CardDTO] from a JSON
@@ -107,6 +111,7 @@ class CardDTO {
           : null,
       accountID: List.from(map["account_ids"] ?? []),
       preferences: CardPreferencesDTO.fromJson(map),
+      isVirtual: map['virtual'] ?? false,
     );
   }
 
@@ -123,6 +128,9 @@ class CardDTOStatus extends EnumDTO {
   /// Inactive status
   static const inactive = CardDTOStatus._internal('I');
 
+  /// Frozen status
+  static const frozen = CardDTOStatus._internal('F');
+
   /// Closed status
   static const closed = CardDTOStatus._internal('C');
 
@@ -130,6 +138,7 @@ class CardDTOStatus extends EnumDTO {
   static const List<CardDTOStatus> values = [
     active,
     inactive,
+    frozen,
     closed,
   ];
 
