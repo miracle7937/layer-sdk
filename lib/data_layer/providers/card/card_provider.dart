@@ -1,4 +1,11 @@
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:pointycastle/pointycastle.dart';
+
 import '../../../../data_layer/network.dart';
+import '../../../_migration/data_layer/src/encryption/rsa_cipher.dart';
+import '../../../_migration/data_layer/src/helpers/dto_helpers.dart';
 import '../../dtos.dart';
 
 /// Provides data related to Cards
@@ -9,7 +16,19 @@ class CardProvider {
   /// Creates a new [CardProvider] instance
   CardProvider(
     this.netClient,
-  );
+  ) {
+    _generateKey();
+  }
+
+  late RSACipher _cipher;
+  late dynamic _key;
+  late AsymmetricKeyPair<PublicKey, PrivateKey> _keyPair;
+
+  void _generateKey() {
+    _cipher = RSACipher();
+    _keyPair = _cipher.generateKeyPair();
+    _key = _cipher.encodePublicKeyToPem(_keyPair.publicKey as RSAPublicKey);
+  }
 
   /// Returns all cards of the supplied customer
   Future<List<CardDTO>> listCustomerCards({
@@ -21,7 +40,7 @@ class CardProvider {
       netClient.netEndpoints.card,
       method: NetRequestMethods.get,
       queryParameters: {
-        'customer_id': customerId,
+        if (isNotEmpty(customerId)) 'customer_id': customerId,
         'include_details': includeDetails,
       },
       forceRefresh: forceRefresh,
@@ -56,5 +75,62 @@ class CardProvider {
     return CardTransactionDTO.fromJsonList(
       List<Map<String, dynamic>>.from(response.data),
     );
+  }
+
+  /// Returns the card info for the specified card
+  Future<CardInfoDTO> getCardInfo({
+    required int cardId,
+    int? otpId,
+    String? otpValue,
+    SecondFactorTypeDTO? secondFactorType,
+    String? clientResponse,
+    bool forceRefresh = false,
+  }) async {
+    final response = await netClient.request(
+      netClient.netEndpoints.cardInfo,
+      method: NetRequestMethods.post,
+      queryParameters: {
+        if (otpValue != null || clientResponse != null)
+          'second_factor_verification': true,
+      },
+      data: {
+        "card_id": cardId,
+        "key": _key,
+        if (secondFactorType != null) "second_factor": secondFactorType.value,
+        if (clientResponse != null &&
+            secondFactorType == SecondFactorTypeDTO.ocra)
+          "client_response": clientResponse,
+        if (otpId != null && secondFactorType == SecondFactorTypeDTO.otp)
+          "otp_id": otpId,
+        if (otpValue != null && secondFactorType == SecondFactorTypeDTO.otp)
+          "otp_value": otpValue,
+      },
+      forceRefresh: forceRefresh,
+    );
+
+    if (response.data != null) {
+      return CardInfoDTO.fromJson(_decryptCardInfo(response.data));
+    }
+
+    throw Exception('Invalid response');
+  }
+
+  Map<String, dynamic> _decryptCardInfo(dynamic data) {
+    if (data is Map<String, dynamic> &&
+        data['second_factor'] != null &&
+        data['card_info'] == null) {
+      return data;
+    } else if (data is Map<String, dynamic> && data['card_info'] != null) {
+      final decrypted = _cipher.decryptBase64(
+        base64.decode(data['card_info']),
+        _keyPair.privateKey as RSAPrivateKey,
+      );
+      try {
+        return json.decode(decrypted);
+      } on Exception {
+        throw Exception('Invalid response');
+      }
+    }
+    return data;
   }
 }

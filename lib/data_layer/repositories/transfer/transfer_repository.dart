@@ -85,16 +85,30 @@ class TransferRepository implements TransferRepositoryInterface {
     return transferDTO.toTransfer();
   }
 
+  /// Sends the OTP code for the passed transfer id.
+  @override
+  Future<Transfer> sendOTPCode({
+    required int transferId,
+    required bool editMode,
+  }) async {
+    final transferDTO = await _provider.sendOTPCode(
+      transferId: transferId,
+      editMode: editMode,
+    );
+
+    return transferDTO.toTransfer();
+  }
+
   /// Verifies the second factor for the passed transfer id.
   @override
   Future<Transfer> verifySecondFactor({
     required int transferId,
-    required String otpValue,
+    required String value,
     required SecondFactorType secondFactorType,
   }) async {
     final transferDTO = await _provider.verifySecondFactor(
       transferId: transferId,
-      otpValue: otpValue,
+      value: value,
       secondFactorTypeDTO: secondFactorType.toSecondFactorTypeDTO(),
     );
 

@@ -39,6 +39,13 @@ class ShortcutRepository extends ShortcutRepositoryInterface {
 
       case ShortcutType.payment:
         return (payload as Payment).toPaymentShortcutPayloadDTO().toJson();
+
+      case ShortcutType.payToMobile:
+        if (payload is NewPayToMobile) {
+          return payload.toDTO().toJson();
+        }
+
+        return (payload as PayToMobile).toPayToMobileDTO().toJson();
     }
   }
 }

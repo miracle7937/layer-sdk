@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
+
 import '../../../../../domain_layer/models.dart';
-import '../../../../domain_layer/models.dart';
 
 /// Handles LoyaltyExchange error status
 enum LoyaltyPointsExchangeErrorStatus {

@@ -18,7 +18,7 @@ class ReceiptProvider {
   Future<List<int>> getReceipt({
     required String objectId,
     required ReceiptActionType actionType,
-    ReceiptType type = ReceiptType.image,
+    FileType type = FileType.image,
   }) async {
     final response = await netClient.request(
       '${actionType.toQueryString(netClient.netEndpoints)}/$objectId',
