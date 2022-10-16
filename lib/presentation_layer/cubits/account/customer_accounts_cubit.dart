@@ -8,7 +8,7 @@ import '../../cubits.dart';
 class CustomerAccountsCubit extends Cubit<CustomerAccountsState> {
   final GetCustomerAccountsUseCase _getCustomerAccountsUseCase;
 
-  /// Creates a new instance of [AccountCubit]
+  /// Creates a new instance of [CustomerAccountsCubit]
   CustomerAccountsCubit({
     required GetCustomerAccountsUseCase getCustomerAccountsUseCase,
   })  : _getCustomerAccountsUseCase = getCustomerAccountsUseCase,

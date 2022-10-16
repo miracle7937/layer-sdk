@@ -10,16 +10,16 @@ class VerifyTransferSecondFactorUseCase {
     required TransferRepositoryInterface transferRepository,
   }) : _transferRepository = transferRepository;
 
-  /// Returns a transfer resulting on verifying the otp for the
+  /// Returns a transfer resulting on verifying the second factor for the
   /// passed transfer id.
   Future<Transfer> call({
     required int transferId,
-    required String otpValue,
+    required String value,
     required SecondFactorType secondFactorType,
   }) =>
       _transferRepository.verifySecondFactor(
         transferId: transferId,
-        otpValue: otpValue,
+        value: value,
         secondFactorType: secondFactorType,
       );
 }

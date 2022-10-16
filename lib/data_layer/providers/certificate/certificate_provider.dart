@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
 
+import '../../../domain_layer/models.dart';
+import '../../mappings.dart';
 import '../../network.dart';
 
 /// Customer certificates provider
@@ -74,6 +76,7 @@ class CertificateProvider {
     required String customerId,
     required DateTime toDate,
     required DateTime fromDate,
+    FileType type = FileType.image,
   }) async {
     final format = DateFormat('yyyyMMdd');
     final response = await netClient.request(
@@ -86,7 +89,7 @@ class CertificateProvider {
         'customer_id': customerId,
       },
       data: {
-        "format": "image",
+        'format': type.toFormat(),
         "form_id": "bank_statement",
         "send_by": "response",
         "account_id": accountId,
