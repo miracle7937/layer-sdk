@@ -6,10 +6,5 @@ extension DateTimeExtensions on DateTime {
       );
 
   /// Returns the end of the given month.
-  DateTime endOfTheMonth() => DateTime(
-        year,
-        month + 1,
-      ).subtract(
-        const Duration(milliseconds: 1),
-      );
+  DateTime endOfTheMonth() => DateTime(year, month + 1, 0);
 }

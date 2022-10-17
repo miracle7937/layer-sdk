@@ -2,15 +2,10 @@ import '../../../../domain_layer/abstract_repositories.dart';
 import '../../../../domain_layer/models.dart';
 import '../../../dtos.dart';
 import '../../../mappings.dart';
-import '../../../providers.dart';
 
 /// Handles expirated loyalty points data
 class MockLoyaltyPointsExpirationRepository
     implements LoyaltyPointsExpirationRepositoryInterface {
-  ///  Creates a new repository with the supplied [LoyaltyPointsProvider]
-  MockLoyaltyPointsExpirationRepository(
-      LoyaltyPointsExpirationProvider provider);
-
   /// Fetches the amount of loyalty points to expire by the set date
   @override
   Future<LoyaltyPointsExpiration> getExpiryPointsByDate({

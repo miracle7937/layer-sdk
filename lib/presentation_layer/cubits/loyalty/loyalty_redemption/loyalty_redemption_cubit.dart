@@ -161,7 +161,7 @@ class LoyaltyRedemptionCubit extends Cubit<LoyaltyRedemptionState> {
             LoyaltyRedemptionAction.rate,
           ),
           loyaltyPoints: state.loyaltyPoints.copyWith(
-            rate: rate.rate.toDouble(),
+            rate: rate.rate,
           ),
         ),
       );
