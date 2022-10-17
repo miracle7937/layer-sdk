@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import '../../../../../../data_layer/network.dart';
 import '../../../../presentation_layer/utils.dart';
 import '../../../domain_layer/use_cases.dart';
+import '../../../domain_layer/use_cases/payments/generate_device_uid_use_case.dart';
 import '../../cubits.dart';
 
 /// A cubit that keeps the list of customer transfers.
@@ -13,10 +14,12 @@ class TransferCubit extends Cubit<TransferState> {
   TransferCubit({
     required String customerId,
     required LoadTransfersUseCase loadTransfersUseCase,
+    required GenerateDeviceUIDUseCase generateDeviceUIDUseCase,
     int limit = 50,
   })  : _loadTransfersUseCase = loadTransfersUseCase,
         super(
           TransferState(
+            deviceUID: generateDeviceUIDUseCase(30),
             customerId: customerId,
             pagination: Pagination(limit: limit),
           ),

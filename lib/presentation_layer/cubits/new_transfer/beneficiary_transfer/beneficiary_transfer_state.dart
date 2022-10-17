@@ -156,6 +156,9 @@ class BeneficiaryTransferState extends BaseState<BeneficiaryTransferAction,
   /// Defaults to `false`
   final bool editMode;
 
+  /// Device uid
+  final String? deviceUID;
+
   /// Creates a new [BeneficiaryTransferState].
   BeneficiaryTransferState({
     required this.transfer,
@@ -172,6 +175,7 @@ class BeneficiaryTransferState extends BaseState<BeneficiaryTransferAction,
     this.banksPagination = const Pagination(),
     this.evaluation,
     this.transferResult,
+    this.deviceUID,
     this.bankQuery,
     required this.editMode,
   })  : beneficiarySettings = UnmodifiableListView(beneficiarySettings),
@@ -200,6 +204,7 @@ class BeneficiaryTransferState extends BaseState<BeneficiaryTransferAction,
     Transfer? transferResult,
     String? bankQuery,
     bool? editMode,
+    String? deviceUID,
   }) =>
       BeneficiaryTransferState(
         transfer: transfer ?? this.transfer,
@@ -218,6 +223,7 @@ class BeneficiaryTransferState extends BaseState<BeneficiaryTransferAction,
         transferResult: transferResult ?? this.transferResult,
         bankQuery: bankQuery ?? this.bankQuery,
         editMode: editMode ?? this.editMode,
+        deviceUID: deviceUID ?? this.deviceUID,
       );
 
   @override
@@ -237,6 +243,7 @@ class BeneficiaryTransferState extends BaseState<BeneficiaryTransferAction,
         evaluation,
         transferResult,
         bankQuery,
+        deviceUID,
         editMode,
       ];
 }

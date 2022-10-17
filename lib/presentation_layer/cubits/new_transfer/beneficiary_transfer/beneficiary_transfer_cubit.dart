@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../domain_layer/models.dart';
 import '../../../../domain_layer/use_cases.dart';
+import '../../../../domain_layer/use_cases/payments/generate_device_uid_use_case.dart';
 import '../../../cubits.dart';
 import '../../../utils.dart';
 
@@ -49,6 +50,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         verifyTransferSecondFactorUseCase,
     required ResendTransferSecondFactorUseCase
         resendTransferSecondFactorUseCase,
+    required GenerateDeviceUIDUseCase generateDeviceUIDUseCase,
     required CreateShortcutUseCase createShortcutUseCase,
     int banksPaginationLimit = 20,
   })  : _loadGlobalSettingsUseCase = loadGlobalSettingsUseCase,
@@ -69,6 +71,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         _createShortcutUseCase = createShortcutUseCase,
         super(
           BeneficiaryTransferState(
+            deviceUID: generateDeviceUIDUseCase(30),
             transfer: transfer,
             banksPagination: Pagination(
               limit: banksPaginationLimit,
@@ -727,6 +730,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
   Future<void> submit() async {
     emit(
       state.copyWith(
+        transfer: state.transfer.copyWith(deviceUID: state.deviceUID),
         actions: state.addAction(
           BeneficiaryTransferAction.submit,
         ),
