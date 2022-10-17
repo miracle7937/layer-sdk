@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../domain_layer/models.dart';
@@ -161,7 +162,7 @@ class LoyaltyRedemptionCubit extends Cubit<LoyaltyRedemptionState> {
             LoyaltyRedemptionAction.rate,
           ),
           loyaltyPoints: state.loyaltyPoints.copyWith(
-            rate: rate.rate.toDouble(),
+            rate: rate.rate,
           ),
         ),
       );
