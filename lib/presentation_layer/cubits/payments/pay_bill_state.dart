@@ -51,6 +51,9 @@ class PayBillState
   /// The shortcut name.
   final String? shortcutName;
 
+  /// The payment returned
+  final Payment? returnedPayment;
+
   /// Creates a new state.
   PayBillState({
     this.amount = 0,
@@ -71,6 +74,7 @@ class PayBillState
     this.scheduleDetails,
     this.saveToShortcut = false,
     this.shortcutName,
+    this.returnedPayment,
   }) : _billers = billers;
 
   @override
@@ -91,6 +95,7 @@ class PayBillState
         serviceFields,
         validatedBill,
         payment,
+        returnedPayment,
         bill,
         scheduleDetails,
         saveToShortcut,
@@ -118,6 +123,7 @@ class PayBillState
     bool? saveToShortcut,
     String? shortcutName,
     Set<PayBillEvent>? events,
+    Payment? returnedPayment,
   }) {
     return PayBillState(
       amount: amount ?? this.amount,
@@ -131,6 +137,7 @@ class PayBillState
       selectedBiller: selectedBiller ?? this.selectedBiller,
       selectedCategory: selectedCategory ?? this.selectedCategory,
       billers: billers ?? _billers,
+      returnedPayment: returnedPayment ?? this.returnedPayment,
       services: services ?? this.services,
       selectedService: selectedService ?? this.selectedService,
       serviceFields: serviceFields ?? this.serviceFields,
@@ -155,6 +162,21 @@ class PayBillState
             element.category.categoryCode == selectedCategory!.categoryCode)
         .toList(growable: false);
   }
+
+  /// The payment to be made
+  Payment get payment => Payment(
+        fromAccount: selectedAccount,
+        bill: bill,
+        amount: amount,
+        currency: selectedAccount?.currency ?? '',
+        deviceUID: deviceUID,
+        status: PaymentStatus.completed,
+        recurrence: scheduleDetails?.recurrence ?? Recurrence.none,
+        scheduled: _scheduledDate,
+        recurrenceStart: _recurrenceStart,
+        recurrenceEnd: _recurrenceEnd,
+        recurring: _recurring,
+      );
 
   /// Wether the user can subit the form or not
   bool get canSubmit =>
@@ -205,21 +227,6 @@ class PayBillState
         billStatus: BillStatus.active,
         billingFields: serviceFields,
         visible: false,
-      );
-
-  /// The payment to be made
-  Payment get payment => Payment(
-        fromAccount: selectedAccount,
-        bill: bill,
-        amount: amount,
-        currency: selectedAccount?.currency ?? '',
-        deviceUID: deviceUID,
-        status: PaymentStatus.completed,
-        recurrence: scheduleDetails?.recurrence ?? Recurrence.none,
-        scheduled: _scheduledDate,
-        recurrenceStart: _recurrenceStart,
-        recurrenceEnd: _recurrenceEnd,
-        recurring: _recurring,
       );
 }
 

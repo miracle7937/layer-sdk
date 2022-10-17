@@ -182,6 +182,7 @@ class PayBillCubit extends Cubit<PayBillState> {
           actions: state.addAction(otp != null
               ? PayBillBusyAction.validatingSecondFactor
               : PayBillBusyAction.submitting),
+          returnedPayment: otp == null ? null : state.returnedPayment,
           errors: state.removeErrorForAction(otp != null
               ? PayBillBusyAction.validatingSecondFactor
               : PayBillBusyAction.submitting),
@@ -193,7 +194,7 @@ class PayBillCubit extends Cubit<PayBillState> {
       );
 
       final res = await _postPaymentUseCase(
-        payment ?? state.payment,
+        otp == null ? payment! : state.returnedPayment!,
         otp: otp,
       );
 
@@ -211,6 +212,7 @@ class PayBillCubit extends Cubit<PayBillState> {
         actions: state.removeAction(otp != null
             ? PayBillBusyAction.validatingSecondFactor
             : PayBillBusyAction.submitting),
+        returnedPayment: res,
         events: state.removeEvent(otp != null
             ? PayBillEvent.inputOTPCode
             : PayBillEvent.showConfirmationView),

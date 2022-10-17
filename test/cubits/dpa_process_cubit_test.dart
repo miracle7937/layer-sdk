@@ -1,3 +1,4 @@
+///TODO migrate this test to the new architecture
 // import 'package:bloc_test/bloc_test.dart';
 // import 'package:equatable/equatable.dart';
 // import 'package:layer_sdk/data_layer/network.dart';
@@ -21,12 +22,14 @@
 // class MockCancelDPAProcessUseCase extends Mock
 //     implements CancelDPAProcessUseCase {}
 
-// class MockUploadDPAImageUseCase extends Mock implements UploadDPAImageUseCase {}
+// class MockUploadDPAImageUseCase extends Mock implements 
+//UploadDPAImageUseCase {}
 
 // class MockDownloadDPAFileUseCase extends Mock
 //     implements DownloadDPAFileUseCase {}
 
-// class MockDeleteDPAFileUseCase extends Mock implements DeleteDPAFileUseCase {}
+// class MockDeleteDPAFileUseCase extends Mock implements 
+//DeleteDPAFileUseCase {}
 
 // class MockChangePhoneNumberUseCase extends Mock
 //     implements DPAChangePhoneNumberUseCase {}
@@ -233,12 +236,14 @@
 //     ).thenAnswer((_) async => null);
 
 //     when(
-//       () => _loadTaskUseCase(processInstanceId: _taskFailureProcessInstanceId),
+//       () => _loadTaskUseCase(processInstanceId: 
+// _taskFailureProcessInstanceId),
 //     ).thenThrow(NetException(message: 'Some error'));
 
 //     when(
 //       () =>
-//           _loadTaskUseCase(processInstanceId: _resumeFailureProcessInstanceId),
+//           _loadTaskUseCase(processInstanceId: 
+// _resumeFailureProcessInstanceId),
 //     ).thenAnswer((_) async => _mockedFailureProcess.task);
 
 //     when(
@@ -474,7 +479,8 @@
 //     );
 
 //     when(
-//       () => _skipStepUseCase(process: _mockedSkipStepProcess, extraVariables: [
+//       () => _skipStepUseCase(process: _mockedSkipStepProcess,
+// extraVariables: [
 //         DPAVariable(
 //           id: 'skip',
 //           type: DPAVariableType.boolean,
@@ -600,7 +606,8 @@
 //       ),
 //     ],
 //     verify: (c) => verify(
-//       () => _skipStepUseCase(process: _mockedSkipStepProcess, extraVariables: [
+//       () => _skipStepUseCase(process: _mockedSkipStepProcess, 
+//extraVariables: [
 //         DPAVariable(
 //           id: 'skip',
 //           type: DPAVariableType.boolean,
