@@ -154,6 +154,8 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
   }) async {
     final process = DPAProcess(
       task: task,
+      processName: task.processDefinitionName,
+      variables: task.variables,
     );
 
     emit(
@@ -293,18 +295,25 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
           print('taskVariable -> $taskVariable');
 
           if (taskVariable?['value'] != null) {
+            print('task variables on json -> '
+                '${taskVariable?['value']['taskVariables']}');
             final task = _parseJSONIntoDPATaskToContinueDPAProcessUseCase(
               json: taskVariable!['value'],
             );
 
             print('task -> $task');
+            print('task variables -> ${task.variables}');
 
             continueProcessWithTask(task: task);
             return;
           }
         }
-      } catch (e, s) {
-        print('$e | $s');
+      } on Exception catch (error, stackTrace) {
+        _log.severe(
+          'Error while parsing the task to continue the onboarding',
+          error,
+          stackTrace,
+        );
       }
 
       emit(
