@@ -74,8 +74,12 @@ class OfferDTO {
         id: JsonParser.parseInt(json['offer_id']),
         consoleName: json['console_name'],
         customerName: json['customer_name'],
-        starts: JsonParser.parseDate(json['ts_start']),
-        ends: JsonParser.parseDate(json['ts_end']),
+        starts: json['ts_start'] != null
+            ? JsonParser.parseStringDate(json['ts_start']['Time'])
+            : null,
+        ends: json['ts_end'] != null
+            ? JsonParser.parseStringDate(json['ts_end']['Time'])
+            : null,
         imageURL: json['image_url'],
         description: json['description'],
         shortDescription: json['short_description'],
@@ -88,9 +92,9 @@ class OfferDTO {
                 : MerchantDTO.fromJson(json['merchant_offer'].first),
         rules: json['rule_offer'] == null
             ? null
-            : OfferRuleDTO.fromJsonList(json['rule_offer']
-                .where((rule) => rule['reward'] != null)
-                .toList()),
+            : OfferRuleDTO.fromJsonList(List<Map<String, dynamic>>.from(
+                json['rule_offer'],
+              )),
         type: OfferTypeDTO.fromRaw(json['type']),
         currency: json['currency'],
       );

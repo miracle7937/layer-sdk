@@ -36,6 +36,7 @@ class NetworkImageContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => CachedNetworkImage(
+        fit: fit,
         imageUrl: imageURL,
         httpHeaders: {
           'Authorization': customToken ??
