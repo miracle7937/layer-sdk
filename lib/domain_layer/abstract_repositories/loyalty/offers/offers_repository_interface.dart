@@ -18,6 +18,7 @@ abstract class OffersRepositoryInterface {
     double? longitudeForDistance,
     double? latitude,
     double? longitude,
+    String? searchQuery,
   });
 
   /// Gets an [Offer] by its id.

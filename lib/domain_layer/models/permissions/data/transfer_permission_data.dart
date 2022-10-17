@@ -1,10 +1,8 @@
-import 'package:equatable/equatable.dart';
-
 import '../../../../data_layer/extensions.dart';
 import '../../../models.dart';
 
 /// Permissions related to transfers.
-class TransferPermissionData extends Equatable {
+class TransferPermissionData extends BasePermissionData {
   /// Allowed currencies specific permissions.
   final BasePermissionData allowedCurrencies;
 
@@ -41,8 +39,34 @@ class TransferPermissionData extends Equatable {
   /// Reason specific permissions.
   final BasePermissionData reason;
 
+  /// Checks if any of the underlying permissions are visible.
+  bool get canDoAnyTransfer => [
+        allowedCurrencies,
+        bank,
+        bulk,
+        card,
+        domestic,
+        instant,
+        international,
+        limits,
+        merchant,
+        mobile,
+        own,
+        reason,
+      ].any((e) => e.isFeatureVisible);
+
+  @override
+  bool get isFeatureVisible => canDoAnyTransfer || (view || edit);
+
   /// Creates a [TransferPermissionData] object.
   const TransferPermissionData({
+    super.view = false,
+    super.edit = false,
+    super.modify = false,
+    super.publish = false,
+    super.executeAction = false,
+    super.createAction = false,
+    super.decrypt = false,
     this.allowedCurrencies = const BasePermissionData(),
     this.bank = const BasePermissionData(),
     this.bulk = const BasePermissionData(),
@@ -59,6 +83,7 @@ class TransferPermissionData extends Equatable {
 
   @override
   List<Object> get props => [
+        ...super.props,
         allowedCurrencies,
         bank,
         bulk,
@@ -74,7 +99,15 @@ class TransferPermissionData extends Equatable {
       ];
 
   /// Returns a copy of this permission with select different values.
+  @override
   TransferPermissionData copyWith({
+    bool? view,
+    bool? edit,
+    bool? modify,
+    bool? publish,
+    bool? executeAction,
+    bool? createAction,
+    bool? decrypt,
     BasePermissionData? allowedCurrencies,
     BasePermissionData? bank,
     BasePermissionData? bulk,
@@ -89,6 +122,13 @@ class TransferPermissionData extends Equatable {
     BasePermissionData? reason,
   }) =>
       TransferPermissionData(
+        view: view ?? this.view,
+        edit: edit ?? this.edit,
+        modify: modify ?? this.modify,
+        publish: publish ?? this.publish,
+        executeAction: executeAction ?? this.executeAction,
+        createAction: createAction ?? this.createAction,
+        decrypt: decrypt ?? this.decrypt,
         allowedCurrencies: allowedCurrencies ?? this.allowedCurrencies,
         bank: bank ?? this.bank,
         bulk: bulk ?? this.bulk,
@@ -106,6 +146,13 @@ class TransferPermissionData extends Equatable {
   @override
   String toString() => '<'
       '${[
+        'view: $view',
+        'edit: $edit',
+        'modify: $modify',
+        'publish: $publish',
+        'executeAction: $executeAction',
+        'createAction: $createAction',
+        'decrypt: $decrypt',
         'allowedCurrencies: $allowedCurrencies',
         'bank: $bank',
         'bulk: $bulk',
