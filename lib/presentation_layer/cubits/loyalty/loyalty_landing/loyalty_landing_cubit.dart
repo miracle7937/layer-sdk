@@ -192,6 +192,7 @@ class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
     double? longitudeForDistance,
     double? latitude,
     double? longitude,
+    String? searchQuery,
   }) async {
     emit(
       state.copyWith(
@@ -218,6 +219,7 @@ class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
         longitudeForDistance: longitudeForDistance,
         latitude: latitude,
         longitude: longitude,
+        searchQuery: searchQuery,
       );
 
       final offers = newPage.firstPage

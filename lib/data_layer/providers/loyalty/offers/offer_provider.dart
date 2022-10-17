@@ -48,6 +48,7 @@ class OfferProvider {
     double? longitudeForDistance,
     double? latitude,
     double? longitude,
+    String? searchQuery,
   }) async {
     assert((!isForMe && !isFavorites) || (isForMe != isFavorites));
     assert((latitudeForDistance == null && longitudeForDistance == null) ||
@@ -57,6 +58,7 @@ class OfferProvider {
       netClient.netEndpoints.offers,
       method: NetRequestMethods.get,
       queryParameters: {
+        if (searchQuery != null) 'q': searchQuery,
         if (ids != null && ids.isNotEmpty) 'offer_ids': ids.join(','),
         if (isForMe) 'for_me': true,
         if (isFavorites) 'favorites': true,
