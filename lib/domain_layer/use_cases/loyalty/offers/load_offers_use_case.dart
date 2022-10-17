@@ -47,6 +47,7 @@ class LoadOffersUseCase {
     double? longitudeForDistance,
     double? latitude,
     double? longitude,
+    String? searchQuery,
   }) =>
       _repository.list(
         ids: ids,
@@ -61,5 +62,6 @@ class LoadOffersUseCase {
         longitude: longitude,
         latitudeForDistance: latitudeForDistance,
         longitudeForDistance: longitudeForDistance,
+        searchQuery: searchQuery,
       );
 }

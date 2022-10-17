@@ -51,6 +51,7 @@ class OfferRepository implements OffersRepositoryInterface {
     double? longitudeForDistance,
     double? latitude,
     double? longitude,
+    String? searchQuery,
   }) async {
     assert((!isForMe && !isFavorites) || (isForMe != isFavorites));
     assert((latitudeForDistance == null && longitudeForDistance == null) ||
@@ -71,6 +72,7 @@ class OfferRepository implements OffersRepositoryInterface {
       longitudeForDistance: longitudeForDistance,
       latitude: latitude,
       longitude: longitude,
+      searchQuery: searchQuery,
     );
 
     return offerResponseDTO.toOfferResponse();
