@@ -81,6 +81,8 @@ export 'cubits/dpa/task_history_cubit.dart';
 export 'cubits/dpa/task_history_states.dart';
 export 'cubits/dpa/unassigned_tasks_cubit.dart';
 export 'cubits/dpa/unassigned_tasks_states.dart';
+export 'cubits/dpa/user_task_details_cubit.dart';
+export 'cubits/dpa/user_task_details_state.dart';
 export 'cubits/dpa/user_tasks_cubit.dart';
 export 'cubits/dpa/user_tasks_states.dart';
 export 'cubits/experience/experience_cubit.dart';
