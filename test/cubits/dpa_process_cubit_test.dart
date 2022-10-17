@@ -1,3 +1,5 @@
+///TODO migrate test to new architecture
+void main() {}
 // import 'package:bloc_test/bloc_test.dart';
 // import 'package:equatable/equatable.dart';
 // import 'package:layer_sdk/data_layer/network.dart';
@@ -21,13 +23,13 @@
 // class MockCancelDPAProcessUseCase extends Mock
 //     implements CancelDPAProcessUseCase {}
 
-// class MockUploadDPAImageUseCase extends Mock implements 
+// class MockUploadDPAImageUseCase extends Mock implements
 //UploadDPAImageUseCase {}
 
 // class MockDownloadDPAFileUseCase extends Mock
 //     implements DownloadDPAFileUseCase {}
 
-// class MockDeleteDPAFileUseCase extends Mock implements 
+// class MockDeleteDPAFileUseCase extends Mock implements
 //DeleteDPAFileUseCase {}
 
 // class MockChangePhoneNumberUseCase extends Mock
@@ -235,13 +237,13 @@
 //     ).thenAnswer((_) async => null);
 
 //     when(
-//       () => _loadTaskUseCase(processInstanceId: 
+//       () => _loadTaskUseCase(processInstanceId:
 // _taskFailureProcessInstanceId),
 //     ).thenThrow(NetException(message: 'Some error'));
 
 //     when(
 //       () =>
-//           _loadTaskUseCase(processInstanceId: 
+//           _loadTaskUseCase(processInstanceId:
 // _resumeFailureProcessInstanceId),
 //     ).thenAnswer((_) async => _mockedFailureProcess.task);
 
@@ -605,7 +607,7 @@
 //       ),
 //     ],
 //     verify: (c) => verify(
-//       () => _skipStepUseCase(process: _mockedSkipStepProcess, 
+//       () => _skipStepUseCase(process: _mockedSkipStepProcess,
 //extraVariables: [
 //         DPAVariable(
 //           id: 'skip',
