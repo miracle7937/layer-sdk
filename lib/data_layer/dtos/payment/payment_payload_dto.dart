@@ -1,5 +1,4 @@
 import '../../dtos.dart';
-import '../../helpers.dart';
 
 /// The payment payload DTO
 class PaymenShortcutPayloadDTO {
