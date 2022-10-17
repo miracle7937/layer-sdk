@@ -152,7 +152,7 @@ class PaymentDTO {
       'amount': amount,
       'currency': currency,
       'otp_id': otpId,
-      'device_uid': randomAlphaNumeric(32),
+      'device_uid': deviceUID,
       'status': status?.value,
       'second_factor': secondFactor?.value,
       'ts_created': created?.millisecondsSinceEpoch,
