@@ -11,15 +11,22 @@ import 'package:test/test.dart';
 
 class MockLoadTransfersUseCase extends Mock implements LoadTransfersUseCase {}
 
+class MockGenerateDeviceUIDUseCase extends Mock
+    implements GenerateDeviceUIDUseCase {}
+
 final _repositoryList = <Transfer>[];
+
+final _deviceUID = 'LApoWgWWw5hYSoGS0N9R3JKMjVxEMK';
 final _defaultLimit = 10;
 final _customerId = '200000';
 
+late MockGenerateDeviceUIDUseCase _generateDeviceUIDUseCase;
 late MockLoadTransfersUseCase _loadTransfersUseCase;
 late TransferCubit _cubit;
 
 final _defaultState = TransferState(
   customerId: _customerId,
+  deviceUID: _deviceUID,
   pagination: Pagination(limit: _defaultLimit),
 );
 
@@ -44,12 +51,18 @@ void main() {
   }
 
   setUp(() {
+    _generateDeviceUIDUseCase = MockGenerateDeviceUIDUseCase();
+    when(
+      () => _generateDeviceUIDUseCase(30),
+    ).thenAnswer(
+      (_) => _deviceUID,
+    );
     _loadTransfersUseCase = MockLoadTransfersUseCase();
     _cubit = TransferCubit(
       customerId: _customerId,
       loadTransfersUseCase: _loadTransfersUseCase,
       limit: _defaultLimit,
-      generateDeviceUIDUseCase: GenerateDeviceUIDUseCase(),
+      generateDeviceUIDUseCase: _generateDeviceUIDUseCase,
     );
 
     when(
