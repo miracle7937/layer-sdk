@@ -353,6 +353,9 @@ class NetEndpoints {
   /// Endpoint for getting the balance
   String get balance => '$_infoBanking/v2/balance/periodical_balance';
 
+  /// Endpoint for handling alerts
+  String get alert => '$_infoBanking/v1/alert';
+
   /// Endpoint for posting new pay to mobile flows.
   String get sendMoney => '$_txnBanking/v1/send_money';
 
