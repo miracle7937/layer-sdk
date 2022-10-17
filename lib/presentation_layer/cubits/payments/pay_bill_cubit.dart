@@ -212,7 +212,7 @@ class PayBillCubit extends Cubit<PayBillState> {
             ? PayBillBusyAction.validatingSecondFactor
             : PayBillBusyAction.submitting),
         returnedPayment: res,
-        events: state.removeEvent(otp != null
+        events: state.addEvent(otp != null
             ? PayBillEvent.inputOTPCode
             : PayBillEvent.showConfirmationView),
       ));

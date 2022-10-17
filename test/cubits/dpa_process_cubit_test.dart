@@ -1,4 +1,4 @@
-///TODO migrate this test to the new architecture
+//TODO migrate this test to the new architecture
 // import 'package:bloc_test/bloc_test.dart';
 // import 'package:equatable/equatable.dart';
 // import 'package:layer_sdk/data_layer/network.dart';
