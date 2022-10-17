@@ -56,7 +56,7 @@ class OwnTransferState extends Equatable {
   final TransferStatus? resultStatus;
 
   /// Device uid
-  final deviceUID;
+  final String? deviceUID;
 
   /// TODO: cubit_issue | Why do we need this? We already have the transfer
   /// object which has a destination account. We should only set that account

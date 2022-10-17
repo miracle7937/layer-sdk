@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
 import 'package:layer_sdk/data_layer/network.dart';
+import 'package:layer_sdk/domain_layer/use_cases/payments/generate_device_uid_use_case.dart';
 import 'package:layer_sdk/features/transfer.dart';
 import 'package:layer_sdk/presentation_layer/utils.dart';
 import 'package:mocktail/mocktail.dart';
@@ -48,6 +49,7 @@ void main() {
       customerId: _customerId,
       loadTransfersUseCase: _loadTransfersUseCase,
       limit: _defaultLimit,
+      generateDeviceUIDUseCase: GenerateDeviceUIDUseCase(),
     );
 
     when(
