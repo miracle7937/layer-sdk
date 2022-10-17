@@ -39,11 +39,11 @@ abstract class DPARepositoryInterface {
     bool forceRefresh = false,
   });
 
-  /// Returns an array, if the array is not empty, then the
-  /// user has a task in progress, if not, then he doesn't
-  /// have any task in progress
+  /// Returns the user task for the provided process key
   Future<List<DPATask>?> getUserTaskDetails({
     required String processKey,
+    String? variable,
+    String? variableValue,
     bool forceRefresh = false,
   });
 

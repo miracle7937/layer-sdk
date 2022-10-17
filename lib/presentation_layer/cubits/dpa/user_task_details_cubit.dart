@@ -17,6 +17,8 @@ class UserTaskDetailsCubit extends Cubit<UserTaskDetailsState> {
   /// for this step (whether its starting/basic/full access)
   Future<void> checkVerificationStepUseCase({
     required String processKey,
+    String? variable,
+    String? variableValue,
   }) async {
     emit(
       state.copyWith(
@@ -29,6 +31,8 @@ class UserTaskDetailsCubit extends Cubit<UserTaskDetailsState> {
     try {
       final tasks = await _checkVerificationStepUseCase(
         processKey: processKey,
+        variable: variable,
+        variableValue: variableValue,
       );
 
       emit(

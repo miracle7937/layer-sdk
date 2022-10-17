@@ -31,11 +31,11 @@ class DPAProvider {
         .toList();
   }
 
-  /// Returns an array, if the array is not empty, then the
-  /// user has a task in progress, if not, then he doesn't
-  /// have any task in progress
+  /// Returns the user task for the provided process key
   Future<List<DPATaskDTO>> getUserTaskDetails({
     required String processKey,
+    String? variable,
+    String? variableValue,
     bool forceRefresh = false,
   }) async {
     final response = await netClient.request(
@@ -43,8 +43,8 @@ class DPAProvider {
       method: NetRequestMethods.get,
       queryParameters: {
         'process_key': processKey,
-        'variable': 'status',
-        'variable_value': 'B',
+        if (variable != null) 'variable': variable,
+        if (variableValue != null) 'variable_value': variableValue,
       },
       forceRefresh: forceRefresh,
     );

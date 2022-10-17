@@ -131,16 +131,18 @@ class DPARepository implements DPARepositoryInterface {
     return dto?.toDPATask(_createCustomData);
   }
 
-  /// Returns an array, if the array is not empty, then the
-  /// user has a task in progress, if not, then he doesn't
-  /// have any task in progress
+  /// Returns the user task for the provided process key
   @override
   Future<List<DPATask>?> getUserTaskDetails({
     required String processKey,
+    String? variable,
+    String? variableValue,
     bool forceRefresh = false,
   }) async {
     final dtos = await _provider.getUserTaskDetails(
       processKey: processKey,
+      variable: variable,
+      variableValue: variableValue,
       forceRefresh: forceRefresh,
     );
 
