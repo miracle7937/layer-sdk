@@ -140,6 +140,9 @@ class NetEndpoints {
   /// The cards endpoint
   String get card => '$_infoBanking/v1/card';
 
+  /// The card info endpoint
+  String get cardInfo => '$_infoBanking/v2/card_info';
+
   /// The beneficiaries endpoint
   String get beneficiary => '$_txnBanking/v1/beneficiary';
 
@@ -349,4 +352,13 @@ class NetEndpoints {
 
   /// Endpoint for getting the balance
   String get balance => '$_infoBanking/v2/balance/periodical_balance';
+
+  /// Endpoint for posting new pay to mobile flows.
+  String get sendMoney => '$_txnBanking/v1/send_money';
+
+  /// Endpoint for resending the withdrawal code from a pay to mobile.
+  String get resendSendMoney => '$_txnBanking/v1/resend_send_money';
+
+  /// Endpoint for the pay to mobile receipts.
+  String get sendMoneyReceipt => '$_txnBanking/v1/send_money_receipt';
 }

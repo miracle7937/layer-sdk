@@ -132,4 +132,71 @@ class OcraAuthenticationCubit extends Cubit<OcraAuthenticationState> {
       }
     }
   }
+
+  /// Generates a new client response to be send on
+  /// 2fa request in case of biometrics
+  Future<void> generateClientResponse({
+    String? password,
+    bool shouldRethrow = false,
+  }) async {
+    emit(
+      state.copyWith(
+        actions: state.addAction(
+          OcraAuthenticationAction.gettingServerChallenge,
+        ),
+        errors: {},
+      ),
+    );
+
+    try {
+      final challenge = _generateOcraChallengeUseCase();
+      final timestamp = _generateOcraTimestampUseCase();
+      final response = await _clientChallengeOcraUseCase(
+        challenge: OcraChallenge(
+          deviceId: _deviceId,
+          challenge: challenge,
+        ),
+      );
+
+      final expectedResult = _solveOcraChallengeUseCase(
+        question: challenge + response.serverChallenge,
+        timestamp: timestamp,
+      );
+
+      if (expectedResult != response.serverResponse) {
+        throw OcraWrongResultException();
+      }
+
+      final serverChallengeResult = _solveOcraChallengeUseCase(
+        question: response.serverChallenge + challenge,
+        timestamp: timestamp,
+        password: password,
+      );
+
+      emit(
+        state.copyWith(
+          actions: state.removeAction(
+            OcraAuthenticationAction.gettingServerChallenge,
+          ),
+          clientResponse: serverChallengeResult,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          actions: state.removeAction(
+            OcraAuthenticationAction.gettingServerChallenge,
+          ),
+          errors: state.addErrorFromException(
+            action: OcraAuthenticationAction.gettingServerChallenge,
+            exception: e,
+          ),
+        ),
+      );
+
+      if (shouldRethrow) {
+        rethrow;
+      }
+    }
+  }
 }
