@@ -81,9 +81,6 @@ class TransferPermissionData extends BasePermissionData {
     this.reason = const BasePermissionData(),
   });
 
-  ///TODO: Temporary solution for filters
-  bool get canDoAnyTransfer => true;
-
   @override
   List<Object> get props => [
         ...super.props,

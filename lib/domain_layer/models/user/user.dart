@@ -108,7 +108,7 @@ class User extends Equatable {
   final double? lowBalanceValue;
 
   /// List of activity types for which user receives alerts.
-  final List<ActivityType> enabledAlerts;
+  final UnmodifiableListView<ActivityType> enabledAlerts;
 
   /// Returns the full name of the customer.
   String get fullName => [firstName, lastName]
@@ -137,9 +137,10 @@ class User extends Equatable {
     this.permissions = const UserPermissions(),
     this.verifyDevice = false,
     this.branch,
-    this.enabledAlerts = const [],
+    Iterable<ActivityType> enabledAlerts = const <ActivityType>[],
   })  : favoriteOffers = UnmodifiableListView(favoriteOffers ?? []),
-        roles = UnmodifiableListView(roles ?? <String>[]);
+        roles = UnmodifiableListView(roles ?? <String>[]),
+        enabledAlerts = UnmodifiableListView(enabledAlerts);
 
   /// Returns a copy of the user modified by the provided data.
   User copyWith({
@@ -163,7 +164,7 @@ class User extends Equatable {
     bool? verifyDevice,
     String? branch,
     double? lowBalanceValue,
-    List<ActivityType>? enabledAlerts,
+    Iterable<ActivityType>? enabledAlerts,
   }) =>
       User(
         id: id ?? this.id,
