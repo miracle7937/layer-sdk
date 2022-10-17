@@ -34,9 +34,6 @@ enum DPAProcessBusyAction {
 
   /// Busy requesting a manual verification.
   requestingManualVerification,
-
-  /// Busy checking if verification is in progress
-  checkingForVerification,
 }
 
 /// Denotes the status of the process in the cubit.

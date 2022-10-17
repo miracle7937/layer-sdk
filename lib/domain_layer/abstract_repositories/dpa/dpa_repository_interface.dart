@@ -39,12 +39,11 @@ abstract class DPARepositoryInterface {
     bool forceRefresh = false,
   });
 
-  /// Returns true/false whether the user has a
-  /// verification sent to the bank or not
-  Future<bool> userHasVerificationSent({
-    String? processKey,
-    String? variable,
-    String? variableValue,
+  /// Returns an array, if the array is not empty, then the
+  /// user has a task in progress, if not, then he doesn't
+  /// have any task in progress
+  Future<List<DPATask>?> getUserTaskDetails({
+    required String processKey,
     bool forceRefresh = false,
   });
 

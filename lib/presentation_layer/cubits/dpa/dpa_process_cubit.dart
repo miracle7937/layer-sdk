@@ -25,7 +25,6 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
   final DPAChangeEmailAddressUseCase _changeEmailAddressUseCase;
   final DPARequestManualVerificationUseCase _manualVerificationUseCase;
   final DPASkipStepUseCase _skipStepUseCase;
-  final CheckVerificationStepUseCase _checkVerificationStepUseCase;
 
   /// Creates a new cubit using the necessary use cases.
   DPAProcessCubit({
@@ -43,7 +42,6 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
     required DPAChangeEmailAddressUseCase changeEmailAddressUseCase,
     required DPARequestManualVerificationUseCase manualVerificationUseCase,
     required DPASkipStepUseCase skipStepUseCase,
-    required CheckVerificationStepUseCase checkVerificationStepUseCase,
   })  : _startDPAProcessUseCase = startDPAProcessUseCase,
         _resumeDPAProcessUsecase = resumeDPAProcessUsecase,
         _loadTaskByIdUseCase = loadTaskByIdUseCase,
@@ -58,7 +56,6 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
         _changeEmailAddressUseCase = changeEmailAddressUseCase,
         _manualVerificationUseCase = manualVerificationUseCase,
         _skipStepUseCase = skipStepUseCase,
-        _checkVerificationStepUseCase = checkVerificationStepUseCase,
         super(DPAProcessState());
 
   /// Starts a DPA process, either by starting a new one (if [instanceId] is
@@ -777,51 +774,6 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
           errorStatus: DPAProcessErrorStatus.network,
         ),
       );
-    }
-  }
-
-  /// Checks if the customer has a verification in progress
-  /// for this step (whether its starting/basic/full access)
-  Future<bool> checkVerificationStepUseCase({
-    String? processKey,
-    String? variable,
-    String? variableValue,
-  }) async {
-    emit(
-      state.copyWith(
-        actions: state.actions.union({
-          DPAProcessBusyAction.checkingForVerification,
-        }),
-        errorStatus: DPAProcessErrorStatus.none,
-      ),
-    );
-
-    try {
-      final isInProgress = await _checkVerificationStepUseCase(
-        processKey: processKey,
-        variable: variable,
-        variableValue: variableValue,
-      );
-
-      emit(
-        state.copyWith(
-          actions: state.actions.difference({
-            DPAProcessBusyAction.checkingForVerification,
-          }),
-        ),
-      );
-
-      return isInProgress;
-    } on NetException {
-      emit(
-        state.copyWith(
-          actions: state.actions.difference({
-            DPAProcessBusyAction.checkingForVerification,
-          }),
-          errorStatus: DPAProcessErrorStatus.network,
-        ),
-      );
-      return false;
     }
   }
 

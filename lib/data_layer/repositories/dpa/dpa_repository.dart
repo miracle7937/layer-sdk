@@ -131,25 +131,20 @@ class DPARepository implements DPARepositoryInterface {
     return dto?.toDPATask(_createCustomData);
   }
 
-  /// Returns true/false whether the user has a
-  /// verification sent to the bank or not
+  /// Returns an array, if the array is not empty, then the
+  /// user has a task in progress, if not, then he doesn't
+  /// have any task in progress
   @override
-  Future<bool> userHasVerificationSent({
-    String? processKey,
-    String? variable,
-    String? variableValue,
+  Future<List<DPATask>?> getUserTaskDetails({
+    required String processKey,
     bool forceRefresh = false,
   }) async {
-    _log.finest('Fetching task by process instance id');
-
-    final response = await _provider.userHasVerificationSent(
+    final dtos = await _provider.getUserTaskDetails(
       processKey: processKey,
-      variable: variable,
-      variableValue: variableValue,
       forceRefresh: forceRefresh,
     );
 
-    return response;
+    return dtos.map((e) => e.toDPATask(_createCustomData)).toList();
   }
 
   /// Lists all tasks assigned to the user.
