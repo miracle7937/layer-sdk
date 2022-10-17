@@ -93,7 +93,7 @@ class OfferDTO {
         rules: json['rule_offer'] == null
             ? null
             : OfferRuleDTO.fromJsonList(List<Map<String, dynamic>>.from(
-                json['rule_offer'].where((rule) => rule['reward'] != null),
+                json['rule_offer'],
               )),
         type: OfferTypeDTO.fromRaw(json['type']),
         currency: json['currency'],
