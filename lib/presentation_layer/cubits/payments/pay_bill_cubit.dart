@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../data_layer/mappings/payment/biller_dto_mapping.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
@@ -16,7 +17,6 @@ class PayBillCubit extends Cubit<PayBillState> {
   final LoadServicesUseCase _loadServicesUseCase;
   final GetAccountsByStatusUseCase _getCustomerAccountsUseCase;
   final PostPaymentUseCase _postPaymentUseCase;
-  final GenerateDeviceUIDUseCase _generateDeviceUIDUseCase;
   final ValidateBillUseCase _validateBillUseCase;
   final CreateShortcutUseCase _createShortcutUseCase;
   final ResendOTPPaymentUseCase _resendOTPUseCase;
@@ -44,11 +44,12 @@ class PayBillCubit extends Cubit<PayBillState> {
         _loadServicesUseCase = loadServicesUseCase,
         _getCustomerAccountsUseCase = getCustomerAccountsUseCase,
         _postPaymentUseCase = postPaymentUseCase,
-        _generateDeviceUIDUseCase = generateDeviceUIDUseCase,
         _validateBillUseCase = validateBillUseCase,
         _createShortcutUseCase = createShortcutUseCase,
         _resendOTPUseCase = resendPaymentOTPUseCase,
-        super(PayBillState());
+        super(PayBillState(
+          deviceUID: generateDeviceUIDUseCase(30),
+        ));
 
   /// Loads all the required data, must be called at least once before anything
   /// other method in this cubit.
@@ -174,7 +175,6 @@ class PayBillCubit extends Cubit<PayBillState> {
   /// Submits the payment
   Future<void> submit({
     String? otp,
-    Payment? payment,
   }) async {
     try {
       emit(
@@ -186,7 +186,6 @@ class PayBillCubit extends Cubit<PayBillState> {
           errors: state.removeErrorForAction(otp != null
               ? PayBillBusyAction.validatingSecondFactor
               : PayBillBusyAction.submitting),
-          deviceUID: _generateDeviceUIDUseCase(30),
           events: state.removeEvent(otp != null
               ? PayBillEvent.inputOTPCode
               : PayBillEvent.showConfirmationView),
@@ -194,7 +193,7 @@ class PayBillCubit extends Cubit<PayBillState> {
       );
 
       final res = await _postPaymentUseCase(
-        otp == null ? payment! : state.returnedPayment!,
+        otp == null ? state.payment : state.returnedPayment!,
         otp: otp,
       );
 
