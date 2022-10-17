@@ -60,6 +60,7 @@ class ActivityCubit extends Cubit<ActivityState> {
     List<ActivityType>? types,
     List<ActivityTag>? activityTags,
     List<TransferType>? transferTypes,
+    String? searchStr,
   }) async {
     emit(
       state.copyWith(
@@ -83,6 +84,7 @@ class ActivityCubit extends Cubit<ActivityState> {
         types: types,
         activityTags: activityTags,
         transferTypes: transferTypes,
+        searchStr: searchStr,
       );
 
       final activities = newPage.firstPage

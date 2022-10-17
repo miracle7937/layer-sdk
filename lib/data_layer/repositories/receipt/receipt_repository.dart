@@ -19,7 +19,7 @@ class ReceiptRepository implements ReceiptRepositoryInterface {
   Future<List<int>> getReceipt({
     required String objectId,
     required ReceiptActionType actionType,
-    ReceiptType type = ReceiptType.image,
+    FileType type = FileType.image,
   }) =>
       _provider.getReceipt(
         objectId: objectId,

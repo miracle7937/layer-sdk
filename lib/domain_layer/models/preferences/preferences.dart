@@ -2,6 +2,9 @@ import 'package:equatable/equatable.dart';
 
 /// Preferences
 class Preferences extends Equatable {
+  /// Whether the user has hidden the access level container or not
+  final bool? hideAccessLevelContainer;
+
   /// This user's preferred language.
   final String? language;
 
@@ -22,6 +25,7 @@ class Preferences extends Equatable {
 
   /// Creates a new immutable [Preferences]
   const Preferences({
+    this.hideAccessLevelContainer,
     this.language,
     this.currency,
     this.theme,
@@ -32,6 +36,7 @@ class Preferences extends Equatable {
 
   /// Returns a copy of the perferences modified by the provided data.
   Preferences copyWith({
+    bool? hideAccessLevelContainer,
     String? language,
     String? currency,
     String? theme,
@@ -40,6 +45,8 @@ class Preferences extends Equatable {
     String? overviewAccountId,
   }) =>
       Preferences(
+        hideAccessLevelContainer:
+            hideAccessLevelContainer ?? this.hideAccessLevelContainer,
         language: language ?? this.language,
         currency: currency ?? this.currency,
         theme: theme ?? this.theme,
@@ -50,6 +57,7 @@ class Preferences extends Equatable {
 
   @override
   List<Object?> get props => [
+        hideAccessLevelContainer,
         language,
         currency,
         theme,

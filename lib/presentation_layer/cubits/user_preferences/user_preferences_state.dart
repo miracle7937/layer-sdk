@@ -1,6 +1,5 @@
 import 'dart:collection';
 
-
 import '../../../features/user_preferences.dart';
 import '../base_cubit/base_state.dart';
 
@@ -32,6 +31,9 @@ enum UserPreferencesAction {
 
   /// The low balance alert was deleted
   alertRemoved,
+
+  /// A new preference is added
+  prefAdded,
 }
 
 ///The state for the [UserPreferencesCubit]

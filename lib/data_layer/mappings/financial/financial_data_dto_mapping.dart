@@ -11,6 +11,7 @@ extension FinancialDataDTOMapping on FinancialDataDTO {
         cardCategoryBalances: cardCategoryBalances?.toFinancialDataCard() ??
             <CardCategory, double>{},
         availableCredit: availableCredit is double ? availableCredit : 0.0,
+        currentBalance: currentBalance is double ? currentBalance : 0.0,
         remainingBalance: remainingBalance is double ? remainingBalance : 0.0,
         upcomingPayments: upcomingPayments is double ? upcomingPayments : 0.0,
         cardBalance: cardBalance is double ? cardBalance : 0.0,

@@ -8,6 +8,9 @@ class LabelledValue extends Equatable {
   /// The value of the model
   final String value;
 
+  /// The optional description
+  final String? description;
+
   /// Extra info we need to pass to instant
   final LabelledValueExtraInfo? labelledValueExtraInfo;
 
@@ -15,11 +18,17 @@ class LabelledValue extends Equatable {
   const LabelledValue({
     required this.label,
     required this.value,
+    this.description,
     this.labelledValueExtraInfo,
   });
 
   @override
-  List<Object?> get props => [label, value, labelledValueExtraInfo];
+  List<Object?> get props => [
+        label,
+        value,
+        description,
+        labelledValueExtraInfo,
+      ];
 }
 
 /// This is an abstract class that will help customizing the extra info about

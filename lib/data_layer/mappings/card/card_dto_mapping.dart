@@ -22,6 +22,7 @@ extension CardDTOMapping on CardDTO {
         status: status?.toCardStatus(),
         accountIds: accountID ?? [],
         preferences: preferences?.toCardPreferences() ?? CardPreferences(),
+        isVirtual: isVirtual ?? false,
       );
 }
 
@@ -51,6 +52,9 @@ extension CardTypeDTOMapping on CardTypeDTO {
     return CardType(
       category: category,
       name: type,
+      canFreezeCard: canFreezeCard ?? true,
+      canStopCard: canStopCard ?? true,
+      image: image,
     );
   }
 }
@@ -68,6 +72,9 @@ extension CardDTOStatusMapping on CardDTOStatus {
 
       case CardDTOStatus.inactive:
         return CardStatus.inactive;
+
+      case CardDTOStatus.frozen:
+        return CardStatus.frozen;
 
       default:
         throw MappingException(from: CardDTOStatus, to: CardStatus);
