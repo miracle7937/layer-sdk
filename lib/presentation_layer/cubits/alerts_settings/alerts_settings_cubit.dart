@@ -25,9 +25,6 @@ class AlertsSettingsCubit extends Cubit<AlertsSettingsState> {
         newUser: state.newUser?.copyWith(
           enabledAlerts: enabledAlerts,
         ),
-        events: state.addEvent(
-          AlertsSettingsEvent.changeSettings,
-        ),
       ),
     );
   }

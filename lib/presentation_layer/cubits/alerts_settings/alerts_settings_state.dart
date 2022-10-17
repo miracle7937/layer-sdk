@@ -11,9 +11,6 @@ enum AlertsSettingsAction {
 
 /// The available events that the cubit can emit.
 enum AlertsSettingsEvent {
-  /// Event for changing settings.
-  changeSettings,
-
   /// Event for showing the result view.
   showResultView,
 }
