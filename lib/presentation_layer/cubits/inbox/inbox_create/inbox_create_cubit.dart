@@ -38,7 +38,7 @@ class InboxCreateCubit extends Cubit<InboxCreateState> {
     );
   }
 
-  /// Adds a file to state
+  /// Add a file to the state
   void addFile(InboxFile file) {
     emit(
       state.copyWith(
@@ -93,7 +93,9 @@ class InboxCreateCubit extends Cubit<InboxCreateState> {
   }
 
   /// Posts a new [InboxReport]
-  Future<void> post() async {
+  Future<void> createReport({
+    InboxFile? logFile,
+  }) async {
     try {
       emit(
         state.copyWith(
@@ -103,16 +105,20 @@ class InboxCreateCubit extends Cubit<InboxCreateState> {
         ),
       );
 
-      if (state.selectedCategory?.id == 'application_issue') {
-        /// TODO - Needs to include the log file when implemented
-        addFile(InboxFile(name: ''));
-      }
+      InboxReportMessage? message;
 
-      final message = await _createReportUseCase(
-        description: state.description ?? '',
-        categoryId: state.selectedCategory!.id ?? '',
-        files: state.inboxFiles,
-      );
+      if (logFile != null) {
+        addFile(logFile);
+        message = await _createReportUseCase(
+          description: state.description ?? '',
+          categoryId: state.selectedCategory!.id ?? '',
+          files: state.inboxFiles,
+        );
+      } else {
+        await _createInboxReportUseCase(
+          state.selectedCategory?.id ?? '',
+        );
+      }
 
       emit(
         state.copyWith(
@@ -120,49 +126,7 @@ class InboxCreateCubit extends Cubit<InboxCreateState> {
           busyAction: InboxCreateBusyAction.idle,
           errorStatus: InboxCreateErrorStatus.none,
           inboxMessage: message,
-        ),
-      );
-    } on Exception catch (e) {
-      emit(
-        state.copyWith(
-          busy: false,
-          busyAction: InboxCreateBusyAction.idle,
-          errorStatus: e is NetException
-              ? InboxCreateErrorStatus.network
-              : InboxCreateErrorStatus.generic,
-          errorMessage: e is NetException ? e.message : e.toString(),
-        ),
-      );
-
-      rethrow;
-    }
-  }
-
-  /// Posts a new [InboxReport] using only the category of the report
-  Future<void> createReport() async {
-    try {
-      emit(
-        state.copyWith(
-          busy: true,
-          busyAction: InboxCreateBusyAction.creatingReport,
-          errorStatus: InboxCreateErrorStatus.none,
-        ),
-      );
-
-      if (state.selectedCategory?.id == 'application_issue') {
-        /// TODO - Needs to include the log file when implemented
-        addFile(InboxFile(name: ''));
-      }
-
-      await _createInboxReportUseCase(
-        state.selectedCategory?.id ?? '',
-      );
-
-      emit(
-        state.copyWith(
-          busy: false,
-          busyAction: InboxCreateBusyAction.idle,
-          errorStatus: InboxCreateErrorStatus.none,
+          inboxFiles: [],
         ),
       );
     } on Exception catch (e) {

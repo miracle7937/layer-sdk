@@ -49,7 +49,7 @@ class InboxProvider {
     final response = await netClient.multipartRequest(
       netClient.netEndpoints.inboxMessage,
       method: NetRequestMethods.post,
-      fields: body,
+      fields: {'message_object': body},
       files: files,
     );
 
