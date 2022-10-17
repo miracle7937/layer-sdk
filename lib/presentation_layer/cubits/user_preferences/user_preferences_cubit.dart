@@ -9,14 +9,17 @@ import '../../cubits.dart';
 class UserPreferencesCubit extends Cubit<UserPreferencesState> {
   final ChangeOfferFavoriteStatusUseCase _changeOfferFavoriteStatusUseCase;
   final SetLowBalanceAlertUseCase _setLowBalanceAlertUseCase;
+  final SetCustomUserPrefsUseCase _setCustomUserPrefsUseCase;
 
   ///Creates a new [UserPreferencesCubit]
   UserPreferencesCubit({
     User? user,
     required ChangeOfferFavoriteStatusUseCase changeOfferFavoriteStatusUseCase,
     required SetLowBalanceAlertUseCase setLowBalanceAlertUseCase,
+    required SetCustomUserPrefsUseCase setCustomUserPrefsUseCase,
   })  : _changeOfferFavoriteStatusUseCase = changeOfferFavoriteStatusUseCase,
         _setLowBalanceAlertUseCase = setLowBalanceAlertUseCase,
+        _setCustomUserPrefsUseCase = setCustomUserPrefsUseCase,
         super(
           UserPreferencesState(
             favoriteOffers: user != null ? user.favoriteOffers.toList() : [],
@@ -158,6 +161,53 @@ class UserPreferencesCubit extends Cubit<UserPreferencesState> {
       emit(
         state.copyWith(
           lowBalanceValue: response.lowBalanceValue,
+          busy: false,
+          actions: state.removeAction(action),
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          busy: false,
+          actions: state.removeAction(action),
+          errors: state.addErrorFromException(
+            action: action,
+            exception: e,
+          ),
+          errorMessage: e is NetException ? e.message : null,
+        ),
+      );
+    }
+  }
+
+  /// Sets a custom user pref based on the
+  /// key/value passed to this function
+  Future<void> setCustomUserPrefs({
+    required String key,
+    required dynamic value,
+  }) async {
+    var action = UserPreferencesAction.prefAdded;
+
+    emit(
+      state.copyWith(
+        busy: true,
+        actions: state.addAction(
+          action,
+        ),
+        errors: state.removeErrorForAction(
+          action,
+        ),
+      ),
+    );
+
+    try {
+      await _setCustomUserPrefsUseCase(
+        key: key,
+        value: value,
+      );
+
+      emit(
+        state.copyWith(
           busy: false,
           actions: state.removeAction(action),
         ),

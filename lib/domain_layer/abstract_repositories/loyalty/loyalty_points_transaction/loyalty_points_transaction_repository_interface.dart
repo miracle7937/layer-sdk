@@ -10,5 +10,7 @@ abstract class LoyaltyPointsTransactionRepositoryInterface {
     int? limit,
     String? searchQuery,
     bool forceRefresh = false,
+    DateTime? startDate,
+    DateTime? endDate,
   });
 }

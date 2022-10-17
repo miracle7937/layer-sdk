@@ -3,6 +3,9 @@ import '../../helpers.dart';
 
 /// User Preferences
 class PreferencesDTO {
+  /// Whether the user has hidden the access level container or not
+  bool? hideAccessLevelContainer;
+
   /// This user's preferred language.
   String? language;
 
@@ -29,6 +32,7 @@ class PreferencesDTO {
 
   /// Creates a new [PreferencesDTO]
   PreferencesDTO({
+    this.hideAccessLevelContainer,
     this.language,
     this.currency,
     this.theme,
@@ -42,6 +46,8 @@ class PreferencesDTO {
   /// Creates a [PreferencesDTO] from a JSON
   factory PreferencesDTO.fromJson(Map<String, dynamic> json) {
     return PreferencesDTO(
+      hideAccessLevelContainer:
+          JsonParser.jsonLookup(json['pref'], ['hide_access_level_container']),
       language: JsonParser.jsonLookup(json['pref'], ['language']),
       currency: JsonParser.jsonLookup(json['pref'], ['currency']),
       theme: JsonParser.jsonLookup(json['pref'], ['pref_theme']),
