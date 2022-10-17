@@ -14,6 +14,10 @@ class ActivityCubit extends Cubit<ActivityState> {
   final CreateShortcutUseCase _createShortcutUseCase;
   final CancelRecurringTransferUseCase _cancelRecurringTransferUseCase;
   final CancelRecurringPaymentUseCase _cancelRecurrPaymentUseCase;
+  final MarkAlertAsReadUseCase _markAlertAsReadUseCase;
+  final DeleteAlertUseCase _deleteAlertUseCase;
+  final MarkAllAlertsAsReadUseCase _markAllAlertsAsReadUseCase;
+  final DeleteAllAlertsUseCase _deleteAllAlertsUseCase;
 
   /// Creates a new [ActivityCubit] instance
   ActivityCubit({
@@ -23,6 +27,10 @@ class ActivityCubit extends Cubit<ActivityState> {
     required CreateShortcutUseCase createShortcutUseCase,
     required CancelRecurringTransferUseCase cancelRecurringTransferUseCase,
     required CancelRecurringPaymentUseCase cancelRecurrPaymentUseCase,
+    required MarkAlertAsReadUseCase markAlertAsReadUseCase,
+    required DeleteAlertUseCase deleteAlertUseCase,
+    required MarkAllAlertsAsReadUseCase markAllAlertsAsReadUseCase,
+    required DeleteAllAlertsUseCase deleteAllAlertsUseCase,
     int limit = 20,
   })  : _loadActivitiesUseCase = loadActivitiesUseCase,
         _deleteActivityUseCase = deleteActivityUseCase,
@@ -30,6 +38,10 @@ class ActivityCubit extends Cubit<ActivityState> {
         _createShortcutUseCase = createShortcutUseCase,
         _cancelRecurringTransferUseCase = cancelRecurringTransferUseCase,
         _cancelRecurrPaymentUseCase = cancelRecurrPaymentUseCase,
+        _markAlertAsReadUseCase = markAlertAsReadUseCase,
+        _deleteAlertUseCase = deleteAlertUseCase,
+        _markAllAlertsAsReadUseCase = markAllAlertsAsReadUseCase,
+        _deleteAllAlertsUseCase = deleteAllAlertsUseCase,
         super(ActivityState(
           pagination: Pagination(limit: limit),
         ));
@@ -48,6 +60,7 @@ class ActivityCubit extends Cubit<ActivityState> {
     List<ActivityType>? types,
     List<ActivityTag>? activityTags,
     List<TransferType>? transferTypes,
+    String? searchStr,
   }) async {
     emit(
       state.copyWith(
@@ -71,6 +84,7 @@ class ActivityCubit extends Cubit<ActivityState> {
         types: types,
         activityTags: activityTags,
         transferTypes: transferTypes,
+        searchStr: searchStr,
       );
 
       final activities = newPage.firstPage
@@ -187,4 +201,18 @@ class ActivityCubit extends Cubit<ActivityState> {
           shortcutName: shortcutName,
         ),
       );
+
+  /// Read the current alert by the respective [Activity]
+  Future<void> markAlertAsRead(Activity activity) => _markAlertAsReadUseCase(
+        activity,
+      );
+
+  /// Delete the current alert by the respective [Activity]
+  Future<void> deleteAlert(Activity activity) => _deleteAlertUseCase(activity);
+
+  /// Read all the alerts
+  Future<void> markAllAlertsAsRead() => _markAllAlertsAsReadUseCase();
+
+  /// Delete all the alerts
+  Future<void> deleteAllAlerts() => _deleteAllAlertsUseCase();
 }
