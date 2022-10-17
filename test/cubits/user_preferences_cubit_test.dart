@@ -52,6 +52,7 @@ void main() {
   setUp(() {
     _useCase = MockChangeOfferFavoriteStatusUseCase();
     _balanceAlertUseCase = MockSetLowBalanceAlertUseCase();
+    _setCustomUserPrefsUseCase = MockSetCustomUserPrefsUseCase();
 
     when(
       () => _useCase(
