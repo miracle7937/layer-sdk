@@ -131,6 +131,24 @@ class DPARepository implements DPARepositoryInterface {
     return dto?.toDPATask(_createCustomData);
   }
 
+  /// Returns the user task for the provided process key
+  @override
+  Future<List<DPATask>?> getUserTaskDetails({
+    required String processKey,
+    String? variable,
+    String? variableValue,
+    bool forceRefresh = false,
+  }) async {
+    final dtos = await _provider.getUserTaskDetails(
+      processKey: processKey,
+      variable: variable,
+      variableValue: variableValue,
+      forceRefresh: forceRefresh,
+    );
+
+    return dtos.map((e) => e.toDPATask(_createCustomData)).toList();
+  }
+
   /// Lists all tasks assigned to the user.
   ///
   /// If the [customerId] is passed, this will return only the tasks related

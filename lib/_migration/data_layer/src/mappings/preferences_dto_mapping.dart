@@ -5,6 +5,7 @@ import '../../../../domain_layer/models.dart';
 extension PreferencesDTOMapping on PreferencesDTO {
   /// Maps into a [Preferences]
   Preferences toPreference() => Preferences(
+        hideAccessLevelContainer: hideAccessLevelContainer,
         language: language,
         currency: currency,
         theme: theme,

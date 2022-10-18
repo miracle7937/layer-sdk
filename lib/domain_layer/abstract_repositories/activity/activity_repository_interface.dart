@@ -37,4 +37,28 @@ abstract class ActivityRepositoryInterface {
 
   /// Cancel the recurring transfer [Activity] by `id`
   Future<void> cancelRecurringTransfer(String id, {String? otpValue});
+
+  /// Read the current [Alert] by respective `id`
+  Future<void> markAlertAsRead(int id);
+
+  /// Read the current [Request] by respective `id`
+  Future<void> markRequestAsRead(String id);
+
+  /// Delete the current [Alert] by respective `id`
+  Future<void> deleteAlert(int id);
+
+  /// Delete the current [Request] by respective `id`
+  Future<void> deleteRequest(String id);
+
+  /// Read all the [Alert]'s
+  Future<void> markAllAlertsAsRead();
+
+  /// Read all the [Request]'s
+  Future<void> markAllRequestsAsRead();
+
+  /// Delete all the [Alert]'s
+  Future<void> deleteAllAlerts();
+
+  /// Delete all the [Request]'s
+  Future<void> deleteAllRequests();
 }

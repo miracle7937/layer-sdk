@@ -39,6 +39,14 @@ abstract class DPARepositoryInterface {
     bool forceRefresh = false,
   });
 
+  /// Returns the user task for the provided process key
+  Future<List<DPATask>?> getUserTaskDetails({
+    required String processKey,
+    String? variable,
+    String? variableValue,
+    bool forceRefresh = false,
+  });
+
   /// Lists all tasks assigned to the user.
   ///
   /// If the [customerId] is passed, this will return only the tasks related

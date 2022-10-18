@@ -18,12 +18,18 @@ class LoyaltyPointsTransactionProvider {
     int? offset,
     int? limit,
     bool forceRefresh = false,
+    DateTime? startDate,
+    DateTime? endDate,
   }) async {
     final response = await netClient.request(
       netClient.netEndpoints.loyaltyTransaction,
       method: NetRequestMethods.get,
       queryParameters: {
-        if (transactionType != null) "txn_type": transactionType.value,
+        if (startDate != null)
+          'ts_posted_before': startDate.millisecondsSinceEpoch.toString(),
+        if (endDate != null)
+          'ts_posted_after': endDate.millisecondsSinceEpoch.toString(),
+        if (transactionType != null) 'txn_type': transactionType.value,
         if (offset != null) 'offset': offset,
         if (limit != null) 'limit': limit,
         if (searchQuery != null) 'q': searchQuery,
@@ -31,6 +37,10 @@ class LoyaltyPointsTransactionProvider {
       forceRefresh: forceRefresh,
     );
 
-    return LoyaltyPointsTransactionDTO.fromJsonList(response.data);
+    return LoyaltyPointsTransactionDTO.fromJsonList(
+      List<Map<String, dynamic>>.from(
+        response.data,
+      ),
+    );
   }
 }
