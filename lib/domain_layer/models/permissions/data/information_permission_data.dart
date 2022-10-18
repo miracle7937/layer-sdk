@@ -14,6 +14,9 @@ class InformationPermissionData extends Equatable {
     this.accounts = false,
   });
 
+  ///TODO: Temporary solution for alerts
+  bool get canDoAnyTransaction => true;
+
   @override
   List<Object> get props => [
         accounts,

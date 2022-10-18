@@ -41,6 +41,9 @@ class MockDPARequestManualVerificationUseCase extends Mock
 
 class MockDPASkipStepUseCase extends Mock implements DPASkipStepUseCase {}
 
+class MockParseJSONIntoDPATaskToContinueDPAProcessUseCase extends Mock
+    implements ParseJSONIntoDPATaskToContinueDPAProcessUseCase {}
+
 final _startUseCase = MockStartDPAProcessUseCase();
 final _resumeUseCase = MockResumeDPAProcessUsecase();
 final _loadTaskUseCase = MockLoadTaskByIdUseCase();
@@ -56,6 +59,8 @@ final _changeEmailAddressuseCase = MockChangeEmailAddressUseCase();
 final _requestManualVerificationUseCase =
     MockDPARequestManualVerificationUseCase();
 final _skipStepUseCase = MockDPASkipStepUseCase();
+final _parseJSONIntoDPATaskToContinueProcessUseCase =
+    MockParseJSONIntoDPATaskToContinueDPAProcessUseCase();
 
 final _successId = '1';
 final _successKey = 'success';
@@ -129,6 +134,8 @@ DPAProcessCubit create() => DPAProcessCubit(
       changeEmailAddressUseCase: _changeEmailAddressuseCase,
       manualVerificationUseCase: _requestManualVerificationUseCase,
       skipStepUseCase: _skipStepUseCase,
+      parseJSONIntoDPATaskToContinueDPAProcessUseCase:
+          _parseJSONIntoDPATaskToContinueProcessUseCase,
     );
 
 void main() {
