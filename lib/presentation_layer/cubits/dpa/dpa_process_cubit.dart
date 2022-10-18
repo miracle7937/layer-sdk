@@ -90,6 +90,14 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
               variables: variables,
             );
 
+      emit(
+        state.copyWith(
+          actions: state.removeAction(
+            DPAProcessBusyAction.starting,
+          ),
+        ),
+      );
+
       if (process != null) {
         final delay = process.stepProperties?.delay;
 
@@ -98,20 +106,6 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
             process: process.isPopUp() ? null : process,
             popUp: process.isPopUp() ? process : null,
             clearPopUp: !process.isPopUp(),
-            actions: state.removeActions({
-              DPAProcessBusyAction.starting,
-              if (delay != null) DPAProcessBusyAction.steppingForward,
-            }),
-            errors: !(delay != null)
-                ? state.removeErrorForAction(
-                    DPAProcessBusyAction.starting,
-                  )
-                : state
-                    .removeErrorForAction(
-                      DPAProcessBusyAction.starting,
-                    )
-                    .union(state.removeErrorForAction(
-                        DPAProcessBusyAction.steppingForward)),
             runStatus: process.finished
                 ? DPAProcessRunStatus.finished
                 : DPAProcessRunStatus.running,
@@ -130,12 +124,6 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
           await Future.delayed(Duration(seconds: delay));
           stepOrFinish();
         }
-      } else {
-        emit(state.copyWith(
-          actions: state.removeAction(
-            DPAProcessBusyAction.starting,
-          ),
-        ));
       }
     } on NetException catch (e) {
       emit(
@@ -144,7 +132,9 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
             DPAProcessBusyAction.starting,
           ),
           errors: state.addErrorFromException(
-              action: DPAProcessBusyAction.starting, exception: e),
+            action: DPAProcessBusyAction.starting,
+            exception: e,
+          ),
         ),
       );
     }
@@ -266,10 +256,9 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
           process: process.isPopUp() ? null : process,
           popUp: process.isPopUp() ? process : null,
           clearPopUp: !process.isPopUp(),
-          actions: state.removeActions({
+          actions: state.removeAction(
             DPAProcessBusyAction.steppingForward,
-            if (delay != null) DPAProcessBusyAction.steppingForward,
-          }),
+          ),
           runStatus: process.finished ? DPAProcessRunStatus.finished : null,
           clearProcessingFiles: true,
         ),
@@ -286,7 +275,9 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
             DPAProcessBusyAction.steppingForward,
           ),
           errors: state.addErrorFromException(
-              action: DPAProcessBusyAction.steppingForward, exception: e),
+            action: DPAProcessBusyAction.steppingForward,
+            exception: e,
+          ),
         ),
       );
     }
@@ -299,12 +290,13 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
 
     emit(
       state.copyWith(
-          actions: state.addAction(
-            DPAProcessBusyAction.skipping,
-          ),
-          errors: state.removeErrorForAction(
-            DPAProcessBusyAction.skipping,
-          )),
+        actions: state.addAction(
+          DPAProcessBusyAction.skipping,
+        ),
+        errors: state.removeErrorForAction(
+          DPAProcessBusyAction.skipping,
+        ),
+      ),
     );
 
     try {
@@ -322,10 +314,9 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
           process: process.isPopUp() ? null : process,
           popUp: process.isPopUp() ? process : null,
           clearPopUp: !process.isPopUp(),
-          actions: state.addActions({
+          actions: state.addAction(
             DPAProcessBusyAction.skipping,
-            if (delay != null) DPAProcessBusyAction.steppingForward,
-          }),
+          ),
           runStatus: process.finished ? DPAProcessRunStatus.finished : null,
           clearProcessingFiles: true,
         ),
@@ -342,7 +333,9 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
             DPAProcessBusyAction.skipping,
           ),
           errors: state.addErrorFromException(
-              action: DPAProcessBusyAction.skipping, exception: e),
+            action: DPAProcessBusyAction.skipping,
+            exception: e,
+          ),
         ),
       );
     }
@@ -391,11 +384,14 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
     } on NetException catch (e) {
       emit(
         state.copyWith(
-            actions: state.removeAction(
-              DPAProcessBusyAction.cancelling,
-            ),
-            errors: state.addErrorFromException(
-                action: DPAProcessBusyAction.cancelling, exception: e)),
+          actions: state.removeAction(
+            DPAProcessBusyAction.cancelling,
+          ),
+          errors: state.addErrorFromException(
+            action: DPAProcessBusyAction.cancelling,
+            exception: e,
+          ),
+        ),
       );
     }
   }
@@ -409,12 +405,13 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
 
     emit(
       state.copyWith(
-          actions: state.addAction(
-            DPAProcessBusyAction.updatingValue,
-          ),
-          errors: state.removeErrorForAction(
-            DPAProcessBusyAction.updatingValue,
-          )),
+        actions: state.addAction(
+          DPAProcessBusyAction.updatingValue,
+        ),
+        errors: state.removeErrorForAction(
+          DPAProcessBusyAction.updatingValue,
+        ),
+      ),
     );
 
     _log.info(
@@ -436,14 +433,12 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
 
     emit(
       state.copyWith(
-          process: updatedProcess.isPopUp() ? null : updatedProcess,
-          popUp: updatedProcess.isPopUp() ? updatedProcess : null,
-          actions: state.removeAction(
-            DPAProcessBusyAction.updatingValue,
-          ),
-          errors: state.removeErrorForAction(
-            DPAProcessBusyAction.updatingValue,
-          )),
+        process: updatedProcess.isPopUp() ? null : updatedProcess,
+        popUp: updatedProcess.isPopUp() ? updatedProcess : null,
+        actions: state.removeAction(
+          DPAProcessBusyAction.updatingValue,
+        ),
+      ),
     );
   }
 
@@ -473,19 +468,22 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
 
     emit(
       state.copyWith(
-          processingFiles: state.processingFiles.union({
+        processingFiles: state.processingFiles.union(
+          {
             DPAProcessingFileData(
               fileName: filename,
               action: DPAProcessingFileAction.uploading,
               variableKey: variable.key,
             ),
-          }),
-          actions: state.addAction(
-            DPAProcessBusyAction.updatingValue,
-          ),
-          errors: state.removeErrorForAction(
-            DPAProcessBusyAction.updatingValue,
-          )),
+          },
+        ),
+        actions: state.addAction(
+          DPAProcessBusyAction.updatingValue,
+        ),
+        errors: state.removeErrorForAction(
+          DPAProcessBusyAction.updatingValue,
+        ),
+      ),
     );
 
     try {
@@ -525,16 +523,17 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
     } on Exception catch (e) {
       emit(
         state.copyWith(
-            processingFiles: state.processingFiles
-                .where((d) => d.variableKey != variable.key)
-                .toSet(),
-            actions: state.removeAction(
-              DPAProcessBusyAction.updatingValue,
-            ),
-            errors: state.addErrorFromException(
-              exception: e,
-              action: DPAProcessBusyAction.updatingValue,
-            )),
+          processingFiles: state.processingFiles
+              .where((d) => d.variableKey != variable.key)
+              .toSet(),
+          actions: state.removeAction(
+            DPAProcessBusyAction.updatingValue,
+          ),
+          errors: state.addErrorFromException(
+            exception: e,
+            action: DPAProcessBusyAction.updatingValue,
+          ),
+        ),
       );
     }
   }
@@ -577,13 +576,15 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
 
     emit(
       state.copyWith(
-        processingFiles: state.processingFiles.union({
-          DPAProcessingFileData(
-            fileName: (variable.value as DPAFileData?)?.name ?? '',
-            action: DPAProcessingFileAction.deleting,
-            variableKey: variable.key,
-          ),
-        }),
+        processingFiles: state.processingFiles.union(
+          {
+            DPAProcessingFileData(
+              fileName: (variable.value as DPAFileData?)?.name ?? '',
+              action: DPAProcessingFileAction.deleting,
+              variableKey: variable.key,
+            ),
+          },
+        ),
         actions: state.addAction(
           DPAProcessBusyAction.updatingValue,
         ),
@@ -778,13 +779,14 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
     } on NetException catch (e) {
       emit(
         state.copyWith(
-            actions: state.removeAction(
-              DPAProcessBusyAction.requestingEmailChange,
-            ),
-            errors: state.addErrorFromException(
-              exception: e,
-              action: DPAProcessBusyAction.requestingEmailChange,
-            )),
+          actions: state.removeAction(
+            DPAProcessBusyAction.requestingEmailChange,
+          ),
+          errors: state.addErrorFromException(
+            exception: e,
+            action: DPAProcessBusyAction.requestingEmailChange,
+          ),
+        ),
       );
     }
   }
@@ -827,16 +829,19 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
     } on NetException catch (e) {
       emit(
         state.copyWith(
-            actions: state.removeAction(
-              DPAProcessBusyAction.requestingManualVerification,
-            ),
-            errors: state.addErrorFromException(
-                action: DPAProcessBusyAction.requestingManualVerification,
-                exception: e)),
+          actions: state.removeAction(
+            DPAProcessBusyAction.requestingManualVerification,
+          ),
+          errors: state.addErrorFromException(
+            action: DPAProcessBusyAction.requestingManualVerification,
+            exception: e,
+          ),
+        ),
       );
     }
   }
 
+  /// Emits the updated file progress when uploading a file.
   void _updateFileProgress({
     required DPAVariable variable,
     int? count,
@@ -858,6 +863,8 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
       );
 }
 
+/// Extensions on [DPAProcess]
 extension on DPAProcess {
+  /// Retruns whether if the taks is a popUp or not.
   bool isPopUp() => stepProperties?.format == DPAStepFormat.popUp;
 }

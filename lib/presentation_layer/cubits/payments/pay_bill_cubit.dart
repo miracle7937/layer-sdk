@@ -9,6 +9,7 @@ import '../../../domain_layer/use_cases/payments/load_billers_use_case.dart';
 import '../../../domain_layer/use_cases/payments/load_services_use_case.dart';
 import '../../../domain_layer/use_cases/payments/post_payment_use_case.dart';
 import '../../../domain_layer/use_cases/payments/validate_bill_use_case.dart';
+import '../../cubits.dart';
 import 'pay_bill_state.dart';
 
 /// A cubit for paying customer bills.
@@ -56,13 +57,15 @@ class PayBillCubit extends Cubit<PayBillState> {
   void load() async {
     emit(
       state.copyWith(
-          actions: state.addAction(
-            PayBillBusyAction.loading,
-          ),
-          errors: state.removeErrorForAction(
-            PayBillBusyAction.loading,
-          )),
+        actions: state.addAction(
+          PayBillBusyAction.loading,
+        ),
+        errors: state.removeErrorForAction(
+          PayBillBusyAction.loading,
+        ),
+      ),
     );
+
     try {
       final responses = await Future.wait([
         _loadBillersUseCase(),
@@ -136,18 +139,20 @@ class PayBillCubit extends Cubit<PayBillState> {
 
   /// Validates user input and returns the bill object
   Future<void> validateBill() async {
-    try {
-      emit(
-        state.copyWith(
-          actions: state.addAction(
-            PayBillBusyAction.validating,
-          ),
-          errors: state.removeErrorForAction(
-            PayBillBusyAction.validating,
-          ),
+    emit(
+      state.copyWith(
+        actions: state.addAction(
+          PayBillBusyAction.validating,
         ),
-      );
+        errors: state.removeErrorForAction(
+          PayBillBusyAction.validating,
+        ),
+      ),
+    );
+
+    try {
       final validatedBill = await _validateBillUseCase(bill: state.bill);
+
       emit(
         state.copyWith(
           validatedBill: validatedBill,
@@ -168,54 +173,147 @@ class PayBillCubit extends Cubit<PayBillState> {
           ),
         ),
       );
-      rethrow;
     }
   }
 
   /// Submits the payment
-  Future<void> submit({
-    String? otp,
-  }) async {
-    try {
-      emit(
-        state.copyWith(
-          actions: state.addAction(otp != null
-              ? PayBillBusyAction.validatingSecondFactor
-              : PayBillBusyAction.submitting),
-          returnedPayment: otp == null ? null : state.returnedPayment,
-          errors: state.removeErrorForAction(otp != null
-              ? PayBillBusyAction.validatingSecondFactor
-              : PayBillBusyAction.submitting),
-          events: state.removeEvent(otp != null
-              ? PayBillEvent.inputOTPCode
-              : PayBillEvent.showConfirmationView),
+  Future<void> submit() async {
+    emit(
+      state.copyWith(
+        actions: state.addAction(
+          PayBillBusyAction.submitting,
         ),
+        errors: state.removeErrorForAction(
+          PayBillBusyAction.submitting,
+        ),
+        events: state.removeEvent(
+          PayBillEvent.showConfirmationView,
+        ),
+      ),
+    );
+
+    try {
+      final returnedPayment = await _postPaymentUseCase(
+        state.payment,
       );
 
-      final res = await _postPaymentUseCase(
-        otp == null ? state.payment : state.returnedPayment!,
+      switch (returnedPayment.status) {
+        case PaymentStatus.completed:
+        case PaymentStatus.pending:
+        case PaymentStatus.scheduled:
+        case PaymentStatus.pendingBank:
+          if (state.saveToShortcut) {
+            await _createShortcut(returnedPayment);
+          }
+
+          emit(
+            state.copyWith(
+              actions: state.removeAction(
+                PayBillBusyAction.submitting,
+              ),
+              returnedPayment: returnedPayment,
+              events: state.addEvent(
+                PayBillEvent.showResultView,
+              ),
+            ),
+          );
+          break;
+
+        case PaymentStatus.failed:
+          emit(
+            state.copyWith(
+              actions: state.removeAction(
+                PayBillBusyAction.submitting,
+              ),
+              errors: state.addCustomCubitError(
+                action: PayBillBusyAction.submitting,
+                code: CubitErrorCode.paymentFailed,
+              ),
+            ),
+          );
+          break;
+
+        case PaymentStatus.otp:
+          emit(
+            state.copyWith(
+              actions: state.removeAction(
+                PayBillBusyAction.submit,
+              ),
+              returnedPayment: returnedPayment,
+              events: state.addEvent(
+                PayBillEvent.openSecondFactor,
+              ),
+            ),
+          );
+          break;
+
+        default:
+          throw Exception(
+            'Unhandled payment status -> ${returnedPayment.status}',
+          );
+      }
+
+      emit(
+        state.copyWith(
+          actions: state.removeAction(
+            PayBillBusyAction.submitting,
+          ),
+          returnedPayment: returnedPayment,
+          events: state.addEvent(
+            PayBillEvent.showConfirmationView,
+          ),
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          actions: state.removeAction(
+            PayBillBusyAction.submitting,
+          ),
+          errors: state.addErrorFromException(
+            action: PayBillBusyAction.submitting,
+            exception: e,
+          ),
+        ),
+      );
+    }
+  }
+
+  /// Validates the second factor for this payment.
+  Future<void> validateSecondFactor({
+    String? otp,
+  }) async {
+    assert(state.returnedPayment != null);
+
+    emit(
+      state.copyWith(
+        actions: state.addAction(
+          PayBillBusyAction.validatingSecondFactor,
+        ),
+        errors: state.removeErrorForAction(
+          PayBillBusyAction.validatingSecondFactor,
+        ),
+        events: state.removeEvent(
+          PayBillEvent.inputOTPCode,
+        ),
+      ),
+    );
+
+    try {
+      final returnedPayment = await _postPaymentUseCase(
+        state.returnedPayment!,
         otp: otp,
       );
 
-      if ((state.saveToShortcut) &&
-          ([
-            PaymentStatus.completed,
-            PaymentStatus.pending,
-            PaymentStatus.scheduled,
-            PaymentStatus.pendingBank,
-          ].contains(res.status))) {
-        await _createShortcut(res);
-      }
-
-      emit(state.copyWith(
-        actions: state.removeAction(otp != null
-            ? PayBillBusyAction.validatingSecondFactor
-            : PayBillBusyAction.submitting),
-        returnedPayment: res,
-        events: state.addEvent(otp != null
-            ? PayBillEvent.inputOTPCode
-            : PayBillEvent.showConfirmationView),
-      ));
+      emit(
+        state.copyWith(
+          actions: state.removeAction(
+            PayBillBusyAction.validatingSecondFactor,
+          ),
+          returnedPayment: returnedPayment,
+          events: state.addEvent(PayBillEvent.inputOTPCode),
+        ),
+      );
     } on Exception catch (e) {
       emit(
         state.copyWith(
@@ -232,7 +330,6 @@ class PayBillCubit extends Cubit<PayBillState> {
           ),
         ),
       );
-      rethrow;
     }
   }
 
@@ -276,7 +373,6 @@ class PayBillCubit extends Cubit<PayBillState> {
           ),
         ),
       );
-      rethrow;
     }
   }
 
@@ -336,6 +432,7 @@ class PayBillCubit extends Cubit<PayBillState> {
     final biller =
         state.billers.firstWhereOrNull((element) => element.id == billerId);
     if (biller == null) return;
+
     emit(
       state.copyWith(
         selectedBiller: biller,
@@ -356,12 +453,13 @@ class PayBillCubit extends Cubit<PayBillState> {
 
       emit(
         state.copyWith(
-            services: services,
-            selectedService: services.firstOrNull,
-            serviceFields: services.firstOrNull?.serviceFields,
-            actions: state.removeAction(
-              PayBillBusyAction.loadingServices,
-            )),
+          services: services,
+          selectedService: services.firstOrNull,
+          serviceFields: services.firstOrNull?.serviceFields,
+          actions: state.removeAction(
+            PayBillBusyAction.loadingServices,
+          ),
+        ),
       );
     } on Exception catch (e) {
       emit(

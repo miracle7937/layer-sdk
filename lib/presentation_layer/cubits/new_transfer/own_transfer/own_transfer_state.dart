@@ -56,7 +56,7 @@ class OwnTransferState extends Equatable {
   final TransferStatus? resultStatus;
 
   /// Device uid
-  final String? deviceUID;
+  final String deviceUID;
 
   /// TODO: cubit_issue | Why do we need this? We already have the transfer
   /// object which has a destination account. We should only set that account
@@ -82,7 +82,7 @@ class OwnTransferState extends Equatable {
     Set<OwnTransferAction> errors = const {},
     this.errorMessage,
     this.resultStatus,
-    this.deviceUID,
+    required this.deviceUID,
     this.transferId,
     this.preselectedAccount,
   })  : fromAccounts = UnmodifiableListView(fromAccounts),

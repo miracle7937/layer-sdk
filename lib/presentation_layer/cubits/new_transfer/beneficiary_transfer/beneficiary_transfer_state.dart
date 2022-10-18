@@ -157,7 +157,7 @@ class BeneficiaryTransferState extends BaseState<BeneficiaryTransferAction,
   final bool editMode;
 
   /// Device uid
-  final String? deviceUID;
+  final String deviceUID;
 
   /// Creates a new [BeneficiaryTransferState].
   BeneficiaryTransferState({
@@ -175,7 +175,7 @@ class BeneficiaryTransferState extends BaseState<BeneficiaryTransferAction,
     this.banksPagination = const Pagination(),
     this.evaluation,
     this.transferResult,
-    this.deviceUID,
+    required this.deviceUID,
     this.bankQuery,
     required this.editMode,
   })  : beneficiarySettings = UnmodifiableListView(beneficiarySettings),

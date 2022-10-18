@@ -35,6 +35,9 @@ enum CubitErrorCode {
   /// The transfer failed.
   transferFailed('transfer_failed'),
 
+  /// The payment failed.
+  paymentFailed('payment_failed'),
+
   /// unknown error code.
   unknown('unknown');
 

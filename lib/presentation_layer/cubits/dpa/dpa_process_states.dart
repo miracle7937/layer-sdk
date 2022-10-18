@@ -52,21 +52,8 @@ enum DPAProcessRunStatus {
   finished,
 }
 
-/// The available error status
-enum DPAProcessErrorStatus {
-  /// No errors
-  none,
-
-  /// Generic error.
-  generic,
-
-  /// Network error
-  network,
-}
-
 /// The state that holds the DPA process definitions.
-class DPAProcessState
-    extends BaseState<DPAProcessBusyAction, void, DPAProcessErrorStatus> {
+class DPAProcessState extends BaseState<DPAProcessBusyAction, void, void> {
   /// The current process.
   ///
   /// A [DPAProcess] has the general details of the process, but also the
@@ -95,9 +82,6 @@ class DPAProcessState
   /// variable.
   ///
   /// This is calculated by using [processingFiles].
-  ///
-  /// This is done separated from [busy] as you can process more than one
-  /// variable and the UI should work differently for each.
   final bool busyProcessingFile;
 
   /// Holds the data of the variables that are processing files.
