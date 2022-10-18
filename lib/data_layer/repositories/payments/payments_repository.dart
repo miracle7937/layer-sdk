@@ -1,5 +1,6 @@
 import '../../../domain_layer/abstract_repositories.dart';
 import '../../../domain_layer/models.dart';
+import '../../dtos/payment/payment_dto.dart';
 import '../../mappings.dart';
 import '../../providers.dart';
 
@@ -56,6 +57,36 @@ class PaymentRepository implements PaymentsRepositoryInterface {
       payment: payment.toPaymentDTO(),
       otp: otp,
       resendOtp: resendOtp,
+    );
+
+    return paymentDTO.toPayment();
+  }
+
+  /// Sends the OTP code for the passed payment id.
+  @override
+  Future<Payment> sendOTPCode({
+    required int paymentId,
+    required bool editMode,
+  }) async {
+    final paymentDTO = await _provider.sendOTPCode(
+      paymentId: paymentId,
+      editMode: editMode,
+    );
+
+    return paymentDTO.toPayment();
+  }
+
+  /// Verifies the second factor for the passed payment id.
+  @override
+  Future<Payment> verifySecondFactor({
+    required int paymentId,
+    required String value,
+    required SecondFactorType secondFactorType,
+  }) async {
+    final paymentDTO = await _provider.verifySecondFactor(
+      paymentId: paymentId,
+      value: value,
+      secondFactorTypeDTO: secondFactorType.toSecondFactorTypeDTO(),
     );
 
     return paymentDTO.toPayment();

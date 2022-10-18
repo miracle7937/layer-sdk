@@ -2,8 +2,7 @@ import '../../../domain_layer/models.dart';
 import '../base_cubit/base_state.dart';
 
 /// The state of the bill payment cubit
-class PayBillState
-    extends BaseState<PayBillBusyAction, PayBillEvent, PayBillErrorStatus> {
+class PayBillState extends BaseState<PayBillBusyAction, PayBillEvent, void> {
   /// The amount to be paid
   final double amount;
 
@@ -241,39 +240,36 @@ enum PayBillBusyAction {
   /// Loading the list of services
   loadingServices,
 
+  /// Validating user input
+  validating,
+
   /// Submitting the payment
   submitting,
 
+  /// Sending the OTP code for the payment.
+  sendingOTPCode,
+
   /// Validating second factory
-  validatingSecondFactor,
+  verifyingSecondFactor,
 
   /// Re-sending the OTP
   resendingOTP,
-
-  /// Validating user input
-  validating,
 }
 
 /// Possible events
 enum PayBillEvent {
-  /// Event for inputing the OTP code.
-  inputOTPCode,
-
-  /// Show confirmation view
+  /// Event for showing the confirmation view.
   showConfirmationView,
-}
 
-/// The available error status
-enum PayBillErrorStatus {
-  /// No errors
-  none,
+  /// Event for opening the second factor.
+  openSecondFactor,
 
-  /// Generic error
-  generic,
+  /// Event for showing the OTP code inputing view.
+  showOTPCodeView,
 
-  /// Network error
-  network,
+  /// Event for closing the second factor.
+  closeSecondFactor,
 
-  /// Incorrect OTP code.
-  incorrectOTPCode,
+  /// Event for showing the payment result view.
+  showResultView,
 }

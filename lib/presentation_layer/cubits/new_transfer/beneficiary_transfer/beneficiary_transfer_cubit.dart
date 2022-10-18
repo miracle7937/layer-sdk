@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logging/logging.dart';
 
 import '../../../../domain_layer/models.dart';
 import '../../../../domain_layer/use_cases.dart';
@@ -9,6 +10,8 @@ import '../../../utils.dart';
 
 /// A Cubit that handles the state for the beneficiary transfer flow.
 class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
+  final _logger = Logger('BeneficiaryTransferCubit');
+
   final LoadGlobalSettingsUseCase _loadGlobalSettingsUseCase;
   final GetActiveAccountsSortedByAvailableBalance
       _getActiveAccountsSortedByAvailableBalance;
@@ -814,6 +817,9 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
           break;
 
         default:
+          _logger.severe(
+            'Unhandled transfer status -> ${transferResult.status}',
+          );
           throw Exception(
             'Unhandled transfer status -> ${transferResult.status}',
           );

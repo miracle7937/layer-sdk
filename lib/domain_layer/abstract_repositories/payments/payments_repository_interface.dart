@@ -26,6 +26,19 @@ abstract class PaymentsRepositoryInterface {
     bool resendOtp = false,
   });
 
+  /// Sends the otp code for the passed payment id.
+  Future<Payment> sendOTPCode({
+    required int paymentId,
+    required bool editMode,
+  });
+
+  /// Verifies the second factor for the passed payment id.
+  Future<Payment> verifySecondFactor({
+    required int paymentId,
+    required String value,
+    required SecondFactorType secondFactorType,
+  });
+
   /// Resends the one time password to the customer
   Future<Payment> resendOTP({
     required Payment payment,

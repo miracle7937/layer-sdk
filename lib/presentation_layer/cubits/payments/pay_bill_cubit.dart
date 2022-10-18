@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logging/logging.dart';
 
 import '../../../data_layer/mappings/payment/biller_dto_mapping.dart';
 import '../../../domain_layer/models.dart';
@@ -14,6 +15,8 @@ import 'pay_bill_state.dart';
 
 /// A cubit for paying customer bills.
 class PayBillCubit extends Cubit<PayBillState> {
+  final _logger = Logger('PayBillCubit');
+
   final LoadBillersUseCase _loadBillersUseCase;
   final LoadServicesUseCase _loadServicesUseCase;
   final GetAccountsByStatusUseCase _getCustomerAccountsUseCase;
@@ -21,6 +24,8 @@ class PayBillCubit extends Cubit<PayBillState> {
   final ValidateBillUseCase _validateBillUseCase;
   final CreateShortcutUseCase _createShortcutUseCase;
   final ResendOTPPaymentUseCase _resendOTPUseCase;
+  final SendOTPCodeForPaymentUseCase _sendOTPCodeForPaymentUseCase;
+  final VerifyPaymentSecondFactorUseCase _verifyPaymentSecondFactorUseCase;
 
   /// The biller id to pay for, if provided the biller will be pre-selected
   /// when the cubit loads.
@@ -39,6 +44,8 @@ class PayBillCubit extends Cubit<PayBillState> {
     required ValidateBillUseCase validateBillUseCase,
     required CreateShortcutUseCase createShortcutUseCase,
     required ResendOTPPaymentUseCase resendPaymentOTPUseCase,
+    required SendOTPCodeForPaymentUseCase sendOTPCodeForPaymentUseCase,
+    required VerifyPaymentSecondFactorUseCase verifyPaymentSecondFactorUseCase,
     this.billerId,
     this.paymentToRepeat,
   })  : _loadBillersUseCase = loadBillersUseCase,
@@ -48,6 +55,8 @@ class PayBillCubit extends Cubit<PayBillState> {
         _validateBillUseCase = validateBillUseCase,
         _createShortcutUseCase = createShortcutUseCase,
         _resendOTPUseCase = resendPaymentOTPUseCase,
+        _sendOTPCodeForPaymentUseCase = sendOTPCodeForPaymentUseCase,
+        _verifyPaymentSecondFactorUseCase = verifyPaymentSecondFactorUseCase,
         super(PayBillState(
           deviceUID: generateDeviceUIDUseCase(30),
         ));
@@ -147,6 +156,9 @@ class PayBillCubit extends Cubit<PayBillState> {
         errors: state.removeErrorForAction(
           PayBillBusyAction.validating,
         ),
+        events: state.removeEvent(
+          PayBillEvent.showConfirmationView,
+        ),
       ),
     );
 
@@ -155,9 +167,12 @@ class PayBillCubit extends Cubit<PayBillState> {
 
       emit(
         state.copyWith(
-          validatedBill: validatedBill,
           actions: state.removeAction(
             PayBillBusyAction.validating,
+          ),
+          validatedBill: validatedBill,
+          events: state.addEvent(
+            PayBillEvent.showConfirmationView,
           ),
         ),
       );
@@ -186,8 +201,11 @@ class PayBillCubit extends Cubit<PayBillState> {
         errors: state.removeErrorForAction(
           PayBillBusyAction.submitting,
         ),
-        events: state.removeEvent(
-          PayBillEvent.showConfirmationView,
+        events: state.removeEvents(
+          {
+            PayBillEvent.showResultView,
+            PayBillEvent.openSecondFactor,
+          },
         ),
       ),
     );
@@ -237,7 +255,7 @@ class PayBillCubit extends Cubit<PayBillState> {
           emit(
             state.copyWith(
               actions: state.removeAction(
-                PayBillBusyAction.submit,
+                PayBillBusyAction.submitting,
               ),
               returnedPayment: returnedPayment,
               events: state.addEvent(
@@ -248,22 +266,13 @@ class PayBillCubit extends Cubit<PayBillState> {
           break;
 
         default:
+          _logger.severe(
+            'Unhandled payment status -> ${returnedPayment.status}',
+          );
           throw Exception(
             'Unhandled payment status -> ${returnedPayment.status}',
           );
       }
-
-      emit(
-        state.copyWith(
-          actions: state.removeAction(
-            PayBillBusyAction.submitting,
-          ),
-          returnedPayment: returnedPayment,
-          events: state.addEvent(
-            PayBillEvent.showConfirmationView,
-          ),
-        ),
-      );
     } on Exception catch (e) {
       emit(
         state.copyWith(
@@ -279,53 +288,114 @@ class PayBillCubit extends Cubit<PayBillState> {
     }
   }
 
-  /// Validates the second factor for this payment.
-  Future<void> validateSecondFactor({
-    String? otp,
-  }) async {
+  /// Send the OTP code for the current returned payment.
+  Future<void> sendOTPCode() async {
     assert(state.returnedPayment != null);
 
     emit(
       state.copyWith(
         actions: state.addAction(
-          PayBillBusyAction.validatingSecondFactor,
+          PayBillBusyAction.sendingOTPCode,
         ),
         errors: state.removeErrorForAction(
-          PayBillBusyAction.validatingSecondFactor,
+          PayBillBusyAction.sendingOTPCode,
         ),
         events: state.removeEvent(
-          PayBillEvent.inputOTPCode,
+          PayBillEvent.showOTPCodeView,
         ),
       ),
     );
 
     try {
-      final returnedPayment = await _postPaymentUseCase(
-        state.returnedPayment!,
-        otp: otp,
+      final returnedPayment = await _sendOTPCodeForPaymentUseCase(
+        paymentId: state.returnedPayment?.id ?? 0,
+        editMode: false,
       );
 
       emit(
         state.copyWith(
           actions: state.removeAction(
-            PayBillBusyAction.validatingSecondFactor,
+            PayBillBusyAction.sendingOTPCode,
           ),
           returnedPayment: returnedPayment,
-          events: state.addEvent(PayBillEvent.inputOTPCode),
+          events: state.addEvent(
+            PayBillEvent.showOTPCodeView,
+          ),
         ),
       );
     } on Exception catch (e) {
       emit(
         state.copyWith(
           actions: state.removeAction(
-            otp != null
-                ? PayBillBusyAction.validatingSecondFactor
-                : PayBillBusyAction.submitting,
+            PayBillBusyAction.sendingOTPCode,
           ),
           errors: state.addErrorFromException(
-            action: otp != null
-                ? PayBillBusyAction.validatingSecondFactor
-                : PayBillBusyAction.submitting,
+            action: PayBillBusyAction.sendingOTPCode,
+            exception: e,
+          ),
+        ),
+      );
+    }
+  }
+
+  /// Verifies the second factor for the payment retrievied on the [submit]
+  /// method.
+  Future<void> verifySecondFactor({
+    String? otpCode,
+    String? ocraClientResponse,
+  }) async {
+    assert(
+      otpCode != null || ocraClientResponse != null,
+      'An OTP code or OCRA client response must be provided in order for '
+      'verifying the second factor',
+    );
+
+    emit(
+      state.copyWith(
+        actions: state.addAction(
+          PayBillBusyAction.verifyingSecondFactor,
+        ),
+        errors: {},
+      ),
+    );
+
+    try {
+      final returnedPayment = await _verifyPaymentSecondFactorUseCase(
+        paymentId: state.returnedPayment?.id ?? 0,
+        value: otpCode ?? ocraClientResponse ?? '',
+        secondFactorType:
+            otpCode != null ? SecondFactorType.otp : SecondFactorType.ocra,
+      );
+
+      emit(
+        state.copyWith(
+          actions: state.removeAction(
+            PayBillBusyAction.verifyingSecondFactor,
+          ),
+        ),
+      );
+
+      emit(
+        state.copyWith(
+          returnedPayment: returnedPayment,
+          events: state.addEvent(
+            PayBillEvent.closeSecondFactor,
+          ),
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          actions: state.removeAction(
+            PayBillBusyAction.verifyingSecondFactor,
+          ),
+        ),
+      );
+
+      emit(
+        state.copyWith(
+          errors: state.addErrorFromException(
+            action: PayBillBusyAction.verifyingSecondFactor,
             exception: e,
           ),
         ),

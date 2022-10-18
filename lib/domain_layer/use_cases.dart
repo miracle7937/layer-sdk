@@ -135,6 +135,8 @@ export 'use_cases/payments/load_customer_payments_use_case.dart';
 export 'use_cases/payments/load_frequent_payments_use_case.dart';
 export 'use_cases/payments/patch_payment_use_case.dart';
 export 'use_cases/payments/resend_payment_otp_use_case.dart';
+export 'use_cases/payments/send_otp_code_for_payment_use_case.dart';
+export 'use_cases/payments/verify_payment_second_factor_use_case.dart';
 export 'use_cases/product/load_product_by_product_id_use_case.dart';
 export 'use_cases/product/load_products_use_case.dart';
 export 'use_cases/queue/accept_queue_use_case.dart';

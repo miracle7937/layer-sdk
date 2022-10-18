@@ -100,6 +100,46 @@ class PaymentProvider {
     );
   }
 
+  /// Returns the payment dto resulting on sending the OTP code for the
+  /// passed payment id.
+  Future<PaymentDTO> sendOTPCode({
+    required int paymentId,
+    required bool editMode,
+  }) async {
+    final response = await netClient.request(
+      netClient.netEndpoints.paymentV2,
+      method: editMode ? NetRequestMethods.patch : NetRequestMethods.post,
+      data: {
+        'payment_id': paymentId,
+        'second_factor': SecondFactorTypeDTO.otp.value,
+      },
+    );
+
+    return PaymentDTO.fromJson(response.data);
+  }
+
+  /// Returns the payment dto resulting on verifying the second factor for
+  /// the passed payment id.
+  Future<PaymentDTO> verifySecondFactor({
+    required int paymentId,
+    required String value,
+    required SecondFactorTypeDTO secondFactorTypeDTO,
+  }) async {
+    final response = await netClient.request(
+      netClient.netEndpoints.paymentV2,
+      method: NetRequestMethods.post,
+      data: {
+        'payment_id': paymentId,
+        'second_factor': secondFactorTypeDTO.value,
+        if (secondFactorTypeDTO == SecondFactorTypeDTO.ocra)
+          'client_response': value,
+        if (secondFactorTypeDTO == SecondFactorTypeDTO.otp) 'otp_value': value,
+      },
+    );
+
+    return PaymentDTO.fromJson(response.data);
+  }
+
   /// Resends the one time password to the customer
   Future<PaymentDTO> resendOTP({
     required PaymentDTO payment,
