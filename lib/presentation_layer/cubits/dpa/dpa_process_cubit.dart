@@ -276,33 +276,21 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
 
       final delay = process.stepProperties?.delay;
 
-      print('process isFinished -> ${process.finished}');
-      print('process return variables -> ${process.returnVariables}');
-
       try {
         final continueOldProcessVariable =
             process.returnVariables.singleWhereOrNull(
           (variable) => variable['name'] == 'continue_old_process',
         );
 
-        print('continueOldProcessVariable -> $continueOldProcessVariable');
-
         if (continueOldProcessVariable != null) {
           final taskVariable = process.returnVariables.singleWhereOrNull(
             (variable) => variable['name'] == 'task',
           );
 
-          print('taskVariable -> $taskVariable');
-
           if (taskVariable?['value'] != null) {
-            print('task variables on json -> '
-                '${taskVariable?['value']['taskVariables']}');
             final task = _parseJSONIntoDPATaskToContinueDPAProcessUseCase(
               json: taskVariable!['value'],
             );
-
-            print('task -> $task');
-            print('task variables -> ${task.variables}');
 
             continueProcessWithTask(task: task);
             return;
