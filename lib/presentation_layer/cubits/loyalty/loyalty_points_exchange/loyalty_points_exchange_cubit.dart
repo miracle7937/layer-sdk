@@ -1,14 +1,14 @@
 import 'package:bloc/bloc.dart';
 
 import '../../../../data_layer/network.dart';
-import '../../../../data_layer/repositories.dart';
+import '../../../../domain_layer/abstract_repositories.dart';
 import '../../../../domain_layer/models.dart';
 import '../../../../domain_layer/use_cases.dart';
 import '../../../cubits.dart';
 
 /// Cubit responsible for [LoyaltyPointsExchange]
 /// TODO: Change the accounts to use the new structure.
-/// TODO: Change the cards to use the new strucutre.
+/// TODO: Change the cards to use the new structure.
 class LoyaltyPointsExchangeCubit extends Cubit<LoyaltyPointsExchangeState> {
   final LoadCurrentLoyaltyPointsRateUseCase
       _loadCurrentLoyaltyPointsRateUseCase;
@@ -16,7 +16,7 @@ class LoyaltyPointsExchangeCubit extends Cubit<LoyaltyPointsExchangeState> {
   final ConfirmSecondFactorForLoyaltyPointsExchangeUseCase
       _confirmSecondFactorForLoyaltyPointsExchangeUseCase;
   final GetAccountsByStatusUseCase _getAccountsByStatusUseCase;
-  final CardRepository _cardRepository;
+  final CardRepositoryInterface _cardRepository;
 
   /// Creates a new [LoyaltyPointsExchangeCubit] using the supplied use cases.
   LoyaltyPointsExchangeCubit({
@@ -26,7 +26,7 @@ class LoyaltyPointsExchangeCubit extends Cubit<LoyaltyPointsExchangeState> {
     required ConfirmSecondFactorForLoyaltyPointsExchangeUseCase
         confirmSecondFactorForLoyaltyPointsExchangeUseCase,
     required GetAccountsByStatusUseCase getAccountsByStatusUseCase,
-    required CardRepository cardRepository,
+    required CardRepositoryInterface cardRepository,
   })  : _loadCurrentLoyaltyPointsRateUseCase =
             loadCurrentLoyaltyPointsRateUseCase,
         _exchangeLoyaltyPointsUseCase = exchangeLoyaltyPointsUseCase,

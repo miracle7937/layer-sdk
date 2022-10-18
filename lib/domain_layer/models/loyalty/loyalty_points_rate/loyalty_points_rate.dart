@@ -15,7 +15,7 @@ class LoyaltyPointsRate extends Equatable {
   final DateTime? startDate;
 
   /// Rate amount
-  final num rate;
+  final double rate;
 
   ///[LoyaltyPointsRate] constructor
   const LoyaltyPointsRate({
@@ -32,7 +32,7 @@ class LoyaltyPointsRate extends Equatable {
     DateTime? createdAt,
     DateTime? updatedAt,
     DateTime? startDate,
-    num? rate,
+    double? rate,
   }) =>
       LoyaltyPointsRate(
         id: id ?? this.id,

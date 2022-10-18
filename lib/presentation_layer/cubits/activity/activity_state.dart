@@ -64,7 +64,6 @@ class ActivityState extends Equatable {
     ActivityErrorStatus? errorStatus,
     ActivityBusyAction? action,
     Pagination? pagination,
-    int? offSet,
     Iterable<Activity>? activities,
     String? shortcutName,
     String? errorMessage,

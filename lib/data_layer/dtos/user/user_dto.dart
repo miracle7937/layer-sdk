@@ -54,7 +54,8 @@ class UserDTO {
   /// The password for this user.
   String? password;
 
-  //PrefAlerts prefAlerts;
+  /// List of activity types for which user receives alerts.
+  List<ActivityTypeDTO>? enabledAlerts;
 
   // PrefPfm prefPfm;
   // PrefSettings prefSettings;
@@ -163,6 +164,7 @@ class UserDTO {
     this.hasSmsAds,
     this.verifyDevice,
     this.branch,
+    this.enabledAlerts,
   });
 
   /// Creates an [UserDTO] from the supplied JSON.
@@ -185,11 +187,18 @@ class UserDTO {
     hasEmailAds = JsonParser.jsonLookup(json['pref'], ['ad_consent_email']);
     hasSmsAds = JsonParser.jsonLookup(json['pref'], ['ad_consent_sms']);
 
-    // if (jsonLookup(json, ['pref', 'alert']) != null) {
-    //   prefAlerts = PrefAlerts.fromJson(jsonLookup(json, ['pref', 'alert']));
-    // } else {
-    //   prefAlerts = PrefAlerts();
-    // }
+    enabledAlerts = [];
+
+    final activityTypesList = JsonParser.jsonLookup(json, ['pref', 'alert']);
+    if (activityTypesList != null && activityTypesList is List) {
+      enabledAlerts = activityTypesList
+          .map(
+            (activityTypeString) =>
+                ActivityTypeDTO.fromRaw(activityTypeString) ??
+                ActivityTypeDTO.unknown,
+          )
+          .toList();
+    }
 
     trackedCurrencies = [];
     if (JsonParser.jsonLookup(json['pref'], ['tracked_currencies']) != null) {

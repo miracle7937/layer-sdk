@@ -15,7 +15,7 @@ class LoyaltyPointsRateDTO {
   final DateTime? startDate;
 
   /// Rate amount
-  final num? rate;
+  final double? rate;
 
   /// [LoyaltyPointsRateDTO] constructor
   LoyaltyPointsRateDTO({

@@ -36,6 +36,9 @@ abstract class StorageKeys {
   /// The OCRA secret key setting
   static const ocraSecretKey = 'ocraSecretKey';
 
-  /// Whether if the app has completed the landing page tutorial or not.
+  /// Whether if the [User] has completed the landing page tutorial or not.
   static const completedLandingPageTutorial = 'completedLandingPageTutorial';
+
+  /// Whether if the [User] has completed the loyalty tutorial or not.
+  static const completedLoyaltyTutorial = 'completedLoyaltyTutorial';
 }
