@@ -23,6 +23,8 @@ class PayBillCubit extends Cubit<PayBillState> {
   final ValidateBillUseCase _validateBillUseCase;
   final CreateShortcutUseCase _createShortcutUseCase;
   final ResendOTPPaymentUseCase _resendOTPUseCase;
+  final GetActiveAccountsSortedByAvailableBalance
+      _getActiveAccountsSortedByAvailableBalance;
 
   /// The biller id to pay for, if provided the biller will be pre-selected
   /// when the cubit loads.
@@ -40,11 +42,15 @@ class PayBillCubit extends Cubit<PayBillState> {
     required GenerateDeviceUIDUseCase generateDeviceUIDUseCase,
     required ValidateBillUseCase validateBillUseCase,
     required CreateShortcutUseCase createShortcutUseCase,
+    required GetActiveAccountsSortedByAvailableBalance
+        getActiveAccountsSortedByAvailableBalance,
     required ResendOTPPaymentUseCase resendPaymentOTPUseCase,
     this.billerId,
     this.paymentToRepeat,
   })  : _loadBillersUseCase = loadBillersUseCase,
         _loadServicesUseCase = loadServicesUseCase,
+        _getActiveAccountsSortedByAvailableBalance =
+            getActiveAccountsSortedByAvailableBalance,
         _getCustomerAccountsUseCase = getCustomerAccountsUseCase,
         _postPaymentUseCase = postPaymentUseCase,
         _generateDeviceUIDUseCase = generateDeviceUIDUseCase,
@@ -71,10 +77,12 @@ class PayBillCubit extends Cubit<PayBillState> {
           ],
           includeDetails: false,
         ),
+        _getActiveAccountsSortedByAvailableBalance(),
       ]);
 
       final billers = responses[0] as List<Biller>;
       final accounts = responses[1] as List<Account>;
+      final sortedByavailableBalanceAccounts = responses[2] as List<Account>;
 
       emit(
         state.copyWith(
@@ -83,6 +91,7 @@ class PayBillCubit extends Cubit<PayBillState> {
           fromAccounts: accounts
               .where((element) => element.canPay)
               .toList(growable: false),
+          selectedAccount: sortedByavailableBalanceAccounts.first,
           billerCategories: billers.toBillerCategories(),
         ),
       );
