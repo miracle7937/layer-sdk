@@ -15,7 +15,6 @@ export 'use_cases/activity/cancel_recurring_transfer_use_case.dart';
 export 'use_cases/activity/delete_activity_use_case.dart';
 export 'use_cases/activity/delete_alert_use_case.dart';
 export 'use_cases/activity/delete_all_alerts_use_case.dart';
-export 'use_cases/activity/filter_transfer_activity_types_use_case.dart';
 export 'use_cases/activity/load_activities_use_case.dart';
 export 'use_cases/activity/mark_alert_as_read_use_case.dart';
 export 'use_cases/activity/mark_all_alerts_as_read_use_case.dart';
