@@ -89,10 +89,6 @@ class ActivityCubit extends Cubit<ActivityState> {
         searchStr: searchStr,
       );
 
-      if (resultList.length < state.pagination.limit) {
-        newPage = newPage.copyWith(limit: resultList.length);
-      }
-
       final activities = newPage.firstPage
           ? resultList
           : [
