@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
 
 import '../../../data_layer/network.dart';
@@ -25,6 +26,8 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
   final DPAChangeEmailAddressUseCase _changeEmailAddressUseCase;
   final DPARequestManualVerificationUseCase _manualVerificationUseCase;
   final DPASkipStepUseCase _skipStepUseCase;
+  final ParseJSONIntoDPATaskToContinueDPAProcessUseCase
+      _parseJSONIntoDPATaskToContinueDPAProcessUseCase;
 
   /// Creates a new cubit using the necessary use cases.
   DPAProcessCubit({
@@ -42,6 +45,8 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
     required DPAChangeEmailAddressUseCase changeEmailAddressUseCase,
     required DPARequestManualVerificationUseCase manualVerificationUseCase,
     required DPASkipStepUseCase skipStepUseCase,
+    required ParseJSONIntoDPATaskToContinueDPAProcessUseCase
+        parseJSONIntoDPATaskToContinueDPAProcessUseCase,
   })  : _startDPAProcessUseCase = startDPAProcessUseCase,
         _resumeDPAProcessUsecase = resumeDPAProcessUsecase,
         _loadTaskByIdUseCase = loadTaskByIdUseCase,
@@ -56,6 +61,8 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
         _changeEmailAddressUseCase = changeEmailAddressUseCase,
         _manualVerificationUseCase = manualVerificationUseCase,
         _skipStepUseCase = skipStepUseCase,
+        _parseJSONIntoDPATaskToContinueDPAProcessUseCase =
+            parseJSONIntoDPATaskToContinueDPAProcessUseCase,
         super(DPAProcessState());
 
   /// Starts a DPA process, either by starting a new one (if [instanceId] is
@@ -138,6 +145,30 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
         ),
       );
     }
+  }
+
+  /// Continues a process with a new task
+  Future<void> continueProcessWithTask({
+    required DPATask task,
+  }) async {
+    final process = DPAProcess(
+      task: task,
+      processName: task.processDefinitionName,
+      variables: task.variables,
+    );
+
+    emit(
+      state.copyWith(
+        process: process.isPopUp() ? null : process,
+        popUp: process.isPopUp() ? process : null,
+        clearPopUp: !process.isPopUp(),
+        actions: state.removeAction(
+          DPAProcessBusyAction.steppingForward,
+        ),
+        runStatus: DPAProcessRunStatus.running,
+        clearProcessingFiles: true,
+      ),
+    );
   }
 
   Future<DPAProcess?> _resumeProcess({
@@ -250,6 +281,34 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
       }
 
       final delay = process.stepProperties?.delay;
+
+      try {
+        final continueOldProcessVariable =
+            process.returnVariables.singleWhereOrNull(
+          (variable) => variable['name'] == 'continue_old_process',
+        );
+
+        if (continueOldProcessVariable != null) {
+          final taskVariable = process.returnVariables.singleWhereOrNull(
+            (variable) => variable['name'] == 'task',
+          );
+
+          if (taskVariable?['value'] != null) {
+            final task = _parseJSONIntoDPATaskToContinueDPAProcessUseCase(
+              json: taskVariable!['value'],
+            );
+
+            continueProcessWithTask(task: task);
+            return;
+          }
+        }
+      } on Exception catch (error, stackTrace) {
+        _log.severe(
+          'Error while parsing the task to continue the onboarding',
+          error,
+          stackTrace,
+        );
+      }
 
       emit(
         state.copyWith(

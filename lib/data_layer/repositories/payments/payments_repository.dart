@@ -1,6 +1,5 @@
 import '../../../domain_layer/abstract_repositories.dart';
 import '../../../domain_layer/models.dart';
-import '../../dtos/payment/payment_dto.dart';
 import '../../mappings.dart';
 import '../../providers.dart';
 
@@ -37,11 +36,9 @@ class PaymentRepository implements PaymentsRepositoryInterface {
   @override
   Future<Payment> postPayment({
     required Payment payment,
-    String? otp,
   }) async {
     final paymentDTO = await _provider.postPayment(
       payment: payment.toPaymentDTO(),
-      otp: otp,
     );
 
     return paymentDTO.toPayment();
@@ -50,54 +47,55 @@ class PaymentRepository implements PaymentsRepositoryInterface {
   @override
   Future<Payment> patchPayment({
     required Payment payment,
-    String? otp,
-    bool resendOtp = false,
   }) async {
     final paymentDTO = await _provider.patchPayment(
       payment: payment.toPaymentDTO(),
-      otp: otp,
-      resendOtp: resendOtp,
     );
 
     return paymentDTO.toPayment();
   }
 
-  /// Sends the OTP code for the passed payment id.
+  /// Sends the OTP code for the passed payment.
   @override
   Future<Payment> sendOTPCode({
-    required int paymentId,
+    required Payment payment,
     required bool editMode,
   }) async {
     final paymentDTO = await _provider.sendOTPCode(
-      paymentId: paymentId,
+      payment: payment.toPaymentDTO(),
       editMode: editMode,
     );
 
     return paymentDTO.toPayment();
   }
 
-  /// Verifies the second factor for the passed payment id.
+  /// Verifies the second factor for the passed payment.
   @override
   Future<Payment> verifySecondFactor({
-    required int paymentId,
+    required Payment payment,
     required String value,
     required SecondFactorType secondFactorType,
+    required bool editMode,
   }) async {
     final paymentDTO = await _provider.verifySecondFactor(
-      paymentId: paymentId,
+      payment: payment.toPaymentDTO(),
       value: value,
       secondFactorTypeDTO: secondFactorType.toSecondFactorTypeDTO(),
+      editMode: editMode,
     );
 
     return paymentDTO.toPayment();
   }
 
+  /// Resends second factor for the passed payment.
   @override
-  Future<Payment> resendOTP({
+  Future<Payment> resendSecondFactor({
     required Payment payment,
+    required bool editMode,
   }) async {
-    final paymentDTO = await _provider.resendOTP(
+    final paymentDTO = await _provider.resendSecondFactor(
       payment: payment.toPaymentDTO(),
+      editMode: editMode,
     );
 
     return paymentDTO.toPayment();

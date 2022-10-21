@@ -231,9 +231,6 @@ class PayBillState extends BaseState<PayBillBusyAction, PayBillEvent, void> {
 
 /// Which loading action the cubit is doing
 enum PayBillBusyAction {
-  /// No errors
-  none,
-
   /// Loading the entire cubit state
   loading,
 

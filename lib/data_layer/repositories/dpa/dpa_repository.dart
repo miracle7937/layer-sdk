@@ -476,4 +476,13 @@ class DPARepository implements DPARepositoryInterface {
       rethrow;
     }
   }
+
+  /// Parses a JSON into a [DPATask].
+  @override
+  DPATask parseJSONIntoDPATask({
+    required Map<String, dynamic> json,
+  }) =>
+      _provider
+          .parseJSONIntoDPATaskDTO(json: json)
+          .toDPATask(_createCustomData);
 }

@@ -167,4 +167,11 @@ abstract class DPARepositoryInterface {
     required DPAVariable variable,
     NetProgressCallback? onProgress,
   });
+
+  /// Parses a JSON into a [DPATask].
+  ///
+  /// Returns the [DPATask].
+  DPATask parseJSONIntoDPATask({
+    required Map<String, dynamic> json,
+  });
 }

@@ -1,21 +1,21 @@
 import '../../../features/payments.dart';
 
-/// A use case that sends the OTP code for a payment.
-class SendOTPCodeForPaymentUseCase {
+/// A use case that resends the second factor for a payment.
+class ResendPaymentSecondFactorUseCase {
   final PaymentsRepositoryInterface _repository;
 
-  /// Creates a new [SendOTPCodeForPaymentUseCase] use case.
-  const SendOTPCodeForPaymentUseCase({
+  /// Creates a new [ResendPaymentSecondFactorUseCase] use case.
+  const ResendPaymentSecondFactorUseCase({
     required PaymentsRepositoryInterface repository,
   }) : _repository = repository;
 
-  /// Returns a payment resulting on sending the OTP code for the
+  /// Returns a payment resulting on resending the second factor for the
   /// passed payment.
   Future<Payment> call({
     required Payment payment,
     required bool editMode,
   }) =>
-      _repository.sendOTPCode(
+      _repository.resendSecondFactor(
         payment: payment,
         editMode: editMode,
       );

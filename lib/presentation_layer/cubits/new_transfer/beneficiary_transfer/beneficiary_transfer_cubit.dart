@@ -28,6 +28,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
   final VerifyTransferSecondFactorUseCase _verifyTransferSecondFactorUseCase;
   final ResendTransferSecondFactorUseCase _resendTransferSecondFactorUseCase;
   final CreateShortcutUseCase _createShortcutUseCase;
+  final GenerateDeviceUIDUseCase _generateDeviceUIDUseCase;
 
   /// Creates a new [BeneficiaryTransferCubit].
   ///
@@ -72,9 +73,9 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         _verifyTransferSecondFactorUseCase = verifyTransferSecondFactorUseCase,
         _resendTransferSecondFactorUseCase = resendTransferSecondFactorUseCase,
         _createShortcutUseCase = createShortcutUseCase,
+        _generateDeviceUIDUseCase = generateDeviceUIDUseCase,
         super(
           BeneficiaryTransferState(
-            deviceUID: generateDeviceUIDUseCase(30),
             transfer: transfer,
             banksPagination: Pagination(
               limit: banksPaginationLimit,
@@ -731,9 +732,11 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
   /// Submits the transfer.
   Future<void> submit() async {
+    final deviceUID = _generateDeviceUIDUseCase(30);
+
     emit(
       state.copyWith(
-        transfer: state.transfer.copyWith(deviceUID: state.deviceUID),
+        transfer: state.transfer.copyWith(deviceUID: deviceUID),
         actions: state.addAction(
           BeneficiaryTransferAction.submit,
         ),

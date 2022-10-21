@@ -23,9 +23,10 @@ class PayBillCubit extends Cubit<PayBillState> {
   final PostPaymentUseCase _postPaymentUseCase;
   final ValidateBillUseCase _validateBillUseCase;
   final CreateShortcutUseCase _createShortcutUseCase;
-  final ResendOTPPaymentUseCase _resendOTPUseCase;
   final SendOTPCodeForPaymentUseCase _sendOTPCodeForPaymentUseCase;
   final VerifyPaymentSecondFactorUseCase _verifyPaymentSecondFactorUseCase;
+  final ResendPaymentSecondFactorUseCase _resendPaymentSecondFactorUseCase;
+  final GenerateDeviceUIDUseCase _generateDeviceUIDUseCase;
 
   /// The biller id to pay for, if provided the biller will be pre-selected
   /// when the cubit loads.
@@ -43,9 +44,9 @@ class PayBillCubit extends Cubit<PayBillState> {
     required GenerateDeviceUIDUseCase generateDeviceUIDUseCase,
     required ValidateBillUseCase validateBillUseCase,
     required CreateShortcutUseCase createShortcutUseCase,
-    required ResendOTPPaymentUseCase resendPaymentOTPUseCase,
     required SendOTPCodeForPaymentUseCase sendOTPCodeForPaymentUseCase,
     required VerifyPaymentSecondFactorUseCase verifyPaymentSecondFactorUseCase,
+    required ResendPaymentSecondFactorUseCase resendPaymentSecondFactorUseCase,
     this.billerId,
     this.paymentToRepeat,
   })  : _loadBillersUseCase = loadBillersUseCase,
@@ -54,12 +55,11 @@ class PayBillCubit extends Cubit<PayBillState> {
         _postPaymentUseCase = postPaymentUseCase,
         _validateBillUseCase = validateBillUseCase,
         _createShortcutUseCase = createShortcutUseCase,
-        _resendOTPUseCase = resendPaymentOTPUseCase,
         _sendOTPCodeForPaymentUseCase = sendOTPCodeForPaymentUseCase,
         _verifyPaymentSecondFactorUseCase = verifyPaymentSecondFactorUseCase,
-        super(PayBillState(
-          deviceUID: generateDeviceUIDUseCase(30),
-        ));
+        _resendPaymentSecondFactorUseCase = resendPaymentSecondFactorUseCase,
+        _generateDeviceUIDUseCase = generateDeviceUIDUseCase,
+        super(PayBillState());
 
   /// Loads all the required data, must be called at least once before anything
   /// other method in this cubit.
@@ -207,12 +207,13 @@ class PayBillCubit extends Cubit<PayBillState> {
             PayBillEvent.openSecondFactor,
           },
         ),
+        deviceUID: _generateDeviceUIDUseCase(30),
       ),
     );
 
     try {
       final returnedPayment = await _postPaymentUseCase(
-        state.payment,
+        state.payment.copyWith(deviceUID: state.deviceUID),
       );
 
       switch (returnedPayment.status) {
@@ -308,7 +309,7 @@ class PayBillCubit extends Cubit<PayBillState> {
 
     try {
       final returnedPayment = await _sendOTPCodeForPaymentUseCase(
-        paymentId: state.returnedPayment?.id ?? 0,
+        payment: state.returnedPayment!,
         editMode: false,
       );
 
@@ -344,6 +345,7 @@ class PayBillCubit extends Cubit<PayBillState> {
     String? otpCode,
     String? ocraClientResponse,
   }) async {
+    assert(state.returnedPayment != null);
     assert(
       otpCode != null || ocraClientResponse != null,
       'An OTP code or OCRA client response must be provided in order for '
@@ -361,10 +363,11 @@ class PayBillCubit extends Cubit<PayBillState> {
 
     try {
       final returnedPayment = await _verifyPaymentSecondFactorUseCase(
-        paymentId: state.returnedPayment?.id ?? 0,
+        payment: state.returnedPayment!,
         value: otpCode ?? ocraClientResponse ?? '',
         secondFactorType:
             otpCode != null ? SecondFactorType.otp : SecondFactorType.ocra,
+        editMode: false,
       );
 
       emit(
@@ -403,25 +406,26 @@ class PayBillCubit extends Cubit<PayBillState> {
     }
   }
 
-  /// TODO: cubit_issue | This is the payment that we have on the state, right?
-  /// I think it would be better to use that one and add an assert.
-  ///
-  /// Resend an OTP request
-  Future<void> resendOTP(Payment payment) async {
-    try {
-      emit(
-        state.copyWith(
-          actions: state.addAction(
-            PayBillBusyAction.resendingOTP,
-          ),
-          errors: state.removeErrorForAction(
-            PayBillBusyAction.resendingOTP,
-          ),
-        ),
-      );
+  /// Resends the second factor for the payment retrievied on the [submit]
+  /// method.
+  Future<void> resendSecondFactor() async {
+    assert(state.returnedPayment != null);
 
-      await _resendOTPUseCase(
-        payment,
+    emit(
+      state.copyWith(
+        actions: state.addAction(
+          PayBillBusyAction.resendingOTP,
+        ),
+        errors: state.removeErrorForAction(
+          PayBillBusyAction.resendingOTP,
+        ),
+      ),
+    );
+
+    try {
+      final returnedPayment = await _resendPaymentSecondFactorUseCase(
+        payment: state.returnedPayment!,
+        editMode: false,
       );
 
       emit(
@@ -429,6 +433,7 @@ class PayBillCubit extends Cubit<PayBillState> {
           actions: state.removeAction(
             PayBillBusyAction.resendingOTP,
           ),
+          returnedPayment: returnedPayment,
         ),
       );
     } on Exception catch (e) {

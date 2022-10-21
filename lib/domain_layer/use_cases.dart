@@ -86,6 +86,7 @@ export 'use_cases/dpa/list_unassigned_tasks_use_case.dart';
 export 'use_cases/dpa/list_user_tasks_use_case.dart';
 export 'use_cases/dpa/load_dpa_history_use_case.dart';
 export 'use_cases/dpa/load_task_by_id_use_case.dart';
+export 'use_cases/dpa/parse_dpa_task_json_to_continue_dpa_process_use_case.dart';
 export 'use_cases/dpa/resume_dpa_process_use_case.dart';
 export 'use_cases/dpa/start_dpa_process_use_case.dart';
 export 'use_cases/dpa/upload_dpa_image_use_case.dart';
@@ -134,7 +135,7 @@ export 'use_cases/pay_to_mobile/verity_pay_to_mobile_second_factor_use_case.dart
 export 'use_cases/payments/load_customer_payments_use_case.dart';
 export 'use_cases/payments/load_frequent_payments_use_case.dart';
 export 'use_cases/payments/patch_payment_use_case.dart';
-export 'use_cases/payments/resend_payment_otp_use_case.dart';
+export 'use_cases/payments/resend_payment_second_factor_use_case.dart';
 export 'use_cases/payments/send_otp_code_for_payment_use_case.dart';
 export 'use_cases/payments/verify_payment_second_factor_use_case.dart';
 export 'use_cases/product/load_product_by_product_id_use_case.dart';
