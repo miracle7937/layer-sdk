@@ -194,6 +194,9 @@ enum ActivityType {
 
   /// Insufficient Balance
   insufficientBalance,
+
+  /// Profile update
+  profileUpdate
 }
 
 /// The action type of the [Activity]

@@ -84,6 +84,9 @@ extension ActivityTypeDTOMapping on ActivityTypeDTO {
       case ActivityTypeDTO.cardExpiry:
         return ActivityType.cardExpiry;
 
+      case ActivityTypeDTO.profileUpdate:
+        return ActivityType.profileUpdate;
+
       case ActivityTypeDTO.cardReminder:
         return ActivityType.cardReminder;
 
@@ -522,6 +525,9 @@ extension ActivityTypeMapping on ActivityType {
 
       case ActivityType.wpsTransfer:
         return 'wps_transfer';
+
+      case ActivityType.profileUpdate:
+        return 'profile_update';
 
       default:
         return '';

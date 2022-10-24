@@ -74,6 +74,9 @@ class ActivityTypeDTO extends EnumDTO {
   /// The activity type is Card Expiry
   static const cardExpiry = ActivityTypeDTO._internal('card_expiry');
 
+  /// The activity type is Profile Update
+  static const profileUpdate = ActivityTypeDTO._internal('profile_update');
+
   /// The activity type is message
   static const message = ActivityTypeDTO._internal('message');
 
