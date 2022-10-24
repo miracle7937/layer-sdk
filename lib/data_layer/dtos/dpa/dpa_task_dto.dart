@@ -178,6 +178,7 @@ class DPATaskDTO {
       '${preVariables != null ? ' preVariables: $preVariables' : ''}'
       '${processKey != null ? ' processKey: $processKey' : ''}'
       '${taskVariables != null ? ' taskVariables: $taskVariables' : ''}'
-      '${activityDescription != null ? ' activityDescription: $activityDescription' : ''}'
+      '${activityDescription != null ? ' activityDescription:'
+          ' $activityDescription' : ''}'
       '}';
 }
