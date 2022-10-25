@@ -26,7 +26,6 @@ late TransferCubit _cubit;
 
 final _defaultState = TransferState(
   customerId: _customerId,
-  deviceUID: _deviceUID,
   pagination: Pagination(limit: _defaultLimit),
 );
 
@@ -62,7 +61,6 @@ void main() {
       customerId: _customerId,
       loadTransfersUseCase: _loadTransfersUseCase,
       limit: _defaultLimit,
-      generateDeviceUIDUseCase: _generateDeviceUIDUseCase,
     );
 
     when(
