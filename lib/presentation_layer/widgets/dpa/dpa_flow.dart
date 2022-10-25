@@ -257,26 +257,6 @@ class DPAFlow<T> extends StatelessWidget {
         process.stepProperties?.skipLabel?.isNotEmpty ?? false;
 
     /// Shows the transfer error bottom sheet.
-    Future<void> _showRetryError({
-      required String titleKey,
-      required DPAProcessBusyAction action,
-    }) async {
-      if (!_isErrorShowing) {
-        _isErrorShowing = true;
-
-        await BottomSheetHelper.showError(
-          context: context,
-          titleKey: titleKey,
-          descriptionKey: 'retry_loading_data_transfer',
-          dismissKey: 'retry',
-          blurBackground: true,
-        );
-
-        _isErrorShowing = false;
-      }
-    }
-
-    /// Shows the transfer error bottom sheet.
     Future<void> _showErrorBottomSheet({
       required String titleKey,
       String? descriptionKey,
