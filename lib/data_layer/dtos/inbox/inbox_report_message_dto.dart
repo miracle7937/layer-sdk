@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../../dtos.dart';
 import '../../helpers.dart';
 
@@ -70,8 +72,8 @@ class InboxReportMessageDTO {
     List<dynamic> jsonList,
   ) {
     return jsonList
-        // ignore: unnecessary_lambdas
-        .map((r) => InboxReportMessageDTO.fromJson(r))
+        .map(
+            (r) => InboxReportMessageDTO.fromJson(Map<String, dynamic>.from(r)))
         .where(
           (m) => isNotEmpty(m.text) || (m.attachmentUrls?.isNotEmpty ?? false),
         )
