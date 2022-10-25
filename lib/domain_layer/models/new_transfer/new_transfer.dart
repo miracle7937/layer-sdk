@@ -34,6 +34,9 @@ abstract class NewTransfer extends Equatable {
   /// The id of the new transfer
   final int? transferId;
 
+  /// Device uid;
+  final String? deviceUID;
+
   /// Creates a new [NewTransfer].
   const NewTransfer({
     this.type,
@@ -45,6 +48,7 @@ abstract class NewTransfer extends Equatable {
     this.shortcutName,
     this.note,
     this.transferId,
+    this.deviceUID,
   });
 
   /// Creates a new [NewTransfer] with the passed values.

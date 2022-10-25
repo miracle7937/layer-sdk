@@ -392,4 +392,12 @@ class DPAProvider {
       '${netClient.netEndpoints.dpaDownloadFile}'
       '/${process.task?.processInstanceId}'
       '/$key';
+
+  /// Parses a JSON into a [DPATaskDTO].
+  DPATaskDTO parseJSONIntoDPATaskDTO({
+    required Map<String, dynamic> json,
+  }) =>
+      DPATaskDTO.fromJson(
+        json,
+      );
 }

@@ -246,7 +246,7 @@ class _OTPScreenState extends State<_OTPScreen> with FullScreenLoaderMixin {
     _isVerifying = widget.isVerifying;
     _isResending = widget.isResending;
     _shouldClearCode = widget.shouldClearCode;
-    _showOTPCodeInput = widget.onSendOTPCode == null;
+    _showOTPCodeInput = !widget.showBiometrics;
 
     _remainingTime = widget.resendInterval;
     _startTimer();
@@ -474,13 +474,15 @@ class _OTPScreenState extends State<_OTPScreen> with FullScreenLoaderMixin {
                         )
                       : const SizedBox.shrink(),
                 ),
-                Spacer(),
-                DKButton(
-                  type: DKButtonType.basePlain,
-                  title: translation.translate('proceed_with_biometrics'),
-                  iconPath: FLImages.biometrics,
-                  onPressed: _authenticateBiometrics,
-                ),
+                if (widget.showBiometrics) ...[
+                  Spacer(),
+                  DKButton(
+                    type: DKButtonType.basePlain,
+                    title: translation.translate('proceed_with_biometrics'),
+                    iconPath: FLImages.biometrics,
+                    onPressed: _authenticateBiometrics,
+                  ),
+                ],
               ],
             ),
           ),
