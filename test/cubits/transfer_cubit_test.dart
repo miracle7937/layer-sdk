@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
 import 'package:layer_sdk/data_layer/network.dart';
-import 'package:layer_sdk/domain_layer/use_cases/payments/generate_device_uid_use_case.dart';
 import 'package:layer_sdk/features/transfer.dart';
 import 'package:layer_sdk/presentation_layer/utils.dart';
 import 'package:mocktail/mocktail.dart';
@@ -11,16 +10,11 @@ import 'package:test/test.dart';
 
 class MockLoadTransfersUseCase extends Mock implements LoadTransfersUseCase {}
 
-class MockGenerateDeviceUIDUseCase extends Mock
-    implements GenerateDeviceUIDUseCase {}
-
 final _repositoryList = <Transfer>[];
 
-final _deviceUID = 'LApoWgWWw5hYSoGS0N9R3JKMjVxEMK';
 final _defaultLimit = 10;
 final _customerId = '200000';
 
-late MockGenerateDeviceUIDUseCase _generateDeviceUIDUseCase;
 late MockLoadTransfersUseCase _loadTransfersUseCase;
 late TransferCubit _cubit;
 
@@ -50,12 +44,6 @@ void main() {
   }
 
   setUp(() {
-    _generateDeviceUIDUseCase = MockGenerateDeviceUIDUseCase();
-    when(
-      () => _generateDeviceUIDUseCase(30),
-    ).thenAnswer(
-      (_) => _deviceUID,
-    );
     _loadTransfersUseCase = MockLoadTransfersUseCase();
     _cubit = TransferCubit(
       customerId: _customerId,
