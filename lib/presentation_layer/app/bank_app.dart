@@ -184,6 +184,11 @@ class BankAppState extends State<BankApp> {
         ),
         CreatorProvider<StorageCreator>(
           create: (_) => StorageCreator(
+            loadUserDetailsFromTokenUseCase: LoadUserDetailsFromTokenUseCase(
+                repository: UserRepository(
+                    userProvider: UserProvider(
+              netClient: widget.netClient,
+            ))),
             loadLoggedInUsersUseCase: LoadLoggedInUsersUseCase(
               secureStorage: widget.secureStorage,
             ),

@@ -2,19 +2,15 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:carrier_info/carrier_info.dart';
-import 'package:design_kit_layer/design_kit_layer.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../domain_layer/models/device_session/device_session.dart';
 import '../../../domain_layer/models/resolution/resolution.dart';
-import '../../creators.dart';
+import '../../../layer_sdk.dart';
 import '../../cubits.dart';
 import '../../extensions/ocra_authentication/ocra_authentication_error_ui_extension.dart';
-import '../../features.dart';
-import '../../utils.dart';
-import '../../widgets.dart';
 
 /// A screen that allows the user to set an access pin.
 class LockScreen extends StatelessWidget {
@@ -139,7 +135,7 @@ class _LockScreenState extends SetAccessPinBaseWidgetState<_LockScreen> {
               previous.token != current.token && current.token != null,
           listener: (context, state) async {
             final storageCubit = context.read<StorageCreator>().create();
-            await storageCubit.loadLastLoggedUser();
+            await storageCubit.getUserDetails(state.token!);
 
             final user = storageCubit.state.currentUser;
 

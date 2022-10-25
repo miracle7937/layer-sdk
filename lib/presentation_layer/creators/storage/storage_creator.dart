@@ -15,6 +15,7 @@ class StorageCreator implements CubitCreator {
   final SetBrightnessUseCase _setBrightnessUseCase;
   final LoadBrightnessUseCase _loadBrightnessUseCase;
   final ToggleBiometricsUseCase _toggleBiometricsUseCase;
+  final LoadUserDetailsFromTokenUseCase _loadUserDetailsFromTokenUseCase;
 
   /// Creates [StorageCreator].
   StorageCreator({
@@ -30,6 +31,7 @@ class StorageCreator implements CubitCreator {
     required SetBrightnessUseCase setBrightnessUseCase,
     required LoadBrightnessUseCase loadBrightnessUseCase,
     required ToggleBiometricsUseCase toggleBiometricsUseCase,
+    required LoadUserDetailsFromTokenUseCase loadUserDetailsFromTokenUseCase,
   })  : _loadLoggedInUsersUseCase = loadLoggedInUsersUseCase,
         _loadLastLoggedUserUseCase = loadLastLoggedUserUseCase,
         _saveUserUseCase = saveUserUseCase,
@@ -40,6 +42,7 @@ class StorageCreator implements CubitCreator {
         _saveOcraSecretKeyUseCase = saveOcraSecretKeyUseCase,
         _setBrightnessUseCase = setBrightnessUseCase,
         _loadBrightnessUseCase = loadBrightnessUseCase,
+        _loadUserDetailsFromTokenUseCase = loadUserDetailsFromTokenUseCase,
         _toggleBiometricsUseCase = toggleBiometricsUseCase;
 
   /// Creates the [StorageCubit].
@@ -55,5 +58,6 @@ class StorageCreator implements CubitCreator {
         setBrightnessUseCase: _setBrightnessUseCase,
         loadBrightnessUseCase: _loadBrightnessUseCase,
         toggleBiometricsUseCase: _toggleBiometricsUseCase,
+        loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
       );
 }
