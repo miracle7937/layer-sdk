@@ -28,9 +28,6 @@ class TransferState extends Equatable {
   /// True if the cubit is processing something.
   final bool busy;
 
-  /// A unique identifier of the transfer.
-  final String? deviceUID;
-
   /// Has all the data needed to handle the list of transfers.
   final Pagination pagination;
 
@@ -42,7 +39,6 @@ class TransferState extends Equatable {
     required this.customerId,
     Iterable<Transfer> transfers = const <Transfer>[],
     this.busy = false,
-    this.deviceUID,
     this.pagination = const Pagination(),
     this.errorStatus = TransferErrorStatus.none,
   }) : transfers = UnmodifiableListView(transfers);
@@ -53,7 +49,6 @@ class TransferState extends Equatable {
         transfers,
         busy,
         pagination,
-        deviceUID,
         errorStatus,
       ];
 
@@ -64,10 +59,8 @@ class TransferState extends Equatable {
     bool? busy,
     Pagination? pagination,
     TransferErrorStatus? errorStatus,
-    String? deviceUID,
   }) =>
       TransferState(
-        deviceUID: deviceUID ?? this.deviceUID,
         customerId: customerId ?? this.customerId,
         transfers: transfers ?? this.transfers,
         busy: busy ?? this.busy,

@@ -732,6 +732,10 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
   /// Submits the transfer.
   Future<void> submit() async {
+    if (state.actions.contains(BeneficiaryTransferAction.submit)) {
+      return;
+    }
+
     final deviceUID = _generateDeviceUIDUseCase(30);
 
     emit(

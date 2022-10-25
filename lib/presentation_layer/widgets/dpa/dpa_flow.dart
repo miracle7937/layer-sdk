@@ -234,12 +234,6 @@ class DPAFlow<T> extends StatelessWidget {
       (cubit) => cubit.state.areVariablesValidated,
     );
 
-    /// Whether if the error that happened for the action was while initializing
-    /// the needed data for the pay to mobile flow.
-    bool isRetryError(DPAProcessBusyAction action) => [
-          DPAProcessBusyAction.values.toSet(),
-        ].contains(action);
-
     /// Whether if a error is showing or not;
     var _isErrorShowing = false;
     final translation = Translation.of(context);
@@ -305,58 +299,19 @@ class DPAFlow<T> extends StatelessWidget {
     /// Called when a new connectivity error is emitted by the cubit.
     void _showConnectivityError(
       CubitConnectivityError<DPAProcessBusyAction> error,
-    ) {
-      if (isRetryError(error.action)) {
-        _showRetryError(
+    ) =>
+        _showErrorBottomSheet(
           titleKey: 'connectivity_error',
-          action: error.action,
         );
-        return;
-      }
-
-      _showErrorBottomSheet(
-        titleKey: 'connectivity_error',
-      );
-    }
 
     /// Called when a new api error is emitted by the cubit.
     void _showAPIError(
       CubitAPIError<DPAProcessBusyAction> error,
-    ) {
-      if (isRetryError(error.action)) {
-        _showRetryError(
+    ) =>
+        _showErrorBottomSheet(
           titleKey: error.code?.value ?? 'generic_error',
-          action: error.action,
+          descriptionKey: error.message,
         );
-        return;
-      }
-
-      if (error.code == CubitErrorCode.insufficientBalance) {
-        Navigator.pop(context);
-      }
-
-      _showErrorBottomSheet(
-        titleKey: error.code?.value ?? 'generic_error',
-        descriptionKey: error.message,
-      );
-    }
-
-    /// Called when a custom error is emitted by the cubit.
-    void _showCustomError(
-      CubitCustomError<DPAProcessBusyAction> error,
-    ) {
-      switch (error.code) {
-        case CubitErrorCode.transferFailed:
-          _showErrorBottomSheet(
-            titleKey: ' transfer_failed',
-            descriptionKey: 'try_again',
-          );
-          break;
-
-        default:
-          return;
-      }
-    }
 
     return MultiBlocListener(
         listeners: [
@@ -391,7 +346,6 @@ class DPAFlow<T> extends StatelessWidget {
           actions: DPAProcessBusyAction.values.toSet(),
           onConnectivityError: _showConnectivityError,
           onAPIError: _showAPIError,
-          onCustomError: _showCustomError,
           child: Stack(
             children: [
               _getEffectiveCustomChild(context) ??

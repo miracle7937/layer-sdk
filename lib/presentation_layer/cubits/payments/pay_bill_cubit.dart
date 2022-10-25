@@ -193,6 +193,12 @@ class PayBillCubit extends Cubit<PayBillState> {
 
   /// Submits the payment
   Future<void> submit() async {
+    if (state.actions.contains(PayBillBusyAction.submitting)) {
+      return;
+    }
+
+    final deviceUID = _generateDeviceUIDUseCase(30);
+
     emit(
       state.copyWith(
         actions: state.addAction(
@@ -207,13 +213,13 @@ class PayBillCubit extends Cubit<PayBillState> {
             PayBillEvent.openSecondFactor,
           },
         ),
-        deviceUID: _generateDeviceUIDUseCase(30),
+        deviceUID: deviceUID,
       ),
     );
 
     try {
       final returnedPayment = await _postPaymentUseCase(
-        state.payment.copyWith(deviceUID: state.deviceUID),
+        state.payment,
       );
 
       switch (returnedPayment.status) {
