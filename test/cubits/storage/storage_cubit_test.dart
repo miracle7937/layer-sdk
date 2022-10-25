@@ -22,6 +22,9 @@ class MockLoadLoggedInUsersUseCase extends Mock
 class MockLoadLastLoggedUserUseCase extends Mock
     implements LoadLastLoggedUserUseCase {}
 
+class MockLoadUserDetailsFromTokenUseCase extends Mock
+    implements LoadUserDetailsFromTokenUseCase {}
+
 class MockLoadOcraSecretKeyUseCase extends Mock
     implements LoadOcraSecretKeyUseCase {}
 
@@ -53,7 +56,7 @@ final _saveOcraSecretKeyUseCase = MockSaveOcraSecretKeyUseCase();
 final _saveUserUseCase = MockSaveUserUseCase();
 final _setBrightnessUseCase = MockSetBrightnessUseCase();
 final _toggleBiometricsUseCase = MockToggleBiometricsUseCase();
-
+final _loadUserDetailsFromTokenUseCase = MockLoadUserDetailsFromTokenUseCase();
 final _domainTest = 'test.domain.com';
 final _domainOther = 'other.layer.com';
 final _domainFail = 'failed.domain.com';
@@ -106,6 +109,7 @@ StorageCubit createStorageCubit() => StorageCubit(
       saveUserUseCase: _saveUserUseCase,
       setBrightnessUseCase: _setBrightnessUseCase,
       toggleBiometricsUseCase: _toggleBiometricsUseCase,
+      loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
     );
 
 void main() {
@@ -303,6 +307,7 @@ void _saveDataTests() {
       saveUserUseCase: _saveUserUseCase,
       setBrightnessUseCase: _setBrightnessUseCase,
       toggleBiometricsUseCase: _toggleBiometricsUseCase,
+      loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
     ),
     act: (c) => c.removeUser(_user.id),
     expect: () => [
