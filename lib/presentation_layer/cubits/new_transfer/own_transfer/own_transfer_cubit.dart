@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../data_layer/network.dart';
 import '../../../../domain_layer/models.dart';
 import '../../../../domain_layer/use_cases.dart';
+import '../../../../domain_layer/use_cases/payments/generate_device_uid_use_case.dart';
 import '../../../cubits.dart';
 
 /// The cubit managing the own transfer flow.
@@ -31,6 +32,7 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
         getDestinationAccountsForOwnTransferUseCase,
     required LoadAllCurrenciesUseCase loadAllCurrenciesUseCase,
     required SubmitTransferUseCase submitTransferUseCase,
+    required GenerateDeviceUIDUseCase generateDeviceUIDUseCase,
     required CreateShortcutUseCase createShortcutUseCase,
     required GetPreselectedAccountForOwnTransferUseCase
         getPreselectedAccountForOwnTransferUseCase,
@@ -47,6 +49,7 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
           OwnTransferState(
             transfer: transfer ?? OwnTransfer(),
             editMode: editMode,
+            deviceUID: generateDeviceUIDUseCase(30),
           ),
         );
 
@@ -82,6 +85,7 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
         preselectedAccount: preselectedAccount,
         currencies: currencies,
         transfer: state.transfer.copyWith(
+          deviceUID: state.deviceUID,
           source: fromAccounts.isNotEmpty
               ? NewTransferSource(account: preselectedAccount)
               : null,
