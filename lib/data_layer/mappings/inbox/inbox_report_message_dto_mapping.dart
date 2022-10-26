@@ -6,7 +6,7 @@ extension InboxReportMessageDTOMapper on InboxReportMessageDTO {
   /// Maps a [InboxReportMessageDTO] into a [InboxReportMessage]
   InboxReportMessage toInboxReportMessage() {
     // files[index], path: '/issues/$reportId/${files[index]}'
-    final fileUrls = files?.replaceAll(' ', '').split('') ?? [];
+    final fileUrls = files?.replaceAll(' ', '').split(',') ?? [];
     final fileList = fileUrls.asMap().entries.map(
           (entry) => InboxFile(
             name: entry.value,
