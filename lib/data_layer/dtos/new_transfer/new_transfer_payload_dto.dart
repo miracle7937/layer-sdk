@@ -1,5 +1,4 @@
 import '../../dtos.dart';
-import '../../helpers.dart';
 
 /// Data transfer object representing the payload to send to the API
 /// when performing a new transfer flow.
@@ -76,6 +75,9 @@ class NewTransferPayloadDTO {
   /// The OTP id for this transfer.
   int? otpId;
 
+  /// Device UID
+  String? deviceUID;
+
   /// Creates a new [NewTransferPayloadDTO].
   NewTransferPayloadDTO({
     required this.type,
@@ -102,6 +104,7 @@ class NewTransferPayloadDTO {
     this.endDate,
     this.processingType,
     this.otpId,
+    this.deviceUID,
   });
 
   /// Returns a json map with the provided values.
@@ -118,7 +121,7 @@ class NewTransferPayloadDTO {
       if (fromProvider != null) 'from_provider': fromProvider,
       'amount': amount,
       'currency': currencyCode,
-      'device_uid': randomAlphaNumeric(32),
+      'device_uid': deviceUID,
       if (note != null) 'note': note,
       if (reason != null) 'reason': reason,
       if (extra != null) 'extra': extra,

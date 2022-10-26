@@ -38,6 +38,9 @@ class LockScreen extends StatelessWidget {
   /// The device id.
   final int deviceId;
 
+  /// Whether to scramble the pin code or not
+  final bool scramblePin;
+
   /// Creates a new [LockScreen].
   LockScreen({
     Key? key,
@@ -47,6 +50,7 @@ class LockScreen extends StatelessWidget {
     this.useBiometrics = false,
     required this.ocraSecret,
     required this.deviceId,
+    this.scramblePin = false,
   }) : assert(ocraSecret.isNotEmpty, 'The ocra secret cannot be empty');
 
   @override
@@ -64,6 +68,7 @@ class LockScreen extends StatelessWidget {
             useBiometrics: useBiometrics,
             ocraSecret: ocraSecret,
             deviceId: deviceId,
+            scramblePin: scramblePin,
           ),
         ),
       );
@@ -88,6 +93,9 @@ class _LockScreen extends SetAccessPinBaseWidget {
   /// The device id.
   final int deviceId;
 
+  /// Whether to scramble the pin code or not
+  final bool scramblePin;
+
   /// Creates a new [_LockScreen].
   const _LockScreen({
     super.key,
@@ -97,6 +105,7 @@ class _LockScreen extends SetAccessPinBaseWidget {
     this.useBiometrics = false,
     required this.ocraSecret,
     required this.deviceId,
+    this.scramblePin = false,
   });
 
   @override
@@ -174,6 +183,7 @@ class _LockScreenState extends SetAccessPinBaseWidgetState<_LockScreen> {
           child: Padding(
             padding: const EdgeInsets.all(32.0),
             child: PinPadView(
+              scramblePin: widget.scramblePin,
               pinLenght: widget.pinLength,
               pin: currentPin,
               title: widget.title,
