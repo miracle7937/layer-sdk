@@ -1,3 +1,5 @@
+import 'package:dio/dio.dart';
+
 import '../../dtos.dart';
 import '../../extensions.dart';
 import '../../network.dart';
@@ -22,7 +24,9 @@ class InboxProvider {
     int? limit,
     int? offset,
   }) async {
-    final params = <String, dynamic>{}
+    final params = <String, dynamic>{
+      'include_details': true,
+    }
       ..addIfNotNull('q', searchQuery)
       ..addIfNotNull('limit', limit)
       ..addIfNotNull('offset', offset);
@@ -35,6 +39,61 @@ class InboxProvider {
 
     return InboxReportDTO.fromJsonList(
         List<Map<String, dynamic>>.from(response.data));
+  }
+
+  /// Posts a Inbox message
+  Future<InboxReportMessageDTO> postMessage(
+    InboxNewReportDTO body,
+    List<MultipartFile> files,
+  ) async {
+    final response = await netClient.multipartRequest(
+      netClient.netEndpoints.inboxMessage,
+      method: NetRequestMethods.post,
+      fields: {'message_object': body.toJson()},
+      files: files,
+    );
+
+    return InboxReportMessageDTO.fromJson(response.data);
+  }
+
+  /// Posts a report chat message
+  Future<InboxReportMessageDTO> postChatMessage({
+    required int reportId,
+    required String messageText,
+    required String? file,
+  }) async {
+    final response = await netClient.request(
+      netClient.netEndpoints.reportMessage,
+      method: NetRequestMethods.post,
+      data: {
+        "report_id": reportId,
+        "text": messageText,
+        "files": file,
+      },
+    );
+
+    if (response.data is List) {
+      return InboxReportMessageDTO.fromJson(response.data.first);
+    }
+
+    return InboxReportMessageDTO.fromJson(response.data);
+  }
+
+  /// Posts a list of
+  Future<InboxReportMessageDTO> postInboxFileList({
+    required InboxNewMessageDTO body,
+    required List<MultipartFile> files,
+  }) async {
+    final response = await netClient.multipartRequest(
+      netClient.netEndpoints.inboxMessage,
+      fields: {'message_object': body.toJson()},
+      files: files,
+    );
+
+    if (response.data is List) {
+      return InboxReportMessageDTO.fromJson(response.data.first);
+    }
+    return InboxReportMessageDTO.fromJson(response.data);
   }
 
   /// Create a new inbox report
