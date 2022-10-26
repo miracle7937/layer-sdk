@@ -8,6 +8,7 @@ abstract class PayToMobileReceiverRepositoryInterface {
     required String accountId,
     required String withdrawalCode,
     required String withdrawalPin,
+    required String deviceUUID,
     String? reason,
     Beneficiary? beneficiary,
   });

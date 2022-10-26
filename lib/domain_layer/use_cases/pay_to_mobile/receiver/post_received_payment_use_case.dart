@@ -17,6 +17,7 @@ class PostReceivedPaymentUseCase {
     required String accountId,
     required String withdrawalCode,
     required String withdrawalPin,
+    required String deviceUUID,
     String? reason,
     Beneficiary? beneficiary,
   }) async {
@@ -25,6 +26,7 @@ class PostReceivedPaymentUseCase {
       accountId: accountId,
       withdrawalCode: withdrawalCode,
       withdrawalPin: withdrawalPin,
+      deviceUUID: deviceUUID,
     );
   }
 }

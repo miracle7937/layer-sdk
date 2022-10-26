@@ -20,6 +20,7 @@ class PayToMobileReceiverRepository
     required String accountId,
     required String withdrawalCode,
     required String withdrawalPin,
+    required String deviceUUID,
     String? reason,
     Beneficiary? beneficiary,
   }) async {
@@ -29,6 +30,7 @@ class PayToMobileReceiverRepository
       withdrawalCode: withdrawalCode,
       withdrawalPin: withdrawalPin,
       beneficiary: beneficiary?.toBeneficiaryDTO(),
+      deviceUUID: deviceUUID,
     );
   }
 }

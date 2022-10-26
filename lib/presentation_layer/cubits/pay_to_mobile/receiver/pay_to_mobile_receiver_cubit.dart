@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../data_layer/helpers.dart';
 import '../../../../features/accounts.dart';
 import '../../../../features/pay_to_mobile_receiver.dart';
 
@@ -16,7 +17,9 @@ class PayToMobileReceiverCubit extends Cubit<PayToMobileReceiverState> {
   })  : _postPaymentUseCase = postReceivedPaymentUseCase,
         _accountsUseCase = getCustomerAccountsUseCase,
         super(
-          PayToMobileReceiverState(),
+          PayToMobileReceiverState(
+            deviceUUID: randomAlphaNumeric(30),
+          ),
         );
 
   /// Set the withdrawal pin number
@@ -92,6 +95,7 @@ class PayToMobileReceiverCubit extends Cubit<PayToMobileReceiverState> {
         accountId: state.selectedAccount!.accountNumber!,
         withdrawalCode: state.withdrawalCode,
         withdrawalPin: state.withdrawalPin,
+        deviceUUID: state.deviceUUID,
       );
 
       emit(

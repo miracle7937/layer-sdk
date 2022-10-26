@@ -46,11 +46,15 @@ class PayToMobileReceiverState extends BaseState<PayToMobileReceiverActions,
   /// The [Account] selected by the user
   final Account? selectedAccount;
 
+  /// The device UUID
+  final String deviceUUID;
+
   /// Creates a new [PayToMobileReceiverState]
   PayToMobileReceiverState({
     super.actions = const <PayToMobileReceiverActions>{},
     super.errors = const <CubitError>{},
     super.events = const <PayToMobileReceiverEvent>{},
+    required this.deviceUUID,
     Iterable<Account> accounts = const [],
     this.sendMoneyId = '',
     this.accountId = '',
@@ -74,6 +78,7 @@ class PayToMobileReceiverState extends BaseState<PayToMobileReceiverActions,
     Set<PayToMobileReceiverActions>? actions,
     Set<CubitError>? errors,
     Set<PayToMobileReceiverEvent>? events,
+    String? deviceUUID,
   }) {
     return PayToMobileReceiverState(
       sendMoneyId: sendMoneyId ?? this.sendMoneyId,
@@ -87,6 +92,7 @@ class PayToMobileReceiverState extends BaseState<PayToMobileReceiverActions,
       actions: actions ?? super.actions,
       errors: errors ?? super.errors,
       events: events ?? super.events,
+      deviceUUID: deviceUUID ?? this.deviceUUID,
     );
   }
 

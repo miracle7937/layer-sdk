@@ -1,6 +1,5 @@
 import '../../dtos.dart';
 import '../../extensions/map/map_extensions.dart';
-import '../../helpers.dart';
 import '../../network.dart';
 
 /// Provider for handling
@@ -19,13 +18,14 @@ class PayToMobileReceiverProvider {
     required String accountId,
     required String withdrawalCode,
     required String withdrawalPin,
+    required String deviceUUID,
     String? reason,
     BeneficiaryDTO? beneficiary,
   }) async {
     final data = <String, Object>{
       'from_send_money_id': fromSendMoneyId,
       'to_account_id': accountId,
-      'device_uid': randomAlphaNumeric(30),
+      'device_uid': deviceUUID,
       'withdrawal_code': withdrawalCode,
       'withdrawal_pin': withdrawalPin,
     };
