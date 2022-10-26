@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 
+import '../../../data_layer/dtos.dart';
 import '../../models.dart';
 
 /// Abstract repository for the Inbox repository
@@ -16,7 +17,7 @@ abstract class InboxRepositoryInterface {
   /// Receives a json map containing information about the report
   /// and a list of [InboxFile]s containing files to be sent to the server
   Future<InboxReportMessage> postNewMessage(
-    Map<String, Object> body,
+    InboxNewReportDTO body,
     List<InboxFile> files,
   );
 
@@ -29,7 +30,7 @@ abstract class InboxRepositoryInterface {
 
   /// Send a list of [InboxFile] to the server
   Future<InboxReportMessage> postInboxFileList({
-    required Map<String, Object> body,
+    required InboxNewMessageDTO body,
     required List<MultipartFile> files,
   });
 

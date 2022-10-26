@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 
+import '../../../data_layer/dtos.dart';
 import '../../abstract_repositories.dart';
 import '../../models.dart';
 
@@ -20,10 +21,8 @@ class PostInboxFilesUseCase {
     required List<InboxFile> files,
     required String messageText,
   }) async {
-    final requestBody = {
-      "report_id": reportId,
-      "text": messageText,
-    };
+    final requestBody =
+        InboxNewMessageDTO(messageText: messageText, reportId: reportId);
 
     return _repository.postInboxFileList(
       body: requestBody,

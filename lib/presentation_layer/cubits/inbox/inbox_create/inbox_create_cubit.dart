@@ -87,8 +87,6 @@ class InboxCreateCubit extends Cubit<InboxCreateState> {
           errorMessage: e is NetException ? e.message : e.toString(),
         ),
       );
-
-      rethrow;
     }
   }
 
@@ -140,8 +138,6 @@ class InboxCreateCubit extends Cubit<InboxCreateState> {
           errorMessage: e is NetException ? e.message : e.toString(),
         ),
       );
-
-      rethrow;
     }
   }
 }

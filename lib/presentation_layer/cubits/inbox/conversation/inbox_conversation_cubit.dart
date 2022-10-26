@@ -127,8 +127,6 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
           errorMessage: e is NetException ? e.message : e.toString(),
         ),
       );
-
-      rethrow;
     }
   }
 
@@ -225,8 +223,6 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
           errorMessage: e is NetException ? e.message : e.toString(),
         ),
       );
-
-      rethrow;
     }
   }
 
@@ -334,8 +330,6 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
           errorMessage: e is NetException ? e.message : e.toString(),
         ),
       );
-
-      rethrow;
     }
   }
 
@@ -417,8 +411,6 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
           errorMessage: e is NetException ? e.message : e.toString(),
         ),
       );
-
-      rethrow;
     }
   }
 

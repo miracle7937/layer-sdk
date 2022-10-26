@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 
 import '../../../domain_layer/abstract_repositories.dart';
 import '../../../domain_layer/models.dart';
+import '../../dtos.dart';
 import '../../mappings.dart';
 import '../../providers.dart';
 
@@ -34,7 +35,7 @@ class InboxRepository implements InboxRepositoryInterface {
   /// Creates a new report
   @override
   Future<InboxReportMessage> postNewMessage(
-    Map<String, Object> body,
+    InboxNewReportDTO body,
     List<InboxFile> files,
   ) async {
     final result = await _provider.postMessage(body, [
@@ -65,7 +66,7 @@ class InboxRepository implements InboxRepositoryInterface {
 
   @override
   Future<InboxReportMessage> postInboxFileList({
-    required Map<String, Object> body,
+    required InboxNewMessageDTO body,
     required List<MultipartFile> files,
   }) async {
     final result = await _provider.postInboxFileList(

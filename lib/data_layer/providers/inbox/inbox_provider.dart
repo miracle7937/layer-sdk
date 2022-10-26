@@ -43,13 +43,13 @@ class InboxProvider {
 
   /// Posts a Inbox message
   Future<InboxReportMessageDTO> postMessage(
-    Map<String, Object> body,
+    InboxNewReportDTO body,
     List<MultipartFile> files,
   ) async {
     final response = await netClient.multipartRequest(
       netClient.netEndpoints.inboxMessage,
       method: NetRequestMethods.post,
-      fields: {'message_object': body},
+      fields: {'message_object': body.toJson()},
       files: files,
     );
 
@@ -81,12 +81,12 @@ class InboxProvider {
 
   /// Posts a list of
   Future<InboxReportMessageDTO> postInboxFileList({
-    required Map<String, Object> body,
+    required InboxNewMessageDTO body,
     required List<MultipartFile> files,
   }) async {
     final response = await netClient.multipartRequest(
       netClient.netEndpoints.inboxMessage,
-      fields: {'message_object': body},
+      fields: {'message_object': body.toJson()},
       files: files,
     );
 

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import '../../../data_layer/dtos.dart';
 import '../../abstract_repositories.dart';
 import '../../models.dart';
 
@@ -18,13 +19,11 @@ class CreateReportUseCase {
     required String categoryId,
     required List<InboxFile> files,
   }) {
-    final body = {
-      'text': description,
-      'report': {
-        'category': categoryId,
-      }
-    };
+    final newReport = InboxNewReportDTO(
+      categoryId: categoryId,
+      description: description,
+    );
 
-    return _repository.postNewMessage(body, files);
+    return _repository.postNewMessage(newReport, files);
   }
 }
