@@ -311,14 +311,14 @@ class PayToMobileCubit extends Cubit<PayToMobileState> {
       );
     }
 
-    // if ((transfer.dialCode ?? '').trim().isEmpty) {
-    //   validationErrors.add(
-    //     CubitValidationError<PayToMobileValidationErrorCode>(
-    //       validationErrorCode:
-    //           PayToMobileValidationErrorCode.dialCodeValidationError,
-    //     ),
-    //   );
-    // }
+    if ((transfer.dialCode ?? '').trim().isEmpty) {
+      validationErrors.add(
+        CubitValidationError<PayToMobileValidationErrorCode>(
+          validationErrorCode:
+              PayToMobileValidationErrorCode.dialCodeValidationError,
+        ),
+      );
+    }
 
     if ((transfer.phoneNumber ?? '').trim().isEmpty) {
       validationErrors.add(

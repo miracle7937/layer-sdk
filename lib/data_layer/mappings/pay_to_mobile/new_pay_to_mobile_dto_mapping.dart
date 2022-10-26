@@ -7,7 +7,7 @@ extension NewPayToMobileExtension on NewPayToMobile {
   /// Maps a [NewPayToMobile] into its DTO.
   NewPayToMobileDTO toDTO() => NewPayToMobileDTO(
         accountId: accountId,
-        dialCode: dialCode ?? '',
+        dialCode: dialCode,
         phoneNumber: phoneNumber,
         currencyCode: currencyCode,
         amount: amount,

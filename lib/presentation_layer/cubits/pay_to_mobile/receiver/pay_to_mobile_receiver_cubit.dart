@@ -39,39 +39,36 @@ class PayToMobileReceiverCubit extends Cubit<PayToMobileReceiverState> {
 
   /// Loads accounts and set the user account
   Future<void> load() async {
-    if (state.accounts.isEmpty ||
-        state.errors.contains(PayToMobileReceiverActions.accounts)) {
+    emit(
+      state.copyWith(
+        actions: state.addAction(
+          PayToMobileReceiverActions.accounts,
+        ),
+        errors: state.removeErrorForAction(
+          PayToMobileReceiverActions.accounts,
+        ),
+      ),
+    );
+
+    try {
+      final accounts = await _accountsUseCase();
       emit(
         state.copyWith(
-          actions: state.addAction(
-            PayToMobileReceiverActions.accounts,
-          ),
-          errors: state.removeErrorForAction(
-            PayToMobileReceiverActions.accounts,
+          actions: state.removeAction(PayToMobileReceiverActions.accounts),
+          selectedAccount: accounts.first,
+          accounts: accounts,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          actions: state.removeAction(PayToMobileReceiverActions.accounts),
+          errors: state.addErrorFromException(
+            action: PayToMobileReceiverActions.accounts,
+            exception: e,
           ),
         ),
       );
-
-      try {
-        final accounts = await _accountsUseCase();
-        emit(
-          state.copyWith(
-            actions: state.removeAction(PayToMobileReceiverActions.accounts),
-            selectedAccount: accounts.first,
-            accounts: accounts,
-          ),
-        );
-      } on Exception catch (e) {
-        emit(
-          state.copyWith(
-            actions: state.removeAction(PayToMobileReceiverActions.accounts),
-            errors: state.addErrorFromException(
-              action: PayToMobileReceiverActions.accounts,
-              exception: e,
-            ),
-          ),
-        );
-      }
     }
   }
 

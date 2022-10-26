@@ -14,7 +14,7 @@ class PayToMobileReceiverProvider {
   }) : _netClient = netClient;
 
   /// Posts a received mobile payment
-  Future<SecondFactorTypeDTO?> postReceivedTransfer({
+  Future<void> postReceivedTransfer({
     required String fromSendMoneyId,
     required String accountId,
     required String withdrawalCode,
@@ -32,13 +32,10 @@ class PayToMobileReceiverProvider {
     data.addIfNotNull('reason', reason);
     data.addIfNotNull('beneficiary', beneficiary?.toJson());
 
-    final response = await _netClient.request(
+    await _netClient.request(
       _netClient.netEndpoints.transferV2,
       method: NetRequestMethods.post,
       data: data,
     );
-
-    final secFactor = response.data?['second_factor'] as String;
-    return SecondFactorTypeDTO.fromRaw(secFactor);
   }
 }

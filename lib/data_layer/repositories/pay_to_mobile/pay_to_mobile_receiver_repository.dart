@@ -15,7 +15,7 @@ class PayToMobileReceiverRepository
   }) : _provider = provider;
 
   @override
-  Future<SecondFactorType?> postReceivedTransfer({
+  Future<void> postReceivedTransfer({
     required String fromSendMoneyId,
     required String accountId,
     required String withdrawalCode,
@@ -23,14 +23,12 @@ class PayToMobileReceiverRepository
     String? reason,
     Beneficiary? beneficiary,
   }) async {
-    final result = await _provider.postReceivedTransfer(
+    return await _provider.postReceivedTransfer(
       fromSendMoneyId: fromSendMoneyId,
       accountId: accountId,
       withdrawalCode: withdrawalCode,
       withdrawalPin: withdrawalPin,
       beneficiary: beneficiary?.toBeneficiaryDTO(),
     );
-
-    return result?.toSecondFactorType();
   }
 }

@@ -12,7 +12,7 @@ class PostReceivedPaymentUseCase {
   }) : _repository = repository;
 
   /// Post the mobile payment
-  Future<SecondFactorType?> call({
+  Future<void> call({
     required String fromSendMoneyId,
     required String accountId,
     required String withdrawalCode,
