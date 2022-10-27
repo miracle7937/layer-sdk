@@ -92,7 +92,7 @@ class BeneficiaryProvider {
     required bool editMode,
   }) async {
     final response = await netClient.request(
-      netClient.netEndpoints.submitTransfer,
+      netClient.netEndpoints.beneficiary2,
       method: editMode ? NetRequestMethods.patch : NetRequestMethods.post,
       data: {
         'beneficiary_id': beneficiaryId,
