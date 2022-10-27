@@ -1,54 +1,47 @@
 import 'dart:collection';
 
-import 'package:equatable/equatable.dart';
-
 import '../../../domain_layer/models.dart';
+import '../../cubits.dart';
 
-/// Model used for the errors.
-class EditBeneficiaryError extends Equatable {
-  /// The action.
-  final EditBeneficiaryAction action;
+/// All possible actions.
+enum EditBeneficiaryAction {
+  /// Initializing the cubit with the needed data.
+  initialize,
 
-  /// The error.
-  final EditBeneficiaryErrorStatus errorStatus;
+  /// Adding new beneficiary action.
+  save,
 
-  /// The error code.
-  final String? code;
+  /// Sending the OTP code for the beneficiary.
+  sendOTPCode,
 
-  /// The error message.
-  final String? message;
+  /// The second factor is being verified.
+  verifySecondFactor,
 
-  /// Creates a new [EditBeneficiaryError].
-  const EditBeneficiaryError({
-    required this.action,
-    required this.errorStatus,
-    this.code,
-    this.message,
-  });
-
-  @override
-  List<Object?> get props => [
-        action,
-        errorStatus,
-        code,
-        message,
-      ];
+  /// The second factor is being resent.
+  resendSecondFactor,
 }
 
-/// The available error status
-enum EditBeneficiaryErrorStatus {
-  /// No errors
-  none,
+/// The available add beneficiary cubit events.
+enum EditBeneficiaryEvent {
+  /// Event for showing the confirmation view.
+  showConfirmationView,
 
-  /// Generic error
-  generic,
+  /// Event for opening the second factor.
+  openSecondFactor,
 
-  /// Network error
-  network,
+  /// Event for showing the OTP code inputing view.
+  showOTPCodeView,
+
+  /// Event for closing the second factor.
+  closeSecondFactor,
+
+  /// Event for showing the beneficiary result view.
+  showResultView,
 }
 
 /// The state of the EditBeneficiary cubit
-class EditBeneficiaryState extends Equatable {
+class EditBeneficiaryState
+    extends BaseState<EditBeneficiaryAction, EditBeneficiaryEvent, void> {
   /// Beneficiary to edit.
   final Beneficiary oldBeneficiary;
 
@@ -57,12 +50,6 @@ class EditBeneficiaryState extends Equatable {
 
   /// A list of countries
   final UnmodifiableListView<Country> countries;
-
-  /// The errors.
-  final UnmodifiableSetView<EditBeneficiaryError> errors;
-
-  /// The actions that the cubit is performing.
-  final UnmodifiableSetView<EditBeneficiaryAction> actions;
 
   /// Depending on its currency, beneficiary has:
   /// - for `GBP` - account and routing code
@@ -81,54 +68,38 @@ class EditBeneficiaryState extends Equatable {
 
   /// Creates a new [EditBeneficiaryState].
   EditBeneficiaryState({
+    super.actions = const <EditBeneficiaryAction>{},
+    super.errors = const <CubitError>{},
+    super.events = const <EditBeneficiaryEvent>{},
     required this.oldBeneficiary,
     required this.beneficiary,
     Iterable<Country> countries = const <Country>[],
-    Set<EditBeneficiaryAction> actions = const <EditBeneficiaryAction>{},
-    Set<EditBeneficiaryError> errors = const <EditBeneficiaryError>{},
-  })  : countries = UnmodifiableListView(countries),
-        actions = UnmodifiableSetView(actions),
-        errors = UnmodifiableSetView(errors);
+  }) : countries = UnmodifiableListView(countries);
 
   @override
   List<Object?> get props => [
+        actions,
+        errors,
+        events,
         oldBeneficiary,
         beneficiary,
         countries,
-        errors,
-        actions,
       ];
 
   /// Creates a new state based on this one.
   EditBeneficiaryState copyWith({
+    Set<EditBeneficiaryAction>? actions,
+    Set<CubitError>? errors,
+    Set<EditBeneficiaryEvent>? events,
     Beneficiary? beneficiary,
     Iterable<Country>? countries,
-    Set<EditBeneficiaryAction>? actions,
-    Set<EditBeneficiaryError>? errors,
   }) =>
       EditBeneficiaryState(
+        actions: actions ?? super.actions,
+        errors: errors ?? super.errors,
+        events: events ?? super.events,
         oldBeneficiary: oldBeneficiary,
         beneficiary: beneficiary ?? this.beneficiary,
         countries: countries ?? this.countries,
-        errors: errors ?? this.errors,
-        actions: actions ?? this.actions,
       );
-}
-
-/// All possible actions.
-enum EditBeneficiaryAction {
-  /// Init action, is used to set initial values.
-  initAction,
-
-  /// Editing action.
-  editAction,
-
-  /// Saving of edited beneficiary action.
-  save,
-
-  /// Edit requires OTP verification action.
-  otpRequired,
-
-  /// Edit successful beneficiary action.
-  success,
 }

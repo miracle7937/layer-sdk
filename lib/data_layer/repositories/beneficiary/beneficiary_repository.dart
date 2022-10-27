@@ -64,6 +64,20 @@ class BeneficiaryRepository implements BeneficiaryRepositoryInterface {
     return beneficiaryDTO.toBeneficiary();
   }
 
+  /// Sends the OTP code for the passed beneficiary id.
+  @override
+  Future<Beneficiary> sendOTPCode({
+    required int beneficiaryId,
+    required bool editMode,
+  }) async {
+    final beneficiaryDTO = await _provider.sendOTPCode(
+      beneficiaryId: beneficiaryId,
+      editMode: editMode,
+    );
+
+    return beneficiaryDTO.toBeneficiary();
+  }
+
   /// Returns the beneficiary resulting on verifying the second factor for
   /// the passed [beneficiary].
   /// True should be passed in [isEditing]
@@ -71,12 +85,14 @@ class BeneficiaryRepository implements BeneficiaryRepositoryInterface {
   @override
   Future<Beneficiary> verifySecondFactor({
     required Beneficiary beneficiary,
-    required String otpValue,
+    required String value,
+    required SecondFactorType secondFactorType,
     bool isEditing = false,
   }) async {
     final beneficiaryDTO = await _provider.verifySecondFactor(
       beneficiaryDTO: beneficiary.toBeneficiaryDTO(),
-      otpValue: otpValue,
+      value: value,
+      secondFactorTypeDTO: secondFactorType.toSecondFactorTypeDTO(),
       isEditing: isEditing,
     );
 

@@ -85,19 +85,47 @@ class BeneficiaryProvider {
     );
   }
 
+  /// Returns the beneficiary dto resulting on sending the OTP code for the
+  /// passed beneficiary id.
+  Future<BeneficiaryDTO> sendOTPCode({
+    required int beneficiaryId,
+    required bool editMode,
+  }) async {
+    final response = await netClient.request(
+      netClient.netEndpoints.submitTransfer,
+      method: editMode ? NetRequestMethods.patch : NetRequestMethods.post,
+      data: {
+        'beneficiary_id': beneficiaryId,
+        'second_factor': SecondFactorTypeDTO.otp.value,
+      },
+    );
+
+    return BeneficiaryDTO.fromJson(response.data);
+  }
+
   /// Returns the beneficiary dto resulting on verifying the second factor for
   /// the passed [beneficiaryDTO].
   /// True should be passed in [isEditing]
   /// in case of existing beneficiary is being edited.
   Future<BeneficiaryDTO> verifySecondFactor({
     required BeneficiaryDTO beneficiaryDTO,
-    required String otpValue,
+    required String value,
+    required SecondFactorTypeDTO secondFactorTypeDTO,
     bool isEditing = false,
   }) async {
+    final data = beneficiaryDTO.toJson();
+
+    data.addAll({
+      'second_factor': secondFactorTypeDTO.value,
+      if (secondFactorTypeDTO == SecondFactorTypeDTO.ocra)
+        'client_response': value,
+      if (secondFactorTypeDTO == SecondFactorTypeDTO.otp) 'otp_value': value,
+    });
+
     final response = await netClient.request(
       netClient.netEndpoints.beneficiary2,
       method: isEditing ? NetRequestMethods.patch : NetRequestMethods.post,
-      queryParameters: {'otp_value': otpValue},
+      queryParameters: data,
       data: beneficiaryDTO.toJson(),
     );
 
