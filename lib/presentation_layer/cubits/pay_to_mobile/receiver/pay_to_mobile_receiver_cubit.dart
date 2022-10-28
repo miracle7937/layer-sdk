@@ -92,7 +92,7 @@ class PayToMobileReceiverCubit extends Cubit<PayToMobileReceiverState> {
     try {
       await _postPaymentUseCase(
         fromSendMoneyId: fromSendMoneyId,
-        accountId: state.selectedAccount!.accountNumber!,
+        accountId: state.selectedAccount!.id!,
         withdrawalCode: state.withdrawalCode,
         withdrawalPin: state.withdrawalPin,
         deviceUUID: state.deviceUUID,
