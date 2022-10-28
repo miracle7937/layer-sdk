@@ -239,4 +239,28 @@ class ActivityProvider {
       method: NetRequestMethods.delete,
     );
   }
+
+  /// Retrive the alert by the activity query from push notification
+  Future<ActivityDTO> getAlertByActivityQuery(
+    String query, {
+    bool? includeDetails,
+  }) async {
+    final queryList = query.split('=');
+
+    final params = {
+      queryList.first: queryList.last,
+      'include_details': includeDetails,
+      'search_object': true,
+      'search_alert': true,
+      'search_user_task': true,
+    };
+
+    final response = await netClient.request(
+      netClient.netEndpoints.activity,
+      method: NetRequestMethods.get,
+      queryParameters: params,
+    );
+
+    return ActivityDTO.fromJson(response.data);
+  }
 }

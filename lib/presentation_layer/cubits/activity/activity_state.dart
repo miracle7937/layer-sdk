@@ -49,15 +49,19 @@ class ActivityState extends Equatable {
   /// A String that holds an error message
   final String? errorMessage;
 
+  /// The result alert
+  final Activity? alert;
+
   /// Creates a new [ActivityState] instance
-  ActivityState({
-    Iterable<Activity> activities = const <Activity>[],
-    this.action = ActivityBusyAction.none,
-    this.errorStatus = ActivityErrorStatus.none,
-    this.pagination = const Pagination(),
-    this.shortcutName = '',
-    this.errorMessage,
-  }) : activities = UnmodifiableListView(activities);
+  ActivityState(
+      {Iterable<Activity> activities = const <Activity>[],
+      this.action = ActivityBusyAction.none,
+      this.errorStatus = ActivityErrorStatus.none,
+      this.pagination = const Pagination(),
+      this.shortcutName = '',
+      this.errorMessage,
+      this.alert})
+      : activities = UnmodifiableListView(activities);
 
   /// Copies the object with new values
   ActivityState copyWith({
@@ -67,6 +71,7 @@ class ActivityState extends Equatable {
     Iterable<Activity>? activities,
     String? shortcutName,
     String? errorMessage,
+    Activity? alert,
   }) {
     return ActivityState(
       errorStatus: errorStatus ?? this.errorStatus,
@@ -75,6 +80,7 @@ class ActivityState extends Equatable {
       activities: activities ?? this.activities,
       shortcutName: shortcutName ?? this.shortcutName,
       errorMessage: errorMessage ?? this.errorMessage,
+      alert: alert ?? this.alert,
     );
   }
 
@@ -86,5 +92,6 @@ class ActivityState extends Equatable {
         activities,
         shortcutName,
         errorMessage,
+        alert,
       ];
 }

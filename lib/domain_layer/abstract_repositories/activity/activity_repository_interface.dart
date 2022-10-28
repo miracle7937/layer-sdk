@@ -61,4 +61,10 @@ abstract class ActivityRepositoryInterface {
 
   /// Delete all the [Request]'s
   Future<void> deleteAllRequests();
+
+  /// Retrive the alert by the activity query from push notification
+  Future<Activity> getAlertByActivityQuery(
+    String query, {
+    bool? includeDetails,
+  });
 }

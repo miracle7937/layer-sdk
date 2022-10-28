@@ -154,7 +154,10 @@ class AuthenticationProvider {
   ///
   /// Throws if the pin is invalid.
   Future<VerifyPinResponseDTO> verifyAccessPin(
-      String pin, DeviceSession deviceInfo) async {
+    String pin,
+    DeviceSession deviceInfo,
+    String? notificationToken,
+  ) async {
     // TODO: Check what exactly should be provided. This is hardcoded on x-app:
     final key =
         '-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAg'
@@ -175,6 +178,7 @@ class AuthenticationProvider {
       method: NetRequestMethods.post,
       throwAllErrors: false,
       data: {
+        if (notificationToken != null) 'notification_token': notificationToken,
         'access_pin': pin,
         'key': key,
         if (deviceInfo.model?.isNotEmpty ?? false) 'model': deviceInfo.model,
