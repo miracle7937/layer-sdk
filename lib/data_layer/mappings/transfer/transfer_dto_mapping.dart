@@ -9,6 +9,7 @@ extension TransferDTOMapping on TransferDTO {
   Transfer toTransfer() => Transfer(
         id: id,
         currency: currency,
+        deviceUID: deviceUID,
         amount: amount,
         amountVisible: amountVisible,
         fromAccount: fromAccount?.toAccount(),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:location/location.dart' as loc;
+import 'package:path_provider/path_provider.dart';
 
 import '../../_migration/flutter_layer/src/cubits.dart';
 import '../../_migration/flutter_layer/src/widgets/text_fields/auto_padding_keyboard_view.dart';
@@ -134,6 +135,24 @@ class BankAppState extends State<BankApp> {
     setState(() {
       _appKey = UniqueKey();
     });
+  }
+
+  @override
+  void initState() {
+    _initializeFileLogger();
+    super.initState();
+  }
+
+  void _initializeFileLogger() async {
+    final directory = await getApplicationDocumentsDirectory();
+    try {
+      FileLogger.getInstant()
+          .initializeLogger(logFilesLocation: directory.path);
+      debugPrint(
+          'Initialized file logger Successfully on path: ${directory.path}');
+    } on Exception catch (exception) {
+      print('Error initializing the file logger: ${(exception)}');
+    }
   }
 
   /// The creators that are injected by the layer SDK.

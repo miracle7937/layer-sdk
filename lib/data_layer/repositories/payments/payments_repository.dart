@@ -36,11 +36,9 @@ class PaymentRepository implements PaymentsRepositoryInterface {
   @override
   Future<Payment> postPayment({
     required Payment payment,
-    String? otp,
   }) async {
     final paymentDTO = await _provider.postPayment(
       payment: payment.toPaymentDTO(),
-      otp: otp,
     );
 
     return paymentDTO.toPayment();
@@ -49,24 +47,55 @@ class PaymentRepository implements PaymentsRepositoryInterface {
   @override
   Future<Payment> patchPayment({
     required Payment payment,
-    String? otp,
-    bool resendOtp = false,
   }) async {
     final paymentDTO = await _provider.patchPayment(
       payment: payment.toPaymentDTO(),
-      otp: otp,
-      resendOtp: resendOtp,
     );
 
     return paymentDTO.toPayment();
   }
 
+  /// Sends the OTP code for the passed payment.
   @override
-  Future<Payment> resendOTP({
+  Future<Payment> sendOTPCode({
     required Payment payment,
+    required bool editMode,
   }) async {
-    final paymentDTO = await _provider.resendOTP(
+    final paymentDTO = await _provider.sendOTPCode(
       payment: payment.toPaymentDTO(),
+      editMode: editMode,
+    );
+
+    return paymentDTO.toPayment();
+  }
+
+  /// Verifies the second factor for the passed payment.
+  @override
+  Future<Payment> verifySecondFactor({
+    required Payment payment,
+    required String value,
+    required SecondFactorType secondFactorType,
+    required bool editMode,
+  }) async {
+    final paymentDTO = await _provider.verifySecondFactor(
+      payment: payment.toPaymentDTO(),
+      value: value,
+      secondFactorTypeDTO: secondFactorType.toSecondFactorTypeDTO(),
+      editMode: editMode,
+    );
+
+    return paymentDTO.toPayment();
+  }
+
+  /// Resends second factor for the passed payment.
+  @override
+  Future<Payment> resendSecondFactor({
+    required Payment payment,
+    required bool editMode,
+  }) async {
+    final paymentDTO = await _provider.resendSecondFactor(
+      payment: payment.toPaymentDTO(),
+      editMode: editMode,
     );
 
     return paymentDTO.toPayment();

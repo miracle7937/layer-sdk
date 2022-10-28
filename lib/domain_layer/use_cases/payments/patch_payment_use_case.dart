@@ -12,14 +12,9 @@ class PatchPaymentUseCase {
 
   /// Patches the provided payment
   Future<Payment> call(
-    Payment payment, {
-    String? otp,
-    bool resendOtp = false,
-  }) {
-    return _repository.patchPayment(
-      payment: payment,
-      otp: otp,
-      resendOtp: resendOtp,
-    );
-  }
+    Payment payment,
+  ) =>
+      _repository.patchPayment(
+        payment: payment,
+      );
 }

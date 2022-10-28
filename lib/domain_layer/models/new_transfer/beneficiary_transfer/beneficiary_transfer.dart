@@ -41,6 +41,7 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
     super.shortcutName,
     super.note,
     super.transferId,
+    super.deviceUID,
   }) : super();
 
   /// Whether if the beneficiary transfer is ready to be submitted or not.
@@ -77,6 +78,7 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
     String? shortcutName,
     String? note,
     int? transferId,
+    String? deviceUID,
   }) =>
       BeneficiaryTransfer(
         transferId: transferId ?? this.transferId,
@@ -94,6 +96,7 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
             ? null
             : shortcutName ?? this.shortcutName,
         note: note ?? this.note,
+        deviceUID: deviceUID ?? this.deviceUID,
       );
 
   /// Converts to [NewTransferPayloadDTO]
@@ -125,6 +128,7 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
       endDate: scheduleDetails.endDate,
       note: note,
       transferId: transferId,
+      deviceUID: deviceUID,
     );
   }
 
@@ -143,5 +147,6 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
         shortcutName,
         note,
         transferId,
+        deviceUID,
       ];
 }

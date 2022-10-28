@@ -14,6 +14,7 @@ class OwnTransfer extends NewSchedulableTransfer {
     super.saveToShortcut,
     super.transferId,
     super.shortcutName,
+    super.deviceUID,
   }) : super(type: TransferType.own);
 
   /// Whether if the own transfer is ready to be submitted or not.
@@ -38,6 +39,7 @@ class OwnTransfer extends NewSchedulableTransfer {
     bool? saveToShortcut,
     String? shortcutName,
     int? transferId,
+    String? deviceUID,
   }) =>
       OwnTransfer(
         transferId: transferId ?? this.transferId,
@@ -45,6 +47,7 @@ class OwnTransfer extends NewSchedulableTransfer {
         destination: destination ?? this.destination,
         amount: amount ?? this.amount,
         currency: currency ?? this.currency,
+        deviceUID: deviceUID ?? this.deviceUID,
         scheduleDetails: scheduleDetails ?? this.scheduleDetails,
         saveToShortcut: saveToShortcut ?? this.saveToShortcut,
         shortcutName: !(saveToShortcut ?? this.saveToShortcut)
@@ -64,6 +67,7 @@ class OwnTransfer extends NewSchedulableTransfer {
         startDate: scheduleDetails.startDate,
         endDate: scheduleDetails.endDate,
         transferId: transferId,
+        deviceUID: deviceUID,
       );
 
   @override
@@ -76,5 +80,6 @@ class OwnTransfer extends NewSchedulableTransfer {
         saveToShortcut,
         shortcutName,
         transferId,
+        deviceUID,
       ];
 }
