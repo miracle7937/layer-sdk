@@ -2,13 +2,15 @@ import 'dart:collection';
 
 import 'package:equatable/equatable.dart';
 
+import 'inbox_file.dart';
+
 /// Class that holds data for report messages
 class InboxReportMessage extends Equatable {
   /// Id of the report
   final int reportId;
 
   /// Id of the message
-  final int messageId;
+  final int? messageId;
 
   /// Time when the record was created
   final DateTime? tsCreated;
@@ -17,10 +19,10 @@ class InboxReportMessage extends Equatable {
   final DateTime? tsUpdated;
 
   /// Files in the report
-  final UnmodifiableListView<String> files;
+  final UnmodifiableListView<InboxFile> files;
 
   /// Id of the sender
-  final int sender;
+  final int? sender;
 
   /// Type of the sender
   final InboxReportSenderType senderType;
@@ -36,11 +38,11 @@ class InboxReportMessage extends Equatable {
 
   /// [InboxReportMessage] constructor
   InboxReportMessage({
-    Iterable<String> files = const [],
+    Iterable<InboxFile> files = const [],
     Iterable<String> attachmentUrls = const [],
     required this.reportId,
-    required this.messageId,
-    required this.sender,
+    this.messageId,
+    this.sender,
     this.senderType = InboxReportSenderType.unknown,
     this.text = '',
     this.tsCreated,
@@ -71,7 +73,7 @@ class InboxReportMessage extends Equatable {
     int? messageId,
     DateTime? tsCreated,
     DateTime? tsUpdated,
-    Iterable<String>? files,
+    Iterable<InboxFile>? files,
     int? sender,
     InboxReportSenderType? senderType,
     String? text,

@@ -53,6 +53,8 @@ export 'dtos/experience/experience_setting_dto.dart';
 export 'dtos/experience_preferences/experience_preferences_dto.dart';
 export 'dtos/experience_preferences/save_experience_preferences_parameters_dto.dart';
 export 'dtos/financial/financial_data_dto.dart';
+export 'dtos/inbox/inbox_new_message_dto.dart';
+export 'dtos/inbox/inbox_new_report_dto.dart';
 export 'dtos/inbox/inbox_report_category_dto.dart';
 export 'dtos/inbox/inbox_report_dto.dart';
 export 'dtos/inbox/inbox_report_message_dto.dart';
