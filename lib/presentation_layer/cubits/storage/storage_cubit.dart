@@ -113,15 +113,25 @@ class StorageCubit extends Cubit<StorageState> {
       ),
     );
 
-    final loyaltyTutorialCompleted =
-        await _loadLoyaltyTutorialCompletionUseCase();
+    try {
+      final loyaltyTutorialCompleted =
+          await _loadLoyaltyTutorialCompletionUseCase();
 
-    emit(
-      state.copyWith(
-        busy: false,
-        loyaltyTutorialCompleted: loyaltyTutorialCompleted,
-      ),
-    );
+      emit(
+        state.copyWith(
+          busy: false,
+          loyaltyTutorialCompleted: loyaltyTutorialCompleted,
+        ),
+      );
+    } on Exception {
+      emit(
+        state.copyWith(
+          busy: false,
+        ),
+      );
+
+      rethrow;
+    }
   }
 
   /// Saves the provided user in storage and sets him as current user.
