@@ -1,13 +1,17 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logging/logging.dart';
 
 import '../../../../domain_layer/models.dart';
 import '../../../../domain_layer/use_cases.dart';
+import '../../../../domain_layer/use_cases/payments/generate_device_uid_use_case.dart';
 import '../../../cubits.dart';
 import '../../../utils.dart';
 
 /// A Cubit that handles the state for the beneficiary transfer flow.
 class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
+  final _logger = Logger('BeneficiaryTransferCubit');
+
   final LoadGlobalSettingsUseCase _loadGlobalSettingsUseCase;
   final GetActiveAccountsSortedByAvailableBalance
       _getActiveAccountsSortedByAvailableBalance;
@@ -24,6 +28,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
   final VerifyTransferSecondFactorUseCase _verifyTransferSecondFactorUseCase;
   final ResendTransferSecondFactorUseCase _resendTransferSecondFactorUseCase;
   final CreateShortcutUseCase _createShortcutUseCase;
+  final GenerateDeviceUIDUseCase _generateDeviceUIDUseCase;
 
   /// Creates a new [BeneficiaryTransferCubit].
   ///
@@ -49,6 +54,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         verifyTransferSecondFactorUseCase,
     required ResendTransferSecondFactorUseCase
         resendTransferSecondFactorUseCase,
+    required GenerateDeviceUIDUseCase generateDeviceUIDUseCase,
     required CreateShortcutUseCase createShortcutUseCase,
     int banksPaginationLimit = 20,
   })  : _loadGlobalSettingsUseCase = loadGlobalSettingsUseCase,
@@ -67,6 +73,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         _verifyTransferSecondFactorUseCase = verifyTransferSecondFactorUseCase,
         _resendTransferSecondFactorUseCase = resendTransferSecondFactorUseCase,
         _createShortcutUseCase = createShortcutUseCase,
+        _generateDeviceUIDUseCase = generateDeviceUIDUseCase,
         super(
           BeneficiaryTransferState(
             transfer: transfer,
@@ -725,8 +732,15 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
   /// Submits the transfer.
   Future<void> submit() async {
+    if (state.actions.contains(BeneficiaryTransferAction.submit)) {
+      return;
+    }
+
+    final deviceUID = _generateDeviceUIDUseCase(30);
+
     emit(
       state.copyWith(
+        transfer: state.transfer.copyWith(deviceUID: deviceUID),
         actions: state.addAction(
           BeneficiaryTransferAction.submit,
         ),
@@ -810,6 +824,9 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
           break;
 
         default:
+          _logger.severe(
+            'Unhandled transfer status -> ${transferResult.status}',
+          );
           throw Exception(
             'Unhandled transfer status -> ${transferResult.status}',
           );

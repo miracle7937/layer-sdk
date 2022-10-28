@@ -94,7 +94,12 @@ export 'use_cases/experience/configure_user_experience_with_preferences_use_case
 export 'use_cases/experience/get_experience_and_configure_it_use_case.dart';
 export 'use_cases/experience_preferences/save_experience_preferences_use_case.dart';
 export 'use_cases/financial/load_financial_data_use_case.dart';
+export 'use_cases/inbox/create_inbox_report_use_case.dart';
+export 'use_cases/inbox/create_report_use_case.dart';
 export 'use_cases/inbox/list_all_inbox_messages_use_case.dart';
+export 'use_cases/inbox/load_report_categories_use_case.dart';
+export 'use_cases/inbox/post_inbox_messages_use_case.dart';
+export 'use_cases/inbox/send_report_chat_message_use_case.dart';
 export 'use_cases/loyalty/cashback_history/load_cashback_history_use_case.dart';
 export 'use_cases/loyalty/loyalty_points/load_all_loyalty_points_use_case.dart';
 export 'use_cases/loyalty/loyalty_points_exchange/confirm_second_factor_for_loyalty_points_exchange_use_case.dart';
@@ -135,7 +140,9 @@ export 'use_cases/pay_to_mobile/verity_pay_to_mobile_second_factor_use_case.dart
 export 'use_cases/payments/load_customer_payments_use_case.dart';
 export 'use_cases/payments/load_frequent_payments_use_case.dart';
 export 'use_cases/payments/patch_payment_use_case.dart';
-export 'use_cases/payments/resend_payment_otp_use_case.dart';
+export 'use_cases/payments/resend_payment_second_factor_use_case.dart';
+export 'use_cases/payments/send_otp_code_for_payment_use_case.dart';
+export 'use_cases/payments/verify_payment_second_factor_use_case.dart';
 export 'use_cases/product/load_product_by_product_id_use_case.dart';
 export 'use_cases/product/load_products_use_case.dart';
 export 'use_cases/queue/accept_queue_use_case.dart';
