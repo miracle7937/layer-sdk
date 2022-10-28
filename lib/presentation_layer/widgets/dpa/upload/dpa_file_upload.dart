@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:design_kit_layer/design_kit_layer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
