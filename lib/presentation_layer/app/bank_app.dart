@@ -237,6 +237,14 @@ class BankAppState extends State<BankApp> {
             toggleBiometricsUseCase: ToggleBiometricsUseCase(
               secureStorage: widget.secureStorage,
             ),
+            loadLoyaltyTutorialCompletionUseCase:
+                LoadLoyaltyTutorialCompletionUseCase(
+              secureStorage: widget.secureStorage,
+            ),
+            setLoyaltyTutorialCompletionUseCase:
+                SetLoyaltyTutorialCompletionUseCase(
+              secureStorage: widget.secureStorage,
+            ),
           ),
         ),
       ];

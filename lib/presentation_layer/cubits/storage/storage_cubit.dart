@@ -18,6 +18,10 @@ class StorageCubit extends Cubit<StorageState> {
   final SetBrightnessUseCase _setBrightnessUseCase;
   final LoadBrightnessUseCase _loadBrightnessUseCase;
   final ToggleBiometricsUseCase _toggleBiometricsUseCase;
+  final LoadLoyaltyTutorialCompletionUseCase
+      _loadLoyaltyTutorialCompletionUseCase;
+  final SetLoyaltyTutorialCompletionUseCase
+      _setLoyaltyTutorialCompletionUseCase;
 
   /// Creates [StorageCubit].
   StorageCubit({
@@ -33,6 +37,10 @@ class StorageCubit extends Cubit<StorageState> {
     required SetBrightnessUseCase setBrightnessUseCase,
     required LoadBrightnessUseCase loadBrightnessUseCase,
     required ToggleBiometricsUseCase toggleBiometricsUseCase,
+    required LoadLoyaltyTutorialCompletionUseCase
+        loadLoyaltyTutorialCompletionUseCase,
+    required SetLoyaltyTutorialCompletionUseCase
+        setLoyaltyTutorialCompletionUseCase,
   })  : _loadLoggedInUsersUseCase = loadLoggedInUsersUseCase,
         _lastLoggedUserUseCase = lastLoggedUserUseCase,
         _saveUserUseCase = saveUserUseCase,
@@ -44,6 +52,10 @@ class StorageCubit extends Cubit<StorageState> {
         _setBrightnessUseCase = setBrightnessUseCase,
         _loadBrightnessUseCase = loadBrightnessUseCase,
         _toggleBiometricsUseCase = toggleBiometricsUseCase,
+        _loadLoyaltyTutorialCompletionUseCase =
+            loadLoyaltyTutorialCompletionUseCase,
+        _setLoyaltyTutorialCompletionUseCase =
+            setLoyaltyTutorialCompletionUseCase,
         super(StorageState());
 
   /// Loads all the logged in users.
@@ -91,6 +103,25 @@ class StorageCubit extends Cubit<StorageState> {
 
       rethrow;
     }
+  }
+
+  /// Loads state of loyalty tutorial completion.
+  Future<void> loadLoyaltyTutorialCompletion() async {
+    emit(
+      state.copyWith(
+        busy: true,
+      ),
+    );
+
+    final loyaltyTutorialCompleted =
+        await _loadLoyaltyTutorialCompletionUseCase();
+
+    emit(
+      state.copyWith(
+        busy: false,
+        loyaltyTutorialCompleted: loyaltyTutorialCompleted,
+      ),
+    );
   }
 
   /// Saves the provided user in storage and sets him as current user.
@@ -347,6 +378,39 @@ class StorageCubit extends Cubit<StorageState> {
         state.copyWith(
           busy: false,
           ocraSecretKey: key,
+        ),
+      );
+    } on Exception {
+      emit(
+        state.copyWith(
+          busy: false,
+        ),
+      );
+
+      rethrow;
+    }
+  }
+
+  /// Sets the loyalty tutorial completion with the provided value,
+  /// that is true by default.
+  void completeLoyaltyTutorial({
+    bool completed = true,
+  }) async {
+    emit(
+      state.copyWith(
+        busy: true,
+      ),
+    );
+
+    try {
+      final success = await _setLoyaltyTutorialCompletionUseCase(
+        completed: completed,
+      );
+
+      emit(
+        state.copyWith(
+          busy: false,
+          loyaltyTutorialCompleted: success ? completed : null,
         ),
       );
     } on Exception {

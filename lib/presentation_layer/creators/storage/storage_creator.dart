@@ -15,6 +15,10 @@ class StorageCreator implements CubitCreator {
   final SetBrightnessUseCase _setBrightnessUseCase;
   final LoadBrightnessUseCase _loadBrightnessUseCase;
   final ToggleBiometricsUseCase _toggleBiometricsUseCase;
+  final LoadLoyaltyTutorialCompletionUseCase
+      _loadLoyaltyTutorialCompletionUseCase;
+  final SetLoyaltyTutorialCompletionUseCase
+      _setLoyaltyTutorialCompletionUseCase;
 
   /// Creates [StorageCreator].
   StorageCreator({
@@ -30,6 +34,10 @@ class StorageCreator implements CubitCreator {
     required SetBrightnessUseCase setBrightnessUseCase,
     required LoadBrightnessUseCase loadBrightnessUseCase,
     required ToggleBiometricsUseCase toggleBiometricsUseCase,
+    required LoadLoyaltyTutorialCompletionUseCase
+        loadLoyaltyTutorialCompletionUseCase,
+    required SetLoyaltyTutorialCompletionUseCase
+        setLoyaltyTutorialCompletionUseCase,
   })  : _loadLoggedInUsersUseCase = loadLoggedInUsersUseCase,
         _loadLastLoggedUserUseCase = loadLastLoggedUserUseCase,
         _saveUserUseCase = saveUserUseCase,
@@ -40,7 +48,11 @@ class StorageCreator implements CubitCreator {
         _saveOcraSecretKeyUseCase = saveOcraSecretKeyUseCase,
         _setBrightnessUseCase = setBrightnessUseCase,
         _loadBrightnessUseCase = loadBrightnessUseCase,
-        _toggleBiometricsUseCase = toggleBiometricsUseCase;
+        _toggleBiometricsUseCase = toggleBiometricsUseCase,
+        _loadLoyaltyTutorialCompletionUseCase =
+            loadLoyaltyTutorialCompletionUseCase,
+        _setLoyaltyTutorialCompletionUseCase =
+            setLoyaltyTutorialCompletionUseCase;
 
   /// Creates the [StorageCubit].
   StorageCubit create() => StorageCubit(
@@ -55,5 +67,9 @@ class StorageCreator implements CubitCreator {
         setBrightnessUseCase: _setBrightnessUseCase,
         loadBrightnessUseCase: _loadBrightnessUseCase,
         toggleBiometricsUseCase: _toggleBiometricsUseCase,
+        loadLoyaltyTutorialCompletionUseCase:
+            _loadLoyaltyTutorialCompletionUseCase,
+        setLoyaltyTutorialCompletionUseCase:
+            _setLoyaltyTutorialCompletionUseCase,
       );
 }
