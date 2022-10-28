@@ -39,7 +39,7 @@ enum CubitErrorCode {
   paymentFailed('payment_failed'),
 
   /// unknown error code.
-  unknown('unknown');
+  unknown('error');
 
   /// The string value for the [CubitErrorCode].
   final String value;
