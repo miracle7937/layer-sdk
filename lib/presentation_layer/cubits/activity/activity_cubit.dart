@@ -75,7 +75,7 @@ class ActivityCubit extends Cubit<ActivityState> {
     );
 
     try {
-      var newPage = state.pagination.paginate(loadMore: loadMore);
+      final newPage = state.pagination.paginate(loadMore: loadMore);
 
       final resultList = await _loadActivitiesUseCase(
         limit: newPage.limit,
