@@ -12,8 +12,8 @@ class GetAlertByActivityQueryUseCase {
 
   /// Callable method to get the alert by the activity query
   Future<Activity> call(
-    String query, {
-    bool? includeDetails,
+    Map<String, dynamic> query, {
+    required bool includeDetails,
   }) {
     return _repository.getAlertByActivityQuery(
       query,

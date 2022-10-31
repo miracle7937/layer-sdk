@@ -19,7 +19,6 @@ class ActivityCubit extends Cubit<ActivityState> {
   final DeleteAlertUseCase _deleteAlertUseCase;
   final MarkAllAlertsAsReadUseCase _markAllAlertsAsReadUseCase;
   final DeleteAllAlertsUseCase _deleteAllAlertsUseCase;
-  final GetAlertByActivityQueryUseCase _getAlertByActivityQueryUseCase;
 
   /// Creates a new [ActivityCubit] instance
   ActivityCubit({
@@ -35,7 +34,6 @@ class ActivityCubit extends Cubit<ActivityState> {
     required DeleteAlertUseCase deleteAlertUseCase,
     required MarkAllAlertsAsReadUseCase markAllAlertsAsReadUseCase,
     required DeleteAllAlertsUseCase deleteAllAlertsUseCase,
-    required GetAlertByActivityQueryUseCase getAlertByActivityQueryUseCase,
     int limit = 20,
   })  : _loadActivitiesUseCase = loadActivitiesUseCase,
         _filterTransferActivityTypesUseCase =
@@ -49,7 +47,6 @@ class ActivityCubit extends Cubit<ActivityState> {
         _deleteAlertUseCase = deleteAlertUseCase,
         _markAllAlertsAsReadUseCase = markAllAlertsAsReadUseCase,
         _deleteAllAlertsUseCase = deleteAllAlertsUseCase,
-        _getAlertByActivityQueryUseCase = getAlertByActivityQueryUseCase,
         super(ActivityState(
           pagination: Pagination(limit: limit),
         ));
@@ -238,43 +235,4 @@ class ActivityCubit extends Cubit<ActivityState> {
 
   /// Delete all the alerts
   Future<void> deleteAllAlerts() => _deleteAllAlertsUseCase();
-
-  /// Get the alert by the passed `query`
-  Future<void> getAlertByActivityQuery(
-    String query, {
-    bool? includeDetails = true,
-  }) async {
-    emit(
-      state.copyWith(
-        errorStatus: ActivityErrorStatus.none,
-        action: ActivityBusyAction.loading,
-      ),
-    );
-
-    try {
-      final result = await _getAlertByActivityQueryUseCase(
-        query,
-        includeDetails: includeDetails,
-      );
-
-      emit(
-        state.copyWith(
-          alert: result,
-          action: ActivityBusyAction.none,
-        ),
-      );
-    } on Exception catch (e) {
-      emit(
-        state.copyWith(
-          errorStatus: e is NetException
-              ? ActivityErrorStatus.network
-              : ActivityErrorStatus.generic,
-          action: ActivityBusyAction.none,
-          errorMessage: e is NetException ? e.message : e.toString(),
-        ),
-      );
-
-      rethrow;
-    }
-  }
 }
