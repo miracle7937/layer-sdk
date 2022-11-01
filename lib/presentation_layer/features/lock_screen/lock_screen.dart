@@ -143,13 +143,12 @@ class _LockScreenState extends SetAccessPinBaseWidgetState<_LockScreen> {
           listenWhen: (previous, current) =>
               previous.token != current.token && current.token != null,
           listener: (context, state) async {
-            final storageCubit = context.read<StorageCreator>().create();
-            await storageCubit.getUserDetails(state.token!);
+            final authenticationCubit = context.read<AuthenticationCubit>();
+            await authenticationCubit.getUserDetails(state.token!);
 
-            final user = storageCubit.state.currentUser;
+            final user = authenticationCubit.state.user;
 
             if (user != null) {
-              final authenticationCubit = context.read<AuthenticationCubit>();
               authenticationCubit.setLoggedUser(
                 user.copyWith(
                   token: state.token,

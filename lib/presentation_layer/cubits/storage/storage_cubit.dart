@@ -18,7 +18,6 @@ class StorageCubit extends Cubit<StorageState> {
   final SetBrightnessUseCase _setBrightnessUseCase;
   final LoadBrightnessUseCase _loadBrightnessUseCase;
   final ToggleBiometricsUseCase _toggleBiometricsUseCase;
-  final LoadUserDetailsFromTokenUseCase _loadUserDetailsFromTokenUseCase;
 
   /// Creates [StorageCubit].
   StorageCubit({
@@ -34,7 +33,6 @@ class StorageCubit extends Cubit<StorageState> {
     required SetBrightnessUseCase setBrightnessUseCase,
     required LoadBrightnessUseCase loadBrightnessUseCase,
     required ToggleBiometricsUseCase toggleBiometricsUseCase,
-    required LoadUserDetailsFromTokenUseCase loadUserDetailsFromTokenUseCase,
   })  : _loadLoggedInUsersUseCase = loadLoggedInUsersUseCase,
         _lastLoggedUserUseCase = lastLoggedUserUseCase,
         _saveUserUseCase = saveUserUseCase,
@@ -46,36 +44,7 @@ class StorageCubit extends Cubit<StorageState> {
         _setBrightnessUseCase = setBrightnessUseCase,
         _loadBrightnessUseCase = loadBrightnessUseCase,
         _toggleBiometricsUseCase = toggleBiometricsUseCase,
-        _loadUserDetailsFromTokenUseCase = loadUserDetailsFromTokenUseCase,
         super(StorageState());
-
-  /// Gets the user details using the registration response token.
-  Future<void> getUserDetails(String token) async {
-    emit(
-      state.copyWith(
-        busy: true,
-      ),
-    );
-
-    try {
-      final user = await _loadUserDetailsFromTokenUseCase(
-        token: token,
-      );
-
-      emit(
-        state.copyWith(
-          busy: false,
-          currentUser: user,
-        ),
-      );
-    } on Exception {
-      emit(
-        state.copyWith(
-          busy: false,
-        ),
-      );
-    }
-  }
 
   /// Loads all the logged in users.
   Future<void> loadLoggedInUsers() async {
