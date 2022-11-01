@@ -19,10 +19,11 @@ class PayBillCubit extends Cubit<PayBillState> {
 
   final LoadBillersUseCase _loadBillersUseCase;
   final LoadServicesUseCase _loadServicesUseCase;
-  final GetAccountsByStatusUseCase _getCustomerAccountsUseCase;
   final PostPaymentUseCase _postPaymentUseCase;
   final ValidateBillUseCase _validateBillUseCase;
   final CreateShortcutUseCase _createShortcutUseCase;
+  final GetActiveAccountsSortedByAvailableBalance
+      _getActiveAccountsSortedByAvailableBalance;
   final SendOTPCodeForPaymentUseCase _sendOTPCodeForPaymentUseCase;
   final VerifyPaymentSecondFactorUseCase _verifyPaymentSecondFactorUseCase;
   final ResendPaymentSecondFactorUseCase _resendPaymentSecondFactorUseCase;
@@ -44,6 +45,8 @@ class PayBillCubit extends Cubit<PayBillState> {
     required GenerateDeviceUIDUseCase generateDeviceUIDUseCase,
     required ValidateBillUseCase validateBillUseCase,
     required CreateShortcutUseCase createShortcutUseCase,
+    required GetActiveAccountsSortedByAvailableBalance
+        getActiveAccountsSortedByAvailableBalance,
     required SendOTPCodeForPaymentUseCase sendOTPCodeForPaymentUseCase,
     required VerifyPaymentSecondFactorUseCase verifyPaymentSecondFactorUseCase,
     required ResendPaymentSecondFactorUseCase resendPaymentSecondFactorUseCase,
@@ -51,7 +54,8 @@ class PayBillCubit extends Cubit<PayBillState> {
     this.paymentToRepeat,
   })  : _loadBillersUseCase = loadBillersUseCase,
         _loadServicesUseCase = loadServicesUseCase,
-        _getCustomerAccountsUseCase = getCustomerAccountsUseCase,
+        _getActiveAccountsSortedByAvailableBalance =
+            getActiveAccountsSortedByAvailableBalance,
         _postPaymentUseCase = postPaymentUseCase,
         _validateBillUseCase = validateBillUseCase,
         _createShortcutUseCase = createShortcutUseCase,
@@ -78,12 +82,7 @@ class PayBillCubit extends Cubit<PayBillState> {
     try {
       final responses = await Future.wait([
         _loadBillersUseCase(),
-        _getCustomerAccountsUseCase(
-          statuses: [
-            AccountStatus.active,
-          ],
-          includeDetails: false,
-        ),
+        _getActiveAccountsSortedByAvailableBalance(),
       ]);
 
       final billers = responses[0] as List<Biller>;
@@ -96,6 +95,7 @@ class PayBillCubit extends Cubit<PayBillState> {
           fromAccounts: accounts
               .where((element) => element.canPay)
               .toList(growable: false),
+          selectedAccount: accounts.first,
           billerCategories: billers.toBillerCategories(),
         ),
       );
