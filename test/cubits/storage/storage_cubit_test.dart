@@ -53,7 +53,6 @@ final _saveOcraSecretKeyUseCase = MockSaveOcraSecretKeyUseCase();
 final _saveUserUseCase = MockSaveUserUseCase();
 final _setBrightnessUseCase = MockSetBrightnessUseCase();
 final _toggleBiometricsUseCase = MockToggleBiometricsUseCase();
-
 final _domainTest = 'test.domain.com';
 final _domainOther = 'other.layer.com';
 final _domainFail = 'failed.domain.com';
