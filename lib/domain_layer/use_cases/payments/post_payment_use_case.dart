@@ -12,12 +12,9 @@ class PostPaymentUseCase {
 
   /// Posts the provided payment
   Future<Payment> call(
-    Payment payment, {
-    String? otp,
-  }) {
-    return _repository.postPayment(
-      payment: payment,
-      otp: otp,
-    );
-  }
+    Payment payment,
+  ) =>
+      _repository.postPayment(
+        payment: payment,
+      );
 }

@@ -147,6 +147,9 @@ class Transfer extends Equatable {
   /// The recurrence end date.
   final DateTime? ends;
 
+  /// Device UID
+  final String? deviceUID;
+
   ///Creates a new immutable [Transfer]
   const Transfer({
     this.id,
@@ -171,6 +174,7 @@ class Transfer extends Equatable {
     this.otpId,
     this.starts,
     this.ends,
+    this.deviceUID,
   });
 
   /// Returns the transfer id as `String`.
@@ -200,5 +204,6 @@ class Transfer extends Equatable {
         otpId,
         starts,
         ends,
+        deviceUID,
       ];
 }

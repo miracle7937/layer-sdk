@@ -17,6 +17,7 @@ abstract class NewSchedulableTransfer extends NewTransfer {
     super.shortcutName,
     super.note,
     super.transferId,
+    super.deviceUID,
   }) : scheduleDetails = scheduleDetails ?? const ScheduleDetails();
 
   /// Whether if this transfer is recurring or not.

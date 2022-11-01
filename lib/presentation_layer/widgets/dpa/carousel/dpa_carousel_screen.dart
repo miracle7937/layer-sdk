@@ -70,12 +70,17 @@ class DPACarouselScreen extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: CarouselPageView(
-            children: content,
-            onFinished: () => context.read<DPAProcessCubit>().stepOrFinish(),
-            onSkip: () => _showSkipBottomSheet(context),
-            busy: state.busy,
-          ),
+          child: CubitActionBuilder<DPAProcessCubit, DPAProcessBusyAction>(
+              actions: DPAProcessBusyAction.values.toSet(),
+              builder: (context, loadingActions) {
+                return CarouselPageView(
+                  children: content,
+                  onFinished: () =>
+                      context.read<DPAProcessCubit>().stepOrFinish(),
+                  onSkip: () => _showSkipBottomSheet(context),
+                  busy: loadingActions.isNotEmpty,
+                );
+              }),
         ),
       ],
     );

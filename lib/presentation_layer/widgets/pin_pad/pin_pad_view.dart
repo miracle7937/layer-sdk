@@ -10,7 +10,7 @@ import '../../resources.dart';
 import '../../utils.dart';
 
 /// A view for inputing a pin with a pin pad.
-class PinPadView extends StatelessWidget {
+class PinPadView extends StatefulWidget {
   /// The pin length.
   /// Default is 6.
   final int pinLenght;
@@ -40,6 +40,9 @@ class PinPadView extends StatelessWidget {
   /// Must be indicated if the [showBiometrics] is `true`.
   final VoidCallback? onBiometrics;
 
+  /// Whether to scramble the pin code or not
+  final bool scramblePin;
+
   /// Creates a new [PinPadView].
   const PinPadView({
     Key? key,
@@ -51,25 +54,41 @@ class PinPadView extends StatelessWidget {
     required this.title,
     this.showBiometrics = false,
     this.onBiometrics,
+    this.scramblePin = false,
   }) : assert(!showBiometrics || onBiometrics != null);
+
+  @override
+  _PinPadViewState createState() => _PinPadViewState();
+}
+
+class _PinPadViewState extends State<PinPadView> {
+  late List<int> pinValues;
+
+  @override
+  void initState() {
+    super.initState();
+    pinValues = List<int>.generate(9, (i) => i + 1)..add(0);
+    if (widget.scramblePin) {
+      pinValues.shuffle();
+    }
+  }
 
   /// The buttons that will appear on the pin pad.
   List<PinButton> pinButtons(BuildContext context) {
     final translation = Translation.of(context);
 
-    return [
-      ...List.generate(
-        9,
-        (index) {
-          final number = (index + 1).toString();
+    var pinWidgets = <PinButton>[];
 
-          return PinButton(
-            title: number,
-            onPressed: () => onChanged('$pin$number'),
-            enabled: pin.length < pinLenght,
-          );
-        },
-      ),
+    for (var index = 0; index < pinValues.length - 1; index++) {
+      pinWidgets.add(PinButton(
+        title: pinValues[index].toString(),
+        onPressed: () => widget.onChanged('${widget.pin}${pinValues[index]}'),
+        enabled: widget.pin.length < widget.pinLenght,
+      ));
+    }
+
+    return [
+      ...pinWidgets,
       PinButton(
         svgPath: FLImages.biometrics,
         onPressed: () async {
@@ -81,23 +100,23 @@ class PinPadView extends StatelessWidget {
           );
 
           if (biometricsCubit.state.authenticated ?? false) {
-            onBiometrics!();
+            widget.onBiometrics!();
           }
         },
-        enabled: showBiometrics,
-        visible: showBiometrics,
+        enabled: widget.showBiometrics,
+        visible: widget.showBiometrics,
       ),
       PinButton(
-        title: '0',
-        onPressed: () => onChanged('${pin}0'),
-        enabled: pin.length < pinLenght,
+        title: pinValues[9].toString(),
+        onPressed: () => widget.onChanged('${widget.pin}${pinValues[9]}'),
+        enabled: widget.pin.length < widget.pinLenght,
       ),
       PinButton(
         svgPath: FLImages.backspace,
-        onPressed: () => onChanged(
-          pin.substring(0, pin.length - 1),
+        onPressed: () => widget.onChanged(
+          widget.pin.substring(0, widget.pin.length - 1),
         ),
-        enabled: pin.isNotEmpty,
+        enabled: widget.pin.isNotEmpty,
       ),
     ];
   }
@@ -110,7 +129,7 @@ class PinPadView extends StatelessWidget {
       create: (context) => context.read<BiometricsCreator>().create(),
       child: Builder(
         builder: (context) => IgnorePointer(
-          ignoring: disabled,
+          ignoring: widget.disabled,
           child: Container(
             margin: const EdgeInsets.all(16),
             child: Column(
@@ -123,7 +142,7 @@ class PinPadView extends StatelessWidget {
                     ),
                     Center(
                       child: AutoSizeText(
-                        title,
+                        widget.title,
                         textAlign: TextAlign.center,
                         style: layerDesign.bodyM(),
                         maxLines: 3,
@@ -157,13 +176,13 @@ class PinPadView extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(
-              pinLenght,
+              widget.pinLenght,
               (index) => IgnorePointer(
                 ignoring: true,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: DKRadioButton(
-                    selected: pin.length > index,
+                    selected: widget.pin.length > index,
                   ),
                 ),
               ),
@@ -175,14 +194,14 @@ class PinPadView extends StatelessWidget {
               opacity: animation,
               child: child,
             ),
-            child: warning == null
+            child: widget.warning == null
                 ? const SizedBox.shrink()
                 : Padding(
                     padding: const EdgeInsets.only(
                       top: 12.0,
                     ),
                     child: AutoSizeText(
-                      warning!,
+                      widget.warning!,
                       textAlign: TextAlign.center,
                       style: layerDesign.titleM(
                         color: layerDesign.errorPrimary,
