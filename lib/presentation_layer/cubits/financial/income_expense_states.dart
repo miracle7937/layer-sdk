@@ -29,6 +29,8 @@ class IncomeExpenseState extends BaseState<IncomeExpenseAction, void, void> {
 
   @override
   List<Object?> get props => [
+        actions,
+        errors,
         incomeExpense,
         accountId,
         endDate,

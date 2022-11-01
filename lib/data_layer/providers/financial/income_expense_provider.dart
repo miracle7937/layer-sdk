@@ -1,3 +1,4 @@
+import '../../../presentation_layer/cubits/financial/income_expense_cubit.dart';
 import '../../dtos/financial/income_expense_dto.dart';
 import '../../network.dart';
 
@@ -14,17 +15,17 @@ class IncomeExpenseProvider {
   /// Returns all  incomes and expenses of the supplied customer account
   Future<List<IncomeExpenseDTO>> getIncomeExpense({
     required String accountId,
-    required int? fromDate,
-    required int? toDate,
-    required String? interval,
+    required DateTime? fromDate,
+    required DateTime? toDate,
+    required IncomeExpenseInterval? interval,
   }) async {
     final response = await netClient.request(
       netClient.netEndpoints.incomeExpense,
       method: NetRequestMethods.get,
       queryParameters: {
-        'interval': interval,
-        'from_date': fromDate,
-        'to_date': toDate,
+        'interval': interval!.value,
+        'from_date': fromDate!.millisecondsSinceEpoch,
+        'to_date': toDate!.millisecondsSinceEpoch,
         'account_id': accountId,
       },
     );

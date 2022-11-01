@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:layer_sdk/data_layer/dtos/financial/income_expense_dto.dart';
 import '../../../domain_layer/use_cases/financial/get_incomes_expenses_use_case.dart';
 import 'income_expense_states.dart';
 
@@ -21,12 +22,10 @@ class IncomeExpenseCubit extends Cubit<IncomeExpenseState> {
           ),
         );
 
-  /// Loads all account completed account incomeExpense of the provided
-  /// Customer Id and Account Id
+  /// Loads incomes and expenses of account
   Future<void> load({
     required String accountId,
-    required String? interval,
-    bool loadMore = false,
+    required IncomeExpenseInterval? interval,
     DateTime? startDate,
     DateTime? endDate,
   }) async {
@@ -43,8 +42,8 @@ class IncomeExpenseCubit extends Cubit<IncomeExpenseState> {
         ),
       );
       final incomeExpense = await _getCustomerIncomeExpenseUseCase(
-        toDate: state.endDate.millisecondsSinceEpoch,
-        fromDate: state.startDate.millisecondsSinceEpoch,
+        toDate: state.endDate,
+        fromDate: state.startDate,
         interval: interval,
         accountId: accountId,
       );

@@ -3,16 +3,16 @@ import 'package:equatable/equatable.dart';
 /// Account incomes and expenses
 class IncomeExpense extends Equatable {
   /// The account income
-  final num? income;
+  final double? income;
 
   /// The account expense
-  final num? expense;
+  final double? expense;
 
   /// The period start date
-  final String? periodStartDate;
+  final DateTime? periodStartDate;
 
   /// This period end date
-  final String? periodEndDate;
+  final DateTime? periodEndDate;
 
   /// The preferred currency
   final String? prefCurrency;
