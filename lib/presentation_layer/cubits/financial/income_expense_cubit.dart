@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:layer_sdk/data_layer/dtos/financial/income_expense_dto.dart';
+import '../../../data_layer/dtos/financial/income_expense_dto.dart';
 import '../../../domain_layer/use_cases/financial/get_incomes_expenses_use_case.dart';
 import 'income_expense_states.dart';
 
@@ -10,13 +10,13 @@ class IncomeExpenseCubit extends Cubit<IncomeExpenseState> {
   /// Creates a new instance of [IncomeExpenseCubit]
   IncomeExpenseCubit({
     required IncomeExpenseUseCase getCustomerIncomeExpenseUseCase,
-    required String accountId,
+    String? accountId,
     required DateTime startDate,
     required DateTime endDate,
   })  : _getCustomerIncomeExpenseUseCase = getCustomerIncomeExpenseUseCase,
         super(
           IncomeExpenseState(
-            accountId: accountId,
+            accountId: accountId ?? '',
             startDate: startDate,
             endDate: endDate,
           ),
