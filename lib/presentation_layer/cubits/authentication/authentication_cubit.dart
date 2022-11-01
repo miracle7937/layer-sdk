@@ -21,6 +21,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   final GetDeviceModelUseCase _getDeviceModelUseCase;
   final LoadDeveloperUserDetailsFromTokenUseCase
       _loadDeveloperUserDetailsFromTokenUseCase;
+  final LoadUserDetailsFromTokenUseCase _loadUserDetailsFromTokenUseCase;
 
   /// Creates a new cubit with an empty [AuthenticationState] and calls
   /// load settings
@@ -37,6 +38,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     bool shouldGetCustomerObject = false,
     required LoadDeveloperUserDetailsFromTokenUseCase
         loadDeveloperUserDetailsFromTokenUseCase,
+    required LoadUserDetailsFromTokenUseCase loadUserDetailsFromTokenUseCase,
   })  : _loginUseCase = loginUseCase,
         _logoutUseCase = logoutUseCase,
         _recoverPasswordUseCase = recoverPasswordUseCase,
@@ -49,6 +51,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         _getDeviceModelUseCase = getDeviceModelUseCase,
         _loadDeveloperUserDetailsFromTokenUseCase =
             loadDeveloperUserDetailsFromTokenUseCase,
+        _loadUserDetailsFromTokenUseCase = loadUserDetailsFromTokenUseCase,
         super(AuthenticationState());
 
   /// Sets the provided user as the current logged user and emits updated state.
@@ -58,6 +61,34 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     _updateUserTokenUseCase(token: user.token);
     if (_shouldGetCustomerObject) loadCustomerObject();
     emit(state.copyWith(user: user));
+  }
+
+  /// Gets the user details using the registration response token.
+  Future<void> getUserDetails(String token) async {
+    emit(
+      state.copyWith(
+        busy: true,
+      ),
+    );
+
+    try {
+      final user = await _loadUserDetailsFromTokenUseCase(
+        token: token,
+      );
+
+      emit(
+        state.copyWith(
+          busy: false,
+          user: user,
+        ),
+      );
+    } on Exception {
+      emit(
+        state.copyWith(
+          busy: false,
+        ),
+      );
+    }
   }
 
   /// Emits a busy state, then logs the user out on the repository and removes
