@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../domain_layer/models.dart';
 import '../../../cubits.dart';
 import '../../../utils.dart';
+import '../../cubit_helpers/cubit_action_builder.dart';
 
 /// Signature for [DPAContinueButton.builder].
 ///
@@ -69,58 +70,65 @@ class DPAContinueButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final translation = Translation.of(context);
+    return CubitActionBuilder<DPAProcessCubit, DPAProcessBusyAction>(
+        actions: DPAProcessBusyAction.values.toSet(),
+        builder: (context, loadingActions) {
+          final translation = Translation.of(context);
 
-    final cubit = context.watch<DPAProcessCubit>();
+          final cubit = context.watch<DPAProcessCubit>();
 
-    final processLabel = customLabel ?? process.stepProperties?.confirmLabel;
+          final processLabel =
+              customLabel ?? process.stepProperties?.confirmLabel;
 
-    final effectiveEnabled = enabled &&
-        cubit.state.activeProcess == process &&
-        !cubit.state.busy &&
-        !cubit.state.busyProcessingFile;
+          final effectiveEnabled = enabled &&
+              cubit.state.activeProcess == process &&
+              loadingActions.isEmpty &&
+              !cubit.state.busyProcessingFile;
 
-    final hasSkip =
-        cubit.state.activeProcess.stepProperties?.skipButton ?? false;
+          final hasSkip =
+              cubit.state.activeProcess.stepProperties?.skipButton ?? false;
 
-    final onTap = effectiveEnabled
-        ? (customOnTap ??
-            (hasSkip
-                ? () => cubit.stepOrFinish(
-                      extraVariables: [
-                        DPAVariable(
-                          id: 'skip',
-                          type: DPAVariableType.boolean,
-                          property: DPAVariableProperty(),
-                          value: false,
-                        )
-                      ],
-                    )
-                : cubit.stepOrFinish))
-        : null;
+          final onTap = effectiveEnabled
+              ? (customOnTap ??
+                  (hasSkip
+                      ? () => cubit.stepOrFinish(
+                            extraVariables: [
+                              DPAVariable(
+                                id: 'skip',
+                                type: DPAVariableType.boolean,
+                                property: DPAVariableProperty(),
+                                value: false,
+                              )
+                            ],
+                          )
+                      : cubit.stepOrFinish))
+              : null;
 
-    final busy = canEnterLoadingState &&
-        cubit.state.busy &&
-        cubit.state.activeProcess == process &&
-        cubit.state.actions.contains(DPAProcessBusyAction.steppingForward) &&
-        (cubit.state.activeProcess.stepProperties?.skipLabel?.isEmpty ?? true);
+          final busy = canEnterLoadingState &&
+              loadingActions.isNotEmpty &&
+              cubit.state.activeProcess == process &&
+              cubit.state.actions
+                  .contains(DPAProcessBusyAction.steppingForward) &&
+              (cubit.state.activeProcess.stepProperties?.skipLabel?.isEmpty ??
+                  true);
 
-    return builder?.call(
-          context,
-          processLabel,
-          effectiveEnabled,
-          busy,
-          onTap,
-        ) ??
-        DKButton(
-          title: processLabel ?? translation.translate('continue'),
-          status: busy
-              ? DKButtonStatus.loading
-              : effectiveEnabled
-                  ? DKButtonStatus.idle
-                  : DKButtonStatus.disabled,
-          onPressed: () => onTap?.call(),
-          expands: expands,
-        );
+          return builder?.call(
+                context,
+                processLabel,
+                effectiveEnabled,
+                busy,
+                onTap,
+              ) ??
+              DKButton(
+                title: processLabel ?? translation.translate('continue'),
+                status: busy
+                    ? DKButtonStatus.loading
+                    : effectiveEnabled
+                        ? DKButtonStatus.idle
+                        : DKButtonStatus.disabled,
+                onPressed: () => onTap?.call(),
+                expands: expands,
+              );
+        });
   }
 }
