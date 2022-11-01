@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../domain_layer/models.dart';
+import '../../cubits.dart';
 
 /// The available actions the cubit may perform
 enum DPAProcessBusyAction {
@@ -51,20 +52,8 @@ enum DPAProcessRunStatus {
   finished,
 }
 
-/// The available error status
-enum DPAProcessErrorStatus {
-  /// No errors
-  none,
-
-  /// Generic error.
-  generic,
-
-  /// Network error
-  network,
-}
-
 /// The state that holds the DPA process definitions.
-class DPAProcessState extends Equatable {
+class DPAProcessState extends BaseState<DPAProcessBusyAction, void, void> {
   /// The current process.
   ///
   /// A [DPAProcess] has the general details of the process, but also the
@@ -89,40 +78,18 @@ class DPAProcessState extends Equatable {
   /// When not null, updating variables will update this process only.
   final DPAProcess? popUp;
 
-  /// If this cubit is busy doing some work.
-  ///
-  /// This is calculated by what action is the cubit performing.
-  ///
-  /// Please note that the processing of files is denoted on
-  /// [busyProcessingFile], so it's best to use both properties when checking if
-  /// is possible to step the process.
-  final bool busy;
-
   /// If this cubit is busy uploading/downloading/deleting some file for a
   /// variable.
   ///
   /// This is calculated by using [processingFiles].
-  ///
-  /// This is done separated from [busy] as you can process more than one
-  /// variable and the UI should work differently for each.
   final bool busyProcessingFile;
 
   /// Holds the data of the variables that are processing files.
   final UnmodifiableSetView<DPAProcessingFileData> processingFiles;
 
-  /// The actions that the cubit is performing.
-  final UnmodifiableSetView<DPAProcessBusyAction> actions;
-
   /// Holds the information of the current status of the process in the cubit:
   /// if one is running, if it has finished, etc.
   final DPAProcessRunStatus runStatus;
-
-  /// The current error status.
-  final DPAProcessErrorStatus errorStatus;
-
-  /// An error message, that will be set if [errorStatus] is different than
-  /// [DPAProcessErrorStatus.none], and if available.
-  final String errorMessage;
 
   /// Whether or not a value was chosen during this state change.
   final bool chosenValue;
@@ -131,18 +98,14 @@ class DPAProcessState extends Equatable {
   DPAProcessState({
     DPAProcess? process,
     this.popUp,
+    super.actions = const <DPAProcessBusyAction>{},
+    super.errors = const <CubitError>{},
     Set<DPAProcessingFileData> processingFiles = const {},
-    Set<DPAProcessBusyAction> actions = const <DPAProcessBusyAction>{},
     this.runStatus = DPAProcessRunStatus.readyToStart,
-    this.errorStatus = DPAProcessErrorStatus.none,
     String errorMessage = '',
     this.chosenValue = false,
   })  : process = process ?? DPAProcess(),
         processingFiles = UnmodifiableSetView(processingFiles),
-        actions = UnmodifiableSetView(actions),
-        busy = actions.isNotEmpty,
-        errorMessage =
-            errorStatus == DPAProcessErrorStatus.none ? '' : errorMessage,
         busyProcessingFile = processingFiles.isNotEmpty;
 
   /// Return the [DPAProcessingFileData] for the given variable key.
@@ -157,13 +120,11 @@ class DPAProcessState extends Equatable {
   List<Object?> get props => [
         process,
         popUp,
-        busy,
         busyProcessingFile,
         processingFiles,
         actions,
+        errors,
         runStatus,
-        errorStatus,
-        errorMessage,
         chosenValue,
       ];
 
@@ -199,20 +160,19 @@ class DPAProcessState extends Equatable {
     bool clearProcessingFiles = false,
     Set<DPAProcessBusyAction>? actions,
     DPAProcessRunStatus? runStatus,
-    DPAProcessErrorStatus? errorStatus,
     String? errorMessage,
     bool chosenValue = false,
+    Set<CubitError>? errors,
   }) {
     return DPAProcessState(
       process: process ?? this.process,
       popUp: clearPopUp ? null : (popUp ?? this.popUp),
       processingFiles:
           clearProcessingFiles ? {} : (processingFiles ?? this.processingFiles),
-      actions: actions ?? this.actions,
       runStatus: runStatus ?? this.runStatus,
-      errorStatus: errorStatus ?? this.errorStatus,
-      errorMessage: errorMessage ?? this.errorMessage,
       chosenValue: chosenValue,
+      errors: errors ?? super.errors,
+      actions: actions ?? super.actions,
     );
   }
 }

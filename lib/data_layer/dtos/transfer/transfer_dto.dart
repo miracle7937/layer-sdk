@@ -114,6 +114,9 @@ class TransferDTO {
   /// The transfer processing type.
   TransferProcessingTypeDTO? processingType;
 
+  /// Device UID
+  String? deviceUID;
+
   ///Creates a new [TransferDTO]
   TransferDTO({
     this.id,
@@ -153,6 +156,7 @@ class TransferDTO {
     this.extra,
     this.cbsLocked,
     this.processingType,
+    this.deviceUID,
   });
 
   /// Creates a [TransferDTO] from a JSON
@@ -198,6 +202,7 @@ class TransferDTO {
         reason: json['reason'],
         reasonId: json['reason_id'],
         note: json['note'],
+        deviceUID: json['device_uid'],
         secondFactor: SecondFactorTypeDTO.fromRaw(json['second_factor']),
         evaluation: TransferEvaluationDTO.fromJson(json['extra'] ?? {}),
         fullName: json['name'],

@@ -71,6 +71,9 @@ class DPATaskDTO {
   /// The process key.
   final String? processKey;
 
+  /// The activity description
+  final String? activityDescription;
+
   /// Creates a new [DPATaskDTO].
   DPATaskDTO({
     this.assignee,
@@ -96,41 +99,42 @@ class DPATaskDTO {
     this.preVariables,
     this.taskVariables,
     this.processKey,
+    this.activityDescription,
   });
 
   /// Creates a new [DPATaskDTO] from a JSON.
   factory DPATaskDTO.fromJson(Map<String, dynamic> json) => DPATaskDTO(
-        assignee: json['assignee'],
-        created: json['created'],
-        description: json['description'],
-        due: json['due'],
-        executionId: json['executionId'],
-        id: json['id'],
-        name: json['name'],
-        processKey: json['processKey'],
-        priority: json['priority'],
-        activityInstanceId: json['activityInstanceId'],
-        previousTasks: List<String>.from(json['previous_task'] ?? []),
-        processDefinitionId: json['processDefinitionId'],
-        processDefinitionName: json['processDefinitionName'],
-        processDefinitionKey: json['processDefinitionKey'],
-        processInstanceId: json['processInstanceId'],
-        processOwner: _cleanProcessOwner(json['process_owner']),
-        reference: json['reference'],
-        suspended: json['suspended'] is String
-            ? json['suspended'] != '0'
-            : json['suspended'],
-        status: DPAStatusDTO.fromRaw(json['Status']),
-        statusUpdate: json['statusUpdate'],
-        taskDefinitionKey: json['taskDefinitionKey'],
-        preVariables: json['PreVariables'] == null
-            ? null
-            : DPAVariableDTO.fromJsonList(
-                List<Map<String, dynamic>>.from(json['PreVariables'])),
-        taskVariables: json['taskVariables'] == null
-            ? null
-            : DPAVariableDTO.fromJsonMap(json['taskVariables']['variables']),
-      );
+      assignee: json['assignee'],
+      created: json['created'],
+      description: json['description'],
+      due: json['due'],
+      executionId: json['executionId'],
+      id: json['id'],
+      name: json['name'],
+      processKey: json['processKey'],
+      priority: json['priority'],
+      activityInstanceId: json['activityInstanceId'],
+      previousTasks: List<String>.from(json['previous_task'] ?? []),
+      processDefinitionId: json['processDefinitionId'],
+      processDefinitionName: json['processDefinitionName'],
+      processDefinitionKey: json['processDefinitionKey'],
+      processInstanceId: json['processInstanceId'],
+      processOwner: _cleanProcessOwner(json['process_owner']),
+      reference: json['reference'],
+      suspended: json['suspended'] is String
+          ? json['suspended'] != '0'
+          : json['suspended'],
+      status: DPAStatusDTO.fromRaw(json['Status']),
+      statusUpdate: json['statusUpdate'],
+      taskDefinitionKey: json['taskDefinitionKey'],
+      preVariables: json['PreVariables'] == null
+          ? null
+          : DPAVariableDTO.fromJsonList(
+              List<Map<String, dynamic>>.from(json['PreVariables'])),
+      taskVariables: json['taskVariables'] == null
+          ? null
+          : DPAVariableDTO.fromJsonMap(json['taskVariables']['variables']),
+      activityDescription: json['activity_description']);
 
   static String? _cleanProcessOwner(String? jsonValue) {
     if (jsonValue == null || jsonValue.isEmpty) return null;
@@ -174,5 +178,7 @@ class DPATaskDTO {
       '${preVariables != null ? ' preVariables: $preVariables' : ''}'
       '${processKey != null ? ' processKey: $processKey' : ''}'
       '${taskVariables != null ? ' taskVariables: $taskVariables' : ''}'
+      '${activityDescription != null ? ' activityDescription:'
+          ' $activityDescription' : ''}'
       '}';
 }

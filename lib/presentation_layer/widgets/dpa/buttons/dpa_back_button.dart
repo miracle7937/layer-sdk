@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../cubits.dart';
 import '../../../resources.dart';
 import '../../../utils.dart';
+import '../../cubit_helpers/cubit_action_builder.dart';
 
 /// Signature for [DPABackButton.builder].
 typedef DPABackBuilder = Widget Function(
@@ -61,49 +62,54 @@ class DPABackButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final canGoBack = context.select<DPAProcessCubit, bool>(
-      (cubit) =>
-          !cubit.state.busy &&
-          !cubit.state.busyProcessingFile &&
-          cubit.state.activeProcess.canGoBack,
-    );
+    return CubitActionBuilder<DPAProcessCubit, DPAProcessBusyAction>(
+        actions: DPAProcessBusyAction.values.toSet(),
+        builder: (context, loadingActions) {
+          final canGoBack = context.select<DPAProcessCubit, bool>(
+            (cubit) =>
+                loadingActions.isEmpty &&
+                !cubit.state.busyProcessingFile &&
+                cubit.state.activeProcess.canGoBack,
+          );
 
-    final cubitBusy = context.select<DPAProcessCubit, bool>(
-      (cubit) => cubit.state.busy || cubit.state.busyProcessingFile,
-    );
+          final cubitBusy = context.select<DPAProcessCubit, bool>(
+            (cubit) =>
+                loadingActions.isNotEmpty || cubit.state.busyProcessingFile,
+          );
 
-    final buttonLoading = context.select<DPAProcessCubit, bool>(
-      (cubit) => cubit.state.actions.any(
-        (action) => [
-          DPAProcessBusyAction.steppingBack,
-          DPAProcessBusyAction.cancelling,
-        ].contains(action),
-      ),
-    );
+          final buttonLoading = context.select<DPAProcessCubit, bool>(
+            (cubit) => cubit.state.actions.any(
+              (action) => [
+                DPAProcessBusyAction.steppingBack,
+                DPAProcessBusyAction.cancelling,
+              ].contains(action),
+            ),
+          );
 
-    final onTap = (cubitBusy || !canGoBack || !enabled)
-        ? () {}
-        : context.read<DPAProcessCubit>().stepBack;
+          final onTap = (cubitBusy || !canGoBack || !enabled)
+              ? () {}
+              : context.read<DPAProcessCubit>().stepBack;
 
-    switch (type) {
-      case DPABackButtonType.header:
-        return _DPAHeaderBackButton(
-          canGoBack: canGoBack,
-          busy: buttonLoading,
-          duration: duration,
-          builder: builder,
-          onTap: onTap,
-        );
+          switch (type) {
+            case DPABackButtonType.header:
+              return _DPAHeaderBackButton(
+                canGoBack: canGoBack,
+                busy: buttonLoading,
+                duration: duration,
+                builder: builder,
+                onTap: onTap,
+              );
 
-      case DPABackButtonType.button:
-        return _DPABackButton(
-          canGoBack: canGoBack,
-          busy: buttonLoading,
-          builder: builder,
-          onTap: onTap,
-          expands: expands,
-        );
-    }
+            case DPABackButtonType.button:
+              return _DPABackButton(
+                canGoBack: canGoBack,
+                busy: buttonLoading,
+                builder: builder,
+                onTap: onTap,
+                expands: expands,
+              );
+          }
+        });
   }
 }
 

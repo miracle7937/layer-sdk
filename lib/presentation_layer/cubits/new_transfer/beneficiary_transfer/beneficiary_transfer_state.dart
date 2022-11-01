@@ -200,6 +200,7 @@ class BeneficiaryTransferState extends BaseState<BeneficiaryTransferAction,
     Transfer? transferResult,
     String? bankQuery,
     bool? editMode,
+    String? deviceUID,
   }) =>
       BeneficiaryTransferState(
         transfer: transfer ?? this.transfer,

@@ -1,42 +1,9 @@
-import 'package:equatable/equatable.dart';
-
 import '../../../domain_layer/models.dart';
-
-/// Which loading action the cubit is doing
-enum PatchPaymentBusyAction {
-  /// Loading the entire cubit state
-  loading,
-
-  /// Loading the list of services
-  loadingServices,
-
-  /// Submitting the payment
-  submitting,
-
-  /// Validating second factory
-  validatingSecondFactor,
-
-  /// Re-sending the OTP
-  resendingOTP,
-
-  /// Validating user input
-  validating,
-}
-
-/// The available error status
-enum PatchPaymentErrorStatus {
-  /// No errors
-  none,
-
-  /// Generic error
-  generic,
-
-  /// Network error
-  network,
-}
+import '../../cubits.dart';
 
 /// The state of the patch bill payment cubit
-class PatchPaymentState extends Equatable {
+class PatchPaymentState
+    extends BaseState<PatchPaymentAction, PatchPaymentEvent, void> {
   /// The payment to be patched
   final Payment payment;
 
@@ -52,17 +19,11 @@ class PatchPaymentState extends Equatable {
   /// The initial schedule details of the payment when we first open the screen
   final ScheduleDetails? _initialRecurrence;
 
-  /// True if the cubit is processing something.
-  final bool busy;
-
-  /// Which busy action is the cubit doing
-  final PatchPaymentBusyAction busyAction;
-
-  /// The current error status.
-  final PatchPaymentErrorStatus errorStatus;
-
   /// The details about scheduled payments
   final ScheduleDetails? scheduleDetails;
+
+  /// The payment returned
+  final Payment? returnedPayment;
 
   /// Creates a new state.
   PatchPaymentState({
@@ -71,49 +32,51 @@ class PatchPaymentState extends Equatable {
     Account? initiallySelectedAccount,
     double? initialAmount,
     List<Biller> billers = const [],
-    this.busy = true,
-    this.busyAction = PatchPaymentBusyAction.loading,
-    this.errorStatus = PatchPaymentErrorStatus.none,
     this.scheduleDetails,
+    super.actions = const <PatchPaymentAction>{},
+    super.errors = const <CubitError>{},
+    super.events = const <PatchPaymentEvent>{},
+    this.returnedPayment,
   })  : _initialRecurrence = scheduleDetails?.copyWith(),
         _initialAmount = initialAmount,
         _initiallySelectedAccount = initiallySelectedAccount;
 
   @override
   List<Object?> get props => [
+        actions,
+        events,
+        errors,
         payment,
         _initiallySelectedAccount,
         _initialAmount,
         _initialRecurrence,
         fromAccounts,
-        busy,
-        busyAction,
-        errorStatus,
         scheduleDetails,
+        returnedPayment,
       ];
 
   /// Creates a new state based on this one.
   PatchPaymentState copyWith({
     Payment? payment,
     List<Account>? fromAccounts,
-    bool? busy,
-    PatchPaymentErrorStatus? errorStatus,
-    PatchPaymentBusyAction? busyAction,
     ScheduleDetails? scheduleDetails,
-  }) {
-    return PatchPaymentState(
-      payment: payment ?? this.payment,
-      fromAccounts: fromAccounts ?? this.fromAccounts,
-      busy: busy ?? this.busy,
-      busyAction: busyAction ?? this.busyAction,
-      errorStatus: errorStatus ?? this.errorStatus,
-      scheduleDetails: scheduleDetails ?? this.scheduleDetails,
-    );
-  }
+    Set<CubitError>? errors,
+    Set<PatchPaymentAction>? actions,
+    Set<PatchPaymentEvent>? events,
+    Payment? returnedPayment,
+  }) =>
+      PatchPaymentState(
+        payment: payment ?? this.payment,
+        fromAccounts: fromAccounts ?? this.fromAccounts,
+        scheduleDetails: scheduleDetails ?? this.scheduleDetails,
+        errors: errors ?? super.errors,
+        events: events ?? super.events,
+        actions: actions ?? super.actions,
+        returnedPayment: returnedPayment ?? this.returnedPayment,
+      );
 
   /// Whether the user can submit the form or not
   bool get canSubmit =>
-      !busy &&
       (_initiallySelectedAccount?.id != payment.fromAccount?.id ||
           _initialAmount != payment.amount ||
           canSubmitRecurrence) &&
@@ -153,4 +116,37 @@ class PatchPaymentState extends Equatable {
         recurrenceStart: _recurrenceStart,
         recurrenceEnd: _recurrenceEnd,
       );
+}
+
+/// Which loading action the cubit is doing
+enum PatchPaymentAction {
+  /// Loading the entire cubit state
+  loading,
+
+  /// Submitting the payment
+  submitting,
+
+  /// Sending the OTP code for the payment.
+  sendingOTPCode,
+
+  /// Validating second factory
+  verifyingSecondFactor,
+
+  /// Re-sending the OTP
+  resendingOTP,
+}
+
+/// Possible events
+enum PatchPaymentEvent {
+  /// Event for opening the second factor.
+  openSecondFactor,
+
+  /// Event for showing the OTP code inputing view.
+  showOTPCodeView,
+
+  /// Event for closing the second factor.
+  closeSecondFactor,
+
+  /// Event for showing the payment result view.
+  showResultView,
 }
