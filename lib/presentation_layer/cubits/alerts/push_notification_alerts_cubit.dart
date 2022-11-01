@@ -6,14 +6,11 @@ import 'push_notification_alerts_state.dart';
 ///A cubit that holds the result alert from push notification
 class PushNotificationAlertsCubit extends Cubit<PushNotificationAlertsState> {
   final GetAlertByActivityQueryUseCase _getAlertByActivityQueryUseCase;
-  final HandleAlertQueryUseCase _handleAlertQueryUseCase;
 
   /// Creates a new [PushNotificationAlertsCubit]
   PushNotificationAlertsCubit({
     required GetAlertByActivityQueryUseCase getAlertByActivityQueryUseCase,
-    required HandleAlertQueryUseCase handleAlertQueryUseCase,
   })  : _getAlertByActivityQueryUseCase = getAlertByActivityQueryUseCase,
-        _handleAlertQueryUseCase = handleAlertQueryUseCase,
         super(PushNotificationAlertsState());
 
   /// Loads the aler details from firebase push notification response by `query`
@@ -33,10 +30,8 @@ class PushNotificationAlertsCubit extends Cubit<PushNotificationAlertsState> {
     );
 
     try {
-      final resultQuery = _handleAlertQueryUseCase(query: query);
-
       final result = await _getAlertByActivityQueryUseCase(
-        resultQuery,
+        query,
         includeDetails: includeDetails,
       );
 

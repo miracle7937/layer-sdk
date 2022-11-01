@@ -64,7 +64,7 @@ abstract class ActivityRepositoryInterface {
 
   /// Retrive the alert by the activity query from push notification
   Future<Activity> getAlertByActivityQuery(
-    Map<String, dynamic> query, {
+    Map<String, dynamic> extraParams, {
     required bool includeDetails,
   });
 }

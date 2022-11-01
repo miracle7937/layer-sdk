@@ -242,11 +242,11 @@ class ActivityProvider {
 
   /// Retrieve the alert by the activity query from push notification
   Future<ActivityDTO> getAlertByActivityQuery(
-    Map<String, dynamic> query, {
+    Map<String, dynamic> extraParams, {
     required bool includeDetails,
   }) async {
     final params = {
-      query.keys.first: query.values.first,
+      ...extraParams,
       'include_details': includeDetails,
       'search_object': true,
       'search_alert': true,

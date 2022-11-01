@@ -160,11 +160,11 @@ class ActivityRepository implements ActivityRepositoryInterface {
   /// Retrive the alert by the activity query from push notification
   @override
   Future<Activity> getAlertByActivityQuery(
-    Map<String, dynamic> query, {
+    Map<String, dynamic> extraParams, {
     required bool includeDetails,
   }) async {
     final result = await _provider.getAlertByActivityQuery(
-      query,
+      extraParams,
       includeDetails: includeDetails,
     );
 

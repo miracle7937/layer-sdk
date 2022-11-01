@@ -12,11 +12,15 @@ class GetAlertByActivityQueryUseCase {
 
   /// Callable method to get the alert by the activity query
   Future<Activity> call(
-    Map<String, dynamic> query, {
+    String query, {
     required bool includeDetails,
   }) {
+    final queryList = query.split('=');
+
+    final extraParams = {queryList.first: queryList.last};
+
     return _repository.getAlertByActivityQuery(
-      query,
+      extraParams,
       includeDetails: includeDetails,
     );
   }
