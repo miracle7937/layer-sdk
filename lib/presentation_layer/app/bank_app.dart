@@ -452,7 +452,7 @@ class BankAppState extends State<BankApp> {
           final languageCode = selectedLocale.languageCode.split('_').first;
 
           Widget app = AutoLock(
-            enabled: widget.appConfiguration.autoLockEnabled,
+            enabled: false,
             child: MaterialApp(
               navigatorKey: _navigatorKey,
               title: widget.appConfiguration.title ?? '',
