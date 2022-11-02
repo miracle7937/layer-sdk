@@ -239,4 +239,26 @@ class ActivityProvider {
       method: NetRequestMethods.delete,
     );
   }
+
+  /// Retrieve the alert by the activity query from push notification
+  Future<ActivityDTO> getAlertByActivityQuery(
+    Map<String, dynamic> extraParams, {
+    required bool includeDetails,
+  }) async {
+    final params = {
+      ...extraParams,
+      'include_details': includeDetails,
+      'search_object': true,
+      'search_alert': true,
+      'search_user_task': true,
+    };
+
+    final response = await netClient.request(
+      netClient.netEndpoints.activity,
+      method: NetRequestMethods.get,
+      queryParameters: params,
+    );
+
+    return ActivityDTO.fromJson(response.data);
+  }
 }

@@ -67,6 +67,7 @@ class ActivityState extends Equatable {
     Iterable<Activity>? activities,
     String? shortcutName,
     String? errorMessage,
+    Activity? alert,
   }) {
     return ActivityState(
       errorStatus: errorStatus ?? this.errorStatus,
