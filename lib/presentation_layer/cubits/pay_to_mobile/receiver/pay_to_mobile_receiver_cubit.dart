@@ -1,6 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../data_layer/helpers.dart';
+import '../../../../domain_layer/models/bank/bank.dart';
+import '../../../../domain_layer/models/beneficiary/beneficiary.dart';
+import '../../../../domain_layer/use_cases/bank/get_bank_by_bic_use_case.dart';
 import '../../../../features/accounts.dart';
 import '../../../../features/pay_to_mobile_receiver.dart';
 
@@ -9,13 +12,16 @@ class PayToMobileReceiverCubit extends Cubit<PayToMobileReceiverState> {
   /// Use case that posts a new mobile payment
   final PostReceivedPaymentUseCase _postPaymentUseCase;
   final GetCustomerAccountsUseCase _accountsUseCase;
+  final GetBankByBicUseCase _getBankByBic;
 
   /// Creates a new [PayToMobileReceiverCubit]
   PayToMobileReceiverCubit({
     required PostReceivedPaymentUseCase postReceivedPaymentUseCase,
     required GetCustomerAccountsUseCase getCustomerAccountsUseCase,
+    required GetBankByBicUseCase getBankByBic,
   })  : _postPaymentUseCase = postReceivedPaymentUseCase,
         _accountsUseCase = getCustomerAccountsUseCase,
+        _getBankByBic = getBankByBic,
         super(
           PayToMobileReceiverState(
             deviceUUID: randomAlphaNumeric(30),
@@ -40,24 +46,27 @@ class PayToMobileReceiverCubit extends Cubit<PayToMobileReceiverState> {
     );
   }
 
-  /// Loads accounts and set the user account
+  /// Loads the accounts and the bank for the selected account
   Future<void> load() async {
     emit(
       state.copyWith(
-        actions: state.addAction(
-          PayToMobileReceiverActions.accounts,
-        ),
+        actions: state.addAction(PayToMobileReceiverActions.loadingData),
         errors: state.removeErrorForAction(
-          PayToMobileReceiverActions.accounts,
+          PayToMobileReceiverActions.loadingData,
         ),
       ),
     );
 
     try {
       final accounts = await _accountsUseCase();
+
+      final bank = await _getBankByBic(
+        bic: accounts.first.extraSwiftCode ?? "",
+      );
       emit(
         state.copyWith(
-          actions: state.removeAction(PayToMobileReceiverActions.accounts),
+          actions: state.removeAction(PayToMobileReceiverActions.loadingData),
+          bank: bank,
           selectedAccount: accounts.first,
           accounts: accounts,
         ),
@@ -65,15 +74,18 @@ class PayToMobileReceiverCubit extends Cubit<PayToMobileReceiverState> {
     } on Exception catch (e) {
       emit(
         state.copyWith(
-          actions: state.removeAction(PayToMobileReceiverActions.accounts),
+          actions: state.removeAction(PayToMobileReceiverActions.loadingData),
           errors: state.addErrorFromException(
-            action: PayToMobileReceiverActions.accounts,
+            action: PayToMobileReceiverActions.loadingData,
             exception: e,
           ),
         ),
       );
     }
   }
+
+  /// Loads accounts and set the user account
+  Future<void> loadingData() async {}
 
   /// Post the mobile payment
   Future<void> postPayment({
@@ -96,6 +108,19 @@ class PayToMobileReceiverCubit extends Cubit<PayToMobileReceiverState> {
         withdrawalCode: state.withdrawalCode,
         withdrawalPin: state.withdrawalPin,
         deviceUUID: state.deviceUUID,
+        beneficiary: Beneficiary(
+          middleName: '',
+          nickname: '',
+          lastName: '',
+          firstName: '',
+          bankName: '',
+          accountNumber: state.selectedAccount?.extraAccountNumber,
+          bankCountryCode: state.bank?.countryCode,
+          bank: Bank(
+            bic: state.selectedAccount?.extraSwiftCode,
+            countryCode: state.bank?.countryCode,
+          ),
+        ),
       );
 
       emit(

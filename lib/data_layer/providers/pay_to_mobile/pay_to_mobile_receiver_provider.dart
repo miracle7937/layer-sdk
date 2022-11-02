@@ -24,13 +24,15 @@ class PayToMobileReceiverProvider {
   }) async {
     final data = <String, Object>{
       'from_send_money_id': fromSendMoneyId,
-      'to_account_id': accountId,
       'device_uid': deviceUUID,
       'withdrawal_code': withdrawalCode,
       'withdrawal_pin': withdrawalPin,
     };
     data.addIfNotNull('reason', reason);
-    data.addIfNotNull('beneficiary', beneficiary?.toJson());
+    data.addIfNotNull(
+      'beneficiary',
+      beneficiary?.toJson(),
+    );
 
     await _netClient.request(
       _netClient.netEndpoints.transferV2,

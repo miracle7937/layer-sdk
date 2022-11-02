@@ -27,6 +27,7 @@ class PostReceivedPaymentUseCase {
       withdrawalCode: withdrawalCode,
       withdrawalPin: withdrawalPin,
       deviceUUID: deviceUUID,
+      beneficiary: beneficiary,
     );
   }
 }

@@ -34,4 +34,19 @@ class BankRepository implements BankRepositoryInterface {
 
     return bankDTOList.map((e) => e.toBank()).toList(growable: false);
   }
+
+  /// Returns the bank with the corresponding
+  /// swift code
+  @override
+  Future<Bank> getBankByBIC({
+    required String bic,
+    bool forceRefresh = false,
+  }) async {
+    final bank = await _provider.getBankByBIC(
+      bic: bic,
+      forceRefresh: forceRefresh,
+    );
+
+    return bank.toBank();
+  }
 }

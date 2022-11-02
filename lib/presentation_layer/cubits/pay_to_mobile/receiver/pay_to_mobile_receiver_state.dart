@@ -6,8 +6,8 @@ import 'pay_to_mobile_receiver_cubit.dart';
 
 /// Available busy actions for the cubit
 enum PayToMobileReceiverActions {
-  /// Is loading accounts
-  accounts,
+  /// Is loading data
+  loadingData,
 
   /// Is posting the payment
   submit,
@@ -46,6 +46,9 @@ class PayToMobileReceiverState extends BaseState<PayToMobileReceiverActions,
   /// The [Account] selected by the user
   final Account? selectedAccount;
 
+  /// The [Bank] for the selected account
+  final Bank? bank;
+
   /// The device UUID
   final String deviceUUID;
 
@@ -63,6 +66,7 @@ class PayToMobileReceiverState extends BaseState<PayToMobileReceiverActions,
     this.reason = '',
     this.beneficiary,
     this.selectedAccount,
+    this.bank,
   }) : accounts = UnmodifiableListView(accounts);
 
   @override
@@ -75,6 +79,7 @@ class PayToMobileReceiverState extends BaseState<PayToMobileReceiverActions,
     Beneficiary? beneficiary,
     Iterable<Account>? accounts,
     Account? selectedAccount,
+    Bank? bank,
     Set<PayToMobileReceiverActions>? actions,
     Set<CubitError>? errors,
     Set<PayToMobileReceiverEvent>? events,
@@ -89,6 +94,7 @@ class PayToMobileReceiverState extends BaseState<PayToMobileReceiverActions,
       beneficiary: beneficiary ?? this.beneficiary,
       accounts: accounts ?? this.accounts,
       selectedAccount: selectedAccount ?? this.selectedAccount,
+      bank: bank ?? this.bank,
       actions: actions ?? super.actions,
       errors: errors ?? super.errors,
       events: events ?? super.events,
@@ -106,6 +112,7 @@ class PayToMobileReceiverState extends BaseState<PayToMobileReceiverActions,
         beneficiary,
         accounts,
         selectedAccount,
+        bank,
         errors,
         actions,
         events,
