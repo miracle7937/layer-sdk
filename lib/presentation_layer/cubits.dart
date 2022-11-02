@@ -17,6 +17,8 @@ export 'cubits/account_transaction/account_transactions_cubit.dart';
 export 'cubits/account_transaction/account_transactions_states.dart';
 export 'cubits/activity/activity_cubit.dart';
 export 'cubits/activity/activity_state.dart';
+export 'cubits/alerts/push_notification_alerts_cubit.dart';
+export 'cubits/alerts/push_notification_alerts_state.dart';
 export 'cubits/alerts/unread_alerts_count_cubit.dart';
 export 'cubits/alerts/unread_alerts_count_state.dart';
 export 'cubits/alerts_settings/alerts_settings_cubit.dart';

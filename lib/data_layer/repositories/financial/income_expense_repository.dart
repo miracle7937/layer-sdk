@@ -1,6 +1,5 @@
 import '../../../domain_layer/abstract_repositories/financial/income_expense_repository_interface.dart';
 import '../../../domain_layer/models/financial/income_expense.dart';
-import '../../../presentation_layer/cubits/financial/income_expense_cubit.dart';
 import '../../dtos/financial/income_expense_dto.dart';
 import '../../mappings/financial/income_expense_dto_mapping.dart';
 import '../../providers/financial/income_expense_provider.dart';

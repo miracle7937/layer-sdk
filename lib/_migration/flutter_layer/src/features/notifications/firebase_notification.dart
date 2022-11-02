@@ -1,11 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+import '../../../../../layer_sdk.dart';
 
 /// A callback to handle the notification activity.
 typedef NotificationActivityHandler = void Function(
@@ -102,6 +101,7 @@ class _FirebaseNotificationState extends State<FirebaseNotification> {
       importance: Importance.high,
       priority: Priority.max,
       ticker: 'ticker',
+      color: DesignSystem.of(context).brandPrimary,
     );
     final iOSPlatformChannelSpecifics = IOSNotificationDetails();
     final platformChannelSpecifics = NotificationDetails(
@@ -120,7 +120,7 @@ class _FirebaseNotificationState extends State<FirebaseNotification> {
 
   void _initLocalNotifications() {
     final androidInitializationSettings =
-        AndroidInitializationSettings('@drawable/ic_notification');
+        AndroidInitializationSettings('@mipmap/ic_notification');
 
     final iOSInitializationSettings = IOSInitializationSettings();
     final initializationSettings = InitializationSettings(
@@ -135,7 +135,7 @@ class _FirebaseNotificationState extends State<FirebaseNotification> {
   }
 
   void _handleNotification(Map<String, dynamic> message) async {
-    var data = Platform.isIOS ? message : message['data'];
+    var data = message;
 
     var activityQuery = data['activity_query'];
     if (activityQuery == null) {

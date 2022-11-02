@@ -3,7 +3,6 @@ import 'dart:collection';
 import 'package:equatable/equatable.dart';
 
 import '../../../../../domain_layer/models.dart';
-import '../../../../domain_layer/models.dart';
 
 /// The available error status
 enum ContactUsErrorStatus {
