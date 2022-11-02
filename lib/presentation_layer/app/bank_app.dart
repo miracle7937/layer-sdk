@@ -237,6 +237,14 @@ class BankAppState extends State<BankApp> {
             toggleBiometricsUseCase: ToggleBiometricsUseCase(
               secureStorage: widget.secureStorage,
             ),
+            loadLoyaltyTutorialCompletionUseCase:
+                LoadLoyaltyTutorialCompletionUseCase(
+              secureStorage: widget.secureStorage,
+            ),
+            setLoyaltyTutorialCompletionUseCase:
+                SetLoyaltyTutorialCompletionUseCase(
+              secureStorage: widget.secureStorage,
+            ),
           ),
         ),
       ];
@@ -367,6 +375,13 @@ class BankAppState extends State<BankApp> {
           ),
           loadDeveloperUserDetailsFromTokenUseCase:
               LoadDeveloperUserDetailsFromTokenUseCase(
+            repository: UserRepository(
+              userProvider: UserProvider(
+                netClient: widget.netClient,
+              ),
+            ),
+          ),
+          loadUserDetailsFromTokenUseCase: LoadUserDetailsFromTokenUseCase(
             repository: UserRepository(
               userProvider: UserProvider(
                 netClient: widget.netClient,
