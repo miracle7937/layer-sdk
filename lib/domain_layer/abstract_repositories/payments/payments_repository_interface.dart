@@ -16,19 +16,31 @@ abstract class PaymentsRepositoryInterface {
   /// Submits the provided payment
   Future<Payment> postPayment({
     required Payment payment,
-    String? otp,
   });
 
   /// Patches the provided payment
   Future<Payment> patchPayment({
     required Payment payment,
-    String? otp,
-    bool resendOtp = false,
   });
 
-  /// Resends the one time password to the customer
-  Future<Payment> resendOTP({
+  /// Sends the otp code for the passed payment.
+  Future<Payment> sendOTPCode({
     required Payment payment,
+    required bool editMode,
+  });
+
+  /// Verifies the second factor for the passed payment.
+  Future<Payment> verifySecondFactor({
+    required Payment payment,
+    required String value,
+    required SecondFactorType secondFactorType,
+    required bool editMode,
+  });
+
+  /// Resends second factor for the passed payment.
+  Future<Payment> resendSecondFactor({
+    required Payment payment,
+    required bool editMode,
   });
 
   /// Deletes a payment

@@ -24,6 +24,9 @@ class StorageState extends Equatable {
   /// OCRA mutual authentication flow.
   final String? ocraSecretKey;
 
+  /// If loyalty tutorial completed.
+  final bool loyaltyTutorialCompleted;
+
   /// Creates [StorageState].
   StorageState({
     this.busy = false,
@@ -32,6 +35,7 @@ class StorageState extends Equatable {
     this.authenticationSettings = const AuthenticationSettings(),
     this.applicationSettings = const ApplicationSettings(),
     this.ocraSecretKey,
+    this.loyaltyTutorialCompleted = false,
   }) : loggedInUsers = UnmodifiableListView(loggedInUsers);
 
   /// Creates a new state based on this one.
@@ -43,6 +47,7 @@ class StorageState extends Equatable {
     AuthenticationSettings? authenticationSettings,
     ApplicationSettings? applicationSettings,
     String? ocraSecretKey,
+    bool? loyaltyTutorialCompleted,
   }) =>
       StorageState(
         busy: busy ?? this.busy,
@@ -52,6 +57,8 @@ class StorageState extends Equatable {
             authenticationSettings ?? this.authenticationSettings,
         applicationSettings: applicationSettings ?? this.applicationSettings,
         ocraSecretKey: ocraSecretKey ?? this.ocraSecretKey,
+        loyaltyTutorialCompleted:
+            loyaltyTutorialCompleted ?? this.loyaltyTutorialCompleted,
       );
 
   @override
@@ -62,5 +69,6 @@ class StorageState extends Equatable {
         authenticationSettings,
         applicationSettings,
         ocraSecretKey,
+        loyaltyTutorialCompleted,
       ];
 }

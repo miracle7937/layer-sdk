@@ -23,6 +23,7 @@ class InboxReportSenderTypeDTO extends EnumDTO {
 
   /// Return a [InboxReportSenderTypeDTO] based on a string
   static InboxReportSenderTypeDTO fromRaw(String? value) {
-    return values.firstWhere((it) => it.value == value);
+    return values.firstWhere((it) => it.value == value,
+        orElse: () => InboxReportSenderTypeDTO.unknown);
   }
 }

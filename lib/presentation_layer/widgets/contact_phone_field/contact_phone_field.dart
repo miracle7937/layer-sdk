@@ -36,6 +36,9 @@ class ContactPhoneField extends StatelessWidget with ContactPickerMixin {
   /// The title for when the selector view gets opened as a bottom sheet.
   final String bottomSheetPickerTitle;
 
+  /// The search field hint text.
+  final String? searchFieldHint;
+
   /// Callback called when a contact is picked from the contact picker screen.
   final ValueSetter<Contact> onContactPicked;
 
@@ -51,6 +54,7 @@ class ContactPhoneField extends StatelessWidget with ContactPickerMixin {
     required this.onCountryCodeChanged,
     this.warning,
     this.bottomSheetPickerTitle = '',
+    this.searchFieldHint,
     required this.onContactPicked,
   })  : countries = UnmodifiableSetView(countries),
         super(key: key);
@@ -61,6 +65,7 @@ class ContactPhoneField extends StatelessWidget with ContactPickerMixin {
         status: status,
         countries: countries,
         bottomSheetPickerTitle: bottomSheetPickerTitle,
+        searchFieldHint: searchFieldHint,
         controller: phoneController,
         pickerController: countryCodePickerController,
         onChanged: onChanged,

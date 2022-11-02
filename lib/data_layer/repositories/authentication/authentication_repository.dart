@@ -76,10 +76,12 @@ class AuthenticationRepository implements AuthenticationRepositoryInterface {
   Future<VerifyPinResponse> verifyAccessPin({
     required String pin,
     required DeviceSession deviceInfo,
+    String? notificationToken,
   }) async {
     final verifyPinResponseDTO = await _provider.verifyAccessPin(
       pin,
       deviceInfo,
+      notificationToken,
     );
 
     return verifyPinResponseDTO.toVerifyPinResponse();

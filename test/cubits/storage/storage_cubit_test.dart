@@ -40,6 +40,12 @@ class MockSetBrightnessUseCase extends Mock implements SetBrightnessUseCase {}
 class MockToggleBiometricsUseCase extends Mock
     implements ToggleBiometricsUseCase {}
 
+class MockLoadLoyaltyTutorialCompletionUseCase extends Mock
+    implements LoadLoyaltyTutorialCompletionUseCase {}
+
+class MockSetLoyaltyTutorialCompletionUseCase extends Mock
+    implements SetLoyaltyTutorialCompletionUseCase {}
+
 final _loadAuthenticationSettingsUseCase =
     MockLoadAuthenticationSettingsUseCase();
 final _loadBrightnessUseCase = MockLoadBrightnessUseCase();
@@ -53,6 +59,10 @@ final _saveOcraSecretKeyUseCase = MockSaveOcraSecretKeyUseCase();
 final _saveUserUseCase = MockSaveUserUseCase();
 final _setBrightnessUseCase = MockSetBrightnessUseCase();
 final _toggleBiometricsUseCase = MockToggleBiometricsUseCase();
+final _loadLoyaltyTutorialCompletionUseCase =
+    MockLoadLoyaltyTutorialCompletionUseCase();
+final _setLoyaltyTutorialCompletionUseCase =
+    MockSetLoyaltyTutorialCompletionUseCase();
 
 final _domainTest = 'test.domain.com';
 final _domainOther = 'other.layer.com';
@@ -106,6 +116,9 @@ StorageCubit createStorageCubit() => StorageCubit(
       saveUserUseCase: _saveUserUseCase,
       setBrightnessUseCase: _setBrightnessUseCase,
       toggleBiometricsUseCase: _toggleBiometricsUseCase,
+      loadLoyaltyTutorialCompletionUseCase:
+          _loadLoyaltyTutorialCompletionUseCase,
+      setLoyaltyTutorialCompletionUseCase: _setLoyaltyTutorialCompletionUseCase,
     );
 
 void main() {
@@ -124,6 +137,7 @@ void main() {
   group('Biometrics', _biometricsTests);
   group('Application Settings', _applicationSettingsTests);
   group('OCRA key', _ocraKeyTests);
+  group('Loyalty tutorial completion', _loyaltyCompletionTests);
 }
 
 void _loadDataTests() {
@@ -303,6 +317,9 @@ void _saveDataTests() {
       saveUserUseCase: _saveUserUseCase,
       setBrightnessUseCase: _setBrightnessUseCase,
       toggleBiometricsUseCase: _toggleBiometricsUseCase,
+      loadLoyaltyTutorialCompletionUseCase:
+          _loadLoyaltyTutorialCompletionUseCase,
+      setLoyaltyTutorialCompletionUseCase: _setLoyaltyTutorialCompletionUseCase,
     ),
     act: (c) => c.removeUser(_user.id),
     expect: () => [
@@ -743,6 +760,107 @@ _ocraKeyTests() {
           value: failedOcraKey,
         ),
       ).called(1);
+    },
+  ); // should handle exceptions
+}
+
+void _loyaltyCompletionTests() {
+  setUp(() {
+    when(
+      _loadLoyaltyTutorialCompletionUseCase,
+    ).thenAnswer(
+      (_) async => false,
+    );
+
+    when(
+      _setLoyaltyTutorialCompletionUseCase,
+    ).thenAnswer(
+      (_) async => true,
+    );
+  });
+
+  blocTest<StorageCubit, StorageState>(
+    'Loads loyalty tutorial completion value, '
+    'emits state with saved value',
+    build: createStorageCubit,
+    act: (c) => c.loadLoyaltyTutorialCompletion(),
+    expect: () => [
+      StorageState(
+        busy: true,
+      ),
+      StorageState(
+        busy: false,
+        loyaltyTutorialCompleted: false,
+      ),
+    ],
+    verify: (c) {
+      verify(_loadLoyaltyTutorialCompletionUseCase).called(1);
+    },
+  ); // should save settings
+
+  blocTest<StorageCubit, StorageState>(
+    'Saves loyalty tutorial completion value, '
+    'emits state with saved value',
+    build: createStorageCubit,
+    act: (c) => c.completeLoyaltyTutorial(),
+    expect: () => [
+      StorageState(
+        busy: true,
+      ),
+      StorageState(
+        busy: false,
+        loyaltyTutorialCompleted: true,
+      ),
+    ],
+    verify: (c) {
+      verify(_setLoyaltyTutorialCompletionUseCase).called(1);
+    },
+  ); // should save settings
+
+  blocTest<StorageCubit, StorageState>(
+    'Fails to save loyalty tutorial completion value',
+    setUp: () => when(
+      _setLoyaltyTutorialCompletionUseCase,
+    ).thenAnswer(
+      (_) async => false,
+    ),
+    build: createStorageCubit,
+    act: (c) => c.completeLoyaltyTutorial(),
+    expect: () => [
+      StorageState(
+        busy: true,
+      ),
+      StorageState(
+        busy: false,
+      ),
+    ],
+    verify: (c) {
+      verify(_setLoyaltyTutorialCompletionUseCase).called(1);
+    },
+  ); // should save settings
+
+  blocTest<StorageCubit, StorageState>(
+    'Fails with exception setting of the loyalty tutorial completion value',
+    setUp: () => when(
+      _setLoyaltyTutorialCompletionUseCase,
+    ).thenThrow(
+      Exception(),
+    ),
+    build: createStorageCubit,
+    act: (c) => c.completeLoyaltyTutorial(),
+    expect: () => [
+      StorageState(
+        busy: true,
+      ),
+      StorageState(
+        busy: false,
+      ),
+    ],
+    errors: () => [
+      isA<Exception>(),
+    ],
+    verify: (c) {
+      verify(_setLoyaltyTutorialCompletionUseCase).called(1);
     },
   ); // should handle exceptions
 }
