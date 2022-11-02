@@ -381,6 +381,13 @@ class BankAppState extends State<BankApp> {
               ),
             ),
           ),
+          loadUserDetailsFromTokenUseCase: LoadUserDetailsFromTokenUseCase(
+            repository: UserRepository(
+              userProvider: UserProvider(
+                netClient: widget.netClient,
+              ),
+            ),
+          ),
         ),
       ),
       BlocProvider<CurrencyCubit>(
