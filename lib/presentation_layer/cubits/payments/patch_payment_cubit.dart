@@ -135,7 +135,10 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
               actions: state.removeAction(
                 PatchPaymentAction.submitting,
               ),
-              returnedPayment: returnedPayment,
+              returnedPayment: state.paymentToBePatched.copyWith(
+                otpId: returnedPayment.otpId,
+                secondFactor: returnedPayment.secondFactor,
+              ),
               events: state.addEvent(
                 PatchPaymentEvent.showResultView,
               ),
@@ -163,7 +166,10 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
               actions: state.removeAction(
                 PatchPaymentAction.submitting,
               ),
-              returnedPayment: returnedPayment,
+              returnedPayment: state.paymentToBePatched.copyWith(
+                otpId: returnedPayment.otpId,
+                secondFactor: returnedPayment.secondFactor,
+              ),
               events: state.addEvent(
                 PatchPaymentEvent.openSecondFactor,
               ),
@@ -223,7 +229,10 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
           actions: state.removeAction(
             PatchPaymentAction.sendingOTPCode,
           ),
-          returnedPayment: returnedPayment,
+          returnedPayment: state.paymentToBePatched.copyWith(
+            otpId: returnedPayment.otpId,
+            secondFactor: returnedPayment.secondFactor,
+          ),
           events: state.addEvent(
             PatchPaymentEvent.showOTPCodeView,
           ),
