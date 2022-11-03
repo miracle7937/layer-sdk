@@ -1,5 +1,7 @@
 import 'dart:collection';
 
+import 'package:collection/collection.dart';
+
 import '../../../../domain_layer/models.dart';
 import '../../cubits.dart';
 
@@ -50,4 +52,8 @@ class AccountsState extends BaseState<AccountsAction, void, void> {
         accounts,
         financialData,
       ];
+
+  /// Getting account by id.
+  Account getAccountById(String id) =>
+      accounts.firstWhereOrNull((account) => account.id == id) ?? Account();
 }
