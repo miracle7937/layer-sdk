@@ -60,6 +60,9 @@ class DPAProcessStepProperties extends Equatable {
   /// The label for the skip button.
   final String? skipButtonLabel;
 
+  /// The amount of seconds to wait before the task is auto finished.
+  final int? autoFinishIn;
+
   /// Creates a new [DPAProcessStepProperties].
   const DPAProcessStepProperties({
     required this.format,
@@ -80,6 +83,7 @@ class DPAProcessStepProperties extends Equatable {
     this.skipLabel,
     this.skipButton = false,
     this.skipButtonLabel,
+    this.autoFinishIn,
   });
 
   @override
@@ -102,6 +106,7 @@ class DPAProcessStepProperties extends Equatable {
         skipLabel,
         skipButton,
         skipButtonLabel,
+        autoFinishIn,
       ];
 
   /// Creates a new [DPAProcessStepProperties] using another as a base.
@@ -124,6 +129,7 @@ class DPAProcessStepProperties extends Equatable {
     String? skipLabel,
     bool? skipButton,
     String? skipButtonLabel,
+    int? autoFinishIn,
   }) =>
       DPAProcessStepProperties(
         format: format ?? this.format,
@@ -144,6 +150,7 @@ class DPAProcessStepProperties extends Equatable {
         skipLabel: skipLabel ?? this.skipLabel,
         skipButton: skipButton ?? this.skipButton,
         skipButtonLabel: skipButtonLabel ?? this.skipButtonLabel,
+        autoFinishIn: autoFinishIn ?? this.autoFinishIn,
       );
 }
 
