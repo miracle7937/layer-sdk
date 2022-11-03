@@ -29,6 +29,7 @@ export 'use_cases/authentication/recover_password_use_case.dart';
 export 'use_cases/authentication/reset_password_use_case.dart';
 export 'use_cases/authentication/update_user_token_use_case.dart';
 export 'use_cases/authentication/verify_access_pin_use_case.dart';
+export 'use_cases/bank/get_bank_by_bic_use_case.dart';
 export 'use_cases/bank/load_banks_by_country_code_use_case.dart';
 export 'use_cases/beneficiary/add_new_beneficiary_use_case.dart';
 export 'use_cases/beneficiary/delete_beneficiary_use_case.dart';
