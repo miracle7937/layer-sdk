@@ -45,7 +45,8 @@ class DPAProcessDTO {
   /// Creates a new [DPAProcessDTO] from a JSON.
   factory DPAProcessDTO.fromJson(Map<String, dynamic> json) => DPAProcessDTO(
         message: json['message'],
-        finished: json['message'] == 'process_finished',
+        finished: json['message'] == 'process_finished' ||
+            json['message'] == 'unmatched_assignee',
         action: json['action'] ?? false,
         status: DPAStatusDTO.fromRaw(json['status']),
         processProperties: json['process_properties'],
