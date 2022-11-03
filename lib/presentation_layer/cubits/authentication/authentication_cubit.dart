@@ -26,7 +26,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   /// Flag param to handle if we have to show the auto lock screen or not
   ///
   /// Defaults to `true`
-  bool shouldShowAutoLock = true;
+  bool shouldAllowAutoLock = true;
 
   /// Creates a new cubit with an empty [AuthenticationState] and calls
   /// load settings
@@ -462,7 +462,12 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   /// Used to indicate that the user need to verify the pin to continue
   /// using the app.
   void setPinNeedsVerification({bool verified = false}) {
-    if (shouldShowAutoLock) {
+    /// Some packages like [Jumio] might put the app on the background mode when
+    /// processing the task.
+    ///
+    /// In that case we need to disable the auto lock behaviour until the
+    /// [Jumio] process is finished
+    if (shouldAllowAutoLock) {
       emit(
         state.copyWith(
           verifyPinResponse: VerifyPinResponse(
