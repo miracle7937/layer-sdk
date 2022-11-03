@@ -82,8 +82,8 @@ class AuthenticationRepository implements AuthenticationRepositoryInterface {
     final verifyPinResponseDTO = await _provider.verifyAccessPin(
       pin,
       deviceInfo,
-      userToken,
       notificationToken,
+      userToken,
     );
 
     return verifyPinResponseDTO.toVerifyPinResponse();

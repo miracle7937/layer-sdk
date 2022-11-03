@@ -274,7 +274,8 @@ class _DPAOTPScreenState extends State<_DPAOTPScreen>
                                     child: PinWidgetRow(
                                       onPinSet: (otpCode) =>
                                           _onSecondFactorIntroduced(
-                                              otpCode: otpCode),
+                                        otpCode: otpCode,
+                                      ),
                                     ),
                                   ),
                                   DKButton(
@@ -393,42 +394,41 @@ class _DPAOTPScreenState extends State<_DPAOTPScreen>
 
     final cubit = context.read<DPAProcessCubit>();
     final variables = cubit.state.process.variables;
+    final variable = variables.first;
+
     final secondFactorVariable = variables.singleWhereOrNull(
       (variable) =>
           variable.key == (otpCode != null ? 'second_factor_value' : 'ocra'),
     );
 
-    if (secondFactorVariable != null) {
-      await cubit.updateValue(
-        variable: secondFactorVariable,
-        newValue: otpCode ?? ocraClientResponse,
-      );
+    await cubit.updateValue(
+      variable: secondFactorVariable ?? variable,
+      newValue: otpCode ?? ocraClientResponse,
+    );
 
-      final isPhoneOTP =
-          cubit.state.process.stepProperties?.maskedNumber != null;
+    final isPhoneOTP = cubit.state.process.stepProperties?.maskedNumber != null;
 
-      cubit.stepOrFinish(
-        extraVariables: [
-          DPAVariable(
-            id: 'timeout',
-            type: DPAVariableType.boolean,
-            value: false,
-            property: DPAVariableProperty(),
-          ),
-          DPAVariable(
-            id: isPhoneOTP ? 'rectify_mobile_number' : 'rectify_email_address',
-            type: DPAVariableType.boolean,
-            value: false,
-            property: DPAVariableProperty(),
-          ),
-          DPAVariable(
-            id: 'enter_code',
-            type: DPAVariableType.boolean,
-            value: false,
-            property: DPAVariableProperty(),
-          ),
-        ],
-      );
-    }
+    cubit.stepOrFinish(
+      extraVariables: [
+        DPAVariable(
+          id: 'timeout',
+          type: DPAVariableType.boolean,
+          value: false,
+          property: DPAVariableProperty(),
+        ),
+        DPAVariable(
+          id: isPhoneOTP ? 'rectify_mobile_number' : 'rectify_email_address',
+          type: DPAVariableType.boolean,
+          value: false,
+          property: DPAVariableProperty(),
+        ),
+        DPAVariable(
+          id: 'enter_code',
+          type: DPAVariableType.boolean,
+          value: false,
+          property: DPAVariableProperty(),
+        ),
+      ],
+    );
   }
 }
