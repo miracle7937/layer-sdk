@@ -274,7 +274,8 @@ class _DPAOTPScreenState extends State<_DPAOTPScreen>
                                     child: PinWidgetRow(
                                       onPinSet: (otpCode) =>
                                           _onSecondFactorIntroduced(
-                                              otpCode: otpCode),
+                                        otpCode: otpCode,
+                                      ),
                                     ),
                                   ),
                                   DKButton(
