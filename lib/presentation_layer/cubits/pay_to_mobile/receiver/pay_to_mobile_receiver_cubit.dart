@@ -112,10 +112,11 @@ class PayToMobileReceiverCubit extends Cubit<PayToMobileReceiverState> {
           middleName: '',
           nickname: '',
           lastName: '',
-          firstName: '',
+          firstName: 'temp',
           bankName: '',
           accountNumber: state.selectedAccount?.extraAccountNumber,
           bankCountryCode: state.bank?.countryCode,
+          routingCode: state.selectedAccount?.extraSortCode,
           bank: Bank(
             bic: state.selectedAccount?.extraSwiftCode,
             countryCode: state.bank?.countryCode,

@@ -15,6 +15,7 @@ extension AccountDTOMapping on AccountDTO {
         formattedAccountNumber: displayAccountNumber,
         extraAccountNumber: extraAccountNumber,
         extraSwiftCode: extraSwiftCode,
+        extraSortCode: extraSortCode,
         id: accountId,
         reference: reference,
         branchId: branchId,
