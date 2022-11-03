@@ -37,6 +37,9 @@ class LockScreen extends StatelessWidget {
   /// Whether to scramble the pin code or not
   final bool scramblePin;
 
+  /// The Firebase notification token
+  final String? notificationToken;
+
   /// Creates a new [LockScreen].
   LockScreen({
     Key? key,
@@ -47,6 +50,7 @@ class LockScreen extends StatelessWidget {
     required this.ocraSecret,
     required this.deviceId,
     this.scramblePin = false,
+    this.notificationToken,
   }) : assert(ocraSecret.isNotEmpty, 'The ocra secret cannot be empty');
 
   @override
@@ -65,6 +69,7 @@ class LockScreen extends StatelessWidget {
             ocraSecret: ocraSecret,
             deviceId: deviceId,
             scramblePin: scramblePin,
+            notifcationToken: notificationToken,
           ),
         ),
       );
@@ -92,6 +97,9 @@ class _LockScreen extends SetAccessPinBaseWidget {
   /// Whether to scramble the pin code or not
   final bool scramblePin;
 
+  /// The Firebase notification token
+  final String? notifcationToken;
+
   /// Creates a new [_LockScreen].
   const _LockScreen({
     super.key,
@@ -102,6 +110,7 @@ class _LockScreen extends SetAccessPinBaseWidget {
     required this.ocraSecret,
     required this.deviceId,
     this.scramblePin = false,
+    required this.notifcationToken,
   });
 
   @override
@@ -196,8 +205,11 @@ class _LockScreenState extends SetAccessPinBaseWidgetState<_LockScreen> {
                         password: currentPin,
                       );
                   final session = await _getDeviceSession();
-                  await authenticationCubit.verifyAccessPin(pin,
-                      deviceInfo: session);
+                  await authenticationCubit.verifyAccessPin(
+                    pin,
+                    deviceInfo: session,
+                    notificationToken: widget.notifcationToken,
+                  );
                 }
               },
               showBiometrics: widget.useBiometrics,

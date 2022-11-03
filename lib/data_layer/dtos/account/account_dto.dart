@@ -109,6 +109,9 @@ class AccountDTO {
   /// The account number provided in the `extra`
   String? extraAccountNumber;
 
+  /// The bank swift code provided in the `extra`
+  String? extraSwiftCode;
+
   /// account number formatted
   String? displayAccountNumber;
 
@@ -160,6 +163,7 @@ class AccountDTO {
     this.canConfirmIssuedCheck = true,
     this.accountNumber,
     this.extraAccountNumber,
+    this.extraSwiftCode,
     this.displayAccountNumber,
     this.branchId,
     this.extraBranchId,
@@ -215,6 +219,8 @@ class AccountDTO {
       displayAccountNumber: json['account_no_displayed'],
       extraAccountNumber:
           json['extra'] != null ? json['extra']['account_number'] : null,
+      extraSwiftCode:
+          json['extra'] != null ? json['extra']['swift_code'] : null,
       branchId: json['branch_id'],
       extraBranchId: (json['branch'] as Map?)
           ?.lookup<dynamic, String>(['location_id'])?.toString(),

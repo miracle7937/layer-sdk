@@ -156,4 +156,18 @@ class ActivityRepository implements ActivityRepositoryInterface {
 
     return result;
   }
+
+  /// Retrive the alert by the activity query from push notification
+  @override
+  Future<Activity> getAlertByActivityQuery(
+    Map<String, dynamic> extraParams, {
+    required bool includeDetails,
+  }) async {
+    final result = await _provider.getAlertByActivityQuery(
+      extraParams,
+      includeDetails: includeDetails,
+    );
+
+    return result.toActivity(_createCustomData);
+  }
 }

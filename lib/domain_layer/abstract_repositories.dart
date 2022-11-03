@@ -43,6 +43,7 @@ export 'abstract_repositories/more_info/more_info_repository_interface.dart';
 export 'abstract_repositories/ocra/ocra_repository_interface.dart';
 export 'abstract_repositories/otp/otp_repository_interface.dart';
 export 'abstract_repositories/otp/second_factor_repository_interface.dart';
+export 'abstract_repositories/pay_to_mobile/pay_to_mobile_receiver/pay_to_mobile_receiver_repository_interface.dart';
 export 'abstract_repositories/pay_to_mobile/pay_to_mobile_repository_interface.dart';
 export 'abstract_repositories/payments/frequent_payments_repository_interface.dart';
 export 'abstract_repositories/payments/payments_repository_interface.dart';
