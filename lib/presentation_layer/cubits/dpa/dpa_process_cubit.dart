@@ -109,8 +109,6 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
         final secondsToAutoStepOrFinish = process.stepProperties?.delay ??
             process.stepProperties?.autoFinishIn;
 
-        print('secondsToAutoStepOrFinish -> $secondsToAutoStepOrFinish');
-
         emit(
           state.copyWith(
             process: process.isPopUp() ? null : process,
@@ -286,8 +284,6 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
       final secondsToAutoStepOrFinish =
           process.stepProperties?.delay ?? process.stepProperties?.autoFinishIn;
 
-      print('secondsToAutoStepOrFinish -> $secondsToAutoStepOrFinish');
-
       try {
         final continueOldProcessVariable =
             process.returnVariables.singleWhereOrNull(
@@ -374,8 +370,6 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
 
       final secondsToAutoStepOrFinish =
           process.stepProperties?.delay ?? process.stepProperties?.autoFinishIn;
-
-      print('secondsToAutoStepOrFinish -> $secondsToAutoStepOrFinish');
 
       emit(
         state.copyWith(
