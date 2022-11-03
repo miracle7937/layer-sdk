@@ -23,6 +23,11 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
       _loadDeveloperUserDetailsFromTokenUseCase;
   final LoadUserDetailsFromTokenUseCase _loadUserDetailsFromTokenUseCase;
 
+  /// Flag param to handle if we have to show the auto lock screen or not
+  ///
+  /// Defaults to `true`
+  bool shouldShowAutoLock = true;
+
   /// Creates a new cubit with an empty [AuthenticationState] and calls
   /// load settings
   AuthenticationCubit({
@@ -451,13 +456,17 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   ///
   /// Used to indicate that the user need to verify the pin to continue
   /// using the app.
-  void setPinNeedsVerification({bool verified = false}) => emit(
+  void setPinNeedsVerification({bool verified = false}) {
+    if (shouldShowAutoLock) {
+      emit(
         state.copyWith(
           verifyPinResponse: VerifyPinResponse(
             isVerified: verified,
           ),
         ),
       );
+    }
+  }
 
   /// Sets the access pin of the logged user.
   ///
