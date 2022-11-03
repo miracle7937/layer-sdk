@@ -157,6 +157,7 @@ class AuthenticationProvider {
     String pin,
     DeviceSession deviceInfo,
     String? notificationToken,
+    String? userToken,
   ) async {
     // TODO: Check what exactly should be provided. This is hardcoded on x-app:
     final key =
@@ -176,6 +177,7 @@ class AuthenticationProvider {
     final response = await netClient.request(
       netClient.netEndpoints.checkAccessPin,
       method: NetRequestMethods.post,
+      authorizationHeader: userToken,
       throwAllErrors: false,
       data: {
         if (notificationToken != null) 'notification_token': notificationToken,

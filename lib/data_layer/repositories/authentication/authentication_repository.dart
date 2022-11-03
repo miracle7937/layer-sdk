@@ -77,10 +77,12 @@ class AuthenticationRepository implements AuthenticationRepositoryInterface {
     required String pin,
     required DeviceSession deviceInfo,
     String? notificationToken,
+    String? userToken,
   }) async {
     final verifyPinResponseDTO = await _provider.verifyAccessPin(
       pin,
       deviceInfo,
+      userToken,
       notificationToken,
     );
 
