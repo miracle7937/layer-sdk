@@ -53,6 +53,10 @@ class InboxProvider {
       files: files,
     );
 
+    if (response.data is List) {
+      return InboxReportMessageDTO.fromJson(response.data.first);
+    }
+
     return InboxReportMessageDTO.fromJson(response.data);
   }
 

@@ -105,7 +105,7 @@ class UnmaskCardInfoCubit extends Cubit<UnmaskCardInfoState> {
     emit(
       state.copyWith(
         actions: state.addAction(
-          UnmaskCardInfoAction.verifySecondFactor,
+          UnmaskCardInfoAction.gettingOTPId,
         ),
         events: state.removeEvents(
           {
@@ -127,7 +127,7 @@ class UnmaskCardInfoCubit extends Cubit<UnmaskCardInfoState> {
         state.copyWith(
           otpId: cardInfo.otpId,
           actions: state.removeAction(
-            UnmaskCardInfoAction.verifySecondFactor,
+            UnmaskCardInfoAction.gettingOTPId,
           ),
           events: state.addEvent(
             UnmaskCardInfoEvent.inputSecondFactor,
@@ -138,7 +138,7 @@ class UnmaskCardInfoCubit extends Cubit<UnmaskCardInfoState> {
       emit(
         state.copyWith(
           actions: state.removeAction(
-            UnmaskCardInfoAction.verifySecondFactor,
+            UnmaskCardInfoAction.gettingOTPId,
           ),
           events: state.removeEvents(
             {
@@ -146,7 +146,7 @@ class UnmaskCardInfoCubit extends Cubit<UnmaskCardInfoState> {
             },
           ),
           errors: state.addErrorFromException(
-            action: UnmaskCardInfoAction.verifySecondFactor,
+            action: UnmaskCardInfoAction.gettingOTPId,
             exception: e,
           ),
         ),

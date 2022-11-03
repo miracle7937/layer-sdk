@@ -47,5 +47,6 @@ abstract class AuthenticationRepositoryInterface {
   Future<VerifyPinResponse> verifyAccessPin({
     required String pin,
     required DeviceSession deviceInfo,
+    String? notificationToken,
   });
 }

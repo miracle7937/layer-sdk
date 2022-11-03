@@ -98,6 +98,7 @@ dynamic _parseItem(ActivityTypeDTO type, Map<String, dynamic> json) {
       return DPATaskDTO.fromJson(json);
 
     case ActivityTypeDTO.sendMoney:
+    case ActivityTypeDTO.receivedSendMoney:
       return PayToMobileDTO.fromJson(json);
 
     default:
