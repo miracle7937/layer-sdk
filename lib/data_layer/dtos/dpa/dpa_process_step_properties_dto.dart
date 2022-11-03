@@ -67,6 +67,9 @@ class DPAProcessStepPropertiesDTO {
   /// The label for the cancel button.
   final String? skipButtonLabel;
 
+  /// The amount of seconds to wait before the task is auto finished.
+  final int? autoFinishIn;
+
   /// Creates a new [DPAProcessStepPropertiesDTO].
   DPAProcessStepPropertiesDTO({
     this.image,
@@ -90,6 +93,7 @@ class DPAProcessStepPropertiesDTO {
     this.skipLabel,
     this.skipButton,
     this.skipButtonLabel,
+    this.autoFinishIn,
   });
 
   /// Creates a new [DPAProcessStepPropertiesDTO] from a JSON.
@@ -123,6 +127,9 @@ class DPAProcessStepPropertiesDTO {
         skipLabel: json['button_skip'],
         skipButton: json['skip_button'],
         skipButtonLabel: json['skip_label'],
+        autoFinishIn: JsonParser.parseInt(
+          json['finish_in'],
+        ),
       );
 }
 
