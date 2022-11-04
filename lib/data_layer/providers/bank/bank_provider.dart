@@ -41,4 +41,19 @@ class BankProvider {
       ),
     );
   }
+
+  /// Returns the bank with the corresponding
+  /// swift code
+  Future<BankDTO> getBankByBIC({
+    required String bic,
+    bool forceRefresh = false,
+  }) async {
+    final response = await netClient.request(
+      "${netClient.netEndpoints.bank}/$bic",
+      method: NetRequestMethods.get,
+      forceRefresh: forceRefresh,
+    );
+
+    return BankDTO.fromJson(response.data);
+  }
 }

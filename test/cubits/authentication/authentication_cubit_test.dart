@@ -726,8 +726,10 @@ void _accessPinTests() {
 
   setUp(() {
     when(
-      () =>
-          _verifyAccessPinUseCase(pin: correctPin, deviceInfo: DeviceSession()),
+      () => _verifyAccessPinUseCase(
+          userToken: 'Bearer token',
+          pin: correctPin,
+          deviceInfo: DeviceSession()),
     ).thenAnswer(
       (_) async => VerifyPinResponse(
         isVerified: true,
@@ -736,7 +738,9 @@ void _accessPinTests() {
 
     when(
       () => _verifyAccessPinUseCase(
-          pin: incorrectPin, deviceInfo: DeviceSession()),
+          userToken: 'Bearer token',
+          pin: incorrectPin,
+          deviceInfo: DeviceSession()),
     ).thenAnswer(
       (_) async => VerifyPinResponse(
         isVerified: false,
@@ -745,14 +749,18 @@ void _accessPinTests() {
 
     when(
       () => _verifyAccessPinUseCase(
-          pin: exceptionPin, deviceInfo: DeviceSession()),
+          userToken: 'Bearer token',
+          pin: exceptionPin,
+          deviceInfo: DeviceSession()),
     ).thenAnswer(
       (_) async => throw Exception(),
     );
 
     when(
       () => _verifyAccessPinUseCase(
-          pin: netExceptionPin, deviceInfo: DeviceSession()),
+          userToken: 'Bearer token',
+          pin: netExceptionPin,
+          deviceInfo: DeviceSession()),
     ).thenAnswer(
       (_) async => throw NetException(),
     );
@@ -774,7 +782,11 @@ void _accessPinTests() {
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
     ),
-    act: (c) => c.verifyAccessPin(correctPin, deviceInfo: DeviceSession()),
+    act: (c) => c.verifyAccessPin(
+      correctPin,
+      deviceInfo: DeviceSession(),
+      userToken: 'token',
+    ),
     expect: () => [
       AuthenticationState(busy: true),
       AuthenticationState(
@@ -785,7 +797,9 @@ void _accessPinTests() {
     ],
     verify: (c) {
       verify(() => _verifyAccessPinUseCase(
-          pin: correctPin, deviceInfo: DeviceSession())).called(1);
+          userToken: 'Bearer token',
+          pin: correctPin,
+          deviceInfo: DeviceSession())).called(1);
     },
   );
   blocTest<AuthenticationCubit, AuthenticationState>(
@@ -804,7 +818,11 @@ void _accessPinTests() {
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
     ),
-    act: (c) => c.verifyAccessPin(incorrectPin, deviceInfo: DeviceSession()),
+    act: (c) => c.verifyAccessPin(
+      incorrectPin,
+      deviceInfo: DeviceSession(),
+      userToken: 'token',
+    ),
     expect: () => [
       AuthenticationState(busy: true),
       AuthenticationState(
@@ -813,7 +831,9 @@ void _accessPinTests() {
     ],
     verify: (c) {
       verify(() => _verifyAccessPinUseCase(
-          pin: incorrectPin, deviceInfo: DeviceSession())).called(1);
+          userToken: 'Bearer token',
+          pin: incorrectPin,
+          deviceInfo: DeviceSession())).called(1);
     },
   );
 
@@ -938,7 +958,11 @@ void _accessPinTests() {
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
     ),
-    act: (c) => c.verifyAccessPin(exceptionPin, deviceInfo: DeviceSession()),
+    act: (c) => c.verifyAccessPin(
+      exceptionPin,
+      deviceInfo: DeviceSession(),
+      userToken: 'token',
+    ),
     expect: () => [
       AuthenticationState(busy: true),
       AuthenticationState(
@@ -951,7 +975,9 @@ void _accessPinTests() {
     ],
     verify: (c) {
       verify(() => _verifyAccessPinUseCase(
-          pin: exceptionPin, deviceInfo: DeviceSession())).called(1);
+          userToken: 'Bearer token',
+          pin: exceptionPin,
+          deviceInfo: DeviceSession())).called(1);
     },
   );
 
@@ -971,7 +997,11 @@ void _accessPinTests() {
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
     ),
-    act: (c) => c.verifyAccessPin(netExceptionPin, deviceInfo: DeviceSession()),
+    act: (c) => c.verifyAccessPin(
+      netExceptionPin,
+      deviceInfo: DeviceSession(),
+      userToken: 'token',
+    ),
     expect: () => [
       AuthenticationState(busy: true),
       AuthenticationState(
@@ -984,7 +1014,9 @@ void _accessPinTests() {
     ],
     verify: (c) {
       verify(() => _verifyAccessPinUseCase(
-          pin: netExceptionPin, deviceInfo: DeviceSession())).called(1);
+          userToken: 'Bearer token',
+          pin: netExceptionPin,
+          deviceInfo: DeviceSession())).called(1);
     },
   );
 }

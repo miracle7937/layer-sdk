@@ -119,13 +119,13 @@ class PaymentProvider {
     final response = await netClient.request(
       netClient.netEndpoints.paymentV2,
       method: editMode ? NetRequestMethods.patch : NetRequestMethods.post,
+      queryParameters: {'second_factor_verification': true},
       data: {
         ...paymentJson,
         'second_factor': secondFactorTypeDTO.value,
         if (secondFactorTypeDTO == SecondFactorTypeDTO.ocra)
           'client_response': value,
         if (secondFactorTypeDTO == SecondFactorTypeDTO.otp) 'otp_value': value,
-        'second_factor_verification': true
       },
     );
 
