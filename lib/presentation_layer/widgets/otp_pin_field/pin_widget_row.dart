@@ -389,6 +389,7 @@ class _PinWidget extends StatelessWidget {
             contentPadding: EdgeInsets.only(top: 6.0),
             border: InputBorder.none,
           ),
+          autofillHints: null,
           onChanged: (v) {
             if (v.replaceAll(_PinWidgetRowState.emptyChar, '').isNotEmpty) {
               onFill();
