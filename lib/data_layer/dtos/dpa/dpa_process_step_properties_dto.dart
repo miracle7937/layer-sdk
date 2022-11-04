@@ -127,10 +127,8 @@ class DPAProcessStepPropertiesDTO {
         skipLabel: json['button_skip'],
         skipButton: json['skip_button'],
         skipButtonLabel: json['skip_label'],
-        autoFinishIn: JsonParser.parseInt(
-          num.tryParse(
-            (json['finish_in'] ?? '').toString(),
-          ),
+        autoFinishIn: int.tryParse(
+          (json['finish_in'] ?? '').toString(),
         ),
       );
 }
