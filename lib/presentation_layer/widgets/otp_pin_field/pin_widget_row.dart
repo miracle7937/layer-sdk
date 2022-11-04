@@ -223,10 +223,14 @@ class _PinWidgetRowState extends State<PinWidgetRow>
                           next: secondNode,
                           self: firstNode,
                         ),
-                        onDelete: (clearPrevious) => _onDelete(
-                          controller: firstPin,
-                          clearPrevious: clearPrevious,
-                        ),
+                        onDelete: (clearPrevious) {
+                          if (firstPin.text.isNotEmpty) {
+                            _onDelete(
+                              controller: firstPin,
+                              clearPrevious: clearPrevious,
+                            );
+                          }
+                        },
                         node: firstNode,
                         onSubmitted: (_) => _clearCurrentEntry(),
                       ),
@@ -337,6 +341,8 @@ class _PinWidgetRowState extends State<PinWidgetRow>
     for (final pin in pins) {
       pin.text = emptyChar;
     }
+
+    firstNode.requestFocus();
   }
 }
 
