@@ -20,7 +20,7 @@ enum CardStatus {
 }
 
 /// The [BankingCard] provider
-enum CardProvider {
+enum BankingCardProviderType {
   /// Visa
   visa,
 
@@ -85,7 +85,7 @@ class BankingCard extends Equatable {
   final bool isVirtual;
 
   /// Mastercard or visa
-  final CardProvider? provider;
+  final BankingCardProviderType? provider;
 
   /// Creates a new immutable [BankingCard]
   BankingCard({

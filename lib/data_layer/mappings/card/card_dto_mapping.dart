@@ -84,17 +84,17 @@ extension CardDTOStatusMapping on CardDTOStatus {
 
 /// Extension that provides mapping for [ProviderDTO]
 extension ProviderDTOMapping on ProviderDTO {
-  /// Maps a [ProviderDTO] to a [CardProvider]
-  CardProvider toProvider() {
+  /// Maps a [ProviderDTO] to a [BankingCardProviderType]
+  BankingCardProviderType toProvider() {
     switch (this) {
       case ProviderDTO.mastercard:
-        return CardProvider.mastercard;
+        return BankingCardProviderType.mastercard;
 
       case ProviderDTO.visa:
-        return CardProvider.visa;
+        return BankingCardProviderType.visa;
 
       default:
-        throw MappingException(from: ProviderDTO, to: CardProvider);
+        throw MappingException(from: ProviderDTO, to: BankingCardProviderType);
     }
   }
 }
