@@ -159,7 +159,10 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
             ),
           );
           break;
-
+        //When editing the payment the BE returns the old payment data on the
+        //first request. That's why we can't use the [returnedPayment] and
+        //need to make sure that the updated values for amount, schedule date,
+        //etc. are being sent on the 2FA request
         case PaymentStatus.otp:
           emit(
             state.copyWith(
