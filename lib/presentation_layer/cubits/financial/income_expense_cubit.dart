@@ -23,12 +23,11 @@ class IncomeExpenseCubit extends Cubit<IncomeExpenseState> {
         );
 
   /// Loads incomes and expenses of account
-  Future<void> load({
-    required String accountId,
-    required IncomeExpenseInterval? interval,
-    DateTime? startDate,
-    DateTime? endDate,
-  }) async {
+  Future<void> load(
+      {required String accountId,
+      DateTime? startDate,
+      DateTime? endDate,
+      IncomeExpenseInterval interval = IncomeExpenseInterval.month}) async {
     try {
       emit(
         state.copyWith(

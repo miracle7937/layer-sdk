@@ -1,5 +1,4 @@
-import 'package:collection/collection.dart';
-
+import '../../../_migration/data_layer/src/errors/mapping_error.dart';
 import '../../../_migration/data_layer/src/helpers.dart';
 
 /// Represents a customer's account incomes and expenses
@@ -45,42 +44,64 @@ class IncomeExpenseDTO {
   }
 }
 
-/// The general format of this variable.
-class IncomeExpenseInterval extends EnumDTO {
-  /// Image
-  static const month = IncomeExpenseInterval._('month');
+/// The available intervals for incomes and expenses
+enum IncomeExpenseIntervalDTO {
+  /// month.
+  month('month'),
 
-  /// Returns all the values available.
-  static const List<IncomeExpenseInterval> values = [month];
+  /// Unknown.
+  unknown('unknown');
 
-  const IncomeExpenseInterval._(String value) : super.internal(value);
+  /// The string value for the [IncomeExpenseIntervalDTO].
+  final String value;
 
-  /// Creates a new [IncomeExpenseInterval] from a raw text.
-  static IncomeExpenseInterval? fromRaw(String? raw) {
-    // We transform raw to lowercase as there's a bug with the textArea
-    // coming from the backend in certain processes.
-    final effectiveRaw = raw?.toLowerCase();
+  /// Creates a new [IncomeExpenseIntervalDTO] with the passed value.
+  const IncomeExpenseIntervalDTO(this.value);
 
-    if (effectiveRaw == null) return null;
-
-    return values.firstWhereOrNull(
-      (val) => val.value.toLowerCase() == effectiveRaw,
-    );
-  }
-
-  @override
-  String toString() => 'IncomeExpenseInterval{$value}';
+  /// Creates a new [IncomeExpenseIntervalDTO] from a passed string.
+  factory IncomeExpenseIntervalDTO.fromString(String status) =>
+      values.singleWhere(
+        (value) => value.value == status,
+        orElse: () => unknown,
+      );
 }
 
-/// Extension that maps [InboxReportCategoryDTO]
-extension IncomeExpenseIntervalMapper on IncomeExpenseInterval {
-  /// Maps a [InboxReportCategoryDTO] into a [InboxReportCategory]
-  IncomeExpenseInterval toInterval() {
+/// The available intervals
+enum IncomeExpenseInterval {
+  /// Month.
+  month,
+}
+
+/// Extension on [IncomeExpenseIntervalDTO].
+extension IncomeExpenseIntervalDTOExtension on IncomeExpenseIntervalDTO {
+  /// Maps [IncomeExpenseIntervalDTO] into [IncomeExpenseInterval].
+  IncomeExpenseInterval? toStatus() {
+    switch (this) {
+      case IncomeExpenseIntervalDTO.month:
+        return IncomeExpenseInterval.month;
+
+      case IncomeExpenseIntervalDTO.unknown:
+        throw MappingException(
+          from: IncomeExpenseIntervalDTO,
+          to: IncomeExpenseInterval,
+        );
+    }
+  }
+}
+
+/// Extension on [IncomeExpenseInterval].
+extension IncomeExpenseIntervalExtension on IncomeExpenseInterval {
+  /// Maps [IncomeExpenseInterval] into [IncomeExpenseIntervalDTO].
+  IncomeExpenseIntervalDTO? toStatusDTO() {
     switch (this) {
       case IncomeExpenseInterval.month:
-        return IncomeExpenseInterval.month;
+        return IncomeExpenseIntervalDTO.month;
+
       default:
-        return IncomeExpenseInterval.month;
+        throw MappingException(
+          from: IncomeExpenseInterval,
+          to: IncomeExpenseIntervalDTO,
+        );
     }
   }
 }

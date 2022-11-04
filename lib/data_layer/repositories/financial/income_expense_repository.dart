@@ -13,12 +13,11 @@ class IncomeExpenseRepository implements IncomeExpenseRepositoryInterface {
 
   // Returns all completed balance of the supplied customer account
   @override
-  Future<List<IncomeExpense>> getIncomeExpense({
-    required String accountId,
-    required DateTime? fromDate,
-    required DateTime? toDate,
-    required IncomeExpenseInterval? interval,
-  }) async {
+  Future<List<IncomeExpense>> getIncomeExpense(
+      {required String accountId,
+      required DateTime? fromDate,
+      required DateTime? toDate,
+      IncomeExpenseInterval interval = IncomeExpenseInterval.month}) async {
     final incomeExpensesDTOs = await _provider.getIncomeExpense(
       accountId: accountId,
       fromDate: fromDate,
