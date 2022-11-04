@@ -19,6 +19,15 @@ enum CardStatus {
   frozen,
 }
 
+/// The [BankingCard] provider
+enum Provider {
+  /// Visa
+  visa,
+
+  /// MasterCard
+  mastercard,
+}
+
 /// A card owned by a [Customer]
 class BankingCard extends Equatable {
   /// Unique card identifier
@@ -75,6 +84,9 @@ class BankingCard extends Equatable {
   /// Whether its a virtual card or not
   final bool isVirtual;
 
+  /// Mastercard or visa
+  final Provider? provider;
+
   /// Creates a new immutable [BankingCard]
   BankingCard({
     required this.cardId,
@@ -93,6 +105,7 @@ class BankingCard extends Equatable {
     this.formattedExpiryDate,
     this.type = const CardType(),
     required this.preferences,
+    this.provider,
     Iterable<String> accountIds = const [],
     this.isVirtual = false,
   }) : accountID = UnmodifiableListView(accountIds);
@@ -104,6 +117,7 @@ class BankingCard extends Equatable {
         nickname,
         cardHolderName,
         branchName,
+        provider,
         monthlyPayment,
         dailyLimit,
         blockedAmount,

@@ -82,6 +82,23 @@ extension CardDTOStatusMapping on CardDTOStatus {
   }
 }
 
+/// Extension that provides mapping for [ProviderDTO]
+extension ProviderDTOMapping on ProviderDTO {
+  /// Maps a [ProviderDTO] to a [Provider]
+  Provider toProvider() {
+    switch (this) {
+      case ProviderDTO.mastercard:
+        return Provider.mastercard;
+
+      case ProviderDTO.visa:
+        return Provider.visa;
+
+      default:
+        throw MappingException(from: ProviderDTO, to: Provider);
+    }
+  }
+}
+
 /// Extension that provides mapping for [CardCategoryDTO]
 extension CardCategoryDTOMapping on CardCategoryDTO {
   /// Maps a [CardCategoryDTO] to a [CardCategory]
