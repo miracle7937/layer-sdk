@@ -48,5 +48,6 @@ class LandingTransferState
         frequentTransfers,
         actions,
         errors,
+        events,
       ];
 }
