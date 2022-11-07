@@ -22,7 +22,6 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   final LoadDeveloperUserDetailsFromTokenUseCase
       _loadDeveloperUserDetailsFromTokenUseCase;
   final LoadUserDetailsFromTokenUseCase _loadUserDetailsFromTokenUseCase;
-  final DeactivateDeviceUseCase _deactivateDeviceUseCase;
 
   /// Flag param to handle if we have to show the auto lock screen or not
   ///
@@ -45,7 +44,6 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     required LoadDeveloperUserDetailsFromTokenUseCase
         loadDeveloperUserDetailsFromTokenUseCase,
     required LoadUserDetailsFromTokenUseCase loadUserDetailsFromTokenUseCase,
-    required DeactivateDeviceUseCase deactivateDeviceUseCase,
   })  : _loginUseCase = loginUseCase,
         _logoutUseCase = logoutUseCase,
         _recoverPasswordUseCase = recoverPasswordUseCase,
@@ -59,7 +57,6 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         _loadDeveloperUserDetailsFromTokenUseCase =
             loadDeveloperUserDetailsFromTokenUseCase,
         _loadUserDetailsFromTokenUseCase = loadUserDetailsFromTokenUseCase,
-        _deactivateDeviceUseCase = deactivateDeviceUseCase,
         super(AuthenticationState());
 
   /// Sets the provided user as the current logged user and emits updated state.
@@ -600,43 +597,6 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
           errorMessage: e is NetException ? e.message : null,
         ),
       );
-    }
-  }
-
-  /// Deactivates the passed device id.
-  Future<void> deactivateDevice({
-    required int deviceId,
-  }) async {
-    try {
-      emit(
-        state.copyWith(
-          busy: true,
-          errorStatus: AuthenticationErrorStatus.none,
-        ),
-      );
-
-      await _deactivateDeviceUseCase(
-        deviceId: deviceId,
-      );
-
-      emit(
-        state.copyWith(
-          busy: false,
-          authenticationAction: AuthenticationAction.none,
-        ),
-      );
-    } on Exception catch (e) {
-      emit(
-        state.copyWith(
-          busy: false,
-          errorStatus: e is NetException
-              ? AuthenticationErrorStatus.network
-              : AuthenticationErrorStatus.generic,
-          errorMessage: e is NetException ? e.message : null,
-        ),
-      );
-
-      rethrow;
     }
   }
 }
