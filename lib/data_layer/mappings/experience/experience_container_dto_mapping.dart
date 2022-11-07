@@ -190,7 +190,7 @@ extension ExperienceContainerTypeMapping on String {
       case "prayers":
         return ExperienceContainerType.prayers;
 
-      case "contactUs":
+      case "contact_us":
         return ExperienceContainerType.contactUs;
 
       case "qr":

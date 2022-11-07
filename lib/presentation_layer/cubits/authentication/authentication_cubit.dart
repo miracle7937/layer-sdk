@@ -101,6 +101,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   /// empty [AuthenticationState], but preserving the settings.
   Future<void> logout({
     bool deactivateDevice = true,
+    int? deviceId,
   }) async {
     try {
       emit(
@@ -110,8 +111,10 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         ),
       );
 
+      /// TODO: we should get the current device id instead of this being
+      /// passed from the method or retrieved from the user in the state.
       await _logoutUseCase(
-        deviceId: deactivateDevice ? state.user?.deviceId : null,
+        deviceId: deactivateDevice ? (state.user?.deviceId ?? deviceId) : null,
       );
 
       emit(
@@ -417,6 +420,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     String pin, {
     DeviceSession? deviceInfo,
     String? notificationToken,
+    String? userToken,
   }) async {
     emit(
       state.copyWith(
@@ -428,6 +432,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     try {
       final verifyPinResponse = await _verifyAccessPinUseCase(
         pin: pin,
+        userToken: 'Bearer $userToken',
         deviceInfo: deviceInfo ?? DeviceSession(),
         notificationToken: notificationToken,
       );

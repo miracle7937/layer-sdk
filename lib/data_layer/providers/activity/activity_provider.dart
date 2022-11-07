@@ -38,6 +38,7 @@ class ActivityProvider {
     List<ActivityType>? types,
     List<TransferType>? transferTypes,
     List<ActivityTag>? activityTags,
+    bool forceRefresh = false,
   }) async {
     final params = <String, dynamic>{
       'include_details': includeDetails.toString(),
@@ -125,6 +126,7 @@ class ActivityProvider {
       netClient.netEndpoints.activity,
       method: NetRequestMethods.get,
       queryParameters: params,
+      forceRefresh: forceRefresh,
     );
 
     return ActivityDTO.fromJsonList(

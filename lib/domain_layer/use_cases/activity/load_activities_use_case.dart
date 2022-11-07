@@ -37,6 +37,7 @@ class LoadActivitiesUseCase {
     List<ActivityType>? types,
     List<TransferType>? transferTypes,
     List<ActivityTag>? activityTags,
+    bool forceRefresh = false,
   }) =>
       _repository.list(
         fromTS: fromTS,
@@ -62,5 +63,6 @@ class LoadActivitiesUseCase {
         type: type,
         types: types,
         activityTags: activityTags,
+        forceRefresh: forceRefresh,
       );
 }

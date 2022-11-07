@@ -89,13 +89,19 @@ class _DPAOTPScreenState extends State<_DPAOTPScreen>
 
   late bool _showBiometricsButton;
   bool get showBiometricsButton => _showBiometricsButton;
-  set showBiometricsButton(bool showBiometricsButton) =>
-      setState(() => _showBiometricsButton = showBiometricsButton);
+  set showBiometricsButton(bool showBiometricsButton) => mounted
+      ? setState(() => _showBiometricsButton = showBiometricsButton)
+      : null;
 
   late bool _showOTPCodeInput;
   bool get showOTPCodeInput => _showOTPCodeInput;
   set showOTPCodeInput(bool showOTPCodeInput) =>
-      setState(() => _showOTPCodeInput = showOTPCodeInput);
+      mounted ? setState(() => _showOTPCodeInput = showOTPCodeInput) : null;
+
+  bool _shouldClearCode = false;
+  bool get shouldClearCode => _shouldClearCode;
+  set shouldClearCode(bool shouldClearCode) =>
+      mounted ? setState(() => _shouldClearCode = shouldClearCode) : null;
 
   @override
   void initState() {
@@ -209,11 +215,30 @@ class _DPAOTPScreenState extends State<_DPAOTPScreen>
           process: state.process,
         );
 
-    return BlocListener<DPAProcessCubit, DPAProcessState>(
-      listenWhen: (previous, current) =>
-          previous.actions.contains(DPAProcessBusyAction.resendingCode) &&
-          !current.actions.contains(DPAProcessBusyAction.resendingCode),
-      listener: (_, __) => _startTimer(),
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<DPAProcessCubit, DPAProcessState>(
+          listenWhen: (previous, current) =>
+              previous.actions.contains(DPAProcessBusyAction.resendingCode) &&
+              !current.actions.contains(DPAProcessBusyAction.resendingCode),
+          listener: (_, __) => _startTimer(),
+        ),
+        BlocListener<DPAProcessCubit, DPAProcessState>(
+          listenWhen: (previous, current) {
+            final secondFactorVariable = current.process.variables
+                .singleWhereOrNull(
+                    (variable) => variable.key == 'second_factor_value');
+
+            return secondFactorVariable?.value == null &&
+                previous.process != current.process;
+          },
+          listener: (context, state) async {
+            shouldClearCode = true;
+            await Future.delayed(Duration(milliseconds: 300));
+            shouldClearCode = false;
+          },
+        ),
+      ],
       child: Stack(
         children: [
           Column(
@@ -276,6 +301,7 @@ class _DPAOTPScreenState extends State<_DPAOTPScreen>
                                           _onSecondFactorIntroduced(
                                         otpCode: otpCode,
                                       ),
+                                      shouldClearCode: shouldClearCode,
                                     ),
                                   ),
                                   DKButton(
