@@ -69,6 +69,7 @@ class ActivityCubit extends Cubit<ActivityState> {
     List<TransferType>? transferTypes,
     String? searchStr,
     bool applyFilter = false,
+    bool forceRefresh = false,
   }) async {
     emit(
       state.copyWith(
@@ -94,6 +95,7 @@ class ActivityCubit extends Cubit<ActivityState> {
               activityTags: activityTags,
               transferTypes: transferTypes,
               searchStr: searchStr,
+              forceRefresh: forceRefresh,
             )
           : await _loadActivitiesUseCase(
               limit: newPage.limit,
@@ -105,6 +107,7 @@ class ActivityCubit extends Cubit<ActivityState> {
               activityTags: activityTags,
               transferTypes: transferTypes,
               searchStr: searchStr,
+              forceRefresh: forceRefresh,
             );
 
       final activities = newPage.firstPage
