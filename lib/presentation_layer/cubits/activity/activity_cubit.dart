@@ -3,12 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../data_layer/network.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
+import '../../../domain_layer/use_cases/activity/filter_transfer_activity_types_use_case.dart';
 import '../../cubits.dart';
 import '../../utils.dart';
 
 /// A cubit that handles the [User] activities
 class ActivityCubit extends Cubit<ActivityState> {
   final LoadActivitiesUseCase _loadActivitiesUseCase;
+  final FilterTransferActivityTypesUseCase _filterTransferActivityTypesUseCase;
   final DeleteActivityUseCase _deleteActivityUseCase;
   final CancelActivityUseCase _cancelActivityUseCase;
   final CreateShortcutUseCase _createShortcutUseCase;
@@ -22,6 +24,8 @@ class ActivityCubit extends Cubit<ActivityState> {
   /// Creates a new [ActivityCubit] instance
   ActivityCubit({
     required LoadActivitiesUseCase loadActivitiesUseCase,
+    required FilterTransferActivityTypesUseCase
+        filterTransferActivityTypesUseCase,
     required DeleteActivityUseCase deleteActivityUseCase,
     required CancelActivityUseCase cancelActivityUseCase,
     required CreateShortcutUseCase createShortcutUseCase,
@@ -33,6 +37,8 @@ class ActivityCubit extends Cubit<ActivityState> {
     required DeleteAllAlertsUseCase deleteAllAlertsUseCase,
     int limit = 20,
   })  : _loadActivitiesUseCase = loadActivitiesUseCase,
+        _filterTransferActivityTypesUseCase =
+            filterTransferActivityTypesUseCase,
         _deleteActivityUseCase = deleteActivityUseCase,
         _cancelActivityUseCase = cancelActivityUseCase,
         _createShortcutUseCase = createShortcutUseCase,
@@ -63,6 +69,8 @@ class ActivityCubit extends Cubit<ActivityState> {
     List<ActivityTag>? activityTags,
     List<TransferType>? transferTypes,
     String? searchStr,
+    bool applyFilter = false,
+    bool forceRefresh = false,
   }) async {
     emit(
       state.copyWith(
@@ -77,17 +85,31 @@ class ActivityCubit extends Cubit<ActivityState> {
     try {
       final newPage = state.pagination.paginate(loadMore: loadMore);
 
-      final resultList = await _loadActivitiesUseCase(
-        limit: newPage.limit,
-        offset: newPage.offset,
-        fromTS: startDate,
-        toTS: endDate,
-        itemIsNull: itemIsNull,
-        types: types,
-        activityTags: activityTags,
-        transferTypes: transferTypes,
-        searchStr: searchStr,
-      );
+      final resultList = applyFilter
+          ? await _filterTransferActivityTypesUseCase(
+              limit: newPage.limit,
+              offset: newPage.offset,
+              fromTS: startDate,
+              toTS: endDate,
+              itemIsNull: itemIsNull,
+              types: types,
+              activityTags: activityTags,
+              transferTypes: transferTypes,
+              searchStr: searchStr,
+              forceRefresh: forceRefresh,
+            )
+          : await _loadActivitiesUseCase(
+              limit: newPage.limit,
+              offset: newPage.offset,
+              fromTS: startDate,
+              toTS: endDate,
+              itemIsNull: itemIsNull,
+              types: types,
+              activityTags: activityTags,
+              transferTypes: transferTypes,
+              searchStr: searchStr,
+              forceRefresh: forceRefresh,
+            );
 
       final activities = newPage.firstPage
           ? resultList
