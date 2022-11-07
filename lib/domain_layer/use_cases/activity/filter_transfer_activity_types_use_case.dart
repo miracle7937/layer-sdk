@@ -37,7 +37,6 @@ class FilterTransferActivityTypesUseCase extends LoadActivitiesUseCase {
     List<ActivityType>? types,
     List<TransferType>? transferTypes,
     List<ActivityTag>? activityTags,
-    bool forceRefresh = false,
   }) async {
     final result = await super.call(
       fromTS: fromTS,
@@ -63,7 +62,6 @@ class FilterTransferActivityTypesUseCase extends LoadActivitiesUseCase {
       type: type,
       types: types,
       activityTags: activityTags,
-      forceRefresh: forceRefresh,
     );
 
     final newAlerts = List<Activity>.from(result);

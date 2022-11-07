@@ -43,7 +43,6 @@ class ActivityRepository implements ActivityRepositoryInterface {
     List<ActivityType>? types,
     List<TransferType>? transferTypes,
     List<ActivityTag>? activityTags,
-    bool forceRefresh = false,
   }) async {
     final activitiesDTO = await _provider.list(
       fromTS: fromTS,
@@ -69,7 +68,6 @@ class ActivityRepository implements ActivityRepositoryInterface {
       types: types,
       transferTypes: transferTypes,
       activityTags: activityTags,
-      forceRefresh: forceRefresh,
     );
 
     return activitiesDTO.map((e) => e.toActivity(_createCustomData)).toList();
