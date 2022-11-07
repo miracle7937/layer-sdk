@@ -61,6 +61,9 @@ class DPATask extends Equatable {
   /// The ids of the tasks that come before this one.
   final UnmodifiableListView<String> previousTasksIds;
 
+  /// The activity description
+  final String? activityDescription;
+
   /// Creates a new [DPATask].
   DPATask({
     required this.id,
@@ -79,6 +82,7 @@ class DPATask extends Equatable {
     this.processDefinitionKey = '',
     this.processDefinitionName = '',
     this.processKey = '',
+    this.activityDescription,
     Iterable<String> previousTasksIds = const [],
   })  : preVariables = UnmodifiableListView<DPAVariable>(preVariables),
         variables = UnmodifiableListView<DPAVariable>(variables),
@@ -103,6 +107,7 @@ class DPATask extends Equatable {
         processDefinitionName,
         previousTasksIds,
         processKey,
+        activityDescription,
       ];
 
   /// Returns if the task is open
@@ -138,6 +143,7 @@ class DPATask extends Equatable {
     String? processDefinitionName,
     String? processKey,
     List<String>? previousTasksIds,
+    String? activityDescription,
   }) =>
       DPATask(
         id: id ?? this.id,
@@ -158,5 +164,6 @@ class DPATask extends Equatable {
             processDefinitionName ?? this.processDefinitionName,
         previousTasksIds: previousTasksIds ?? this.previousTasksIds,
         processKey: processKey ?? this.processKey,
+        activityDescription: activityDescription ?? this.activityDescription,
       );
 }

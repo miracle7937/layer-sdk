@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../domain_layer/models.dart';
 import '../../cubits.dart';
 import '../../extensions.dart';
@@ -56,6 +57,7 @@ typedef MorePageBuilder = Widget Function(
   BuildContext context,
   Set<ExperiencePage> pages,
   ValueSetter<ExperiencePage> onSingleMorePageSelected,
+  Widget Function(ExperiencePage experiencePage),
 );
 
 /// Custom type created for building the app bar for the currently selected page
@@ -69,7 +71,7 @@ typedef MorePageBuilder = Widget Function(
 ///   ),
 /// );
 /// ```
-typedef AppBarBuilder = PreferredSizeWidget Function(
+typedef AppBarBuilder = PreferredSizeWidget? Function(
   BuildContext context,
   ExperiencePage currenctPage,
 );
@@ -146,6 +148,10 @@ class HomeScreen extends StatefulWidget {
   /// The [AppBarBuilder] for building the app bar of the selected page.
   final AppBarBuilder? appBarBuilder;
 
+  /// The [AppBarBuilder] for building the app bar of the selected page
+  /// for more page items.
+  final AppBarBuilder? morePageAppBarBuilder;
+
   /// A [Future] method for deciding the initial page based on the
   /// retrieved [ExperiencePage] list.
   ///
@@ -166,6 +172,7 @@ class HomeScreen extends StatefulWidget {
     required this.pageBuilder,
     required this.cardsBuilder,
     required this.morePageBuilder,
+    this.morePageAppBarBuilder,
     this.appBarBuilder,
     this.extraCardsBuilder,
     this.extraContainers = const [],
@@ -226,6 +233,42 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  /// Getting widget representing current experience page for displaying
+  /// as an items for More menu
+  Widget _getMorePageWidget(ExperiencePage page) {
+    _selectedPage = page;
+    final containers = page.containers;
+    final extraContainersForPage = widget.extraContainers
+        .where((element) => element.visible(page))
+        .toList();
+    final containerCount = containers.length + extraContainersForPage.length;
+    if (containers.isEmpty) {
+      return SizedBox.shrink();
+    } else if (containerCount == 1) {
+      return widget.pageBuilder(
+        context,
+        page,
+      );
+    } else {
+      final experience = context.read<ExperienceCubit>().state.experience;
+      return _getContent(
+        appBar: (experience?.pages != null && experience!.pages.isNotEmpty)
+            ? (widget.morePageAppBarBuilder != null && _selectedPage != null)
+                ? widget.morePageAppBarBuilder!(context, _selectedPage!)
+                : experience.topBarMenu
+            : null,
+        pageWidget: LayerPageBuilder(
+          page: page,
+          containerBuilder: widget.cardsBuilder,
+          extraCardBuilder: widget.extraCardsBuilder,
+          extraCards: widget.extraContainers,
+        ),
+        withBottomBar: false,
+        experience: experience,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final busy = context.select<ExperienceCubit, bool>(
@@ -265,25 +308,41 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         ),
       ],
-      child: Scaffold(
-        drawer: experience?.sideDrawerMenu,
-        // TODO: appbar builder
+      child: _getContent(
         appBar: (experience?.pages != null && experience!.pages.isNotEmpty)
             ? (widget.appBarBuilder != null && _selectedPage != null)
                 ? widget.appBarBuilder!(context, _selectedPage!)
                 : experience.topBarMenu
             : null,
-        body: Stack(
-          children: [
-            SizedBox(
-              height: double.maxFinite,
-              width: double.maxFinite,
-              child: Column(
-                children: [
-                  if (experience != null && pageWidget != null) ...[
-                    Expanded(
-                      child: pageWidget!,
-                    ),
+        pageWidget: pageWidget,
+        experience: experience,
+        busy: busy,
+      ),
+    );
+  }
+
+  Widget _getContent({
+    PreferredSizeWidget? appBar,
+    Widget? pageWidget,
+    bool withBottomBar = true,
+    Experience? experience,
+    bool busy = false,
+  }) {
+    return Scaffold(
+      drawer: experience?.sideDrawerMenu,
+      appBar: appBar,
+      body: Stack(
+        children: [
+          SizedBox(
+            height: double.maxFinite,
+            width: double.maxFinite,
+            child: Column(
+              children: [
+                if (experience != null && pageWidget != null) ...[
+                  Expanded(
+                    child: pageWidget,
+                  ),
+                  if (withBottomBar)
                     experience.bottomBarMenu(
                       context,
                       initialPage: _initialPage,
@@ -293,23 +352,23 @@ class _HomeScreenState extends State<HomeScreen> {
                       onSinglePageChanged: _updatePageWidget,
                       onMorePageChanged: (morePages) {
                         _selectedPage = null;
-                        pageWidget = widget.morePageBuilder(
+                        this.pageWidget = widget.morePageBuilder(
                           context,
                           morePages,
                           _updatePageWidget,
+                          _getMorePageWidget,
                         );
                       },
                     ),
-                  ],
                 ],
-              ),
+              ],
             ),
-            if (busy)
-              Positioned.fill(
-                child: widget.fullscreenLoader,
-              ),
-          ],
-        ),
+          ),
+          if (busy)
+            Positioned.fill(
+              child: widget.fullscreenLoader,
+            ),
+        ],
       ),
     );
   }

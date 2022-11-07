@@ -21,6 +21,12 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   final GetDeviceModelUseCase _getDeviceModelUseCase;
   final LoadDeveloperUserDetailsFromTokenUseCase
       _loadDeveloperUserDetailsFromTokenUseCase;
+  final LoadUserDetailsFromTokenUseCase _loadUserDetailsFromTokenUseCase;
+
+  /// Flag param to handle if we have to show the auto lock screen or not
+  ///
+  /// Defaults to `true`
+  bool shouldAllowAutoLock = true;
 
   /// Creates a new cubit with an empty [AuthenticationState] and calls
   /// load settings
@@ -37,6 +43,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     bool shouldGetCustomerObject = false,
     required LoadDeveloperUserDetailsFromTokenUseCase
         loadDeveloperUserDetailsFromTokenUseCase,
+    required LoadUserDetailsFromTokenUseCase loadUserDetailsFromTokenUseCase,
   })  : _loginUseCase = loginUseCase,
         _logoutUseCase = logoutUseCase,
         _recoverPasswordUseCase = recoverPasswordUseCase,
@@ -49,6 +56,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         _getDeviceModelUseCase = getDeviceModelUseCase,
         _loadDeveloperUserDetailsFromTokenUseCase =
             loadDeveloperUserDetailsFromTokenUseCase,
+        _loadUserDetailsFromTokenUseCase = loadUserDetailsFromTokenUseCase,
         super(AuthenticationState());
 
   /// Sets the provided user as the current logged user and emits updated state.
@@ -60,11 +68,40 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     emit(state.copyWith(user: user));
   }
 
+  /// Gets the user details using the registration response token.
+  Future<void> getUserDetails(String token) async {
+    emit(
+      state.copyWith(
+        busy: true,
+      ),
+    );
+
+    try {
+      final user = await _loadUserDetailsFromTokenUseCase(
+        token: token,
+      );
+
+      emit(
+        state.copyWith(
+          busy: false,
+          user: user,
+        ),
+      );
+    } on Exception {
+      emit(
+        state.copyWith(
+          busy: false,
+        ),
+      );
+    }
+  }
+
   /// Emits a busy state, then logs the user out on the repository and removes
   /// him from storage. Finally, logs the user out on the cubit by emitting an
   /// empty [AuthenticationState], but preserving the settings.
   Future<void> logout({
     bool deactivateDevice = true,
+    int? deviceId,
   }) async {
     try {
       emit(
@@ -74,8 +111,10 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         ),
       );
 
+      /// TODO: we should get the current device id instead of this being
+      /// passed from the method or retrieved from the user in the state.
       await _logoutUseCase(
-        deviceId: deactivateDevice ? state.user?.deviceId : null,
+        deviceId: deactivateDevice ? (state.user?.deviceId ?? deviceId) : null,
       );
 
       emit(
@@ -377,7 +416,12 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   ///
   /// Emits a busy state while checking and a state with verification result
   /// in the `isPinVerified` field.
-  Future<void> verifyAccessPin(String pin, {DeviceSession? deviceInfo}) async {
+  Future<void> verifyAccessPin(
+    String pin, {
+    DeviceSession? deviceInfo,
+    String? notificationToken,
+    String? userToken,
+  }) async {
     emit(
       state.copyWith(
         busy: true,
@@ -388,7 +432,9 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     try {
       final verifyPinResponse = await _verifyAccessPinUseCase(
         pin: pin,
+        userToken: 'Bearer $userToken',
         deviceInfo: deviceInfo ?? DeviceSession(),
+        notificationToken: notificationToken,
       );
 
       emit(
@@ -420,13 +466,22 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   ///
   /// Used to indicate that the user need to verify the pin to continue
   /// using the app.
-  void setPinNeedsVerification({bool verified = false}) => emit(
+  void setPinNeedsVerification({bool verified = false}) {
+    /// Some packages like [Jumio] might put the app on the background mode when
+    /// processing the task.
+    ///
+    /// In that case we need to disable the auto lock behaviour until the
+    /// [Jumio] process is finished
+    if (shouldAllowAutoLock) {
+      emit(
         state.copyWith(
           verifyPinResponse: VerifyPinResponse(
             isVerified: verified,
           ),
         ),
       );
+    }
+  }
 
   /// Sets the access pin of the logged user.
   ///

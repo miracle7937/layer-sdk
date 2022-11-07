@@ -135,7 +135,10 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
               actions: state.removeAction(
                 PatchPaymentAction.submitting,
               ),
-              returnedPayment: returnedPayment,
+              returnedPayment: state.paymentToBePatched.copyWith(
+                otpId: returnedPayment.otpId,
+                secondFactor: returnedPayment.secondFactor,
+              ),
               events: state.addEvent(
                 PatchPaymentEvent.showResultView,
               ),
@@ -156,14 +159,20 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
             ),
           );
           break;
-
+        //When editing the payment the BE returns the old payment data on the
+        //first request. That's why we can't use the [returnedPayment] and
+        //need to make sure that the updated values for amount, schedule date,
+        //etc. are being sent on the 2FA request
         case PaymentStatus.otp:
           emit(
             state.copyWith(
               actions: state.removeAction(
                 PatchPaymentAction.submitting,
               ),
-              returnedPayment: returnedPayment,
+              returnedPayment: state.paymentToBePatched.copyWith(
+                otpId: returnedPayment.otpId,
+                secondFactor: returnedPayment.secondFactor,
+              ),
               events: state.addEvent(
                 PatchPaymentEvent.openSecondFactor,
               ),
@@ -223,7 +232,10 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
           actions: state.removeAction(
             PatchPaymentAction.sendingOTPCode,
           ),
-          returnedPayment: returnedPayment,
+          returnedPayment: state.paymentToBePatched.copyWith(
+            otpId: returnedPayment.otpId,
+            secondFactor: returnedPayment.secondFactor,
+          ),
           events: state.addEvent(
             PatchPaymentEvent.showOTPCodeView,
           ),

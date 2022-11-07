@@ -2,19 +2,15 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:carrier_info/carrier_info.dart';
-import 'package:design_kit_layer/design_kit_layer.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../domain_layer/models/device_session/device_session.dart';
 import '../../../domain_layer/models/resolution/resolution.dart';
-import '../../creators.dart';
+import '../../../layer_sdk.dart';
 import '../../cubits.dart';
 import '../../extensions/ocra_authentication/ocra_authentication_error_ui_extension.dart';
-import '../../features.dart';
-import '../../utils.dart';
-import '../../widgets.dart';
 
 /// A screen that allows the user to set an access pin.
 class LockScreen extends StatelessWidget {
@@ -41,6 +37,9 @@ class LockScreen extends StatelessWidget {
   /// Whether to scramble the pin code or not
   final bool scramblePin;
 
+  /// The Firebase notification token
+  final String? notificationToken;
+
   /// Creates a new [LockScreen].
   LockScreen({
     Key? key,
@@ -51,6 +50,7 @@ class LockScreen extends StatelessWidget {
     required this.ocraSecret,
     required this.deviceId,
     this.scramblePin = false,
+    this.notificationToken,
   }) : assert(ocraSecret.isNotEmpty, 'The ocra secret cannot be empty');
 
   @override
@@ -69,6 +69,7 @@ class LockScreen extends StatelessWidget {
             ocraSecret: ocraSecret,
             deviceId: deviceId,
             scramblePin: scramblePin,
+            notifcationToken: notificationToken,
           ),
         ),
       );
@@ -96,6 +97,9 @@ class _LockScreen extends SetAccessPinBaseWidget {
   /// Whether to scramble the pin code or not
   final bool scramblePin;
 
+  /// The Firebase notification token
+  final String? notifcationToken;
+
   /// Creates a new [_LockScreen].
   const _LockScreen({
     super.key,
@@ -106,6 +110,7 @@ class _LockScreen extends SetAccessPinBaseWidget {
     required this.ocraSecret,
     required this.deviceId,
     this.scramblePin = false,
+    required this.notifcationToken,
   });
 
   @override
@@ -147,13 +152,12 @@ class _LockScreenState extends SetAccessPinBaseWidgetState<_LockScreen> {
           listenWhen: (previous, current) =>
               previous.token != current.token && current.token != null,
           listener: (context, state) async {
-            final storageCubit = context.read<StorageCreator>().create();
-            await storageCubit.loadLastLoggedUser();
+            final authenticationCubit = context.read<AuthenticationCubit>();
+            await authenticationCubit.getUserDetails(state.token!);
 
-            final user = storageCubit.state.currentUser;
+            final user = authenticationCubit.state.user;
 
             if (user != null) {
-              final authenticationCubit = context.read<AuthenticationCubit>();
               authenticationCubit.setLoggedUser(
                 user.copyWith(
                   token: state.token,
@@ -201,8 +205,13 @@ class _LockScreenState extends SetAccessPinBaseWidgetState<_LockScreen> {
                         password: currentPin,
                       );
                   final session = await _getDeviceSession();
-                  await authenticationCubit.verifyAccessPin(pin,
-                      deviceInfo: session);
+                  await authenticationCubit.verifyAccessPin(
+                    pin,
+                    deviceInfo: session,
+                    userToken:
+                        context.read<OcraAuthenticationCubit>().state.token,
+                    notificationToken: widget.notifcationToken,
+                  );
                 }
               },
               showBiometrics: widget.useBiometrics,

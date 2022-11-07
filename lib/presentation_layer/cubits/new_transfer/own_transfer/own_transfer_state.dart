@@ -123,6 +123,20 @@ class OwnTransferState extends Equatable {
         deviceUID: deviceUID ?? this.deviceUID,
       );
 
+  /// get from accounts
+  List<Account> get currentFromAccounts => fromAccounts
+      .where(
+        (account) => transfer.destination?.account?.id != account.id,
+      )
+      .toList();
+
+  /// get to accounts
+  List<Account> get currentToAccounts => toAccounts
+      .where(
+        (account) => transfer.source?.account?.id != account.id,
+      )
+      .toList();
+
   @override
   List<Object?> get props => [
         transfer,

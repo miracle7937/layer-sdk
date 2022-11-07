@@ -48,6 +48,12 @@ class Account extends Equatable {
   /// [accountNumber].
   final String? extraAccountNumber;
 
+  /// The bank swift code provided in the extra data.
+  final String? extraSwiftCode;
+
+  /// The sort code provided in the extra data.
+  final String? extraSortCode;
+
   /// Generic bank defined reference for account
   final String? reference;
 
@@ -169,6 +175,8 @@ class Account extends Equatable {
     this.accountNumber,
     this.formattedAccountNumber,
     this.extraAccountNumber,
+    this.extraSwiftCode,
+    this.extraSortCode,
     this.reference,
     this.status,
     this.accountInfo,
@@ -206,6 +214,8 @@ class Account extends Equatable {
         accountNumber,
         formattedAccountNumber,
         extraAccountNumber,
+        extraSwiftCode,
+        extraSortCode,
         reference,
         status,
         accountInfo,

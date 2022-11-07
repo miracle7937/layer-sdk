@@ -13,4 +13,11 @@ abstract class BankRepositoryInterface {
     String? query,
     bool forceRefresh = false,
   });
+
+  /// Returns the bank with the corresponding
+  /// swift code
+  Future<Bank> getBankByBIC({
+    required String bic,
+    bool forceRefresh = false,
+  });
 }
