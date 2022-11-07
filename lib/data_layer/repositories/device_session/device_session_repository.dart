@@ -5,7 +5,7 @@ import '../../mappings.dart';
 import '../../providers.dart';
 
 /// Handles all the device sessions data
-class DeviceSessionRepository implements DeviceSessionRepositoryInterface{
+class DeviceSessionRepository implements DeviceSessionRepositoryInterface {
   final DeviceSessionProvider _provider;
 
   /// Creates a new repository with the supplied [DeviceSessionProvider]
@@ -13,6 +13,7 @@ class DeviceSessionRepository implements DeviceSessionRepositoryInterface{
       : _provider = provider;
 
   /// Lists all the device sessions of a customer.
+  @override
   Future<List<DeviceSession>> getDeviceSessions({
     List<SessionType> deviceTypes = const [
       SessionType.android,
@@ -43,6 +44,7 @@ class DeviceSessionRepository implements DeviceSessionRepositoryInterface{
   /// Terminates a session using the customerType and the deviceId.
   ///
   /// Throws exception if failed to terminate the session.
+  @override
   Future<DeviceSession> terminateSession({
     required String deviceId,
     required CustomerType customerType,
@@ -58,6 +60,7 @@ class DeviceSessionRepository implements DeviceSessionRepositoryInterface{
   }
 
   /// Activates a session using the deviceId.
+  @override
   Future<void> activateSession({
     required String deviceId,
   }) async {
@@ -65,4 +68,13 @@ class DeviceSessionRepository implements DeviceSessionRepositoryInterface{
       deviceId: deviceId,
     );
   }
+
+  /// Deactivates the passed device id.
+  @override
+  Future<void> deactivateDevice({
+    required int deviceId,
+  }) =>
+      _provider.deactivateDevice(
+        deviceId: deviceId,
+      );
 }

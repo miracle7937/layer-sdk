@@ -69,6 +69,7 @@ export 'use_cases/customer/update_customer_estatement_use_case.dart';
 export 'use_cases/customer/update_customer_grace_period_use_case.dart';
 export 'use_cases/device_info/get_device_model_use_case.dart';
 export 'use_cases/device_session/activate_session_use_case.dart';
+export 'use_cases/device_session/deactivate_device_use_case.dart';
 export 'use_cases/device_session/load_device_sessions_use_case.dart';
 export 'use_cases/device_session/terminate_device_session_use_case.dart';
 export 'use_cases/dpa/cancel_dpa_process_use_case.dart';

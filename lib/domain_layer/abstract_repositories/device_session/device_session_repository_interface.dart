@@ -26,4 +26,9 @@ abstract class DeviceSessionRepositoryInterface {
     required String deviceId,
     required CustomerType customerType,
   });
+
+  /// Deactivates the passed device id.
+  Future<void> deactivateDevice({
+    required int deviceId,
+  });
 }

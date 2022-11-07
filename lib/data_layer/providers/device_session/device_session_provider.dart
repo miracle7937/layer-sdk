@@ -72,12 +72,13 @@ class DeviceSessionProvider {
 
     return DeviceSessionDTO.fromJson(list.first);
   }
+
   /// Activates a device.
 
   Future<void> activate({
     required String deviceId,
   }) async {
-   await netClient.request(
+    await netClient.request(
       netClient.netEndpoints.customerDevice,
       method: NetRequestMethods.patch,
       data: [
@@ -86,6 +87,20 @@ class DeviceSessionProvider {
         }
       ],
     );
-
   }
+
+  /// Deactivates a device.
+  Future<void> deactivateDevice({
+    required int deviceId,
+  }) =>
+      netClient.request(
+        netClient.netEndpoints.customerDevice,
+        method: NetRequestMethods.patch,
+        data: [
+          {
+            'device_id': deviceId,
+            'status': 'W',
+          }
+        ],
+      );
 }

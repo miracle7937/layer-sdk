@@ -371,7 +371,11 @@ class BankAppState extends State<BankApp> {
             ),
           ),
           customerUseCase: LoadCurrentCustomerUseCase(
-            repository: CustomerRepository(CustomerProvider(widget.netClient)),
+            repository: CustomerRepository(
+              CustomerProvider(
+                widget.netClient,
+              ),
+            ),
           ),
           loadDeveloperUserDetailsFromTokenUseCase:
               LoadDeveloperUserDetailsFromTokenUseCase(
@@ -384,6 +388,13 @@ class BankAppState extends State<BankApp> {
           loadUserDetailsFromTokenUseCase: LoadUserDetailsFromTokenUseCase(
             repository: UserRepository(
               userProvider: UserProvider(
+                netClient: widget.netClient,
+              ),
+            ),
+          ),
+          deactivateDeviceUseCase: DeactivateDeviceUseCase(
+            repository: DeviceSessionRepository(
+              DeviceSessionProvider(
                 netClient: widget.netClient,
               ),
             ),
