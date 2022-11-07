@@ -88,19 +88,4 @@ class DeviceSessionProvider {
       ],
     );
   }
-
-  /// Deactivates a device.
-  Future<void> deactivateDevice({
-    required int deviceId,
-  }) =>
-      netClient.request(
-        netClient.netEndpoints.customerDevice,
-        method: NetRequestMethods.patch,
-        data: [
-          {
-            'device_id': deviceId,
-            'status': 'W',
-          }
-        ],
-      );
 }

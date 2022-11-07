@@ -392,13 +392,6 @@ class BankAppState extends State<BankApp> {
               ),
             ),
           ),
-          deactivateDeviceUseCase: DeactivateDeviceUseCase(
-            repository: DeviceSessionRepository(
-              DeviceSessionProvider(
-                netClient: widget.netClient,
-              ),
-            ),
-          ),
         ),
       ),
       BlocProvider<CurrencyCubit>(

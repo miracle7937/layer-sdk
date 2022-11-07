@@ -68,13 +68,4 @@ class DeviceSessionRepository implements DeviceSessionRepositoryInterface {
       deviceId: deviceId,
     );
   }
-
-  /// Deactivates the passed device id.
-  @override
-  Future<void> deactivateDevice({
-    required int deviceId,
-  }) =>
-      _provider.deactivateDevice(
-        deviceId: deviceId,
-      );
 }

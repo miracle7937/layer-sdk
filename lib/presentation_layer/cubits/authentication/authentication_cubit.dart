@@ -22,7 +22,6 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   final LoadDeveloperUserDetailsFromTokenUseCase
       _loadDeveloperUserDetailsFromTokenUseCase;
   final LoadUserDetailsFromTokenUseCase _loadUserDetailsFromTokenUseCase;
-  final DeactivateDeviceUseCase _deactivateDeviceUseCase;
 
   /// Flag param to handle if we have to show the auto lock screen or not
   ///
@@ -45,7 +44,6 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     required LoadDeveloperUserDetailsFromTokenUseCase
         loadDeveloperUserDetailsFromTokenUseCase,
     required LoadUserDetailsFromTokenUseCase loadUserDetailsFromTokenUseCase,
-    required DeactivateDeviceUseCase deactivateDeviceUseCase,
   })  : _loginUseCase = loginUseCase,
         _logoutUseCase = logoutUseCase,
         _recoverPasswordUseCase = recoverPasswordUseCase,
@@ -59,13 +57,14 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         _loadDeveloperUserDetailsFromTokenUseCase =
             loadDeveloperUserDetailsFromTokenUseCase,
         _loadUserDetailsFromTokenUseCase = loadUserDetailsFromTokenUseCase,
-        _deactivateDeviceUseCase = deactivateDeviceUseCase,
         super(AuthenticationState());
 
   /// Sets the provided user as the current logged user and emits updated state.
   ///
   /// Configures the [NetClient] token with the user token.
   void setLoggedUser(User user) {
+    print(
+        'updates user on authentication cubit with device id -> ${user.deviceId}');
     _updateUserTokenUseCase(token: user.token);
     if (_shouldGetCustomerObject) loadCustomerObject();
     emit(state.copyWith(user: user));
@@ -104,6 +103,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   /// empty [AuthenticationState], but preserving the settings.
   Future<void> logout({
     bool deactivateDevice = true,
+    int? deviceId,
   }) async {
     try {
       emit(
@@ -113,8 +113,10 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         ),
       );
 
+      /// TODO: we should get the current device id instead of this being
+      /// passed from the method or retrieved from the user in the state.
       await _logoutUseCase(
-        deviceId: deactivateDevice ? state.user?.deviceId : null,
+        deviceId: deactivateDevice ? (state.user?.deviceId ?? deviceId) : null,
       );
 
       emit(
@@ -600,43 +602,6 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
           errorMessage: e is NetException ? e.message : null,
         ),
       );
-    }
-  }
-
-  /// Deactivates the passed device id.
-  Future<void> deactivateDevice({
-    required int deviceId,
-  }) async {
-    try {
-      emit(
-        state.copyWith(
-          busy: true,
-          errorStatus: AuthenticationErrorStatus.none,
-        ),
-      );
-
-      await _deactivateDeviceUseCase(
-        deviceId: deviceId,
-      );
-
-      emit(
-        state.copyWith(
-          busy: false,
-          authenticationAction: AuthenticationAction.none,
-        ),
-      );
-    } on Exception catch (e) {
-      emit(
-        state.copyWith(
-          busy: false,
-          errorStatus: e is NetException
-              ? AuthenticationErrorStatus.network
-              : AuthenticationErrorStatus.generic,
-          errorMessage: e is NetException ? e.message : null,
-        ),
-      );
-
-      rethrow;
     }
   }
 }

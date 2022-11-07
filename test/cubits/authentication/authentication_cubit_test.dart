@@ -35,9 +35,6 @@ class MockLoadDeveloperUserDetailsFromTokenUseCase extends Mock
 class MockLoadUserDetailsFromTokenUseCase extends Mock
     implements LoadUserDetailsFromTokenUseCase {}
 
-class MockDeactivateDeviceUseCase extends Mock
-    implements DeactivateDeviceUseCase {}
-
 final _changePasswordUseCase = MockChangePasswordUseCase();
 final _loginUseCase = MockLoginUseCase();
 final _logoutUseCase = MockLogoutUseCase();
@@ -50,7 +47,6 @@ final _getDeviceModelUseCase = MockGetDeviceModelUseCase();
 final _loadDeveloperUserDetailsFromTokenUseCase =
     MockLoadDeveloperUserDetailsFromTokenUseCase();
 final _loadUserDetailsFromTokenUseCase = MockLoadUserDetailsFromTokenUseCase();
-final _deactivateDeviceUseCase = MockDeactivateDeviceUseCase();
 
 void main() {
   EquatableConfig.stringify = true;
@@ -70,7 +66,6 @@ void main() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     verify: (c) => expect(c.state, AuthenticationState()),
   ); // starts on empty state
@@ -250,7 +245,6 @@ void _loginFlowTests() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     act: (c) => c.setLoggedUser(_activeUser),
     expect: () => [
@@ -276,7 +270,6 @@ void _loginFlowTests() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     seed: () => AuthenticationState(
       user: _activeUser,
@@ -313,7 +306,6 @@ void _loginFlowTests() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     seed: AuthenticationState.new,
     act: (c) => c.login(
@@ -353,7 +345,6 @@ void _loginFlowTests() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     act: (c) => c.login(
       username: usernameActive,
@@ -388,7 +379,6 @@ void _loginFlowTests() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     act: (c) => c.login(
       username: usernameSuspended,
@@ -424,7 +414,6 @@ void _loginFlowTests() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     act: (c) => c.login(
       username: usernameExpired,
@@ -460,7 +449,6 @@ void _loginFlowTests() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     act: (c) => c.login(
       username: usernameException,
@@ -501,7 +489,6 @@ void _loginFlowTests() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     act: (c) => c.login(
       username: usernameNetException,
@@ -542,7 +529,6 @@ void _loginFlowTests() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     seed: () => AuthenticationState(
       user: _exceptionUser,
@@ -584,7 +570,6 @@ void _loginFlowTests() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     seed: () => AuthenticationState(
       user: _netExceptionUser,
@@ -626,7 +611,6 @@ void _loginFlowTests() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     act: (c) => c.authenticateDeveloper(
       token: successToken,
@@ -667,7 +651,6 @@ void _loginFlowTests() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     act: (c) => c.authenticateDeveloper(
       token: netExceptionToken,
@@ -708,7 +691,6 @@ void _loginFlowTests() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     act: (c) => c.authenticateDeveloper(
       token: exceptionToken,
@@ -791,7 +773,6 @@ void _accessPinTests() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     act: (c) => c.verifyAccessPin(correctPin, deviceInfo: DeviceSession()),
     expect: () => [
@@ -822,7 +803,6 @@ void _accessPinTests() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     act: (c) => c.verifyAccessPin(incorrectPin, deviceInfo: DeviceSession()),
     expect: () => [
@@ -852,7 +832,6 @@ void _accessPinTests() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     seed: () => AuthenticationState(
       verifyPinResponse: VerifyPinResponse(
@@ -884,7 +863,6 @@ void _accessPinTests() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     seed: () => AuthenticationState(user: user),
     act: (c) => c.setAccessPin(correctPin),
@@ -908,7 +886,6 @@ void _accessPinTests() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     seed: AuthenticationState.new,
     act: (c) => c.lock(),
@@ -930,7 +907,6 @@ void _accessPinTests() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     seed: () => AuthenticationState(
       user: user,
@@ -961,7 +937,6 @@ void _accessPinTests() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     act: (c) => c.verifyAccessPin(exceptionPin, deviceInfo: DeviceSession()),
     expect: () => [
@@ -995,7 +970,6 @@ void _accessPinTests() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     act: (c) => c.verifyAccessPin(netExceptionPin, deviceInfo: DeviceSession()),
     expect: () => [
@@ -1031,7 +1005,6 @@ void _emptyFieldsTests() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     act: (c) => c.login(
       username: '',
@@ -1065,7 +1038,6 @@ void _emptyFieldsTests() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     act: (c) => c.login(
       username: '',
@@ -1099,7 +1071,6 @@ void _emptyFieldsTests() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     act: (c) => c.login(
       username: 'superadmin',
@@ -1173,7 +1144,6 @@ void _recoverPassword() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     act: (c) => c.recoverPassword(username: _successUsername),
     expect: () => [
@@ -1204,7 +1174,6 @@ void _recoverPassword() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     act: (c) => c.recoverPassword(username: _invalidUsername),
     expect: () => [
@@ -1235,7 +1204,6 @@ void _recoverPassword() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     act: (c) => c.recoverPassword(username: _suspendedUsername),
     expect: () => [
@@ -1266,7 +1234,6 @@ void _recoverPassword() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     act: (c) => c.recoverPassword(username: _notAllowedUsername),
     expect: () => [
@@ -1297,7 +1264,6 @@ void _recoverPassword() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     act: (c) => c.recoverPassword(username: _exceptionUsername),
     expect: () => [
@@ -1391,7 +1357,6 @@ void _resetPassword() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     act: (c) => c.resetPassword(
       username: successUsername,
@@ -1430,7 +1395,6 @@ void _resetPassword() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     act: (c) => c.resetPassword(
       username: failureUsername,
@@ -1469,7 +1433,6 @@ void _resetPassword() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     act: (c) => c.resetPassword(
       username: exceptionUsername,
@@ -1510,7 +1473,6 @@ void _resetPassword() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     act: (c) => c.resetPassword(
       username: netExceptionUsername,
@@ -1565,7 +1527,6 @@ void _unlock() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     act: (c) => c.unlock(user),
     expect: () => [
@@ -1596,7 +1557,6 @@ void _unlock() {
       loadDeveloperUserDetailsFromTokenUseCase:
           _loadDeveloperUserDetailsFromTokenUseCase,
       loadUserDetailsFromTokenUseCase: _loadUserDetailsFromTokenUseCase,
-      deactivateDeviceUseCase: _deactivateDeviceUseCase,
     ),
     act: (c) => c.lock(),
     expect: () => [],
