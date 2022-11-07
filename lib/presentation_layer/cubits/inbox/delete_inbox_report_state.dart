@@ -1,26 +1,15 @@
 import 'package:equatable/equatable.dart';
 
 import '../../../../domain_layer/models.dart';
+import '../../cubits.dart';
 
 /// Delete report action
 enum DeleteInboxReportAction {
   /// No actions
   none,
 
-  ///Creating report
-  creating
-}
-
-/// Delete report error status
-enum DeleteReportErrorStatus {
-  /// No error
-  none,
-
-  /// Generic error
-  generic,
-
-  /// Network error
-  network
+  ///Deleting report
+  deleting
 }
 
 /// Delete report state
@@ -29,7 +18,7 @@ class DeleteInboxReportState extends Equatable {
   final DeleteInboxReportAction action;
 
   /// Error status
-  final DeleteReportErrorStatus error;
+  final InboxReportErrorStatus error;
 
   /// Created report
   final InboxReport? deletedReport;
@@ -37,7 +26,7 @@ class DeleteInboxReportState extends Equatable {
   /// Copy with method
   DeleteInboxReportState copyWith({
     DeleteInboxReportAction? action,
-    DeleteReportErrorStatus? error,
+    InboxReportErrorStatus? error,
     String? category,
     InboxReport? deletedReport,
   }) =>

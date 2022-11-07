@@ -4,6 +4,7 @@ import '../../../../data_layer/network/net_exceptions.dart';
 import '../../../../domain_layer/models/inbox/inbox_report.dart';
 import '../../../../domain_layer/use_cases.dart';
 import 'delete_inbox_report_state.dart';
+import 'inbox_report_state.dart';
 
 /// Delete report cubit
 class DeleteInboxReportCubit extends Cubit<DeleteInboxReportState> {
@@ -15,7 +16,7 @@ class DeleteInboxReportCubit extends Cubit<DeleteInboxReportState> {
       : super(
           DeleteInboxReportState(
             action: DeleteInboxReportAction.none,
-            error: DeleteReportErrorStatus.none,
+            error: InboxReportErrorStatus.none,
           ),
         );
 
@@ -24,9 +25,10 @@ class DeleteInboxReportCubit extends Cubit<DeleteInboxReportState> {
     required InboxReport inboxReport,
   }) async {
     emit(
-      state.copyWith(
-        action: DeleteInboxReportAction.creating,
-      ),
+      DeleteInboxReportState(
+          action: DeleteInboxReportAction.deleting,
+          error: InboxReportErrorStatus.none,
+          deletedReport: null),
     );
 
     try {
@@ -44,8 +46,8 @@ class DeleteInboxReportCubit extends Cubit<DeleteInboxReportState> {
         state.copyWith(
           action: DeleteInboxReportAction.none,
           error: e is NetException
-              ? DeleteReportErrorStatus.network
-              : DeleteReportErrorStatus.generic,
+              ? InboxReportErrorStatus.network
+              : InboxReportErrorStatus.generic,
         ),
       );
     }

@@ -97,6 +97,8 @@ export 'cubits/inbox/create_inbox_report_cubit.dart';
 export 'cubits/inbox/create_inbox_report_state.dart';
 export 'cubits/inbox/delete_inbox_report_cubit.dart';
 export 'cubits/inbox/delete_inbox_report_state.dart';
+export 'cubits/inbox/inbox_report_cubit.dart';
+export 'cubits/inbox/inbox_report_state.dart';
 export 'cubits/loyalty/cashback_history/cashback_history_cubit.dart';
 export 'cubits/loyalty/cashback_history/cashback_history_state.dart';
 export 'cubits/loyalty/loyalty_points/loyalty_points_cubit.dart';

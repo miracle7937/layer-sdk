@@ -33,7 +33,7 @@ void main() {
           c.state,
           DeleteInboxReportState(
               action: DeleteInboxReportAction.none,
-              error: DeleteReportErrorStatus.none)));
+              error: InboxReportErrorStatus.none)));
 
   blocTest<DeleteInboxReportCubit, DeleteInboxReportState>(
     "Should delete report",
@@ -46,12 +46,12 @@ void main() {
     act: (c) => c.deleteReport(inboxReport: report),
     expect: () => [
       DeleteInboxReportState(
-        action: DeleteInboxReportAction.creating,
-        error: DeleteReportErrorStatus.none,
+        action: DeleteInboxReportAction.deleting,
+        error: InboxReportErrorStatus.none,
       ),
       DeleteInboxReportState(
         action: DeleteInboxReportAction.none,
-        error: DeleteReportErrorStatus.none,
+        error: InboxReportErrorStatus.none,
         deletedReport: report,
       ),
     ],
@@ -66,12 +66,12 @@ void main() {
     act: (c) => c.deleteReport(inboxReport: report),
     expect: () => [
       DeleteInboxReportState(
-        action: DeleteInboxReportAction.creating,
-        error: DeleteReportErrorStatus.none,
+        action: DeleteInboxReportAction.deleting,
+        error: InboxReportErrorStatus.none,
       ),
       DeleteInboxReportState(
         action: DeleteInboxReportAction.none,
-        error: DeleteReportErrorStatus.network,
+        error: InboxReportErrorStatus.network,
       ),
     ],
   );
@@ -85,11 +85,11 @@ void main() {
     act: (c) => c.deleteReport(inboxReport: report),
     expect: () => [
       DeleteInboxReportState(
-          action: DeleteInboxReportAction.creating,
-          error: DeleteReportErrorStatus.none),
+          action: DeleteInboxReportAction.deleting,
+          error: InboxReportErrorStatus.none),
       DeleteInboxReportState(
         action: DeleteInboxReportAction.none,
-        error: DeleteReportErrorStatus.generic,
+        error: InboxReportErrorStatus.generic,
       ),
     ],
   );
