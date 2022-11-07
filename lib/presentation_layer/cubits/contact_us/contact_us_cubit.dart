@@ -12,7 +12,7 @@ class ContactUsCubit extends Cubit<ContactUsState> {
   final LoadGlobalSettingsUseCase _loadGlobalSettingsUseCase;
   final OpenLinkUseCase _openLinkUseCase;
 
-  /// Creates a new cubit [ContactUsItem] cubit.
+  /// Creates a new cubit [ContactUsItem]  cubit.
   ContactUsCubit({
     required GetExperienceAndConfigureItUseCase
         getExperienceAndConfigureItUseCase,
@@ -25,7 +25,10 @@ class ContactUsCubit extends Cubit<ContactUsState> {
         super(ContactUsState());
 
   /// Loads the contact us data
+  /// Container data is fetched from public experience
+  /// if [publicExperience] value is true
   Future<void> load({
+    bool publicExperience = true,
     bool forceRefresh = false,
   }) async {
     emit(
@@ -60,10 +63,12 @@ class ContactUsCubit extends Cubit<ContactUsState> {
               'call_international_number_enabled',
               'call_center_international',
               'call_complaints_number_enabled',
+              'whatsapp_enabled',
+              'whatsapp_link',
             ],
           ),
           _getExperienceAndConfigureItUseCase(
-            public: true,
+            public: publicExperience,
           )
         ],
       );
@@ -337,13 +342,11 @@ class ContactUsCubit extends Cubit<ContactUsState> {
           .firstWhereOrNull((element) => element.name == "gr_contact_us");
 
   bool _settingsAvailable(String containerSettingId, String globalSettingId) {
-    return (getContainerSettings()?.firstWhereOrNull(
-              (element) => element?.setting == containerSettingId,
-            ) !=
-            null) &&
-        (getContainerSettings()?.firstWhereOrNull(
-              (element) => element?.setting == containerSettingId,
-            ) !=
+    return (getContainerSettings()
+                ?.firstWhereOrNull(
+                  (element) => element?.setting == containerSettingId,
+                )
+                ?.value ??
             false) &&
         isNotEmpty(getGlobalSettingValue(globalSettingId, "customer_service"));
   }
