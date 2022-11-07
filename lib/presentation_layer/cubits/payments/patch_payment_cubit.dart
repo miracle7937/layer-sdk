@@ -1,12 +1,11 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logging/logging.dart';
 
-import '../../../data_layer/network.dart';
-import '../../../data_layer/network/net_exceptions.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../../layer_sdk.dart';
-import 'patch_payment_state.dart';
+import '../../cubits.dart';
 
 /// TODO: cubit_issue | As discussed with Hassan, this cubit and the
 /// [PaymentCubit] share lot of duplicated logic. We should create a base
@@ -14,16 +13,27 @@ import 'patch_payment_state.dart';
 ///
 /// A cubit for patching customer bill payments.
 class PatchPaymentCubit extends Cubit<PatchPaymentState> {
+  final _logger = Logger('PatchPaymentCubit');
+
   final GetAccountsByStatusUseCase _getCustomerAccountsUseCase;
   final PatchPaymentUseCase _patchPaymentUseCase;
+  final SendOTPCodeForPaymentUseCase _sendOTPCodeForPaymentUseCase;
+  final VerifyPaymentSecondFactorUseCase _verifyPaymentSecondFactorUseCase;
+  final ResendPaymentSecondFactorUseCase _resendPaymentSecondFactorUseCase;
 
   /// Creates a new cubit
   PatchPaymentCubit({
     required GetAccountsByStatusUseCase getCustomerAccountsUseCase,
     required PatchPaymentUseCase patchPaymentUseCase,
     required Payment paymentToPatch,
+    required SendOTPCodeForPaymentUseCase sendOTPCodeForPaymentUseCase,
+    required VerifyPaymentSecondFactorUseCase verifyPaymentSecondFactorUseCase,
+    required ResendPaymentSecondFactorUseCase resendPaymentSecondFactorUseCase,
   })  : _getCustomerAccountsUseCase = getCustomerAccountsUseCase,
         _patchPaymentUseCase = patchPaymentUseCase,
+        _sendOTPCodeForPaymentUseCase = sendOTPCodeForPaymentUseCase,
+        _verifyPaymentSecondFactorUseCase = verifyPaymentSecondFactorUseCase,
+        _resendPaymentSecondFactorUseCase = resendPaymentSecondFactorUseCase,
         super(
           PatchPaymentState(
             payment: paymentToPatch,
@@ -51,10 +61,15 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
   void load() async {
     emit(
       state.copyWith(
-        busy: true,
-        errorStatus: PatchPaymentErrorStatus.none,
+        actions: state.addAction(
+          PatchPaymentAction.loading,
+        ),
+        errors: state.removeErrorForAction(
+          PatchPaymentAction.loading,
+        ),
       ),
     );
+
     try {
       final accounts = await _getCustomerAccountsUseCase(
         statuses: [
@@ -65,7 +80,7 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
 
       emit(
         state.copyWith(
-          busy: false,
+          actions: state.removeAction(PatchPaymentAction.loading),
           fromAccounts: accounts
               .where((element) => element.canPay)
               .toList(growable: false),
@@ -74,60 +89,282 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
     } on Exception catch (e) {
       emit(
         state.copyWith(
-          busy: false,
-          errorStatus: e is NetException
-              ? PatchPaymentErrorStatus.network
-              : PatchPaymentErrorStatus.generic,
+          actions: state.removeAction(
+            PatchPaymentAction.loading,
+          ),
+          errors: state.addErrorFromException(
+            action: PatchPaymentAction.loading,
+            exception: e,
+          ),
         ),
       );
     }
   }
 
-  /// TODO: cubit_issue | Why is the payment nullable? This is the payment
-  /// that we want to submit, right? And also, why should we pass it as a
-  /// parameter when we have it on the state at this point?
-  ///
   /// Submits the payment
-  Future<Payment> submit({
-    String? otp,
-    Payment? payment,
-    bool resendOtp = false,
+  Future<void> submit() async {
+    emit(
+      state.copyWith(
+        actions: state.addAction(
+          PatchPaymentAction.submitting,
+        ),
+        errors: state.removeErrorForAction(
+          PatchPaymentAction.submitting,
+        ),
+        events: state.removeEvents(
+          {
+            PatchPaymentEvent.showResultView,
+            PatchPaymentEvent.openSecondFactor,
+          },
+        ),
+      ),
+    );
+
+    try {
+      final returnedPayment = await _patchPaymentUseCase(
+        state.paymentToBePatched,
+      );
+
+      switch (returnedPayment.status) {
+        case PaymentStatus.completed:
+        case PaymentStatus.pending:
+        case PaymentStatus.scheduled:
+        case PaymentStatus.pendingBank:
+          emit(
+            state.copyWith(
+              actions: state.removeAction(
+                PatchPaymentAction.submitting,
+              ),
+              returnedPayment: state.paymentToBePatched.copyWith(
+                otpId: returnedPayment.otpId,
+                secondFactor: returnedPayment.secondFactor,
+              ),
+              events: state.addEvent(
+                PatchPaymentEvent.showResultView,
+              ),
+            ),
+          );
+          break;
+
+        case PaymentStatus.failed:
+          emit(
+            state.copyWith(
+              actions: state.removeAction(
+                PatchPaymentAction.submitting,
+              ),
+              errors: state.addCustomCubitError(
+                action: PatchPaymentAction.submitting,
+                code: CubitErrorCode.paymentFailed,
+              ),
+            ),
+          );
+          break;
+        //When editing the payment the BE returns the old payment data on the
+        //first request. That's why we can't use the [returnedPayment] and
+        //need to make sure that the updated values for amount, schedule date,
+        //etc. are being sent on the 2FA request
+        case PaymentStatus.otp:
+          emit(
+            state.copyWith(
+              actions: state.removeAction(
+                PatchPaymentAction.submitting,
+              ),
+              returnedPayment: state.paymentToBePatched.copyWith(
+                otpId: returnedPayment.otpId,
+                secondFactor: returnedPayment.secondFactor,
+              ),
+              events: state.addEvent(
+                PatchPaymentEvent.openSecondFactor,
+              ),
+            ),
+          );
+          break;
+
+        default:
+          _logger.severe(
+            'Unhandled payment status -> ${returnedPayment.status}',
+          );
+          throw Exception(
+            'Unhandled payment status -> ${returnedPayment.status}',
+          );
+      }
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          actions: state.removeAction(
+            PatchPaymentAction.submitting,
+          ),
+          errors: state.addErrorFromException(
+            action: PatchPaymentAction.submitting,
+            exception: e,
+          ),
+        ),
+      );
+    }
+  }
+
+  /// Send the OTP code for the current returned payment.
+  Future<void> sendOTPCode() async {
+    assert(state.returnedPayment != null);
+
+    emit(
+      state.copyWith(
+        actions: state.addAction(
+          PatchPaymentAction.sendingOTPCode,
+        ),
+        errors: state.removeErrorForAction(
+          PatchPaymentAction.sendingOTPCode,
+        ),
+        events: state.removeEvent(
+          PatchPaymentEvent.showOTPCodeView,
+        ),
+      ),
+    );
+
+    try {
+      final returnedPayment = await _sendOTPCodeForPaymentUseCase(
+        payment: state.returnedPayment!,
+        editMode: true,
+      );
+
+      emit(
+        state.copyWith(
+          actions: state.removeAction(
+            PatchPaymentAction.sendingOTPCode,
+          ),
+          returnedPayment: state.paymentToBePatched.copyWith(
+            otpId: returnedPayment.otpId,
+            secondFactor: returnedPayment.secondFactor,
+          ),
+          events: state.addEvent(
+            PatchPaymentEvent.showOTPCodeView,
+          ),
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          actions: state.removeAction(
+            PatchPaymentAction.sendingOTPCode,
+          ),
+          errors: state.addErrorFromException(
+            action: PatchPaymentAction.sendingOTPCode,
+            exception: e,
+          ),
+        ),
+      );
+    }
+  }
+
+  /// Verifies the second factor for the payment retrievied on the [submit]
+  /// method.
+  Future<void> verifySecondFactor({
+    String? otpCode,
+    String? ocraClientResponse,
   }) async {
+    assert(state.returnedPayment != null);
+    assert(
+      otpCode != null || ocraClientResponse != null,
+      'An OTP code or OCRA client response must be provided in order for '
+      'verifying the second factor',
+    );
+
+    emit(
+      state.copyWith(
+        actions: state.addAction(
+          PatchPaymentAction.verifyingSecondFactor,
+        ),
+        errors: {},
+      ),
+    );
+
+    try {
+      final returnedPayment = await _verifyPaymentSecondFactorUseCase(
+        payment: state.returnedPayment!,
+        value: otpCode ?? ocraClientResponse ?? '',
+        secondFactorType:
+            otpCode != null ? SecondFactorType.otp : SecondFactorType.ocra,
+        editMode: true,
+      );
+
+      emit(
+        state.copyWith(
+          actions: state.removeAction(
+            PatchPaymentAction.verifyingSecondFactor,
+          ),
+        ),
+      );
+
+      emit(
+        state.copyWith(
+          returnedPayment: returnedPayment,
+          events: state.addEvent(
+            PatchPaymentEvent.closeSecondFactor,
+          ),
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          actions: state.removeAction(
+            PatchPaymentAction.verifyingSecondFactor,
+          ),
+        ),
+      );
+
+      emit(
+        state.copyWith(
+          errors: state.addErrorFromException(
+            action: PatchPaymentAction.verifyingSecondFactor,
+            exception: e,
+          ),
+        ),
+      );
+    }
+  }
+
+  /// Resends the second factor for the payment retrievied on the [submit]
+  /// method.
+  Future<void> resendSecondFactor() async {
+    assert(state.returnedPayment != null);
+
     try {
       emit(
         state.copyWith(
-          busy: true,
-          busyAction: resendOtp
-              ? PatchPaymentBusyAction.resendingOTP
-              : otp != null
-                  ? PatchPaymentBusyAction.validatingSecondFactor
-                  : PatchPaymentBusyAction.submitting,
+          actions: state.addAction(
+            PatchPaymentAction.resendingOTP,
+          ),
+          errors: state.removeErrorForAction(
+            PatchPaymentAction.resendingOTP,
+          ),
         ),
       );
 
-      final res = await _patchPaymentUseCase(
-        state.paymentToBePatched.copyWith(
-          otpId: payment?.otpId,
-        ),
-        otp: otp,
-        resendOtp: resendOtp,
+      final returnedPayment = await _resendPaymentSecondFactorUseCase(
+        payment: state.returnedPayment!,
+        editMode: true,
       );
 
       emit(
         state.copyWith(
-          busy: false,
+          actions: state.removeAction(
+            PatchPaymentAction.resendingOTP,
+          ),
+          returnedPayment: returnedPayment,
         ),
       );
-
-      return res;
-    } on Exception catch (_) {
-      /// TODO: cubit_issue | Handle errors.
+    } on Exception catch (e) {
       emit(
         state.copyWith(
-          busy: false,
+          actions: state.removeAction(
+            PatchPaymentAction.resendingOTP,
+          ),
+          errors: state.addErrorFromException(
+            action: PatchPaymentAction.resendingOTP,
+            exception: e,
+          ),
         ),
       );
-      rethrow;
     }
   }
 

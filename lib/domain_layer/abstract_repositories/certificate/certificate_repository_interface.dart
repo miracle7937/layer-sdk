@@ -1,3 +1,5 @@
+import '../../models.dart';
+
 /// An abstract repository for certificates
 abstract class CertificateRepositoryInterface {
   /// Request a new `Certificate of deposit`
@@ -24,5 +26,6 @@ abstract class CertificateRepositoryInterface {
     required String accountId,
     required DateTime fromDate,
     required DateTime toDate,
+    FileType type = FileType.image,
   });
 }

@@ -38,6 +38,7 @@ class ActivityProvider {
     List<ActivityType>? types,
     List<TransferType>? transferTypes,
     List<ActivityTag>? activityTags,
+    bool forceRefresh = false,
   }) async {
     final params = <String, dynamic>{
       'include_details': includeDetails.toString(),
@@ -125,6 +126,7 @@ class ActivityProvider {
       netClient.netEndpoints.activity,
       method: NetRequestMethods.get,
       queryParameters: params,
+      forceRefresh: forceRefresh,
     );
 
     return ActivityDTO.fromJsonList(
@@ -169,5 +171,96 @@ class ActivityProvider {
       queryParameters: param,
       method: NetRequestMethods.delete,
     );
+  }
+
+  /// Read the current [Alert] by `id`
+  Future<void> markAlertAsRead(int id) async {
+    await netClient.request(
+      netClient.netEndpoints.alert,
+      method: NetRequestMethods.patch,
+      data: [
+        {'alert_id': id, 'read': true}
+      ],
+    );
+  }
+
+  /// Read the current [Request] by `id`
+  Future<void> markRequestAsRead(String id) async {
+    await netClient.request(
+      '${netClient.netEndpoints.request}/$id/read',
+      method: NetRequestMethods.patch,
+    );
+  }
+
+  /// Delete the current [Alert] by `id`
+  Future<void> deleteAlert(int id) async {
+    await netClient.request(
+      '${netClient.netEndpoints.alert}/$id',
+      method: NetRequestMethods.delete,
+    );
+  }
+
+  /// Delete the current [Request] by `id`
+  Future<void> deleteRequest(String id) async {
+    await netClient.request(
+      '${netClient.netEndpoints.request}/$id',
+      method: NetRequestMethods.delete,
+    );
+  }
+
+  /// Read all the [Alert]'s
+  Future<void> markAllAlertsAsRead() async {
+    await netClient.request(
+      '${netClient.netEndpoints.alert}/read_all',
+      method: NetRequestMethods.post,
+      data: [],
+    );
+  }
+
+  /// Read all the [Request]'s
+  Future<void> markAllRequestsAsRead() async {
+    await netClient.request(
+      '${netClient.netEndpoints.request}/read',
+      method: NetRequestMethods.patch,
+      data: {},
+    );
+  }
+
+  /// Delete all the [Alert]'s
+  Future<void> deleteAllAlerts() async {
+    await netClient.request(
+      netClient.netEndpoints.alert,
+      method: NetRequestMethods.delete,
+    );
+  }
+
+  /// Delete all the [Request]'s
+  Future<void> deleteAllRequests() async {
+    await netClient.request(
+      netClient.netEndpoints.request,
+      method: NetRequestMethods.delete,
+    );
+  }
+
+  /// Retrieve the alert by the activity query from push notification
+  Future<ActivityDTO> getAlertByActivityQuery(
+    Map<String, dynamic> extraParams, {
+    required bool includeDetails,
+  }) async {
+    final params = {
+      ...extraParams,
+      'include_details': includeDetails,
+      'search_object': true,
+      'search_alert': true,
+      'search_user_task': true,
+    };
+
+    final response = await netClient.request(
+      netClient.netEndpoints.activity,
+      method: NetRequestMethods.get,
+      queryParameters: params,
+    );
+
+    return ActivityDTO.fromJson(response.data);
   }
 }

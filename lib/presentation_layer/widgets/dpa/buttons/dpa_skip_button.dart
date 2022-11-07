@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../domain_layer/models.dart';
 import '../../../cubits.dart';
 import '../../../utils.dart';
+import '../../cubit_helpers/cubit_action_builder.dart';
 
 /// The default Layer Design Kit button that skips the current steps and moves
 /// to the next step in the DPA process when tapped.
@@ -20,23 +21,29 @@ class DPASkipButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final translation = Translation.of(context);
+    return CubitActionBuilder<DPAProcessCubit, DPAProcessBusyAction>(
+        actions: DPAProcessBusyAction.values.toSet(),
+        builder: (context, loadingActions) {
+          final translation = Translation.of(context);
 
-    final cubit = context.watch<DPAProcessCubit>();
+          final cubit = context.watch<DPAProcessCubit>();
 
-    final processLabel = process.stepProperties?.skipLabel;
+          final processLabel = process.stepProperties?.skipLabel;
 
-    final busy = cubit.state.busy &&
-        cubit.state.activeProcess == process &&
-        cubit.state.actions.contains(DPAProcessBusyAction.steppingForward) &&
-        (cubit.state.activeProcess.stepProperties?.skipLabel?.isNotEmpty ??
-            false);
+          final busy = loadingActions.isNotEmpty &&
+              cubit.state.activeProcess == process &&
+              cubit.state.actions
+                  .contains(DPAProcessBusyAction.steppingForward) &&
+              (cubit.state.activeProcess.stepProperties?.skipLabel
+                      ?.isNotEmpty ??
+                  false);
 
-    return DKButton(
-      title: processLabel ?? translation.translate('skip'),
-      type: DKButtonType.baseSecondary,
-      status: busy ? DKButtonStatus.loading : DKButtonStatus.idle,
-      onPressed: cubit.skipOrFinish,
-    );
+          return DKButton(
+            title: processLabel ?? translation.translate('skip'),
+            type: DKButtonType.baseSecondary,
+            status: busy ? DKButtonStatus.loading : DKButtonStatus.idle,
+            onPressed: cubit.skipOrFinish,
+          );
+        });
   }
 }

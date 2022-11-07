@@ -8,15 +8,21 @@ import '../../cubits.dart';
 ///A cubit that holds the user preferences from a [LoggedUser]
 class UserPreferencesCubit extends Cubit<UserPreferencesState> {
   final ChangeOfferFavoriteStatusUseCase _changeOfferFavoriteStatusUseCase;
+  final SetLowBalanceAlertUseCase _setLowBalanceAlertUseCase;
+  final SetCustomUserPrefsUseCase _setCustomUserPrefsUseCase;
 
   ///Creates a new [UserPreferencesCubit]
   UserPreferencesCubit({
-    required User user,
+    User? user,
     required ChangeOfferFavoriteStatusUseCase changeOfferFavoriteStatusUseCase,
+    required SetLowBalanceAlertUseCase setLowBalanceAlertUseCase,
+    required SetCustomUserPrefsUseCase setCustomUserPrefsUseCase,
   })  : _changeOfferFavoriteStatusUseCase = changeOfferFavoriteStatusUseCase,
+        _setLowBalanceAlertUseCase = setLowBalanceAlertUseCase,
+        _setCustomUserPrefsUseCase = setCustomUserPrefsUseCase,
         super(
           UserPreferencesState(
-            favoriteOffers: user.favoriteOffers.toList(),
+            favoriteOffers: user != null ? user.favoriteOffers.toList() : [],
           ),
         );
 
@@ -63,6 +69,158 @@ class UserPreferencesCubit extends Cubit<UserPreferencesState> {
           error: e is NetException
               ? UserPreferencesError.network
               : UserPreferencesError.generic,
+          errorMessage: e is NetException ? e.message : null,
+        ),
+      );
+    }
+  }
+
+  ///Adds a low balance alert
+  Future<void> setLowBalanceAlert({
+    required double lowBalanceValue,
+    required String accountId,
+    bool? valueAlert,
+  }) async {
+    UserPreferencesAction action;
+    action = UserPreferencesAction.lowBalanceAdded;
+    emit(
+      state.copyWith(
+        busy: true,
+        actions: state.addAction(
+          action,
+        ),
+        errors: state.removeErrorForAction(
+          action,
+        ),
+      ),
+    );
+    var keyLowBalance = "customer_account.$accountId.pref_lowbal";
+    var keyAlertLowBalance = "customer_account.$accountId.pref_alert_lowbal";
+    var keyAlerted = "customer_account.$accountId.alerted";
+
+    try {
+      final response = await _setLowBalanceAlertUseCase(
+        valueLowBalance: lowBalanceValue,
+        keyLowBalance: keyLowBalance,
+        valueAlertLowBalance: valueAlert,
+        keyAlerted: keyAlerted,
+        keyAlertLowBalance: keyAlertLowBalance,
+      );
+
+      emit(
+        state.copyWith(
+          lowBalanceValue: response.lowBalanceValue,
+          busy: false,
+          actions: state.removeAction(action),
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          busy: false,
+          actions: state.removeAction(action),
+          errors: state.addErrorFromException(
+            action: action,
+            exception: e,
+          ),
+          errorMessage: e is NetException ? e.message : null,
+        ),
+      );
+    }
+  }
+
+  ///Adds a low balance alert
+  Future<void> removeBalanceAlert({
+    required double lowBalanceValue,
+    required String accountId,
+    bool? valueAlert,
+  }) async {
+    UserPreferencesAction action;
+    action = UserPreferencesAction.alertRemoved;
+    emit(
+      state.copyWith(
+        busy: true,
+        actions: state.addAction(
+          action,
+        ),
+        errors: state.removeErrorForAction(
+          action,
+        ),
+      ),
+    );
+    var keyLowBalance = "customer_account.$accountId.pref_lowbal";
+    var keyAlerted = "customer_account.$accountId.pref_alert_lowbal";
+
+    try {
+      final response = await _setLowBalanceAlertUseCase(
+        valueLowBalance: lowBalanceValue,
+        keyLowBalance: keyLowBalance,
+        keyAlertLowBalance: keyAlerted,
+      );
+
+      emit(
+        state.copyWith(
+          lowBalanceValue: response.lowBalanceValue,
+          busy: false,
+          actions: state.removeAction(action),
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          busy: false,
+          actions: state.removeAction(action),
+          errors: state.addErrorFromException(
+            action: action,
+            exception: e,
+          ),
+          errorMessage: e is NetException ? e.message : null,
+        ),
+      );
+    }
+  }
+
+  /// Sets a custom user pref based on the
+  /// key/value passed to this function
+  Future<void> setCustomUserPrefs({
+    required String key,
+    required dynamic value,
+  }) async {
+    var action = UserPreferencesAction.prefAdded;
+
+    emit(
+      state.copyWith(
+        busy: true,
+        actions: state.addAction(
+          action,
+        ),
+        errors: state.removeErrorForAction(
+          action,
+        ),
+      ),
+    );
+
+    try {
+      await _setCustomUserPrefsUseCase(
+        key: key,
+        value: value,
+      );
+
+      emit(
+        state.copyWith(
+          busy: false,
+          actions: state.removeAction(action),
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          busy: false,
+          actions: state.removeAction(action),
+          errors: state.addErrorFromException(
+            action: action,
+            exception: e,
+          ),
           errorMessage: e is NetException ? e.message : null,
         ),
       );

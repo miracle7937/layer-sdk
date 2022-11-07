@@ -55,6 +55,9 @@ class OwnTransferState extends Equatable {
   /// The status of the submitted transfer.
   final TransferStatus? resultStatus;
 
+  /// Device uid
+  final String deviceUID;
+
   /// TODO: cubit_issue | Why do we need this? We already have the transfer
   /// object which has a destination account. We should only set that account
   /// to the preselected one when we fetch the accounts. This value is
@@ -79,6 +82,7 @@ class OwnTransferState extends Equatable {
     Set<OwnTransferAction> errors = const {},
     this.errorMessage,
     this.resultStatus,
+    required this.deviceUID,
     this.transferId,
     this.preselectedAccount,
   })  : fromAccounts = UnmodifiableListView(fromAccounts),
@@ -101,6 +105,7 @@ class OwnTransferState extends Equatable {
     int? transferId,
     Account? preselectedAccount,
     bool? editMode,
+    String? deviceUID,
   }) =>
       OwnTransferState(
         transfer: transfer ?? this.transfer,
@@ -115,7 +120,22 @@ class OwnTransferState extends Equatable {
         resultStatus: resultStatus ?? this.resultStatus,
         transferId: transferId ?? this.transferId,
         editMode: editMode ?? this.editMode,
+        deviceUID: deviceUID ?? this.deviceUID,
       );
+
+  /// get from accounts
+  List<Account> get currentFromAccounts => fromAccounts
+      .where(
+        (account) => transfer.destination?.account?.id != account.id,
+      )
+      .toList();
+
+  /// get to accounts
+  List<Account> get currentToAccounts => toAccounts
+      .where(
+        (account) => transfer.source?.account?.id != account.id,
+      )
+      .toList();
 
   @override
   List<Object?> get props => [
@@ -125,6 +145,7 @@ class OwnTransferState extends Equatable {
         currencies,
         actions,
         errors,
+        deviceUID,
         errorMessage,
         resultStatus,
         transferId,

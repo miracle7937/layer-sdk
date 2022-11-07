@@ -10,14 +10,14 @@ class LoyaltyPointsTransactionCubit
     extends Cubit<LoyaltyPointsTransactionState> {
   final LoadLoyaltyPointsTransactionsByTypeUseCase
       _loadLoyaltyPointsTransactionsByTypeUseCase;
-  final LoyaltyPointsTransactionType _type;
+  final LoyaltyPointsTransactionType? _type;
 
   /// Creates a new [LoyaltyPointsTransactionCubit] using
   /// the supplied [LoadLoyaltyPointsTransactionsUseCase].
   LoyaltyPointsTransactionCubit({
     required LoadLoyaltyPointsTransactionsByTypeUseCase
         loadLoyaltyPointsTransactionsByTypeUseCase,
-    required LoyaltyPointsTransactionType type,
+    LoyaltyPointsTransactionType? type,
     bool loadMore = false,
   })  : _loadLoyaltyPointsTransactionsByTypeUseCase =
             loadLoyaltyPointsTransactionsByTypeUseCase,
@@ -28,6 +28,8 @@ class LoyaltyPointsTransactionCubit
   Future<void> load({
     bool loadMore = false,
     String? searchQuery,
+    DateTime? startDate,
+    DateTime? endDate,
   }) async {
     emit(
       state.copyWith(
@@ -49,6 +51,8 @@ class LoyaltyPointsTransactionCubit
         limit: pagination.limit,
         offset: pagination.offset,
         searchQuery: searchQuery,
+        startDate: startDate,
+        endDate: endDate,
       );
 
       final transations = pagination.firstPage

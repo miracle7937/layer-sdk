@@ -16,6 +16,13 @@ class VerifyAccessPinUseCase {
   Future<VerifyPinResponse> call({
     required String pin,
     required DeviceSession deviceInfo,
+    String? notificationToken,
+    String? userToken,
   }) =>
-      _repository.verifyAccessPin(pin: pin, deviceInfo: deviceInfo);
+      _repository.verifyAccessPin(
+        pin: pin,
+        deviceInfo: deviceInfo,
+        userToken: userToken,
+        notificationToken: notificationToken,
+      );
 }

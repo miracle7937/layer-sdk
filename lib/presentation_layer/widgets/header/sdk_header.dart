@@ -22,6 +22,9 @@ class SDKHeader extends StatelessWidget implements PreferredSizeWidget {
   /// Only indicate this if [suffixSvgIcon] is not null.
   final VoidCallback? onSuffixIconPressed;
 
+  /// Optional suffix widget.
+  final Widget? customSuffix;
+
   /// Creates a new [SDKHeader].
   const SDKHeader({
     Key? key,
@@ -31,8 +34,10 @@ class SDKHeader extends StatelessWidget implements PreferredSizeWidget {
     this.onPrefixIconPressed,
     this.suffixSvgIcon,
     this.onSuffixIconPressed,
+    this.customSuffix,
   })  : assert(prefixSvgIcon == null || onPrefixIconPressed != null),
         assert(suffixSvgIcon == null || onSuffixIconPressed != null),
+        assert(suffixSvgIcon == null || customSuffix == null),
         super(key: key);
 
   @override
@@ -84,7 +89,9 @@ class SDKHeader extends StatelessWidget implements PreferredSizeWidget {
                   textAlign: TextAlign.center,
                 ),
               ),
-              if (prefixSvgIcon != null && suffixSvgIcon == null)
+              if (prefixSvgIcon != null &&
+                  suffixSvgIcon == null &&
+                  customSuffix == null)
                 const SizedBox(width: 34.0),
               if (suffixSvgIcon != null) ...[
                 const SizedBox(width: 10.0),
@@ -97,6 +104,9 @@ class SDKHeader extends StatelessWidget implements PreferredSizeWidget {
                   ),
                 ),
               ],
+              if (customSuffix != null) ...[
+                customSuffix!,
+              ]
             ],
           ),
         ),

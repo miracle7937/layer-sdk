@@ -30,6 +30,9 @@ enum BeneficiaryTransferAction {
   /// Transfer being evaluated.
   evaluate,
 
+  /// Sending the OTP code for the transfer.
+  sendOTPCode,
+
   /// Transfer is being submitted.
   submit,
 
@@ -48,23 +51,23 @@ enum BeneficiaryTransferEvent {
   /// Event for showing the confirmation view.
   showConfirmationView,
 
-  /// Event for inputing the OTP code.
-  inputOTPCode,
+  /// Event for opening the second factor.
+  openSecondFactor,
+
+  /// Event for showing the OTP code inputing view.
+  showOTPCodeView,
+
+  /// Event for closing the second factor.
+  closeSecondFactor,
 
   /// Event for showing the transfer result view.
   showResultView,
-
-  /// Event for closing the OTP code.
-  closeOTPView,
 }
 
 /// The available validation error codes.
 enum BeneficiaryTransferValidationErrorCode {
   /// Invalid IBAN.
   invalidIBAN,
-
-  /// Incorrect OTP code.
-  incorrectOTPCode,
 
   /// Source account validation error.
   sourceAccountValidationError,
@@ -159,9 +162,9 @@ class BeneficiaryTransferState extends BaseState<BeneficiaryTransferAction,
     super.actions = const <BeneficiaryTransferAction>{},
     super.errors = const <CubitError>{},
     super.events = const <BeneficiaryTransferEvent>{},
-    Iterable<GlobalSetting> beneficiarySettings = const <GlobalSetting>{},
-    Iterable<Country> countries = const <Country>{},
-    Iterable<Currency> currencies = const <Currency>{},
+    Iterable<GlobalSetting> beneficiarySettings = const <GlobalSetting>[],
+    Iterable<Country> countries = const <Country>[],
+    Iterable<Currency> currencies = const <Currency>[],
     Iterable<Account> accounts = const <Account>[],
     Iterable<Beneficiary> beneficiaries = const <Beneficiary>[],
     Iterable<Message> reasons = const <Message>[],
@@ -197,6 +200,7 @@ class BeneficiaryTransferState extends BaseState<BeneficiaryTransferAction,
     Transfer? transferResult,
     String? bankQuery,
     bool? editMode,
+    String? deviceUID,
   }) =>
       BeneficiaryTransferState(
         transfer: transfer ?? this.transfer,

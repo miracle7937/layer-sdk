@@ -39,7 +39,6 @@ class PaymentProvider {
   /// Excutes the payment
   Future<PaymentDTO> postPayment({
     required PaymentDTO payment,
-    String? otp,
   }) async {
     final json = payment.toJson();
     final response = await netClient.request(
@@ -47,9 +46,6 @@ class PaymentProvider {
       method: NetRequestMethods.post,
       data: json,
       forceRefresh: true,
-      queryParameters: {
-        if (otp?.isNotEmpty ?? false) 'otp_value': otp,
-      },
     );
 
     return PaymentDTO.fromJson(response.data);
@@ -58,22 +54,12 @@ class PaymentProvider {
   /// Patches the payment
   Future<PaymentDTO> patchPayment({
     required PaymentDTO payment,
-    String? otp,
-    bool resendOtp = false,
   }) async {
-    final data = payment.toJson();
-    if (otp?.isNotEmpty ?? false) {
-      data['otp_value'] = otp;
-    }
     final response = await netClient.request(
       netClient.netEndpoints.paymentV2,
       method: NetRequestMethods.patch,
-      data: data,
+      data: payment.toJson(),
       forceRefresh: true,
-      queryParameters: {
-        if (otp?.isNotEmpty ?? false) 'second_factor_verification': true,
-        if (resendOtp) 'resend_otp': true,
-      },
     );
 
     return PaymentDTO.fromJson(response.data);
@@ -100,20 +86,68 @@ class PaymentProvider {
     );
   }
 
-  /// Resends the one time password to the customer
-  Future<PaymentDTO> resendOTP({
+  /// Returns the payment dto resulting on sending the OTP code for the
+  /// passed payment.
+  Future<PaymentDTO> sendOTPCode({
     required PaymentDTO payment,
+    required bool editMode,
   }) async {
-    final requestParams = {
-      "resend_otp": true,
-    };
+    final paymentJson = payment.toJson();
 
     final response = await netClient.request(
       netClient.netEndpoints.paymentV2,
-      method: NetRequestMethods.post,
-      data: payment.toJson(),
+      method: editMode ? NetRequestMethods.patch : NetRequestMethods.post,
+      data: {
+        ...paymentJson,
+        'second_factor': SecondFactorTypeDTO.otp.value,
+      },
+    );
+
+    return PaymentDTO.fromJson(response.data);
+  }
+
+  /// Returns the payment dto resulting on verifying the second factor for
+  /// the passed payment.
+  Future<PaymentDTO> verifySecondFactor({
+    required PaymentDTO payment,
+    required String value,
+    required SecondFactorTypeDTO secondFactorTypeDTO,
+    required bool editMode,
+  }) async {
+    final paymentJson = payment.toJson();
+
+    final response = await netClient.request(
+      netClient.netEndpoints.paymentV2,
+      method: editMode ? NetRequestMethods.patch : NetRequestMethods.post,
+      queryParameters: {'second_factor_verification': true},
+      data: {
+        ...paymentJson,
+        'second_factor': secondFactorTypeDTO.value,
+        if (secondFactorTypeDTO == SecondFactorTypeDTO.ocra)
+          'client_response': value,
+        if (secondFactorTypeDTO == SecondFactorTypeDTO.otp) 'otp_value': value,
+      },
+    );
+
+    return PaymentDTO.fromJson(response.data);
+  }
+
+  /// Resends second factor for the passed payment.
+  Future<PaymentDTO> resendSecondFactor({
+    required PaymentDTO payment,
+    required bool editMode,
+  }) async {
+    final paymentJson = payment.toJson();
+
+    final response = await netClient.request(
+      netClient.netEndpoints.paymentV2,
+      method: editMode ? NetRequestMethods.patch : NetRequestMethods.post,
+      data: {
+        ...paymentJson,
+        'resend_otp': true,
+      },
+      //queryParameters: {'resend_otp': true},
       forceRefresh: true,
-      queryParameters: requestParams,
     );
 
     return PaymentDTO.fromJson(response.data);

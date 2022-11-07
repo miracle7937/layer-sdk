@@ -1,6 +1,5 @@
 import '../../../../domain_layer/abstract_repositories.dart';
 import '../../../../domain_layer/models.dart';
-import '../../../dtos.dart';
 import '../../../mappings.dart';
 import '../../../providers.dart';
 
@@ -23,14 +22,17 @@ class LoyaltyPointsTransactionRepository
     int? limit,
     String? searchQuery,
     bool forceRefresh = false,
+    DateTime? startDate,
+    DateTime? endDate,
   }) async {
     final response = await _provider.fetchLoyaltyTransactions(
-      transactionType: transactionType?.toLoyaltyPointsTransactionTypeDTO() ??
-          LoyaltyPointsTransactionTypeDTO.none,
+      transactionType: transactionType?.toLoyaltyPointsTransactionTypeDTO(),
       offset: offset,
       limit: limit,
       searchQuery: searchQuery,
       forceRefresh: forceRefresh,
+      startDate: startDate,
+      endDate: endDate,
     );
     return response
         .map((it) => it.toLoyaltyPointsTransaction())

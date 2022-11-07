@@ -1,6 +1,7 @@
 import 'dart:collection';
 
-import 'package:equatable/equatable.dart';
+import '../../../features/user_preferences.dart';
+import '../base_cubit/base_state.dart';
 
 /// The available errors.
 enum UserPreferencesError {
@@ -23,11 +24,21 @@ enum UserPreferencesAction {
   favoriteRemoved,
 
   /// A new favorite was added
-  favoriteAdded
+  favoriteAdded,
+
+  /// A new low balance was added
+  lowBalanceAdded,
+
+  /// The low balance alert was deleted
+  alertRemoved,
+
+  /// A new preference is added
+  prefAdded,
 }
 
 ///The state for the [UserPreferencesCubit]
-class UserPreferencesState extends Equatable {
+class UserPreferencesState
+    extends BaseState<UserPreferencesAction, void, void> {
   /// The list of favorite offer ids.
   final UnmodifiableListView<int> favoriteOffers;
 
@@ -43,25 +54,37 @@ class UserPreferencesState extends Equatable {
   /// The last action performed by the user.
   final UserPreferencesAction action;
 
+  /// A new low balance was added
+  final double? lowBalanceValue;
+
   ///Creates a new [UserPreferencesState]
   UserPreferencesState({
+    super.actions = const <UserPreferencesAction>{},
+    super.errors = const <CubitError>{},
     Iterable<int> favoriteOffers = const <int>[],
     this.busy = false,
     this.error = UserPreferencesError.none,
     this.errorMessage,
+    this.lowBalanceValue,
     this.action = UserPreferencesAction.none,
   }) : favoriteOffers = UnmodifiableListView(favoriteOffers);
 
   ///Copies this state with different values
   UserPreferencesState copyWith({
+    Set<UserPreferencesAction>? actions,
+    Set<CubitError>? errors,
     Iterable<int>? favoriteOffers,
+    double? lowBalanceValue,
     bool? busy,
     UserPreferencesError? error,
     String? errorMessage,
     UserPreferencesAction? action,
   }) =>
       UserPreferencesState(
+        actions: actions ?? super.actions,
+        errors: errors ?? super.errors,
         favoriteOffers: favoriteOffers ?? this.favoriteOffers,
+        lowBalanceValue: lowBalanceValue ?? this.lowBalanceValue,
         busy: busy ?? this.busy,
         error: error ?? this.error,
         errorMessage: error == UserPreferencesError.none
@@ -77,5 +100,8 @@ class UserPreferencesState extends Equatable {
         error,
         errorMessage,
         action,
+        lowBalanceValue,
+        errors,
+        actions,
       ];
 }

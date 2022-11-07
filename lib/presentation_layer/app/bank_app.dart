@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:location/location.dart' as loc;
+import 'package:path_provider/path_provider.dart';
 
 import '../../_migration/flutter_layer/src/cubits.dart';
 import '../../_migration/flutter_layer/src/widgets/text_fields/auto_padding_keyboard_view.dart';
@@ -127,14 +128,31 @@ class BankApp extends StatefulWidget {
 /// The state of the [BankApp] widget.
 class BankAppState extends State<BankApp> {
   Key _appKey = UniqueKey();
-  GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 
   /// Resets the [Key] passed to the [MaterialApp] to restart the application.
   void restart() {
     setState(() {
       _appKey = UniqueKey();
-      _navigatorKey = GlobalKey<NavigatorState>();
     });
+  }
+
+  @override
+  void initState() {
+    _initializeFileLogger();
+    super.initState();
+  }
+
+  void _initializeFileLogger() async {
+    final directory = await getApplicationDocumentsDirectory();
+    try {
+      FileLogger.getInstant()
+          .initializeLogger(logFilesLocation: directory.path);
+      debugPrint(
+          'Initialized file logger Successfully on path: ${directory.path}');
+    } on Exception catch (exception) {
+      print('Error initializing the file logger: ${(exception)}');
+    }
   }
 
   /// The creators that are injected by the layer SDK.
@@ -217,6 +235,14 @@ class BankAppState extends State<BankApp> {
               secureStorage: widget.secureStorage,
             ),
             toggleBiometricsUseCase: ToggleBiometricsUseCase(
+              secureStorage: widget.secureStorage,
+            ),
+            loadLoyaltyTutorialCompletionUseCase:
+                LoadLoyaltyTutorialCompletionUseCase(
+              secureStorage: widget.secureStorage,
+            ),
+            setLoyaltyTutorialCompletionUseCase:
+                SetLoyaltyTutorialCompletionUseCase(
               secureStorage: widget.secureStorage,
             ),
           ),
@@ -345,10 +371,21 @@ class BankAppState extends State<BankApp> {
             ),
           ),
           customerUseCase: LoadCurrentCustomerUseCase(
-            repository: CustomerRepository(CustomerProvider(widget.netClient)),
+            repository: CustomerRepository(
+              CustomerProvider(
+                widget.netClient,
+              ),
+            ),
           ),
           loadDeveloperUserDetailsFromTokenUseCase:
               LoadDeveloperUserDetailsFromTokenUseCase(
+            repository: UserRepository(
+              userProvider: UserProvider(
+                netClient: widget.netClient,
+              ),
+            ),
+          ),
+          loadUserDetailsFromTokenUseCase: LoadUserDetailsFromTokenUseCase(
             repository: UserRepository(
               userProvider: UserProvider(
                 netClient: widget.netClient,
@@ -410,6 +447,24 @@ class BankAppState extends State<BankApp> {
             ),
           ),
         ),
+      ),
+      BlocProvider<AccountsCubit>(
+        create: (_) {
+          return AccountsCubit(
+            getCustomerAccountsUseCase: GetCustomerAccountsUseCase(
+              repository: AccountRepository(
+                AccountProvider(
+                  widget.netClient,
+                ),
+              ),
+            ),
+            loadFinancialDataUseCase: LoadFinancialDataUseCase(
+              repository: FinancialDataRepository(
+                FinancialDataProvider(widget.netClient),
+              ),
+            ),
+          );
+        },
       ),
     ];
   }

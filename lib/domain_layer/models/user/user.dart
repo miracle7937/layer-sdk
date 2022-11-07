@@ -104,6 +104,12 @@ class User extends Equatable {
   /// The branch this user belongs to.
   final String? branch;
 
+  /// The low balance
+  final double? lowBalanceValue;
+
+  /// List of activity types for which user receives alerts.
+  final UnmodifiableListView<ActivityType> enabledAlerts;
+
   /// Returns the full name of the customer.
   String get fullName => [firstName, lastName]
       .where((element) => element != null && element.isNotEmpty)
@@ -121,6 +127,7 @@ class User extends Equatable {
     this.lastName,
     this.accessPin,
     this.deviceId,
+    this.lowBalanceValue,
     this.hasEmailAds = false,
     this.hasSmsAds = false,
     this.isUSSDActive = false,
@@ -130,8 +137,10 @@ class User extends Equatable {
     this.permissions = const UserPermissions(),
     this.verifyDevice = false,
     this.branch,
+    Iterable<ActivityType> enabledAlerts = const <ActivityType>[],
   })  : favoriteOffers = UnmodifiableListView(favoriteOffers ?? []),
-        roles = UnmodifiableListView(roles ?? <String>[]);
+        roles = UnmodifiableListView(roles ?? <String>[]),
+        enabledAlerts = UnmodifiableListView(enabledAlerts);
 
   /// Returns a copy of the user modified by the provided data.
   User copyWith({
@@ -154,6 +163,8 @@ class User extends Equatable {
     bool? isUSSDActive,
     bool? verifyDevice,
     String? branch,
+    double? lowBalanceValue,
+    Iterable<ActivityType>? enabledAlerts,
   }) =>
       User(
         id: id ?? this.id,
@@ -175,6 +186,8 @@ class User extends Equatable {
         isUSSDActive: isUSSDActive ?? this.isUSSDActive,
         verifyDevice: verifyDevice ?? this.verifyDevice,
         branch: branch ?? this.branch,
+        lowBalanceValue: lowBalanceValue ?? this.lowBalanceValue,
+        enabledAlerts: enabledAlerts ?? this.enabledAlerts,
       );
 
   @override
@@ -197,5 +210,7 @@ class User extends Equatable {
         permissions,
         verifyDevice,
         branch,
+        lowBalanceValue,
+        enabledAlerts,
       ];
 }

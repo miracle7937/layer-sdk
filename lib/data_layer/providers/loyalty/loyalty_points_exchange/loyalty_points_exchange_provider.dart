@@ -28,6 +28,10 @@ class LoyaltyPointsExchangeProvider {
       },
     );
 
+    if (response.data == null) {
+      return LoyaltyPointsExchangeDTO();
+    }
+
     return LoyaltyPointsExchangeDTO.fromJson(response.data);
   }
 

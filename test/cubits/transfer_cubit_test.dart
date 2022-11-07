@@ -11,6 +11,7 @@ import 'package:test/test.dart';
 class MockLoadTransfersUseCase extends Mock implements LoadTransfersUseCase {}
 
 final _repositoryList = <Transfer>[];
+
 final _defaultLimit = 10;
 final _customerId = '200000';
 

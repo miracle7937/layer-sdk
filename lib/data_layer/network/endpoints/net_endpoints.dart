@@ -9,7 +9,6 @@ class NetEndpoints {
   static const String _xstudio = '/xstudio';
   static const String _automation = '/automation';
   static const String _payment = '/payment';
-  static const String _loyalty = '/loyalty';
   static const String _integration = '/integration';
   static const String _loyaltyEngine = '/loyalty-engine';
   static const String _engagement = '/engagement';
@@ -67,6 +66,9 @@ class NetEndpoints {
 
   /// The experience images endpoint
   String get experienceImage => '$images/xstudio';
+
+  /// DPA - Gets the user task details
+  String get userTaskDetails => '$_automation/v1/user_task_details';
 
   /// DPA - Lists all processes and all their version.
   String get listProcessesWithVersions => '$_automation/v1/list_processes';
@@ -137,6 +139,9 @@ class NetEndpoints {
   /// The cards endpoint
   String get card => '$_infoBanking/v1/card';
 
+  /// The card info endpoint
+  String get cardInfo => '$_infoBanking/v2/card_info';
+
   /// The beneficiaries endpoint
   String get beneficiary => '$_txnBanking/v1/beneficiary';
 
@@ -182,6 +187,9 @@ class NetEndpoints {
   /// The transactions endpoint
   String get transaction => '$_infoBanking/v1/transaction';
 
+  /// The filter transactions endpoint
+  String get filterTransaction => '$_infoBanking/v1/filter/transaction';
+
   /// The message endpoint
   String get message => '$_infoBanking/v1/message';
 
@@ -225,7 +233,7 @@ class NetEndpoints {
   String get officialBankStatement => '$customerAccount/bank_statement';
 
   ///The offers endpoint
-  String get offers => '$_loyalty/v1/offer';
+  String get offers => '$_loyaltyEngine/v1/offer';
 
   ///[Category] - Fetch all categories
   String get category => '$_infoBanking/v1/category';
@@ -234,7 +242,7 @@ class NetEndpoints {
   String get accountLoanPayment => '$_infoBanking/v1/account_loan_payment';
 
   ///The offer transactions endpoint
-  String get offerTransactions => '$_loyalty/v1/offer_transaction';
+  String get offerTransactions => '$_loyaltyEngine/v1/offer_transaction';
 
   ///The settings endpoint
   String get settings => '$_infoBanking/v1/setting';
@@ -338,9 +346,27 @@ class NetEndpoints {
   /// Endpoint for the customer limits
   String get customerLimits => '$_txnBanking/v2/customer_limit';
 
-  /// Endpoint for handling inbox report calls
+  /// Endpoint for handling inbox calls
   String get report => '$_engagement/v1/report';
+
+  /// Endpoint for handling report messages
+  String get inboxMessage => '$_engagement/v2/message';
+
+  /// Endpoint for sending chat report messages
+  String get reportMessage => '$_engagement/v1/message';
 
   /// Endpoint for getting the balance
   String get balance => '$_infoBanking/v2/balance/periodical_balance';
+
+  /// Endpoint for handling alerts
+  String get alert => '$_infoBanking/v1/alert';
+
+  /// Endpoint for posting new pay to mobile flows.
+  String get sendMoney => '$_txnBanking/v1/send_money';
+
+  /// Endpoint for resending the withdrawal code from a pay to mobile.
+  String get resendSendMoney => '$_txnBanking/v1/resend_send_money';
+
+  /// Endpoint for the pay to mobile receipts.
+  String get sendMoneyReceipt => '$_txnBanking/v1/send_money_receipt';
 }

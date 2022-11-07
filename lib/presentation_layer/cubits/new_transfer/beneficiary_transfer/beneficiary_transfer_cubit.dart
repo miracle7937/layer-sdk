@@ -1,16 +1,20 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logging/logging.dart';
 
 import '../../../../domain_layer/models.dart';
 import '../../../../domain_layer/use_cases.dart';
+import '../../../../domain_layer/use_cases/payments/generate_device_uid_use_case.dart';
 import '../../../cubits.dart';
 import '../../../utils.dart';
 
 /// A Cubit that handles the state for the beneficiary transfer flow.
 class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
+  final _logger = Logger('BeneficiaryTransferCubit');
+
   final LoadGlobalSettingsUseCase _loadGlobalSettingsUseCase;
-  final GetSourceAccountsForBeneficiaryTransferUseCase
-      _getSourceAccountsForBeneficiaryTransferUseCase;
+  final GetActiveAccountsSortedByAvailableBalance
+      _getActiveAccountsSortedByAvailableBalance;
   final GetDestinationBeneficiariesForBeneficiariesTransferUseCase
       _getDestinationBeneficiariesForBeneficiariesTransferUseCase;
   final LoadCountriesUseCase _loadCountriesUseCase;
@@ -19,10 +23,12 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
   final LoadBanksByCountryCodeUseCase _loadBanksByCountryCodeUseCase;
   final ValidateIBANUseCase _validateIBANUseCase;
   final EvaluateTransferUseCase _evaluateTransferUseCase;
+  final SendOTPCodeForTransferUseCase _sendOTPCodeForTransferUseCase;
   final SubmitTransferUseCase _submitTransferUseCase;
   final VerifyTransferSecondFactorUseCase _verifyTransferSecondFactorUseCase;
   final ResendTransferSecondFactorUseCase _resendTransferSecondFactorUseCase;
   final CreateShortcutUseCase _createShortcutUseCase;
+  final GenerateDeviceUIDUseCase _generateDeviceUIDUseCase;
 
   /// Creates a new [BeneficiaryTransferCubit].
   ///
@@ -32,8 +38,8 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     bool editMode = false,
     required LoadGlobalSettingsUseCase loadGlobalSettingsUseCase,
     required BeneficiaryTransfer transfer,
-    required GetSourceAccountsForBeneficiaryTransferUseCase
-        getSourceAccountsForBeneficiaryTransferUseCase,
+    required GetActiveAccountsSortedByAvailableBalance
+        getActiveAccountsSortedByAvailableBalance,
     required GetDestinationBeneficiariesForBeneficiariesTransferUseCase
         getDestinationBeneficiariesForBeneficiariesTransferUseCase,
     required LoadCountriesUseCase loadCountriesUseCase,
@@ -42,16 +48,18 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     required LoadBanksByCountryCodeUseCase loadBanksByCountryCodeUseCase,
     required ValidateIBANUseCase validateIBANUseCase,
     required EvaluateTransferUseCase evaluateTransferUseCase,
+    required SendOTPCodeForTransferUseCase sendOTPCodeForTransferUseCase,
     required SubmitTransferUseCase submitTransferUseCase,
     required VerifyTransferSecondFactorUseCase
         verifyTransferSecondFactorUseCase,
     required ResendTransferSecondFactorUseCase
         resendTransferSecondFactorUseCase,
+    required GenerateDeviceUIDUseCase generateDeviceUIDUseCase,
     required CreateShortcutUseCase createShortcutUseCase,
     int banksPaginationLimit = 20,
   })  : _loadGlobalSettingsUseCase = loadGlobalSettingsUseCase,
-        _getSourceAccountsForBeneficiaryTransferUseCase =
-            getSourceAccountsForBeneficiaryTransferUseCase,
+        _getActiveAccountsSortedByAvailableBalance =
+            getActiveAccountsSortedByAvailableBalance,
         _getDestinationBeneficiariesForBeneficiariesTransferUseCase =
             getDestinationBeneficiariesForBeneficiariesTransferUseCase,
         _loadCountriesUseCase = loadCountriesUseCase,
@@ -60,10 +68,12 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         _loadBanksByCountryCodeUseCase = loadBanksByCountryCodeUseCase,
         _validateIBANUseCase = validateIBANUseCase,
         _evaluateTransferUseCase = evaluateTransferUseCase,
+        _sendOTPCodeForTransferUseCase = sendOTPCodeForTransferUseCase,
         _submitTransferUseCase = submitTransferUseCase,
         _verifyTransferSecondFactorUseCase = verifyTransferSecondFactorUseCase,
         _resendTransferSecondFactorUseCase = resendTransferSecondFactorUseCase,
         _createShortcutUseCase = createShortcutUseCase,
+        _generateDeviceUIDUseCase = generateDeviceUIDUseCase,
         super(
           BeneficiaryTransferState(
             transfer: transfer,
@@ -146,8 +156,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
       );
 
       try {
-        final accounts =
-            await _getSourceAccountsForBeneficiaryTransferUseCase();
+        final accounts = await _getActiveAccountsSortedByAvailableBalance();
 
         if (accounts.isNotEmpty) {
           onChanged(
@@ -579,7 +588,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     }
 
     if (transfer.saveToShortcut &&
-        (transfer.shortcutName ?? '').toString().isEmpty) {
+        (transfer.shortcutName ?? '').trim().isEmpty) {
       validationErrors.add(
         CubitValidationError<BeneficiaryTransferValidationErrorCode>(
           validationErrorCode: BeneficiaryTransferValidationErrorCode
@@ -723,8 +732,15 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
 
   /// Submits the transfer.
   Future<void> submit() async {
+    if (state.actions.contains(BeneficiaryTransferAction.submit)) {
+      return;
+    }
+
+    final deviceUID = _generateDeviceUIDUseCase(30);
+
     emit(
       state.copyWith(
+        transfer: state.transfer.copyWith(deviceUID: deviceUID),
         actions: state.addAction(
           BeneficiaryTransferAction.submit,
         ),
@@ -734,7 +750,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         events: state.removeEvents(
           {
             BeneficiaryTransferEvent.showResultView,
-            BeneficiaryTransferEvent.inputOTPCode,
+            BeneficiaryTransferEvent.openSecondFactor,
           },
         ),
       ),
@@ -801,13 +817,16 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
               ),
               transferResult: transferResult,
               events: state.addEvent(
-                BeneficiaryTransferEvent.inputOTPCode,
+                BeneficiaryTransferEvent.openSecondFactor,
               ),
             ),
           );
           break;
 
         default:
+          _logger.severe(
+            'Unhandled transfer status -> ${transferResult.status}',
+          );
           throw Exception(
             'Unhandled transfer status -> ${transferResult.status}',
           );
@@ -827,11 +846,68 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     }
   }
 
+  /// Send the OTP code for the current transfer result.
+  Future<void> sendOTPCode() async {
+    assert(state.transferResult != null);
+
+    emit(
+      state.copyWith(
+        actions: state.addAction(
+          BeneficiaryTransferAction.sendOTPCode,
+        ),
+        errors: state.removeErrorForAction(
+          BeneficiaryTransferAction.sendOTPCode,
+        ),
+        events: state.removeEvent(
+          BeneficiaryTransferEvent.showOTPCodeView,
+        ),
+      ),
+    );
+
+    try {
+      final transferResult = await _sendOTPCodeForTransferUseCase(
+        transferId: state.transferResult?.id ?? 0,
+        editMode: state.editMode,
+      );
+
+      emit(
+        state.copyWith(
+          actions: state.removeAction(
+            BeneficiaryTransferAction.sendOTPCode,
+          ),
+          transferResult: transferResult,
+          events: state.addEvent(
+            BeneficiaryTransferEvent.showOTPCodeView,
+          ),
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          actions: state.removeAction(
+            BeneficiaryTransferAction.sendOTPCode,
+          ),
+          errors: state.addErrorFromException(
+            action: BeneficiaryTransferAction.sendOTPCode,
+            exception: e,
+          ),
+        ),
+      );
+    }
+  }
+
   /// Verifies the second factor for the transfer retrievied on the [submit]
   /// method.
   Future<void> verifySecondFactor({
-    required String otpValue,
+    String? otpCode,
+    String? ocraClientResponse,
   }) async {
+    assert(
+      otpCode != null || ocraClientResponse != null,
+      'An OTP code or OCRA client response must be provided in order for '
+      'verifying the second factor',
+    );
+
     emit(
       state.copyWith(
         actions: state.addAction(
@@ -844,9 +920,9 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     try {
       final transferResult = await _verifyTransferSecondFactorUseCase(
         transferId: state.transferResult?.id ?? 0,
-        otpValue: otpValue,
+        value: otpCode ?? ocraClientResponse ?? '',
         secondFactorType:
-            state.transferResult?.secondFactorType ?? SecondFactorType.otp,
+            otpCode != null ? SecondFactorType.otp : SecondFactorType.ocra,
       );
 
       emit(
@@ -861,7 +937,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         state.copyWith(
           transferResult: transferResult,
           events: state.addEvent(
-            BeneficiaryTransferEvent.closeOTPView,
+            BeneficiaryTransferEvent.closeSecondFactor,
           ),
         ),
       );
@@ -935,7 +1011,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     }
   }
 
-  /// Creates the shortcut (if enabled) once the transfer has succeded.
+  /// Creates the shortcut (if enabled).
   Future<void> _createShortcut() async {
     emit(
       state.copyWith(

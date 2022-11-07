@@ -43,6 +43,7 @@ class ActivityRepository implements ActivityRepositoryInterface {
     List<ActivityType>? types,
     List<TransferType>? transferTypes,
     List<ActivityTag>? activityTags,
+    bool forceRefresh = false,
   }) async {
     final activitiesDTO = await _provider.list(
       fromTS: fromTS,
@@ -68,6 +69,7 @@ class ActivityRepository implements ActivityRepositoryInterface {
       types: types,
       transferTypes: transferTypes,
       activityTags: activityTags,
+      forceRefresh: forceRefresh,
     );
 
     return activitiesDTO.map((e) => e.toActivity(_createCustomData)).toList();
@@ -91,5 +93,83 @@ class ActivityRepository implements ActivityRepositoryInterface {
     final result = _provider.cancelRecurringTransfer(id, otpValue: otpValue);
 
     return result;
+  }
+
+  /// Read the current [Alert] by respective `id`
+  @override
+  Future<void> markAlertAsRead(int id) {
+    final result = _provider.markAlertAsRead(id);
+
+    return result;
+  }
+
+  /// Read the current [Request] by respective `id`
+  @override
+  Future<void> markRequestAsRead(String id) {
+    final result = _provider.markRequestAsRead(id);
+
+    return result;
+  }
+
+  /// Delete the current [Alert] by respective `id`
+  @override
+  Future<void> deleteAlert(int id) {
+    final result = _provider.deleteAlert(id);
+
+    return result;
+  }
+
+  /// Delete the current [Request] by respective `id`
+  @override
+  Future<void> deleteRequest(String id) {
+    final result = _provider.deleteRequest(id);
+
+    return result;
+  }
+
+  /// Read all the [Alert]'s
+  @override
+  Future<void> markAllAlertsAsRead() {
+    final result = _provider.markAllAlertsAsRead();
+
+    return result;
+  }
+
+  /// Read all the [Request]'s
+  @override
+  Future<void> markAllRequestsAsRead() {
+    final result = _provider.markAllRequestsAsRead();
+
+    return result;
+  }
+
+  /// Delete all the [Alert]'s
+  @override
+  Future<void> deleteAllAlerts() {
+    final result = _provider.deleteAllAlerts();
+
+    return result;
+  }
+
+  /// Delete all the [Request]'s
+  @override
+  Future<void> deleteAllRequests() {
+    final result = _provider.deleteAllRequests();
+
+    return result;
+  }
+
+  /// Retrive the alert by the activity query from push notification
+  @override
+  Future<Activity> getAlertByActivityQuery(
+    Map<String, dynamic> extraParams, {
+    required bool includeDetails,
+  }) async {
+    final result = await _provider.getAlertByActivityQuery(
+      extraParams,
+      includeDetails: includeDetails,
+    );
+
+    return result.toActivity(_createCustomData);
   }
 }

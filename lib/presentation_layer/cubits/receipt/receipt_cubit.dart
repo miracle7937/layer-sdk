@@ -45,13 +45,13 @@ class ReceiptCubit extends Cubit<ReceiptState> {
   /// to.
   ///
   /// The [type] refers to the type of receipt that you are tring to load.
-  /// Default is [ReceiptType.image].
+  /// Default is [FileType.image].
   Future<void> loadReceipt({
     required String objectId,
     required ReceiptActionType actionType,
-    ReceiptType type = ReceiptType.image,
+    FileType type = FileType.image,
   }) async {
-    final isImage = type == ReceiptType.image;
+    final isImage = type == FileType.image;
     final action =
         isImage ? ReceiptAction.receiptImage : ReceiptAction.receiptPdf;
 

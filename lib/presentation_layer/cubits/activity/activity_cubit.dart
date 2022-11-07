@@ -9,27 +9,44 @@ import '../../utils.dart';
 /// A cubit that handles the [User] activities
 class ActivityCubit extends Cubit<ActivityState> {
   final LoadActivitiesUseCase _loadActivitiesUseCase;
+  final FilterTransferActivityTypesUseCase _filterTransferActivityTypesUseCase;
   final DeleteActivityUseCase _deleteActivityUseCase;
   final CancelActivityUseCase _cancelActivityUseCase;
   final CreateShortcutUseCase _createShortcutUseCase;
   final CancelRecurringTransferUseCase _cancelRecurringTransferUseCase;
   final CancelRecurringPaymentUseCase _cancelRecurrPaymentUseCase;
+  final MarkAlertAsReadUseCase _markAlertAsReadUseCase;
+  final DeleteAlertUseCase _deleteAlertUseCase;
+  final MarkAllAlertsAsReadUseCase _markAllAlertsAsReadUseCase;
+  final DeleteAllAlertsUseCase _deleteAllAlertsUseCase;
 
   /// Creates a new [ActivityCubit] instance
   ActivityCubit({
     required LoadActivitiesUseCase loadActivitiesUseCase,
+    required FilterTransferActivityTypesUseCase
+        filterTransferActivityTypesUseCase,
     required DeleteActivityUseCase deleteActivityUseCase,
     required CancelActivityUseCase cancelActivityUseCase,
     required CreateShortcutUseCase createShortcutUseCase,
     required CancelRecurringTransferUseCase cancelRecurringTransferUseCase,
     required CancelRecurringPaymentUseCase cancelRecurrPaymentUseCase,
+    required MarkAlertAsReadUseCase markAlertAsReadUseCase,
+    required DeleteAlertUseCase deleteAlertUseCase,
+    required MarkAllAlertsAsReadUseCase markAllAlertsAsReadUseCase,
+    required DeleteAllAlertsUseCase deleteAllAlertsUseCase,
     int limit = 20,
   })  : _loadActivitiesUseCase = loadActivitiesUseCase,
+        _filterTransferActivityTypesUseCase =
+            filterTransferActivityTypesUseCase,
         _deleteActivityUseCase = deleteActivityUseCase,
         _cancelActivityUseCase = cancelActivityUseCase,
         _createShortcutUseCase = createShortcutUseCase,
         _cancelRecurringTransferUseCase = cancelRecurringTransferUseCase,
         _cancelRecurrPaymentUseCase = cancelRecurrPaymentUseCase,
+        _markAlertAsReadUseCase = markAlertAsReadUseCase,
+        _deleteAlertUseCase = deleteAlertUseCase,
+        _markAllAlertsAsReadUseCase = markAllAlertsAsReadUseCase,
+        _deleteAllAlertsUseCase = deleteAllAlertsUseCase,
         super(ActivityState(
           pagination: Pagination(limit: limit),
         ));
@@ -40,6 +57,8 @@ class ActivityCubit extends Cubit<ActivityState> {
   ///
   /// The [startDate], [endDate], [types], [activityTags] and [transferTypes]
   /// parameters can be used for filtering purposes.
+  ///
+  /// The `applyFilter` param can be used to filter the transfer activity type
   Future<void> load({
     bool loadMore = false,
     bool itemIsNull = false,
@@ -48,6 +67,9 @@ class ActivityCubit extends Cubit<ActivityState> {
     List<ActivityType>? types,
     List<ActivityTag>? activityTags,
     List<TransferType>? transferTypes,
+    String? searchStr,
+    bool applyFilter = false,
+    bool forceRefresh = false,
   }) async {
     emit(
       state.copyWith(
@@ -62,16 +84,31 @@ class ActivityCubit extends Cubit<ActivityState> {
     try {
       final newPage = state.pagination.paginate(loadMore: loadMore);
 
-      final resultList = await _loadActivitiesUseCase(
-        limit: newPage.limit,
-        offset: newPage.offset,
-        fromTS: startDate,
-        toTS: endDate,
-        itemIsNull: itemIsNull,
-        types: types,
-        activityTags: activityTags,
-        transferTypes: transferTypes,
-      );
+      final resultList = applyFilter
+          ? await _filterTransferActivityTypesUseCase(
+              limit: newPage.limit,
+              offset: newPage.offset,
+              fromTS: startDate,
+              toTS: endDate,
+              itemIsNull: itemIsNull,
+              types: types,
+              activityTags: activityTags,
+              transferTypes: transferTypes,
+              searchStr: searchStr,
+              forceRefresh: forceRefresh,
+            )
+          : await _loadActivitiesUseCase(
+              limit: newPage.limit,
+              offset: newPage.offset,
+              fromTS: startDate,
+              toTS: endDate,
+              itemIsNull: itemIsNull,
+              types: types,
+              activityTags: activityTags,
+              transferTypes: transferTypes,
+              searchStr: searchStr,
+              forceRefresh: forceRefresh,
+            );
 
       final activities = newPage.firstPage
           ? resultList
@@ -187,4 +224,18 @@ class ActivityCubit extends Cubit<ActivityState> {
           shortcutName: shortcutName,
         ),
       );
+
+  /// Read the current alert by the respective [Activity]
+  Future<void> markAlertAsRead(Activity activity) => _markAlertAsReadUseCase(
+        activity,
+      );
+
+  /// Delete the current alert by the respective [Activity]
+  Future<void> deleteAlert(Activity activity) => _deleteAlertUseCase(activity);
+
+  /// Read all the alerts
+  Future<void> markAllAlertsAsRead() => _markAllAlertsAsReadUseCase();
+
+  /// Delete all the alerts
+  Future<void> deleteAllAlerts() => _deleteAllAlertsUseCase();
 }

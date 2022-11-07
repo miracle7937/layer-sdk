@@ -39,6 +39,14 @@ abstract class DPARepositoryInterface {
     bool forceRefresh = false,
   });
 
+  /// Returns the user task for the provided process key
+  Future<List<DPATask>?> getUserTaskDetails({
+    required String processKey,
+    String? variable,
+    String? variableValue,
+    bool forceRefresh = false,
+  });
+
   /// Lists all tasks assigned to the user.
   ///
   /// If the [customerId] is passed, this will return only the tasks related
@@ -158,5 +166,12 @@ abstract class DPARepositoryInterface {
     required DPAProcess process,
     required DPAVariable variable,
     NetProgressCallback? onProgress,
+  });
+
+  /// Parses a JSON into a [DPATask].
+  ///
+  /// Returns the [DPATask].
+  DPATask parseJSONIntoDPATask({
+    required Map<String, dynamic> json,
   });
 }

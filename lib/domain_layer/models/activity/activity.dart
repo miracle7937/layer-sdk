@@ -254,6 +254,15 @@ enum ActivityActionType {
 
   /// Renewal
   renewal,
+
+  /// Resend withdrawal code.
+  resendWithdrawalCode,
+
+  /// Share transaction code.
+  shareTransactionCode,
+
+  /// Dispute transaction
+  dispute,
 }
 
 /// The tag of the [Activity]

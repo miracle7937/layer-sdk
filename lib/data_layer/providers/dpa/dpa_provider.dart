@@ -31,6 +31,29 @@ class DPAProvider {
         .toList();
   }
 
+  /// Returns the user task for the provided process key
+  Future<List<DPATaskDTO>> getUserTaskDetails({
+    required String processKey,
+    String? variable,
+    String? variableValue,
+    bool forceRefresh = false,
+  }) async {
+    final response = await netClient.request(
+      netClient.netEndpoints.userTaskDetails,
+      method: NetRequestMethods.get,
+      queryParameters: {
+        'process_key': processKey,
+        if (variable != null) 'variable': variable,
+        if (variableValue != null) 'variable_value': variableValue,
+      },
+      forceRefresh: forceRefresh,
+    );
+
+    return DPATaskDTO.fromJsonList(
+      List<Map<String, dynamic>>.from(response.data),
+    );
+  }
+
   /// Returns the list of processes in their latests versions
   /// that can be started by the user.
   Future<List<DPAProcessDefinitionDTO>> listLatestProcesses({
@@ -369,4 +392,12 @@ class DPAProvider {
       '${netClient.netEndpoints.dpaDownloadFile}'
       '/${process.task?.processInstanceId}'
       '/$key';
+
+  /// Parses a JSON into a [DPATaskDTO].
+  DPATaskDTO parseJSONIntoDPATaskDTO({
+    required Map<String, dynamic> json,
+  }) =>
+      DPATaskDTO.fromJson(
+        json,
+      );
 }

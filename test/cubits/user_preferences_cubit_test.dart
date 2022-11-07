@@ -2,6 +2,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
 import 'package:layer_sdk/data_layer/network.dart';
 import 'package:layer_sdk/domain_layer/models.dart';
+import 'package:layer_sdk/domain_layer/use_cases/user/set_custom_user_prefs_use_case.dart';
 import 'package:layer_sdk/features/user_preferences.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
@@ -9,7 +10,15 @@ import 'package:test/test.dart';
 class MockChangeOfferFavoriteStatusUseCase extends Mock
     implements ChangeOfferFavoriteStatusUseCase {}
 
+class MockSetLowBalanceAlertUseCase extends Mock
+    implements SetLowBalanceAlertUseCase {}
+
+class MockSetCustomUserPrefsUseCase extends Mock
+    implements SetCustomUserPrefsUseCase {}
+
 late MockChangeOfferFavoriteStatusUseCase _useCase;
+late MockSetLowBalanceAlertUseCase _balanceAlertUseCase;
+late MockSetCustomUserPrefsUseCase _setCustomUserPrefsUseCase;
 
 final _exception = NetException(message: 'there was an exception');
 
@@ -42,6 +51,8 @@ void main() {
 
   setUp(() {
     _useCase = MockChangeOfferFavoriteStatusUseCase();
+    _balanceAlertUseCase = MockSetLowBalanceAlertUseCase();
+    _setCustomUserPrefsUseCase = MockSetCustomUserPrefsUseCase();
 
     when(
       () => _useCase(
@@ -71,6 +82,8 @@ void main() {
     build: () => UserPreferencesCubit(
       user: mockedUser,
       changeOfferFavoriteStatusUseCase: _useCase,
+      setLowBalanceAlertUseCase: _balanceAlertUseCase,
+      setCustomUserPrefsUseCase: _setCustomUserPrefsUseCase,
     ),
     verify: (c) => expect(
       c.state,
@@ -83,6 +96,8 @@ void main() {
     build: () => UserPreferencesCubit(
       user: exceptionMockedUser,
       changeOfferFavoriteStatusUseCase: _useCase,
+      setLowBalanceAlertUseCase: _balanceAlertUseCase,
+      setCustomUserPrefsUseCase: _setCustomUserPrefsUseCase,
     ),
     act: (c) => c.changeOfferFavoriteStatus(offerId: 140),
     expect: () => [
@@ -111,6 +126,8 @@ void main() {
     build: () => UserPreferencesCubit(
       user: exceptionMockedUser,
       changeOfferFavoriteStatusUseCase: _useCase,
+      setLowBalanceAlertUseCase: _balanceAlertUseCase,
+      setCustomUserPrefsUseCase: _setCustomUserPrefsUseCase,
     ),
     seed: () => UserPreferencesState(
       error: UserPreferencesError.network,
@@ -144,6 +161,8 @@ void main() {
     build: () => UserPreferencesCubit(
       user: mockedUser,
       changeOfferFavoriteStatusUseCase: _useCase,
+      setLowBalanceAlertUseCase: _balanceAlertUseCase,
+      setCustomUserPrefsUseCase: _setCustomUserPrefsUseCase,
     ),
     act: (c) => c.changeOfferFavoriteStatus(offerId: 130),
     expect: () => [
@@ -170,6 +189,8 @@ void main() {
     build: () => UserPreferencesCubit(
       user: mockedUser,
       changeOfferFavoriteStatusUseCase: _useCase,
+      setLowBalanceAlertUseCase: _balanceAlertUseCase,
+      setCustomUserPrefsUseCase: _setCustomUserPrefsUseCase,
     ),
     act: (c) => c.changeOfferFavoriteStatus(offerId: 120),
     expect: () => [
