@@ -62,7 +62,7 @@ class CardDTO {
   bool? isVirtual;
 
   /// Mastercard or visa
-  ProviderDTO? provider;
+  CardProviderDTO? provider;
 
   /// Creates a new [CardDTO]
   CardDTO({
@@ -93,7 +93,7 @@ class CardDTO {
       cardId: map['card_id'],
       maskedCardNumber: map['masked_card_no'],
       nickname: map['pref_nickname'],
-      provider: ProviderDTO.fromRaw(map['provider']),
+      provider: CardProviderDTO.fromString(map['extra']['provider']),
       cardHolderName: map['holder_name'],
       branchName: map['extra'] != null
           ? jsonLookup(map, ['extra', 'branch_name'])
@@ -155,24 +155,26 @@ class CardDTOStatus extends EnumDTO {
       );
 }
 
-/// Provider DTO
-class ProviderDTO extends EnumDTO {
-  /// Visa
-  static const visa = ProviderDTO._internal('Visa');
+/// The available providers for the card
+enum CardProviderDTO {
+  /// Visa.
+  visa('Visa'),
 
-  /// MasterCard
-  static const mastercard = ProviderDTO._internal('MasterCard');
+  /// MasterCard.
+  mastercard('MasterCard'),
 
-  /// List of providers
-  static const List<ProviderDTO> values = [
-    visa,
-    mastercard,
-  ];
+  /// Unknown.
+  unknown('unknown');
 
-  const ProviderDTO._internal(String value) : super.internal(value);
+  /// The string value for the [CardProviderDTO].
+  final String value;
 
-  /// Convert string to [ProviderDTO]
-  static ProviderDTO? fromRaw(String? raw) => values.firstWhereOrNull(
-        (val) => val.value == raw,
+  /// Creates a new [CardProviderDTO] with the passed value.
+  const CardProviderDTO(this.value);
+
+  /// Creates a new [CardProviderDTO] from a passed string.
+  factory CardProviderDTO.fromString(String provider) => values.singleWhere(
+        (value) => value.value == provider,
+        orElse: () => unknown,
       );
 }
