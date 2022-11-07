@@ -5,9 +5,6 @@ import '../../cubits.dart';
 
 /// All possible actions.
 enum EditBeneficiaryAction {
-  /// Initializing the cubit with the needed data.
-  initialize,
-
   /// Adding new beneficiary action.
   save,
 
@@ -23,9 +20,6 @@ enum EditBeneficiaryAction {
 
 /// The available add beneficiary cubit events.
 enum EditBeneficiaryEvent {
-  /// Event for showing the confirmation view.
-  showConfirmationView,
-
   /// Event for opening the second factor.
   openSecondFactor,
 
@@ -47,6 +41,9 @@ class EditBeneficiaryState
 
   /// New beneficiary.
   final Beneficiary beneficiary;
+
+  /// The beneficiary that we got from the API.
+  final Beneficiary? beneficiaryResult;
 
   /// A list of countries
   final UnmodifiableListView<Country> countries;
@@ -73,18 +70,9 @@ class EditBeneficiaryState
     super.events = const <EditBeneficiaryEvent>{},
     required this.oldBeneficiary,
     required this.beneficiary,
+    this.beneficiaryResult,
     Iterable<Country> countries = const <Country>[],
   }) : countries = UnmodifiableListView(countries);
-
-  @override
-  List<Object?> get props => [
-        actions,
-        errors,
-        events,
-        oldBeneficiary,
-        beneficiary,
-        countries,
-      ];
 
   /// Creates a new state based on this one.
   EditBeneficiaryState copyWith({
@@ -92,6 +80,7 @@ class EditBeneficiaryState
     Set<CubitError>? errors,
     Set<EditBeneficiaryEvent>? events,
     Beneficiary? beneficiary,
+    Beneficiary? beneficiaryResult,
     Iterable<Country>? countries,
   }) =>
       EditBeneficiaryState(
@@ -100,6 +89,18 @@ class EditBeneficiaryState
         events: events ?? super.events,
         oldBeneficiary: oldBeneficiary,
         beneficiary: beneficiary ?? this.beneficiary,
+        beneficiaryResult: beneficiaryResult ?? this.beneficiaryResult,
         countries: countries ?? this.countries,
       );
+
+  @override
+  List<Object?> get props => [
+        actions,
+        errors,
+        events,
+        oldBeneficiary,
+        beneficiary,
+        beneficiaryResult,
+        countries,
+      ];
 }

@@ -408,27 +408,16 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         iban: accountRequired ? '' : state.beneficiary!.iban!,
       );
 
-      /// TODO: cubit_issue | I think we should keep separated the beneficiary
-      /// item that we were creating and the beneficiary result that BE is
-      /// sending back.
-      ///
-      /// Also I think the action usage is not coherent with the rest os cubits
-      /// that we have on the sdk. As I stated before, the actions are for
-      /// indicating the type of loading that it's being done by the cubit.
-      /// You are using them as actions that the UI should perform later on.
-      ///
-      /// For that, you should be using [BlocListener]s on the UI.
-      ///
-      final newBeneficiary = await _addNewBeneficiaryUseCase(
+      final beneficiaryResult = await _addNewBeneficiaryUseCase(
         beneficiary: beneficiary,
       );
 
-      switch (newBeneficiary.status) {
+      switch (beneficiaryResult.status) {
         case BeneficiaryStatus.active:
         case BeneficiaryStatus.pending:
           emit(
             state.copyWith(
-              beneficiary: newBeneficiary,
+              beneficiaryResult: beneficiaryResult,
               actions: state.removeAction(AddBeneficiaryAction.add),
               events: state.addEvent(AddBeneficiaryEvent.showResultView),
             ),
@@ -438,7 +427,7 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         case BeneficiaryStatus.otp:
           emit(
             state.copyWith(
-              beneficiary: newBeneficiary,
+              beneficiaryResult: beneficiaryResult,
               actions: state.removeAction(AddBeneficiaryAction.add),
               events: state.addEvent(AddBeneficiaryEvent.openSecondFactor),
             ),
@@ -447,10 +436,10 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
 
         default:
           _logger.severe(
-            'Unhandled beneficiary status -> ${newBeneficiary.status}',
+            'Unhandled beneficiary status -> ${beneficiaryResult.status}',
           );
           throw Exception(
-            'Unhandled beneficiary status -> ${newBeneficiary.status}',
+            'Unhandled beneficiary status -> ${beneficiaryResult.status}',
           );
       }
     } on Exception catch (e) {
@@ -468,7 +457,10 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
 
   /// Send the OTP code for the current beneficiary.
   Future<void> sendOTPCode() async {
-    assert(state.beneficiary != null);
+    assert(state.beneficiaryResult != null);
+    if (state.beneficiaryResult == null) {
+      return;
+    }
 
     emit(
       state.copyWith(
@@ -486,8 +478,8 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
 
     try {
       final beneficiaryResult = await _sendOTPCodeForBeneficiaryUseCase(
-        beneficiaryId: state.beneficiary?.id ?? 0,
-        editMode: false,
+        beneficiary: state.beneficiaryResult!,
+        isEditing: false,
       );
 
       emit(
@@ -495,7 +487,7 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
           actions: state.removeAction(
             AddBeneficiaryAction.sendOTPCode,
           ),
-          beneficiary: beneficiaryResult,
+          beneficiaryResult: beneficiaryResult,
           events: state.addEvent(
             AddBeneficiaryEvent.showOTPCodeView,
           ),
@@ -528,8 +520,8 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
       'verifying the second factor',
     );
 
-    assert(state.beneficiary != null);
-    if (state.beneficiary == null) {
+    assert(state.beneficiaryResult != null);
+    if (state.beneficiaryResult == null) {
       return;
     }
 
@@ -544,7 +536,7 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
 
     try {
       final beneficiaryResult = await _verifyBeneficiarySecondFactorUseCase(
-        beneficiary: state.beneficiary!,
+        beneficiary: state.beneficiaryResult!,
         value: otpCode ?? ocraClientResponse ?? '',
         secondFactorType:
             otpCode != null ? SecondFactorType.otp : SecondFactorType.ocra,
@@ -589,8 +581,8 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
   /// Resends the second factor for the beneficiary retrievied on the [onAdd]
   /// method.
   Future<void> resendSecondFactor() async {
-    assert(state.beneficiary != null);
-    if (state.beneficiary == null) {
+    assert(state.beneficiaryResult != null);
+    if (state.beneficiaryResult == null) {
       return;
     }
 
@@ -605,7 +597,7 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
 
     try {
       final beneficiaryResult = await _resendBeneficiarySecondFactorUseCase(
-        beneficiary: state.beneficiary!,
+        beneficiary: state.beneficiaryResult!,
       );
 
       emit(
@@ -618,7 +610,7 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
 
       emit(
         state.copyWith(
-          beneficiary: beneficiaryResult,
+          beneficiaryResult: beneficiaryResult,
         ),
       );
     } on Exception catch (e) {

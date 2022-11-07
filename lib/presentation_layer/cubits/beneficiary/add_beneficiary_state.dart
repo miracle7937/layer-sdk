@@ -31,9 +31,6 @@ enum AddBeneficiaryAction {
 
 /// The available add beneficiary cubit events.
 enum AddBeneficiaryEvent {
-  /// Event for showing the confirmation view.
-  showConfirmationView,
-
   /// Event for opening the second factor.
   openSecondFactor,
 
@@ -64,6 +61,9 @@ class AddBeneficiaryState extends BaseState<AddBeneficiaryAction,
 
   /// New beneficiary.
   final Beneficiary? beneficiary;
+
+  /// The beneficiary that we got from the API.
+  final Beneficiary? beneficiaryResult;
 
   /// A list of countries
   final UnmodifiableListView<Country> countries;
@@ -120,6 +120,7 @@ class AddBeneficiaryState extends BaseState<AddBeneficiaryAction,
     super.events = const <AddBeneficiaryEvent>{},
     this.beneficiaryType,
     this.beneficiary,
+    this.beneficiaryResult,
     Iterable<Country> countries = const <Country>[],
     Iterable<Currency> availableCurrencies = const <Currency>[],
     Iterable<Bank> banks = const <Bank>[],
@@ -142,6 +143,7 @@ class AddBeneficiaryState extends BaseState<AddBeneficiaryAction,
     Set<AddBeneficiaryEvent>? events,
     TransferType? beneficiaryType,
     Beneficiary? beneficiary,
+    Beneficiary? beneficiaryResult,
     Iterable<Country>? countries,
     Iterable<Currency>? availableCurrencies,
     Iterable<Bank>? banks,
@@ -157,6 +159,7 @@ class AddBeneficiaryState extends BaseState<AddBeneficiaryAction,
         events: events ?? super.events,
         beneficiaryType: beneficiaryType ?? this.beneficiaryType,
         beneficiary: beneficiary ?? this.beneficiary,
+        beneficiaryResult: beneficiaryResult ?? this.beneficiaryResult,
         countries: countries ?? this.countries,
         availableCurrencies: availableCurrencies ?? this.availableCurrencies,
         banks: banks ?? this.banks,
@@ -174,6 +177,7 @@ class AddBeneficiaryState extends BaseState<AddBeneficiaryAction,
         events,
         beneficiaryType,
         beneficiary,
+        beneficiaryResult,
         countries,
         availableCurrencies,
         banks,

@@ -146,7 +146,6 @@ class PaymentProvider {
         ...paymentJson,
         'resend_otp': true,
       },
-      //queryParameters: {'resend_otp': true},
       forceRefresh: true,
     );
 

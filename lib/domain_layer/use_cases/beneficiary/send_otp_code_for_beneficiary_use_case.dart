@@ -1,7 +1,7 @@
 import '../../abstract_repositories.dart';
 import '../../models.dart';
 
-/// A use case that sends the OTP code for a transfer ID.
+/// A use case that sends the OTP code for a beneficiary.
 class SendOTPCodeForBeneficiaryUseCase {
   final BeneficiaryRepositoryInterface _repository;
 
@@ -11,13 +11,13 @@ class SendOTPCodeForBeneficiaryUseCase {
   }) : _repository = repository;
 
   /// Returns a beneficiary resulting on sending the OTP code for the
-  /// passed beneficiary id.
+  /// passed beneficiary.
   Future<Beneficiary> call({
-    required int beneficiaryId,
-    required bool editMode,
+    required Beneficiary beneficiary,
+    required bool isEditing,
   }) =>
       _repository.sendOTPCode(
-        beneficiaryId: beneficiaryId,
-        editMode: editMode,
+        beneficiary: beneficiary,
+        isEditing: isEditing,
       );
 }

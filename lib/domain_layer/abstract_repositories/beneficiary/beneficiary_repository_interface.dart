@@ -33,10 +33,12 @@ abstract class BeneficiaryRepositoryInterface {
     bool forceRefresh = false,
   });
 
-  /// Sends the otp code for the passed transfer id.
+  /// Sends the otp code for the passed [beneficiary].
+  /// True should be passed in [isEditing]
+  /// in case of existing beneficiary is being edited.
   Future<Beneficiary> sendOTPCode({
-    required int beneficiaryId,
-    required bool editMode,
+    required Beneficiary beneficiary,
+    required bool isEditing,
   });
 
   /// Returns the beneficiary resulting on verifying the second factor for

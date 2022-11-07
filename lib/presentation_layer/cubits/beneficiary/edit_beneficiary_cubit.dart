@@ -97,16 +97,17 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
         routingCode: hasAccount ? state.beneficiary.routingCode : '',
         iban: hasAccount ? '' : state.beneficiary.iban,
       );
-      final editedBeneficiary = await _editBeneficiaryUseCase(
+
+      final beneficiaryResult = await _editBeneficiaryUseCase(
         beneficiary: beneficiary,
       );
 
-      switch (editedBeneficiary.status) {
+      switch (beneficiaryResult.status) {
         case BeneficiaryStatus.active:
         case BeneficiaryStatus.pending:
           emit(
             state.copyWith(
-              beneficiary: editedBeneficiary,
+              beneficiaryResult: beneficiaryResult,
               actions: state.removeAction(EditBeneficiaryAction.save),
               events: state.addEvent(EditBeneficiaryEvent.showResultView),
             ),
@@ -116,7 +117,7 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
         case BeneficiaryStatus.otp:
           emit(
             state.copyWith(
-              beneficiary: editedBeneficiary,
+              beneficiaryResult: beneficiaryResult,
               actions: state.removeAction(EditBeneficiaryAction.save),
               events: state.addEvent(EditBeneficiaryEvent.openSecondFactor),
             ),
@@ -125,10 +126,10 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
 
         default:
           _logger.severe(
-            'Unhandled beneficiary status -> ${editedBeneficiary.status}',
+            'Unhandled beneficiary status -> ${beneficiaryResult.status}',
           );
           throw Exception(
-            'Unhandled beneficiary status -> ${editedBeneficiary.status}',
+            'Unhandled beneficiary status -> ${beneficiaryResult.status}',
           );
       }
     } on Exception catch (e) {
@@ -146,6 +147,11 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
 
   /// Send the OTP code for the current beneficiary.
   Future<void> sendOTPCode() async {
+    assert(state.beneficiaryResult != null);
+    if (state.beneficiaryResult == null) {
+      return;
+    }
+
     emit(
       state.copyWith(
         actions: state.addAction(
@@ -162,8 +168,8 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
 
     try {
       final beneficiaryResult = await _sendOTPCodeForBeneficiaryUseCase(
-        beneficiaryId: state.beneficiary.id ?? 0,
-        editMode: true,
+        beneficiary: state.beneficiaryResult!,
+        isEditing: true,
       );
 
       emit(
@@ -171,7 +177,7 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
           actions: state.removeAction(
             EditBeneficiaryAction.sendOTPCode,
           ),
-          beneficiary: beneficiaryResult,
+          beneficiaryResult: beneficiaryResult,
           events: state.addEvent(
             EditBeneficiaryEvent.showOTPCodeView,
           ),
@@ -204,6 +210,11 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
       'verifying the second factor',
     );
 
+    assert(state.beneficiaryResult != null);
+    if (state.beneficiaryResult == null) {
+      return;
+    }
+
     emit(
       state.copyWith(
         actions: state.addAction(
@@ -215,7 +226,7 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
 
     try {
       final beneficiaryResult = await _verifyBeneficiarySecondFactorUseCase(
-        beneficiary: state.beneficiary,
+        beneficiary: state.beneficiaryResult!,
         value: otpCode ?? ocraClientResponse ?? '',
         secondFactorType:
             otpCode != null ? SecondFactorType.otp : SecondFactorType.ocra,
@@ -232,7 +243,7 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
 
       emit(
         state.copyWith(
-          beneficiary: beneficiaryResult,
+          beneficiaryResult: beneficiaryResult,
           events: state.addEvent(
             EditBeneficiaryEvent.closeSecondFactor,
           ),
@@ -261,6 +272,11 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
   /// Resends the second factor for the beneficiary retrievied on the [onEdit]
   /// method.
   Future<void> resendSecondFactor() async {
+    assert(state.beneficiaryResult != null);
+    if (state.beneficiaryResult == null) {
+      return;
+    }
+
     emit(
       state.copyWith(
         actions: state.addAction(
@@ -272,7 +288,7 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
 
     try {
       final beneficiaryResult = await _resendBeneficiarySecondFactorUseCase(
-        beneficiary: state.beneficiary,
+        beneficiary: state.beneficiaryResult!,
         isEditing: true,
       );
 
@@ -286,7 +302,7 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
 
       emit(
         state.copyWith(
-          beneficiary: beneficiaryResult,
+          beneficiaryResult: beneficiaryResult,
         ),
       );
     } on Exception catch (e) {

@@ -86,16 +86,20 @@ class BeneficiaryProvider {
   }
 
   /// Returns the beneficiary dto resulting on sending the OTP code for the
-  /// passed beneficiary id.
+  /// the passed [beneficiaryDTO].
+  /// True should be passed in [isEditing]
+  /// in case of existing beneficiary is being edited.
   Future<BeneficiaryDTO> sendOTPCode({
-    required int beneficiaryId,
-    required bool editMode,
+    required BeneficiaryDTO beneficiaryDTO,
+    required bool isEditing,
   }) async {
+    final beneficiaryJson = beneficiaryDTO.toJson();
+
     final response = await netClient.request(
       netClient.netEndpoints.beneficiary2,
-      method: editMode ? NetRequestMethods.patch : NetRequestMethods.post,
+      method: isEditing ? NetRequestMethods.patch : NetRequestMethods.post,
       data: {
-        'beneficiary_id': beneficiaryId,
+        ...beneficiaryJson,
         'second_factor': SecondFactorTypeDTO.otp.value,
       },
     );
@@ -113,20 +117,19 @@ class BeneficiaryProvider {
     required SecondFactorTypeDTO secondFactorTypeDTO,
     bool isEditing = false,
   }) async {
-    final data = beneficiaryDTO.toJson();
-
-    data.addAll({
-      'second_factor': secondFactorTypeDTO.value,
-      if (secondFactorTypeDTO == SecondFactorTypeDTO.ocra)
-        'client_response': value,
-      if (secondFactorTypeDTO == SecondFactorTypeDTO.otp) 'otp_value': value,
-    });
+    final beneficiaryJson = beneficiaryDTO.toJson();
 
     final response = await netClient.request(
       netClient.netEndpoints.beneficiary2,
       method: isEditing ? NetRequestMethods.patch : NetRequestMethods.post,
-      queryParameters: data,
-      data: beneficiaryDTO.toJson(),
+      queryParameters: {'second_factor_verification': true},
+      data: {
+        ...beneficiaryJson,
+        'second_factor': secondFactorTypeDTO.value,
+        if (secondFactorTypeDTO == SecondFactorTypeDTO.ocra)
+          'client_response': value,
+        if (secondFactorTypeDTO == SecondFactorTypeDTO.otp) 'otp_value': value,
+      },
     );
 
     return BeneficiaryDTO.fromJson(response.data);
@@ -139,11 +142,16 @@ class BeneficiaryProvider {
     required BeneficiaryDTO beneficiaryDTO,
     bool isEditing = false,
   }) async {
+    final beneficiaryJson = beneficiaryDTO.toJson();
+
     final response = await netClient.request(
       netClient.netEndpoints.beneficiary2,
       method: isEditing ? NetRequestMethods.patch : NetRequestMethods.post,
-      queryParameters: {'resend_otp': true},
-      data: beneficiaryDTO.toJson(),
+      data: {
+        ...beneficiaryJson,
+        'resend_otp': true,
+      },
+      forceRefresh: true,
     );
 
     return BeneficiaryDTO.fromJson(response.data);

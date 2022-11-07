@@ -64,15 +64,17 @@ class BeneficiaryRepository implements BeneficiaryRepositoryInterface {
     return beneficiaryDTO.toBeneficiary();
   }
 
-  /// Sends the OTP code for the passed beneficiary id.
+  /// Sends the OTP code for the passed [beneficiary].
+  /// True should be passed in [isEditing]
+  /// in case of existing beneficiary is being edited.
   @override
   Future<Beneficiary> sendOTPCode({
-    required int beneficiaryId,
-    required bool editMode,
+    required Beneficiary beneficiary,
+    required bool isEditing,
   }) async {
     final beneficiaryDTO = await _provider.sendOTPCode(
-      beneficiaryId: beneficiaryId,
-      editMode: editMode,
+      beneficiaryDTO: beneficiary.toBeneficiaryDTO(),
+      isEditing: isEditing,
     );
 
     return beneficiaryDTO.toBeneficiary();
