@@ -88,7 +88,6 @@ class AuthenticationProvider {
         netClient.netEndpoints.device,
         method: NetRequestMethods.patch,
         forceRefresh: true,
-        throwAllErrors: false,
         data: [
           {
             'device_id': deviceId,
