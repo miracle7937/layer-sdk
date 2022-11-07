@@ -63,8 +63,6 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   ///
   /// Configures the [NetClient] token with the user token.
   void setLoggedUser(User user) {
-    print(
-        'updates user on authentication cubit with device id -> ${user.deviceId}');
     _updateUserTokenUseCase(token: user.token);
     if (_shouldGetCustomerObject) loadCustomerObject();
     emit(state.copyWith(user: user));
