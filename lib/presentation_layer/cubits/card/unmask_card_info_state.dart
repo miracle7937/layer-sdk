@@ -9,6 +9,9 @@ enum UnmaskCardInfoAction {
   /// The second factor is being verified.
   verifySecondFactor,
 
+  /// Getting the OTP ID
+  gettingOTPId,
+
   /// The second factor is resending otp.
   resendSecondFactor,
 }

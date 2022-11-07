@@ -96,7 +96,8 @@ extension DPAVariableDTOMapping on DPAVariableDTO {
           return DPAVariableType.radioButton;
         }
 
-        if (property?.searchBar ?? false) {
+        if ((property?.searchBar ?? false) ||
+            property?.propertyType == PropertyTypeDTO.listButton) {
           return DPAVariableType.dropdown;
         }
 

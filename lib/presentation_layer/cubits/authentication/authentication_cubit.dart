@@ -23,6 +23,11 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
       _loadDeveloperUserDetailsFromTokenUseCase;
   final LoadUserDetailsFromTokenUseCase _loadUserDetailsFromTokenUseCase;
 
+  /// Flag param to handle if we have to show the auto lock screen or not
+  ///
+  /// Defaults to `true`
+  bool shouldAllowAutoLock = true;
+
   /// Creates a new cubit with an empty [AuthenticationState] and calls
   /// load settings
   AuthenticationCubit({
@@ -96,6 +101,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   /// empty [AuthenticationState], but preserving the settings.
   Future<void> logout({
     bool deactivateDevice = true,
+    int? deviceId,
   }) async {
     try {
       emit(
@@ -105,8 +111,10 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         ),
       );
 
+      /// TODO: we should get the current device id instead of this being
+      /// passed from the method or retrieved from the user in the state.
       await _logoutUseCase(
-        deviceId: deactivateDevice ? state.user?.deviceId : null,
+        deviceId: deactivateDevice ? (state.user?.deviceId ?? deviceId) : null,
       );
 
       emit(
@@ -412,6 +420,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     String pin, {
     DeviceSession? deviceInfo,
     String? notificationToken,
+    String? userToken,
   }) async {
     emit(
       state.copyWith(
@@ -423,6 +432,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     try {
       final verifyPinResponse = await _verifyAccessPinUseCase(
         pin: pin,
+        userToken: 'Bearer $userToken',
         deviceInfo: deviceInfo ?? DeviceSession(),
         notificationToken: notificationToken,
       );
@@ -456,13 +466,22 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   ///
   /// Used to indicate that the user need to verify the pin to continue
   /// using the app.
-  void setPinNeedsVerification({bool verified = false}) => emit(
+  void setPinNeedsVerification({bool verified = false}) {
+    /// Some packages like [Jumio] might put the app on the background mode when
+    /// processing the task.
+    ///
+    /// In that case we need to disable the auto lock behaviour until the
+    /// [Jumio] process is finished
+    if (shouldAllowAutoLock) {
+      emit(
         state.copyWith(
           verifyPinResponse: VerifyPinResponse(
             isVerified: verified,
           ),
         ),
       );
+    }
+  }
 
   /// Sets the access pin of the logged user.
   ///

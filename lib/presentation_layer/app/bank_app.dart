@@ -371,7 +371,11 @@ class BankAppState extends State<BankApp> {
             ),
           ),
           customerUseCase: LoadCurrentCustomerUseCase(
-            repository: CustomerRepository(CustomerProvider(widget.netClient)),
+            repository: CustomerRepository(
+              CustomerProvider(
+                widget.netClient,
+              ),
+            ),
           ),
           loadDeveloperUserDetailsFromTokenUseCase:
               LoadDeveloperUserDetailsFromTokenUseCase(
@@ -443,6 +447,24 @@ class BankAppState extends State<BankApp> {
             ),
           ),
         ),
+      ),
+      BlocProvider<AccountsCubit>(
+        create: (_) {
+          return AccountsCubit(
+            getCustomerAccountsUseCase: GetCustomerAccountsUseCase(
+              repository: AccountRepository(
+                AccountProvider(
+                  widget.netClient,
+                ),
+              ),
+            ),
+            loadFinancialDataUseCase: LoadFinancialDataUseCase(
+              repository: FinancialDataRepository(
+                FinancialDataProvider(widget.netClient),
+              ),
+            ),
+          );
+        },
       ),
     ];
   }
