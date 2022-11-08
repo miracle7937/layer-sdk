@@ -10,9 +10,16 @@ import '../widgets/contact_phone_field/contact_picker_screen.dart';
 mixin ContactPickerMixin {
   /// Checks if the device has camera permissions.
   Future<bool> checkReadContactsPermission(
-      DevicePermissionsCubit devicePermissionsCubit) async {
+    DevicePermissionsCubit devicePermissionsCubit, {
+    ValueGetter<Future<bool>>? permissionDeniedCallback,
+  }) async {
     final permissionStatus = await devicePermissionsCubit.requestPermission(
-      openSettings: openAppSettings,
+      openSettings: () async {
+        if (await permissionDeniedCallback?.call() ?? true) {
+          await openAppSettings();
+        }
+        return;
+      },
       permission: Permission.contacts,
     );
 
@@ -20,10 +27,15 @@ mixin ContactPickerMixin {
   }
 
   /// Opens the contact picker screen and returns a contact when picked.
-  Future<Contact?> openContactPickerScreen(BuildContext context) async {
+  Future<Contact?> openContactPickerScreen(
+    BuildContext context, {
+    ValueGetter<Future<bool>>? permissionDeniedCallback,
+  }) async {
     final devicePermissionsCubit = context.read<DevicePermissionsCubit>();
-    final hasPermission =
-        await checkReadContactsPermission(devicePermissionsCubit);
+    final hasPermission = await checkReadContactsPermission(
+      devicePermissionsCubit,
+      permissionDeniedCallback: permissionDeniedCallback,
+    );
 
     Contact? contact;
 
