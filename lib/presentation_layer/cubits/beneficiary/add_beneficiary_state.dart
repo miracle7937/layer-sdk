@@ -1,66 +1,69 @@
 import 'dart:collection';
 
-import 'package:equatable/equatable.dart';
-
 import '../../../domain_layer/models.dart';
 import '../../../layer_sdk.dart';
+import '../../cubits.dart';
 
-/// Model used for the errors.
-class AddBeneficiaryError extends Equatable {
-  /// The action.
-  final AddBeneficiaryAction action;
+/// TODO: cubit_issue | Some of this actions are being used as flags for the UI
+/// to perform steps. This is not how states should be used.
+/// This can be achieved using [BlocListener]s on the UI.
+///
+/// All possible actions.
+enum AddBeneficiaryAction {
+  /// Initializing the cubit with the needed data.
+  initialize,
 
-  /// The error.
-  final AddBeneficiaryErrorStatus errorStatus;
+  /// Adding new beneficiary action.
+  add,
 
-  /// The error code.
-  final String? code;
+  /// Loading the banks for the new beneficiary.
+  banks,
 
-  /// The error message.
-  final String? message;
+  /// Sending the OTP code for the beneficiary.
+  sendOTPCode,
 
-  /// Creates a new [AddBeneficiaryError].
-  const AddBeneficiaryError({
-    required this.action,
-    required this.errorStatus,
-    this.code,
-    this.message,
-  });
+  /// The second factor is being verified.
+  verifySecondFactor,
 
-  @override
-  List<Object?> get props => [
-        action,
-        errorStatus,
-        code,
-        message,
-      ];
+  /// The second factor is being resent.
+  resendSecondFactor,
 }
 
-/// The available error status
-enum AddBeneficiaryErrorStatus {
-  /// No errors
-  none,
+/// The available add beneficiary cubit events.
+enum AddBeneficiaryEvent {
+  /// Event for opening the second factor.
+  openSecondFactor,
 
-  /// Generic error
-  generic,
+  /// Event for showing the OTP code inputing view.
+  showOTPCodeView,
 
-  /// Network error
-  network,
+  /// Event for closing the second factor.
+  closeSecondFactor,
 
-  /// Invalid account number.
-  invalidAccount,
+  /// Event for showing the beneficiary result view.
+  showResultView,
+}
 
+/// The available validation error codes.
+enum AddBeneficiaryValidationErrorCode {
   /// Invalid IBAN.
   invalidIBAN,
+
+  /// Invalid account.
+  invalidAccount,
 }
 
 /// The state of the AddBeneficiary cubit
-class AddBeneficiaryState extends Equatable {
+class AddBeneficiaryState extends BaseState<AddBeneficiaryAction,
+    AddBeneficiaryEvent, AddBeneficiaryValidationErrorCode> {
   /// Beneficiary type
   final TransferType? beneficiaryType;
 
   /// New beneficiary.
   final Beneficiary? beneficiary;
+
+  /// The beneficiary that we got from the API.
+  final Beneficiary? beneficiaryResult;
 
   /// A list of countries
   final UnmodifiableListView<Country> countries;
@@ -84,19 +87,8 @@ class AddBeneficiaryState extends Equatable {
   /// Selected country.
   final Country? selectedCountry;
 
-  /// The errors.
-  final UnmodifiableSetView<AddBeneficiaryError> errors;
-
   /// The beneficiary settings.
   final UnmodifiableListView<GlobalSetting> beneficiarySettings;
-
-  /// True if the cubit is processing something.
-  final bool busy;
-
-  /// TODO: cubit_issue | This should be a [UnmodifiableSetView] as multiple
-  /// actions can be done at the same time (example: while initializing).
-  /// Current action.
-  final AddBeneficiaryAction action;
 
   /// Depending on selected currency we force user to enter:
   /// - for `GBP` - account and sorting code
@@ -123,104 +115,76 @@ class AddBeneficiaryState extends Equatable {
 
   /// Creates a new [AddBeneficiaryState].
   AddBeneficiaryState({
+    super.actions = const <AddBeneficiaryAction>{},
+    super.errors = const <CubitError>{},
+    super.events = const <AddBeneficiaryEvent>{},
     this.beneficiaryType,
     this.beneficiary,
+    this.beneficiaryResult,
     Iterable<Country> countries = const <Country>[],
     Iterable<Currency> availableCurrencies = const <Currency>[],
     Iterable<Bank> banks = const <Bank>[],
     this.banksPagination = const Pagination(),
     this.selectedCurrency,
     this.selectedCountry,
-    Set<AddBeneficiaryError> errors = const <AddBeneficiaryError>{},
     Iterable<GlobalSetting> beneficiarySettings = const <GlobalSetting>{},
-    this.busy = false,
-    this.action = AddBeneficiaryAction.none,
     this.bankQuery,
     List<int> pdfBytes = const [],
     List<int> imageBytes = const [],
   })  : countries = UnmodifiableListView(countries),
         availableCurrencies = UnmodifiableListView(availableCurrencies),
         banks = UnmodifiableListView(banks),
-        errors = UnmodifiableSetView(errors),
         beneficiarySettings = UnmodifiableListView(beneficiarySettings);
-
-  @override
-  List<Object?> get props => [
-        beneficiaryType,
-        beneficiary,
-        countries,
-        availableCurrencies,
-        banks,
-        banksPagination,
-        selectedCurrency,
-        selectedCountry,
-        errors,
-        beneficiarySettings,
-        busy,
-        action,
-        bankQuery,
-      ];
 
   /// Creates a new state based on this one.
   AddBeneficiaryState copyWith({
+    Set<AddBeneficiaryAction>? actions,
+    Set<CubitError>? errors,
+    Set<AddBeneficiaryEvent>? events,
     TransferType? beneficiaryType,
     Beneficiary? beneficiary,
+    Beneficiary? beneficiaryResult,
     Iterable<Country>? countries,
     Iterable<Currency>? availableCurrencies,
     Iterable<Bank>? banks,
     Pagination? banksPagination,
     Currency? selectedCurrency,
     Country? selectedCountry,
-    Set<AddBeneficiaryError>? errors,
     Iterable<GlobalSetting>? beneficiarySettings,
-    bool? busy,
-    AddBeneficiaryAction? action,
     String? bankQuery,
   }) =>
       AddBeneficiaryState(
+        actions: actions ?? super.actions,
+        errors: errors ?? super.errors,
+        events: events ?? super.events,
         beneficiaryType: beneficiaryType ?? this.beneficiaryType,
         beneficiary: beneficiary ?? this.beneficiary,
+        beneficiaryResult: beneficiaryResult ?? this.beneficiaryResult,
         countries: countries ?? this.countries,
         availableCurrencies: availableCurrencies ?? this.availableCurrencies,
         banks: banks ?? this.banks,
         banksPagination: banksPagination ?? this.banksPagination,
         selectedCurrency: selectedCurrency ?? this.selectedCurrency,
         selectedCountry: selectedCountry ?? this.selectedCountry,
-        errors: errors ?? this.errors,
         beneficiarySettings: beneficiarySettings ?? this.beneficiarySettings,
-        busy: busy ?? this.busy,
-        action: action ?? this.action,
         bankQuery: bankQuery ?? this.bankQuery,
       );
-}
 
-/// TODO: cubit_issue | Some of this actions are being used as flags for the UI
-/// to perform steps. This is not how states should be used.
-/// This can be achieved using [BlocListener]s on the UI.
-///
-/// All possible actions.
-enum AddBeneficiaryAction {
-  /// Init action, is used to set initial values.
-  initAction,
-
-  /// Editing action.
-  editAction,
-
-  /// Completion of process action.
-  confirmCompletionAction,
-
-  /// Adding new beneficiary action.
-  add,
-
-  /// Adding new beneficiary requires OTP verification action.
-  otpRequired,
-
-  /// Successful adding new beneficiary action.
-  success,
-
-  /// Loading the banks for the new beneficiary.
-  banks,
-
-  /// No action.
-  none,
+  @override
+  List<Object?> get props => [
+        actions,
+        errors,
+        events,
+        beneficiaryType,
+        beneficiary,
+        beneficiaryResult,
+        countries,
+        availableCurrencies,
+        banks,
+        banksPagination,
+        selectedCurrency,
+        selectedCountry,
+        beneficiarySettings,
+        bankQuery,
+      ];
 }

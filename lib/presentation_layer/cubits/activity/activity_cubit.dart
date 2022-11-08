@@ -63,6 +63,7 @@ class ActivityCubit extends Cubit<ActivityState> {
     List<ActivityTag>? activityTags,
     List<TransferType>? transferTypes,
     String? searchStr,
+    bool forceRefresh = false,
   }) async {
     emit(
       state.copyWith(
@@ -87,6 +88,7 @@ class ActivityCubit extends Cubit<ActivityState> {
         activityTags: activityTags,
         transferTypes: transferTypes,
         searchStr: searchStr,
+        forceRefresh: forceRefresh,
       );
 
       final activities = newPage.firstPage
