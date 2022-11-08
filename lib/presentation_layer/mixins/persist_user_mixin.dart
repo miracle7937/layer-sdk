@@ -18,7 +18,7 @@ mixin PersistUserMixin {
   /// biometrics or not.
   Future<bool> showEnableBiometricsScreen({
     required BuildContext context,
-    ValueChanged<bool>? onResolved,
+    ValueChanged<bool>? onResult,
   }) async {
     final biometricsCubit = context.read<BiometricsCreator>().create();
 
@@ -35,11 +35,11 @@ mixin PersistUserMixin {
               value: biometricsCubit,
               child: Builder(
                 builder: (context) => EnableBiometricsScreen(
-                  onEnable: () => onResolved != null
-                      ? onResolved(true)
+                  onEnable: () => onResult != null
+                      ? onResult(true)
                       : Navigator.pop(context, true),
-                  onSkip: () => onResolved != null
-                      ? onResolved(false)
+                  onSkip: () => onResult != null
+                      ? onResult(false)
                       : Navigator.pop(context, false),
                 ),
               ),
