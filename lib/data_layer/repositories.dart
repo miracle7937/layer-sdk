@@ -29,6 +29,7 @@ export 'repositories/dpa/dpa_repository.dart';
 export 'repositories/experience/experience_repository.dart';
 export 'repositories/experience_preferences/experience_preferences_repository.dart';
 export 'repositories/financial/financial_data_repository.dart';
+export 'repositories/financial/income_expense_repository.dart';
 export 'repositories/inbox/inbox_repository.dart';
 export 'repositories/loyalty/cashback_history/cashback_history_repository.dart';
 export 'repositories/loyalty/loyalty_points/loyalty_points_repository.dart';

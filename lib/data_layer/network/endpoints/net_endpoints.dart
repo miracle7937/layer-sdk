@@ -358,6 +358,9 @@ class NetEndpoints {
   /// Endpoint for getting the balance
   String get balance => '$_infoBanking/v2/balance/periodical_balance';
 
+  /// Endpoint for getting the spent this month
+  String get incomeExpense => '$_infoBanking/v2/balance/income_expense';
+
   /// Endpoint for handling alerts
   String get alert => '$_infoBanking/v1/alert';
 
