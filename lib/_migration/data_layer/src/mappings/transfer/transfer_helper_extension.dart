@@ -3,7 +3,7 @@ import '../../../../../domain_layer/models.dart';
 /// Helper extension for [Transfer].
 extension TransferHelperExtension on Transfer {
   /// Returns the display name for the source of the transfer.
-  String? toSourceName() =>
+  String? fromSourceName() =>
       fromAccount?.accountInfo?.accountName ??
       fromAccount?.accountInfo?.accountType?.index.toString() ??
       fromCard?.maskedCardNumber ??
@@ -18,7 +18,9 @@ extension TransferHelperExtension on Transfer {
       toBeneficiary?.displayName;
 
   /// Returns the source account/card/beneficiary number
-  String? toSourceNumber() =>
+  String? fromSourceNumber() =>
+      fromAccount?.iban ??
+      fromAccount?.extraAccountNumber ??
       fromAccount?.formattedAccountNumber ??
       fromAccount?.accountNumber ??
       fromCard?.maskedCardNumber ??
@@ -26,6 +28,8 @@ extension TransferHelperExtension on Transfer {
 
   /// Returns the destination account/card/beneficiary number
   String? toDestinationNumber() =>
+      toAccount?.iban ??
+      toAccount?.extraAccountNumber ??
       toAccount?.formattedAccountNumber ??
       toAccount?.accountNumber ??
       toCard?.maskedCardNumber ??
