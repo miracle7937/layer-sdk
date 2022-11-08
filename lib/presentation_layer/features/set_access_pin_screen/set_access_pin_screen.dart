@@ -24,7 +24,7 @@ class SetAccessPinScreen extends SetAccessPinBaseWidget {
   final String repeatPinTitle;
 
   ///The function if succes set pin process
-  final Function(User? user)? onSuccess;
+  final ValueChanged<User?> onSuccess;
 
   /// Creates a new [SetAccessPinScreen].
   const SetAccessPinScreen({
@@ -32,7 +32,7 @@ class SetAccessPinScreen extends SetAccessPinBaseWidget {
     super.pinLength = 6,
     this.setPinAppBar,
     this.repeatPinAppBar,
-    this.onSuccess,
+    required this.onSuccess,
     required this.setPinTitle,
     required this.repeatPinTitle,
   });
@@ -45,7 +45,7 @@ class SetAccessPinScreen extends SetAccessPinBaseWidget {
     PreferredSizeWidget? repeatPinAppBar,
     required String setPinTitle,
     required String repeatPinTitle,
-    final Function(User? user)? onSuccess,
+    required ValueChanged<User?> onSuccess,
   }) =>
       MaterialPageRoute(
         builder: (context) => BlocProvider<SetPinScreenCubit>(
@@ -139,7 +139,7 @@ class _RepeatAccessPinScreen extends SetAccessPinBaseWidget {
   final String title;
 
   ///The function if succes set pin process
-  final Function(User? user)? onSuccess;
+  final ValueChanged<User?> onSuccess;
 
   /// Creates a new [_RepeatAccessPinScreen].
   // ignore_for_file: unused_element
@@ -149,7 +149,7 @@ class _RepeatAccessPinScreen extends SetAccessPinBaseWidget {
     required this.pin,
     this.appBar,
     required this.title,
-    this.onSuccess,
+    required this.onSuccess,
   });
 
   @override
@@ -167,9 +167,7 @@ class __RepeatAccessPinScreenState
         BlocListener<SetPinScreenCubit, SetPinScreenState>(
           listenWhen: (previous, current) =>
               previous.user != current.user && current.user != null,
-          listener: (context, state) => widget.onSuccess != null
-              ? widget.onSuccess!(state.user)
-              : Navigator.pop(context),
+          listener: (context, state) => widget.onSuccess(state.user),
           child: Scaffold(
             backgroundColor: DesignSystem.of(context).surfaceOctonary1,
             appBar: widget.appBar,
