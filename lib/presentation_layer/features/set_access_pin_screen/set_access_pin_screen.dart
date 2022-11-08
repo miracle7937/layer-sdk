@@ -24,7 +24,7 @@ class SetAccessPinScreen extends SetAccessPinBaseWidget {
   final String repeatPinTitle;
 
   ///The function if succes set pin process
-  final ValueChanged<User?> onSuccess;
+  final ValueChanged<User> onSuccess;
 
   /// Creates a new [SetAccessPinScreen].
   const SetAccessPinScreen({
@@ -139,7 +139,7 @@ class _RepeatAccessPinScreen extends SetAccessPinBaseWidget {
   final String title;
 
   ///The function if succes set pin process
-  final ValueChanged<User?> onSuccess;
+  final ValueChanged<User> onSuccess;
 
   /// Creates a new [_RepeatAccessPinScreen].
   // ignore_for_file: unused_element
@@ -167,7 +167,7 @@ class __RepeatAccessPinScreenState
         BlocListener<SetPinScreenCubit, SetPinScreenState>(
           listenWhen: (previous, current) =>
               previous.user != current.user && current.user != null,
-          listener: (context, state) => widget.onSuccess(state.user),
+          listener: (context, state) => widget.onSuccess(state.user!),
           child: Scaffold(
             backgroundColor: DesignSystem.of(context).surfaceOctonary1,
             appBar: widget.appBar,
