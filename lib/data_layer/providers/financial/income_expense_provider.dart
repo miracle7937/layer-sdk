@@ -22,8 +22,8 @@ class IncomeExpenseProvider {
       method: NetRequestMethods.get,
       queryParameters: {
         'interval': interval.name,
-        'from_date': fromDate!.millisecondsSinceEpoch,
-        'to_date': toDate!.millisecondsSinceEpoch,
+        if (fromDate != null) 'from_date': fromDate.millisecondsSinceEpoch,
+        if (toDate != null) 'to_date': toDate.millisecondsSinceEpoch,
         'account_id': accountId,
       },
     );

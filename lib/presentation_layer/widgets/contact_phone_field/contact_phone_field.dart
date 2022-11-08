@@ -42,6 +42,9 @@ class ContactPhoneField extends StatelessWidget with ContactPickerMixin {
   /// Callback called when a contact is picked from the contact picker screen.
   final ValueSetter<Contact> onContactPicked;
 
+  /// Called if permission is denied to verify if app settings should be opened.
+  final ValueGetter<Future<bool>>? permissionDeniedCallback;
+
   /// Creates a new [ContactPhoneField].
   ContactPhoneField({
     Key? key,
@@ -56,6 +59,7 @@ class ContactPhoneField extends StatelessWidget with ContactPickerMixin {
     this.bottomSheetPickerTitle = '',
     this.searchFieldHint,
     required this.onContactPicked,
+    this.permissionDeniedCallback,
   })  : countries = UnmodifiableSetView(countries),
         super(key: key);
 
@@ -75,7 +79,10 @@ class ContactPhoneField extends StatelessWidget with ContactPickerMixin {
           type: DKButtonType.brandPlain,
           iconPath: FLImages.contacts,
           onPressed: () async {
-            final contact = await openContactPickerScreen(context);
+            final contact = await openContactPickerScreen(
+              context,
+              permissionDeniedCallback: permissionDeniedCallback,
+            );
             if (contact != null) {
               onContactPicked(contact);
             }
