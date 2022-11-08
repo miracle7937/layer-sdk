@@ -14,8 +14,8 @@ class IncomeExpenseUseCase {
   /// Returns the accounts incomes and expenses
   Future<List<IncomeExpense>> call(
           {required String accountId,
-          required DateTime? fromDate,
-          required DateTime? toDate,
+          DateTime? fromDate,
+          DateTime? toDate,
           IncomeExpenseInterval interval = IncomeExpenseInterval.month}) =>
       _repository.getIncomeExpense(
         accountId: accountId,

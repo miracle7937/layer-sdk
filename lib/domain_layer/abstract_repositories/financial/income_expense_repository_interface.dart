@@ -6,7 +6,7 @@ abstract class IncomeExpenseRepositoryInterface {
   /// Returns all incomes expenses of the supplied customer account
   Future<List<IncomeExpense>> getIncomeExpense(
       {required String accountId,
-      required DateTime? fromDate,
-      required DateTime? toDate,
+      DateTime? fromDate,
+      DateTime? toDate,
       IncomeExpenseInterval interval = IncomeExpenseInterval.month});
 }

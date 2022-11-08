@@ -14,8 +14,8 @@ class IncomeExpenseProvider {
   /// Returns all  incomes and expenses of the supplied customer account
   Future<List<IncomeExpenseDTO>> getIncomeExpense(
       {required String accountId,
-      required DateTime? fromDate,
-      required DateTime? toDate,
+      DateTime? fromDate,
+      DateTime? toDate,
       IncomeExpenseInterval interval = IncomeExpenseInterval.month}) async {
     final response = await netClient.request(
       netClient.netEndpoints.incomeExpense,

@@ -27,6 +27,7 @@ abstract class ActivityRepositoryInterface {
     List<ActivityType>? types,
     List<TransferType>? transferTypes,
     List<ActivityTag>? activityTags,
+    bool forceRefresh = false,
   });
 
   /// Delete a certain activity based on the id
