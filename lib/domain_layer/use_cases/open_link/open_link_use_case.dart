@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:io';
 
 import 'package:url_launcher/url_launcher.dart';
@@ -34,38 +36,50 @@ class OpenLinkUseCase {
     required String facebookPageId,
   }) =>
       _openPlatformSpecificLink(
-        iosValue: "fb://profile/$facebookPageId/",
-        androidValue: "fb://page/$facebookPageId",
-      );
+          iosValue: "fb://profile/$facebookPageId/",
+          androidValue: "fb://page/$facebookPageId",
+          useDeprecated: true);
 
   /// Opens the linkedin profile
   void openLinkedIn({
     required String username,
   }) =>
       _openPlatformSpecificLink(
-        iosValue: "linkedin://company/$username",
-        androidValue: "linkedin://$username",
+        iosValue: "https://www.linkedin.com/company/$username",
+        androidValue: "https://www.linkedin.com/company/$username",
+        useDeprecated: true,
       );
 
   /// Opens the platform specific link
   void _openPlatformSpecificLink({
     required String iosValue,
     required String androidValue,
+    bool useDeprecated = false,
   }) async {
     try {
       var isIOS = Platform.isIOS;
 
       if (isIOS) {
         final iosValueUri = Uri.tryParse(iosValue.replaceAll(' ', '%20'));
-
-        if (await canLaunchUrl(iosValueUri!)) {
-          await launchUrl(iosValueUri);
+        if (useDeprecated) {
+          if (await canLaunch(iosValue)) {
+            await launch(iosValue);
+          }
+        } else {
+          if (await canLaunchUrl(iosValueUri!)) {
+            await launchUrl(iosValueUri);
+          }
         }
       } else {
         final androidValueUri = Uri.tryParse(androidValue);
-
-        if (await canLaunchUrl(androidValueUri!)) {
-          await launchUrl(androidValueUri);
+        if (useDeprecated) {
+          if (await canLaunch(androidValue)) {
+            await launch(androidValue);
+          }
+        } else {
+          if (await canLaunchUrl(androidValueUri!)) {
+            await launchUrl(androidValueUri);
+          }
         }
       }
     } on Exception catch (e) {
