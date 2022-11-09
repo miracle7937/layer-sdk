@@ -59,10 +59,25 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         _loadUserDetailsFromTokenUseCase = loadUserDetailsFromTokenUseCase,
         super(AuthenticationState());
 
+  /// Method that disables the auto lock before running the passed future and
+  /// enables it again when the future finishes.
+  ///
+  /// Use this when you need to run 3rd party code which will put the app in
+  /// background before resuming the app and completing the flow.
+  ///
+  /// Fore example: Running Jumio, Picking a file, etc.
+  Future<void> disableAutoLock({
+    required Future Function() future,
+  }) async {
+    shouldAllowAutoLock = false;
+    await future();
+    shouldAllowAutoLock = true;
+  }
+
   /// Sets the provided user as the current logged user and emits updated state.
   ///
   /// Configures the [NetClient] token with the user token.
-  void setLoggedUser(User user) {
+  Future<void> setLoggedUser(User user) async {
     _updateUserTokenUseCase(token: user.token);
     if (_shouldGetCustomerObject) loadCustomerObject();
     emit(state.copyWith(user: user));
