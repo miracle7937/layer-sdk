@@ -26,7 +26,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   /// Flag param to handle if we have to show the auto lock screen or not
   ///
   /// Defaults to `true`
-  bool shouldAllowAutoLock = true;
+  bool _shouldAllowAutoLock = true;
 
   /// Creates a new cubit with an empty [AuthenticationState] and calls
   /// load settings
@@ -58,6 +58,21 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
             loadDeveloperUserDetailsFromTokenUseCase,
         _loadUserDetailsFromTokenUseCase = loadUserDetailsFromTokenUseCase,
         super(AuthenticationState());
+
+  /// Method that disables the auto lock before running the passed future and
+  /// enables it again when the future finishes.
+  ///
+  /// Use this when you need to run 3rd party code which will put the app in
+  /// background before resuming the app and completing the flow.
+  ///
+  /// Fore example: Running Jumio, Picking a file, etc.
+  Future<void> disableAutoLock({
+    required Future Function() future,
+  }) async {
+    _shouldAllowAutoLock = false;
+    await future();
+    _shouldAllowAutoLock = true;
+  }
 
   /// Sets the provided user as the current logged user and emits updated state.
   ///
@@ -472,7 +487,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     ///
     /// In that case we need to disable the auto lock behaviour until the
     /// [Jumio] process is finished
-    if (shouldAllowAutoLock) {
+    if (_shouldAllowAutoLock) {
       emit(
         state.copyWith(
           verifyPinResponse: VerifyPinResponse(
