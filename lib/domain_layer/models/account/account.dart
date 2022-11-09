@@ -22,6 +22,9 @@ class Account extends Equatable {
   /// Unique account identifier, SHA-1 of CIF
   final String? id;
 
+  /// The customer associated with this account.
+  final Customer? customer;
+
   /// The currency used by this account
   final String? currency;
 
@@ -168,6 +171,7 @@ class Account extends Equatable {
   /// Creates a new immutable [Account]
   const Account({
     this.id,
+    this.customer,
     this.currency,
     this.availableBalance,
     this.currentBalance,
@@ -207,6 +211,7 @@ class Account extends Equatable {
   @override
   List<Object?> get props => [
         id,
+        customer,
         currency,
         availableBalance,
         currentBalance,
