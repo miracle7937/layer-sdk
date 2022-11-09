@@ -116,4 +116,16 @@ class InboxProvider {
 
     return InboxReportDTO.fromJson(result.data);
   }
+
+  /// Mark report as read
+  Future<bool> markReportAsRead({
+    required int reportId,
+  }) async {
+    final result = await netClient.request(
+      "${netClient.netEndpoints.report}/$reportId/read_all",
+      method: NetRequestMethods.post,
+    );
+
+    return result.success;
+  }
 }
