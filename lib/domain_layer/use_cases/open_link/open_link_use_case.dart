@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use
-
 import 'dart:io';
 
 import 'package:url_launcher/url_launcher.dart';
@@ -34,21 +32,26 @@ class OpenLinkUseCase {
   /// Opens the facebook profile
   void openFacebookProfile({
     required String facebookPageId,
-  }) =>
-      _openPlatformSpecificLink(
-          iosValue: "fb://profile/$facebookPageId/",
-          androidValue: "fb://page/$facebookPageId",
-          useDeprecated: true);
+  }) async {
+    var url = Uri.parse('https://www.facebook.com/$facebookPageId');
+    try {
+      await launchUrl(url, mode: LaunchMode.inAppWebView);
+    } on Exception catch (e) {
+      print(e);
+    }
+  }
 
   /// Opens the linkedin profile
   void openLinkedIn({
     required String username,
-  }) =>
-      _openPlatformSpecificLink(
-        iosValue: "https://www.linkedin.com/company/$username",
-        androidValue: "https://www.linkedin.com/company/$username",
-        useDeprecated: true,
-      );
+  }) async {
+    var url = Uri.parse('https://www.linkedin.com/company/$username');
+    try {
+      await launchUrl(url, mode: LaunchMode.inAppWebView);
+    } on Exception catch (e) {
+      print(e);
+    }
+  }
 
   /// Opens the platform specific link
   void _openPlatformSpecificLink({
@@ -61,25 +64,16 @@ class OpenLinkUseCase {
 
       if (isIOS) {
         final iosValueUri = Uri.tryParse(iosValue.replaceAll(' ', '%20'));
-        if (useDeprecated) {
-          if (await canLaunch(iosValue)) {
-            await launch(iosValue);
-          }
-        } else {
-          if (await canLaunchUrl(iosValueUri!)) {
-            await launchUrl(iosValueUri);
-          }
+
+        if (await canLaunchUrl(iosValueUri!)) {
+          await launchUrl(iosValueUri, mode: LaunchMode.externalApplication);
         }
       } else {
         final androidValueUri = Uri.tryParse(androidValue);
-        if (useDeprecated) {
-          if (await canLaunch(androidValue)) {
-            await launch(androidValue);
-          }
-        } else {
-          if (await canLaunchUrl(androidValueUri!)) {
-            await launchUrl(androidValueUri);
-          }
+
+        if (await canLaunchUrl(androidValueUri!)) {
+          await launchUrl(androidValueUri,
+              mode: LaunchMode.externalApplication);
         }
       }
     } on Exception catch (e) {
