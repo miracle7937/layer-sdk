@@ -52,32 +52,4 @@ class OpenLinkUseCase {
       print(e);
     }
   }
-
-  /// Opens the platform specific link
-  void _openPlatformSpecificLink({
-    required String iosValue,
-    required String androidValue,
-    bool useDeprecated = false,
-  }) async {
-    try {
-      var isIOS = Platform.isIOS;
-
-      if (isIOS) {
-        final iosValueUri = Uri.tryParse(iosValue.replaceAll(' ', '%20'));
-
-        if (await canLaunchUrl(iosValueUri!)) {
-          await launchUrl(iosValueUri, mode: LaunchMode.externalApplication);
-        }
-      } else {
-        final androidValueUri = Uri.tryParse(androidValue);
-
-        if (await canLaunchUrl(androidValueUri!)) {
-          await launchUrl(androidValueUri,
-              mode: LaunchMode.externalApplication);
-        }
-      }
-    } on Exception catch (e) {
-      throw Exception('Error launching platform specific link ${e.toString()}');
-    }
-  }
 }
