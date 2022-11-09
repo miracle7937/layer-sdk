@@ -87,7 +87,7 @@ class _DPAOTPScreenState extends State<_DPAOTPScreen>
   /// Whether if the 2FA is compatible with OCRA (biometrics).
   late bool hasOCRA;
 
-  late bool _showBiometricsButton;
+  bool _showBiometricsButton = false;
   bool get showBiometricsButton => _showBiometricsButton;
   set showBiometricsButton(bool showBiometricsButton) => mounted
       ? setState(() => _showBiometricsButton = showBiometricsButton)
@@ -120,15 +120,29 @@ class _DPAOTPScreenState extends State<_DPAOTPScreen>
     if (hasOCRA) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         final biometricsCubit = context.read<BiometricsCubit>();
-        await biometricsCubit.initialize();
+        final storageCubit = context.read<StorageCreator>().create();
+
+        await Future.wait([
+          biometricsCubit.initialize(),
+          storageCubit.loadAuthenticationSettings(),
+        ]);
 
         final canUseBiometrics =
             biometricsCubit.state.canUseBiometrics ?? false;
+        final useBiometrics =
+            storageCubit.state.authenticationSettings.useBiometrics;
 
-        showBiometricsButton = canUseBiometrics;
+        showBiometricsButton = canUseBiometrics && useBiometrics;
 
-        if (canUseBiometrics) {
+        if (showBiometricsButton) {
           _authenticateBiometrics();
+        } else {
+          final dpaCubit = context.read<DPAProcessCubit>();
+          await dpaCubit.resendCode();
+
+          showOTPCodeInput = !dpaCubit.state.actionHasErrors(
+            DPAProcessBusyAction.resendingCode,
+          );
         }
       });
     }
@@ -370,7 +384,7 @@ class _DPAOTPScreenState extends State<_DPAOTPScreen>
                                 ),
                               ),
                       ),
-                      if (hasOCRA) ...[
+                      if (showBiometricsButton) ...[
                         const SizedBox(height: 20.0),
                         DKButton(
                           type: DKButtonType.basePlain,
