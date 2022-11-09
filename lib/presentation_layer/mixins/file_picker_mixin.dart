@@ -4,9 +4,11 @@ import 'package:design_kit_layer/design_kit_layer.dart';
 import 'package:equatable/equatable.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../cubits.dart';
 import '../utils.dart';
 import '../widgets.dart';
 
@@ -46,34 +48,38 @@ mixin FilePickerMixin {
   }) async {
     PickedFile? pickedFile;
 
-    var allowedSources = _getAllowedSourcesFromExtensions(
-      allowedExtensions,
+    await context.read<AuthenticationCubit>().disableAutoLock(
+      future: () async {
+        var allowedSources = _getAllowedSourcesFromExtensions(
+          allowedExtensions,
+        );
+
+        if (allowedSources.contains(FilePickerSource.galleryImage)) {
+          allowedSources = {
+            FilePickerSource.cameraImage,
+            ...allowedSources,
+          };
+        }
+
+        final source = await _showFilePickerOptionsBottomSheet(
+          context,
+          title: title,
+          allowedSources: allowedSources,
+        );
+
+        if (source != null) {
+          pickedFile = await pickFile(
+            source,
+            allowedExtensions: allowedExtensions,
+            maxHeight: maxHeight,
+            maxWidth: maxWidth,
+            imageQuality: imageQuality,
+            showImageCropper: showImageCropper,
+            maxCropSize: maxCropSize,
+          );
+        }
+      },
     );
-
-    if (allowedSources.contains(FilePickerSource.galleryImage)) {
-      allowedSources = {
-        FilePickerSource.cameraImage,
-        ...allowedSources,
-      };
-    }
-
-    final source = await _showFilePickerOptionsBottomSheet(
-      context,
-      title: title,
-      allowedSources: allowedSources,
-    );
-
-    if (source != null) {
-      pickedFile = await pickFile(
-        source,
-        allowedExtensions: allowedExtensions,
-        maxHeight: maxHeight,
-        maxWidth: maxWidth,
-        imageQuality: imageQuality,
-        showImageCropper: showImageCropper,
-        maxCropSize: maxCropSize,
-      );
-    }
 
     return pickedFile;
   }
