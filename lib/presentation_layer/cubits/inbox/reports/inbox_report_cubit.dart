@@ -21,11 +21,8 @@ class InboxReportCubit extends Cubit<InboxReportState> {
 
   /// Loads a list of [InboxReport]s and adds them to the state.
   ///
-  /// Use the [limit] and [offset] parameters for pagination purposes.
   /// The [searchQuery] parameter can be used for filtering the results.
   Future<void> load({
-    int? offset,
-    int? limit,
     String? searchQuery,
     bool loadMore = false,
   }) async {
@@ -42,8 +39,8 @@ class InboxReportCubit extends Cubit<InboxReportState> {
       final pagination = state.pagination.paginate(loadMore: loadMore);
 
       final foundReports = await _listInboxUseCase(
-        limit: limit,
-        offset: offset,
+        limit: pagination.limit,
+        offset: pagination.offset,
         searchQuery: searchQuery,
       );
 
