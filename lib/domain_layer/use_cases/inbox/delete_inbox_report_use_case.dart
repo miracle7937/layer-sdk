@@ -1,5 +1,4 @@
 import '../../abstract_repositories.dart';
-import '../../models/inbox/inbox_report.dart';
 
 /// Delete report use case
 class DeleteInboxReportUseCase {

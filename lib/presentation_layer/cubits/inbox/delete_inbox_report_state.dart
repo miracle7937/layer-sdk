@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 
 import '../../../../domain_layer/models.dart';
-import '../../cubits.dart';
 
 ///  The available error status
 enum DeleteReportErrorStatus {

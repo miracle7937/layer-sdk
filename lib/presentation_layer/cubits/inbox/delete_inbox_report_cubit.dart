@@ -4,7 +4,6 @@ import '../../../../data_layer/network/net_exceptions.dart';
 import '../../../../domain_layer/models/inbox/inbox_report.dart';
 import '../../../../domain_layer/use_cases.dart';
 import 'delete_inbox_report_state.dart';
-import 'inbox_report_state.dart';
 
 /// Delete report cubit
 class DeleteInboxReportCubit extends Cubit<DeleteInboxReportState> {
