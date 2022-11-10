@@ -23,7 +23,7 @@ class DeleteInboxReportCubit extends Cubit<DeleteInboxReportState> {
     required int reportId,
   }) async {
     emit(
-      DeleteInboxReportState(
+      state.copyWith(
         action: DeleteInboxReportAction.deleting,
         error: DeleteReportErrorStatus.none,
       ),

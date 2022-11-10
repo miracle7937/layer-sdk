@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import '../../../../domain_layer/models/inbox/inbox_report.dart';
 
 /// Create report action
-enum CreateInboxReportAction {
+enum CreateReportAction {
   /// No actions
   none,
 
@@ -24,9 +24,9 @@ enum CreateReportErrorStatus {
 }
 
 /// Create report state
-class CreateInboxReportState extends Equatable {
+class CreateReportState extends Equatable {
   /// Busy action
-  final CreateInboxReportAction action;
+  final CreateReportAction action;
 
   /// Error status
   final CreateReportErrorStatus error;
@@ -35,20 +35,20 @@ class CreateInboxReportState extends Equatable {
   final InboxReport? createdReport;
 
   /// Copy with method
-  CreateInboxReportState copyWith({
-    CreateInboxReportAction? action,
+  CreateReportState copyWith({
+    CreateReportAction? action,
     CreateReportErrorStatus? error,
     String? category,
     InboxReport? createdReport,
   }) =>
-      CreateInboxReportState(
+      CreateReportState(
         action: action ?? this.action,
         error: error ?? this.error,
         createdReport: createdReport ?? this.createdReport,
       );
 
   /// Default constructor
-  CreateInboxReportState({
+  CreateReportState({
     required this.action,
     required this.error,
     this.createdReport,

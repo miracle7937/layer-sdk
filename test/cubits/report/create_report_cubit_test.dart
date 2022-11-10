@@ -26,19 +26,19 @@ void main() {
         CreateInboxReportCubit(createReportUseCase: createReportUseCase);
   });
 
-  blocTest<CreateInboxReportCubit, CreateInboxReportState>(
+  blocTest<CreateInboxReportCubit, CreateReportState>(
     "Should test initial state",
     build: () => createReportCubit,
     verify: (c) => expect(
       c.state,
-      CreateInboxReportState(
-        action: CreateInboxReportAction.none,
+      CreateReportState(
+        action: CreateReportAction.none,
         error: CreateReportErrorStatus.none,
       ),
     ),
   );
 
-  blocTest<CreateInboxReportCubit, CreateInboxReportState>(
+  blocTest<CreateInboxReportCubit, CreateReportState>(
     "Should create report",
     setUp: () {
       when(() => createReportUseCase(_category)).thenAnswer(
@@ -48,19 +48,19 @@ void main() {
     build: () => createReportCubit,
     act: (c) => c.createReport(categoryId: _category),
     expect: () => [
-      CreateInboxReportState(
-        action: CreateInboxReportAction.creating,
+      CreateReportState(
+        action: CreateReportAction.creating,
         error: CreateReportErrorStatus.none,
       ),
-      CreateInboxReportState(
-        action: CreateInboxReportAction.none,
+      CreateReportState(
+        action: CreateReportAction.none,
         error: CreateReportErrorStatus.none,
         createdReport: _defReport,
       ),
     ],
   );
 
-  blocTest<CreateInboxReportCubit, CreateInboxReportState>(
+  blocTest<CreateInboxReportCubit, CreateReportState>(
     "Should emits network error",
     setUp: () {
       when(() => createReportUseCase(_category)).thenThrow(NetException());
@@ -68,18 +68,18 @@ void main() {
     build: () => createReportCubit,
     act: (c) => c.createReport(categoryId: _category),
     expect: () => [
-      CreateInboxReportState(
-        action: CreateInboxReportAction.creating,
+      CreateReportState(
+        action: CreateReportAction.creating,
         error: CreateReportErrorStatus.none,
       ),
-      CreateInboxReportState(
-        action: CreateInboxReportAction.none,
+      CreateReportState(
+        action: CreateReportAction.none,
         error: CreateReportErrorStatus.network,
       ),
     ],
   );
 
-  blocTest<CreateInboxReportCubit, CreateInboxReportState>(
+  blocTest<CreateInboxReportCubit, CreateReportState>(
     "Should emits generic error",
     setUp: () {
       when(() => createReportUseCase(_category)).thenThrow(Exception());
@@ -87,12 +87,12 @@ void main() {
     build: () => createReportCubit,
     act: (c) => c.createReport(categoryId: _category),
     expect: () => [
-      CreateInboxReportState(
-        action: CreateInboxReportAction.creating,
+      CreateReportState(
+        action: CreateReportAction.creating,
         error: CreateReportErrorStatus.none,
       ),
-      CreateInboxReportState(
-        action: CreateInboxReportAction.none,
+      CreateReportState(
+        action: CreateReportAction.none,
         error: CreateReportErrorStatus.generic,
       ),
     ],
