@@ -48,38 +48,35 @@ mixin FilePickerMixin {
   }) async {
     PickedFile? pickedFile;
 
-    await context.read<AuthenticationCubit>().disableAutoLock(
-      future: () async {
-        var allowedSources = _getAllowedSourcesFromExtensions(
-          allowedExtensions,
-        );
-
-        if (allowedSources.contains(FilePickerSource.galleryImage)) {
-          allowedSources = {
-            FilePickerSource.cameraImage,
-            ...allowedSources,
-          };
-        }
-
-        final source = await _showFilePickerOptionsBottomSheet(
-          context,
-          title: title,
-          allowedSources: allowedSources,
-        );
-
-        if (source != null) {
-          pickedFile = await pickFile(
-            source,
-            allowedExtensions: allowedExtensions,
-            maxHeight: maxHeight,
-            maxWidth: maxWidth,
-            imageQuality: imageQuality,
-            showImageCropper: showImageCropper,
-            maxCropSize: maxCropSize,
-          );
-        }
-      },
+    var allowedSources = _getAllowedSourcesFromExtensions(
+      allowedExtensions,
     );
+
+    if (allowedSources.contains(FilePickerSource.galleryImage)) {
+      allowedSources = {
+        FilePickerSource.cameraImage,
+        ...allowedSources,
+      };
+    }
+
+    final source = await _showFilePickerOptionsBottomSheet(
+      context,
+      title: title,
+      allowedSources: allowedSources,
+    );
+
+    if (source != null) {
+      pickedFile = await pickFile(
+        context,
+        source,
+        allowedExtensions: allowedExtensions,
+        maxHeight: maxHeight,
+        maxWidth: maxWidth,
+        imageQuality: imageQuality,
+        showImageCropper: showImageCropper,
+        maxCropSize: maxCropSize,
+      );
+    }
 
     return pickedFile;
   }
@@ -137,6 +134,7 @@ mixin FilePickerMixin {
   /// image.
   /// By default will be `640`.
   Future<PickedFile?> pickFile(
+    BuildContext context,
     FilePickerSource source, {
     Set<String> allowedExtensions = const {},
     double maxWidth = 640.0,
@@ -147,73 +145,78 @@ mixin FilePickerMixin {
   }) async {
     PickedFile? pickedFile;
 
-    switch (source) {
-      case FilePickerSource.cameraImage:
-      case FilePickerSource.galleryImage:
-        final file = await ImagePicker().pickImage(
-          source: source == FilePickerSource.cameraImage
-              ? ImageSource.camera
-              : ImageSource.gallery,
-          maxWidth: maxWidth,
-          maxHeight: maxHeight,
-          imageQuality: imageQuality,
-        );
-
-        if (file != null) {
-          pickedFile = PickedFile(
-            file: File(file.path),
-            mimeType: file.mimeType,
-          );
-        }
-        break;
-
-      case FilePickerSource.video:
-        final result = await FilePicker.platform.pickFiles(
-          type: FileType.video,
-        );
-
-        if (result?.files.isNotEmpty ?? false) {
-          final file = result!.files.first;
-
-          if (file.path != null) {
-            pickedFile = PickedFile(
-              file: File(file.path!),
+    await context.read<AuthenticationCubit>().disableAutoLock(
+      future: () async {
+        switch (source) {
+          case FilePickerSource.cameraImage:
+          case FilePickerSource.galleryImage:
+            final file = await ImagePicker().pickImage(
+              source: source == FilePickerSource.cameraImage
+                  ? ImageSource.camera
+                  : ImageSource.gallery,
+              maxWidth: maxWidth,
+              maxHeight: maxHeight,
+              imageQuality: imageQuality,
             );
-          }
-        }
-        break;
 
-      case FilePickerSource.file:
-        final result = await FilePicker.platform.pickFiles(
-          type: allowedExtensions.isNotEmpty ? FileType.custom : FileType.any,
-          allowedExtensions: allowedExtensions.toList(),
-        );
+            if (file != null) {
+              pickedFile = PickedFile(
+                file: File(file.path),
+                mimeType: file.mimeType,
+              );
+            }
+            break;
 
-        if (result?.files.isNotEmpty ?? false) {
-          final file = result!.files.first;
-
-          if (file.path != null) {
-            pickedFile = PickedFile(
-              file: File(file.path!),
+          case FilePickerSource.video:
+            final result = await FilePicker.platform.pickFiles(
+              type: FileType.video,
             );
-          }
+
+            if (result?.files.isNotEmpty ?? false) {
+              final file = result!.files.first;
+
+              if (file.path != null) {
+                pickedFile = PickedFile(
+                  file: File(file.path!),
+                );
+              }
+            }
+            break;
+
+          case FilePickerSource.file:
+            final result = await FilePicker.platform.pickFiles(
+              type:
+                  allowedExtensions.isNotEmpty ? FileType.custom : FileType.any,
+              allowedExtensions: allowedExtensions.toList(),
+            );
+
+            if (result?.files.isNotEmpty ?? false) {
+              final file = result!.files.first;
+
+              if (file.path != null) {
+                pickedFile = PickedFile(
+                  file: File(file.path!),
+                );
+              }
+            }
+            break;
         }
-        break;
-    }
 
-    final shouldShowCropper = showImageCropper &&
-        [
-          FilePickerSource.cameraImage,
-          FilePickerSource.galleryImage,
-        ].contains(source);
+        final shouldShowCropper = showImageCropper &&
+            [
+              FilePickerSource.cameraImage,
+              FilePickerSource.galleryImage,
+            ].contains(source);
 
-    if (pickedFile != null) {
-      pickedFile = shouldShowCropper
-          ? pickedFile.copyWith(
-              file: await _cropImage(pickedFile.file, maxCropSize),
-            )
-          : pickedFile;
-    }
+        if (pickedFile != null) {
+          pickedFile = shouldShowCropper
+              ? pickedFile!.copyWith(
+                  file: await _cropImage(pickedFile!.file, maxCropSize),
+                )
+              : pickedFile;
+        }
+      },
+    );
 
     return pickedFile;
   }
