@@ -13,6 +13,9 @@ class SendMoneyPermissionData extends Equatable {
   /// User can send money to him/herself.
   final bool own;
 
+  /// Getter that checks if the user has enough permissions to view the feature.
+  bool get isFeatureVisible => bank || domestic || own;
+
   /// Creates a [SendMoneyPermissionData] object.
   const SendMoneyPermissionData({
     this.bank = false,

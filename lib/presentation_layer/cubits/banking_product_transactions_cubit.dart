@@ -110,6 +110,7 @@ class BankingProductTransactionsCubit
     double? amountFrom,
     double? amountTo,
     bool loadMore = false,
+    bool? isTypeSelected,
   }) async {
     emit(
       state.copyWith(
@@ -120,7 +121,8 @@ class BankingProductTransactionsCubit
         amountFrom: amountFrom ?? state.amountFrom,
         amountTo: amountTo ?? state.amountTo,
         listData: BankingProductTransactionsListData(),
-        credit: credit ?? state.credit,
+        credit: credit,
+        isTypeSelected: isTypeSelected?? state.isTypeSelected,
         actions: state.addAction(loadMore
             ? BankingProductTransactionsAction.loadingMore
             : (changeDate
@@ -149,7 +151,7 @@ class BankingProductTransactionsCubit
           limit: limit,
           forceRefresh: forceRefresh,
           searchString: searchString,
-          credit: credit ?? state.credit,
+          credit: credit,
           amountFrom: amountFrom ?? state.amountFrom,
           amountTo: amountTo ?? state.amountTo,
         ),
@@ -167,6 +169,7 @@ class BankingProductTransactionsCubit
       emit(
         state.copyWith(
           transactions: list,
+          isTypeSelected: isTypeSelected,
           actions: state.removeAction(
             loadMore
                 ? BankingProductTransactionsAction.loadingMore

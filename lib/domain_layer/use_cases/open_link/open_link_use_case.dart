@@ -35,7 +35,7 @@ class OpenLinkUseCase {
     try {
       await launchUrl(url, mode: LaunchMode.inAppWebView);
     } on Exception catch (e) {
-      print(e);
+      throw Exception('Error launching link ${e.toString()}');
     }
   }
 
@@ -47,7 +47,7 @@ class OpenLinkUseCase {
     try {
       await launchUrl(url, mode: LaunchMode.inAppWebView);
     } on Exception catch (e) {
-      print(e);
+      throw Exception('Error launching link ${e.toString()}');
     }
   }
 }

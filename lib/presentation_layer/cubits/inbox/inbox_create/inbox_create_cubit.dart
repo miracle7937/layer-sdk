@@ -100,10 +100,12 @@ class InboxCreateCubit extends Cubit<InboxCreateState> {
           busy: true,
           busyAction: InboxCreateBusyAction.creatingReport,
           errorStatus: InboxCreateErrorStatus.none,
+          clearEvent: true,
         ),
       );
 
       InboxReportMessage? message;
+      InboxReport? report;
 
       if (logFile != null) {
         addFile(logFile);
@@ -113,7 +115,7 @@ class InboxCreateCubit extends Cubit<InboxCreateState> {
           files: state.inboxFiles,
         );
       } else {
-        await _createInboxReportUseCase(
+        report = await _createInboxReportUseCase(
           state.selectedCategory?.id ?? '',
         );
       }
@@ -125,6 +127,11 @@ class InboxCreateCubit extends Cubit<InboxCreateState> {
           errorStatus: InboxCreateErrorStatus.none,
           inboxMessage: message,
           inboxFiles: [],
+          event: report == null
+              ? null
+              : InboxReportCreatedEvent(
+                  report: report,
+                ),
         ),
       );
     } on Exception catch (e) {
