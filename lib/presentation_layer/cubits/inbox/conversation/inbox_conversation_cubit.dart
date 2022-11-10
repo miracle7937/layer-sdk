@@ -195,7 +195,8 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
           report: state.report.copyWith(
             messages: [
               failedInboxMessage,
-              ...state.report.messages.sublist(0, state.messages.length - 1),
+              if (state.report.messages.isNotEmpty)
+                ...state.report.messages.sublist(0, state.messages.length - 1),
             ],
           ),
           messages: [
@@ -204,7 +205,8 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
               status: InboxChatMessageStatus.failed,
               sentTime: DateTime.now(),
             ),
-            ...(state.messages.sublist(0, state.messages.length - 1)),
+            if (state.messages.isNotEmpty)
+              ...(state.messages.sublist(0, state.messages.length - 1)),
           ],
           errorStatus: e is NetException
               ? InboxConversationErrorStatus.network
@@ -269,12 +271,14 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
               message: sentMessage,
               status: InboxChatMessageStatus.uploaded,
             ),
-            ...state.messages.sublist(0, state.messages.length - 1),
+            if (state.messages.isNotEmpty)
+              ...state.messages.sublist(0, state.messages.length - 1),
           ],
           report: state.report.copyWith(
             messages: [
               sentMessage,
-              ...state.report.messages.sublist(0, state.messages.length - 1),
+              if (state.report.messages.isNotEmpty)
+                ...state.report.messages.sublist(0, state.messages.length - 1),
             ],
           ),
         ),
@@ -291,7 +295,8 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
           report: state.report.copyWith(
             messages: [
               failedInboxMessage,
-              ...state.report.messages.sublist(state.messages.length - 1),
+              if (state.report.messages.isNotEmpty)
+                ...state.report.messages.sublist(state.messages.length - 1),
             ],
           ),
           messages: [
@@ -300,7 +305,8 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
               status: InboxChatMessageStatus.failed,
               sentTime: DateTime.now(),
             ),
-            ...(state.messages.sublist(0, state.messages.length - 1)),
+            if (state.messages.isNotEmpty)
+              ...(state.messages.sublist(0, state.messages.length - 1)),
           ],
           errorStatus: e is NetException
               ? InboxConversationErrorStatus.network
@@ -335,12 +341,14 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
               sentTime: DateTime.now(),
               status: InboxChatMessageStatus.uploading,
             ),
-            ...state.messages.sublist(0, state.messages.length - 1),
+            if (state.messages.isNotEmpty)
+              ...state.messages.sublist(0, state.messages.length - 1),
           ],
           report: state.report.copyWith(
             messages: [
               failedMessage.message,
-              ...state.report.messages.sublist(0, state.messages.length - 1)
+              if (state.report.messages.isNotEmpty)
+                ...state.report.messages.sublist(0, state.messages.length - 1)
             ],
           ),
         ),
@@ -358,7 +366,8 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
           filesToUpload: [],
           uploadedFiles: [],
           messages: [
-            ...state.messages.sublist(0, state.messages.length - 1),
+            if (state.messages.isNotEmpty)
+              ...state.messages.sublist(0, state.messages.length - 1),
             failedMessage.copyWith(
               message: sentMessage,
               status: InboxChatMessageStatus.uploaded,
@@ -367,8 +376,9 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
           report: state.report.copyWith(
             messages: [
               sentMessage,
-              ...state.report.messages
-                  .sublist(0, state.report.messages.length - 1),
+              if (state.report.messages.isNotEmpty)
+                ...state.report.messages
+                    .sublist(0, state.report.messages.length - 1),
             ],
           ),
         ),
@@ -381,10 +391,11 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
           report: state.report.copyWith(
             messages: [
               failedMessage.message,
-              ...state.report.messages.sublist(
-                0,
-                state.report.messages.length - 1,
-              ),
+              if (state.report.messages.isNotEmpty)
+                ...state.report.messages.sublist(
+                  0,
+                  state.report.messages.length - 1,
+                ),
             ],
           ),
           messages: [
@@ -392,7 +403,8 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
               message: failedMessage.message,
               status: InboxChatMessageStatus.failed,
             ),
-            ...(state.messages.sublist(0, state.messages.length - 1)),
+            if (state.messages.isNotEmpty)
+              ...(state.messages.sublist(0, state.messages.length - 1)),
           ],
           errorStatus: e is NetException
               ? InboxConversationErrorStatus.network
