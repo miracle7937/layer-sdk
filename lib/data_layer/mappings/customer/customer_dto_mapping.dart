@@ -7,7 +7,7 @@ import '../../errors.dart';
 /// Extension that provides mappings for [CustomerDTO].
 extension CustomerDTOMapping on CustomerDTO {
   /// Maps into a [Customer].
-  Customer toCustomer(DPAMappingCustomData customData) => Customer(
+  Customer toCustomer([DPAMappingCustomData? customData]) => Customer(
         id: id ?? '',
         status: status?.toCustomerStatus() ?? CustomerStatus.unknown,
         type: type?.toCustomerType() ?? CustomerType.unknown,
@@ -31,8 +31,16 @@ extension CustomerDTOMapping on CustomerDTO {
           otherNationalities: customerInformation?.otherNationalities?.map(
             (e) => e.toNationality(),
           ),
-          beneficiaryDocument: toBeneficiaryDocument(customData),
-          otherParty: toOtherPartyDocument(customData),
+          beneficiaryDocument: customData == null
+              ? ''
+              : toBeneficiaryDocument(
+                  customData,
+                ),
+          otherParty: customData == null
+              ? ''
+              : toOtherPartyDocument(
+                  customData,
+                ),
           company: CustomerCompany(
             name: customerInformation?.companyName ?? '',
             type: customerInformation?.companyType ?? '',
@@ -61,7 +69,8 @@ extension CustomerDTOMapping on CustomerDTO {
               (name) => name.isValid,
             ) ??
             <String>[],
-        vaultDisclaimer: false, // TODO: get data from the backend
+        vaultDisclaimer: false,
+        // TODO: get data from the backend
         fatcaStatus: customerInformation?.fatcaStatus ?? false,
         addresses: toAddresses(),
         cpr: toCPR(),

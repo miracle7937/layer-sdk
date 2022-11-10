@@ -376,7 +376,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
           process: process.isPopUp() ? null : process,
           popUp: process.isPopUp() ? process : null,
           clearPopUp: !process.isPopUp(),
-          actions: state.addAction(
+          actions: state.removeAction(
             DPAProcessBusyAction.skipping,
           ),
           runStatus: process.finished ? DPAProcessRunStatus.finished : null,

@@ -126,4 +126,18 @@ class InboxProvider {
 
     return result.success;
   }
+
+  /// Mark report as read
+  Future<InboxReportDTO> markReportAsRead({
+    required int reportId,
+  }) async {
+    final result = await netClient.request(
+      "${netClient.netEndpoints.report}/$reportId/read_all",
+      method: NetRequestMethods.post,
+    );
+
+    List _response = result.data;
+
+    return InboxReportDTO.fromJson(_response.first);
+  }
 }

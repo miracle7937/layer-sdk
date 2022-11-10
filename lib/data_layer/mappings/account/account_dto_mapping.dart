@@ -7,6 +7,7 @@ import '../../mappings.dart';
 extension AccountDTOMapping on AccountDTO {
   /// Maps a [AccountDTO] instance to a [Account] model
   Account toAccount() => Account(
+        customer: customer?.toCustomer(),
         accountNumber: accountNumber,
         availableBalance: availableBalance,
         currency: currency,

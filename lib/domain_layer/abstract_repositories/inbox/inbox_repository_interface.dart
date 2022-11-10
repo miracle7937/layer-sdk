@@ -41,4 +41,7 @@ abstract class InboxRepositoryInterface {
 
   /// Delete report
   Future<bool> deleteReport(InboxReport inboxReport);
+
+  /// Mark a [InboxReport] as read
+  Future<InboxReport> markReportAsRead(InboxReport report);
 }

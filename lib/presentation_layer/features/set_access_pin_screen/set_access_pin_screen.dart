@@ -23,12 +23,16 @@ class SetAccessPinScreen extends SetAccessPinBaseWidget {
   /// The title for the repeat pin screen.
   final String repeatPinTitle;
 
+  ///The function if succes set pin process
+  final ValueChanged<User> onSuccess;
+
   /// Creates a new [SetAccessPinScreen].
   const SetAccessPinScreen({
     super.key,
     super.pinLength = 6,
     this.setPinAppBar,
     this.repeatPinAppBar,
+    required this.onSuccess,
     required this.setPinTitle,
     required this.repeatPinTitle,
   });
@@ -41,6 +45,7 @@ class SetAccessPinScreen extends SetAccessPinBaseWidget {
     PreferredSizeWidget? repeatPinAppBar,
     required String setPinTitle,
     required String repeatPinTitle,
+    required ValueChanged<User?> onSuccess,
   }) =>
       MaterialPageRoute(
         builder: (context) => BlocProvider<SetPinScreenCubit>(
@@ -53,6 +58,7 @@ class SetAccessPinScreen extends SetAccessPinBaseWidget {
             repeatPinAppBar: repeatPinAppBar,
             setPinTitle: setPinTitle,
             repeatPinTitle: repeatPinTitle,
+            onSuccess: onSuccess,
           ),
         ),
       );
@@ -103,6 +109,7 @@ class _SetAccessPinScreenState
               pin: currentPin,
               appBar: widget.repeatPinAppBar,
               title: widget.repeatPinTitle,
+              onSuccess: widget.onSuccess,
             ),
           ),
         ),
@@ -131,6 +138,9 @@ class _RepeatAccessPinScreen extends SetAccessPinBaseWidget {
   /// The title for the repeat pin screen.
   final String title;
 
+  ///The function if succes set pin process
+  final ValueChanged<User> onSuccess;
+
   /// Creates a new [_RepeatAccessPinScreen].
   // ignore_for_file: unused_element
   const _RepeatAccessPinScreen({
@@ -139,6 +149,7 @@ class _RepeatAccessPinScreen extends SetAccessPinBaseWidget {
     required this.pin,
     this.appBar,
     required this.title,
+    required this.onSuccess,
   });
 
   @override
@@ -156,7 +167,7 @@ class __RepeatAccessPinScreenState
         BlocListener<SetPinScreenCubit, SetPinScreenState>(
           listenWhen: (previous, current) =>
               previous.user != current.user && current.user != null,
-          listener: (context, state) => Navigator.pop(context),
+          listener: (context, state) => widget.onSuccess(state.user!),
           child: Scaffold(
             backgroundColor: DesignSystem.of(context).surfaceOctonary1,
             appBar: widget.appBar,

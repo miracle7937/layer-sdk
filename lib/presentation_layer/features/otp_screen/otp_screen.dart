@@ -224,7 +224,7 @@ class _OTPScreenState extends State<_OTPScreen> with FullScreenLoaderMixin {
   set shouldClearCode(bool shouldClearCode) =>
       setState(() => _shouldClearCode = shouldClearCode);
 
-  late bool _showBiometricsButton;
+  bool _showBiometricsButton = false;
   bool get showBiometricsButton => _showBiometricsButton;
   set showBiometricsButton(bool showBiometricsButton) =>
       setState(() => _showBiometricsButton = showBiometricsButton);
@@ -254,15 +254,26 @@ class _OTPScreenState extends State<_OTPScreen> with FullScreenLoaderMixin {
     if (widget.showBiometrics) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         final biometricsCubit = context.read<BiometricsCubit>();
-        await biometricsCubit.initialize();
+        final storageCubit = context.read<StorageCreator>().create();
+
+        await Future.wait([
+          biometricsCubit.initialize(),
+          storageCubit.loadAuthenticationSettings(),
+        ]);
 
         final canUseBiometrics =
             biometricsCubit.state.canUseBiometrics ?? false;
+        final useBiometrics =
+            storageCubit.state.authenticationSettings.useBiometrics;
 
-        showBiometricsButton = canUseBiometrics;
+        showBiometricsButton = canUseBiometrics && useBiometrics;
 
-        if (canUseBiometrics) {
+        if (showBiometricsButton) {
           _authenticateBiometrics();
+        } else if (widget.onSendOTPCode != null) {
+          isSendingOTPCode = true;
+          showOTPCodeInput = await widget.onSendOTPCode!();
+          isSendingOTPCode = false;
         }
       });
     }
@@ -474,7 +485,7 @@ class _OTPScreenState extends State<_OTPScreen> with FullScreenLoaderMixin {
                         )
                       : const SizedBox.shrink(),
                 ),
-                if (widget.showBiometrics) ...[
+                if (showBiometricsButton) ...[
                   Spacer(),
                   DKButton(
                     type: DKButtonType.basePlain,

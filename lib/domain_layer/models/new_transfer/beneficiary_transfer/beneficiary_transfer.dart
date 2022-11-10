@@ -120,9 +120,11 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
               ? null
               : newBeneficiary?.toBeneficiaryDTO(),
       reason: reason,
-      extra: beneficiaryType == DestinationBeneficiaryType.currentBeneficiary
-          ? jsonDecode(destination?.beneficiary?.extra ?? '')
-          : null,
+      extra:
+          (beneficiaryType == DestinationBeneficiaryType.currentBeneficiary &&
+                  destination?.beneficiary?.extra != null)
+              ? jsonDecode(destination!.beneficiary!.extra!)
+              : null,
       recurrence: scheduleDetails.recurrence.toRecurrenceDTO(),
       startDate: scheduleDetails.startDate,
       endDate: scheduleDetails.endDate,

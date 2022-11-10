@@ -29,6 +29,29 @@ enum InboxCreateBusyAction {
   idle,
 }
 
+/// Class that represents the event of a new [InboxReport] being created.
+class InboxReportCreatedEvent extends Equatable {
+  /// The created report.
+  final InboxReport report;
+
+  const InboxReportCreatedEvent({
+    required this.report,
+  });
+
+  InboxReportCreatedEvent copyWith({
+    InboxReport? report,
+  }) {
+    return InboxReportCreatedEvent(
+      report: report ?? this.report,
+    );
+  }
+
+  @override
+  List<Object> get props => [
+        report,
+      ];
+}
+
 /// Class that holds the state of [InboxCreateCubit]
 class InboxCreateState extends Equatable {
   /// The cubit error status
@@ -57,6 +80,9 @@ class InboxCreateState extends Equatable {
 
   final InboxReportMessage? inboxMessage;
 
+  /// Event that represents a newly created [InboxReport].
+  final InboxReportCreatedEvent? event;
+
   /// Creates a new instance of [InboxCreateState]
   InboxCreateState({
     Iterable<Message> categories = const [],
@@ -68,6 +94,7 @@ class InboxCreateState extends Equatable {
     this.errorMessage = '',
     this.description,
     this.selectedCategory,
+    this.event,
   })  : categories = UnmodifiableListView(categories),
         inboxFiles = UnmodifiableListView(inboxFiles);
 
@@ -83,6 +110,7 @@ class InboxCreateState extends Equatable {
       categories,
       selectedCategory,
       inboxFiles,
+      event,
     ];
   }
 
@@ -97,6 +125,8 @@ class InboxCreateState extends Equatable {
     Iterable<InboxFile>? inboxFiles,
     Message? selectedCategory,
     InboxReportMessage? inboxMessage,
+    InboxReportCreatedEvent? event,
+    bool clearEvent = false,
   }) {
     return InboxCreateState(
       errorStatus: errorStatus ?? this.errorStatus,
@@ -108,6 +138,7 @@ class InboxCreateState extends Equatable {
       selectedCategory: selectedCategory ?? this.selectedCategory,
       inboxFiles: inboxFiles ?? this.inboxFiles,
       inboxMessage: inboxMessage ?? this.inboxMessage,
+      event: clearEvent ? null : event ?? this.event,
     );
   }
 }

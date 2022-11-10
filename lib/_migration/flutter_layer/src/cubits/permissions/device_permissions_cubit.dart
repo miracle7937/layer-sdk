@@ -38,6 +38,10 @@ class DevicePermissionsCubit extends Cubit<DevicePermissionsState> {
       status = await _wrapper.status(permission);
     } else {
       status = await _wrapper.request(permission);
+      if (status == PermissionStatus.permanentlyDenied) {
+        await openSettings();
+        status = await _wrapper.status(permission);
+      }
     }
 
     emit(state.copyWith(

@@ -13,6 +13,9 @@ class AccountDTO {
   /// The customer id associated with this account.
   String? customerId;
 
+  /// The customer associated with this account.
+  CustomerDTO? customer;
+
   /// Date when account entry was created
   DateTime? created;
 
@@ -134,6 +137,7 @@ class AccountDTO {
   AccountDTO({
     this.accountId,
     this.customerId,
+    this.customer,
     this.created,
     this.updated,
     this.type,
@@ -180,6 +184,9 @@ class AccountDTO {
     return AccountDTO(
       accountId: json['account_id'],
       customerId: json['customer_id'],
+      customer: json['customer'] != null
+          ? CustomerDTO.fromJson(json['customer'])
+          : null,
       created: JsonParser.parseDate(json['ts_created']),
       updated: JsonParser.parseDate(json['ts_updated']),
       type: json['account_type'] != null
