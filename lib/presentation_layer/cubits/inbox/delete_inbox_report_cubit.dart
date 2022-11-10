@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../data_layer/network/net_exceptions.dart';
-import '../../../../domain_layer/models/inbox/inbox_report.dart';
 import '../../../../domain_layer/use_cases.dart';
 import 'delete_inbox_report_state.dart';
 
@@ -21,22 +20,21 @@ class DeleteInboxReportCubit extends Cubit<DeleteInboxReportState> {
 
   /// Delete report
   void deleteReport({
-    required InboxReport inboxReport,
+    required int reportId,
   }) async {
     emit(
       DeleteInboxReportState(
-          action: DeleteInboxReportAction.deleting,
-          error: DeleteReportErrorStatus.none,
-          deletedReport: null),
+        action: DeleteInboxReportAction.deleting,
+        error: DeleteReportErrorStatus.none,
+      ),
     );
     try {
-      await deleteReportUseCase(inboxReport.id!);
+      await deleteReportUseCase(reportId);
 
       emit(
         state.copyWith(
-          action: DeleteInboxReportAction.none,
-          deletedReport: inboxReport,
-        ),
+            action: DeleteInboxReportAction.none,
+            error: DeleteReportErrorStatus.none),
       );
     } on Exception catch (e) {
       emit(

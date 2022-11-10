@@ -43,7 +43,7 @@ void main() {
       );
     },
     build: () => deleteReportCubit,
-    act: (c) => c.deleteReport(inboxReport: report),
+    act: (c) => c.deleteReport(reportId: report.id!),
     expect: () => [
       DeleteInboxReportState(
         action: DeleteInboxReportAction.deleting,
@@ -52,7 +52,6 @@ void main() {
       DeleteInboxReportState(
         action: DeleteInboxReportAction.none,
         error: DeleteReportErrorStatus.none,
-        deletedReport: report,
       ),
     ],
   );
@@ -63,7 +62,7 @@ void main() {
       when(() => deleteReportUseCase(report.id!)).thenThrow(NetException());
     },
     build: () => deleteReportCubit,
-    act: (c) => c.deleteReport(inboxReport: report),
+    act: (c) => c.deleteReport(reportId: report.id!),
     expect: () => [
       DeleteInboxReportState(
         action: DeleteInboxReportAction.deleting,
@@ -82,7 +81,7 @@ void main() {
       when(() => deleteReportUseCase(report.id!)).thenThrow(Exception());
     },
     build: () => deleteReportCubit,
-    act: (c) => c.deleteReport(inboxReport: report),
+    act: (c) => c.deleteReport(reportId: report.id!),
     expect: () => [
       DeleteInboxReportState(
           action: DeleteInboxReportAction.deleting,
