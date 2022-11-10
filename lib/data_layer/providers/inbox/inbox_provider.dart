@@ -118,13 +118,11 @@ class InboxProvider {
   }
 
   /// Delete report
-  Future<bool> deleteReport(int reportId) async {
-    final result = await netClient.request(
+  Future<void> deleteReport(int reportId) async {
+    await netClient.request(
       "${netClient.netEndpoints.report}/$reportId",
       method: NetRequestMethods.delete,
     );
-
-    return result.success;
   }
 
   /// Mark report as read

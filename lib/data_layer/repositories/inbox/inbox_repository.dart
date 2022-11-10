@@ -91,7 +91,7 @@ class InboxRepository implements InboxRepositoryInterface {
   }
 
   @override
-  Future<bool> deleteReport(int reportId) {
+  Future<void> deleteReport(int reportId) {
     return _provider.deleteReport(reportId);
   }
 

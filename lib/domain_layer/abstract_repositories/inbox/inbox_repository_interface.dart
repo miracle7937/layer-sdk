@@ -40,7 +40,7 @@ abstract class InboxRepositoryInterface {
   Future<InboxReport> createReport(String category);
 
   /// Delete report
-  Future<bool> deleteReport(int reportId);
+  Future<void> deleteReport(int reportId);
 
   /// Mark a [InboxReport] as read
   Future<InboxReport> markReportAsRead(InboxReport report);
