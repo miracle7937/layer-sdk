@@ -126,6 +126,8 @@ class InboxProvider {
       method: NetRequestMethods.post,
     );
 
-    return InboxReportDTO.fromJson(result.data);
+    List _response = result.data;
+
+    return InboxReportDTO.fromJson(_response.first);
   }
 }
