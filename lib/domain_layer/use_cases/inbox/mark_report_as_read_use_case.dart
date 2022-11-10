@@ -9,7 +9,7 @@ class MarkReportAsReadUseCase {
   MarkReportAsReadUseCase(this._inboxRepository);
 
   /// Mark a [InboxReport] as read
-  Future<bool> call(InboxReport report) async {
-    return await _inboxRepository.markReportAsRead(report);
+  Future<InboxReport> call(InboxReport report) {
+    return _inboxRepository.markReportAsRead(report);
   }
 }

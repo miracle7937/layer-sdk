@@ -31,7 +31,7 @@ void main() {
     build: () => inboxReportCubit,
     setUp: () {
       when(() => markReportAsReadUseCase.call(InboxReport(id: 1, read: false)))
-          .thenAnswer((_) async => true);
+          .thenAnswer((_) async => InboxReport(id: 1, read: true));
     },
     act: (cubit) async {
       cubit.markReportAsRead(InboxReport(id: 1, read: false));

@@ -118,7 +118,7 @@ class InboxProvider {
   }
 
   /// Mark report as read
-  Future<bool> markReportAsRead({
+  Future<InboxReportDTO> markReportAsRead({
     required int reportId,
   }) async {
     final result = await netClient.request(
@@ -126,6 +126,6 @@ class InboxProvider {
       method: NetRequestMethods.post,
     );
 
-    return result.success;
+    return InboxReportDTO.fromJson(result.data);
   }
 }

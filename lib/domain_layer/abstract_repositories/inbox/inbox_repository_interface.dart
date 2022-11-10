@@ -40,5 +40,5 @@ abstract class InboxRepositoryInterface {
   Future<InboxReport> createReport(String category);
 
   /// Mark a [InboxReport] as read
-  Future<bool> markReportAsRead(InboxReport report);
+  Future<InboxReport> markReportAsRead(InboxReport report);
 }

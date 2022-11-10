@@ -17,10 +17,10 @@ void main() {
 
   test('should mark a report as read', () async {
     when(() => inboxRepository.markReportAsRead(InboxReport(id: 1)))
-        .thenAnswer((_) async => true);
+        .thenAnswer((_) async => InboxReport(id: 1, read: true));
 
     final result = await markReportAsReadUseCase.call(InboxReport(id: 1));
 
-    expect(result, true);
+    expect(result.read, true);
   });
 }

@@ -85,11 +85,11 @@ class InboxReportCubit extends Cubit<InboxReportState> {
         ),
       );
 
-      await _markReportAsReadUseCase(report);
+      final result = await _markReportAsReadUseCase(report);
 
       final reports = state.reports.map((r) {
         if (r.id == report.id) {
-          return r.copyWith(read: true);
+          return r.copyWith(read: result.read);
         }
 
         return r;
