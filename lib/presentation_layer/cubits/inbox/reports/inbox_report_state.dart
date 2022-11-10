@@ -51,7 +51,7 @@ class InboxReportState extends Equatable {
     this.busyAction,
     this.errorStatus = InboxReportErrorStatus.none,
     this.errorMessage = '',
-    this.pagination = const Pagination(),
+    this.pagination = const Pagination(limit: 10),
     Iterable<InboxReport> reports = const [],
     this.busy = false,
   }) : reports = UnmodifiableListView(reports);

@@ -38,7 +38,13 @@ enum CubitErrorCode {
   /// The payment failed.
   paymentFailed('payment_failed'),
 
-  /// unknown error code.
+  /// Bad request. (400 status code)
+  badRequest('BAD_REQUEST'),
+
+  /// Unknown error code.
+  ///
+  /// If you get this, it means that you are getting an error code from the
+  /// API that you are not handling here.
   unknown('unknown');
 
   /// The string value for the [CubitErrorCode].
