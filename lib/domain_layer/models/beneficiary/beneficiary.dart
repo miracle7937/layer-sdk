@@ -82,6 +82,9 @@ class Beneficiary extends Equatable {
   /// The beneficiary's routing code.
   final String? routingCode;
 
+  /// The second factor type.
+  final SecondFactorType? secondFactorType;
+
   /// Creates a new immutable [Beneficiary]
   const Beneficiary({
     this.id,
@@ -103,6 +106,7 @@ class Beneficiary extends Equatable {
     this.otpId,
     this.extra,
     this.routingCode,
+    this.secondFactorType,
   });
 
   /// Returns the full name of this beneficiary
@@ -130,6 +134,7 @@ class Beneficiary extends Equatable {
         otpId,
         extra,
         routingCode,
+        secondFactorType,
       ];
 
   /// Returns beneficiary display name
@@ -156,6 +161,7 @@ class Beneficiary extends Equatable {
     String? address3,
     String? routingCode,
     int? otpId,
+    SecondFactorType? secondFactorType,
   }) =>
       Beneficiary(
         id: id ?? this.id,
@@ -176,5 +182,6 @@ class Beneficiary extends Equatable {
         address3: address3 ?? this.address3,
         routingCode: routingCode ?? this.routingCode,
         otpId: otpId ?? this.otpId,
+        secondFactorType: secondFactorType ?? this.secondFactorType,
       );
 }

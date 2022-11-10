@@ -23,7 +23,7 @@ dependencies:
   design_kit_layer:
     git:
       url: git@gitlab.ubanquity.com:dart-packages/design-kit-layer.git
-      ref: 14cc0cf4f356bb5dcc93d7457061f67ea0c18546
+      ref: 304d542ac8c7cfeb0bba403308ebbfab59eb5cf6
 
   ocra_authentication:
     git:
@@ -85,6 +85,9 @@ dev_dependencies:
     sdk: flutter
   mocktail: ^0.1.4
   test: ^1.17.5
+
+dependency_overrides:
+  firebase_core_platform_interface: 4.5.1
 
 flutter:
   uses-material-design: true

@@ -192,8 +192,9 @@ class BottomSheetHelper {
   /// Returns true or false based on the user action.
   static Future<bool> showConfirmation({
     required BuildContext context,
-    required String titleKey,
     required BottomSheetType type,
+    String? titleKey,
+    String? title,
     String? descriptionKey,
     String confirmKey = 'yes',
     String denyKey = 'no',
@@ -238,6 +239,7 @@ class BottomSheetHelper {
       builder: (context) {
         final content = _ConfirmationBottomSheet(
           titleKey: titleKey,
+          title: title,
           confirmKey: confirmKey,
           dismissKey: denyKey,
           type: type,
@@ -330,7 +332,8 @@ class _ErrorBottomSheet extends StatelessWidget {
 }
 
 class _ConfirmationBottomSheet extends StatelessWidget {
-  final String titleKey;
+  final String? titleKey;
+  final String? title;
   final String? descriptionKey;
   final String confirmKey;
   final String dismissKey;
@@ -340,11 +343,12 @@ class _ConfirmationBottomSheet extends StatelessWidget {
 
   const _ConfirmationBottomSheet({
     Key? key,
-    required this.titleKey,
     required this.confirmKey,
     required this.dismissKey,
     required this.type,
     required this.denyButtonType,
+    this.titleKey,
+    this.title,
     this.descriptionKey,
     this.showDenyButton = true,
   }) : super(key: key);
@@ -370,7 +374,7 @@ class _ConfirmationBottomSheet extends StatelessWidget {
             height: 20.0,
           ),
           Text(
-            translation.translate(titleKey),
+            titleKey == null ? (title ?? '') : translation.translate(titleKey!),
             style: design.titleXXL(),
             textAlign: TextAlign.center,
           ),

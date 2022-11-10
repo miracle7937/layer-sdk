@@ -22,6 +22,9 @@ class Account extends Equatable {
   /// Unique account identifier, SHA-1 of CIF
   final String? id;
 
+  /// The customer associated with this account.
+  final Customer? customer;
+
   /// The currency used by this account
   final String? currency;
 
@@ -47,6 +50,12 @@ class Account extends Equatable {
   /// In cases of some integrations it should be displayed instead of the
   /// [accountNumber].
   final String? extraAccountNumber;
+
+  /// The bank swift code provided in the extra data.
+  final String? extraSwiftCode;
+
+  /// The sort code provided in the extra data.
+  final String? extraSortCode;
 
   /// Generic bank defined reference for account
   final String? reference;
@@ -162,6 +171,7 @@ class Account extends Equatable {
   /// Creates a new immutable [Account]
   const Account({
     this.id,
+    this.customer,
     this.currency,
     this.availableBalance,
     this.currentBalance,
@@ -169,6 +179,8 @@ class Account extends Equatable {
     this.accountNumber,
     this.formattedAccountNumber,
     this.extraAccountNumber,
+    this.extraSwiftCode,
+    this.extraSortCode,
     this.reference,
     this.status,
     this.accountInfo,
@@ -199,6 +211,7 @@ class Account extends Equatable {
   @override
   List<Object?> get props => [
         id,
+        customer,
         currency,
         availableBalance,
         currentBalance,
@@ -206,6 +219,8 @@ class Account extends Equatable {
         accountNumber,
         formattedAccountNumber,
         extraAccountNumber,
+        extraSwiftCode,
+        extraSortCode,
         reference,
         status,
         accountInfo,

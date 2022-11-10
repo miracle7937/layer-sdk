@@ -106,7 +106,8 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
       );
 
       if (process != null) {
-        final delay = process.stepProperties?.delay;
+        final secondsToAutoStepOrFinish = process.stepProperties?.delay ??
+            process.stepProperties?.autoFinishIn;
 
         emit(
           state.copyWith(
@@ -127,8 +128,8 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
           stepOrFinish();
         }
 
-        if (delay != null) {
-          await Future.delayed(Duration(seconds: delay));
+        if (secondsToAutoStepOrFinish != null) {
+          await Future.delayed(Duration(seconds: secondsToAutoStepOrFinish));
           stepOrFinish();
         }
       }
@@ -280,7 +281,8 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
         );
       }
 
-      final delay = process.stepProperties?.delay;
+      final secondsToAutoStepOrFinish =
+          process.stepProperties?.delay ?? process.stepProperties?.autoFinishIn;
 
       try {
         final continueOldProcessVariable =
@@ -323,8 +325,8 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
         ),
       );
 
-      if (delay != null) {
-        await Future.delayed(Duration(seconds: delay));
+      if (secondsToAutoStepOrFinish != null) {
+        await Future.delayed(Duration(seconds: secondsToAutoStepOrFinish));
         stepOrFinish();
       }
     } on NetException catch (e) {
@@ -366,14 +368,15 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
         extraVariables: extraVariables ?? [],
       );
 
-      final delay = process.stepProperties?.delay;
+      final secondsToAutoStepOrFinish =
+          process.stepProperties?.delay ?? process.stepProperties?.autoFinishIn;
 
       emit(
         state.copyWith(
           process: process.isPopUp() ? null : process,
           popUp: process.isPopUp() ? process : null,
           clearPopUp: !process.isPopUp(),
-          actions: state.addAction(
+          actions: state.removeAction(
             DPAProcessBusyAction.skipping,
           ),
           runStatus: process.finished ? DPAProcessRunStatus.finished : null,
@@ -381,8 +384,8 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
         ),
       );
 
-      if (delay != null) {
-        await Future.delayed(Duration(seconds: delay));
+      if (secondsToAutoStepOrFinish != null) {
+        await Future.delayed(Duration(seconds: secondsToAutoStepOrFinish));
         stepOrFinish(extraVariables: extraVariables);
       }
     } on NetException catch (e) {

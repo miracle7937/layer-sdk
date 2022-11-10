@@ -260,6 +260,9 @@ enum ActivityActionType {
 
   /// Share transaction code.
   shareTransactionCode,
+
+  /// Dispute transaction
+  dispute,
 }
 
 /// The tag of the [Activity]

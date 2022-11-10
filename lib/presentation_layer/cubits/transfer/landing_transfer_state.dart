@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+
 import '../../../domain_layer/models.dart';
 import '../../utils.dart';
 import '../base_cubit/base_state.dart';
@@ -20,20 +21,18 @@ class LandingTransferState
 
   /// Creates a new [LandingTransferState] instance
   LandingTransferState({
-    Iterable<Transfer> frequentTransfers = const <Transfer>[],
-    Iterable<Currency> currencies = const <Currency>[],
     this.pagination = const Pagination(),
+    Iterable<Transfer> frequentTransfers = const <Transfer>[],
     super.actions = const <LandingTransferAction>{},
     super.errors = const <CubitError>{},
   }) : frequentTransfers = UnmodifiableListView(frequentTransfers);
 
   /// Creates a new state based on this one.
   LandingTransferState copyWith({
-    int? limit,
     Pagination? pagination,
+    Iterable<Transfer>? frequentTransfers,
     Set<LandingTransferAction>? actions,
     Set<CubitError>? errors,
-    Iterable<Transfer>? frequentTransfers,
   }) {
     return LandingTransferState(
       pagination: pagination ?? this.pagination,
@@ -47,5 +46,8 @@ class LandingTransferState
   List<Object?> get props => [
         pagination,
         frequentTransfers,
+        actions,
+        errors,
+        events,
       ];
 }

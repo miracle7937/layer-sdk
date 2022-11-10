@@ -21,9 +21,15 @@ class GetExperienceAndConfigureItUseCase {
     int? minPublicVersion,
   }) async {
     final experience = await _repository.getExperience(
-        public: public, minPublicVersion: minPublicVersion);
+      public: public,
+      minPublicVersion: minPublicVersion,
+    );
 
-    return experience.copyWith(pages: _configureExperience(experience));
+    return experience.copyWith(
+      pages: _configureExperience(
+        experience,
+      ),
+    );
   }
 
   /// Modifies the [Experience]..

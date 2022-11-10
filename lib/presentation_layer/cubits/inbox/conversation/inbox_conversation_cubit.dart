@@ -157,18 +157,6 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
         sentTime: DateTime.now(),
       );
 
-      emit(
-        state.copyWith(
-          busy: false,
-          busyAction: InboxConversationBusyAction.postingMessage,
-          errorStatus: InboxConversationErrorStatus.none,
-          messages: [
-            // inboxChatMessage,
-            ...state.messages,
-          ],
-        ),
-      );
-
       final inboxMessage = await _sendChatMessageUseCase(
         reportId: state.report.id ?? 0,
         messageText: message,
@@ -177,11 +165,12 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
 
       emit(
         state.copyWith(
+          busy: false,
+          busyAction: InboxConversationBusyAction.idle,
           report: state.report.copyWith(
             messages: [
               inboxMessage,
-              ...state.report.messages
-                  .sublist(0, state.report.messages.length - 1),
+              ...state.report.messages,
             ],
           ),
           messages: [
@@ -189,7 +178,7 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
               message: inboxMessage,
               status: InboxChatMessageStatus.uploaded,
             ),
-            ...(state.messages.sublist(0, state.messages.length - 1)),
+            ...state.messages,
           ],
         ),
       );

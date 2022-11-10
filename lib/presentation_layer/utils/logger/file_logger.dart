@@ -36,7 +36,7 @@ class FileLogger {
     Logger.root.onRecord.listen((rec) {
       var str =
           '${rec.level.name}: ${rec.loggerName}: ${rec.time}: ${rec.message}';
-      print(rec.message);
+
       _writeToFile('$str\n');
     });
   }

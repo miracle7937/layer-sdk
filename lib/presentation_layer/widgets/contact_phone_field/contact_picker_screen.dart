@@ -91,7 +91,7 @@ class _ContactPickerScreenState extends State<ContactPickerScreen>
 
     final contactWidgetList = <Widget>[];
     for (final contact in effectiveContactList) {
-      final initial = (contact.displayName ?? '').characters.first;
+      final initial = (contact.displayName ?? ' ').characters.first;
       var shouldAddDivider = false;
 
       if (!addedHeaderInitials.contains(initial)) {

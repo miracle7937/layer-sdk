@@ -151,9 +151,9 @@ class BeneficiaryDTO {
   /// Maps a instance of [BeneficiaryDTO] into a json map
   Map<String, dynamic> toJson() => <String, dynamic>{
         if (beneficiaryId != null) 'beneficiary_id': beneficiaryId,
-        if (firstName != null) 'rcpt_first_name': firstName,
-        if (lastName != null) 'rcpt_last_name': lastName,
-        if (nickname != null) 'nickname': nickname,
+        if (isNotEmpty(firstName)) 'rcpt_first_name': firstName,
+        if (isNotEmpty(lastName)) 'rcpt_last_name': lastName,
+        if (isNotEmpty(nickname)) 'nickname': nickname,
         if (type != null) 'type': type!.value,
         if (currency != null) 'currency': currency,
         if (accountNumber != null) 'account_number': accountNumber,
@@ -164,13 +164,13 @@ class BeneficiaryDTO {
         if (bankAddress1 != null) 'bank_address_1': bankAddress1,
         if (bankAddress2 != null) 'bank_address_2': bankAddress2,
         if (bankCountryCode != null) 'bank_country_code': bankCountryCode,
-        if (bankName != null) 'bank_name': bankName,
+        if (isNotEmpty(bankName)) 'bank_name': bankName,
         if (bankSwift != null) 'bank_swift': bankSwift,
         if (description != null) 'description': description,
         if (routingCode != null) 'routing_code': routingCode,
         if (bankImageUrl != null) 'bank_image_url': bankImageUrl,
         if (extra != null) 'extra': extra,
-        'visible': nickname != null,
+        'visible': isNotEmpty(nickname),
         if (otpId != null) 'otp_id': otpId,
       };
 }

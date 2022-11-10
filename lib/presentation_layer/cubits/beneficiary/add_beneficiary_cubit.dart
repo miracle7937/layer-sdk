@@ -1,14 +1,17 @@
 import 'package:bloc/bloc.dart';
 import 'package:collection/collection.dart';
+import 'package:logging/logging.dart';
 
-import '../../../../../../data_layer/network.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
-import '../../../layer_sdk.dart';
+
 import '../../cubits.dart';
+import '../../utils.dart';
 
 /// A cubit that handles adding a new beneficiary.
 class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
+  final _logger = Logger('AddBeneficiaryCubit');
+
   final LoadCountriesUseCase _loadCountriesUseCase;
   final LoadCurrentCustomerUseCase _loadCustomerUseCase;
   final LoadAllCurrenciesUseCase _loadAllCurrenciesUseCase;
@@ -17,6 +20,11 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
   final ValidateIBANUseCase _validateIBANUseCase;
   final AddNewBeneficiaryUseCase _addNewBeneficiaryUseCase;
   final LoadGlobalSettingsUseCase _loadGlobalSettingsUseCase;
+  final SendOTPCodeForBeneficiaryUseCase _sendOTPCodeForBeneficiaryUseCase;
+  final VerifyBeneficiarySecondFactorUseCase
+      _verifyBeneficiarySecondFactorUseCase;
+  final ResendBeneficiarySecondFactorUseCase
+      _resendBeneficiarySecondFactorUseCase;
 
   /// Creates a new [AddBeneficiaryCubit].
   AddBeneficiaryCubit({
@@ -28,6 +36,11 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
     required AddNewBeneficiaryUseCase addNewBeneficiariesUseCase,
     required LoadGlobalSettingsUseCase loadGlobalSettingsUseCase,
     required LoadCurrentCustomerUseCase loadCustomerUseCase,
+    required SendOTPCodeForBeneficiaryUseCase sendOTPCodeForBeneficiaryUseCase,
+    required VerifyBeneficiarySecondFactorUseCase
+        verifyBeneficiarySecondFactorUseCase,
+    required ResendBeneficiarySecondFactorUseCase
+        resendBeneficiarySecondFactorUseCase,
     TransferType? beneficiaryType,
   })  : _loadCountriesUseCase = loadCountriesUseCase,
         _loadAllCurrenciesUseCase = loadAvailableCurrenciesUseCase,
@@ -37,6 +50,11 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         _addNewBeneficiaryUseCase = addNewBeneficiariesUseCase,
         _loadGlobalSettingsUseCase = loadGlobalSettingsUseCase,
         _loadCustomerUseCase = loadCustomerUseCase,
+        _sendOTPCodeForBeneficiaryUseCase = sendOTPCodeForBeneficiaryUseCase,
+        _verifyBeneficiarySecondFactorUseCase =
+            verifyBeneficiarySecondFactorUseCase,
+        _resendBeneficiarySecondFactorUseCase =
+            resendBeneficiarySecondFactorUseCase,
         super(
           AddBeneficiaryState(
             beneficiaryType: beneficiaryType,
@@ -54,8 +72,8 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
   }) async {
     emit(
       state.copyWith(
-        busy: true,
-        errors: {},
+        actions: state.addAction(AddBeneficiaryAction.initialize),
+        errors: state.removeErrorForAction(AddBeneficiaryAction.initialize),
       ),
     );
 
@@ -77,6 +95,7 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         ),
         _loadCustomerUseCase(),
       ]);
+
       final countries = futures[0] as List<Country>;
       final currencies = futures[1] as List<Currency>;
       final beneficiarySettings = futures[2] as List<GlobalSetting>;
@@ -95,6 +114,7 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
       /// processed. If the loading was done, the action should be `none`.
       emit(
         state.copyWith(
+          actions: state.removeAction(AddBeneficiaryAction.initialize),
           beneficiary: Beneficiary(
             nickname: '',
             firstName: '',
@@ -107,28 +127,19 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
           countries: countries,
           selectedCurrency: selectedCurrency,
           availableCurrencies: currencies,
-          busy: false,
-          action: AddBeneficiaryAction.none,
           beneficiarySettings: beneficiarySettings,
         ),
       );
     } on Exception catch (e) {
       emit(
         state.copyWith(
-          busy: false,
-          action: AddBeneficiaryAction.none,
-          errors: _addError(
-            action: AddBeneficiaryAction.initAction,
-            errorStatus: e is NetException
-                ? AddBeneficiaryErrorStatus.network
-                : AddBeneficiaryErrorStatus.generic,
-            code: e is NetException ? e.code : null,
-            message: e is NetException ? e.message : null,
+          actions: state.removeAction(AddBeneficiaryAction.initialize),
+          errors: state.addErrorFromException(
+            action: AddBeneficiaryAction.initialize,
+            exception: e,
           ),
         ),
       );
-
-      rethrow;
     }
   }
 
@@ -182,7 +193,6 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         state.beneficiary?.copyWith(
           accountNumber: text,
         ),
-        AddBeneficiaryErrorStatus.invalidAccount,
       );
 
   /// Handles event of routing code changes.
@@ -197,23 +207,12 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         state.beneficiary?.copyWith(
           iban: text,
         ),
-        AddBeneficiaryErrorStatus.invalidIBAN,
       );
 
   /// Emits state with beneficiary and removes [errorStatus] if provided.
-  void _emitBeneficiary(
-    Beneficiary? beneficiary, [
-    AddBeneficiaryErrorStatus? errorStatus,
-  ]) =>
-      emit(
+  void _emitBeneficiary(Beneficiary? beneficiary) => emit(
         state.copyWith(
           beneficiary: beneficiary,
-          action: AddBeneficiaryAction.editAction,
-          errors: errorStatus == null
-              ? _removeDefault()
-              : _removeDefault()
-                  .where((error) => error.errorStatus != errorStatus)
-                  .toSet(),
         ),
       );
 
@@ -229,8 +228,6 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
             currency: currency.code,
           ),
           selectedCurrency: currency,
-          action: AddBeneficiaryAction.editAction,
-          errors: _removeDefault(),
         ),
       );
 
@@ -239,8 +236,6 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
     emit(
       state.copyWith(
         selectedCountry: country,
-        action: AddBeneficiaryAction.editAction,
-        errors: _removeDefault(),
       ),
     );
     loadBanks();
@@ -252,8 +247,6 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
           beneficiary: state.beneficiary?.copyWith(
             bank: bank,
           ),
-          action: AddBeneficiaryAction.editAction,
-          errors: _removeDefault(),
         ),
       );
 
@@ -268,9 +261,8 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
 
     emit(
       state.copyWith(
-        busy: true,
-        action: AddBeneficiaryAction.banks,
-        errors: _removeDefault(),
+        actions: state.addAction(AddBeneficiaryAction.banks),
+        errors: state.removeErrorForAction(AddBeneficiaryAction.banks),
         banks: loadMore ? state.banks : {},
       ),
     );
@@ -294,8 +286,7 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
 
       emit(
         state.copyWith(
-          busy: false,
-          action: AddBeneficiaryAction.none,
+          actions: state.removeAction(AddBeneficiaryAction.banks),
           banks: banks,
           banksPagination: newPage.refreshCanLoadMore(
             loadedCount: resultList.length,
@@ -305,15 +296,10 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
     } on Exception catch (e) {
       emit(
         state.copyWith(
-          busy: false,
-          action: AddBeneficiaryAction.none,
-          errors: _addError(
+          actions: state.removeAction(AddBeneficiaryAction.banks),
+          errors: state.addErrorFromException(
             action: AddBeneficiaryAction.banks,
-            errorStatus: e is NetException
-                ? AddBeneficiaryErrorStatus.network
-                : AddBeneficiaryErrorStatus.generic,
-            code: e is NetException ? e.code : null,
-            message: e is NetException ? e.message : null,
+            exception: e,
           ),
         ),
       );
@@ -362,15 +348,17 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         maxAccountChars:
             maxChars is int ? maxChars : (int.tryParse(maxChars ?? '') ?? 30),
       );
+
       if (!isAccountValid) {
         emit(
           state.copyWith(
-            errors: _addError(
-              action: AddBeneficiaryAction.add,
-              errorStatus: AddBeneficiaryErrorStatus.invalidAccount,
+            errors: state.addValidationError(
+              validationErrorCode:
+                  AddBeneficiaryValidationErrorCode.invalidAccount,
             ),
           ),
         );
+
         return;
       }
     } else {
@@ -381,25 +369,34 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
                 (element) => element.code == 'benef_iban_allowed_characters')
             ?.value,
       );
+
       if (!isIbanValid) {
         emit(
           state.copyWith(
-            errors: _addError(
-              action: AddBeneficiaryAction.add,
-              errorStatus: AddBeneficiaryErrorStatus.invalidIBAN,
+            errors: state.addValidationError(
+              validationErrorCode:
+                  AddBeneficiaryValidationErrorCode.invalidIBAN,
             ),
           ),
         );
+
         return;
       }
     }
+
     emit(
       state.copyWith(
-        action: AddBeneficiaryAction.add,
-        busy: true,
-        errors: _removeDefault(),
+        actions: state.addAction(AddBeneficiaryAction.add),
+        errors: state.removeErrorForAction(AddBeneficiaryAction.add),
+        events: state.removeEvents(
+          const {
+            AddBeneficiaryEvent.openSecondFactor,
+            AddBeneficiaryEvent.showResultView,
+          },
+        ),
       ),
     );
+
     try {
       /// TODO: cubit_issue | At this point, the beneficiary should be ready.
       /// Why are we changing it before sending it? I don't understand. The
@@ -410,72 +407,229 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         routingCode: accountRequired ? state.beneficiary!.routingCode! : '',
         iban: accountRequired ? '' : state.beneficiary!.iban!,
       );
-      final newBeneficiary = await _addNewBeneficiaryUseCase(
+
+      final beneficiaryResult = await _addNewBeneficiaryUseCase(
         beneficiary: beneficiary,
       );
 
-      /// TODO: cubit_issue | I think we should keep separated the beneficiary
-      /// item that we were creating and the beneficiary result that BE is
-      /// sending back.
-      ///
-      /// Also I think the action usage is not coherent with the rest os cubits
-      /// that we have on the sdk. As I stated before, the actions are for
-      /// indicating the type of loading that it's being done by the cubit.
-      /// You are using them as actions that the UI should perform later on.
-      ///
-      /// For that, you should be using [BlocListener]s on the UI.
+      switch (beneficiaryResult.status) {
+        case BeneficiaryStatus.active:
+        case BeneficiaryStatus.pending:
+          emit(
+            state.copyWith(
+              beneficiaryResult: beneficiaryResult,
+              actions: state.removeAction(AddBeneficiaryAction.add),
+              events: state.addEvent(AddBeneficiaryEvent.showResultView),
+            ),
+          );
+          break;
+
+        case BeneficiaryStatus.otp:
+          emit(
+            state.copyWith(
+              beneficiaryResult: beneficiaryResult,
+              actions: state.removeAction(AddBeneficiaryAction.add),
+              events: state.addEvent(AddBeneficiaryEvent.openSecondFactor),
+            ),
+          );
+          break;
+
+        default:
+          _logger.severe(
+            'Unhandled beneficiary status -> ${beneficiaryResult.status}',
+          );
+          throw Exception(
+            'Unhandled beneficiary status -> ${beneficiaryResult.status}',
+          );
+      }
+    } on Exception catch (e) {
       emit(
         state.copyWith(
-          beneficiary: newBeneficiary,
-          busy: false,
-          action: newBeneficiary.otpId == null
-              ? AddBeneficiaryAction.success
-              : AddBeneficiaryAction.otpRequired,
+          actions: state.removeAction(AddBeneficiaryAction.add),
+          errors: state.addErrorFromException(
+            action: AddBeneficiaryAction.add,
+            exception: e,
+          ),
+        ),
+      );
+    }
+  }
+
+  /// Send the OTP code for the current beneficiary.
+  Future<void> sendOTPCode() async {
+    assert(state.beneficiaryResult != null);
+    if (state.beneficiaryResult == null) {
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        actions: state.addAction(
+          AddBeneficiaryAction.sendOTPCode,
+        ),
+        errors: state.removeErrorForAction(
+          AddBeneficiaryAction.sendOTPCode,
+        ),
+        events: state.removeEvent(
+          AddBeneficiaryEvent.showOTPCodeView,
+        ),
+      ),
+    );
+
+    try {
+      final beneficiaryResult = await _sendOTPCodeForBeneficiaryUseCase(
+        beneficiary: state.beneficiaryResult!,
+        isEditing: false,
+      );
+
+      emit(
+        state.copyWith(
+          actions: state.removeAction(
+            AddBeneficiaryAction.sendOTPCode,
+          ),
+          beneficiaryResult: beneficiaryResult,
+          events: state.addEvent(
+            AddBeneficiaryEvent.showOTPCodeView,
+          ),
         ),
       );
     } on Exception catch (e) {
       emit(
         state.copyWith(
-          busy: false,
-          action: AddBeneficiaryAction.none,
-          errors: _addError(
-            action: AddBeneficiaryAction.add,
-            errorStatus: e is NetException
-                ? AddBeneficiaryErrorStatus.network
-                : AddBeneficiaryErrorStatus.generic,
-            code: e is NetException ? e.code : null,
-            message: e is NetException ? e.message : null,
+          actions: state.removeAction(
+            AddBeneficiaryAction.sendOTPCode,
+          ),
+          errors: state.addErrorFromException(
+            action: AddBeneficiaryAction.sendOTPCode,
+            exception: e,
+          ),
+        ),
+      );
+    }
+  }
+
+  /// Verifies the second factor for the beneficiary retrievied on the [onAdd]
+  /// method.
+  Future<void> verifySecondFactor({
+    String? otpCode,
+    String? ocraClientResponse,
+  }) async {
+    assert(
+      otpCode != null || ocraClientResponse != null,
+      'An OTP code or OCRA client response must be provided in order for '
+      'verifying the second factor',
+    );
+
+    assert(state.beneficiaryResult != null);
+    if (state.beneficiaryResult == null) {
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        actions: state.addAction(
+          AddBeneficiaryAction.verifySecondFactor,
+        ),
+        errors: {},
+      ),
+    );
+
+    try {
+      final beneficiaryResult = await _verifyBeneficiarySecondFactorUseCase(
+        beneficiary: state.beneficiaryResult!,
+        value: otpCode ?? ocraClientResponse ?? '',
+        secondFactorType:
+            otpCode != null ? SecondFactorType.otp : SecondFactorType.ocra,
+      );
+
+      emit(
+        state.copyWith(
+          actions: state.removeAction(
+            AddBeneficiaryAction.verifySecondFactor,
           ),
         ),
       );
 
-      rethrow;
+      emit(
+        state.copyWith(
+          beneficiary: beneficiaryResult,
+          events: state.addEvent(
+            AddBeneficiaryEvent.closeSecondFactor,
+          ),
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          actions: state.removeAction(
+            AddBeneficiaryAction.verifySecondFactor,
+          ),
+        ),
+      );
+
+      emit(
+        state.copyWith(
+          errors: state.addErrorFromException(
+            action: AddBeneficiaryAction.verifySecondFactor,
+            exception: e,
+          ),
+        ),
+      );
     }
   }
 
-  /// Returns an error list that includes the passed action and error status.
-  Set<AddBeneficiaryError> _addError({
-    required AddBeneficiaryAction action,
-    required AddBeneficiaryErrorStatus errorStatus,
-    String? code,
-    String? message,
-  }) =>
-      state.errors.union({
-        AddBeneficiaryError(
-          action: action,
-          errorStatus: errorStatus,
-          code: code,
-          message: message,
-        )
-      });
+  /// Resends the second factor for the beneficiary retrievied on the [onAdd]
+  /// method.
+  Future<void> resendSecondFactor() async {
+    assert(state.beneficiaryResult != null);
+    if (state.beneficiaryResult == null) {
+      return;
+    }
 
-  /// TODO: cubit_issue | Not very self explanatory. Anyways the errors should
-  /// clear each time something is being loaded by the cubit. That is how we
-  /// usually have it on other cubits.
-  Set<AddBeneficiaryError> _removeDefault() => state.errors
-      .where((error) => ![
-            AddBeneficiaryErrorStatus.network,
-            AddBeneficiaryErrorStatus.generic,
-          ].contains(error.errorStatus))
-      .toSet();
+    emit(
+      state.copyWith(
+        actions: state.addAction(
+          AddBeneficiaryAction.resendSecondFactor,
+        ),
+        errors: {},
+      ),
+    );
+
+    try {
+      final beneficiaryResult = await _resendBeneficiarySecondFactorUseCase(
+        beneficiary: state.beneficiaryResult!,
+      );
+
+      emit(
+        state.copyWith(
+          actions: state.removeAction(
+            AddBeneficiaryAction.resendSecondFactor,
+          ),
+        ),
+      );
+
+      emit(
+        state.copyWith(
+          beneficiaryResult: beneficiaryResult,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          actions: state.removeAction(
+            AddBeneficiaryAction.resendSecondFactor,
+          ),
+        ),
+      );
+
+      emit(
+        state.copyWith(
+          errors: state.addErrorFromException(
+            action: AddBeneficiaryAction.resendSecondFactor,
+            exception: e,
+          ),
+        ),
+      );
+    }
+  }
 }

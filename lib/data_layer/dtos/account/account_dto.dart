@@ -13,6 +13,9 @@ class AccountDTO {
   /// The customer id associated with this account.
   String? customerId;
 
+  /// The customer associated with this account.
+  CustomerDTO? customer;
+
   /// Date when account entry was created
   DateTime? created;
 
@@ -109,6 +112,12 @@ class AccountDTO {
   /// The account number provided in the `extra`
   String? extraAccountNumber;
 
+  /// The bank swift code provided in the `extra`
+  String? extraSwiftCode;
+
+  /// The sort code provided in the `extra`
+  String? extraSortCode;
+
   /// account number formatted
   String? displayAccountNumber;
 
@@ -128,6 +137,7 @@ class AccountDTO {
   AccountDTO({
     this.accountId,
     this.customerId,
+    this.customer,
     this.created,
     this.updated,
     this.type,
@@ -160,6 +170,8 @@ class AccountDTO {
     this.canConfirmIssuedCheck = true,
     this.accountNumber,
     this.extraAccountNumber,
+    this.extraSwiftCode,
+    this.extraSortCode,
     this.displayAccountNumber,
     this.branchId,
     this.extraBranchId,
@@ -172,6 +184,9 @@ class AccountDTO {
     return AccountDTO(
       accountId: json['account_id'],
       customerId: json['customer_id'],
+      customer: json['customer'] != null
+          ? CustomerDTO.fromJson(json['customer'])
+          : null,
       created: JsonParser.parseDate(json['ts_created']),
       updated: JsonParser.parseDate(json['ts_updated']),
       type: json['account_type'] != null
@@ -215,6 +230,9 @@ class AccountDTO {
       displayAccountNumber: json['account_no_displayed'],
       extraAccountNumber:
           json['extra'] != null ? json['extra']['account_number'] : null,
+      extraSwiftCode:
+          json['extra'] != null ? json['extra']['swift_code'] : null,
+      extraSortCode: json['extra'] != null ? json['extra']['sort_code'] : null,
       branchId: json['branch_id'],
       extraBranchId: (json['branch'] as Map?)
           ?.lookup<dynamic, String>(['location_id'])?.toString(),

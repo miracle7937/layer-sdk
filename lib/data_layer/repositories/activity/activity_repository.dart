@@ -43,6 +43,7 @@ class ActivityRepository implements ActivityRepositoryInterface {
     List<ActivityType>? types,
     List<TransferType>? transferTypes,
     List<ActivityTag>? activityTags,
+    bool forceRefresh = false,
   }) async {
     final activitiesDTO = await _provider.list(
       fromTS: fromTS,
@@ -68,6 +69,7 @@ class ActivityRepository implements ActivityRepositoryInterface {
       types: types,
       transferTypes: transferTypes,
       activityTags: activityTags,
+      forceRefresh: forceRefresh,
     );
 
     return activitiesDTO.map((e) => e.toActivity(_createCustomData)).toList();
@@ -155,5 +157,19 @@ class ActivityRepository implements ActivityRepositoryInterface {
     final result = _provider.deleteAllRequests();
 
     return result;
+  }
+
+  /// Retrive the alert by the activity query from push notification
+  @override
+  Future<Activity> getAlertByActivityQuery(
+    Map<String, dynamic> extraParams, {
+    required bool includeDetails,
+  }) async {
+    final result = await _provider.getAlertByActivityQuery(
+      extraParams,
+      includeDetails: includeDetails,
+    );
+
+    return result.toActivity(_createCustomData);
   }
 }

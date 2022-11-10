@@ -13,12 +13,14 @@ class VerifyBeneficiarySecondFactorUseCase {
   /// Verify beneficiary add/edit with second factor.
   Future<Beneficiary> call({
     required Beneficiary beneficiary,
-    required String otpValue,
+    required String value,
+    required SecondFactorType secondFactorType,
     bool isEditing = false,
   }) =>
       _beneficiaryRepository.verifySecondFactor(
         beneficiary: beneficiary,
-        otpValue: otpValue,
+        value: value,
+        secondFactorType: secondFactorType,
         isEditing: isEditing,
       );
 }

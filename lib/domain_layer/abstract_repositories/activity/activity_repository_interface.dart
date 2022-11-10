@@ -27,6 +27,7 @@ abstract class ActivityRepositoryInterface {
     List<ActivityType>? types,
     List<TransferType>? transferTypes,
     List<ActivityTag>? activityTags,
+    bool forceRefresh = false,
   });
 
   /// Delete a certain activity based on the id
@@ -61,4 +62,10 @@ abstract class ActivityRepositoryInterface {
 
   /// Delete all the [Request]'s
   Future<void> deleteAllRequests();
+
+  /// Retrive the alert by the activity query from push notification
+  Future<Activity> getAlertByActivityQuery(
+    Map<String, dynamic> extraParams, {
+    required bool includeDetails,
+  });
 }
