@@ -39,6 +39,9 @@ abstract class InboxRepositoryInterface {
   /// [categoryId] The category id for the new report
   Future<InboxReport> createReport(String category);
 
+  /// Delete report
+  Future<void> deleteReport(int reportId);
+
   /// Mark a [InboxReport] as read
   Future<InboxReport> markReportAsRead(InboxReport report);
 }

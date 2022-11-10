@@ -117,6 +117,14 @@ class InboxProvider {
     return InboxReportDTO.fromJson(result.data);
   }
 
+  /// Delete report
+  Future<void> deleteReport(int reportId) async {
+    await netClient.request(
+      "${netClient.netEndpoints.report}/$reportId",
+      method: NetRequestMethods.delete,
+    );
+  }
+
   /// Mark report as read
   Future<InboxReportDTO> markReportAsRead({
     required int reportId,

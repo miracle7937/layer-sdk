@@ -31,6 +31,37 @@ extension InboxReportDTOMapper on InboxReportDTO {
   }
 }
 
+/// Extension that maps [InboxReport]
+extension InboxReportMapper on InboxReport {
+  /// Maps a [InboxReport] into a [InboxReportDTO]
+  InboxReportDTO toInboxReportDTO() {
+    return InboxReportDTO(
+      id: id,
+      customerID: customerID,
+      username: username,
+      deviceID: deviceID,
+      description: description,
+      deviceInfo: deviceInfo,
+      status: status.toReportStatusDTO(),
+      category: category.toReportCategoryDTO(),
+      osVersion: osVersion,
+      privateNote: privateNote,
+      assignee: assignee,
+      assigneeFirstName: assigneeFirstName,
+      assigneeLastName: assigneeLastName,
+      categoryName: categoryName,
+      read: read,
+      messages: messages
+          .map<InboxReportMessageDTO>((m) => m.toInboxReportMessageDTO())
+          .toList(),
+      files: files,
+      tsCreated: tsCreated,
+      tsUpdated: tsUpdated,
+      extra: extra,
+    );
+  }
+}
+
 /// Extension that maps [InboxReportCategoryDTO]
 extension InboxReportCategoryDTOMapper on InboxReportCategoryDTO {
   /// Maps a [InboxReportCategoryDTO] into a [InboxReportCategory]
@@ -73,6 +104,23 @@ extension InboxReportStatusDTOMapper on InboxReportStatusDTO {
   }
 }
 
+/// Extension that maps [InboxReportStatus]
+extension on InboxReportStatus {
+  /// Maps a [InboxReportStatus] into a [InboxReportStatusDTO]
+  InboxReportStatusDTO toReportStatusDTO() {
+    switch (this) {
+      case InboxReportStatus.deleted:
+        return InboxReportStatusDTO.deleted;
+      case InboxReportStatus.closed:
+        return InboxReportStatusDTO.closed;
+      case InboxReportStatus.unknown:
+        return InboxReportStatusDTO.unknown;
+      default:
+        return InboxReportStatusDTO.unknown;
+    }
+  }
+}
+
 /// Extension that maps [InboxReportCategory]
 extension InboxReportCategoryMapper on InboxReportCategoryDTO {
   /// Maps a [InboxReportCategory] into a [InboxReportStatus]
@@ -101,6 +149,38 @@ extension InboxReportCategoryMapper on InboxReportCategoryDTO {
 
       default:
         return InboxReportCategory.other;
+    }
+  }
+}
+
+/// Extension that maps [InboxReportCategoryDTO]
+extension on InboxReportCategory {
+  /// Maps a [InboxReportCategory] into a [InboxReportCategoryDTO]
+  InboxReportCategoryDTO toReportCategoryDTO() {
+    switch (this) {
+      case InboxReportCategory.appointmentReview:
+        return InboxReportCategoryDTO.appointmentReview;
+
+      case InboxReportCategory.articleFeedback:
+        return InboxReportCategoryDTO.articleFeedback;
+
+      case InboxReportCategory.offerInquiry:
+        return InboxReportCategoryDTO.offerInquiry;
+
+      case InboxReportCategory.productInquiry:
+        return InboxReportCategoryDTO.productInquiry;
+
+      case InboxReportCategory.generalComments:
+        return InboxReportCategoryDTO.generalComments;
+
+      case InboxReportCategory.appIssue:
+        return InboxReportCategoryDTO.appIssue;
+
+      case InboxReportCategory.other:
+        return InboxReportCategoryDTO.other;
+
+      default:
+        return InboxReportCategoryDTO.other;
     }
   }
 }
