@@ -713,8 +713,7 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         allowedCharacters: state.beneficiarySettings
             .singleWhereOrNull(
                 (element) => element.code == 'benef_iban_allowed_characters')
-            ?.value
-            ?.split(''),
+            ?.value,
       );
 
       if (!isValid) {
