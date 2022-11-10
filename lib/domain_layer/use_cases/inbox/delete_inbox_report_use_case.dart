@@ -12,7 +12,7 @@ class DeleteInboxReportUseCase {
   }) : _repository = repository;
 
   /// Create a new report
-  Future<bool> call(InboxReport report) {
-    return _repository.deleteReport(report);
+  Future<void> call(int reportId) {
+    return _repository.deleteReport(reportId);
   }
 }

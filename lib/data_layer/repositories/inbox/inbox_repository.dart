@@ -91,8 +91,8 @@ class InboxRepository implements InboxRepositoryInterface {
   }
 
   @override
-  Future<bool> deleteReport(InboxReport inboxReport) {
-    return _provider.deleteReport(inboxReport.toInboxReportDTO());
+  Future<bool> deleteReport(int reportId) {
+    return _provider.deleteReport(reportId);
   }
 
   Future<InboxReport> markReportAsRead(InboxReport report) async {

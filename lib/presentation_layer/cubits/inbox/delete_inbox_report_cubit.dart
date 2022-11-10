@@ -16,38 +16,36 @@ class DeleteInboxReportCubit extends Cubit<DeleteInboxReportState> {
       : super(
           DeleteInboxReportState(
             action: DeleteInboxReportAction.none,
-            error: InboxReportErrorStatus.none,
+            error: DeleteReportErrorStatus.none,
           ),
         );
 
   /// Delete report
-  Future<void> deleteReport({
+  void deleteReport({
     required InboxReport inboxReport,
   }) async {
     emit(
       DeleteInboxReportState(
           action: DeleteInboxReportAction.deleting,
-          error: InboxReportErrorStatus.none,
+          error: DeleteReportErrorStatus.none,
           deletedReport: null),
     );
-
     try {
-      final result = await deleteReportUseCase(inboxReport);
-      if (result) {
-        emit(
-          state.copyWith(
-            action: DeleteInboxReportAction.none,
-            deletedReport: inboxReport,
-          ),
-        );
-      }
+      await deleteReportUseCase(inboxReport.id!);
+
+      emit(
+        state.copyWith(
+          action: DeleteInboxReportAction.none,
+          deletedReport: inboxReport,
+        ),
+      );
     } on Exception catch (e) {
       emit(
         state.copyWith(
           action: DeleteInboxReportAction.none,
           error: e is NetException
-              ? InboxReportErrorStatus.network
-              : InboxReportErrorStatus.generic,
+              ? DeleteReportErrorStatus.network
+              : DeleteReportErrorStatus.generic,
         ),
       );
     }

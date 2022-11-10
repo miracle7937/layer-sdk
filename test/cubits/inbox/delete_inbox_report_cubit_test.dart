@@ -33,12 +33,12 @@ void main() {
           c.state,
           DeleteInboxReportState(
               action: DeleteInboxReportAction.none,
-              error: InboxReportErrorStatus.none)));
+              error: DeleteReportErrorStatus.none)));
 
   blocTest<DeleteInboxReportCubit, DeleteInboxReportState>(
     "Should delete report",
     setUp: () {
-      when(() => deleteReportUseCase(report)).thenAnswer(
+      when(() => deleteReportUseCase(report.id!)).thenAnswer(
         (invocation) async => true,
       );
     },
@@ -47,11 +47,11 @@ void main() {
     expect: () => [
       DeleteInboxReportState(
         action: DeleteInboxReportAction.deleting,
-        error: InboxReportErrorStatus.none,
+        error: DeleteReportErrorStatus.none,
       ),
       DeleteInboxReportState(
         action: DeleteInboxReportAction.none,
-        error: InboxReportErrorStatus.none,
+        error: DeleteReportErrorStatus.none,
         deletedReport: report,
       ),
     ],
@@ -60,18 +60,18 @@ void main() {
   blocTest<DeleteInboxReportCubit, DeleteInboxReportState>(
     "Should emits network error",
     setUp: () {
-      when(() => deleteReportUseCase(report)).thenThrow(NetException());
+      when(() => deleteReportUseCase(report.id!)).thenThrow(NetException());
     },
     build: () => deleteReportCubit,
     act: (c) => c.deleteReport(inboxReport: report),
     expect: () => [
       DeleteInboxReportState(
         action: DeleteInboxReportAction.deleting,
-        error: InboxReportErrorStatus.none,
+        error: DeleteReportErrorStatus.none,
       ),
       DeleteInboxReportState(
         action: DeleteInboxReportAction.none,
-        error: InboxReportErrorStatus.network,
+        error: DeleteReportErrorStatus.network,
       ),
     ],
   );
@@ -79,17 +79,17 @@ void main() {
   blocTest<DeleteInboxReportCubit, DeleteInboxReportState>(
     "Should emits generic error",
     setUp: () {
-      when(() => deleteReportUseCase(report)).thenThrow(Exception());
+      when(() => deleteReportUseCase(report.id!)).thenThrow(Exception());
     },
     build: () => deleteReportCubit,
     act: (c) => c.deleteReport(inboxReport: report),
     expect: () => [
       DeleteInboxReportState(
           action: DeleteInboxReportAction.deleting,
-          error: InboxReportErrorStatus.none),
+          error: DeleteReportErrorStatus.none),
       DeleteInboxReportState(
         action: DeleteInboxReportAction.none,
-        error: InboxReportErrorStatus.generic,
+        error: DeleteReportErrorStatus.generic,
       ),
     ],
   );

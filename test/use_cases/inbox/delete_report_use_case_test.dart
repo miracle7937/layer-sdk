@@ -25,13 +25,13 @@ void main() {
 
   test("Should delete report", () async {
     when(
-      () => _repository.deleteReport(report),
+      () => _repository.deleteReport(report.id!),
     ).thenAnswer(
       (_) async => true,
     );
 
-    final result = await _deleteReportUseCase(report);
+    final deleteReport = _deleteReportUseCase(report.id!);
 
-    expect(result, true);
+    expect(deleteReport, completes);
   });
 }

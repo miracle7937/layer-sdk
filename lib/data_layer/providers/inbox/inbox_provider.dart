@@ -118,9 +118,9 @@ class InboxProvider {
   }
 
   /// Delete report
-  Future<bool> deleteReport(InboxReportDTO inboxReport) async {
+  Future<bool> deleteReport(int reportId) async {
     final result = await netClient.request(
-      "${netClient.netEndpoints.report}/${inboxReport.id}",
+      "${netClient.netEndpoints.report}/$reportId",
       method: NetRequestMethods.delete,
     );
 
