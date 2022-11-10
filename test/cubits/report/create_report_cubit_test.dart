@@ -11,7 +11,7 @@ class MockCreateReportUseCase extends Mock implements CreateInboxReportUseCase {
 
 void main() {
   late CreateInboxReportUseCase createReportUseCase;
-  late CreateInboxReportCubit createReportCubit;
+  late CreateReportCubit createReportCubit;
   final _category = '1_category_name';
   final _defReport = InboxReport(
     category: InboxReportCategory.appIssue,
@@ -23,10 +23,10 @@ void main() {
   setUp(() {
     createReportUseCase = MockCreateReportUseCase();
     createReportCubit =
-        CreateInboxReportCubit(createReportUseCase: createReportUseCase);
+        CreateReportCubit(createReportUseCase: createReportUseCase);
   });
 
-  blocTest<CreateInboxReportCubit, CreateReportState>(
+  blocTest<CreateReportCubit, CreateReportState>(
     "Should test initial state",
     build: () => createReportCubit,
     verify: (c) => expect(
@@ -38,7 +38,7 @@ void main() {
     ),
   );
 
-  blocTest<CreateInboxReportCubit, CreateReportState>(
+  blocTest<CreateReportCubit, CreateReportState>(
     "Should create report",
     setUp: () {
       when(() => createReportUseCase(_category)).thenAnswer(
@@ -60,7 +60,7 @@ void main() {
     ],
   );
 
-  blocTest<CreateInboxReportCubit, CreateReportState>(
+  blocTest<CreateReportCubit, CreateReportState>(
     "Should emits network error",
     setUp: () {
       when(() => createReportUseCase(_category)).thenThrow(NetException());
@@ -79,7 +79,7 @@ void main() {
     ],
   );
 
-  blocTest<CreateInboxReportCubit, CreateReportState>(
+  blocTest<CreateReportCubit, CreateReportState>(
     "Should emits generic error",
     setUp: () {
       when(() => createReportUseCase(_category)).thenThrow(Exception());

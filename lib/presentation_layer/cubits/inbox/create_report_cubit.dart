@@ -5,12 +5,12 @@ import '../../../../domain_layer/use_cases/inbox/create_inbox_report_use_case.da
 import 'create_report_state.dart';
 
 /// Create report cubit
-class CreateInboxReportCubit extends Cubit<CreateReportState> {
+class CreateReportCubit extends Cubit<CreateReportState> {
   /// Create report use case
   final CreateInboxReportUseCase createReportUseCase;
 
   /// Default constructor
-  CreateInboxReportCubit({required this.createReportUseCase})
+  CreateReportCubit({required this.createReportUseCase})
       : super(
           CreateReportState(
             action: CreateReportAction.none,
