@@ -89,4 +89,10 @@ class InboxRepository implements InboxRepositoryInterface {
     );
     return reportDto.toInboxReport();
   }
+
+  @override
+  Future<InboxReport> markReportAsRead(InboxReport report) async {
+    final _dto = await _provider.markReportAsRead(reportId: report.id!);
+    return _dto.toInboxReport();
+  }
 }

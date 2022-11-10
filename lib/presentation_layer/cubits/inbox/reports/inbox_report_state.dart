@@ -24,6 +24,12 @@ enum InboxReportBusyAction {
 
   /// If is loading more data
   loadingMore,
+
+  /// If is making a report as read
+  markingAsRead,
+
+  /// If is doing nothing
+  none
 }
 
 /// State for [InboxReportCubit]

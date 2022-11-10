@@ -102,7 +102,7 @@ class InboxConversationCubit extends Cubit<InboxConversationState> {
       ];
 
       messages
-          .sort((o, n) => n.message.tsUpdated!.compareTo(o.message.tsUpdated!));
+          .sort((o, n) => n.message.tsCreated!.compareTo(o.message.tsCreated!));
 
       emit(
         state.copyWith(
