@@ -146,7 +146,7 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
   }
 
   /// Validates Amount
-  Future<void> validateFunds() async {
+  void validateFunds() {
     if (state.transfer.amount != null &&
         state.transfer.source?.account?.availableBalance != null &&
         state.transfer.amount! >
