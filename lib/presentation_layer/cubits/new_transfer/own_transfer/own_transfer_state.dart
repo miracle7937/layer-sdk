@@ -23,7 +23,10 @@ enum OwnTransferAction {
   pdfReceipt,
 
   /// The shortcut is being created.
-  shortcut
+  shortcut,
+
+  /// Validating funds
+  validatingFunds
 }
 
 /// The state of the own transfer flow.

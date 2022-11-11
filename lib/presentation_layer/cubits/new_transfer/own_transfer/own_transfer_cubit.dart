@@ -145,6 +145,30 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
     ));
   }
 
+  /// Validates Amount
+  void validateFunds() {
+    if (state.transfer.amount != null &&
+        state.transfer.source?.account?.availableBalance != null &&
+        state.transfer.amount! >
+            state.transfer.source!.account!.availableBalance!) {
+      emit(
+        state.copyWith(
+          errors: state.errors.union({
+            OwnTransferAction.validatingFunds,
+          }),
+        ),
+      );
+    } else {
+      emit(
+        state.copyWith(
+          errors: state.errors.difference({
+            OwnTransferAction.validatingFunds,
+          }),
+        ),
+      );
+    }
+  }
+
   /// Submits the transfer.
   Future<void> submit() async {
     emit(
