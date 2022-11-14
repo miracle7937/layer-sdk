@@ -339,9 +339,16 @@ class DPAFlow<T> extends StatelessWidget {
                           child: Column(
                             children: [
                               if (showTaskDescription)
-                                DPATaskDescription(
-                                  process: process,
-                                  showTitle: effectiveHeader == null,
+                                Column(
+                                  children: [
+                                    DPATaskDescription(
+                                      process: process,
+                                      showTitle: effectiveHeader == null,
+                                    ),
+                                    SizedBox(
+                                      height: 24,
+                                    )
+                                  ],
                                 ),
                               Padding(
                                 padding: const EdgeInsets.symmetric(
