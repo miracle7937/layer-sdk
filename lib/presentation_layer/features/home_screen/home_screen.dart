@@ -166,6 +166,9 @@ class HomeScreen extends StatefulWidget {
   /// will be used by default by the [Translation] class.
   final String? moreMenuItemTitle;
 
+  /// The background color to be aplied by the `Scaffold`
+  final Color? backgroundColor;
+
   /// Creates a new [HomeScreen]
   const HomeScreen({
     Key? key,
@@ -179,6 +182,7 @@ class HomeScreen extends StatefulWidget {
     this.initialPageCallback,
     required this.fullscreenLoader,
     this.moreMenuItemTitle,
+    this.backgroundColor,
   })  : assert(extraContainers.length == 0 || extraCardsBuilder != null),
         super(key: key);
 
@@ -331,6 +335,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       drawer: experience?.sideDrawerMenu,
       appBar: appBar,
+      backgroundColor: widget.backgroundColor,
       body: Stack(
         children: [
           SizedBox(
