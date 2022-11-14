@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../data_layer/network/net_exceptions.dart';
-import '../../../domain_layer/use_cases/inbox/create_inbox_report_use_case.dart';
+import '../../../../data_layer/network.dart';
+import '../../../../domain_layer/use_cases/inbox/create_inbox_report_use_case.dart';
 import 'create_report_state.dart';
 
 /// Create report cubit

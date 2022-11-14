@@ -2,9 +2,8 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:layer_sdk/data_layer/network/net_exceptions.dart';
 import 'package:layer_sdk/domain_layer/models.dart';
-import 'package:layer_sdk/domain_layer/use_cases/inbox/create_inbox_report_use_case.dart';
-import 'package:layer_sdk/presentation_layer/cubits/report/create_report_cubit.dart';
-import 'package:layer_sdk/presentation_layer/cubits/report/create_report_state.dart';
+import 'package:layer_sdk/domain_layer/use_cases.dart';
+import 'package:layer_sdk/presentation_layer/cubits.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockCreateReportUseCase extends Mock implements CreateInboxReportUseCase {
@@ -23,9 +22,8 @@ void main() {
 
   setUp(() {
     createReportUseCase = MockCreateReportUseCase();
-    createReportCubit = CreateReportCubit(
-      createReportUseCase: createReportUseCase,
-    );
+    createReportCubit =
+        CreateReportCubit(createReportUseCase: createReportUseCase);
   });
 
   blocTest<CreateReportCubit, CreateReportState>(

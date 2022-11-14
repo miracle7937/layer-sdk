@@ -384,20 +384,19 @@ class _DPAOTPScreenState extends State<_DPAOTPScreen>
                                 ),
                               ),
                       ),
-                      if (showBiometricsButton) ...[
-                        const SizedBox(height: 20.0),
-                        DKButton(
-                          type: DKButtonType.basePlain,
-                          title:
-                              translation.translate('proceed_with_biometrics'),
-                          iconPath: FLImages.biometrics,
-                          onPressed: _authenticateBiometrics,
-                        ),
-                      ],
                     ],
                   ),
                 ),
               ),
+              if (showBiometricsButton) ...[
+                DKButton(
+                  type: DKButtonType.basePlain,
+                  title: translation.translate('proceed_with_biometrics'),
+                  iconPath: FLImages.biometrics,
+                  onPressed: _authenticateBiometrics,
+                ),
+                const SizedBox(height: 46.0),
+              ],
             ],
           ),
           if (isSteppingForward) DPAFullscreenLoader(),

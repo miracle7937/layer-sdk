@@ -29,6 +29,25 @@ extension InboxReportMessageDTOMapper on InboxReportMessageDTO {
   }
 }
 
+/// Extension that maps [InboxReportMessage]
+extension InboxReportMessageMapper on InboxReportMessage {
+  /// Maps a [InboxReportMessage] into a [InboxReportMessageDTO]
+  InboxReportMessageDTO toInboxReportMessageDTO() {
+    return InboxReportMessageDTO(
+      reportId: reportId,
+      messageId: messageId,
+      files: files.join(''),
+      attachmentUrls: attachmentUrls,
+      sender: sender,
+      senderType: senderType.toSenderTypeDTO(),
+      text: text,
+      tsCreated: tsCreated,
+      tsUpdated: tsUpdated,
+      read: read,
+    );
+  }
+}
+
 /// Extension that maps [InboxReportSenderTypeDTO]
 extension InboxReportSenderTypeDTOMapper on InboxReportSenderTypeDTO {
   /// Maps a [InboxReportSenderTypeDTO] into a [InboxReportSenderType]
@@ -42,6 +61,23 @@ extension InboxReportSenderTypeDTOMapper on InboxReportSenderTypeDTO {
         return InboxReportSenderType.unknown;
       default:
         return InboxReportSenderType.unknown;
+    }
+  }
+}
+
+/// Extension that maps [InboxReportSenderType]
+extension on InboxReportSenderType {
+  /// Maps a [InboxReportSenderType] into a [InboxReportSenderTypeDTO]
+  InboxReportSenderTypeDTO toSenderTypeDTO() {
+    switch (this) {
+      case InboxReportSenderType.customer:
+        return InboxReportSenderTypeDTO.customer;
+      case InboxReportSenderType.public:
+        return InboxReportSenderTypeDTO.public;
+      case InboxReportSenderType.unknown:
+        return InboxReportSenderTypeDTO.unknown;
+      default:
+        return InboxReportSenderTypeDTO.unknown;
     }
   }
 }

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../_migration/data_layer/src/helpers/dto_helpers.dart';
@@ -32,44 +30,24 @@ class OpenLinkUseCase {
   /// Opens the facebook profile
   void openFacebookProfile({
     required String facebookPageId,
-  }) =>
-      _openPlatformSpecificLink(
-        iosValue: "fb://profile/$facebookPageId/",
-        androidValue: "fb://page/$facebookPageId",
-      );
+  }) async {
+    var url = Uri.parse('https://www.facebook.com/$facebookPageId');
+    try {
+      await launchUrl(url, mode: LaunchMode.inAppWebView);
+    } on Exception catch (e) {
+      throw Exception('Error launching link ${e.toString()}');
+    }
+  }
 
   /// Opens the linkedin profile
   void openLinkedIn({
     required String username,
-  }) =>
-      _openPlatformSpecificLink(
-        iosValue: "linkedin://company/$username",
-        androidValue: "linkedin://$username",
-      );
-
-  /// Opens the platform specific link
-  void _openPlatformSpecificLink({
-    required String iosValue,
-    required String androidValue,
   }) async {
+    var url = Uri.parse('https://www.linkedin.com/company/$username');
     try {
-      var isIOS = Platform.isIOS;
-
-      if (isIOS) {
-        final iosValueUri = Uri.tryParse(iosValue.replaceAll(' ', '%20'));
-
-        if (await canLaunchUrl(iosValueUri!)) {
-          await launchUrl(iosValueUri);
-        }
-      } else {
-        final androidValueUri = Uri.tryParse(androidValue);
-
-        if (await canLaunchUrl(androidValueUri!)) {
-          await launchUrl(androidValueUri);
-        }
-      }
+      await launchUrl(url, mode: LaunchMode.inAppWebView);
     } on Exception catch (e) {
-      throw Exception('Error launching platform specific link ${e.toString()}');
+      throw Exception('Error launching link ${e.toString()}');
     }
   }
 }

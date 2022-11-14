@@ -99,8 +99,10 @@ export 'use_cases/experience_preferences/save_experience_preferences_use_case.da
 export 'use_cases/financial/load_financial_data_use_case.dart';
 export 'use_cases/inbox/create_inbox_report_use_case.dart';
 export 'use_cases/inbox/create_report_use_case.dart';
+export 'use_cases/inbox/delete_inbox_report_use_case.dart';
 export 'use_cases/inbox/list_all_inbox_messages_use_case.dart';
 export 'use_cases/inbox/load_report_categories_use_case.dart';
+export 'use_cases/inbox/mark_report_as_read_use_case.dart';
 export 'use_cases/inbox/post_inbox_messages_use_case.dart';
 export 'use_cases/inbox/send_report_chat_message_use_case.dart';
 export 'use_cases/loyalty/cashback_history/load_cashback_history_use_case.dart';

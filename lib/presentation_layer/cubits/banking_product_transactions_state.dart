@@ -39,6 +39,9 @@ class BankingProductTransactionsState
   /// For the receipt loading
   final BankingProductTransaction? currentTransaction;
 
+  /// To check if credit is selected or not
+  final bool? isTypeSelected;
+
   /// Creates a new instance of [BankingProductTransactionsState]
   BankingProductTransactionsState({
     this.accountId,
@@ -52,6 +55,7 @@ class BankingProductTransactionsState
     this.amountTo,
     this.credit,
     this.receipt,
+    this.isTypeSelected,
     this.currentTransaction,
     this.listData = const BankingProductTransactionsListData(),
   });
@@ -70,6 +74,7 @@ class BankingProductTransactionsState
         credit,
         receipt,
         currentTransaction,
+        isTypeSelected,
       ];
 
   /// Creates a new instance of [BankingProductTransactionsState]
@@ -86,6 +91,7 @@ class BankingProductTransactionsState
     double? amountFrom,
     double? amountTo,
     bool? credit,
+    bool? isTypeSelected,
     List<int>? receipt,
     BankingProductTransaction? currentTransaction,
   }) {
@@ -100,8 +106,9 @@ class BankingProductTransactionsState
       endDate: endDate ?? this.endDate,
       amountFrom: amountFrom ?? this.amountFrom,
       amountTo: amountTo ?? this.amountTo,
-      credit: credit ?? this.credit,
+      credit: (isTypeSelected ?? false) ? (credit ?? this.credit) : null,
       receipt: receipt ?? this.receipt,
+      isTypeSelected: isTypeSelected ?? this.isTypeSelected,
       currentTransaction: currentTransaction ?? this.currentTransaction,
     );
   }

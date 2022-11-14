@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:equatable/equatable.dart';
 
-import '../../../../domain_layer/models.dart';
+import '../../../../../domain_layer/models.dart';
 import '../../../utils.dart';
 
 ///  The available error status
@@ -24,6 +24,12 @@ enum InboxReportBusyAction {
 
   /// If is loading more data
   loadingMore,
+
+  /// If is making a report as read
+  markingAsRead,
+
+  /// If is doing nothing
+  none
 }
 
 /// State for [InboxReportCubit]
@@ -51,7 +57,7 @@ class InboxReportState extends Equatable {
     this.busyAction,
     this.errorStatus = InboxReportErrorStatus.none,
     this.errorMessage = '',
-    this.pagination = const Pagination(),
+    this.pagination = const Pagination(limit: 10),
     Iterable<InboxReport> reports = const [],
     this.busy = false,
   }) : reports = UnmodifiableListView(reports);

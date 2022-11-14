@@ -193,6 +193,7 @@ class _DPAFileUploadState extends State<DPAFileUpload> with FilePickerMixin {
 
     final pickedFile = kIsWeb
         ? await pickFile(
+            context,
             widget.allowPickingImageFromGallery
                 ? FilePickerSource.galleryImage
                 : FilePickerSource.cameraImage,
