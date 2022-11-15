@@ -100,6 +100,15 @@ class DPAVariablePropertyDTO {
   /// Default prefix used to define the default dial code
   final String? defaultPrefix;
 
+  /// Label color
+  final String? labelColor;
+
+  /// Icon text
+  final String? iconUrl;
+
+  /// Label font style
+  final String? labelFontStyle;
+
   /// Creates a new [DPAVariablePropertyDTO].
   DPAVariablePropertyDTO({
     this.propertyType,
@@ -133,6 +142,9 @@ class DPAVariablePropertyDTO {
     this.characterSplit,
     this.picker,
     this.defaultPrefix,
+    this.labelColor,
+    this.iconUrl,
+    this.labelFontStyle,
   });
 
   /// Creates a new [DPAVariablePropertyDTO] from the given JSON.
@@ -194,6 +206,9 @@ class DPAVariablePropertyDTO {
         characterSplit: json['character_split'],
         picker:
             json['picker'] != null ? PickerDTO.fromRaw(json['picker']) : null,
+        labelColor: json['label_color'],
+        iconUrl: json['icon_url'],
+        labelFontStyle: json['label_font_style'],
       );
 
   @override
@@ -233,6 +248,9 @@ class DPAVariablePropertyDTO {
           '$labelTextProperties ' : ''}'
       '${valueTextProperties != null ? 'valueTextProperties: '
           '$valueTextProperties ' : ''}'
+      '${labelColor != null ? 'labelColor: $labelColor ' : ''}'
+      '${iconUrl != null ? 'iconUrl: $iconUrl ' : ''}'
+      '${labelFontStyle != null ? 'labelFontStyle: $labelFontStyle ' : ''}'
       '}';
 }
 
