@@ -63,6 +63,24 @@ class AccountInfo extends Equatable {
   /// Defaults to `true`
   final bool canConfirmIssuedCheck;
 
+  /// Whether if the account type can pay or not.
+  final bool canPay;
+
+  /// Whether if the account type can transfer own accounts.
+  final bool canTransferOwn;
+
+  /// Whether if the account type can transfer bank.
+  final bool canTransferBank;
+
+  /// Whether if the account type can transfer domestic.
+  final bool canTransferDomestic;
+
+  /// Whether if the account type can transfer international.
+  final bool canTransferInternational;
+
+  /// Whether if the account type can receive transfers.
+  final bool canReceiveTransfer;
+
   /// Creates a new instance of [AccountInfo]
   const AccountInfo({
     this.accountType,
@@ -73,6 +91,12 @@ class AccountInfo extends Equatable {
     this.canTransferCardless = true,
     this.canConfirmIssuedCheck = true,
     this.canStopIssuedCheck = true,
+    this.canPay = true,
+    this.canTransferOwn = true,
+    this.canTransferBank = true,
+    this.canTransferDomestic = true,
+    this.canTransferInternational = true,
+    this.canReceiveTransfer = true,
   });
 
   @override
@@ -85,5 +109,11 @@ class AccountInfo extends Equatable {
         canTransferCardless,
         canConfirmIssuedCheck,
         canStopIssuedCheck,
+        canPay,
+        canTransferOwn,
+        canTransferBank,
+        canTransferDomestic,
+        canTransferInternational,
+        canReceiveTransfer,
       ];
 }
