@@ -280,6 +280,7 @@ UserPermissions _createPermissions({
       settings: base,
       topUp: defaultBase,
       topUpProviders: base,
+      mandates: base,
     ),
     payroll: base,
     performanceMonitor: PerformanceMonitorPermissionData(
@@ -330,5 +331,6 @@ UserPermissions _createPermissions({
       own: defaultBase,
       reason: base,
     ),
+    productRequest: base,
   );
 }
