@@ -1,7 +1,6 @@
 import '../../../domain_layer/abstract_repositories.dart';
 import '../../../domain_layer/models.dart';
 import '../../mappings.dart';
-import '../../mappings/card/card_info_dto_mapping.dart';
 import '../../providers.dart';
 
 /// Handles all the cards data
@@ -45,26 +44,5 @@ class CardRepository implements CardRepositoryInterface {
     return cardTransactionsDTOs
         .map((x) => x.toCardTransaction())
         .toList(growable: false);
-  }
-
-  /// Returns the card info for the passed card id
-  Future<CardInfo> getCardInfo({
-    required int cardId,
-    int? otpId,
-    String? otpValue,
-    SecondFactorType? secondFactorType,
-    String? clientResponse,
-    bool forceRefresh = false,
-  }) async {
-    final cardInfoDTO = await _provider.getCardInfo(
-      cardId: cardId,
-      otpId: otpId,
-      otpValue: otpValue,
-      secondFactorType: secondFactorType?.toSecondFactorTypeDTO(),
-      clientResponse: clientResponse,
-      forceRefresh: forceRefresh,
-    );
-
-    return cardInfoDTO.toCardInfo();
   }
 }

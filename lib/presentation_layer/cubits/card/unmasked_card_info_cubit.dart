@@ -7,11 +7,14 @@ import '../../cubits.dart';
 /// Cubit responsible for unmasking the [Card] info
 class UnmaskCardInfoCubit extends Cubit<UnmaskCardInfoState> {
   final LoadCustomerCardInfoUseCase _getCustomerCardInfoUseCase;
+  //final GetCardInfoFromMeaWalletUseCase _getCardInfoFromMeaWalletUseCase;
 
   /// Creates a new instance of [UnmaskCardInfoCubit]
   UnmaskCardInfoCubit({
     required LoadCustomerCardInfoUseCase getCustomerCardInfoUseCase,
+    //required GetCardInfoFromMeaWalletUseCase getCardInfoFromMeaWalletUseCase,
   })  : _getCustomerCardInfoUseCase = getCustomerCardInfoUseCase,
+        //_getCardInfoFromMeaWalletUseCase = getCardInfoFromMeaWalletUseCase,
         super(
           UnmaskCardInfoState(),
         );

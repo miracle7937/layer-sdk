@@ -64,6 +64,9 @@ class CardDTO {
   /// Mastercard or visa
   CardProviderDTO? provider;
 
+  /// The token used for retrieving the secret for the meawallet sdk.
+  String? token;
+
   /// Creates a new [CardDTO]
   CardDTO({
     this.cardId,
@@ -85,6 +88,7 @@ class CardDTO {
     this.preferences,
     this.isVirtual,
     this.provider,
+    this.token,
   });
 
   /// Creates a [CardDTO] from a JSON
@@ -119,6 +123,9 @@ class CardDTO {
       accountID: List.from(map["account_ids"] ?? []),
       preferences: CardPreferencesDTO.fromJson(map),
       isVirtual: map['virtual'] ?? false,
+      token: map['extra'] != null
+          ? jsonLookup(map, ['extra', 'card_token'])
+          : null,
     );
   }
 
