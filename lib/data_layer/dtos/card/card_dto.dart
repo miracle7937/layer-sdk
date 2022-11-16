@@ -93,9 +93,9 @@ class CardDTO {
       cardId: map['card_id'],
       maskedCardNumber: map['masked_card_no'],
       nickname: map['pref_nickname'],
-      provider: map['extra']?['provider'] != null
-          ? CardProviderDTO.fromString(map['extra']['provider'])
-          : null,
+      provider: map['extra']?['provider'] == null
+          ? CardProviderDTO.unknown
+          : CardProviderDTO.fromString(map['extra']['provider']),
       cardHolderName: map['holder_name'],
       branchName: map['extra'] != null
           ? jsonLookup(map, ['extra', 'branch_name'])
