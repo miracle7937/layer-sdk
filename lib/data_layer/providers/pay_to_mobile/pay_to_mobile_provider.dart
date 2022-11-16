@@ -141,13 +141,12 @@ class PayToMobileProvider {
 
   /// Resends the second factor for the deleting the passed [PayToMobileDTO].
   Future<PayToMobileDTO> resendSecondFactorForDeleting({
-    required PayToMobileDTO payToMobileDTO,
+    required String requestId,
   }) async {
     final response = await _netClient.request(
-      _netClient.netEndpoints.sendMoney,
+      '${_netClient.netEndpoints.sendMoney}/$requestId',
       method: NetRequestMethods.delete,
       queryParameters: {'resend_otp': true},
-      data: payToMobileDTO.toJson(),
     );
 
     return PayToMobileDTO.fromJson(response.data);

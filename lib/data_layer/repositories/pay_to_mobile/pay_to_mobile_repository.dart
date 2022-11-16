@@ -105,10 +105,10 @@ class PayToMobileRepository implements PayToMobileRepositoryInterface {
   /// request ID.
   @override
   Future<PayToMobile> resendSecondFactorForDeleting({
-    required PayToMobile payToMobile,
+    required String requestId,
   }) async {
     final payToMobileDTO = await _provider.resendSecondFactorForDeleting(
-      payToMobileDTO: payToMobile.toPayToMobileDTO(),
+      requestId: requestId,
     );
 
     return payToMobileDTO.toPayToMobile();

@@ -23,6 +23,8 @@ class PayToMobileTransactionCubit extends Cubit<PayToMobileTransactionState> {
       _resendPayToMobileSecondFactorUseCase;
   final VerifyDeletePayToMobileSecondFactorUseCase
       _verifyDeletePayToMobileSecondFactorUseCase;
+  final ResendDeletePayToMobileSecondFactorUseCase
+      _resendDeletePayToMobileSecondFactorUseCase;
 
   /// Creates a new [PayToMobileTransactionCubit].
   PayToMobileTransactionCubit({
@@ -36,11 +38,15 @@ class PayToMobileTransactionCubit extends Cubit<PayToMobileTransactionState> {
         resendPayToMobileSecondFactorUseCase,
     required VerifyDeletePayToMobileSecondFactorUseCase
         verifyDeletePayToMobileSecondFactorUseCase,
+    required ResendDeletePayToMobileSecondFactorUseCase
+        resendDeletePayToMobileSecondFactorUseCase,
   })  : assert(
           payToMobile.requestId != null,
           'The passed pay to mobile request ID is null',
         ),
         _payToMobile = payToMobile,
+        _resendDeletePayToMobileSecondFactorUseCase =
+            resendDeletePayToMobileSecondFactorUseCase,
         _resendWithdrawalCodeForPayToMobileUseCase =
             resendWithdrawalCodeForPayToMobileUseCase,
         _deletePayToMobileUseCase = deletePayToMobileUseCase,
@@ -271,6 +277,58 @@ class PayToMobileTransactionCubit extends Cubit<PayToMobileTransactionState> {
         state.copyWith(
           errors: state.addErrorFromException(
             action: PayToMobileTransactionAction.verifySecondFactor,
+            exception: e,
+          ),
+        ),
+      );
+    }
+  }
+
+  /// Resends the second factor for the [PayToMobile] cancel
+  Future<void> resendSecondFactorforDelete() async {
+    assert(state.deletePayToMobileResult != null);
+
+    emit(
+      state.copyWith(
+        actions: state.addAction(
+          PayToMobileTransactionAction.resendSecondFactor,
+        ),
+        errors: {},
+      ),
+    );
+
+    try {
+      final deletePayToMobileResult =
+          await _resendDeletePayToMobileSecondFactorUseCase(
+        requestId: _payToMobile.requestId ?? '',
+      );
+
+      emit(
+        state.copyWith(
+          actions: state.removeAction(
+            PayToMobileTransactionAction.resendSecondFactor,
+          ),
+        ),
+      );
+
+      emit(
+        state.copyWith(
+          deletePayToMobileResult: deletePayToMobileResult,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          actions: state.removeAction(
+            PayToMobileTransactionAction.resendSecondFactor,
+          ),
+        ),
+      );
+
+      emit(
+        state.copyWith(
+          errors: state.addErrorFromException(
+            action: PayToMobileTransactionAction.resendSecondFactor,
             exception: e,
           ),
         ),
