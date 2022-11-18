@@ -18,20 +18,14 @@ extension TransferHelperExtension on Transfer {
       toBeneficiary?.displayName;
 
   /// Returns the source account/card/beneficiary number
-  String? fromSourceNumber() =>
-      fromAccount?.iban ??
-      fromAccount?.extraAccountNumber ??
-      fromAccount?.formattedAccountNumber ??
-      fromAccount?.accountNumber ??
+  String? fromSourceNumber({bool ibanFirst = true}) =>
+      fromAccount?.getNumber(ibanFirst: ibanFirst) ??
       fromCard?.maskedCardNumber ??
       fromMobile;
 
   /// Returns the destination account/card/beneficiary number
-  String? toDestinationNumber() =>
-      toAccount?.iban ??
-      toAccount?.extraAccountNumber ??
-      toAccount?.formattedAccountNumber ??
-      toAccount?.accountNumber ??
+  String? toDestinationNumber({bool ibanFirst = true}) =>
+      toAccount?.getNumber(ibanFirst: ibanFirst) ??
       toCard?.maskedCardNumber ??
       toBeneficiary?.accountNumber;
 }
