@@ -19,8 +19,8 @@ extension TransferHelperExtension on Transfer {
 
   /// Returns the source account/card/beneficiary number
   String? fromSourceNumber() =>
-      fromAccount?.iban ??
       fromAccount?.extraAccountNumber ??
+      fromAccount?.iban ??
       fromAccount?.formattedAccountNumber ??
       fromAccount?.accountNumber ??
       fromCard?.maskedCardNumber ??
@@ -28,8 +28,8 @@ extension TransferHelperExtension on Transfer {
 
   /// Returns the destination account/card/beneficiary number
   String? toDestinationNumber() =>
-      toAccount?.iban ??
       toAccount?.extraAccountNumber ??
+      toAccount?.iban ??
       toAccount?.formattedAccountNumber ??
       toAccount?.accountNumber ??
       toCard?.maskedCardNumber ??
