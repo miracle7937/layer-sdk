@@ -162,6 +162,12 @@ extension AccountTypeDTOMapping on AccountTypeDTO {
         canTransferCardless: canTransferCardless,
         canStopIssuedCheck: canStopIssuedCheck,
         canConfirmIssuedCheck: canConfirmIssuedCheck,
+        canPay: canPay,
+        canTransferOwn: canTransferOwn,
+        canTransferBank: canTransferBank,
+        canTransferDomestic: canTransferDomestic,
+        canTransferInternational: canTransferInternational,
+        canReceiveTransfer: canReceiveTransfer,
       );
 }
 

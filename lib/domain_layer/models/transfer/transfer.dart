@@ -150,6 +150,12 @@ class Transfer extends Equatable {
   /// Device UID
   final String? deviceUID;
 
+  ///The reason of the transfer
+  final String? reason;
+
+  ///An additional description for the reason
+  final String? note;
+
   ///Creates a new immutable [Transfer]
   const Transfer({
     this.id,
@@ -175,6 +181,8 @@ class Transfer extends Equatable {
     this.starts,
     this.ends,
     this.deviceUID,
+    this.reason,
+    this.note,
   });
 
   /// Returns the transfer id as `String`.
@@ -205,5 +213,7 @@ class Transfer extends Equatable {
         starts,
         ends,
         deviceUID,
+        reason,
+        note,
       ];
 }
