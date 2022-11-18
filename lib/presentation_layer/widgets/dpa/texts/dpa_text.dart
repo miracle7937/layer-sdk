@@ -179,14 +179,17 @@ class _DPATextState extends State<DPAText> {
     return (labelTextProperties?.textStyle == DPAVariableTextStyle.titleXXL &&
             (label?.isNotEmpty ?? false))
         ? Center(
-            child: Text(label!,
-                style: labelTextProperties?.toTextStyle(
-                      layerDesign,
-                    ) ??
-                    layerDesign.bodyS(
-                      color: labelTextProperties?.flutterColor ??
-                          layerDesign.baseQuaternary,
-                    )),
+            child: Text(
+              label!,
+              style: labelTextProperties?.toTextStyle(
+                    layerDesign,
+                  ) ??
+                  layerDesign.bodyS(
+                    color: labelTextProperties?.flutterColor ??
+                        layerDesign.baseQuaternary,
+                  ),
+              textAlign: TextAlign.center,
+            ),
           )
         : Column(
             crossAxisAlignment: CrossAxisAlignment.start,
