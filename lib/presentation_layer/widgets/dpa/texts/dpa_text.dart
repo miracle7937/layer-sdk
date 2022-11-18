@@ -1,9 +1,10 @@
+import 'package:collection/collection.dart';
 import 'package:design_kit_layer/design_kit_layer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-
+import '../../../../data_layer/dtos.dart';
 import '../../../../domain_layer/models.dart';
 import '../../../cubits.dart';
 import '../../../extensions.dart';
@@ -162,8 +163,15 @@ class _DPATextState extends State<DPAText> {
     LayerDesign layerDesign,
   ) {
     final label = widget.variable.label;
+    final icon = widget.variable.property.iconUrl;
+    final labelColorRaw = widget.variable.property.labelColor;
+    final labelFontRaw = widget.variable.property.labelFontStyle;
+    final labelFont = DPAVariableTextStyleDTO.fromRaw(labelFontRaw);
+    final fontTextStyle = DPAVariableTextStyle.values.firstWhereOrNull(
+        (element) => element.name == (labelFont?.value ?? ''));
+    final iconProperties = DPAVariableTextProperties(
+        color: labelColorRaw, textStyle: fontTextStyle);
     final labelTextProperties = widget.variable.property.labelTextProperties;
-
     final value = widget.variable.value;
     final currency = widget.variable.property.currencyFlagCode;
     final valueTextProperties = widget.variable.property.valueTextProperties;
@@ -184,15 +192,39 @@ class _DPATextState extends State<DPAText> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (label?.isNotEmpty ?? false) ...[
-                Text(
-                  label!,
-                  style: labelTextProperties?.toTextStyle(
-                        layerDesign,
-                      ) ??
-                      layerDesign.bodyS(
-                        color: labelTextProperties?.flutterColor ??
-                            layerDesign.baseQuaternary,
+                Row(
+                  children: [
+                    if (icon != null) ...[
+                      Container(
+                        padding: const EdgeInsets.all(8.0),
+                        decoration: BoxDecoration(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(8.0)),
+                          color: layerDesign.surfaceNonary3,
+                          border: Border.all(
+                            color: layerDesign.surfaceSeptenary4,
+                          ),
+                        ),
+                        child: Text(
+                          icon,
+                          style: iconProperties.toTextStyle(
+                            layerDesign,
+                          ),
+                        ),
                       ),
+                      SizedBox(width: 12)
+                    ],
+                    Text(
+                      label!,
+                      style: labelTextProperties?.toTextStyle(
+                            layerDesign,
+                          ) ??
+                          layerDesign.bodyS(
+                            color: labelTextProperties?.flutterColor ??
+                                layerDesign.baseQuaternary,
+                          ),
+                    )
+                  ],
                 ),
                 const SizedBox(height: 2.0),
               ],
