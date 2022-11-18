@@ -43,7 +43,9 @@ class CardInfoProvider {
       _netClient.netEndpoints.cardInfo,
       method: NetRequestMethods.post,
       data: {
-        'card_id': cardId,
+        /// TODO: Change this back to a String when the BE solves the
+        /// issue with parsing on their end.
+        'card_id': int.tryParse(cardId) ?? 0,
         'key': _key,
       },
     );
@@ -66,7 +68,9 @@ class CardInfoProvider {
       _netClient.netEndpoints.cardInfo,
       method: NetRequestMethods.post,
       data: {
-        'card_id': cardId,
+        /// TODO: Change this back to a String when the BE solves the
+        /// issue with parsing on their end.
+        'card_id': int.tryParse(cardId) ?? 0,
         'key': _key,
         'second_factor': SecondFactorTypeDTO.otp.value,
       },
@@ -93,8 +97,11 @@ class CardInfoProvider {
         'second_factor_verification': true,
       },
       data: {
-        'card_id': cardId,
+        /// TODO: Change this back to a String when the BE solves the
+        /// issue with parsing on their end.
+        'card_id': int.tryParse(cardId) ?? 0,
         'key': _key,
+        'second_factor': secondFactorTypeDTO.value,
         if (secondFactorTypeDTO == SecondFactorTypeDTO.ocra)
           'client_response': value,
         if (secondFactorTypeDTO == SecondFactorTypeDTO.otp) 'otp_value': value,

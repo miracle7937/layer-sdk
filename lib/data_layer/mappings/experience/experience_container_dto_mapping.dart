@@ -123,117 +123,157 @@ extension ExperienceContainerTypeMapping on String {
   /// this [ExperienceContainerTypeMapping].
   ExperienceContainerType toExperienceContainerType() {
     switch (this) {
-      case "activity":
+      case 'activity':
         return ExperienceContainerType.activity;
 
-      case "campaign":
+      case 'campaign':
         return ExperienceContainerType.campaign;
 
-      case "appointments":
+      case 'appointments':
         return ExperienceContainerType.appointments;
 
-      case "inquiries":
+      case 'inquiry':
+      case 'inquiries':
         return ExperienceContainerType.inquiries;
 
-      case "instant":
+      case 'instant':
         return ExperienceContainerType.instant;
 
-      case "transfer":
+      case 'transfer':
         return ExperienceContainerType.transfer;
 
-      case "bill":
+      case 'bill':
         return ExperienceContainerType.bill;
 
-      case "dpa":
+      case 'dpa':
         return ExperienceContainerType.dpa;
 
-      case "settings":
+      case 'settings':
         return ExperienceContainerType.settings;
 
-      case "tradeFinance":
+      case 'trade_finance':
         return ExperienceContainerType.tradeFinance;
 
-      case "zakat":
+      case 'zakat':
         return ExperienceContainerType.zakat;
 
-      case "alerts":
+      case 'alerts':
         return ExperienceContainerType.alerts;
 
-      case "forex":
+      case 'forex':
         return ExperienceContainerType.forex;
 
-      case "locateUs":
+      case 'locate_us':
         return ExperienceContainerType.locateUs;
 
-      case "merchant_offers":
-      case "loyalty":
+      case 'cashback':
+      case 'merchant_offers':
+      case 'loyalty':
         return ExperienceContainerType.loyalty;
 
-      case "donation":
+      case 'donation':
         return ExperienceContainerType.donation;
 
-      case "accounts":
+      case 'accounts':
         return ExperienceContainerType.accounts;
 
-      case "cards":
+      case 'cards':
         return ExperienceContainerType.cards;
 
-      case "financeCalculator":
+      case 'finance_calculator':
         return ExperienceContainerType.financeCalculator;
 
-      case "pfm":
+      case 'pfm':
         return ExperienceContainerType.pfm;
 
-      case "inbox":
+      case 'inbox':
         return ExperienceContainerType.inbox;
 
-      case "prayers":
+      case 'prayers':
         return ExperienceContainerType.prayers;
 
-      case "contact_us":
+      case 'contact_us':
         return ExperienceContainerType.contactUs;
 
-      case "qr":
+      case 'qr':
         return ExperienceContainerType.qr;
 
-      case "topup":
+      case 'topup':
         return ExperienceContainerType.topup;
 
-      case "upcomingPayments":
+      case 'upcoming_payments':
         return ExperienceContainerType.upcomingPayments;
 
-      case "dashboard":
+      case 'dahboards':
+      case 'dashboard':
         return ExperienceContainerType.dashboard;
 
-      case "wallet":
+      case 'wallet':
         return ExperienceContainerType.wallet;
 
-      case "walletLinking":
+      case 'wallet_linking':
         return ExperienceContainerType.walletLinking;
 
-      case "profile":
+      case 'profile':
         return ExperienceContainerType.profile;
 
-      case "vault":
+      case 'vault':
         return ExperienceContainerType.vault;
 
-      case "instantTransfer":
+      case 'instant_transfer':
         return ExperienceContainerType.instantTransfer;
 
-      case "appointment":
+      case 'appointment':
         return ExperienceContainerType.appointment;
 
-      case "payment":
+      case 'payment':
         return ExperienceContainerType.payment;
 
-      case "mastercard":
+      case 'mastercard':
         return ExperienceContainerType.mastercard;
 
-      case "chatbot":
+      case 'bot':
+      case 'chatbot':
         return ExperienceContainerType.chatbot;
 
-      case "arCampaigns":
+      case 'ar_campaigns':
         return ExperienceContainerType.arCampaigns;
+
+      case 'landing_page':
+        return ExperienceContainerType.landingPage;
+
+      case 'campaign':
+        return ExperienceContainerType.campaign;
+
+      case 'beneficiaries':
+        return ExperienceContainerType.beneficiaries;
+
+      case 'lifestyle':
+        return ExperienceContainerType.lifestyle;
+
+      case 'qr_payments':
+        return ExperienceContainerType.qrPayments;
+
+      case 'qr_emv':
+        return ExperienceContainerType.qrEmv;
+
+      case 'favourites':
+        return ExperienceContainerType.favourites;
+
+      case 'card_reward_hub':
+        return ExperienceContainerType.cardRewardHub;
+
+      case 'flight_booking':
+        return ExperienceContainerType.flightBooking;
+
+      case 'walkthrough_screen':
+        return ExperienceContainerType.walkthroughScreen;
+
+      case 'quickpay':
+        return ExperienceContainerType.quickpay;
+
+      case 'frequent_transfers':
+        return ExperienceContainerType.frequentTransfers;
 
       default:
         final _log = Logger('ExperienceContainerTypeMapping');

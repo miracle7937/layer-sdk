@@ -2,7 +2,7 @@ import '../../../domain_layer/models.dart';
 import '../base_cubit/base_state.dart';
 
 /// The available actions the cubit can emit.
-enum UnmaskCardInfoAction {
+enum CardInfoAction {
   /// Loading the card info
   loadCardInfo,
 
@@ -17,7 +17,7 @@ enum UnmaskCardInfoAction {
 }
 
 /// The available events that the cubit can emit.
-enum UnmaskCardInfoEvent {
+enum CardInfoEvent {
   /// Event for opening the second factor.
   openSecondFactor,
 
@@ -26,34 +26,37 @@ enum UnmaskCardInfoEvent {
 
   /// Event for closing the second factor.
   closeSecondFactor,
+
+  /// Event for showing the card info view.
+  showCardInfoView,
 }
 
-/// The state for the [UnmaskCardInfoCubit]
-class UnmaskCardInfoState
-    extends BaseState<UnmaskCardInfoAction, UnmaskCardInfoEvent, void> {
+/// The state for the [CardInfoCubit].
+class CardInfoState extends BaseState<CardInfoAction, CardInfoEvent, void> {
   /// The card info object.
   final CardInfo? cardInfo;
 
-  /// Creates a new instance of [UnmaskCardInfoState]
-  UnmaskCardInfoState({
+  /// Creates a new instance of [CardInfoState]
+  CardInfoState({
     this.cardInfo,
-    super.actions = const <UnmaskCardInfoAction>{},
-    super.events = const <UnmaskCardInfoEvent>{},
+    super.actions = const <CardInfoAction>{},
+    super.events = const <CardInfoEvent>{},
     super.errors = const <CubitError>{},
   });
 
-  /// Creates a copy of this [UnmaskCardInfoState] with the passed values.
-  UnmaskCardInfoState copyWith({
-    Set<UnmaskCardInfoAction>? actions,
-    Set<UnmaskCardInfoEvent>? events,
+  /// Creates a copy of this [CardInfoState] with the passed values.
+  CardInfoState copyWith({
+    Set<CardInfoAction>? actions,
+    Set<CardInfoEvent>? events,
     Set<CubitError>? errors,
     CardInfo? cardInfo,
+    bool clearCardInfo = false,
   }) =>
-      UnmaskCardInfoState(
+      CardInfoState(
         actions: actions ?? this.actions,
         events: events ?? super.events,
         errors: errors ?? this.errors,
-        cardInfo: cardInfo ?? this.cardInfo,
+        cardInfo: clearCardInfo ? null : cardInfo ?? this.cardInfo,
       );
 
   @override

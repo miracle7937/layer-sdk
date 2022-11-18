@@ -201,4 +201,37 @@ enum ExperienceContainerType {
 
   /// The ar campaign type
   arCampaigns,
+
+  /// The landing page type.
+  landingPage,
+
+  /// The beneficiaries type.
+  beneficiaries,
+
+  /// The lifestyle type.
+  lifestyle,
+
+  /// The QR payments type.
+  qrPayments,
+
+  /// The QR emv type.
+  qrEmv,
+
+  /// The favourites type.
+  favourites,
+
+  /// The card reward hub type.
+  cardRewardHub,
+
+  /// The flight booking type.
+  flightBooking,
+
+  /// The walkthrough screen type.
+  walkthroughScreen,
+
+  /// The quickpay type.
+  quickpay,
+
+  /// The frequent transfers type.
+  frequentTransfers,
 }

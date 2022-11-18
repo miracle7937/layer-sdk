@@ -1,24 +1,30 @@
 import '../../abstract_repositories.dart';
 import '../../models.dart';
 
-/// Use case responsible of getting the card info from a card id.
-class GetCardInfoUseCase {
+/// A use case that verifies the second factor for retreiving
+/// a [CardInfo] from a card.
+class VerifyCardInfoSecondFactorUseCase {
   final CardInfoRepositoryInterface _cardInfoRepository;
   final MeawalletRepositoryInterface _meawalletRepository;
 
-  /// Creates a new [GetCardInfoUseCase]
-  GetCardInfoUseCase({
+  /// Creates a new [VerifyCardInfoSecondFactorUseCase]
+  VerifyCardInfoSecondFactorUseCase({
     required CardInfoRepositoryInterface cardInfoRepository,
     required MeawalletRepositoryInterface meawalletRepository,
   })  : _cardInfoRepository = cardInfoRepository,
         _meawalletRepository = meawalletRepository;
 
-  /// Returns the [CardInfo] for the passed [card].
+  /// Returns the [CardInfo] resulting on verifying the second factor for
+  /// getting the info for the passed [card].
   Future<CardInfo> call({
     required BankingCard card,
+    required String value,
+    required SecondFactorType secondFactorType,
   }) async {
-    final cardInfo = await _cardInfoRepository.getCardInfo(
+    final cardInfo = await _cardInfoRepository.verifySecondFactor(
       cardId: card.cardId,
+      value: value,
+      secondFactorType: secondFactorType,
     );
 
     final cardToken = '237733595'; //card.token;

@@ -35,9 +35,10 @@ dependencies:
   # - meawallet-prod  => Production SDK
   # - meawallet-test => Test SDK
   meawallet_plugin:
-    git:
-      url: git@gitlab.ubanquity.com:dart-packages/meawallet.git
-      ref: meawallet-prod
+    #git:
+    #url: git@gitlab.ubanquity.com:dart-packages/meawallet.git
+    #ref: meawallet-prod
+    path: "/Users/josejet/Projects/meawallet"
 
   # pub.dev packages
   asn1lib: ^1.0.1

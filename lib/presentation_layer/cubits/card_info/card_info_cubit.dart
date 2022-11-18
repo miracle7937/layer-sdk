@@ -5,7 +5,7 @@ import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
 
 /// A Cubit that handles the state for unmasking [BankingCard]s data.
-class UnmaskCardInfoCubit extends Cubit<UnmaskCardInfoState> {
+class CardInfoCubit extends Cubit<CardInfoState> {
   final GetCardInfoUseCase _getCardInfoUseCase;
   final SendOTPCodeForCardInfoUseCase _sendOTPCodeForCardInfoUseCase;
   final VerifyCardInfoSecondFactorUseCase _verifyCardInfoSecondFactorUseCase;
@@ -13,8 +13,8 @@ class UnmaskCardInfoCubit extends Cubit<UnmaskCardInfoState> {
   /// The card object.
   final BankingCard _card;
 
-  /// Creates a new instance of [UnmaskCardInfoCubit]
-  UnmaskCardInfoCubit({
+  /// Creates a new instance of [CardInfoCubit]
+  CardInfoCubit({
     required GetCardInfoUseCase getCardInfoUseCase,
     required SendOTPCodeForCardInfoUseCase sendOTPCodeForCardInfoUseCase,
     required VerifyCardInfoSecondFactorUseCase
@@ -25,21 +25,24 @@ class UnmaskCardInfoCubit extends Cubit<UnmaskCardInfoState> {
         _verifyCardInfoSecondFactorUseCase = verifyCardInfoSecondFactorUseCase,
         _card = card,
         super(
-          UnmaskCardInfoState(),
+          CardInfoState(),
         );
 
-  /// Retrieves the [CardInfo] for the passed [card].
-  Future<void> getCardInfo() async {
+  /// Retrieves the [CardInfo] for the [_card].
+  Future<void> unmaskCardInfo() async {
     emit(
       state.copyWith(
         actions: state.addAction(
-          UnmaskCardInfoAction.loadCardInfo,
+          CardInfoAction.loadCardInfo,
         ),
         errors: state.removeErrorForAction(
-          UnmaskCardInfoAction.loadCardInfo,
+          CardInfoAction.loadCardInfo,
         ),
-        events: state.removeEvent(
-          UnmaskCardInfoEvent.openSecondFactor,
+        events: state.removeEvents(
+          {
+            CardInfoEvent.openSecondFactor,
+            CardInfoEvent.showCardInfoView,
+          },
         ),
       ),
     );
@@ -53,23 +56,25 @@ class UnmaskCardInfoCubit extends Cubit<UnmaskCardInfoState> {
         state.copyWith(
           cardInfo: cardInfo,
           actions: state.removeAction(
-            UnmaskCardInfoAction.loadCardInfo,
+            CardInfoAction.loadCardInfo,
           ),
           events: cardInfo.secondFactorType != null
               ? state.addEvent(
-                  UnmaskCardInfoEvent.openSecondFactor,
+                  CardInfoEvent.openSecondFactor,
                 )
-              : null,
+              : state.addEvent(
+                  CardInfoEvent.showCardInfoView,
+                ),
         ),
       );
     } on Exception catch (e) {
       emit(
         state.copyWith(
           actions: state.removeAction(
-            UnmaskCardInfoAction.loadCardInfo,
+            CardInfoAction.loadCardInfo,
           ),
           errors: state.addErrorFromException(
-            action: UnmaskCardInfoAction.loadCardInfo,
+            action: CardInfoAction.loadCardInfo,
             exception: e,
           ),
         ),
@@ -77,18 +82,18 @@ class UnmaskCardInfoCubit extends Cubit<UnmaskCardInfoState> {
     }
   }
 
-  /// Send the OTP code for the current [CardInfo] object in the state.
+  /// Send the OTP code for the [_card].
   Future<void> sendOTPCode() async {
     emit(
       state.copyWith(
         actions: state.addAction(
-          UnmaskCardInfoAction.sendOTPCode,
+          CardInfoAction.sendOTPCode,
         ),
         errors: state.removeErrorForAction(
-          UnmaskCardInfoAction.sendOTPCode,
+          CardInfoAction.sendOTPCode,
         ),
         events: state.removeEvent(
-          UnmaskCardInfoEvent.showOTPCodeView,
+          CardInfoEvent.showOTPCodeView,
         ),
       ),
     );
@@ -101,11 +106,11 @@ class UnmaskCardInfoCubit extends Cubit<UnmaskCardInfoState> {
       emit(
         state.copyWith(
           actions: state.removeAction(
-            UnmaskCardInfoAction.sendOTPCode,
+            CardInfoAction.sendOTPCode,
           ),
           cardInfo: cardInfo,
           events: state.addEvent(
-            UnmaskCardInfoEvent.showOTPCodeView,
+            CardInfoEvent.showOTPCodeView,
           ),
         ),
       );
@@ -113,10 +118,10 @@ class UnmaskCardInfoCubit extends Cubit<UnmaskCardInfoState> {
       emit(
         state.copyWith(
           actions: state.removeAction(
-            UnmaskCardInfoAction.sendOTPCode,
+            CardInfoAction.sendOTPCode,
           ),
           errors: state.addErrorFromException(
-            action: UnmaskCardInfoAction.sendOTPCode,
+            action: CardInfoAction.sendOTPCode,
             exception: e,
           ),
         ),
@@ -124,7 +129,7 @@ class UnmaskCardInfoCubit extends Cubit<UnmaskCardInfoState> {
     }
   }
 
-  /// Verifies the second factor for the [CardInfo] object in the state.
+  /// Verifies the second factor for the [_card].
   Future<void> verifySecondFactor({
     String? otpCode,
     String? ocraClientResponse,
@@ -142,7 +147,7 @@ class UnmaskCardInfoCubit extends Cubit<UnmaskCardInfoState> {
     emit(
       state.copyWith(
         actions: state.addAction(
-          UnmaskCardInfoAction.verifySecondFactor,
+          CardInfoAction.verifySecondFactor,
         ),
         errors: {},
       ),
@@ -159,7 +164,7 @@ class UnmaskCardInfoCubit extends Cubit<UnmaskCardInfoState> {
       emit(
         state.copyWith(
           actions: state.removeAction(
-            UnmaskCardInfoAction.verifySecondFactor,
+            CardInfoAction.verifySecondFactor,
           ),
         ),
       );
@@ -168,7 +173,7 @@ class UnmaskCardInfoCubit extends Cubit<UnmaskCardInfoState> {
         state.copyWith(
           cardInfo: cardInfo,
           events: state.addEvent(
-            UnmaskCardInfoEvent.closeSecondFactor,
+            CardInfoEvent.closeSecondFactor,
           ),
         ),
       );
@@ -176,7 +181,7 @@ class UnmaskCardInfoCubit extends Cubit<UnmaskCardInfoState> {
       emit(
         state.copyWith(
           actions: state.removeAction(
-            UnmaskCardInfoAction.verifySecondFactor,
+            CardInfoAction.verifySecondFactor,
           ),
         ),
       );
@@ -184,7 +189,7 @@ class UnmaskCardInfoCubit extends Cubit<UnmaskCardInfoState> {
       emit(
         state.copyWith(
           errors: state.addErrorFromException(
-            action: UnmaskCardInfoAction.verifySecondFactor,
+            action: CardInfoAction.verifySecondFactor,
             exception: e,
           ),
         ),
@@ -192,10 +197,11 @@ class UnmaskCardInfoCubit extends Cubit<UnmaskCardInfoState> {
     }
   }
 
-  /// Resets the card info saved in the state
-  void removeCardInfoFromState() => emit(
+  /// Clears the card info for the [_card].
+  void maskCardInfo() => emit(
         state.copyWith(
-          cardInfo: CardInfo(),
+          clearCardInfo: true,
+          events: {},
         ),
       );
 }
