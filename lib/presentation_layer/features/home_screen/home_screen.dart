@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../domain_layer/models.dart';
@@ -169,6 +170,10 @@ class HomeScreen extends StatefulWidget {
   /// The background color to be aplied by the `Scaffold`
   final Color? backgroundColor;
 
+  /// The style of the system overlays, like the status bar, applied to the
+  /// multiple cards pages.
+  final SystemUiOverlayStyle cardsPageUIOverlayStyle;
+
   /// Creates a new [HomeScreen]
   const HomeScreen({
     Key? key,
@@ -183,6 +188,7 @@ class HomeScreen extends StatefulWidget {
     required this.fullscreenLoader,
     this.moreMenuItemTitle,
     this.backgroundColor,
+    this.cardsPageUIOverlayStyle = SystemUiOverlayStyle.light,
   })  : assert(extraContainers.length == 0 || extraCardsBuilder != null),
         super(key: key);
 
@@ -233,6 +239,7 @@ class _HomeScreenState extends State<HomeScreen> {
         containerBuilder: widget.cardsBuilder,
         extraCardBuilder: widget.extraCardsBuilder,
         extraCards: widget.extraContainers,
+        uiOverlayStyle: widget.cardsPageUIOverlayStyle,
       );
     }
   }
@@ -266,6 +273,7 @@ class _HomeScreenState extends State<HomeScreen> {
           containerBuilder: widget.cardsBuilder,
           extraCardBuilder: widget.extraCardsBuilder,
           extraCards: widget.extraContainers,
+          uiOverlayStyle: widget.cardsPageUIOverlayStyle,
         ),
         withBottomBar: false,
         experience: experience,
