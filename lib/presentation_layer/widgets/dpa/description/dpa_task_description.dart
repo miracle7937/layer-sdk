@@ -41,11 +41,12 @@ class DPATaskDescription extends StatelessWidget {
         : Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 16.0,
+              vertical: 16.0,
             ),
             child: _DPATaskTitleDescriptionWidget(
               title: showTitle ? process.task?.name : null,
               description: taskDescription!,
-              align: alignment == DPAScreenAlignment.imageDescription
+              align: alignment != DPAScreenAlignment.imageDescription
                   ? TextAlign.left
                   : TextAlign.center,
             ),

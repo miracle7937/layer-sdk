@@ -30,6 +30,8 @@ extension TransferDTOMapping on TransferDTO {
         otpId: otpId,
         starts: starts,
         ends: ends,
+        reason: reason,
+        note: note,
       );
 
   /// Maps into a [StandingOrder]

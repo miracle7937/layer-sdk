@@ -174,6 +174,7 @@ class DPAVariablesList extends StatelessWidget {
         return DPADropdown(
           key: ValueKey(variable.id),
           isMultipicker: isMultipicker,
+          showDropdownIndicator: false,
           onChanged: (value) => context.read<DPAProcessCubit>().updateValue(
                 variable: variable,
                 newValue: value.toList(),

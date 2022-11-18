@@ -140,7 +140,7 @@ class BeneficiaryDTO {
         description: json['description'],
         routingCode: json['routing_code'],
         secondFactor: SecondFactorTypeDTO.fromRaw(json['second_factor']),
-        bankImageUrl: json['bank_image_url'],
+        bankImageUrl: json['bank_image_url'] ?? json['bank']?['image_url'],
         extra: json['extra'],
       );
 

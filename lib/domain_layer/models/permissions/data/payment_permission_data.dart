@@ -20,6 +20,9 @@ class PaymentPermissionData extends BasePermissionData {
   /// Top up providers specific permissions.
   final BasePermissionData topUpProviders;
 
+  /// Mandates specific permissions.
+  final BasePermissionData mandates;
+
   /// Checks if any of the underlying permissions are visible.
   bool get canDoAnyPayment => [
         bill,
@@ -27,6 +30,7 @@ class PaymentPermissionData extends BasePermissionData {
         settings,
         topUp,
         topUpProviders,
+        mandates,
       ].any((e) => e.isFeatureVisible);
 
   @override
@@ -46,6 +50,7 @@ class PaymentPermissionData extends BasePermissionData {
     this.settings = const BasePermissionData(),
     this.topUp = const BasePermissionData(),
     this.topUpProviders = const BasePermissionData(),
+    this.mandates = const BasePermissionData(),
   });
 
   @override
@@ -56,6 +61,7 @@ class PaymentPermissionData extends BasePermissionData {
       settings,
       topUp,
       topUpProviders,
+      mandates,
     ]);
 
   /// Returns a copy of this permission with select different values.
@@ -72,6 +78,7 @@ class PaymentPermissionData extends BasePermissionData {
     BasePermissionData? settings,
     BasePermissionData? topUp,
     BasePermissionData? topUpProviders,
+    BasePermissionData? mandates,
   }) =>
       PaymentPermissionData(
         view: view ?? this.view,
@@ -86,6 +93,7 @@ class PaymentPermissionData extends BasePermissionData {
         settings: settings ?? this.settings,
         topUp: topUp ?? this.topUp,
         topUpProviders: topUpProviders ?? this.topUpProviders,
+        mandates: mandates ?? this.mandates,
       );
 
   @override
@@ -103,6 +111,7 @@ class PaymentPermissionData extends BasePermissionData {
         'settings: $settings',
         'topUp: $topUp',
         'topUpProviders: $topUpProviders',
+        'mandates: $mandates',
       ].logJoin()}'
       '>';
 }
