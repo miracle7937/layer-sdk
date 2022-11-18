@@ -235,6 +235,9 @@ extension ExperienceContainerTypeMapping on String {
       case "arCampaigns":
         return ExperienceContainerType.arCampaigns;
 
+      case "walkthrough_screen":
+        return ExperienceContainerType.walkthrough;
+
       default:
         final _log = Logger('ExperienceContainerTypeMapping');
         _log.severe('Error parsing $this experience');
