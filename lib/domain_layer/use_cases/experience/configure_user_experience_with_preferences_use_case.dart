@@ -7,13 +7,28 @@ import '../../../presentation_layer/extensions.dart';
 ///
 /// A callable class.
 class ConfigureUserExperienceWithPreferencesUseCase {
+  /// Whether if the [ExperiencePage]s containers should be filtered by
+  /// the [UserPermissions].
+  ///
+  /// Set this as `false` in case you want to handle the case where the
+  /// pages don't have any container with user permissions.
+  ///
+  /// Default is `true`.
+  final bool _shouldFilterExperiencePageContainersByUserPermissions;
+
+  /// Creates a new [ConfigureUserExperienceWithPreferencesUseCase].
+  const ConfigureUserExperienceWithPreferencesUseCase({
+    bool shouldFilterExperiencePageContainersByUserPermissions = true,
+  }) : _shouldFilterExperiencePageContainersByUserPermissions =
+            shouldFilterExperiencePageContainersByUserPermissions;
+
   /// Returns [ExperiencePage]s filtered by the user preferred visibility
   /// and his permissions with containers sorted by his preferred order.
   ///
   /// A page is visible if at least one of it's containers is visible.
-  // TODO: Filter the containers by user permissions after they are implemented.
   Iterable<ExperiencePage> call({
     required Experience experience,
+    UserPermissions? userPermissions,
   }) {
     final preferences = experience.preferences.firstWhereOrNull(
       (preferences) => preferences.experienceId == experience.id,
@@ -39,6 +54,27 @@ class ConfigureUserExperienceWithPreferencesUseCase {
         ),
       ),
     );
+
+    if (userPermissions != null &&
+        _shouldFilterExperiencePageContainersByUserPermissions) {
+      final pagesFilteredByPermissions = <ExperiencePage>[];
+      for (final page in sortedVisiblePages) {
+        final visibleContainers = page.containers
+            .where((container) => container.type.isFeatureVisible(
+                  userPermissions: userPermissions,
+                ))
+            .toList();
+
+        if (visibleContainers.isNotEmpty) {
+          pagesFilteredByPermissions.add(
+            page.copyWith(containers: visibleContainers),
+          );
+        }
+      }
+
+      return pagesFilteredByPermissions;
+    }
+
     return sortedVisiblePages;
   }
 

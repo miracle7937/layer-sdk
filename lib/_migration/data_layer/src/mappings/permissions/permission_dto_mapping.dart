@@ -184,6 +184,7 @@ extension PermissionDTOListMapping on Iterable<PermissionDTO> {
       sendMoney: _toSendMoneyPermissionData(defaults),
       sysadmin: toBasePermissionData('sysadmin', defaults),
       transfer: _toTransferPermissionData(defaults),
+      productRequest: toBasePermissionData('product_request', defaults),
     );
   }
 
@@ -443,6 +444,7 @@ extension PermissionDTOListMapping on Iterable<PermissionDTO> {
         useSuffixForView: true,
       ),
       topUpProviders: toBasePermissionData('pmt_topup_providers', defaults),
+      mandates: toBasePermissionData('mandate_payment', defaults),
     );
   }
 

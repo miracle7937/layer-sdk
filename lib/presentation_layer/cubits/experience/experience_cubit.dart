@@ -11,6 +11,7 @@ class ExperienceCubit extends Cubit<ExperienceState> {
       _configureUserExperienceByExperiencePreferencesUseCase;
   final GetExperienceAndConfigureItUseCase _getExperienceAndConfigureItUseCase;
   final SaveExperiencePreferencesUseCase _saveExperiencePreferencesUseCase;
+  final LoadUserByCustomerIdUseCase _loadUserByCustomerIdUseCase;
 
   /// Creates the [ExperienceCubit].
   ExperienceCubit({
@@ -19,11 +20,13 @@ class ExperienceCubit extends Cubit<ExperienceState> {
     required GetExperienceAndConfigureItUseCase
         getExperienceAndConfigureItUseCase,
     required SaveExperiencePreferencesUseCase saveExperiencePreferencesUseCase,
+    required LoadUserByCustomerIdUseCase loadUserByCustomerIdUseCase,
   })  : _configureUserExperienceByExperiencePreferencesUseCase =
             configureUserExperienceByExperiencePreferencesUseCase,
         _getExperienceAndConfigureItUseCase =
             getExperienceAndConfigureItUseCase,
         _saveExperiencePreferencesUseCase = saveExperiencePreferencesUseCase,
+        _loadUserByCustomerIdUseCase = loadUserByCustomerIdUseCase,
         super(ExperienceState());
 
   /// Updates the [Experience] object in the state
@@ -32,16 +35,17 @@ class ExperienceCubit extends Cubit<ExperienceState> {
       'that also depends on the core-banking package.')
   Future<void> update({
     required Experience experience,
-  }) async {
-    emit(
-      state.copyWith(
-        experience: experience,
-        visiblePages: _configureUserExperienceByExperiencePreferencesUseCase(
+    UserPermissions? userPermissions,
+  }) async =>
+      emit(
+        state.copyWith(
           experience: experience,
+          visiblePages: _configureUserExperienceByExperiencePreferencesUseCase(
+            experience: experience,
+            userPermissions: userPermissions,
+          ),
         ),
-      ),
-    );
-  }
+      );
 
   /// Loads the [Experience] configured for the application
   /// in the Experience studio.
@@ -69,11 +73,17 @@ class ExperienceCubit extends Cubit<ExperienceState> {
         minPublicVersion: minPublicVersion,
       );
 
+      User? user;
+      if (!public) {
+        user = await _loadUserByCustomerIdUseCase();
+      }
+
       emit(
         state.copyWith(
           experience: experience,
           visiblePages: _configureUserExperienceByExperiencePreferencesUseCase(
             experience: experience,
+            userPermissions: user?.permissions,
           ),
           busy: false,
         ),
@@ -113,6 +123,7 @@ class ExperienceCubit extends Cubit<ExperienceState> {
       );
 
       final experience = state.experience?.copyWith(preferences: preferences);
+      final user = await _loadUserByCustomerIdUseCase();
 
       emit(
         state.copyWith(
@@ -121,6 +132,7 @@ class ExperienceCubit extends Cubit<ExperienceState> {
           visiblePages: experience != null
               ? _configureUserExperienceByExperiencePreferencesUseCase(
                   experience: experience,
+                  userPermissions: user.permissions,
                 )
               : null,
         ),

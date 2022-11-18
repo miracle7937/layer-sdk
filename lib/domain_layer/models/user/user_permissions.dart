@@ -124,6 +124,9 @@ class UserPermissions extends Equatable {
   /// Permissions for transfers.
   final TransferPermissionData transfer;
 
+  /// Permissions for the product request. (Products and services)
+  final BasePermissionData productRequest;
+
   /// Creates a new [UserPermissions].
   const UserPermissions({
     this.accountTypes = const BasePermissionData(),
@@ -166,6 +169,7 @@ class UserPermissions extends Equatable {
     this.sendMoney = const SendMoneyPermissionData(),
     this.sysadmin = const BasePermissionData(),
     this.transfer = const TransferPermissionData(),
+    this.productRequest = const BasePermissionData(),
   });
 
   @override
@@ -210,6 +214,7 @@ class UserPermissions extends Equatable {
         sendMoney,
         sysadmin,
         transfer,
+        productRequest,
       ];
 
   /// Returns a copy with select different values.
@@ -254,6 +259,7 @@ class UserPermissions extends Equatable {
     SendMoneyPermissionData? sendMoney,
     BasePermissionData? sysadmin,
     TransferPermissionData? transfer,
+    BasePermissionData? productRequest,
   }) =>
       UserPermissions(
         accountTypes: accountTypes ?? this.accountTypes,
@@ -299,6 +305,7 @@ class UserPermissions extends Equatable {
         sendMoney: sendMoney ?? this.sendMoney,
         sysadmin: sysadmin ?? this.sysadmin,
         transfer: transfer ?? this.transfer,
+        productRequest: productRequest ?? this.productRequest,
       );
 
   @override
@@ -342,5 +349,6 @@ class UserPermissions extends Equatable {
       'securitySettings: $securitySettings\n,'
       'sendMoney: $sendMoney\n,'
       'sysadmin: $sysadmin\n,'
-      'transfer: $transfer\n';
+      'transfer: $transfer\n,'
+      'productRequest: $productRequest\n';
 }

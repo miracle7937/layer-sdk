@@ -75,10 +75,10 @@ class OfferDTO {
         consoleName: json['console_name'],
         customerName: json['customer_name'],
         starts: json['ts_start'] != null
-            ? JsonParser.parseStringDate(json['ts_start']['Time'])
+            ? JsonParser.parseDate(json['ts_start'])
             : null,
         ends: json['ts_end'] != null
-            ? JsonParser.parseStringDate(json['ts_end']['Time'])
+            ? JsonParser.parseDate(json['ts_end'])
             : null,
         imageURL: json['image_url'],
         description: json['description'],
