@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../layer_sdk.dart';
 import '../../cubits/base_cubit/base_state.dart';
 
@@ -190,6 +191,9 @@ class DPAFlow<T> extends StatefulWidget {
   /// Provide a custom padding for the continue button
   final EdgeInsets customContinueButtonPadding;
 
+  /// The custom padding for the DPA screen content or the DPA variable list.
+  final EdgeInsets? customContentPadding;
+
   /// Asset for logo
   final String? asset;
 
@@ -217,6 +221,7 @@ class DPAFlow<T> extends StatefulWidget {
       16.0,
       42.0,
     ),
+    this.customContentPadding,
     this.customCarouselScreemBuilder,
   }) : super(key: key);
 
@@ -314,9 +319,10 @@ class _DPAFlowState<T> extends State<DPAFlow<T>> {
                                   showTitle: effectiveHeader == null,
                                 ),
                               Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16.0,
-                                ),
+                                padding: widget.customContentPadding ??
+                                    const EdgeInsets.symmetric(
+                                      horizontal: 16.0,
+                                    ),
                                 child: widget.customVariableListBuilder?.call(
                                       context,
                                       process,
