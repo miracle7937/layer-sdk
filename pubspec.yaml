@@ -1,6 +1,6 @@
 name: layer_sdk
 description: A new Flutter package project.
-version: 0.0.5
+version: 0.0.6
 
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
@@ -35,10 +35,9 @@ dependencies:
   # - meawallet-prod  => Production SDK
   # - meawallet-test => Test SDK
   meawallet_plugin:
-    #git:
-    #url: git@gitlab.ubanquity.com:dart-packages/meawallet.git
-    #ref: meawallet-prod
-    path: "/Users/josejet/Projects/meawallet"
+    git:
+      url: git@gitlab.ubanquity.com:dart-packages/meawallet.git
+      ref: meawallet-prod
 
   # pub.dev packages
   asn1lib: ^1.0.1

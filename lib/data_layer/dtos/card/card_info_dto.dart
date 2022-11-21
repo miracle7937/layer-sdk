@@ -1,12 +1,12 @@
 import '../second_factor/second_factor_type_dto.dart';
 
-/// Represents the customers card info
+/// Represents the infor for a banking card.
 class CardInfoDTO {
   /// The card pin
   String? cardPin;
 
   /// The card expiry date
-  String? expiryDate;
+  DateTime? expiryDate;
 
   /// The unmasked card number
   String? unmaskedCardNumber;
@@ -17,7 +17,7 @@ class CardInfoDTO {
   /// The second factor type
   SecondFactorTypeDTO? secondFactorType;
 
-  /// Creates a new [CardDTO]
+  /// Creates a new [CardInfoDTO].
   CardInfoDTO({
     this.cardPin,
     this.expiryDate,
@@ -27,13 +27,29 @@ class CardInfoDTO {
   });
 
   /// Creates a [CardInfoDTO] from a JSON
-  factory CardInfoDTO.fromJson(Map<String, dynamic> map) {
+  factory CardInfoDTO.fromJson(Map<String, dynamic> json) {
+    final splittedExpiry = (json['expiry'] ?? '')
+        .toString()
+        .split('-')
+        .map(
+          int.tryParse,
+        )
+        .toList();
+
     return CardInfoDTO(
-      cardPin: map['pin'],
-      expiryDate: map['expiry'],
-      unmaskedCardNumber: map['card_no'],
-      otpId: map['otp_id'],
-      secondFactorType: SecondFactorTypeDTO.fromRaw(map['second_factor']),
+      cardPin: json['pin'],
+      expiryDate: splittedExpiry.isEmpty ||
+              splittedExpiry.length != 3 ||
+              splittedExpiry.contains(null)
+          ? null
+          : DateTime(
+              splittedExpiry.last!,
+              splittedExpiry[1]!,
+              splittedExpiry.first!,
+            ),
+      unmaskedCardNumber: json['card_no'],
+      otpId: json['otp_id'],
+      secondFactorType: SecondFactorTypeDTO.fromRaw(json['second_factor']),
     );
   }
 

@@ -121,7 +121,7 @@ class CardInfoProvider {
     required Map<String, dynamic> cardInfoResponse,
   }) {
     final secondFactor = cardInfoResponse['second_factor'];
-    final cardInfo = cardInfoResponse['cardInfo'];
+    final cardInfo = cardInfoResponse['card_info'];
 
     if (cardInfo != null && secondFactor == null) {
       final decrypted = _cipher.decryptBase64(

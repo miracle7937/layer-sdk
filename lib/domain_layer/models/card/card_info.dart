@@ -14,7 +14,7 @@ class CardInfo extends Equatable {
   final String? cardPin;
 
   /// The card expiry date
-  final String? expiryDate;
+  final DateTime? expiryDate;
 
   /// The unmasked card number
   final String? unmaskedCardNumber;
@@ -37,7 +37,7 @@ class CardInfo extends Equatable {
     int? otpId,
     SecondFactorType? secondFactorType,
     String? cardPin,
-    String? expiryDate,
+    DateTime? expiryDate,
     String? unmaskedCardNumber,
     String? cvv,
   }) =>
