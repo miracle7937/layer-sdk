@@ -226,12 +226,12 @@ enum ExperienceContainerType {
   /// The flight booking type.
   flightBooking,
 
-  /// The walkthrough screen type.
-  walkthroughScreen,
-
   /// The quickpay type.
   quickpay,
 
   /// The frequent transfers type.
   frequentTransfers,
+
+  /// The walkthrough type
+  walkthrough,
 }

@@ -125,6 +125,15 @@ class DPAVariableProperty extends Equatable {
   /// Picker Type
   final DPAVariablePicker? picker;
 
+  /// Label color
+  final String? labelColor;
+
+  /// Icon text
+  final String? iconUrl;
+
+  /// Label font style
+  final String? labelFontStyle;
+
   /// Creates a new [DPAVariableProperty].
   DPAVariableProperty({
     this.step,
@@ -155,6 +164,9 @@ class DPAVariableProperty extends Equatable {
     this.characterSplit,
     this.picker,
     this.defaultPrefix,
+    this.labelColor,
+    this.iconUrl,
+    this.labelFontStyle,
   })  : allowedTypes = UnmodifiableSetView(allowedTypes?.toSet() ?? <String>{}),
         dialCodes = UnmodifiableListView(dialCodes ?? []);
 
@@ -187,6 +199,9 @@ class DPAVariableProperty extends Equatable {
         currencyFlagCode,
         picker,
         defaultPrefix,
+        labelColor,
+        iconUrl,
+        labelFontStyle,
       ];
 
   /// Creates a new [DPAVariableProperty] using another as a base.
@@ -219,6 +234,9 @@ class DPAVariableProperty extends Equatable {
     bool? characterSplit,
     DPAVariablePicker? picker,
     String? defaultPrefix,
+    String? labelColor,
+    String? iconUrl,
+    String? labelFontStyle,
   }) =>
       DPAVariableProperty(
         step: step ?? this.step,
@@ -249,5 +267,8 @@ class DPAVariableProperty extends Equatable {
         characterSplit: characterSplit ?? this.characterSplit,
         picker: picker ?? this.picker,
         defaultPrefix: defaultPrefix ?? this.defaultPrefix,
+        labelColor: labelColor ?? this.labelColor,
+        iconUrl: iconUrl ?? this.iconUrl,
+        labelFontStyle: labelFontStyle ?? this.labelFontStyle,
       );
 }

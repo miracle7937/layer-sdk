@@ -266,14 +266,14 @@ extension ExperienceContainerTypeMapping on String {
       case 'flight_booking':
         return ExperienceContainerType.flightBooking;
 
-      case 'walkthrough_screen':
-        return ExperienceContainerType.walkthroughScreen;
-
       case 'quickpay':
         return ExperienceContainerType.quickpay;
 
       case 'frequent_transfers':
         return ExperienceContainerType.frequentTransfers;
+
+      case 'walkthrough_screen':
+        return ExperienceContainerType.walkthrough;
 
       default:
         final _log = Logger('ExperienceContainerTypeMapping');
