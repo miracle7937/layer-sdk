@@ -1,5 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
+import 'package:layer_sdk/domain_layer/models.dart';
+import 'package:layer_sdk/domain_layer/use_cases.dart';
 import 'package:layer_sdk/features/experience.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
@@ -12,12 +14,17 @@ class MockExperiencePreferencesRepository extends Mock
 class MockConfigureUserExperience extends Mock
     implements ConfigureUserExperienceWithPreferencesUseCase {}
 
+class MockLoadUserByCustomerIdUseCase extends Mock
+    implements LoadUserByCustomerIdUseCase {}
+
 late MockExperienceRepository experienceRepositoryMock;
 late MockExperiencePreferencesRepository experiencePreferencesRepository;
 late MockConfigureUserExperience configureUserExperienceMock;
 
 late GetExperienceAndConfigureItUseCase getExperienceAndConfigureItUseCase;
 late SaveExperiencePreferencesUseCase saveExperiencePreferencesUseCase;
+late MockLoadUserByCustomerIdUseCase loadUserByCustomerIdUseCase;
+late User user;
 
 void main() {
   EquatableConfig.stringify = true;
@@ -31,6 +38,11 @@ void main() {
         repository: experienceRepositoryMock);
     saveExperiencePreferencesUseCase = SaveExperiencePreferencesUseCase(
         repository: experiencePreferencesRepository);
+    loadUserByCustomerIdUseCase = MockLoadUserByCustomerIdUseCase();
+
+    user = User(
+      id: 'userId',
+    );
 
     when(() => experienceRepositoryMock.getExperience(
           public: true,
@@ -49,15 +61,24 @@ void main() {
 
     when(() => configureUserExperienceMock.call(
           experience: _experience,
+          userPermissions: any(named: 'userPermissions'),
         )).thenAnswer((_) => _experience.pages);
 
     when(() => configureUserExperienceMock.call(
           experience: _newExperience,
+          userPermissions: any(named: 'userPermissions'),
         )).thenAnswer((_) => _newExperience.pages);
 
     when(() => configureUserExperienceMock.call(
           experience: _experienceWithPreferences,
+          userPermissions: any(named: 'userPermissions'),
         )).thenAnswer((_) => _visiblePages);
+
+    when(
+      () => loadUserByCustomerIdUseCase(),
+    ).thenAnswer(
+      (_) async => user,
+    );
   });
 
   blocTest<ExperienceCubit, ExperienceState>(
@@ -67,6 +88,7 @@ void main() {
           configureUserExperienceMock,
       getExperienceAndConfigureItUseCase: getExperienceAndConfigureItUseCase,
       saveExperiencePreferencesUseCase: saveExperiencePreferencesUseCase,
+      loadUserByCustomerIdUseCase: loadUserByCustomerIdUseCase,
     ),
     verify: (c) => expect(
       c.state,
@@ -81,6 +103,7 @@ void main() {
           configureUserExperienceMock,
       getExperienceAndConfigureItUseCase: getExperienceAndConfigureItUseCase,
       saveExperiencePreferencesUseCase: saveExperiencePreferencesUseCase,
+      loadUserByCustomerIdUseCase: loadUserByCustomerIdUseCase,
     ),
     // ignore: deprecated_member_use_from_same_package
     act: (c) => c.update(experience: _newExperience),
@@ -100,6 +123,7 @@ void main() {
             getExperienceAndConfigureItUseCase:
                 getExperienceAndConfigureItUseCase,
             saveExperiencePreferencesUseCase: saveExperiencePreferencesUseCase,
+            loadUserByCustomerIdUseCase: loadUserByCustomerIdUseCase,
           ),
       act: (c) => c.load(public: true),
       expect: () => [
@@ -125,6 +149,7 @@ void main() {
           configureUserExperienceMock,
       getExperienceAndConfigureItUseCase: getExperienceAndConfigureItUseCase,
       saveExperiencePreferencesUseCase: saveExperiencePreferencesUseCase,
+      loadUserByCustomerIdUseCase: loadUserByCustomerIdUseCase,
     ),
     act: (c) => c.load(
       public: false,
@@ -137,12 +162,17 @@ void main() {
       ),
     ],
     verify: (c) {
-      verify(() => experienceRepositoryMock.getExperience(
-            public: false,
-          )).called(1);
-      verify(() => configureUserExperienceMock.call(
-            experience: _experienceWithPreferences,
-          )).called(1);
+      verify(
+        () => experienceRepositoryMock.getExperience(
+          public: false,
+        ),
+      ).called(1);
+      verify(
+        () => configureUserExperienceMock.call(
+          experience: _experienceWithPreferences,
+          userPermissions: const UserPermissions(),
+        ),
+      ).called(1);
     },
   );
 
@@ -153,6 +183,7 @@ void main() {
           configureUserExperienceMock,
       getExperienceAndConfigureItUseCase: getExperienceAndConfigureItUseCase,
       saveExperiencePreferencesUseCase: saveExperiencePreferencesUseCase,
+      loadUserByCustomerIdUseCase: loadUserByCustomerIdUseCase,
     ),
     seed: () => ExperienceState(experience: _experience),
     act: (c) => c.updatePreferences(
@@ -170,13 +201,18 @@ void main() {
       ),
     ],
     verify: (c) {
-      verify(() => experiencePreferencesRepository.saveExperiencePreferences(
-            parameters: _parameters,
-            experienceId: _experience.id,
-          )).called(1);
-      verify(() => configureUserExperienceMock.call(
-            experience: _experienceWithPreferences,
-          )).called(1);
+      verify(
+        () => experiencePreferencesRepository.saveExperiencePreferences(
+          parameters: _parameters,
+          experienceId: _experience.id,
+        ),
+      ).called(1);
+      verify(
+        () => configureUserExperienceMock.call(
+          experience: _experienceWithPreferences,
+          userPermissions: const UserPermissions(),
+        ),
+      ).called(1);
     },
   );
 }

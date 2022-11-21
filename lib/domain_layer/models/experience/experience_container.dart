@@ -201,4 +201,7 @@ enum ExperienceContainerType {
 
   /// The ar campaign type
   arCampaigns,
+
+  /// The walkthrough type
+  walkthrough,
 }

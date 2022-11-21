@@ -74,6 +74,15 @@ class AppConfiguration {
   /// Defaults to `false`.
   final bool firebaseAnalyticsEnabled;
 
+  /// Whether if the [ExperiencePage]s containers should be filtered by
+  /// the [UserPermissions].
+  ///
+  /// Set this as `false` in case you want to handle the case where the
+  /// pages don't have any container with user permissions.
+  ///
+  /// Default is `true`.
+  final bool shouldFilterExperiencePageContainersByUserPermissions;
+
   /// Creates the [AppConfiguration] object.
   AppConfiguration({
     required this.appThemeConfiguration,
@@ -88,6 +97,7 @@ class AppConfiguration {
     this.title,
     this.firebaseAnalyticsEnabled = false,
     Iterable<FLInterceptor>? interceptors,
+    this.shouldFilterExperiencePageContainersByUserPermissions = true,
   })  : creators = UnmodifiableListView(creators ?? []),
         listeners = UnmodifiableListView(listeners ?? []),
         interceptors = UnmodifiableListView(interceptors ?? []);
