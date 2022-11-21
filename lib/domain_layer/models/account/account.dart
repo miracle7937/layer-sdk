@@ -247,11 +247,6 @@ class Account extends Equatable {
       ];
 
   /// Returns the available account number.
-  /// Depending on passed [ibanFirst], iban value is returned first for true
-  /// or last for false if account number is not available.
-  String? getNumber({bool ibanFirst = true}) =>
-      ibanFirst ? iban ?? _accountNumber : _accountNumber ?? iban;
-
-  String? get _accountNumber =>
-      extraAccountNumber ?? formattedAccountNumber ?? accountNumber;
+  String? getNumber() =>
+      extraAccountNumber ?? iban ?? formattedAccountNumber ?? accountNumber;
 }

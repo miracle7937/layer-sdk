@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
 import '../../../domain_layer/models.dart';
 import '../../widgets.dart';
 
@@ -22,6 +24,9 @@ class LayerPageBuilder extends StatelessWidget {
   /// The extra container list to put the page with position
   final List<ExtraCard> extraCards;
 
+  /// The style of the system overlays, like the status bar.
+  final SystemUiOverlayStyle uiOverlayStyle;
+
   /// Creates a new [LayerPageBuilder]
   const LayerPageBuilder({
     Key? key,
@@ -29,6 +34,7 @@ class LayerPageBuilder extends StatelessWidget {
     required this.containerBuilder,
     this.extraCardBuilder,
     this.extraCards = const [],
+    this.uiOverlayStyle = SystemUiOverlayStyle.light,
   })  : assert(extraCards.length == 0 || extraCardBuilder != null),
         super(key: key);
 
@@ -53,36 +59,39 @@ class LayerPageBuilder extends StatelessWidget {
             extraContainer.position == ExtraCardPosition.bottom)
         .toList();
 
-    return CustomScrollView(
-      slivers: [
-        ...topExtraCards
-            .map(
-              (e) => e.isSliver
-                  ? extraCardBuilder!(context, e)
-                  : SliverToBoxAdapter(
-                      child: extraCardBuilder!(context, e),
-                    ),
-            )
-            .toList(growable: false),
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) => containerBuilder(
-              context,
-              page.containers[index],
+    return AnnotatedRegion(
+      value: uiOverlayStyle,
+      child: CustomScrollView(
+        slivers: [
+          ...topExtraCards
+              .map(
+                (e) => e.isSliver
+                    ? extraCardBuilder!(context, e)
+                    : SliverToBoxAdapter(
+                        child: extraCardBuilder!(context, e),
+                      ),
+              )
+              .toList(growable: false),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) => containerBuilder(
+                context,
+                page.containers[index],
+              ),
+              childCount: page.containers.length,
             ),
-            childCount: page.containers.length,
           ),
-        ),
-        ...bottomExtraCards
-            .map(
-              (e) => e.isSliver
-                  ? extraCardBuilder!(context, e)
-                  : SliverToBoxAdapter(
-                      child: extraCardBuilder!(context, e),
-                    ),
-            )
-            .toList(growable: false),
-      ],
+          ...bottomExtraCards
+              .map(
+                (e) => e.isSliver
+                    ? extraCardBuilder!(context, e)
+                    : SliverToBoxAdapter(
+                        child: extraCardBuilder!(context, e),
+                      ),
+              )
+              .toList(growable: false),
+        ],
+      ),
     );
   }
 }

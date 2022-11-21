@@ -43,6 +43,9 @@ extension DPAVariablePropertyDTOMapping on DPAVariablePropertyDTO {
         characterSplit: characterSplit,
         picker: picker?.toDPAVariablePicker(),
         defaultPrefix: defaultPrefix,
+        labelColor: labelColor,
+        iconUrl: iconUrl,
+        labelFontStyle: labelFontStyle,
       );
 }
 
