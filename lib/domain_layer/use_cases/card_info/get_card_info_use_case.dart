@@ -21,7 +21,7 @@ class GetCardInfoUseCase {
       cardId: card.cardId,
     );
 
-    final cardToken = '237733595'; //card.token;
+    final cardToken = card.token;
     if (cardInfo.secondFactorType == null && cardToken != null) {
       final secret = await _meawalletRepository.getSecretFromCardToken(
         cardToken: cardToken,

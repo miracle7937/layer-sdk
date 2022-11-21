@@ -1,10 +1,6 @@
 import 'dart:async';
-import 'dart:convert';
-
-import 'package:pointycastle/pointycastle.dart';
 
 import '../../../../data_layer/network.dart';
-import '../../../_migration/data_layer/src/encryption/rsa_cipher.dart';
 import '../../../_migration/data_layer/src/helpers/dto_helpers.dart';
 import '../../dtos.dart';
 
@@ -14,21 +10,7 @@ class CardProvider {
   final NetClient netClient;
 
   /// Creates a new [CardProvider] instance
-  CardProvider(
-    this.netClient,
-  ) {
-    _generateKey();
-  }
-
-  late RSACipher _cipher;
-  late dynamic _key;
-  late AsymmetricKeyPair<PublicKey, PrivateKey> _keyPair;
-
-  void _generateKey() {
-    _cipher = RSACipher();
-    _keyPair = _cipher.generateKeyPair();
-    _key = _cipher.encodePublicKeyToPem(_keyPair.publicKey as RSAPublicKey);
-  }
+  CardProvider(this.netClient);
 
   /// Returns all cards of the supplied customer
   Future<List<CardDTO>> listCustomerCards({
