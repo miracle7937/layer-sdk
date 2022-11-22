@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../../features/dpa.dart';
+import '../../../mixins.dart';
 import '../../../utils.dart';
 
 /// The filter function.
@@ -39,7 +40,8 @@ class DPASearchList extends StatefulWidget {
   State<DPASearchList> createState() => _DPASearchListState();
 }
 
-class _DPASearchListState extends State<DPASearchList> {
+class _DPASearchListState extends State<DPASearchList>
+    with FullScreenLoaderMixin {
   late List<DPAValue> options;
 
   @override
@@ -96,12 +98,16 @@ class _DPASearchListState extends State<DPASearchList> {
                       svgPath: flagSvg,
                       dpaValue: options[index],
                       onSelected: (value) async {
+                        showFullScreenLoader(context);
+
                         final cubit = context.read<DPAProcessCubit>();
                         await cubit.updateValue(
                           variable: widget.variable,
                           newValue: value,
                         );
-                        cubit.stepOrFinish();
+                        await cubit.stepOrFinish();
+
+                        Navigator.pop(context);
                       },
                     );
                   },
