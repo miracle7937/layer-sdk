@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+
 import '../../../../data_layer/dtos.dart';
 import '../../../../domain_layer/models.dart';
 import '../../../cubits.dart';
@@ -26,6 +27,9 @@ class DPAText extends StatefulWidget {
   /// Whether the widget is used on the popup task. Defaults to false.
   final bool forPopup;
 
+  /// {@macro flutter.widgets.editableText.scrollPadding}
+  final EdgeInsets scrollPadding;
+
   /// Creates a new [DPAText]
   const DPAText({
     Key? key,
@@ -33,6 +37,7 @@ class DPAText extends StatefulWidget {
     this.readonly = false,
     this.forPopup = false,
     this.padding = EdgeInsets.zero,
+    this.scrollPadding = const EdgeInsets.all(20.0),
   }) : super(key: key);
 
   @override
@@ -154,6 +159,7 @@ class _DPATextState extends State<DPAText> {
                         variable: widget.variable,
                         newValue: v,
                       ),
+                  scrollPadding: widget.scrollPadding,
                 ),
     );
   }
