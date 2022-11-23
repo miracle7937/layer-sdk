@@ -46,7 +46,7 @@ abstract class PayToMobileRepositoryInterface {
   /// Resends the second factor for deleting the passed pay to mobile
   /// request ID.
   Future<PayToMobile> resendSecondFactorForDeleting({
-    required PayToMobile payToMobile,
+    required String requestId,
   });
 
   /// Verifies the second factor for the deleting passed pay to mobile
