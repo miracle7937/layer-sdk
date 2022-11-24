@@ -88,8 +88,7 @@ class ExperienceCubit extends Cubit<ExperienceState> {
           busy: false,
         ),
       );
-    } on Exception catch (e, s) {
-      print('$e -> $s');
+    } on Exception catch (e) {
       emit(
         state.copyWith(
           busy: false,

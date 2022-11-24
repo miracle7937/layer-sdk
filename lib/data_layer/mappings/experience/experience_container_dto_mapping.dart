@@ -204,7 +204,7 @@ extension ExperienceContainerTypeMapping on String {
       case 'upcoming_payments':
         return ExperienceContainerType.upcomingPayments;
 
-      case 'dahboards':
+      case 'dashboards':
       case 'dashboard':
         return ExperienceContainerType.dashboard;
 
@@ -241,9 +241,6 @@ extension ExperienceContainerTypeMapping on String {
 
       case 'landing_page':
         return ExperienceContainerType.landingPage;
-
-      case 'campaign':
-        return ExperienceContainerType.campaign;
 
       case 'beneficiaries':
         return ExperienceContainerType.beneficiaries;

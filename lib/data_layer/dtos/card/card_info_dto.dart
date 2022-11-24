@@ -1,6 +1,6 @@
 import '../second_factor/second_factor_type_dto.dart';
 
-/// Represents the infor for a banking card.
+/// Represents the info for a banking card.
 class CardInfoDTO {
   /// The card pin
   String? cardPin;
