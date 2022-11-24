@@ -251,8 +251,11 @@ class _DPAFlowState<T> extends State<DPAFlow<T>> {
     final cubit = context.read<DPAProcessCubit>();
     final isDelayTask = process.stepProperties?.delay != null;
 
-    final effectiveContinueButton = process.variables.length == 1 &&
-            process.variables.first.property.searchBar
+    final hasJumioConfig = process.stepProperties?.jumioConfig != null;
+
+    final effectiveContinueButton = (process.variables.length == 1 &&
+                process.variables.first.property.searchBar) ||
+            hasJumioConfig
         ? null
         : widget.customContinueButton ??
             DPAContinueButton(
