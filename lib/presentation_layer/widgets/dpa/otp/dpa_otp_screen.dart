@@ -283,7 +283,9 @@ class _DPAOTPScreenState extends State<_DPAOTPScreen>
                                   .translate('enter_code_sent_to_placeholder')
                                   .replaceAll(
                                     '{phone}',
-                                    process.stepProperties?.maskedNumber ?? '',
+                                    process.stepProperties?.maskedNumber
+                                            ?.replaceAll('•', '𖧹') ??
+                                        '',
                                   )
                               : translation
                                   .translate(
