@@ -23,7 +23,7 @@ dependencies:
   design_kit_layer:
     git:
       url: git@gitlab.ubanquity.com:dart-packages/design-kit-layer.git
-      ref: 77d52d657ddff1f7044422d856742abacbf31a3a
+      ref: 1d8576ecb785346cf1af88dda37253583b6520a6
 
   ocra_authentication:
     git:
