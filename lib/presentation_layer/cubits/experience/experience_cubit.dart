@@ -55,14 +55,19 @@ class ExperienceCubit extends Cubit<ExperienceState> {
   ///
   /// The [minPublicVersion] optional parameter can be used to set
   /// a minimum version of the public experience to fetch.
+  ///
+  /// The [clearExperience] parameter is used for wheter if the previous
+  /// experience in the state should be cleared before loading the
+  /// new one or not.
   Future<void> load({
     required bool public,
     int? minPublicVersion,
+    bool clearExperience = true,
   }) async {
     emit(
       state.copyWith(
         busy: true,
-        clearExperience: true,
+        clearExperience: clearExperience,
         error: ExperienceStateError.none,
       ),
     );
