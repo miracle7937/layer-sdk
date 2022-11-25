@@ -12,7 +12,6 @@ class CardDashboardCubit extends Cubit<CardDashboardState> {
   /// Creates a new instance of [CardDashboardCubit]
   CardDashboardCubit({
     required LoadCustomerCardsUseCase getCustomerCardsUseCase,
-    required LoadCustomerCardInfoUseCase getCustomerCardInfoUseCase,
     required LoadFinancialDataUseCase getFinancialDataUseCase,
   })  : _getCustomerCardsUseCase = getCustomerCardsUseCase,
         _getFinancialDataUseCase = getFinancialDataUseCase,

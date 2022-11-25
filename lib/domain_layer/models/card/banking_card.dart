@@ -87,6 +87,9 @@ class BankingCard extends Equatable {
   /// Mastercard or visa
   final BankingCardProviderType? provider;
 
+  /// The token used for retrieving the secret for the meawallet sdk.
+  final String? token;
+
   /// Creates a new immutable [BankingCard]
   BankingCard({
     required this.cardId,
@@ -108,6 +111,7 @@ class BankingCard extends Equatable {
     this.provider,
     Iterable<String> accountIds = const [],
     this.isVirtual = false,
+    this.token,
   }) : accountID = UnmodifiableListView(accountIds);
 
   @override
@@ -131,6 +135,7 @@ class BankingCard extends Equatable {
         accountID,
         preferences,
         isVirtual,
+        token,
       ];
 
   /// Returns the account related to this card

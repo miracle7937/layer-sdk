@@ -152,6 +152,7 @@ class DPAVariablesList extends StatelessWidget {
           padding: EdgeInsets.symmetric(
             vertical: variable.constraints.readonly ? 12.0 : 0,
           ),
+          scrollPadding: const EdgeInsets.only(bottom: 62.0),
         );
 
       case DPAVariableType.dropdown:

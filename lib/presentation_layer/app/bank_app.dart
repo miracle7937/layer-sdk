@@ -480,8 +480,8 @@ class BankAppState extends State<BankApp> {
     ];
   }
 
-  Widget _appBuilder() => Listener(
-        onPointerDown: (_) => FocusManager.instance.primaryFocus?.unfocus(),
+  Widget _appBuilder() => GlobalAutoHideKeyboard(
+        enabled: widget.appConfiguration.autoHideKeyboard,
         child: AppBuilder(
           key: _appKey,
           netClient: widget.netClient,

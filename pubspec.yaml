@@ -1,6 +1,6 @@
 name: layer_sdk
 description: A new Flutter package project.
-version: 0.0.5
+version: 0.0.6
 
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
@@ -29,6 +29,15 @@ dependencies:
     git:
       url: git@gitlab.ubanquity.com:dart-packages/ocra_authentication.git
       ref: 3994518ffff10e0dfb9b1864e4d18a3802a8758f
+
+  # The MeaWallet SDK plugin
+  # Possible branches:
+  # - meawallet-prod  => Production SDK
+  # - meawallet-test => Test SDK
+  meawallet_plugin:
+    git:
+      url: git@gitlab.ubanquity.com:dart-packages/meawallet.git
+      ref: meawallet-prod
 
   # pub.dev packages
   asn1lib: ^1.0.1

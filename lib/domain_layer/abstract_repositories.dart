@@ -16,6 +16,7 @@ export 'abstract_repositories/branch_activation/branch_activation_repository_int
 export 'abstract_repositories/branding/branding_repository_interface.dart';
 export 'abstract_repositories/campaign/campaign_repository_interface.dart';
 export 'abstract_repositories/card/card_repository_interface.dart';
+export 'abstract_repositories/card_info/card_info_repository_interface.dart';
 export 'abstract_repositories/category/category_repository_interface.dart';
 export 'abstract_repositories/certificate/certificate_repository_interface.dart';
 export 'abstract_repositories/checkbook/checkbook_repository_interface.dart';
@@ -38,6 +39,7 @@ export 'abstract_repositories/loyalty/loyalty_points_transaction/loyalty_points_
 export 'abstract_repositories/loyalty/offers/offers_repository_interface.dart';
 export 'abstract_repositories/mandates/mandate_payment_repository_interface.dart';
 export 'abstract_repositories/mandates/mandates_respository_interface.dart';
+export 'abstract_repositories/meawallet/meawallet_repository_interface.dart';
 export 'abstract_repositories/message/message_repository_interface.dart';
 export 'abstract_repositories/more_info/more_info_repository_interface.dart';
 export 'abstract_repositories/ocra/ocra_repository_interface.dart';

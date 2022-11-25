@@ -65,6 +65,9 @@ class AppConfiguration {
   /// Defaults to `true`.
   final bool autoKeyboardPaddingEnabled;
 
+  /// True if the application should automatically hide the keyboard on tap.
+  final bool autoHideKeyboard;
+
   /// A list of [FLInterceptor] for the [NetClient].
   final UnmodifiableListView<FLInterceptor> interceptors;
 
@@ -98,6 +101,7 @@ class AppConfiguration {
     this.firebaseAnalyticsEnabled = false,
     Iterable<FLInterceptor>? interceptors,
     this.shouldFilterExperiencePageContainersByUserPermissions = true,
+    this.autoHideKeyboard = true,
   })  : creators = UnmodifiableListView(creators ?? []),
         listeners = UnmodifiableListView(listeners ?? []),
         interceptors = UnmodifiableListView(interceptors ?? []);
