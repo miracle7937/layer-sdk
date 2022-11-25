@@ -261,7 +261,10 @@ class _HomeScreenState extends State<HomeScreen> {
               context.read<ExperienceCubit>().state.visiblePages.first == page;
 
           if (isDashboard) {
-            context.read<ExperienceCubit>().load(public: false);
+            context.read<ExperienceCubit>().load(
+                  public: false,
+                  clearExperience: false,
+                );
           }
 
           widget.onRefreshMultiContainerPageCallback(page, isDashboard);
