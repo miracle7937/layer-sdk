@@ -372,4 +372,7 @@ class NetEndpoints {
 
   /// Endpoint for the pay to mobile receipts.
   String get sendMoneyReceipt => '$_txnBanking/v1/send_money_receipt';
+
+  /// Meawallet TOTP.
+  String get meawalletTOTP => '$_integration/v1/totp';
 }
