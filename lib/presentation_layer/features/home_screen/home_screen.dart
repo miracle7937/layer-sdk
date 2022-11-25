@@ -186,6 +186,9 @@ class HomeScreen extends StatefulWidget {
   final CustomOnRefreshMultiContainerPageCallback
       onRefreshMultiContainerPageCallback;
 
+  /// Indicates if the more menu should be forced to be rendered
+  final bool forceMoreMenuVisibility;
+
   /// Creates a new [HomeScreen]
   const HomeScreen({
     Key? key,
@@ -201,6 +204,7 @@ class HomeScreen extends StatefulWidget {
     this.moreMenuItemTitle,
     this.backgroundColor,
     this.cardsPageUIOverlayStyle = SystemUiOverlayStyle.light,
+    this.forceMoreMenuVisibility = false,
     required this.onRefreshMultiContainerPageCallback,
   })  : assert(extraContainers.length == 0 || extraCardsBuilder != null),
         super(key: key);
@@ -411,6 +415,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           _getMorePageWidget,
                         );
                       },
+                      forceMoreMenuVisibility: widget.forceMoreMenuVisibility,
                     ),
                 ],
               ],
