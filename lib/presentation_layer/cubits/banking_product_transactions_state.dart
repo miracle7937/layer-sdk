@@ -94,24 +94,29 @@ class BankingProductTransactionsState
     bool? isTypeSelected,
     List<int>? receipt,
     BankingProductTransaction? currentTransaction,
-  }) {
-    return BankingProductTransactionsState(
-      transactions: transactions ?? this.transactions,
-      actions: actions ?? super.actions,
-      errors: errors ?? super.errors,
-      accountId: accountId ?? this.accountId,
-      cardId: cardId ?? this.cardId,
-      listData: listData ?? this.listData,
-      startDate: startDate ?? this.startDate,
-      endDate: endDate ?? this.endDate,
-      amountFrom: amountFrom ?? this.amountFrom,
-      amountTo: amountTo ?? this.amountTo,
-      credit: (isTypeSelected ?? false) ? (credit ?? this.credit) : null,
-      receipt: receipt ?? this.receipt,
-      isTypeSelected: isTypeSelected ?? this.isTypeSelected,
-      currentTransaction: currentTransaction ?? this.currentTransaction,
-    );
-  }
+    bool resetFilter = false,
+  }) =>
+      BankingProductTransactionsState(
+        transactions: transactions ?? this.transactions,
+        actions: actions ?? super.actions,
+        errors: errors ?? super.errors,
+        accountId: accountId ?? this.accountId,
+        cardId: cardId ?? this.cardId,
+        listData: listData ?? this.listData,
+        startDate: resetFilter ? null : startDate ?? this.startDate,
+        endDate: resetFilter ? null : endDate ?? this.endDate,
+        amountFrom: resetFilter ? null : amountFrom ?? this.amountFrom,
+        amountTo: resetFilter ? null : amountTo ?? this.amountTo,
+        credit: resetFilter
+            ? null
+            : (isTypeSelected ?? false)
+                ? (credit ?? this.credit)
+                : null,
+        receipt: receipt ?? this.receipt,
+        isTypeSelected:
+            resetFilter ? null : isTypeSelected ?? this.isTypeSelected,
+        currentTransaction: currentTransaction ?? this.currentTransaction,
+      );
 
   @override
   bool get stringify => true;
