@@ -329,6 +329,9 @@ class _OTPScreenState extends State<_OTPScreen> with FullScreenLoaderMixin {
 
     if (oldWidget.isResending != widget.isResending) {
       isResending = widget.isResending;
+      if (!isResending) {
+        _startTimer();
+      }
     }
 
     if (oldWidget.verificationError != widget.verificationError) {
