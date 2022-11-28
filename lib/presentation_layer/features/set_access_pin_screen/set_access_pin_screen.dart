@@ -73,7 +73,7 @@ class _SetAccessPinScreenState
   Widget build(BuildContext context) {
     final layerDesign = DesignSystem.of(context);
 
-    return Scaffold(
+    return LayerScaffold(
       backgroundColor: layerDesign.surfaceOctonary1,
       appBar: widget.setPinAppBar,
       body: PinPadView(
@@ -168,7 +168,7 @@ class __RepeatAccessPinScreenState
           listenWhen: (previous, current) =>
               previous.user != current.user && current.user != null,
           listener: (context, state) => widget.onSuccess(state.user!),
-          child: Scaffold(
+          child: LayerScaffold(
             backgroundColor: DesignSystem.of(context).surfaceOctonary1,
             appBar: widget.appBar,
             body: WillPopScope(

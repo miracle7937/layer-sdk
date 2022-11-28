@@ -94,6 +94,11 @@ dev_dependencies:
     sdk: flutter
   mocktail: ^0.1.4
   test: ^1.17.5
+  custom_lint: ^0.0.14
+  layer_scaffold_linter:
+    git:
+      url: git@gitlab.ubanquity.com:dart-packages/layer_scaffold_linter.git
+      ref: 96b59095afe9d302e64e283a24f3b607616afef7
 
 dependency_overrides:
   firebase_core_platform_interface: 4.5.1

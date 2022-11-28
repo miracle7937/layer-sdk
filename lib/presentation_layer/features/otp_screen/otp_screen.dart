@@ -369,7 +369,7 @@ class _OTPScreenState extends State<_OTPScreen> with FullScreenLoaderMixin {
       maskedNumber = '$maskedNumber$mobileNumber';
     }
 
-    return Scaffold(
+    return LayerScaffold(
       extendBodyBehindAppBar: true,
       appBar: SDKHeader(
         title: widget.title,
