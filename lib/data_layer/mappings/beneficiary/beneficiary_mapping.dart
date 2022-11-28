@@ -19,6 +19,7 @@ extension BeneficiaryMapping on Beneficiary {
         bankSwift: bank?.bic ?? '',
         bankName: bank?.name ?? '',
         bankCountryCode: bank?.countryCode ?? '',
+        rcptCountryCode: rcptCountryCode,
         currency: currency,
         otpId: otpId,
         type: type?.toTransferTypeDTO(),
