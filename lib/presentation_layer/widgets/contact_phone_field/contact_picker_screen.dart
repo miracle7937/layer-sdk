@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../mixins.dart';
 import '../../utils.dart';
+import '../../widgets.dart';
 import '../header/sdk_header.dart';
 
 /// A screen for picking a contact from a the list of contacts on the device.
@@ -21,18 +22,24 @@ class _ContactPickerScreenState extends State<ContactPickerScreen>
     with ContactPickerMixin {
   /// Whether if the contacts are loading or not.
   bool _loadingContacts = true;
+
   bool get loadingContacts => _loadingContacts;
+
   set loadingContacts(bool loadingContacts) =>
       setState(() => _loadingContacts = loadingContacts);
 
   /// The list of contacts.
   List<Contact> _contacts = <Contact>[];
+
   List<Contact> get contacts => _contacts;
+
   set contacts(List<Contact> contacts) => setState(() => _contacts = contacts);
 
   /// The list of filtered contacts.
   List<Contact> _filteredContacts = <Contact>[];
+
   List<Contact> get filteredContacts => _filteredContacts;
+
   set filteredContacts(List<Contact> filteredContacts) =>
       setState(() => _filteredContacts = filteredContacts);
 
@@ -227,7 +234,7 @@ class _ContactPickerScreenState extends State<ContactPickerScreen>
       translation,
     );
 
-    return Scaffold(
+    return LayerScaffold(
       appBar: SDKHeader(
         title: translation.translate('contacts'),
         prefixSvgIcon: DKImages.arrowLeft,

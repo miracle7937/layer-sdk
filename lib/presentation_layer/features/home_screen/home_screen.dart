@@ -383,7 +383,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Experience? experience,
     bool busy = false,
   }) {
-    return Scaffold(
+    return LayerScaffold(
       drawer: experience?.sideDrawerMenu,
       appBar: appBar,
       backgroundColor: widget.backgroundColor,
