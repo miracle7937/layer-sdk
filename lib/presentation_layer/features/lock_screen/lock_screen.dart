@@ -181,7 +181,7 @@ class _LockScreenState extends SetAccessPinBaseWidgetState<_LockScreen> {
           },
         ),
       ],
-      child: Scaffold(
+      child: LayerScaffold(
         backgroundColor: layerDesign.surfaceOctonary1,
         body: SafeArea(
           child: Padding(

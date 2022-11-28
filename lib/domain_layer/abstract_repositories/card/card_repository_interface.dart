@@ -17,14 +17,4 @@ abstract class CardRepositoryInterface {
     int offset = 0,
     bool forceRefresh = false,
   });
-
-  /// Returns the card info for the passed card id
-  Future<CardInfo> getCardInfo({
-    required int cardId,
-    int? otpId,
-    String? otpValue,
-    SecondFactorType? secondFactorType,
-    String? clientResponse,
-    bool forceRefresh = false,
-  });
 }

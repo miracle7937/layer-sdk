@@ -1,6 +1,6 @@
 name: layer_sdk
 description: A new Flutter package project.
-version: 0.0.5
+version: 0.0.6
 
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
@@ -23,12 +23,21 @@ dependencies:
   design_kit_layer:
     git:
       url: git@gitlab.ubanquity.com:dart-packages/design-kit-layer.git
-      ref: a6b68056eed2ccdeff9bb5f3075e364f904fbba2
+      ref: 4821d08de8f67961dde362af4afa197080e88781
 
   ocra_authentication:
     git:
       url: git@gitlab.ubanquity.com:dart-packages/ocra_authentication.git
       ref: 3994518ffff10e0dfb9b1864e4d18a3802a8758f
+
+  # The MeaWallet SDK plugin
+  # Possible branches:
+  # - meawallet-prod  => Production SDK
+  # - meawallet-test => Test SDK
+  meawallet_plugin:
+    git:
+      url: git@gitlab.ubanquity.com:dart-packages/meawallet.git
+      ref: meawallet-prod
 
   # pub.dev packages
   asn1lib: ^1.0.1
@@ -85,6 +94,11 @@ dev_dependencies:
     sdk: flutter
   mocktail: ^0.1.4
   test: ^1.17.5
+  custom_lint: ^0.0.14
+  layer_scaffold_linter:
+    git:
+      url: git@gitlab.ubanquity.com:dart-packages/layer_scaffold_linter.git
+      ref: 96b59095afe9d302e64e283a24f3b607616afef7
 
 dependency_overrides:
   firebase_core_platform_interface: 4.5.1

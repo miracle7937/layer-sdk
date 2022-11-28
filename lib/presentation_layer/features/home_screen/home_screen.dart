@@ -8,6 +8,13 @@ import '../../extensions.dart';
 import '../../utils/translation.dart';
 import '../../widgets.dart';
 
+/// Custom callback called when a [PullToRefresh] gets triggered on a
+/// page with multiple containers.
+typedef CustomOnRefreshMultiContainerPageCallback = Function(
+  ExperiencePage page,
+  bool isDashboard,
+);
+
 /// Custom type created for building an [ExperiencePage].
 ///
 /// When a single DK menu item is selected, the corresponding [ExperiencePage]
@@ -174,6 +181,14 @@ class HomeScreen extends StatefulWidget {
   /// multiple cards pages.
   final SystemUiOverlayStyle cardsPageUIOverlayStyle;
 
+  /// Callback called when a page with multiple containes gets refreshed by
+  /// the [PullToRefresh] widget.
+  final CustomOnRefreshMultiContainerPageCallback
+      onRefreshMultiContainerPageCallback;
+
+  /// Indicates if the more menu should be forced to be rendered
+  final bool forceMoreMenuVisibility;
+
   /// Creates a new [HomeScreen]
   const HomeScreen({
     Key? key,
@@ -189,6 +204,8 @@ class HomeScreen extends StatefulWidget {
     this.moreMenuItemTitle,
     this.backgroundColor,
     this.cardsPageUIOverlayStyle = SystemUiOverlayStyle.light,
+    this.forceMoreMenuVisibility = false,
+    required this.onRefreshMultiContainerPageCallback,
   })  : assert(extraContainers.length == 0 || extraCardsBuilder != null),
         super(key: key);
 
@@ -209,6 +226,14 @@ class _HomeScreenState extends State<HomeScreen> {
   late ExperiencePage _initialPage;
 
   ExperiencePage? _selectedPage;
+
+  /// The key used to repain the multi container page in case
+  /// the [PullToRefresh] widget gets triggered.
+  Key _multiContainerPageKey = UniqueKey();
+  Key get multiContainerPageKey => _multiContainerPageKey;
+  set multiContainerPageKey(Key key) => setState(
+        () => _multiContainerPageKey = key,
+      );
 
   @override
   void initState() {
@@ -234,12 +259,29 @@ class _HomeScreenState extends State<HomeScreen> {
         page,
       );
     } else {
-      pageWidget = LayerPageBuilder(
-        page: page,
-        containerBuilder: widget.cardsBuilder,
-        extraCardBuilder: widget.extraCardsBuilder,
-        extraCards: widget.extraContainers,
-        uiOverlayStyle: widget.cardsPageUIOverlayStyle,
+      pageWidget = PullToRefresh(
+        onRefresh: () async {
+          final isDashboard =
+              context.read<ExperienceCubit>().state.visiblePages.first == page;
+
+          if (isDashboard) {
+            context.read<ExperienceCubit>().load(
+                  public: false,
+                  clearExperience: false,
+                );
+          }
+
+          widget.onRefreshMultiContainerPageCallback(page, isDashboard);
+          _multiContainerPageKey = UniqueKey();
+        },
+        child: LayerPageBuilder(
+          key: _multiContainerPageKey,
+          page: page,
+          containerBuilder: widget.cardsBuilder,
+          extraCardBuilder: widget.extraCardsBuilder,
+          extraCards: widget.extraContainers,
+          uiOverlayStyle: widget.cardsPageUIOverlayStyle,
+        ),
       );
     }
   }
@@ -269,6 +311,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 : experience.topBarMenu
             : null,
         pageWidget: LayerPageBuilder(
+          key: _multiContainerPageKey,
           page: page,
           containerBuilder: widget.cardsBuilder,
           extraCardBuilder: widget.extraCardsBuilder,
@@ -340,7 +383,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Experience? experience,
     bool busy = false,
   }) {
-    return Scaffold(
+    return LayerScaffold(
       drawer: experience?.sideDrawerMenu,
       appBar: appBar,
       backgroundColor: widget.backgroundColor,
@@ -372,6 +415,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           _getMorePageWidget,
                         );
                       },
+                      forceMoreMenuVisibility: widget.forceMoreMenuVisibility,
                     ),
                 ],
               ],

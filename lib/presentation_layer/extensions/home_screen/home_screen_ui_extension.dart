@@ -30,6 +30,7 @@ extension HomeScreenUIExtension on Experience {
     required ValueSetter<ExperiencePage> onSinglePageChanged,
     required ValueSetter<Set<ExperiencePage>> onMorePageChanged,
     String? moreMenuItemTitle,
+    bool forceMoreMenuVisibility = false,
   }) {
     final translation = Translation.of(context);
 
@@ -77,8 +78,8 @@ extension HomeScreenUIExtension on Experience {
         );
 
       case ExperienceMenuType.tabBarBottomWithFocusAndMore:
-        final shouldShowMoreItem = visiblePages.length > 4;
-
+        final shouldShowMoreItem =
+            (visiblePages.length > 4 || forceMoreMenuVisibility);
         // We are making the assumption here that the dashboard screen
         // (home page) is always the first page in the experience
         final homePage = visiblePages.first;

@@ -20,6 +20,7 @@ export 'mappings/branding/branding_dto_mapping.dart';
 export 'mappings/campaign/campaign_dto_mapping.dart';
 export 'mappings/campaign/campaign_response_dto_mapping.dart';
 export 'mappings/card/card_dto_mapping.dart';
+export 'mappings/card/card_info_dto_mapping.dart';
 export 'mappings/card/card_preferences_dto_mapping.dart';
 export 'mappings/card/card_transaction_dto_mapping.dart';
 export 'mappings/category/category_dto_mapping.dart';

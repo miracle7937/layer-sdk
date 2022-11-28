@@ -3,3 +3,7 @@ include: package:effective_dart/analysis_options.yaml
 linter:
   rules:
     one_member_abstracts: false
+
+analyzer:
+  plugins:
+    - custom_lint

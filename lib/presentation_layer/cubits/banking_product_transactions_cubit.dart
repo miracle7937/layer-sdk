@@ -111,18 +111,19 @@ class BankingProductTransactionsCubit
     double? amountTo,
     bool loadMore = false,
     bool? isTypeSelected,
+    bool resetFilter = false,
   }) async {
     emit(
       state.copyWith(
-        cardId: cardId ?? state.cardId,
-        accountId: accountId ?? state.accountId,
+        cardId: cardId,
+        accountId: accountId,
         startDate: fromDate,
         endDate: toDate,
-        amountFrom: amountFrom ?? state.amountFrom,
-        amountTo: amountTo ?? state.amountTo,
+        amountFrom: amountFrom,
+        amountTo: amountTo,
         listData: BankingProductTransactionsListData(),
         credit: credit,
-        isTypeSelected: isTypeSelected?? state.isTypeSelected,
+        isTypeSelected: isTypeSelected,
         actions: state.addAction(loadMore
             ? BankingProductTransactionsAction.loadingMore
             : (changeDate
@@ -133,6 +134,7 @@ class BankingProductTransactionsCubit
               ? BankingProductTransactionsAction.filtering
               : BankingProductTransactionsAction.loadInitialTransactions,
         ),
+        resetFilter: resetFilter,
       ),
     );
 

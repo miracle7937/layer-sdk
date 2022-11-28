@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../layer_sdk.dart';
 import '../../cubits/base_cubit/base_state.dart';
 
@@ -118,7 +119,7 @@ typedef DPACarouselScreenBuilder = Widget? Function(
 /// );
 /// ```
 /// {@end-tool}
-class DPAFlow<T> extends StatelessWidget {
+class DPAFlow<T> extends StatefulWidget {
   /// If it's during onboarding
   final bool isOnboarding;
 
@@ -190,6 +191,9 @@ class DPAFlow<T> extends StatelessWidget {
   /// Provide a custom padding for the continue button
   final EdgeInsets customContinueButtonPadding;
 
+  /// The custom padding for the DPA screen content or the DPA variable list.
+  final EdgeInsets? customContentPadding;
+
   /// Asset for logo
   final String? asset;
 
@@ -217,8 +221,17 @@ class DPAFlow<T> extends StatelessWidget {
       16.0,
       42.0,
     ),
+    this.customContentPadding,
     this.customCarouselScreemBuilder,
   }) : super(key: key);
+
+  @override
+  State<DPAFlow<T>> createState() => _DPAFlowState<T>();
+}
+
+class _DPAFlowState<T> extends State<DPAFlow<T>> {
+  /// Whether if a error is showing or not;
+  var _isErrorShowing = false;
 
   @override
   Widget build(BuildContext context) {
@@ -234,16 +247,17 @@ class DPAFlow<T> extends StatelessWidget {
       (cubit) => cubit.state.areVariablesValidated,
     );
 
-    /// Whether if a error is showing or not;
-    var _isErrorShowing = false;
     final translation = Translation.of(context);
     final cubit = context.read<DPAProcessCubit>();
     final isDelayTask = process.stepProperties?.delay != null;
 
-    final effectiveContinueButton = process.variables.length == 1 &&
-            process.variables.first.property.searchBar
+    final hasJumioConfig = process.stepProperties?.jumioConfig != null;
+
+    final effectiveContinueButton = (process.variables.length == 1 &&
+                process.variables.first.property.searchBar) ||
+            hasJumioConfig
         ? null
-        : customContinueButton ??
+        : widget.customContinueButton ??
             DPAContinueButton(
               process: process,
               enabled: !hasPopup && areVariablesValidated,
@@ -251,47 +265,10 @@ class DPAFlow<T> extends StatelessWidget {
 
     final effectiveHeader = (process.stepProperties?.hideAppBar ?? false)
         ? null
-        : customHeader ?? DPAHeader(process: process);
+        : widget.customHeader ?? DPAHeader(process: process);
 
     final shouldShowSkipButton =
         process.stepProperties?.skipLabel?.isNotEmpty ?? false;
-
-    /// Shows the transfer error bottom sheet.
-    Future<void> _showErrorBottomSheet({
-      required String titleKey,
-      String? descriptionKey,
-    }) async {
-      if (!_isErrorShowing) {
-        _isErrorShowing = true;
-
-        await BottomSheetHelper.showError(
-          context: context,
-          titleKey: titleKey,
-          descriptionKey: descriptionKey,
-          dismissKey: 'done',
-          blurBackground: true,
-        );
-
-        _isErrorShowing = false;
-      }
-    }
-
-    /// Called when a new connectivity error is emitted by the cubit.
-    void _showConnectivityError(
-      CubitConnectivityError<DPAProcessBusyAction> error,
-    ) =>
-        _showErrorBottomSheet(
-          titleKey: 'connectivity_error',
-        );
-
-    /// Called when a new api error is emitted by the cubit.
-    void _showAPIError(
-      CubitAPIError<DPAProcessBusyAction> error,
-    ) =>
-        _showErrorBottomSheet(
-          titleKey: error.code?.value ?? 'generic_error',
-          descriptionKey: error.message,
-        );
 
     return MultiBlocListener(
         listeners: [
@@ -302,7 +279,7 @@ class DPAFlow<T> extends StatelessWidget {
                 newState.process.stepProperties?.jumioConfig != null,
             listener: (context, state) {
               final dpaProcessCubit = context.read<DPAProcessCubit>();
-              sdkCallback(context, dpaProcessCubit, state.process);
+              widget.sdkCallback(context, dpaProcessCubit, state.process);
             },
           ),
           BlocListener<DPAProcessCubit, DPAProcessState>(
@@ -319,13 +296,14 @@ class DPAFlow<T> extends StatelessWidget {
             listenWhen: (oldState, newState) =>
                 oldState.runStatus != newState.runStatus &&
                 newState.runStatus == DPAProcessRunStatus.finished,
-            listener: onFinished,
+            listener: widget.onFinished,
           ),
         ],
         child: CubitErrorListener<DPAProcessCubit, DPAProcessBusyAction>(
           actions: DPAProcessBusyAction.values.toSet(),
-          onConnectivityError: _showConnectivityError,
-          onAPIError: _showAPIError,
+          onConnectivityError: (error) =>
+              _showConnectivityError(context, error: error),
+          onAPIError: (error) => _showAPIError(context, error: error),
           child: Stack(
             children: [
               _getEffectiveCustomChild(context) ??
@@ -338,23 +316,24 @@ class DPAFlow<T> extends StatelessWidget {
                         child: SingleChildScrollView(
                           child: Column(
                             children: [
-                              if (showTaskDescription)
+                              if (widget.showTaskDescription)
                                 DPATaskDescription(
                                   process: process,
                                   showTitle: effectiveHeader == null,
                                 ),
                               Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16.0,
-                                ),
-                                child: customVariableListBuilder?.call(
+                                padding: widget.customContentPadding ??
+                                    const EdgeInsets.symmetric(
+                                      horizontal: 16.0,
+                                    ),
+                                child: widget.customVariableListBuilder?.call(
                                       context,
                                       process,
                                     ) ??
                                     DPAVariablesList(
                                       process: process,
                                       customEmptySearchBuilder:
-                                          customEmptySearchBuilder,
+                                          widget.customEmptySearchBuilder,
                                     ),
                               ),
                             ],
@@ -362,7 +341,7 @@ class DPAFlow<T> extends StatelessWidget {
                         ),
                       ),
                       Padding(
-                        padding: customContinueButtonPadding,
+                        padding: widget.customContinueButtonPadding,
                         child: Column(
                           children: [
                             if (effectiveContinueButton != null)
@@ -407,15 +386,57 @@ class DPAFlow<T> extends StatelessWidget {
                       ),
                     ],
                   ),
-              if (isDelayTask) DPAFullscreenLoader(asset: asset),
+              if (isDelayTask) DPAFullscreenLoader(asset: widget.asset),
             ],
           ),
         ));
   }
 
+  /// Shows the transfer error bottom sheet.
+  Future<void> _showErrorBottomSheet(
+    BuildContext context, {
+    required String titleKey,
+    String? descriptionKey,
+  }) async {
+    if (!_isErrorShowing) {
+      _isErrorShowing = true;
+
+      await BottomSheetHelper.showError(
+        context: context,
+        titleKey: titleKey,
+        descriptionKey: descriptionKey,
+        dismissKey: 'done',
+        blurBackground: true,
+      );
+
+      _isErrorShowing = false;
+    }
+  }
+
+  /// Called when a new connectivity error is emitted by the cubit.
+  void _showConnectivityError(
+    BuildContext context, {
+    required CubitConnectivityError<DPAProcessBusyAction> error,
+  }) =>
+      _showErrorBottomSheet(
+        context,
+        titleKey: 'connectivity_error',
+      );
+
+  /// Called when a new api error is emitted by the cubit.
+  void _showAPIError(
+    BuildContext context, {
+    required CubitAPIError<DPAProcessBusyAction> error,
+  }) =>
+      _showErrorBottomSheet(
+        context,
+        titleKey: error.code?.value ?? 'generic_error',
+        descriptionKey: error.message,
+      );
+
   Widget? _getEffectiveCustomChild(BuildContext context) {
-    if (customChild != null) {
-      return customChild;
+    if (widget.customChild != null) {
+      return widget.customChild;
     }
 
     final process = context.select<DPAProcessCubit, DPAProcess>(
@@ -427,15 +448,15 @@ class DPAFlow<T> extends StatelessWidget {
           (e) => e.type == DPAVariableType.swipe,
         );
     if (isCarouselScreen) {
-      return customCarouselScreemBuilder?.call(context, process) ??
+      return widget.customCarouselScreemBuilder?.call(context, process) ??
           DPACarouselScreen();
     }
 
     final isOTPScreen = process.stepProperties?.screenType == DPAScreenType.otp;
     if (isOTPScreen) {
       return DPAOTPScreen(
-        isOnboarding: isOnboarding,
-        customDPAHeader: customHeader,
+        isOnboarding: widget.isOnboarding,
+        customDPAHeader: widget.customHeader,
       );
     }
 
@@ -443,7 +464,7 @@ class DPAFlow<T> extends StatelessWidget {
         process.stepProperties?.screenType == DPAScreenType.email;
     if (isEmailValidationScreen) {
       return DPAEmailVerificationScreen(
-        customDPAHeader: customHeader,
+        customDPAHeader: widget.customHeader,
       );
     }
 
@@ -451,7 +472,7 @@ class DPAFlow<T> extends StatelessWidget {
         .singleWhereOrNull((variable) => variable.type == DPAVariableType.pin);
     final effectiveHeader = (process.stepProperties?.hideAppBar ?? false)
         ? null
-        : customHeader ?? DPAHeader(process: process);
+        : widget.customHeader ?? DPAHeader(process: process);
 
     if (pinVariable != null) {
       return DPASetAccessPin(
@@ -483,8 +504,8 @@ class DPAFlow<T> extends StatelessWidget {
   }
 
   void _hidePopUp(BuildContext context, DPAProcessState state) {
-    if (customHidePopUp != null) {
-      customHidePopUp!.call(
+    if (widget.customHidePopUp != null) {
+      widget.customHidePopUp!.call(
         context,
         context.read<DPAProcessCubit>(),
       );
@@ -499,8 +520,8 @@ class DPAFlow<T> extends StatelessWidget {
     final processCubit = context.read<DPAProcessCubit>();
     final linkCubit = context.read<LinkCubit>();
 
-    if (customShowPopUp != null) {
-      customShowPopUp!.call(
+    if (widget.customShowPopUp != null) {
+      widget.customShowPopUp!.call(
         context,
         processCubit,
         linkCubit,
@@ -516,8 +537,8 @@ class DPAFlow<T> extends StatelessWidget {
       builder: (context) => BlocProvider.value(
         value: processCubit,
         child: _PopUpContents(
-          customVariableListBuilder: customVariableListBuilder,
-          customContinueButton: customContinueButton,
+          customVariableListBuilder: widget.customVariableListBuilder,
+          customContinueButton: widget.customContinueButton,
         ),
       ),
     );

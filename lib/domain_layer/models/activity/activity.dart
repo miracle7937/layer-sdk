@@ -252,6 +252,12 @@ enum ActivityActionType {
   /// Edit Appointment
   editAppointment,
 
+  /// Share payment receipt
+  sharePaymentReceipt,
+
+  /// Share transfer receipt.
+  shareTransferReceipt,
+
   /// Renewal
   renewal,
 

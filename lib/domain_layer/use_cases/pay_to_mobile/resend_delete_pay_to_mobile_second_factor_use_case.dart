@@ -14,9 +14,9 @@ class ResendDeletePayToMobileSecondFactorUseCase {
   /// Returns a [PayToMobile] resulting on resending the second factor for
   /// deleting the passed [NewPayToMobile].
   Future<PayToMobile> call({
-    required PayToMobile payToMobile,
+    required String requestId,
   }) =>
       _repository.resendSecondFactorForDeleting(
-        payToMobile: payToMobile,
+        requestId: requestId,
       );
 }

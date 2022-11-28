@@ -245,4 +245,8 @@ class Account extends Equatable {
         canRequestCertificateOfDeposit,
         iban,
       ];
+
+  /// Returns the available account number.
+  String? getNumber() =>
+      extraAccountNumber ?? iban ?? formattedAccountNumber ?? accountNumber;
 }
