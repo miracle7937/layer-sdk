@@ -73,6 +73,9 @@ class Beneficiary extends Equatable {
   /// The address, line 3.
   final String? address3;
 
+  /// The beneficiary's country code.
+  final String? rcptCountryCode;
+
   /// The OTP id
   final int? otpId;
 
@@ -107,6 +110,7 @@ class Beneficiary extends Equatable {
     this.extra,
     this.routingCode,
     this.secondFactorType,
+    this.rcptCountryCode,
   });
 
   /// Returns the full name of this beneficiary
@@ -135,6 +139,7 @@ class Beneficiary extends Equatable {
         extra,
         routingCode,
         secondFactorType,
+        rcptCountryCode,
       ];
 
   /// Returns beneficiary display name
@@ -159,6 +164,7 @@ class Beneficiary extends Equatable {
     String? address1,
     String? address2,
     String? address3,
+    String? rcptCountryCode,
     String? routingCode,
     int? otpId,
     SecondFactorType? secondFactorType,
@@ -180,6 +186,7 @@ class Beneficiary extends Equatable {
         address1: address1 ?? this.address1,
         address2: address2 ?? this.address2,
         address3: address3 ?? this.address3,
+        rcptCountryCode: rcptCountryCode ?? this.rcptCountryCode,
         routingCode: routingCode ?? this.routingCode,
         otpId: otpId ?? this.otpId,
         secondFactorType: secondFactorType ?? this.secondFactorType,
