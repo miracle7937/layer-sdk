@@ -7,6 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import '../../cubits.dart';
 import '../../resources.dart';
 import '../../utils.dart';
+import '../../widgets.dart';
 import '../../widgets/header/sdk_header.dart';
 import '../../widgets/steps_indicator/sdk_steps_indicator.dart';
 
@@ -46,7 +47,7 @@ class EnableBiometricsScreen extends StatelessWidget {
           onEnable();
         }
       },
-      child: Scaffold(
+      child: LayerScaffold(
         appBar: SDKHeader(
           title: translation.translate('enable_biometrics'),
           prefixSvgIcon: DKImages.arrowLeft,

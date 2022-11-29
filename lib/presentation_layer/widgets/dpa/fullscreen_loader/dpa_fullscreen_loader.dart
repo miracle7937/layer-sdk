@@ -18,7 +18,7 @@ class DPAFullscreenLoader extends StatelessWidget {
     final translation = Translation.of(context);
     final design = DesignSystem.of(context);
     return asset != null
-        ? Scaffold(
+        ? LayerScaffold(
             body: Container(
               color: DesignSystem.of(context).surfaceOctonary1,
               child: SafeArea(
