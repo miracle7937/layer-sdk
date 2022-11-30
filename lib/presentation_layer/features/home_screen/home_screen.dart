@@ -174,20 +174,24 @@ class HomeScreen extends StatefulWidget {
   /// will be used by default by the [Translation] class.
   final String? moreMenuItemTitle;
 
-  /// The background color to be aplied by the `Scaffold`
+  /// The background color to be applied by the `Scaffold`
   final Color? backgroundColor;
 
   /// The style of the system overlays, like the status bar, applied to the
   /// multiple cards pages.
   final SystemUiOverlayStyle cardsPageUIOverlayStyle;
 
-  /// Callback called when a page with multiple containes gets refreshed by
+  /// Callback called when a page with multiple contains gets refreshed by
   /// the [PullToRefresh] widget.
   final CustomOnRefreshMultiContainerPageCallback
       onRefreshMultiContainerPageCallback;
 
   /// Indicates if the more menu should be forced to be rendered
   final bool forceMoreMenuVisibility;
+
+  /// If something is loading in this screen.
+  /// Whether [fullscreenLoader] is displayed or not.
+  final bool loading;
 
   /// Creates a new [HomeScreen]
   const HomeScreen({
@@ -201,6 +205,7 @@ class HomeScreen extends StatefulWidget {
     this.extraContainers = const [],
     this.initialPageCallback,
     required this.fullscreenLoader,
+    this.loading = false,
     this.moreMenuItemTitle,
     this.backgroundColor,
     this.cardsPageUIOverlayStyle = SystemUiOverlayStyle.light,
@@ -421,7 +426,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-          if (busy)
+          if (busy || widget.loading)
             Positioned.fill(
               child: widget.fullscreenLoader,
             ),
