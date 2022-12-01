@@ -341,8 +341,6 @@ class _PinWidgetRowState extends State<PinWidgetRow>
     for (final pin in pins) {
       pin.text = emptyChar;
     }
-
-    firstNode.requestFocus();
   }
 }
 
