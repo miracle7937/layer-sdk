@@ -20,7 +20,7 @@ class VerifyCardInfoSecondFactorUseCase {
     required BankingCard card,
     required String value,
     required SecondFactorType secondFactorType,
-    required int otpId,
+    required int? otpId,
   }) async {
     final cardInfo = await _cardInfoRepository.verifySecondFactor(
       cardId: card.cardId,

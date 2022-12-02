@@ -142,19 +142,16 @@ class CardInfoCubit extends Cubit<CardInfoState> {
       );
 
       if (otpCode == null && ocraClientResponse == null) {
-        throw Exception(
-          'An OTP code or OCRA client response must be provided in order for '
-          'verifying the second factor',
-        );
+        return;
       }
 
       assert(
-        state.cardInfo?.otpId != null,
-        'The OTP id from the card info is null',
+        otpCode == null || state.cardInfo?.otpId != null,
+        'Verifying the OTP but the otpId on the card info is null',
       );
 
-      if (state.cardInfo?.otpId == null) {
-        throw Exception('The OTP id from the card info is null');
+      if (otpCode != null && state.cardInfo?.otpId == null) {
+        return;
       }
 
       emit(
@@ -171,7 +168,7 @@ class CardInfoCubit extends Cubit<CardInfoState> {
         value: otpCode ?? ocraClientResponse ?? '',
         secondFactorType:
             otpCode != null ? SecondFactorType.otp : SecondFactorType.ocra,
-        otpId: state.cardInfo!.otpId!,
+        otpId: state.cardInfo!.otpId,
       );
 
       emit(

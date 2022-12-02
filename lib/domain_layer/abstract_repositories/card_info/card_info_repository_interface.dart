@@ -19,6 +19,6 @@ abstract class CardInfoRepositoryInterface {
     required String cardId,
     required String value,
     required SecondFactorType secondFactorType,
-    required int otpId,
+    required int? otpId,
   });
 }
