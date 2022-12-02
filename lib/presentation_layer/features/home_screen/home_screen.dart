@@ -15,6 +15,12 @@ typedef CustomOnRefreshMultiContainerPageCallback = Function(
   bool isDashboard,
 );
 
+/// Callback called when the current page changes.
+typedef OnPageChangedCallback = Function(
+  ExperiencePage page,
+  bool isDashboard,
+);
+
 /// Custom type created for building an [ExperiencePage].
 ///
 /// When a single DK menu item is selected, the corresponding [ExperiencePage]
@@ -193,6 +199,9 @@ class HomeScreen extends StatefulWidget {
   /// Whether [fullscreenLoader] is displayed or not.
   final bool loading;
 
+  /// Optional callback that lets the app know what page was selected.
+  final OnPageChangedCallback? onPageChanged;
+
   /// Creates a new [HomeScreen]
   const HomeScreen({
     Key? key,
@@ -211,6 +220,7 @@ class HomeScreen extends StatefulWidget {
     this.cardsPageUIOverlayStyle = SystemUiOverlayStyle.light,
     this.forceMoreMenuVisibility = false,
     required this.onRefreshMultiContainerPageCallback,
+    this.onPageChanged,
   })  : assert(extraContainers.length == 0 || extraCardsBuilder != null),
         super(key: key);
 
@@ -250,6 +260,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _updatePageWidget(ExperiencePage page) {
+    if (widget.onPageChanged != null) {
+      final isDashboard =
+          context.read<ExperienceCubit>().state.visiblePages.first == page;
+      widget.onPageChanged!(page, isDashboard);
+    }
+
     _selectedPage = page;
     final containers = page.containers;
     final extraContainersForPage = widget.extraContainers
@@ -426,7 +442,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-          if (busy || widget.loading)
+          if ((busy && experience == null) || widget.loading)
             Positioned.fill(
               child: widget.fullscreenLoader,
             ),
