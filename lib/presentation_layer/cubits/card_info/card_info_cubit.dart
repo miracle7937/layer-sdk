@@ -168,7 +168,7 @@ class CardInfoCubit extends Cubit<CardInfoState> {
         value: otpCode ?? ocraClientResponse ?? '',
         secondFactorType:
             otpCode != null ? SecondFactorType.otp : SecondFactorType.ocra,
-        otpId: state.cardInfo!.otpId,
+        otpId: otpCode != null ? state.cardInfo!.otpId! : null,
       );
 
       emit(
