@@ -13,6 +13,16 @@ class CardInfoCubit extends Cubit<CardInfoState> {
   /// The card object.
   final BankingCard _card;
 
+  /// If `true`, the card info will be loaded from BE and from the SDK that
+  /// we use for unmasking the card details.
+  /// (Card number and cvv. Currently we use Meawallet).
+  ///
+  /// If `false`, it will only load the card info from BE.
+  /// (Won't unmaks the card number and cvv).
+  ///
+  /// Default is `true`.
+  final bool _shouldUnmaskCard;
+
   /// Creates a new instance of [CardInfoCubit]
   CardInfoCubit({
     required GetCardInfoUseCase getCardInfoUseCase,
@@ -20,16 +30,16 @@ class CardInfoCubit extends Cubit<CardInfoState> {
     required VerifyCardInfoSecondFactorUseCase
         verifyCardInfoSecondFactorUseCase,
     required BankingCard card,
+    bool shouldUnmaskCard = true,
   })  : _getCardInfoUseCase = getCardInfoUseCase,
         _sendOTPCodeForCardInfoUseCase = sendOTPCodeForCardInfoUseCase,
         _verifyCardInfoSecondFactorUseCase = verifyCardInfoSecondFactorUseCase,
         _card = card,
-        super(
-          CardInfoState(),
-        );
+        _shouldUnmaskCard = shouldUnmaskCard,
+        super(CardInfoState());
 
   /// Retrieves the [CardInfo] for the [_card].
-  Future<void> unmaskCardInfo() async {
+  Future<void> loadCardInfo() async {
     emit(
       state.copyWith(
         actions: state.addAction(
@@ -50,6 +60,7 @@ class CardInfoCubit extends Cubit<CardInfoState> {
     try {
       final cardInfo = await _getCardInfoUseCase(
         card: _card,
+        shouldUnmaskCard: _shouldUnmaskCard,
       );
 
       emit(
@@ -134,31 +145,42 @@ class CardInfoCubit extends Cubit<CardInfoState> {
     String? otpCode,
     String? ocraClientResponse,
   }) async {
-    assert(
-      otpCode != null || ocraClientResponse != null,
-      'An OTP code or OCRA client response must be provided in order for '
-      'verifying the second factor',
-    );
-
-    if (otpCode == null && ocraClientResponse == null) {
-      return;
-    }
-
-    emit(
-      state.copyWith(
-        actions: state.addAction(
-          CardInfoAction.verifySecondFactor,
-        ),
-        errors: {},
-      ),
-    );
-
     try {
+      assert(
+        otpCode != null || ocraClientResponse != null,
+        'An OTP code or OCRA client response must be provided in order for '
+        'verifying the second factor',
+      );
+
+      if (otpCode == null && ocraClientResponse == null) {
+        return;
+      }
+
+      assert(
+        otpCode == null || state.cardInfo?.otpId != null,
+        'Verifying the OTP but the otpId on the card info is null',
+      );
+
+      if (otpCode != null && state.cardInfo?.otpId == null) {
+        return;
+      }
+
+      emit(
+        state.copyWith(
+          actions: state.addAction(
+            CardInfoAction.verifySecondFactor,
+          ),
+          errors: {},
+        ),
+      );
+
       final cardInfo = await _verifyCardInfoSecondFactorUseCase(
         card: _card,
+        shouldUnmaskCard: _shouldUnmaskCard,
         value: otpCode ?? ocraClientResponse ?? '',
         secondFactorType:
             otpCode != null ? SecondFactorType.otp : SecondFactorType.ocra,
+        otpId: otpCode != null ? state.cardInfo!.otpId! : null,
       );
 
       emit(
@@ -198,7 +220,7 @@ class CardInfoCubit extends Cubit<CardInfoState> {
   }
 
   /// Clears the card info for the [_card].
-  void maskCardInfo() => emit(
+  void hideCardInfo() => emit(
         state.copyWith(
           clearCardInfo: true,
           events: {},
