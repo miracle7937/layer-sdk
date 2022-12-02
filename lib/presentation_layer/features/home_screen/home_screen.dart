@@ -280,7 +280,6 @@ class _HomeScreenState extends State<HomeScreen> {
           _multiContainerPageKey = UniqueKey();
         },
         child: LayerPageBuilder(
-          key: _multiContainerPageKey,
           page: page,
           containerBuilder: widget.cardsBuilder,
           extraCardBuilder: widget.extraCardsBuilder,
@@ -340,6 +339,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
 
     return MultiBlocListener(
+      key: _multiContainerPageKey,
       listeners: [
         BlocListener<ExperienceCubit, ExperienceState>(
           listenWhen: (previous, current) =>
