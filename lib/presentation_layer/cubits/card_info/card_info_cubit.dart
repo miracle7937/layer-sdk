@@ -134,31 +134,44 @@ class CardInfoCubit extends Cubit<CardInfoState> {
     String? otpCode,
     String? ocraClientResponse,
   }) async {
-    assert(
-      otpCode != null || ocraClientResponse != null,
-      'An OTP code or OCRA client response must be provided in order for '
-      'verifying the second factor',
-    );
-
-    if (otpCode == null && ocraClientResponse == null) {
-      return;
-    }
-
-    emit(
-      state.copyWith(
-        actions: state.addAction(
-          CardInfoAction.verifySecondFactor,
-        ),
-        errors: {},
-      ),
-    );
-
     try {
+      assert(
+        otpCode != null || ocraClientResponse != null,
+        'An OTP code or OCRA client response must be provided in order for '
+        'verifying the second factor',
+      );
+
+      if (otpCode == null && ocraClientResponse == null) {
+        throw Exception(
+          'An OTP code or OCRA client response must be provided in order for '
+          'verifying the second factor',
+        );
+      }
+
+      assert(
+        state.cardInfo?.otpId != null,
+        'The OTP id from the card info is null',
+      );
+
+      if (state.cardInfo?.otpId == null) {
+        throw Exception('The OTP id from the card info is null');
+      }
+
+      emit(
+        state.copyWith(
+          actions: state.addAction(
+            CardInfoAction.verifySecondFactor,
+          ),
+          errors: {},
+        ),
+      );
+
       final cardInfo = await _verifyCardInfoSecondFactorUseCase(
         card: _card,
         value: otpCode ?? ocraClientResponse ?? '',
         secondFactorType:
             otpCode != null ? SecondFactorType.otp : SecondFactorType.ocra,
+        otpId: state.cardInfo!.otpId!,
       );
 
       emit(

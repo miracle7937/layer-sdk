@@ -89,6 +89,7 @@ class CardInfoProvider {
     required String cardId,
     required String value,
     required SecondFactorTypeDTO secondFactorTypeDTO,
+    required int otpId,
   }) async {
     final response = await _netClient.request(
       _netClient.netEndpoints.cardInfo,
@@ -105,6 +106,7 @@ class CardInfoProvider {
         if (secondFactorTypeDTO == SecondFactorTypeDTO.ocra)
           'client_response': value,
         if (secondFactorTypeDTO == SecondFactorTypeDTO.otp) 'otp_value': value,
+        'otp_id': otpId,
       },
     );
 
