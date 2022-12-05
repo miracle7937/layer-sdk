@@ -44,6 +44,7 @@ extension OfferDTOMapping on OfferDTO {
           : rules!.map((rule) => rule.toOfferRule()).toList(),
       type: type!.toOfferType(),
       currency: currency,
+      created: created,
     );
   }
 }

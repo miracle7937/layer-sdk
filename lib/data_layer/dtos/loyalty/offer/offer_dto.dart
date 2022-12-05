@@ -50,6 +50,9 @@ class OfferDTO {
   ///The currency of the offer
   String? currency;
 
+  ///When the merchant was created
+  DateTime? created;
+
   ///Creates a new [OfferDTO] object
   OfferDTO({
     this.id,
@@ -67,6 +70,7 @@ class OfferDTO {
     this.rules,
     this.type,
     this.currency,
+    this.created,
   });
 
   ///Creates a [OfferDTO] form a JSON object
@@ -97,6 +101,7 @@ class OfferDTO {
               )),
         type: OfferTypeDTO.fromRaw(json['type']),
         currency: json['currency'],
+        created: JsonParser.parseDate(json['ts_created']),
       );
 
   /// Creates a list of [OfferDTO]s from the given JSON list.
