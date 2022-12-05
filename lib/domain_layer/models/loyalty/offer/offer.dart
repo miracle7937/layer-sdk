@@ -80,6 +80,9 @@ class Offer extends Equatable {
   ///The currency of the offer
   final String? currency;
 
+  ///When the merchant was created
+  final DateTime? created;
+
   ///Creates a new [Offer]
   Offer({
     required this.id,
@@ -97,6 +100,7 @@ class Offer extends Equatable {
     Iterable<OfferRule>? rules,
     required this.type,
     this.currency,
+    this.created,
   }) : rules = rules != null ? UnmodifiableListView(rules) : null;
 
   ///Creates a copy of this offer with different values
@@ -116,6 +120,7 @@ class Offer extends Equatable {
     Iterable<OfferRule>? rules,
     OfferType? type,
     String? currency,
+    DateTime? created,
   }) =>
       Offer(
         id: id ?? this.id,
@@ -133,6 +138,7 @@ class Offer extends Equatable {
         rules: rules ?? this.rules,
         type: type ?? this.type,
         currency: currency ?? this.currency,
+        created: created ?? this.created,
       );
 
   @override
@@ -152,5 +158,6 @@ class Offer extends Equatable {
         rules,
         type,
         currency,
+        created,
       ];
 }
