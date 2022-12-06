@@ -260,12 +260,19 @@ abstract class BaseState<CubitAction, CubitEvent, ValidationErrorCode>
       });
 
   /// Removes any error related to the passed action and returns the new set.
-  Set<CubitError> removeErrorForAction(CubitAction action) => errors
-      .where((error) =>
-          (error is CubitConnectivityError<CubitAction> ||
-              error is CubitConnectivityError<CubitAction>) &&
-          error.action != action)
-      .toSet();
+  Set<CubitError> removeErrorForAction(CubitAction action) =>
+      errors.where((error) {
+        final isValidationError = error is CubitValidationError;
+        final action = error is CubitConnectivityError<CubitAction>
+            ? error.action
+            : error is CubitAPIError<CubitAction>
+                ? error.action
+                : error is CubitCustomError<CubitAction>
+                    ? error.action
+                    : null;
+
+        return isValidationError || action != action;
+      }).toSet();
 
   /// Removes the passed validation error related to the passed validation
   /// error code.
