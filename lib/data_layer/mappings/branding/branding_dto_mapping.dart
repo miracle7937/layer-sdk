@@ -111,10 +111,18 @@ extension BrandingColorsDTOMapping on BrandingColorsDTO {
             defaultBrandingColors?.brandSecondary,
         brandTertiary: brandTertiary?.parseHexValueToInt() ??
             defaultBrandingColors?.brandTertiary,
-        basePrimaryWhite: basePrimaryWhite?.parseHexValueToInt() ??
-            defaultBrandingColors?.basePrimaryWhite,
         basePrimary: basePrimary?.parseHexValueToInt() ??
             defaultBrandingColors?.basePrimary,
+        basePrimaryWhite: basePrimaryWhite?.parseHexValueToInt() ??
+            defaultBrandingColors?.basePrimaryWhite,
+        basePrimaryBlack: basePrimaryBlack?.parseHexValueToInt() ??
+            defaultBrandingColors?.basePrimaryBlack,
+        basePrimaryTertiary: basePrimaryTertiary?.parseHexValueToInt() ??
+            defaultBrandingColors?.basePrimaryTertiary,
+        basePrimaryQuinary: basePrimaryQuinary?.parseHexValueToInt() ??
+            defaultBrandingColors?.basePrimaryQuinary,
+        basePrimarySenary: basePrimarySenary?.parseHexValueToInt() ??
+            defaultBrandingColors?.basePrimarySenary,
         baseSecondary: baseSecondary?.parseHexValueToInt() ??
             defaultBrandingColors?.baseSecondary,
         baseTertiary: baseTertiary?.parseHexValueToInt() ??
@@ -155,14 +163,12 @@ extension BrandingColorsDTOMapping on BrandingColorsDTO {
             defaultBrandingColors?.surfaceNonary3,
         surfaceNonary4: surfaceNonary4?.parseHexValueToInt() ??
             defaultBrandingColors?.surfaceNonary4,
-        darkAlpha:
-            darkAlpha?.parseHexValueToInt() ?? defaultBrandingColors?.darkAlpha,
-        whiteAlpha: whiteAlpha?.parseHexValueToInt() ??
-            defaultBrandingColors?.whiteAlpha,
-        successDarkPrimary: successDarkPrimary?.parseHexValueToInt() ??
-            defaultBrandingColors?.successDarkPrimary,
+        successAlpha: successAlpha?.parseHexValueToInt() ??
+            defaultBrandingColors?.successAlpha,
         successPrimary: successPrimary?.parseHexValueToInt() ??
             defaultBrandingColors?.successPrimary,
+        successDarkPrimary: successDarkPrimary?.parseHexValueToInt() ??
+            defaultBrandingColors?.successDarkPrimary,
         successSecondary: successSecondary?.parseHexValueToInt() ??
             defaultBrandingColors?.successSecondary,
         successTertiary: successTertiary?.parseHexValueToInt() ??
@@ -171,10 +177,12 @@ extension BrandingColorsDTOMapping on BrandingColorsDTO {
             defaultBrandingColors?.successQuaternary,
         successQuinary: successQuinary?.parseHexValueToInt() ??
             defaultBrandingColors?.successQuinary,
-        errorDarkPrimary: errorDarkPrimary?.parseHexValueToInt() ??
-            defaultBrandingColors?.errorDarkPrimary,
+        errorAlpha: errorAlpha?.parseHexValueToInt() ??
+            defaultBrandingColors?.errorAlpha,
         errorPrimary: errorPrimary?.parseHexValueToInt() ??
             defaultBrandingColors?.errorPrimary,
+        errorDarkPrimary: errorDarkPrimary?.parseHexValueToInt() ??
+            defaultBrandingColors?.errorDarkPrimary,
         errorSecondary: errorSecondary?.parseHexValueToInt() ??
             defaultBrandingColors?.errorSecondary,
         errorTertiary: errorTertiary?.parseHexValueToInt() ??
@@ -183,10 +191,12 @@ extension BrandingColorsDTOMapping on BrandingColorsDTO {
             defaultBrandingColors?.errorQuaternary,
         errorQuinary: errorQuinary?.parseHexValueToInt() ??
             defaultBrandingColors?.errorQuinary,
-        warningDarkPrimary: warningDarkPrimary?.parseHexValueToInt() ??
-            defaultBrandingColors?.warningDarkPrimary,
+        warningAlpha: warningAlpha?.parseHexValueToInt() ??
+            defaultBrandingColors?.warningAlpha,
         warningPrimary: warningPrimary?.parseHexValueToInt() ??
             defaultBrandingColors?.warningPrimary,
+        warningDarkPrimary: warningDarkPrimary?.parseHexValueToInt() ??
+            defaultBrandingColors?.warningDarkPrimary,
         warningSecondary: warningSecondary?.parseHexValueToInt() ??
             defaultBrandingColors?.warningSecondary,
         warningTertiary: warningTertiary?.parseHexValueToInt() ??
@@ -195,10 +205,12 @@ extension BrandingColorsDTOMapping on BrandingColorsDTO {
             defaultBrandingColors?.warningQuaternary,
         warningQuinary: warningQuinary?.parseHexValueToInt() ??
             defaultBrandingColors?.warningQuinary,
-        cautionDarkPrimary: cautionDarkPrimary?.parseHexValueToInt() ??
-            defaultBrandingColors?.cautionDarkPrimary,
+        cautionAlpha: cautionAlpha?.parseHexValueToInt() ??
+            defaultBrandingColors?.cautionAlpha,
         cautionPrimary: cautionPrimary?.parseHexValueToInt() ??
             defaultBrandingColors?.cautionPrimary,
+        cautionDarkPrimary: cautionDarkPrimary?.parseHexValueToInt() ??
+            defaultBrandingColors?.cautionDarkPrimary,
         cautionSecondary: cautionSecondary?.parseHexValueToInt() ??
             defaultBrandingColors?.cautionSecondary,
         cautionTertiary: cautionTertiary?.parseHexValueToInt() ??
@@ -207,10 +219,12 @@ extension BrandingColorsDTOMapping on BrandingColorsDTO {
             defaultBrandingColors?.cautionQuaternary,
         cautionQuinary: cautionQuinary?.parseHexValueToInt() ??
             defaultBrandingColors?.cautionQuinary,
-        infoDarkPrimary: infoDarkPrimary?.parseHexValueToInt() ??
-            defaultBrandingColors?.infoDarkPrimary,
+        infoAlpha:
+            infoAlpha?.parseHexValueToInt() ?? defaultBrandingColors?.infoAlpha,
         infoPrimary: infoPrimary?.parseHexValueToInt() ??
             defaultBrandingColors?.infoPrimary,
+        infoDarkPrimary: infoDarkPrimary?.parseHexValueToInt() ??
+            defaultBrandingColors?.infoDarkPrimary,
         infoSecondary: infoSecondary?.parseHexValueToInt() ??
             defaultBrandingColors?.infoSecondary,
         infoTertiary: infoTertiary?.parseHexValueToInt() ??
@@ -219,15 +233,5 @@ extension BrandingColorsDTOMapping on BrandingColorsDTO {
             defaultBrandingColors?.infoQuaternary,
         infoQuinary: infoQuinary?.parseHexValueToInt() ??
             defaultBrandingColors?.infoQuinary,
-        successAlpha: successAlpha?.parseHexValueToInt() ??
-            defaultBrandingColors?.successAlpha,
-        errorAlpha: errorAlpha?.parseHexValueToInt() ??
-            defaultBrandingColors?.errorAlpha,
-        warningAlpha: warningAlpha?.parseHexValueToInt() ??
-            defaultBrandingColors?.warningAlpha,
-        cautionAlpha: cautionAlpha?.parseHexValueToInt() ??
-            defaultBrandingColors?.cautionAlpha,
-        infoAlpha:
-            infoAlpha?.parseHexValueToInt() ?? defaultBrandingColors?.infoAlpha,
       );
 }

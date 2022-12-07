@@ -33,9 +33,17 @@ extension BrandingFlutterExtension on Branding {
           colors?.brandSecondary?.toColor() ?? defaultDesign.brandSecondary,
       brandTertiary:
           colors?.brandTertiary?.toColor() ?? defaultDesign.brandTertiary,
+      basePrimary: colors?.basePrimary?.toColor() ?? defaultDesign.basePrimary,
       basePrimaryWhite:
           colors?.basePrimaryWhite?.toColor() ?? defaultDesign.basePrimaryWhite,
-      basePrimary: colors?.basePrimary?.toColor() ?? defaultDesign.basePrimary,
+      basePrimaryBlack:
+          colors?.basePrimaryBlack?.toColor() ?? defaultDesign.basePrimaryBlack,
+      basePrimaryTertiary: colors?.basePrimaryTertiary?.toColor() ??
+          defaultDesign.basePrimaryTertiary,
+      basePrimaryQuinary: colors?.basePrimaryQuinary?.toColor() ??
+          defaultDesign.basePrimaryQuinary,
+      basePrimarySenary: colors?.basePrimarySenary?.toColor() ??
+          defaultDesign.basePrimarySenary,
       baseSecondary:
           colors?.baseSecondary?.toColor() ?? defaultDesign.baseSecondary,
       baseTertiary:
@@ -73,65 +81,72 @@ extension BrandingFlutterExtension on Branding {
           colors?.surfaceNonary3?.toColor() ?? defaultDesign.surfaceNonary3,
       surfaceNonary4:
           colors?.surfaceNonary4?.toColor() ?? defaultDesign.surfaceNonary4,
-      successDarkPrimary: colors?.successDarkPrimary?.toColor() ??
-          defaultDesign.successDarkPrimary,
+      successAlpha:
+          colors?.successAlpha?.toColor() ?? defaultDesign.successAlpha,
       successPrimary:
           colors?.successPrimary?.toColor() ?? defaultDesign.successPrimary,
+      successDarkPrimary: colors?.successDarkPrimary?.toColor() ??
+          defaultDesign.successDarkPrimary,
       successSecondary:
           colors?.successSecondary?.toColor() ?? defaultDesign.successSecondary,
       successTertiary:
           colors?.successTertiary?.toColor() ?? defaultDesign.successTertiary,
       successQuaternary: colors?.successQuaternary?.toColor() ??
           defaultDesign.successQuaternary,
-      errorDarkPrimary:
-          colors?.errorDarkPrimary?.toColor() ?? defaultDesign.errorDarkPrimary,
+      successQuinary:
+          colors?.successQuinary?.toColor() ?? defaultDesign.successQuinary,
+      errorAlpha: colors?.errorAlpha?.toColor() ?? defaultDesign.errorAlpha,
       errorPrimary:
           colors?.errorPrimary?.toColor() ?? defaultDesign.errorPrimary,
+      errorDarkPrimary:
+          colors?.errorDarkPrimary?.toColor() ?? defaultDesign.errorDarkPrimary,
       errorSecondary:
           colors?.errorSecondary?.toColor() ?? defaultDesign.errorSecondary,
       errorTertiary:
           colors?.errorTertiary?.toColor() ?? defaultDesign.errorTertiary,
       errorQuaternary:
           colors?.errorQuaternary?.toColor() ?? defaultDesign.errorQuaternary,
-      warningDarkPrimary: colors?.warningDarkPrimary?.toColor() ??
-          defaultDesign.warningDarkPrimary,
+      errorQuinary:
+          colors?.errorQuinary?.toColor() ?? defaultDesign.errorQuinary,
+      warningAlpha:
+          colors?.warningAlpha?.toColor() ?? defaultDesign.warningAlpha,
       warningPrimary:
           colors?.warningPrimary?.toColor() ?? defaultDesign.warningPrimary,
+      warningDarkPrimary: colors?.warningDarkPrimary?.toColor() ??
+          defaultDesign.warningDarkPrimary,
       warningSecondary:
           colors?.warningSecondary?.toColor() ?? defaultDesign.warningSecondary,
       warningTertiary:
           colors?.warningTertiary?.toColor() ?? defaultDesign.warningTertiary,
       warningQuaternary: colors?.warningQuaternary?.toColor() ??
           defaultDesign.warningQuaternary,
-      cautionDarkPrimary: colors?.cautionDarkPrimary?.toColor() ??
-          defaultDesign.cautionDarkPrimary,
+      warningQuinary:
+          colors?.warningQuinary?.toColor() ?? defaultDesign.warningQuinary,
+      cautionAlpha:
+          colors?.cautionAlpha?.toColor() ?? defaultDesign.cautionAlpha,
       cautionPrimary:
           colors?.cautionPrimary?.toColor() ?? defaultDesign.cautionPrimary,
+      cautionDarkPrimary: colors?.cautionDarkPrimary?.toColor() ??
+          defaultDesign.cautionDarkPrimary,
       cautionSecondary:
           colors?.cautionSecondary?.toColor() ?? defaultDesign.cautionSecondary,
       cautionTertiary:
           colors?.cautionTertiary?.toColor() ?? defaultDesign.cautionTertiary,
       cautionQuaternary: colors?.cautionQuaternary?.toColor() ??
           defaultDesign.cautionQuaternary,
+      cautionQuinary:
+          colors?.cautionQuinary?.toColor() ?? defaultDesign.cautionQuinary,
+      infoAlpha: colors?.infoAlpha?.toColor() ?? defaultDesign.infoAlpha,
+      infoPrimary: colors?.infoPrimary?.toColor() ?? defaultDesign.infoPrimary,
       infoDarkPrimary:
           colors?.infoDarkPrimary?.toColor() ?? defaultDesign.infoDarkPrimary,
-      infoPrimary: colors?.infoPrimary?.toColor() ?? defaultDesign.infoPrimary,
       infoSecondary:
           colors?.infoSecondary?.toColor() ?? defaultDesign.infoSecondary,
       infoTertiary:
           colors?.infoTertiary?.toColor() ?? defaultDesign.infoTertiary,
       infoQuaternary:
           colors?.infoQuaternary?.toColor() ?? defaultDesign.infoQuaternary,
-      successQuinary: const Color(0xFFF9FFF7),
-      errorQuinary: const Color(0xFFFFF8F7),
-      warningQuinary: const Color(0xFFFFFAF7),
-      cautionQuinary: const Color(0xFFFFFCF7),
-      infoQuinary: const Color(0xFFF7F8FF),
-      successAlpha: const Color(0xFF06210B),
-      errorAlpha: const Color(0xFF2E0509),
-      warningAlpha: const Color(0xFF2D1605),
-      cautionAlpha: const Color(0xFF2C2102),
-      infoAlpha: const Color(0xFF09182A),
+      infoQuinary: colors?.infoQuinary?.toColor() ?? defaultDesign.infoQuinary,
       baseTitleXXXL:
           fonts.baseTitleXXXL?.toTextStyle() ?? defaultDesign.titleXXXL(),
       baseTitleXXL:
