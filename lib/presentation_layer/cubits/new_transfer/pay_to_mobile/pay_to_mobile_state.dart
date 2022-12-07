@@ -62,9 +62,6 @@ enum PayToMobileValidationErrorCode {
   /// Source account validation error.
   sourceAccountValidationError,
 
-  /// Dial code validation error.
-  dialCodeValidationError,
-
   /// Phone number validation error.
   phoneNumberValidationError,
 
