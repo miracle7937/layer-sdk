@@ -1,3 +1,9 @@
+#0.0.7
+
+\* BREAKING CHANGE \*
+
+- Branding - Since the DKLayer ref was updated and there are new colors on the [DesignSystem], all the apps should handle this new colors.
+
 # 0.0.6
 
 - Added the meawallet plugin.
