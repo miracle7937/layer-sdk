@@ -260,6 +260,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _updatePageWidget(ExperiencePage page) {
+    if (_selectedPage == page) {
+      return;
+    }
+
     if (widget.onPageChanged != null) {
       final isDashboard =
           context.read<ExperienceCubit>().state.visiblePages.first == page;
