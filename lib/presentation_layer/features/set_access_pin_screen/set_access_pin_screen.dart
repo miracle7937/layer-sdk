@@ -26,6 +26,9 @@ class SetAccessPinScreen extends SetAccessPinBaseWidget {
   ///The function if succes set pin process
   final ValueChanged<User> onSuccess;
 
+  /// Extra widget like contact us button
+  final Widget? extraChild;
+
   /// Creates a new [SetAccessPinScreen].
   const SetAccessPinScreen({
     super.key,
@@ -35,6 +38,7 @@ class SetAccessPinScreen extends SetAccessPinBaseWidget {
     required this.onSuccess,
     required this.setPinTitle,
     required this.repeatPinTitle,
+    this.extraChild,
   });
 
   /// The static page route for the set acces pin screen.
@@ -46,6 +50,7 @@ class SetAccessPinScreen extends SetAccessPinBaseWidget {
     required String setPinTitle,
     required String repeatPinTitle,
     required ValueChanged<User?> onSuccess,
+    Widget? extraChild,
   }) =>
       MaterialPageRoute(
         builder: (context) => BlocProvider<SetPinScreenCubit>(
@@ -59,6 +64,7 @@ class SetAccessPinScreen extends SetAccessPinBaseWidget {
             setPinTitle: setPinTitle,
             repeatPinTitle: repeatPinTitle,
             onSuccess: onSuccess,
+            extraChild: extraChild,
           ),
         ),
       );
@@ -76,18 +82,24 @@ class _SetAccessPinScreenState
     return LayerScaffold(
       backgroundColor: layerDesign.surfaceOctonary1,
       appBar: widget.setPinAppBar,
-      body: PinPadView(
-        pinLenght: widget.pinLength,
-        pin: currentPin,
-        title: widget.setPinTitle,
-        disabled: disabled,
-        warning: warning,
-        onChanged: (pin) {
-          currentPin = pin;
-          if (pin.length == widget.pinLength) {
-            _navigateToRepeatPinScreen();
-          }
-        },
+      body: Column(
+        children: [
+          Expanded(
+              child: PinPadView(
+            pinLenght: widget.pinLength,
+            pin: currentPin,
+            title: widget.setPinTitle,
+            disabled: disabled,
+            warning: warning,
+            onChanged: (pin) {
+              currentPin = pin;
+              if (pin.length == widget.pinLength) {
+                _navigateToRepeatPinScreen();
+              }
+            },
+          )),
+          if (widget.extraChild != null) widget.extraChild!,
+        ],
       ),
     );
   }
@@ -110,6 +122,7 @@ class _SetAccessPinScreenState
               appBar: widget.repeatPinAppBar,
               title: widget.repeatPinTitle,
               onSuccess: widget.onSuccess,
+              extraChild: widget.extraChild,
             ),
           ),
         ),
@@ -141,6 +154,9 @@ class _RepeatAccessPinScreen extends SetAccessPinBaseWidget {
   ///The function if succes set pin process
   final ValueChanged<User> onSuccess;
 
+  /// Extra widget like contact us button
+  final Widget? extraChild;
+
   /// Creates a new [_RepeatAccessPinScreen].
   // ignore_for_file: unused_element
   const _RepeatAccessPinScreen({
@@ -150,6 +166,7 @@ class _RepeatAccessPinScreen extends SetAccessPinBaseWidget {
     this.appBar,
     required this.title,
     required this.onSuccess,
+    this.extraChild,
   });
 
   @override
@@ -173,35 +190,44 @@ class __RepeatAccessPinScreenState
             appBar: widget.appBar,
             body: WillPopScope(
               onWillPop: () async => !state.busy && state.user == null,
-              child: PinPadView(
-                pinLenght: widget.pinLength,
-                pin: currentPin,
-                title: widget.title,
-                disabled: !state.busy && disabled,
-                warning: state.errorMessage ?? warning,
-                onChanged: (pin) async {
-                  currentPin = pin;
-                  if (pin.length == widget.pinLength) {
-                    if (pin != widget.pin) {
-                      currentPin = '';
-                      warning = Translation.of(context).translate(
-                        'pin_code_error_password_not_match',
-                      );
-                    } else {
-                      disabled = true;
+              child: Column(
+                children: [
+                  Expanded(
+                    child: PinPadView(
+                      pinLenght: widget.pinLength,
+                      pin: currentPin,
+                      title: widget.title,
+                      disabled: !state.busy && disabled,
+                      warning: state.errorMessage ?? warning,
+                      onChanged: (pin) async {
+                        currentPin = pin;
+                        if (pin.length == widget.pinLength) {
+                          if (pin != widget.pin) {
+                            currentPin = '';
+                            warning = Translation.of(context).translate(
+                              'pin_code_error_password_not_match',
+                            );
+                          } else {
+                            disabled = true;
 
-                      await BottomSheetHelper.showConfirmation(
-                        context: context,
-                        titleKey: 'pass_code_done',
-                        type: BottomSheetType.success,
-                        showDenyButton: false,
-                        confirmKey: 'ok',
-                      );
+                            await BottomSheetHelper.showConfirmation(
+                              context: context,
+                              titleKey: 'pass_code_done',
+                              type: BottomSheetType.success,
+                              showDenyButton: false,
+                              confirmKey: 'ok',
+                            );
 
-                      context.read<SetPinScreenCubit>().setAccesPin(pin: pin);
-                    }
-                  }
-                },
+                            context
+                                .read<SetPinScreenCubit>()
+                                .setAccesPin(pin: pin);
+                          }
+                        }
+                      },
+                    ),
+                  ),
+                  if (widget.extraChild != null) widget.extraChild!,
+                ],
               ),
             ),
           ),
