@@ -1,5 +1,6 @@
 import '../../../domain_layer/models.dart';
 import '../../dtos.dart';
+import '../../environment/environment_configuration.dart';
 import '../../errors.dart';
 
 ///Extension for mapping the [CategoryDTO]
@@ -10,7 +11,10 @@ extension CategoryDTOMapping on CategoryDTO {
         name: name,
         color: color,
         description: description,
-        iconURL: iconURL,
+        iconURL: iconURL != null && iconURL!.isNotEmpty
+            ? '${EnvironmentConfiguration.current.fullUrl}/infobanking/v1'
+                '$iconURL'
+            : null,
         created: created,
         updated: updated,
         type: type?.toCategoryType(),
