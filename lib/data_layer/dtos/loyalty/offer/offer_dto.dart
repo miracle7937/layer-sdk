@@ -87,7 +87,7 @@ class OfferDTO {
         imageURL: json['image_url'],
         description: json['description'],
         shortDescription: json['short_description'],
-        tncURL: json['tnc_url'],
+        tncURL: json['tnc'],
         tncText: json['tnc_text'],
         status: OfferStatusDTO.fromRaw(json['status']),
         merchant:
