@@ -20,6 +20,12 @@ extension OfferDTOMapping on OfferDTO {
         details: 'One of the required parameters is null',
       );
     }
+
+    var termsAndConditions = tnc;
+    if (tnc != null && tncType == TermsAndConditionsTypeDTO.path) {
+      termsAndConditions =
+          '${EnvironmentConfiguration.current.fullUrl}/infobanking/v1$tnc';
+    }
     return Offer(
       id: id!,
       consoleName: consoleName,
@@ -32,11 +38,8 @@ extension OfferDTOMapping on OfferDTO {
           : null,
       description: description,
       shortDescription: shortDescription,
-      tncURL: tncURL == null
-          ? null
-          : '${EnvironmentConfiguration.current.fullUrl}/infobanking/v1'
-              '$tncURL',
-      tncText: tncText,
+      tnc: termsAndConditions,
+      tncType: tncType?.toTermsAndConditionsType(),
       status: status!.toOfferStatus(),
       merchant: merchant?.toMerchant() ?? Merchant(),
       rules: rules == null
@@ -170,6 +173,26 @@ extension OfferTypeDTOMapping on OfferTypeDTO {
 
       default:
         throw MappingException(from: OfferTypeDTO, to: OfferType);
+    }
+  }
+}
+
+///Extension for mapping the [TermsAndConditionsTypeDTO]
+extension TermsAndConditionsTypeDTOMapping on TermsAndConditionsTypeDTO {
+  ///Maps a [TermsAndConditionsTypeDTO] into a [TermsAndConditionsType]
+  TermsAndConditionsType toTermsAndConditionsType() {
+    switch (this) {
+      case TermsAndConditionsTypeDTO.path:
+        return TermsAndConditionsType.path;
+
+      case TermsAndConditionsTypeDTO.text:
+        return TermsAndConditionsType.text;
+
+      default:
+        throw MappingException(
+          from: TermsAndConditionsTypeDTO,
+          to: TermsAndConditionsType,
+        );
     }
   }
 }
