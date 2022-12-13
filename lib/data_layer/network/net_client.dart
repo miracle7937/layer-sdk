@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
@@ -228,6 +229,7 @@ class NetClient {
     Object? data,
     Map<String, dynamic>? queryParameters,
     bool decodeResponse = true,
+    bool? decodeErrorResponse,
     bool useDefaultToken = false,
     bool useBackgroundJsonHandler = true,
     bool addLanguage = true,
@@ -295,7 +297,7 @@ class NetClient {
 
         return await _buildResponse(
           response: e.response,
-          decodeResponse: decodeResponse,
+          decodeResponse: decodeErrorResponse ?? decodeResponse,
           useBackgroundJsonHandler: useBackgroundJsonHandler,
         );
       }
@@ -348,21 +350,44 @@ class NetClient {
     return uuid;
   }
 
+  dynamic _getDecodedString({
+    String? str,
+    required bool useBackgroundJsonHandler,
+  }) async {
+    if (str?.isEmpty ?? true) {
+      return null;
+    } else {
+      return useBackgroundJsonHandler
+          ? await backgroundJsonHandler.decode(str!)
+          : await jsonHandler.decode(str!);
+    }
+  }
+
   /// Builds a [NetResponse] based on the response from the request.
   Future<NetResponse> _buildResponse({
     @required Response? response,
     required bool decodeResponse,
     required bool useBackgroundJsonHandler,
   }) async {
-    final decodedData = !decodeResponse
-        ? response?.data
-        : (response?.data is String
-                ? (response?.data?.isEmpty ?? true)
-                : response?.data == null)
-            ? null
-            : useBackgroundJsonHandler
-                ? await backgroundJsonHandler.decode(response?.data)
-                : await jsonHandler.decode(response?.data);
+    dynamic decodedData = response?.data;
+    if (decodeResponse) {
+      if (response?.data is String) {
+        decodedData = await _getDecodedString(
+          str: response?.data,
+          useBackgroundJsonHandler: useBackgroundJsonHandler,
+        );
+      } else if (response?.data is Uint8List) {
+        var str = String.fromCharCodes(response?.data);
+        decodedData = await _getDecodedString(
+          str: str,
+          useBackgroundJsonHandler: useBackgroundJsonHandler,
+        );
+      } else {
+        decodedData = useBackgroundJsonHandler
+            ? await backgroundJsonHandler.decode(response?.data)
+            : await jsonHandler.decode(response?.data);
+      }
+    }
 
     return NetResponse(
       data: decodedData,
