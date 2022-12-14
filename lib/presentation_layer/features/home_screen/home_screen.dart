@@ -417,31 +417,43 @@ class _HomeScreenState extends State<HomeScreen> {
           SizedBox(
             height: double.maxFinite,
             width: double.maxFinite,
-            child: Column(
+            child: Stack(
               children: [
                 if (experience != null && pageWidget != null) ...[
-                  Expanded(
-                    child: pageWidget,
-                  ),
-                  if (withBottomBar)
-                    experience.bottomBarMenu(
-                      context,
-                      initialPage: _initialPage,
-                      visiblePages:
-                          context.watch<ExperienceCubit>().state.visiblePages,
-                      moreMenuItemTitle: widget.moreMenuItemTitle,
-                      onSinglePageChanged: _updatePageWidget,
-                      onMorePageChanged: (morePages) {
-                        _selectedPage = null;
-                        this.pageWidget = widget.morePageBuilder(
-                          context,
-                          morePages,
-                          _updatePageWidget,
-                          _getMorePageWidget,
-                        );
-                      },
-                      forceMoreMenuVisibility: widget.forceMoreMenuVisibility,
+                  Container(
+                    height: double.maxFinite,
+                    child: Expanded(
+                      child: pageWidget,
                     ),
+                  ),
+                  Positioned(
+                    left: 0,
+                    bottom: 0,
+                    right: 0,
+                    child: withBottomBar
+                        ? experience.bottomBarMenu(
+                            context,
+                            initialPage: _initialPage,
+                            visiblePages: context
+                                .watch<ExperienceCubit>()
+                                .state
+                                .visiblePages,
+                            moreMenuItemTitle: widget.moreMenuItemTitle,
+                            onSinglePageChanged: _updatePageWidget,
+                            onMorePageChanged: (morePages) {
+                              _selectedPage = null;
+                              this.pageWidget = widget.morePageBuilder(
+                                context,
+                                morePages,
+                                _updatePageWidget,
+                                _getMorePageWidget,
+                              );
+                            },
+                            forceMoreMenuVisibility:
+                                widget.forceMoreMenuVisibility,
+                          )
+                        : Container(),
+                  ),
                 ],
               ],
             ),
