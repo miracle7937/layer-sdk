@@ -1,6 +1,6 @@
 import '../../../domain_layer/models.dart';
 import '../../dtos.dart';
-import '../../environment/environment_configuration.dart';
+import '../../environment.dart';
 import '../../errors.dart';
 
 ///Extension for mapping the [CategoryDTO]

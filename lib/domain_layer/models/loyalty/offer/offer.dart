@@ -33,6 +33,15 @@ enum OfferType {
   cardSchemeMerchant,
 }
 
+///The offer Terms&Conditions type
+enum TermsAndConditionsType {
+  ///Path
+  path,
+
+  ///Text
+  text,
+}
+
 ///Contains the data of an offer
 class Offer extends Equatable {
   ///The id of the offer
@@ -59,11 +68,11 @@ class Offer extends Equatable {
   ///The short description of the offer
   final String? shortDescription;
 
-  ///The terms and conditions URL of the offer
-  final String? tncURL;
-
   ///The terms and conditions plain text
-  final String? tncText;
+  final TermsAndConditionsType? tncType;
+
+  ///The terms and conditions. URL or Text, depending on [tncType]
+  final String? tnc;
 
   ///The offer status
   final OfferStatus status;
@@ -93,8 +102,8 @@ class Offer extends Equatable {
     this.imageURL,
     this.description,
     this.shortDescription,
-    this.tncURL,
-    this.tncText,
+    this.tnc,
+    this.tncType,
     required this.status,
     required this.merchant,
     Iterable<OfferRule>? rules,
@@ -113,8 +122,8 @@ class Offer extends Equatable {
     String? imageURL,
     String? description,
     String? shortDescription,
-    String? tncURL,
-    String? tncText,
+    String? tnc,
+    TermsAndConditionsType? tncType,
     OfferStatus? status,
     Merchant? merchant,
     Iterable<OfferRule>? rules,
@@ -131,8 +140,8 @@ class Offer extends Equatable {
         imageURL: imageURL ?? this.imageURL,
         description: description ?? this.description,
         shortDescription: shortDescription ?? this.shortDescription,
-        tncURL: tncURL ?? this.tncURL,
-        tncText: tncText ?? this.tncText,
+        tnc: tnc ?? this.tnc,
+        tncType: tncType ?? this.tncType,
         status: status ?? this.status,
         merchant: merchant ?? this.merchant,
         rules: rules ?? this.rules,
@@ -151,8 +160,8 @@ class Offer extends Equatable {
         imageURL,
         description,
         shortDescription,
-        tncURL,
-        tncText,
+        tnc,
+        tncType,
         status,
         merchant,
         rules,
