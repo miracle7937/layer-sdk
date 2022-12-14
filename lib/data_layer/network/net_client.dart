@@ -229,7 +229,6 @@ class NetClient {
     Object? data,
     Map<String, dynamic>? queryParameters,
     bool decodeResponse = true,
-    bool? decodeErrorResponse,
     bool useDefaultToken = false,
     bool useBackgroundJsonHandler = true,
     bool addLanguage = true,
@@ -297,7 +296,7 @@ class NetClient {
 
         return await _buildResponse(
           response: e.response,
-          decodeResponse: decodeErrorResponse ?? decodeResponse,
+          decodeResponse: decodeResponse,
           useBackgroundJsonHandler: useBackgroundJsonHandler,
         );
       }
@@ -365,12 +364,12 @@ class NetClient {
 
   /// Builds a [NetResponse] based on the response from the request.
   Future<NetResponse> _buildResponse({
-    @required Response? response,
+    required Response? response,
     required bool decodeResponse,
     required bool useBackgroundJsonHandler,
   }) async {
     dynamic decodedData = response?.data;
-    if (decodeResponse) {
+    if (decodeResponse || response?.statusCode != 200) {
       if (response?.data is String) {
         decodedData = await _getDecodedString(
           str: response?.data,

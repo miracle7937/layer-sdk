@@ -84,7 +84,6 @@ class CertificateProvider {
       method: NetRequestMethods.post,
       responseType: ResponseType.bytes,
       decodeResponse: false,
-      decodeErrorResponse: true,
       throwAllErrors: false,
       queryParameters: {
         'customer_id': customerId,
@@ -102,8 +101,8 @@ class CertificateProvider {
     if (!response.success) {
       throw NetException(
         statusCode: response.statusCode,
-        code: response.data['code'],
-        message: response.data['message'],
+        code: response.data is Map ? response.data['code'] : null,
+        message: response.data is Map ? response.data['message'] : null,
       );
     }
 
