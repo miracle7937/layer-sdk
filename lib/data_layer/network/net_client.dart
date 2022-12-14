@@ -369,7 +369,9 @@ class NetClient {
     required bool useBackgroundJsonHandler,
   }) async {
     dynamic decodedData = response?.data;
-    if (decodeResponse || response?.statusCode != 200) {
+    if (decodeResponse ||
+        response?.statusCode != 200 ||
+        response?.statusCode != 201) {
       if (response?.data is String) {
         decodedData = await _getDecodedString(
           str: response?.data,
