@@ -38,6 +38,9 @@ enum CubitErrorCode {
   /// The payment failed.
   paymentFailed('payment_failed'),
 
+  /// The transaction not found.
+  transactionNotFound('transaction_not_found'),
+
   /// Bad request. (400 status code)
   badRequest('BAD_REQUEST'),
 

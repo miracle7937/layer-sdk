@@ -83,8 +83,8 @@ class CertificateProvider {
       netClient.netEndpoints.officialBankStatement,
       method: NetRequestMethods.post,
       responseType: ResponseType.bytes,
-      throwAllErrors: false,
       decodeResponse: false,
+      throwAllErrors: false,
       queryParameters: {
         'customer_id': customerId,
       },
@@ -101,6 +101,8 @@ class CertificateProvider {
     if (!response.success) {
       throw NetException(
         statusCode: response.statusCode,
+        code: response.data is Map ? response.data['code'] : null,
+        message: response.data is Map ? response.data['message'] : null,
       );
     }
 
