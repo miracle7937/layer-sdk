@@ -295,7 +295,7 @@ class NetClient {
         _log.warning('${method.name} ${e.requestOptions.uri}: $e');
 
         return await _buildResponse(
-          response: e.response,
+          response: e.response!,
           decodeResponse: decodeResponse,
           useBackgroundJsonHandler: useBackgroundJsonHandler,
         );
@@ -364,36 +364,38 @@ class NetClient {
 
   /// Builds a [NetResponse] based on the response from the request.
   Future<NetResponse> _buildResponse({
-    required Response? response,
+    required Response response,
     required bool decodeResponse,
     required bool useBackgroundJsonHandler,
   }) async {
-    dynamic decodedData = response?.data;
-    if (decodeResponse ||
-        response?.statusCode != 200 ||
-        response?.statusCode != 201) {
-      if (response?.data is String) {
+    dynamic decodedData = response.data;
+    final statusCode = response.statusCode ?? '';
+    final shouldDecodeResponse =
+        decodeResponse || statusCode != 200 || statusCode != 201;
+
+    if (shouldDecodeResponse) {
+      if (response.data is String) {
         decodedData = await _getDecodedJson(
-          str: response?.data,
+          str: response.data,
           useBackgroundJsonHandler: useBackgroundJsonHandler,
         );
-      } else if (response?.data is Uint8List) {
-        var str = String.fromCharCodes(response?.data);
+      } else if (response.data is Uint8List) {
+        var str = String.fromCharCodes(response.data);
         decodedData = await _getDecodedJson(
           str: str,
           useBackgroundJsonHandler: useBackgroundJsonHandler,
         );
       } else {
         decodedData = useBackgroundJsonHandler
-            ? await backgroundJsonHandler.decode(response?.data)
-            : await jsonHandler.decode(response?.data);
+            ? await backgroundJsonHandler.decode(response.data)
+            : await jsonHandler.decode(response.data);
       }
     }
 
     return NetResponse(
       data: decodedData,
-      statusCode: response?.statusCode,
-      statusMessage: response?.statusMessage,
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
     );
   }
 
@@ -498,7 +500,7 @@ class NetClient {
         _log.warning('${method.name} ${e.requestOptions.uri}: $e');
 
         return await _buildResponse(
-          response: e.response,
+          response: e.response!,
           decodeResponse: decodeResponse,
           useBackgroundJsonHandler: useBackgroundJsonHandler,
         );
