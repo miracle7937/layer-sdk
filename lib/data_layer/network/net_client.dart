@@ -349,7 +349,7 @@ class NetClient {
     return uuid;
   }
 
-  dynamic _getDecodedJson({
+  Future<dynamic> _getDecodedJson({
     String? str,
     required bool useBackgroundJsonHandler,
   }) async {
@@ -371,7 +371,7 @@ class NetClient {
     dynamic decodedData = response.data;
     final statusCode = response.statusCode ?? '';
     final shouldDecodeResponse =
-        decodeResponse || statusCode != 200 || statusCode != 201;
+        decodeResponse || (statusCode != 200 && statusCode != 201);
 
     if (shouldDecodeResponse) {
       if (response.data is String) {
@@ -380,15 +380,11 @@ class NetClient {
           useBackgroundJsonHandler: useBackgroundJsonHandler,
         );
       } else if (response.data is Uint8List) {
-        var str = String.fromCharCodes(response.data);
+        final str = String.fromCharCodes(response.data);
         decodedData = await _getDecodedJson(
           str: str,
           useBackgroundJsonHandler: useBackgroundJsonHandler,
         );
-      } else {
-        decodedData = useBackgroundJsonHandler
-            ? await backgroundJsonHandler.decode(response.data)
-            : await jsonHandler.decode(response.data);
       }
     }
 
