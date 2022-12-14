@@ -223,15 +223,17 @@ class _DPATextState extends State<DPAText> {
                       ),
                       SizedBox(width: 12)
                     ],
-                    Text(
-                      label!,
-                      style: labelTextProperties?.toTextStyle(
-                            layerDesign,
-                          ) ??
-                          layerDesign.bodyS(
-                            color: labelTextProperties?.flutterColor ??
-                                layerDesign.baseQuaternary,
-                          ),
+                    Expanded(
+                      child: Text(
+                        label!,
+                        style: labelTextProperties?.toTextStyle(
+                              layerDesign,
+                            ) ??
+                            layerDesign.bodyS(
+                              color: labelTextProperties?.flutterColor ??
+                                  layerDesign.baseQuaternary,
+                            ),
+                      ),
                     )
                   ],
                 ),
