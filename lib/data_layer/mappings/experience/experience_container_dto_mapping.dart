@@ -272,6 +272,9 @@ extension ExperienceContainerTypeMapping on String {
       case 'walkthrough_screen':
         return ExperienceContainerType.walkthrough;
 
+      case 'bank_information':
+        return ExperienceContainerType.bankInformation;
+
       default:
         final _log = Logger('ExperienceContainerTypeMapping');
         _log.severe('Error parsing $this experience');

@@ -234,4 +234,7 @@ enum ExperienceContainerType {
 
   /// The walkthrough type
   walkthrough,
+
+  /// The bankInformation type
+  bankInformation,
 }
