@@ -422,9 +422,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (experience != null && pageWidget != null) ...[
                   Container(
                     height: double.maxFinite,
-                    child: Expanded(
-                      child: pageWidget,
-                    ),
+                    child: pageWidget,
                   ),
                   Positioned(
                     left: 0,
