@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 import '../../../../../presentation_layer/resources.dart';
-import 'input_done_view.dart';
 
 /// View that will add/remove a padding to the child view when
 /// the keyboard is shown/hidden
@@ -27,9 +26,7 @@ class AutoPaddingKeyboard extends StatelessWidget {
               .backgroundColor
               .withOpacity(0.8),
           padding: EdgeInsets.only(
-            bottom: isKeyboardVisible && Platform.isIOS
-                ? InputDoneView.doneViewHeight
-                : 0.0,
+            bottom: isKeyboardVisible && Platform.isIOS ? 8 : 0.0,
           ),
           child: child,
         ),
