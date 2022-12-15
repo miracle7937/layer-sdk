@@ -15,10 +15,10 @@ abstract class CardInfoRepositoryInterface {
 
   /// Returns the [CardInfo] object resulting on verifying the 2FA for the
   /// passed [cardId].
-
   Future<CardInfo> verifySecondFactor({
     required String cardId,
     required String value,
     required SecondFactorType secondFactorType,
+    required int? otpId,
   });
 }

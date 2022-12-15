@@ -327,6 +327,12 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
 
       if (secondsToAutoStepOrFinish != null) {
         await Future.delayed(Duration(seconds: secondsToAutoStepOrFinish));
+
+        if (state.actions.contains(DPAProcessBusyAction.steppingForward) ||
+            state.runStatus != DPAProcessRunStatus.running) {
+          return;
+        }
+
         stepOrFinish();
       }
     } on NetException catch (e) {

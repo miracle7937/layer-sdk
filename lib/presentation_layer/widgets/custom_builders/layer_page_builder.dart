@@ -90,6 +90,9 @@ class LayerPageBuilder extends StatelessWidget {
                       ),
               )
               .toList(growable: false),
+          SliverToBoxAdapter(
+            child: const SizedBox(height: 76),
+          ),
         ],
       ),
     );

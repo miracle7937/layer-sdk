@@ -23,6 +23,7 @@ extension BeneficiaryDTOMapping on BeneficiaryDTO {
         address1: rcptAddress1,
         address2: rcptAddress2,
         address3: rcptAddress3,
+        rcptCountryCode:rcptCountryCode ?? '',
         bank: Bank(
           name: bankName,
           bic: bankSwift,

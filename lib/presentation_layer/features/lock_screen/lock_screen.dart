@@ -40,6 +40,9 @@ class LockScreen extends StatelessWidget {
   /// The Firebase notification token
   final String? notificationToken;
 
+  /// Extra widget like contact us button
+  final Widget? extraChild;
+
   /// Creates a new [LockScreen].
   LockScreen({
     Key? key,
@@ -51,6 +54,7 @@ class LockScreen extends StatelessWidget {
     required this.deviceId,
     this.scramblePin = false,
     this.notificationToken,
+    this.extraChild,
   }) : assert(ocraSecret.isNotEmpty, 'The ocra secret cannot be empty');
 
   @override
@@ -70,6 +74,7 @@ class LockScreen extends StatelessWidget {
             deviceId: deviceId,
             scramblePin: scramblePin,
             notifcationToken: notificationToken,
+            extraChild: extraChild,
           ),
         ),
       );
@@ -100,6 +105,9 @@ class _LockScreen extends SetAccessPinBaseWidget {
   /// The Firebase notification token
   final String? notifcationToken;
 
+  /// Extra widget like contact us button
+  final Widget? extraChild;
+
   /// Creates a new [_LockScreen].
   const _LockScreen({
     super.key,
@@ -111,6 +119,7 @@ class _LockScreen extends SetAccessPinBaseWidget {
     required this.deviceId,
     this.scramblePin = false,
     required this.notifcationToken,
+    this.extraChild,
   });
 
   @override
@@ -186,36 +195,47 @@ class _LockScreenState extends SetAccessPinBaseWidgetState<_LockScreen> {
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(32.0),
-            child: PinPadView(
-              scramblePin: widget.scramblePin,
-              pinLenght: widget.pinLength,
-              pin: currentPin,
-              title: widget.title,
-              disabled: disabled,
-              warning: error.localize(
-                translation,
-                state.remainingAttempts,
-              ),
-              onChanged: (pin) async {
-                currentPin = pin;
-                if (pin.length == widget.pinLength) {
-                  final authenticationCubit =
-                      context.read<AuthenticationCubit>();
-                  await context.read<OcraAuthenticationCubit>().generateToken(
-                        password: currentPin,
-                      );
-                  final session = await _getDeviceSession();
-                  await authenticationCubit.verifyAccessPin(
-                    pin,
-                    deviceInfo: session,
-                    userToken:
-                        context.read<OcraAuthenticationCubit>().state.token,
-                    notificationToken: widget.notifcationToken,
-                  );
-                }
-              },
-              showBiometrics: widget.useBiometrics,
-              onBiometrics: _onBiometrics,
+            child: Column(
+              children: [
+                Expanded(
+                  child: PinPadView(
+                    scramblePin: widget.scramblePin,
+                    pinLenght: widget.pinLength,
+                    pin: currentPin,
+                    title: widget.title,
+                    disabled: disabled,
+                    warning: error.localize(
+                      translation,
+                      state.remainingAttempts,
+                    ),
+                    onChanged: (pin) async {
+                      currentPin = pin;
+                      if (pin.length == widget.pinLength) {
+                        final authenticationCubit =
+                            context.read<AuthenticationCubit>();
+                        await context
+                            .read<OcraAuthenticationCubit>()
+                            .generateToken(
+                              password: currentPin,
+                            );
+                        final session = await _getDeviceSession();
+                        await authenticationCubit.verifyAccessPin(
+                          pin,
+                          deviceInfo: session,
+                          userToken: context
+                              .read<OcraAuthenticationCubit>()
+                              .state
+                              .token,
+                          notificationToken: widget.notifcationToken,
+                        );
+                      }
+                    },
+                    showBiometrics: widget.useBiometrics,
+                    onBiometrics: _onBiometrics,
+                  ),
+                ),
+                if (widget.extraChild != null) widget.extraChild!,
+              ],
             ),
           ),
         ),

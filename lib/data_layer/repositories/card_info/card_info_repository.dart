@@ -44,11 +44,13 @@ class CardInfoRepository implements CardInfoRepositoryInterface {
     required String cardId,
     required String value,
     required SecondFactorType secondFactorType,
+    required int? otpId,
   }) async {
     final cardInfoDTO = await _provider.verifySecondFactor(
       cardId: cardId,
       value: value,
       secondFactorTypeDTO: secondFactorType.toSecondFactorTypeDTO(),
+      otpId: otpId,
     );
 
     return cardInfoDTO.toCardInfo();

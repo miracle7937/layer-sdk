@@ -1,6 +1,6 @@
 name: layer_sdk
 description: A new Flutter package project.
-version: 0.0.6
+version: 0.0.7
 
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
@@ -23,7 +23,7 @@ dependencies:
   design_kit_layer:
     git:
       url: git@gitlab.ubanquity.com:dart-packages/design-kit-layer.git
-      ref: 4821d08de8f67961dde362af4afa197080e88781
+      ref: a6edabc067f106f1d0a8579fda779ccf079ddd4b
 
   ocra_authentication:
     git:
@@ -37,7 +37,7 @@ dependencies:
   meawallet_plugin:
     git:
       url: git@gitlab.ubanquity.com:dart-packages/meawallet.git
-      ref: meawallet-prod
+      ref: 9bf1433fbfc774379eaf967620c7249500c0fc3a
 
   # pub.dev packages
   asn1lib: ^1.0.1

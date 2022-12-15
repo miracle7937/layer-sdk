@@ -15,6 +15,12 @@ typedef CustomOnRefreshMultiContainerPageCallback = Function(
   bool isDashboard,
 );
 
+/// Callback called when the current page changes.
+typedef OnPageChangedCallback = Function(
+  ExperiencePage page,
+  bool isDashboard,
+);
+
 /// Custom type created for building an [ExperiencePage].
 ///
 /// When a single DK menu item is selected, the corresponding [ExperiencePage]
@@ -174,20 +180,27 @@ class HomeScreen extends StatefulWidget {
   /// will be used by default by the [Translation] class.
   final String? moreMenuItemTitle;
 
-  /// The background color to be aplied by the `Scaffold`
+  /// The background color to be applied by the `Scaffold`
   final Color? backgroundColor;
 
   /// The style of the system overlays, like the status bar, applied to the
   /// multiple cards pages.
   final SystemUiOverlayStyle cardsPageUIOverlayStyle;
 
-  /// Callback called when a page with multiple containes gets refreshed by
+  /// Callback called when a page with multiple contains gets refreshed by
   /// the [PullToRefresh] widget.
   final CustomOnRefreshMultiContainerPageCallback
       onRefreshMultiContainerPageCallback;
 
   /// Indicates if the more menu should be forced to be rendered
   final bool forceMoreMenuVisibility;
+
+  /// If something is loading in this screen.
+  /// Whether [fullscreenLoader] is displayed or not.
+  final bool loading;
+
+  /// Optional callback that lets the app know what page was selected.
+  final OnPageChangedCallback? onPageChanged;
 
   /// Creates a new [HomeScreen]
   const HomeScreen({
@@ -201,11 +214,13 @@ class HomeScreen extends StatefulWidget {
     this.extraContainers = const [],
     this.initialPageCallback,
     required this.fullscreenLoader,
+    this.loading = false,
     this.moreMenuItemTitle,
     this.backgroundColor,
     this.cardsPageUIOverlayStyle = SystemUiOverlayStyle.light,
     this.forceMoreMenuVisibility = false,
     required this.onRefreshMultiContainerPageCallback,
+    this.onPageChanged,
   })  : assert(extraContainers.length == 0 || extraCardsBuilder != null),
         super(key: key);
 
@@ -245,6 +260,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _updatePageWidget(ExperiencePage page) {
+    if (_selectedPage == page) {
+      return;
+    }
+
+    if (widget.onPageChanged != null) {
+      final isDashboard =
+          context.read<ExperienceCubit>().state.visiblePages.first == page;
+      widget.onPageChanged!(page, isDashboard);
+    }
+
     _selectedPage = page;
     final containers = page.containers;
     final extraContainersForPage = widget.extraContainers
@@ -275,7 +300,6 @@ class _HomeScreenState extends State<HomeScreen> {
           _multiContainerPageKey = UniqueKey();
         },
         child: LayerPageBuilder(
-          key: _multiContainerPageKey,
           page: page,
           containerBuilder: widget.cardsBuilder,
           extraCardBuilder: widget.extraCardsBuilder,
@@ -335,6 +359,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
 
     return MultiBlocListener(
+      key: _multiContainerPageKey,
       listeners: [
         BlocListener<ExperienceCubit, ExperienceState>(
           listenWhen: (previous, current) =>
@@ -392,36 +417,46 @@ class _HomeScreenState extends State<HomeScreen> {
           SizedBox(
             height: double.maxFinite,
             width: double.maxFinite,
-            child: Column(
+            child: Stack(
               children: [
                 if (experience != null && pageWidget != null) ...[
-                  Expanded(
+                  Container(
+                    height: double.maxFinite,
                     child: pageWidget,
                   ),
-                  if (withBottomBar)
-                    experience.bottomBarMenu(
-                      context,
-                      initialPage: _initialPage,
-                      visiblePages:
-                          context.watch<ExperienceCubit>().state.visiblePages,
-                      moreMenuItemTitle: widget.moreMenuItemTitle,
-                      onSinglePageChanged: _updatePageWidget,
-                      onMorePageChanged: (morePages) {
-                        _selectedPage = null;
-                        this.pageWidget = widget.morePageBuilder(
-                          context,
-                          morePages,
-                          _updatePageWidget,
-                          _getMorePageWidget,
-                        );
-                      },
-                      forceMoreMenuVisibility: widget.forceMoreMenuVisibility,
-                    ),
+                  Positioned(
+                    left: 0,
+                    bottom: 0,
+                    right: 0,
+                    child: withBottomBar
+                        ? experience.bottomBarMenu(
+                            context,
+                            initialPage: _initialPage,
+                            visiblePages: context
+                                .watch<ExperienceCubit>()
+                                .state
+                                .visiblePages,
+                            moreMenuItemTitle: widget.moreMenuItemTitle,
+                            onSinglePageChanged: _updatePageWidget,
+                            onMorePageChanged: (morePages) {
+                              _selectedPage = null;
+                              this.pageWidget = widget.morePageBuilder(
+                                context,
+                                morePages,
+                                _updatePageWidget,
+                                _getMorePageWidget,
+                              );
+                            },
+                            forceMoreMenuVisibility:
+                                widget.forceMoreMenuVisibility,
+                          )
+                        : Container(),
+                  ),
                 ],
               ],
             ),
           ),
-          if (busy)
+          if ((busy && experience == null) || widget.loading)
             Positioned.fill(
               child: widget.fullscreenLoader,
             ),

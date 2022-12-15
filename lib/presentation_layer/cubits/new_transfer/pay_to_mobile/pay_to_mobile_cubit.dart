@@ -221,6 +221,16 @@ class PayToMobileCubit extends Cubit<PayToMobileState> {
     bool? saveToShortcut,
     String? shortcutName,
   }) async {
+    _clearValidationErrors(
+      account: account,
+      dialCode: dialCode,
+      phoneNumber: phoneNumber,
+      amount: amount,
+      currency: currency,
+      transactionCode: transactionCode,
+      shortcutName: shortcutName,
+    );
+
     if (account != null && currency == null) {
       currency = state.currencies.singleWhereOrNull(
         (currency) => currency.code == account.currency,
@@ -257,6 +267,76 @@ class PayToMobileCubit extends Cubit<PayToMobileState> {
           saveToShortcut: saveToShortcut,
           shortcutName: shortcutName,
         ),
+      ),
+    );
+  }
+
+  /// Clears the validation errors based on the passed values.
+  void _clearValidationErrors({
+    Account? account,
+    String? dialCode,
+    String? phoneNumber,
+    double? amount,
+    Currency? currency,
+    String? transactionCode,
+    String? shortcutName,
+  }) {
+    final validationErrorCodesToClean = <PayToMobileValidationErrorCode>{};
+
+    if (account != null && account.id != state.payToMobile.accountId) {
+      validationErrorCodesToClean.add(
+        PayToMobileValidationErrorCode.sourceAccountValidationError,
+      );
+    }
+
+    if (dialCode != null && dialCode != state.payToMobile.dialCode) {
+      validationErrorCodesToClean.add(
+        PayToMobileValidationErrorCode.phoneNumberValidationError,
+      );
+    }
+
+    if (phoneNumber != null && phoneNumber != state.payToMobile.phoneNumber) {
+      validationErrorCodesToClean.add(
+        PayToMobileValidationErrorCode.phoneNumberValidationError,
+      );
+    }
+
+    if (amount != null && amount != state.payToMobile.amount) {
+      validationErrorCodesToClean.addAll({
+        PayToMobileValidationErrorCode.amountValidationError,
+        PayToMobileValidationErrorCode.insufficientBalanceValidationError,
+      });
+    }
+
+    if (transactionCode != null &&
+        transactionCode != state.payToMobile.transactionCode) {
+      validationErrorCodesToClean.add(
+        PayToMobileValidationErrorCode.transactionCodeEmptyValidationError,
+      );
+    }
+
+    if (transactionCode != null && transactionCode.length == 4) {
+      validationErrorCodesToClean.add(
+        PayToMobileValidationErrorCode.transactionCodeLengthValidationError,
+      );
+    }
+
+    if (shortcutName != null &&
+        shortcutName != state.payToMobile.shortcutName) {
+      validationErrorCodesToClean.add(
+        PayToMobileValidationErrorCode.shortcutNameValidationError,
+      );
+    }
+
+    var cubitErrors = state.errors.toSet();
+    for (final code in validationErrorCodesToClean) {
+      cubitErrors.removeWhere((error) =>
+          error is CubitValidationError && error.validationErrorCode == code);
+    }
+
+    emit(
+      state.copyWith(
+        errors: cubitErrors,
       ),
     );
   }
@@ -315,7 +395,7 @@ class PayToMobileCubit extends Cubit<PayToMobileState> {
       validationErrors.add(
         CubitValidationError<PayToMobileValidationErrorCode>(
           validationErrorCode:
-              PayToMobileValidationErrorCode.dialCodeValidationError,
+              PayToMobileValidationErrorCode.phoneNumberValidationError,
         ),
       );
     }

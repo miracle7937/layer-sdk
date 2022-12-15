@@ -430,7 +430,6 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     Account? source,
     Beneficiary? destination,
     double? amount,
-    Currency? currency,
     String? reason,
     DestinationBeneficiaryType? beneficiaryType,
     NewBeneficiary? newBeneficiary,
@@ -440,6 +439,15 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
     ScheduleDetails? scheduleDetails,
     String? bankQuery,
   }) async {
+    _clearValidationErrors(
+      source: source,
+      destination: destination,
+      amount: amount,
+      newBeneficiary: newBeneficiary,
+      shortcutName: shortcutName,
+      scheduleDetails: scheduleDetails,
+    );
+
     final sourceCurrency = state.currencies.firstWhereOrNull(
       (currency) => currency.code == state.transfer.source?.account?.currency,
     );
@@ -490,6 +498,144 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
             newBeneficiary?.country != currentCountry)) {
       loadBanks();
     }
+  }
+
+  /// Clears the validation errors based on the passed values.
+  void _clearValidationErrors({
+    Account? source,
+    Beneficiary? destination,
+    double? amount,
+    NewBeneficiary? newBeneficiary,
+    String? shortcutName,
+    ScheduleDetails? scheduleDetails,
+  }) {
+    final validationErrorCodesToClean =
+        <BeneficiaryTransferValidationErrorCode>{};
+
+    if (source != null && source != state.transfer.source?.account) {
+      validationErrorCodesToClean.add(
+        BeneficiaryTransferValidationErrorCode.sourceAccountValidationError,
+      );
+    }
+
+    if (destination != null &&
+        destination != state.transfer.destination?.beneficiary) {
+      validationErrorCodesToClean.add(
+        BeneficiaryTransferValidationErrorCode
+            .selectedBeneficiaryValidationError,
+      );
+    }
+
+    if (newBeneficiary?.firstName != null &&
+        newBeneficiary?.firstName != state.transfer.newBeneficiary?.firstName) {
+      validationErrorCodesToClean.add(
+        BeneficiaryTransferValidationErrorCode.firstNameValidationError,
+      );
+    }
+
+    if (newBeneficiary?.lastName != null &&
+        newBeneficiary?.lastName != state.transfer.newBeneficiary?.lastName) {
+      validationErrorCodesToClean.add(
+        BeneficiaryTransferValidationErrorCode.lastNameValidationError,
+      );
+    }
+
+    if (newBeneficiary?.country != null &&
+        newBeneficiary?.country != state.transfer.newBeneficiary?.country) {
+      validationErrorCodesToClean.add(
+        BeneficiaryTransferValidationErrorCode.countryValidationError,
+      );
+    }
+
+    if (newBeneficiary?.currency != null &&
+        newBeneficiary?.currency != state.transfer.newBeneficiary?.currency) {
+      validationErrorCodesToClean.add(
+        BeneficiaryTransferValidationErrorCode.currencyValidationError,
+      );
+    }
+
+    if (newBeneficiary?.ibanOrAccountNO != null &&
+        newBeneficiary?.ibanOrAccountNO !=
+            state.transfer.newBeneficiary?.ibanOrAccountNO) {
+      validationErrorCodesToClean.add(
+        BeneficiaryTransferValidationErrorCode.ibanOrAccountValidationError,
+      );
+    }
+
+    final shouldValidateIBAN =
+        !(newBeneficiary?.routingCodeIsRequired ?? false) &&
+            (newBeneficiary?.ibanOrAccountNO?.isNotEmpty ?? false);
+
+    if (shouldValidateIBAN) {
+      final isValid = _validateIBANUseCase(
+        iban: state.transfer.newBeneficiary?.ibanOrAccountNO ?? '',
+        allowedCharacters: state.beneficiarySettings
+            .singleWhereOrNull(
+                (element) => element.code == 'benef_iban_allowed_characters')
+            ?.value,
+      );
+
+      if (isValid) {
+        validationErrorCodesToClean.add(
+          BeneficiaryTransferValidationErrorCode.invalidIBAN,
+        );
+      }
+    }
+
+    if (newBeneficiary?.routingCodeIsRequired != null &&
+        newBeneficiary?.routingCode !=
+            state.transfer.newBeneficiary?.routingCode) {
+      validationErrorCodesToClean.add(
+        BeneficiaryTransferValidationErrorCode.routingCodeValidationError,
+      );
+    }
+
+    if (newBeneficiary?.bank != null &&
+        newBeneficiary?.bank != state.transfer.newBeneficiary?.bank) {
+      validationErrorCodesToClean.add(
+        BeneficiaryTransferValidationErrorCode.bankValidationError,
+      );
+    }
+
+    if (amount != null && amount != state.transfer.amount) {
+      validationErrorCodesToClean.addAll({
+        BeneficiaryTransferValidationErrorCode.amountValidationError,
+        BeneficiaryTransferValidationErrorCode
+            .insufficientBalanceValidationError,
+      });
+    }
+
+    if (newBeneficiary?.nickname != null &&
+        newBeneficiary?.nickname != state.transfer.newBeneficiary?.nickname) {
+      validationErrorCodesToClean.add(
+        BeneficiaryTransferValidationErrorCode.nicknameValidationError,
+      );
+    }
+
+    if (shortcutName != null && shortcutName != state.transfer.shortcutName) {
+      validationErrorCodesToClean.add(
+        BeneficiaryTransferValidationErrorCode.shortcutNameValidationError,
+      );
+    }
+
+    if (scheduleDetails != null &&
+        scheduleDetails != state.transfer.scheduleDetails) {
+      validationErrorCodesToClean.add(
+        BeneficiaryTransferValidationErrorCode.scheduleDetailsValidationError,
+      );
+    }
+
+    var cubitErrors = state.errors.toSet();
+    for (final code in validationErrorCodesToClean) {
+      cubitErrors.removeWhere((error) =>
+          error is CubitValidationError && error.validationErrorCode == code);
+    }
+
+    emit(
+      state.copyWith(
+        errors: cubitErrors,
+      ),
+    );
   }
 
   /// Evaluates the transfer.

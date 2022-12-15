@@ -26,7 +26,7 @@ class BankingProductTransactionProvider {
       responseType: ResponseType.bytes,
       data: {
         "account_id": transaction.accountId,
-        "card_id": transaction.cardId,
+        "card_id": transaction.cardId.toString(),
         "send_by": "response",
         "form_id": "pdf_transaction_detail",
         "format": "pdf"

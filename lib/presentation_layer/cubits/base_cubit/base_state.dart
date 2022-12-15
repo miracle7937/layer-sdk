@@ -38,6 +38,9 @@ enum CubitErrorCode {
   /// The payment failed.
   paymentFailed('payment_failed'),
 
+  /// The transaction not found.
+  transactionNotFound('transaction_not_found'),
+
   /// Bad request. (400 status code)
   badRequest('BAD_REQUEST'),
 
@@ -260,12 +263,19 @@ abstract class BaseState<CubitAction, CubitEvent, ValidationErrorCode>
       });
 
   /// Removes any error related to the passed action and returns the new set.
-  Set<CubitError> removeErrorForAction(CubitAction action) => errors
-      .where((error) =>
-          (error is CubitConnectivityError<CubitAction> ||
-              error is CubitConnectivityError<CubitAction>) &&
-          error.action != action)
-      .toSet();
+  Set<CubitError> removeErrorForAction(CubitAction action) =>
+      errors.where((error) {
+        final isValidationError = error is CubitValidationError;
+        final action = error is CubitConnectivityError<CubitAction>
+            ? error.action
+            : error is CubitAPIError<CubitAction>
+                ? error.action
+                : error is CubitCustomError<CubitAction>
+                    ? error.action
+                    : null;
+
+        return isValidationError || action != action;
+      }).toSet();
 
   /// Removes the passed validation error related to the passed validation
   /// error code.

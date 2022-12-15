@@ -406,6 +406,7 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         accountNumber: accountRequired ? state.beneficiary!.accountNumber! : '',
         routingCode: accountRequired ? state.beneficiary!.routingCode! : '',
         iban: accountRequired ? '' : state.beneficiary!.iban!,
+        rcptCountryCode: state.selectedCountry?.countryCode,
       );
 
       final beneficiaryResult = await _addNewBeneficiaryUseCase(

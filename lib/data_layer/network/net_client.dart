@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
@@ -294,7 +295,7 @@ class NetClient {
         _log.warning('${method.name} ${e.requestOptions.uri}: $e');
 
         return await _buildResponse(
-          response: e.response,
+          response: e.response!,
           decodeResponse: decodeResponse,
           useBackgroundJsonHandler: useBackgroundJsonHandler,
         );
@@ -348,26 +349,49 @@ class NetClient {
     return uuid;
   }
 
+  Future<dynamic> _getDecodedJson({
+    String? str,
+    required bool useBackgroundJsonHandler,
+  }) async {
+    if (str?.isEmpty ?? true) {
+      return null;
+    } else {
+      return useBackgroundJsonHandler
+          ? await backgroundJsonHandler.decode(str!)
+          : await jsonHandler.decode(str!);
+    }
+  }
+
   /// Builds a [NetResponse] based on the response from the request.
   Future<NetResponse> _buildResponse({
-    @required Response? response,
+    required Response response,
     required bool decodeResponse,
     required bool useBackgroundJsonHandler,
   }) async {
-    final decodedData = !decodeResponse
-        ? response?.data
-        : (response?.data is String
-                ? (response?.data?.isEmpty ?? true)
-                : response?.data == null)
-            ? null
-            : useBackgroundJsonHandler
-                ? await backgroundJsonHandler.decode(response?.data)
-                : await jsonHandler.decode(response?.data);
+    dynamic decodedData = response.data;
+    final statusCode = response.statusCode ?? '';
+    final shouldDecodeResponse =
+        decodeResponse || (statusCode != 200 && statusCode != 201);
+
+    if (shouldDecodeResponse) {
+      if (response.data is String) {
+        decodedData = await _getDecodedJson(
+          str: response.data,
+          useBackgroundJsonHandler: useBackgroundJsonHandler,
+        );
+      } else if (response.data is Uint8List) {
+        final str = String.fromCharCodes(response.data);
+        decodedData = await _getDecodedJson(
+          str: str,
+          useBackgroundJsonHandler: useBackgroundJsonHandler,
+        );
+      }
+    }
 
     return NetResponse(
       data: decodedData,
-      statusCode: response?.statusCode,
-      statusMessage: response?.statusMessage,
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
     );
   }
 
@@ -472,7 +496,7 @@ class NetClient {
         _log.warning('${method.name} ${e.requestOptions.uri}: $e');
 
         return await _buildResponse(
-          response: e.response,
+          response: e.response!,
           decodeResponse: decodeResponse,
           useBackgroundJsonHandler: useBackgroundJsonHandler,
         );

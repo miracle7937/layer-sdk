@@ -18,30 +18,35 @@ class VerifyCardInfoSecondFactorUseCase {
   /// getting the info for the passed [card].
   Future<CardInfo> call({
     required BankingCard card,
+    bool shouldUnmaskCard = true,
     required String value,
     required SecondFactorType secondFactorType,
+    required int? otpId,
   }) async {
     final cardInfo = await _cardInfoRepository.verifySecondFactor(
       cardId: card.cardId,
       value: value,
       secondFactorType: secondFactorType,
+      otpId: otpId,
     );
 
-    final cardToken = card.token;
-    if (cardInfo.secondFactorType == null && cardToken != null) {
-      final secret = await _meawalletRepository.getSecretFromCardToken(
-        cardToken: cardToken,
-      );
+    if (shouldUnmaskCard) {
+      final cardToken = card.token;
+      if (cardInfo.secondFactorType == null && cardToken != null) {
+        final secret = await _meawalletRepository.getSecretFromCardToken(
+          cardToken: cardToken,
+        );
 
-      final meawalletCardDetails = await _meawalletRepository.getCardDetails(
-        cardId: cardToken,
-        secret: secret,
-      );
+        final meawalletCardDetails = await _meawalletRepository.getCardDetails(
+          cardId: cardToken,
+          secret: secret,
+        );
 
-      return cardInfo.copyWith(
-        unmaskedCardNumber: meawalletCardDetails.cardPan,
-        cvv: meawalletCardDetails.cardCvv,
-      );
+        return cardInfo.copyWith(
+          unmaskedCardNumber: meawalletCardDetails.cardPan,
+          cvv: meawalletCardDetails.cardCvv,
+        );
+      }
     }
 
     return cardInfo;

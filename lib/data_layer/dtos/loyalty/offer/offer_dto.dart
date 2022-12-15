@@ -29,11 +29,11 @@ class OfferDTO {
   ///The short description of the offer
   String? shortDescription;
 
-  ///The terms and conditions URL of the offer
-  String? tncURL;
+  ///The terms and conditions type
+  TermsAndConditionsTypeDTO? tncType;
 
-  ///The terms and conditions text
-  String? tncText;
+  ///The terms and conditions URL of the offer
+  String? tnc;
 
   ///The offer status
   OfferStatusDTO? status;
@@ -50,6 +50,9 @@ class OfferDTO {
   ///The currency of the offer
   String? currency;
 
+  ///When the merchant was created
+  DateTime? created;
+
   ///Creates a new [OfferDTO] object
   OfferDTO({
     this.id,
@@ -60,13 +63,14 @@ class OfferDTO {
     this.imageURL,
     this.description,
     this.shortDescription,
-    this.tncURL,
-    this.tncText,
+    this.tncType,
+    this.tnc,
     this.status,
     this.merchant,
     this.rules,
     this.type,
     this.currency,
+    this.created,
   });
 
   ///Creates a [OfferDTO] form a JSON object
@@ -83,8 +87,8 @@ class OfferDTO {
         imageURL: json['image_url'],
         description: json['description'],
         shortDescription: json['short_description'],
-        tncURL: json['tnc_url'],
-        tncText: json['tnc_text'],
+        tncType: TermsAndConditionsTypeDTO.fromRaw(json['tnc_type']),
+        tnc: json['tnc'],
         status: OfferStatusDTO.fromRaw(json['status']),
         merchant:
             json['merchant_offer'] == null || json['merchant_offer'].isEmpty
@@ -97,6 +101,7 @@ class OfferDTO {
               )),
         type: OfferTypeDTO.fromRaw(json['type']),
         currency: json['currency'],
+        created: JsonParser.parseDate(json['ts_created']),
       );
 
   /// Creates a list of [OfferDTO]s from the given JSON list.
@@ -134,7 +139,7 @@ class OfferStatusDTO extends EnumDTO {
       );
 }
 
-///Data transfer object repersenting the offer type
+///Data transfer object representing the offer type
 class OfferTypeDTO extends EnumDTO {
   ///Bank campaign
   static const bankCampaign = OfferTypeDTO._internal('B');
@@ -160,6 +165,30 @@ class OfferTypeDTO extends EnumDTO {
 
   /// Creates a [OfferTypeDTO] from a `String`.
   static OfferTypeDTO? fromRaw(String? raw) => values.firstWhereOrNull(
+        (val) => val.value == raw,
+      );
+}
+
+///Data transfer object representing the offer Terms&Conditions type
+class TermsAndConditionsTypeDTO extends EnumDTO {
+  ///Path
+  static const path = TermsAndConditionsTypeDTO._internal('P');
+
+  ///Text
+  static const text = TermsAndConditionsTypeDTO._internal('T');
+
+  /// All the possible types for the reward
+  static const List<TermsAndConditionsTypeDTO> values = [
+    path,
+    text,
+  ];
+
+  const TermsAndConditionsTypeDTO._internal(String value)
+      : super.internal(value);
+
+  /// Creates a [TermsAndConditionsTypeDTO] from a `String`.
+  static TermsAndConditionsTypeDTO? fromRaw(String? raw) =>
+      values.firstWhereOrNull(
         (val) => val.value == raw,
       );
 }

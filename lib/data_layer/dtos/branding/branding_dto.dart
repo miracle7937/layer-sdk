@@ -123,11 +123,23 @@ class BrandingColorsDTO {
   /// Hex value for brand tertiary color.
   final String? brandTertiary;
 
+  /// Hex value for base primary color.
+  final String? basePrimary;
+
   /// Hex value for base primary white.
   final String? basePrimaryWhite;
 
-  /// Hex value for base primary color.
-  final String? basePrimary;
+  /// Hex value for base primary black.
+  final String? basePrimaryBlack;
+
+  /// Hex value for base primary tertiary.
+  final String? basePrimaryTertiary;
+
+  /// Hex value for base primary quinary.
+  final String? basePrimaryQuinary;
+
+  /// Hex value for base primary senary.
+  final String? basePrimarySenary;
 
   /// Hex value for base secondary color.
   final String? baseSecondary;
@@ -189,17 +201,14 @@ class BrandingColorsDTO {
   /// Hex value for surface nonary 4 color.
   final String? surfaceNonary4;
 
-  /// Hex value for the dark alpha base color.
-  final String? darkAlpha;
-
-  /// Hex value for the white alpha base color.
-  final String? whiteAlpha;
-
-  /// Hex value for the dark primary success color.
-  final String? successDarkPrimary;
+  /// Hex value for the success alpha color.
+  final String? successAlpha;
 
   /// Hex value for the primary success color.
   final String? successPrimary;
+
+  /// Hex value for the dark primary success color.
+  final String? successDarkPrimary;
 
   /// Hex value for the secondary success color.
   final String? successSecondary;
@@ -213,11 +222,14 @@ class BrandingColorsDTO {
   /// Hex value for the quinary success color.
   final String? successQuinary;
 
-  /// Hex value for the dark primary error color.
-  final String? errorDarkPrimary;
+  /// Hex value for the error alpha color.
+  final String? errorAlpha;
 
   /// Hex value for the primary error color.
   final String? errorPrimary;
+
+  /// Hex value for the dark primary error color.
+  final String? errorDarkPrimary;
 
   /// Hex value for the secondary error color.
   final String? errorSecondary;
@@ -231,11 +243,14 @@ class BrandingColorsDTO {
   /// Hex value for the quinary error color.
   final String? errorQuinary;
 
-  /// Hex value for the dark primary warning color.
-  final String? warningDarkPrimary;
+  /// Hex value for the warning alpha color.
+  final String? warningAlpha;
 
   /// Hex value for the primary warning color.
   final String? warningPrimary;
+
+  /// Hex value for the dark primary warning color.
+  final String? warningDarkPrimary;
 
   /// Hex value for the secondary warning color.
   final String? warningSecondary;
@@ -249,11 +264,14 @@ class BrandingColorsDTO {
   /// Hex value for the quinary warning color.
   final String? warningQuinary;
 
-  /// Hex value for the dark primary caution color.
-  final String? cautionDarkPrimary;
+  /// Hex value for the caution alpha color.
+  final String? cautionAlpha;
 
   /// Hex value for the primary caution color.
   final String? cautionPrimary;
+
+  /// Hex value for the dark primary caution color.
+  final String? cautionDarkPrimary;
 
   /// Hex value for the secondary caution color.
   final String? cautionSecondary;
@@ -267,11 +285,14 @@ class BrandingColorsDTO {
   /// Hex value for the quinary caution color.
   final String? cautionQuinary;
 
-  /// Hex value for the dark primary info color.
-  final String? infoDarkPrimary;
+  /// Hex value for the info alpha color.
+  final String? infoAlpha;
 
   /// Hex value for the primary info color.
   final String? infoPrimary;
+
+  /// Hex value for the dark primary info color.
+  final String? infoDarkPrimary;
 
   /// Hex value for the secondary info color.
   final String? infoSecondary;
@@ -285,21 +306,6 @@ class BrandingColorsDTO {
   /// Hex value for the quinary info color.
   final String? infoQuinary;
 
-  /// Hex value for the success alpha color.
-  final String? successAlpha;
-
-  /// Hex value for the error alpha color.
-  final String? errorAlpha;
-
-  /// Hex value for the warning alpha color.
-  final String? warningAlpha;
-
-  /// Hex value for the caution alpha color.
-  final String? cautionAlpha;
-
-  /// Hex value for the info alpha color.
-  final String? infoAlpha;
-
   /// Creates a new [BrandingColorsDTO].
   const BrandingColorsDTO({
     this.brandGradientStart,
@@ -307,8 +313,12 @@ class BrandingColorsDTO {
     this.brandPrimary,
     this.brandSecondary,
     this.brandTertiary,
-    this.basePrimaryWhite,
     this.basePrimary,
+    this.basePrimaryWhite,
+    this.basePrimaryBlack,
+    this.basePrimaryTertiary,
+    this.basePrimaryQuinary,
+    this.basePrimarySenary,
     this.baseSecondary,
     this.baseTertiary,
     this.baseQuaternary,
@@ -329,43 +339,41 @@ class BrandingColorsDTO {
     this.surfaceNonary2,
     this.surfaceNonary3,
     this.surfaceNonary4,
-    this.darkAlpha,
-    this.whiteAlpha,
-    this.successDarkPrimary,
+    this.successAlpha,
     this.successPrimary,
+    this.successDarkPrimary,
     this.successSecondary,
     this.successTertiary,
     this.successQuaternary,
     this.successQuinary,
-    this.errorDarkPrimary,
+    this.errorAlpha,
     this.errorPrimary,
+    this.errorDarkPrimary,
     this.errorSecondary,
     this.errorTertiary,
     this.errorQuaternary,
     this.errorQuinary,
-    this.warningDarkPrimary,
+    this.warningAlpha,
     this.warningPrimary,
+    this.warningDarkPrimary,
     this.warningSecondary,
     this.warningTertiary,
     this.warningQuaternary,
     this.warningQuinary,
-    this.cautionDarkPrimary,
+    this.cautionAlpha,
     this.cautionPrimary,
+    this.cautionDarkPrimary,
     this.cautionSecondary,
     this.cautionTertiary,
     this.cautionQuaternary,
     this.cautionQuinary,
-    this.infoDarkPrimary,
+    this.infoAlpha,
     this.infoPrimary,
+    this.infoDarkPrimary,
     this.infoSecondary,
     this.infoTertiary,
     this.infoQuaternary,
     this.infoQuinary,
-    this.successAlpha,
-    this.errorAlpha,
-    this.warningAlpha,
-    this.cautionAlpha,
-    this.infoAlpha,
   });
 
   /// Creates a [BrandingColorsDTO] from a JSON
@@ -376,8 +384,12 @@ class BrandingColorsDTO {
         brandPrimary: json['brandPrimary'],
         brandSecondary: json['brandSecondary'],
         brandTertiary: json['brandTertiary'],
-        basePrimaryWhite: json['basePrimaryWhite'],
         basePrimary: json['basePrimary'],
+        basePrimaryWhite: json['basePrimaryWhite'],
+        basePrimaryBlack: json['basePrimaryBlack'],
+        basePrimaryTertiary: json['basePrimaryTertiary'],
+        basePrimaryQuinary: json['basePrimaryQuinary'],
+        basePrimarySenary: json['basePrimarySenary'],
         baseSecondary: json['baseSecondary'],
         baseTertiary: json['baseTertiary'],
         baseQuaternary: json['baseQuaternary'],
@@ -398,43 +410,41 @@ class BrandingColorsDTO {
         surfaceNonary2: json['surfaceNonary2'],
         surfaceNonary3: json['surfaceNonary3'],
         surfaceNonary4: json['surfaceNonary4'],
-        darkAlpha: json['darkAlpha'],
-        whiteAlpha: json['whiteAlpha'],
-        successDarkPrimary: json['successDarkPrimary'],
+        successAlpha: json['successAlpha'],
         successPrimary: json['successPrimary'],
+        successDarkPrimary: json['successDarkPrimary'],
         successSecondary: json['successSecondary'],
         successTertiary: json['successTertiary'],
         successQuaternary: json['successQuaternary'],
         successQuinary: json['successQuinary'],
-        errorDarkPrimary: json['errorDarkPrimary'],
+        errorAlpha: json['errorAlpha'],
         errorPrimary: json['errorPrimary'],
+        errorDarkPrimary: json['errorDarkPrimary'],
         errorSecondary: json['errorSecondary'],
         errorTertiary: json['errorTertiary'],
         errorQuaternary: json['errorQuaternary'],
         errorQuinary: json['errorQuinary'],
-        warningDarkPrimary: json['warningDarkPrimary'],
+        warningAlpha: json['warningAlpha'],
         warningPrimary: json['warningPrimary'],
+        warningDarkPrimary: json['warningDarkPrimary'],
         warningSecondary: json['warningSecondary'],
         warningTertiary: json['warningTertiary'],
         warningQuaternary: json['warningQuaternary'],
         warningQuinary: json['warningQuinary'],
-        cautionDarkPrimary: json['cautionDarkPrimary'],
+        cautionAlpha: json['cautionAlpha'],
         cautionPrimary: json['cautionPrimary'],
+        cautionDarkPrimary: json['cautionDarkPrimary'],
         cautionSecondary: json['cautionSecondary'],
         cautionTertiary: json['cautionTertiary'],
         cautionQuaternary: json['cautionQuaternary'],
         cautionQuinary: json['cautionQuinary'],
-        infoDarkPrimary: json['infoDarkPrimary'],
+        infoAlpha: json['infoAlpha'],
         infoPrimary: json['infoPrimary'],
+        infoDarkPrimary: json['infoDarkPrimary'],
         infoSecondary: json['infoSecondary'],
         infoTertiary: json['infoTertiary'],
         infoQuaternary: json['infoQuaternary'],
         infoQuinary: json['infoQuinary'],
-        successAlpha: json['successAlpha'],
-        errorAlpha: json['errorAlpha'],
-        warningAlpha: json['warningAlpha'],
-        cautionAlpha: json['cautionAlpha'],
-        infoAlpha: json['infoAlpha'],
       );
 }
 
