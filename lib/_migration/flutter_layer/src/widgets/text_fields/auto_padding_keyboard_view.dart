@@ -27,9 +27,7 @@ class AutoPaddingKeyboard extends StatelessWidget {
               .backgroundColor
               .withOpacity(0.8),
           padding: EdgeInsets.only(
-            bottom: isKeyboardVisible && Platform.isIOS
-                ? InputDoneView.doneViewHeight
-                : 0.0,
+            bottom: isKeyboardVisible && Platform.isIOS ? 8 : 0.0,
           ),
           child: child,
         ),
