@@ -1,4 +1,5 @@
 import 'dart:collection';
+
 import '../../../domain_layer/models.dart';
 import '../base_cubit/base_state.dart';
 
@@ -28,6 +29,9 @@ class AccountBalanceState extends BaseState<AccountBalanceAction, void, void> {
 
   @override
   List<Object?> get props => [
+        actions,
+        errors,
+        events,
         balances,
         accountId,
         endDate,
