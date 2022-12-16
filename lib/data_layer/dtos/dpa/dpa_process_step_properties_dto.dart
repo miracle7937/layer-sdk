@@ -70,6 +70,9 @@ class DPAProcessStepPropertiesDTO {
   /// The amount of seconds to wait before the task is auto finished.
   final int? autoFinishIn;
 
+  /// If the current process can be cancelled
+  final bool? allowCancel;
+
   /// Creates a new [DPAProcessStepPropertiesDTO].
   DPAProcessStepPropertiesDTO({
     this.image,
@@ -94,11 +97,13 @@ class DPAProcessStepPropertiesDTO {
     this.skipButton,
     this.skipButtonLabel,
     this.autoFinishIn,
+    this.allowCancel,
   });
 
   /// Creates a new [DPAProcessStepPropertiesDTO] from a JSON.
   factory DPAProcessStepPropertiesDTO.fromJson(Map<String, dynamic> json) =>
       DPAProcessStepPropertiesDTO(
+        allowCancel: json['allow_cancel'],
         image: json['image'],
         feedback: json['feedback'],
         step: json['step'],

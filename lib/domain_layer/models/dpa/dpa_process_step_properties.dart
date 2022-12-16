@@ -63,6 +63,9 @@ class DPAProcessStepProperties extends Equatable {
   /// The amount of seconds to wait before the task is auto finished.
   final int? autoFinishIn;
 
+  /// if the process can be cancelled
+  final bool allowCancel;
+
   /// Creates a new [DPAProcessStepProperties].
   const DPAProcessStepProperties({
     required this.format,
@@ -84,6 +87,7 @@ class DPAProcessStepProperties extends Equatable {
     this.skipButton = false,
     this.skipButtonLabel,
     this.autoFinishIn,
+    this.allowCancel = true,
   });
 
   @override
@@ -107,6 +111,7 @@ class DPAProcessStepProperties extends Equatable {
         skipButton,
         skipButtonLabel,
         autoFinishIn,
+        allowCancel,
       ];
 
   /// Creates a new [DPAProcessStepProperties] using another as a base.
@@ -130,6 +135,7 @@ class DPAProcessStepProperties extends Equatable {
     bool? skipButton,
     String? skipButtonLabel,
     int? autoFinishIn,
+    bool? allowCancel,
   }) =>
       DPAProcessStepProperties(
         format: format ?? this.format,
@@ -151,6 +157,7 @@ class DPAProcessStepProperties extends Equatable {
         skipButton: skipButton ?? this.skipButton,
         skipButtonLabel: skipButtonLabel ?? this.skipButtonLabel,
         autoFinishIn: autoFinishIn ?? this.autoFinishIn,
+        allowCancel: allowCancel ?? this.allowCancel,
       );
 }
 
