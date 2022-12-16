@@ -33,6 +33,7 @@ extension DPAProcessStepPropertiesDTOMapping on DPAProcessStepPropertiesDTO {
         skipButton: skipButton,
         skipButtonLabel: skipButtonLabel,
         autoFinishIn: autoFinishIn,
+        allowCancel: allowCancel ?? true,
       );
 
   /// Checks if this [DPAProcessStepPropertiesDTO] has a valid URL and appends
