@@ -37,7 +37,7 @@ dependencies:
   meawallet_plugin:
     git:
       url: git@gitlab.ubanquity.com:dart-packages/meawallet.git
-      ref: 9bf1433fbfc774379eaf967620c7249500c0fc3a
+      ref: 71c17031b1b4b26eb56616c1cff947b50c84fd33
 
   # pub.dev packages
   asn1lib: ^1.0.1
