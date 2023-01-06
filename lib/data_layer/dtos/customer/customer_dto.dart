@@ -466,9 +466,11 @@ class CustomerInformationDTO {
         isResident: json['is_resident'],
         addresses: json['address_details'] == null
             ? null
-            : AddressDTO.fromJsonList(
-                List<Map<String, dynamic>>.from(json['address_details']),
-              ),
+            : json['address_details'] is List
+                ? AddressDTO.fromJsonList(
+                    List<Map<String, dynamic>>.from(json['address_details']),
+                  )
+                : [AddressDTO.fromJson(json['address_details'])],
         governmentPosition: json['pep'],
         thirdParty: json['representation'],
         ultimateBeneficiary: json['ultimate_beneficiary'],

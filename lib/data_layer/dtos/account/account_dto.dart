@@ -292,6 +292,13 @@ class AccountDTO {
       ),
     );
   }
+
+  /// Creates a JSON from select data for visibility
+  Map<String, dynamic> toVisibilityJson() => {
+        'account_id': accountId,
+        'account_no': accountNumber,
+        if (type?.name?.isNotEmpty ?? false) 'display_name': type!.name!,
+      };
 }
 
 /// The joint type of an account

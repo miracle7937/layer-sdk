@@ -29,7 +29,9 @@ class LoyaltyPointsRateProvider {
       forceRefresh: forceRefresh,
     );
 
-    return LoyaltyPointsRateDTO.fromJsonList(response.data);
+    return LoyaltyPointsRateDTO.fromJsonList(
+      List<Map<String, dynamic>>.from(response.data),
+    );
   }
 
   /// Return just the current [LoyaltyPointsRateDTO]

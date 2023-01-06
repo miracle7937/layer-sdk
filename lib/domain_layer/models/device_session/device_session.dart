@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+
 import '../../models.dart';
 
 /// The available status of a session

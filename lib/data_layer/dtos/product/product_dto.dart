@@ -183,24 +183,3 @@ class ProductTypeDTO extends EnumDTO {
         (val) => val.value == raw,
       );
 }
-
-/// Enum that indicates the type of a [Product]
-enum ProductType {
-  /// Currenct account
-  current,
-
-  /// Savings account
-  savings,
-
-  /// Term deposit
-  termDeposit,
-
-  /// Loan
-  loan,
-
-  /// Debit card
-  debitCard,
-
-  /// Credit card
-  creditCard,
-}

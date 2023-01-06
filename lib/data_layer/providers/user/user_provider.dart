@@ -14,12 +14,13 @@ class UserProvider {
     required this.netClient,
   });
 
-  /// Returns an user. If [customerID] is null, returns the current
-  /// logged in user.
+  /// Returns a user. If [customerID] and [username] is null,
+  /// returns the current logged in user.
   ///
   /// Throws an exception if the user is not found.
   Future<UserDTO> getUser({
     String? customerID,
+    String? username,
     bool forceRefresh = true,
   }) async {
     final response = await netClient.request(
@@ -27,6 +28,7 @@ class UserProvider {
       forceRefresh: forceRefresh,
       queryParameters: {
         if (customerID != null) 'customer_id': customerID,
+        if (username != null) 'username': username,
       },
       throwAllErrors: false,
     );
@@ -35,7 +37,57 @@ class UserProvider {
       return UserDTO.fromJson(response.data[0]);
     }
 
-    throw Exception('User not found');
+    throw UserNotFoundException();
+  }
+
+  /// Returns all users for customer with [customerID].
+  /// Returns a paginated list of sorted by [sortBy] customers .
+  ///
+  /// Optionally filters the results by name.
+  Future<List<UserDTO>> getUsers({
+    required String customerID,
+    bool forceRefresh = true,
+    String? name,
+    String? sortBy,
+    bool descendingOrder = true,
+    int limit = 50,
+    int offset = 0,
+  }) async {
+    final response = await netClient.request(
+      netClient.netEndpoints.user,
+      forceRefresh: forceRefresh,
+      queryParameters: {
+        'customer_id': customerID,
+        if (name?.isNotEmpty ?? false) 'q': name,
+        if (sortBy?.isNotEmpty ?? false) 'sortby': sortBy,
+        'desc': descendingOrder,
+        'limit': limit,
+        'offset': offset,
+      },
+      throwAllErrors: false,
+    );
+    if (response.data is List && response.data.length > 0) {
+      return UserDTO.fromJsonList(
+        List<Map<String, dynamic>>.from(response.data),
+      );
+    }
+
+    return [];
+  }
+
+  /// Changes the password using the given data.
+  Future<ChangeUserPasswordResponseDTO> changeUsersPassword(
+    ChangeUserPasswordDTO data,
+  ) async {
+    final response = await netClient.request(
+      netClient.netEndpoints.changePassword,
+      method: NetRequestMethods.patch,
+      data: data,
+      forceRefresh: true,
+      throwAllErrors: false,
+    );
+
+    return ChangeUserPasswordResponseDTO.fromJson(response.data);
   }
 
   /// Patches an user with different data
@@ -57,30 +109,7 @@ class UserProvider {
       return UserDTO.fromJson(response.data[0]);
     }
 
-    throw Exception('User not found');
-  }
-
-  /// Patches an user preference with different data
-  Future<UserDTO> patchUserPreference({
-    required UserPreference userPreference,
-  }) async {
-    final response = await netClient.request(
-      netClient.netEndpoints.user,
-      data: [
-        {
-          'pref': {
-            'keys': userPreference.toJson(),
-          }
-        },
-      ],
-      method: NetRequestMethods.patch,
-    );
-
-    if (response.data is List && response.data.length > 0) {
-      return UserDTO.fromJson(response.data[0]);
-    }
-
-    throw Exception('User not found');
+    throw UserNotFoundException();
   }
 
   /// Patches multiple user preferences with different data
@@ -108,7 +137,7 @@ class UserProvider {
       return UserDTO.fromJson(response.data[0]);
     }
 
-    throw Exception('User not found');
+    throw UserNotFoundException();
   }
 
   /// Returns an user from a token.
@@ -128,7 +157,7 @@ class UserProvider {
       return UserDTO.fromJson(response.data[0]);
     }
 
-    throw Exception('User not found');
+    throw UserNotFoundException();
   }
 
   /// Returns an user from a `token` and `developerId`.
@@ -152,7 +181,7 @@ class UserProvider {
       return UserDTO.fromJson(response.data[0]);
     }
 
-    throw Exception('User not found');
+    throw UserNotFoundException();
   }
 
   /// Used by the console (DBO) to request a change to a user.
@@ -252,6 +281,29 @@ class UserProvider {
     return UserDTO.fromJson(effectiveData);
   }
 
+  /// Requests to delete an agent.
+  ///
+  /// Returns whether or not the request was successfull.
+  Future<bool> requestDeleteAgent({
+    required User user,
+  }) async {
+    final userId = user.id;
+    final response = await netClient.request(
+      '${(netClient.netEndpoints as ConsoleEndpoints).authEngineUser}/$userId',
+      method: NetRequestMethods.delete,
+      data: [
+        user.toJson(),
+      ],
+      queryParameters: {
+        'corporate': true,
+        'customer_type': 'C',
+      },
+      forceRefresh: true,
+    );
+
+    return response.success;
+  }
+
   /// Patches the list of blocked channels for the provided user id.
   ///
   /// Used only by the DBO app.
@@ -335,6 +387,9 @@ enum RequestChangeType {
 
   /// Reset user transfer PIN.
   pinReset,
+
+  /// Delete user.
+  delete,
 }
 
 extension on RequestChangeType {
@@ -352,6 +407,9 @@ extension on RequestChangeType {
 
       case RequestChangeType.passwordReset:
         return 'password_reset';
+
+      case RequestChangeType.delete:
+        return 'delete';
 
       default:
         throw MappingException(from: RequestChangeType, to: String);

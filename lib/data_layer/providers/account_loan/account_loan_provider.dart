@@ -41,7 +41,9 @@ class AccountLoanProvider {
       forceRefresh: forceRefresh,
     );
 
-    return AccountLoanDTO.fromJsonList(response.data);
+    return AccountLoanDTO.fromJsonList(
+      List<Map<String, dynamic>>.from(response.data),
+    );
   }
 
   /// Returns an account loan associated with an id.

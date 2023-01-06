@@ -14,6 +14,12 @@ class UserDTO {
   /// The customer id associated to this user.
   String? customerId;
 
+  /// The customer name
+  String? customerName;
+
+  /// The agent customer id associated to this user.
+  String? agentCustomerId;
+
   /// The user's first name.
   String? firstName;
 
@@ -119,15 +125,48 @@ class UserDTO {
   /// Whether or not this user consents to sms ads
   bool? hasSmsAds;
 
+  /// Date this user was created.
+  DateTime? created;
+
   /// Whether or not the device of this user should be verified on login
   bool? verifyDevice;
 
   /// The branch this user belongs to.
   String? branch;
 
+  /// The gender of this user.
+  String? gender;
+
+  /// The address from extra info.
+  String? address1;
+
+  /// The date of birth from extra info.
+  String? dob;
+
+  /// The managing branch from extra info.
+  String? managingBranch;
+
+  /// The marital status from extra info.
+  String? maritalStatus;
+
+  /// The mother's name from extra info.
+  String? motherName;
+
+  /// The agent's image profile pic
+  String? image;
+
+  /// List of all visible [CardDTO]s by this user
+  UnmodifiableListView<CardDTO>? visibleCards;
+
+  /// List of all visible [AccountDTO]s by this user
+  UnmodifiableListView<AccountDTO>? visibleAccounts;
+
   /// Creates a new [UserDTO].
   UserDTO({
+    this.id,
     this.customerId,
+    this.customerName,
+    this.agentCustomerId,
     this.firstName,
     this.lastName,
     this.token,
@@ -137,7 +176,6 @@ class UserDTO {
     this.deviceId,
     this.trackedCurrencies,
     this.email,
-    this.id,
     this.imageUrl,
     this.mobileNumber,
     this.otpId,
@@ -162,15 +200,35 @@ class UserDTO {
     this.userPreferences,
     this.hasEmailAds,
     this.hasSmsAds,
+    this.created,
     this.verifyDevice,
     this.branch,
+    this.gender,
+    this.address1,
+    this.dob,
+    this.managingBranch,
+    this.maritalStatus,
+    this.motherName,
+    this.image,
     this.enabledAlerts,
-  });
+    Iterable<CardDTO>? visibleCards = const [],
+    Iterable<AccountDTO>? visibleAccounts = const [],
+  })  : visibleCards = visibleCards == null
+            ? null
+            : UnmodifiableListView(
+                visibleCards,
+              ),
+        visibleAccounts = visibleAccounts == null
+            ? null
+            : UnmodifiableListView(
+                visibleAccounts,
+              );
 
   /// Creates an [UserDTO] from the supplied JSON.
   UserDTO.fromJson(Map<String, dynamic> json) {
     id = json['a_user_id'];
     customerId = json['customer_id'];
+    agentCustomerId = json['agent_customer_id'];
     username = json['username'];
     firstName = json['first_name'];
     lastName = json['last_name'];
@@ -250,8 +308,15 @@ class UserDTO {
     warningMessage = json["warning_message"];
     favoriteOffers = JsonParser.jsonLookup<List, String>(
         json, ['pref', 'favorite_offers'], [])?.cast<int>();
+    created = JsonParser.parseDate(json['ts_created']);
     verifyDevice = json['verify_device'] ?? false;
     branch = json['branch'];
+    address1 = json['extra']?['address1'];
+    dob = json['extra']?['dob'];
+    gender = json['extra']?['gender'];
+    managingBranch = json['extra']?['managing_branch'];
+    maritalStatus = json['extra']?['marital_status'];
+    motherName = json['extra']?['mother_name'];
   }
 
   /// Creates a JSON from select data
@@ -261,6 +326,68 @@ class UserDTO {
     if (customerId != null) json['customer_id'] = customerId;
     if (username != null) json['username'] = username;
     if (password != null) json['password'] = password;
+
+    return json;
+  }
+
+  /// Maps into a json object for agent creation
+  Map<String, dynamic> toAgentJson({
+    bool isEditing = false,
+  }) {
+    var json = {
+      if (isEditing) 'a_user_id': id,
+      'customer_id': customerId,
+      'username': username,
+      'first_name': firstName,
+      'last_name': lastName,
+      'email': email,
+      'mobile_number': mobileNumber,
+      'role_id': role,
+      if (gender != null && gender!.isNotEmpty) 'gender': gender,
+      if (maritalStatus != null && maritalStatus!.isNotEmpty)
+        'marital_status': maritalStatus,
+      if (dob != null && dob!.isNotEmpty) 'dob': dob,
+      if (agentCustomerId != null && agentCustomerId!.isNotEmpty)
+        'agent_customer_id': agentCustomerId,
+      if (managingBranch != null && managingBranch!.isNotEmpty)
+        'managing_branch': managingBranch,
+      if (motherName != null && motherName!.isNotEmpty)
+        'mother_name': motherName,
+      if (address1 != null && address1!.isNotEmpty) 'address1': address1,
+      if (image?.isNotEmpty ?? false) 'image': image,
+    };
+
+    return json;
+  }
+
+  /// Maps into a visibility json object
+  Map<String, dynamic> toAccountVisibilityJson() {
+    final json = {
+      '$customerId/$username': [
+        {
+          'customer_id': customerId,
+          'corporate_name': customerName,
+          if (agentCustomerId?.isNotEmpty ?? false) 'agent_id': agentCustomerId,
+          'agent_name': [firstName, lastName]
+              .where(
+                (element) => element != null && element.isNotEmpty,
+              )
+              .join(' '),
+        },
+        if (visibleCards?.isNotEmpty ?? false)
+          ...visibleCards!
+              .map(
+                (card) => card.toVisibilityJson(),
+              )
+              .toList(),
+        if (visibleAccounts?.isNotEmpty ?? false)
+          ...visibleAccounts!
+              .map(
+                (account) => account.toVisibilityJson(),
+              )
+              .toList(),
+      ],
+    };
 
     return json;
   }

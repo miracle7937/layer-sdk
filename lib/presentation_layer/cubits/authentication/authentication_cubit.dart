@@ -6,6 +6,7 @@ import '../../../data_layer/providers.dart';
 import '../../../data_layer/repositories.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
+import '../../utils.dart';
 
 /// Maintains the states of authentication on the app
 class AuthenticationCubit extends Cubit<AuthenticationState> {
@@ -216,10 +217,15 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         return;
       }
 
+      final deviceName = await RequestHeadersHelper.getDeviceName();
+      final deviceModel = await RequestHeadersHelper.getDeviceModel();
+
       final user = await _loginUseCase(
         username: username,
         password: password,
         notificationToken: notificationToken,
+        deviceName: deviceName,
+        deviceModel: deviceModel,
       );
 
       var errorStatus =

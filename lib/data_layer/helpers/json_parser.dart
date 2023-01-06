@@ -38,9 +38,9 @@ class JsonParser {
   /// Format date object into a formatted date
   static String parseDateWithPattern(
     DateTime date,
-    String pattern,
-    String locale,
-  ) {
+    String pattern, [
+    String? locale,
+  ]) {
     return DateFormat(pattern, locale).format(date);
   }
 

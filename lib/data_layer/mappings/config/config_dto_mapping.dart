@@ -6,6 +6,7 @@ extension ConfigDTOMapping on ConfigDTO {
   /// Maps into a [Config]
   Config toConfig() => Config(
         showCustomersTab: showCustomersTab ?? false,
+        eStatementEnabled: eStatementEnabled ?? false,
         internalServices:
             internalServices?.toInternalServices() ?? InternalServices(),
         graphanaUrl: graphanaUrl ?? '',

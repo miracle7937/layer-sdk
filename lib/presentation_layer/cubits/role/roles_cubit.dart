@@ -15,7 +15,7 @@ class RolesCubit extends Cubit<RolesState> {
         super(RolesState());
 
   /// Loads all available customer roles.
-  void listCustomerRoles({
+  Future<void> listCustomerRoles({
     bool forceRefresh = false,
   }) async {
     emit(

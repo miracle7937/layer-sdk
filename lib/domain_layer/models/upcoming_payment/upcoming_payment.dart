@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../../domain_layer/models.dart';
+import '../../models.dart';
 
 /// The status an upcoming payment can have
 enum UpcomingPaymentStatus {

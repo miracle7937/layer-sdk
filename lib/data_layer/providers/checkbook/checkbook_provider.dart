@@ -33,7 +33,7 @@ class CheckbookProvider {
     );
 
     return CheckbookDTO.fromJsonList(
-      response.data,
+      List<Map<String, dynamic>>.from(response.data),
     );
   }
 }

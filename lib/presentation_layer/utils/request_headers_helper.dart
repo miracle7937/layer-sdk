@@ -6,8 +6,10 @@ import 'package:package_info/package_info.dart';
 
 /// Util class for getting the device fingerprint and user agent request headers
 class RequestHeadersHelper {
+  RequestHeadersHelper._();
+
   /// Returns the device fingerprint for the request headers.
-  Future<String> getDeviceIdentifier() async {
+  static Future<String> getDeviceIdentifier() async {
     final deviceInfoPlugin = DeviceInfoPlugin();
 
     if (kIsWeb) return '';
@@ -22,8 +24,40 @@ class RequestHeadersHelper {
     return '';
   }
 
+  /// Returns the device name.
+  static Future<String?> getDeviceName() async {
+    final deviceInfoPlugin = DeviceInfoPlugin();
+
+    if (kIsWeb) return null;
+
+    if (Platform.isAndroid) {
+      var info = await deviceInfoPlugin.androidInfo;
+      return info.device;
+    } else if (Platform.isIOS) {
+      var info = await deviceInfoPlugin.iosInfo;
+      return info.name;
+    }
+    return null;
+  }
+
+  /// Returns the device model.
+  static Future<String?> getDeviceModel() async {
+    final deviceInfoPlugin = DeviceInfoPlugin();
+
+    if (kIsWeb) return null;
+
+    if (Platform.isAndroid) {
+      var info = await deviceInfoPlugin.androidInfo;
+      return info.model;
+    } else if (Platform.isIOS) {
+      var info = await deviceInfoPlugin.iosInfo;
+      return info.model;
+    }
+    return null;
+  }
+
   /// Returns the user agent for the request headers.
-  Future<String> getUserAgent() async {
+  static Future<String> getUserAgent() async {
     final packageInfo = await PackageInfo.fromPlatform();
     final version = packageInfo.version;
     final build = packageInfo.buildNumber;

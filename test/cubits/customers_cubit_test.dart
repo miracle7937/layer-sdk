@@ -4,7 +4,8 @@ import 'package:layer_sdk/features/customer.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockCustomerRepository extends Mock implements CustomerRepository {}
+class MockCustomerRepository extends Mock
+    implements CustomerRepositoryInterface {}
 
 final _dataCreatedDesc = <Customer>[];
 final _dataCreatedAsc = <Customer>[];
@@ -18,8 +19,6 @@ final _branchesFilter = {'7'};
 
 late MockCustomerRepository _repository;
 late LoadCustomerUseCase _getCustomerUseCase;
-late UpdateCustomerGracePeriodUseCase _updateCustomerGracePeriodUseCase;
-late UpdateCustomerEStatementUseCase _updateCustomerEStatementUseCase;
 
 late CustomersCubit _customersCubit;
 
@@ -71,14 +70,8 @@ void main() {
   setUp(() {
     _repository = MockCustomerRepository();
     _getCustomerUseCase = LoadCustomerUseCase(repository: _repository);
-    _updateCustomerGracePeriodUseCase =
-        UpdateCustomerGracePeriodUseCase(repository: _repository);
-    _updateCustomerEStatementUseCase =
-        UpdateCustomerEStatementUseCase(repository: _repository);
     _customersCubit = CustomersCubit(
       getCustomerUseCase: _getCustomerUseCase,
-      updateCustomerGracePeriodUseCase: _updateCustomerGracePeriodUseCase,
-      updateCustomerEStatmentUseCase: _updateCustomerEStatementUseCase,
       limit: _defaultLimit,
     );
 
@@ -111,8 +104,6 @@ void main() {
     'starts on empty state',
     build: () => CustomersCubit(
       getCustomerUseCase: _getCustomerUseCase,
-      updateCustomerGracePeriodUseCase: _updateCustomerGracePeriodUseCase,
-      updateCustomerEStatmentUseCase: _updateCustomerEStatementUseCase,
       limit: _defaultLimit,
     ),
     verify: (c) => expect(c.state, CustomersState()),
@@ -121,10 +112,7 @@ void main() {
   blocTest<CustomersCubit, CustomersState>(
     'resets cubit to an empty state',
     build: () => CustomersCubit(
-        getCustomerUseCase: _getCustomerUseCase,
-        updateCustomerGracePeriodUseCase: _updateCustomerGracePeriodUseCase,
-        updateCustomerEStatmentUseCase: _updateCustomerEStatementUseCase,
-        limit: _defaultLimit),
+        getCustomerUseCase: _getCustomerUseCase, limit: _defaultLimit),
     seed: () => CustomersState(
       customers: _dataCreatedDesc.take(_defaultLimit).toList(),
       listData: CustomerListData(canLoadMore: true),

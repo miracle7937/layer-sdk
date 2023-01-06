@@ -35,6 +35,8 @@ class AuditProvider {
       },
     );
 
-    return AuditDTO.fromJsonList(response.data);
+    return AuditDTO.fromJsonList(
+      List<Map<String, dynamic>>.from(response.data),
+    );
   }
 }

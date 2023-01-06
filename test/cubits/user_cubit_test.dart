@@ -6,7 +6,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 class MockLoadUserByCustomerIdUseCase extends Mock
-    implements LoadUserByCustomerIdUseCase {}
+    implements LoadUsersByCustomerIdUseCase {}
 
 class MockRequestLockUseCase extends Mock implements RequestLockUseCase {}
 
@@ -26,10 +26,12 @@ class MockRequestPINResetUseCase extends Mock
 
 class MockPatchUseRolesUseCase extends Mock implements PatchUserRolesUseCase {}
 
+class MockDeleteAgentUseCase extends Mock implements DeleteAgentUseCase {}
+
 class MockPathUserBlockedChannlesUseCase extends Mock
     implements PatchUserBlockedChannelUseCase {}
 
-final _loadUserByCustomerIdUseCase = MockLoadUserByCustomerIdUseCase();
+final _loadUsersByCustomerIdUseCase = MockLoadUserByCustomerIdUseCase();
 final _requestLockUseCase = MockRequestLockUseCase();
 final _requestUnlockUseCase = MockRequestUnlockUseCase();
 final _requestActivateUseCase = MockRquestActivateUseCase();
@@ -38,14 +40,30 @@ final _requestPasswordResetUseCase = MockRequestPasswordResetUseCase();
 final _requestPINResetUseCase = MockRequestPINResetUseCase();
 final _patchUserRolesUseCase = MockPatchUseRolesUseCase();
 final _patchUserBlockedChannelUseCase = MockPathUserBlockedChannlesUseCase();
+final _deleteAgentUseCase = MockDeleteAgentUseCase();
 
 final _successId = '1';
 final _failureId = '2';
 
 final mockUser = User(
-  id: _successId,
-  firstName: 'Mock',
-  lastName: 'User',
+  id: 'userId1',
+  firstName: 'MockUserFirstName1',
+  lastName: 'MockUserLastName1',
+  created: DateTime.utc(2020),
+);
+
+final mockUser1 = User(
+  id: 'userId2',
+  firstName: 'MockUserFirstName2',
+  lastName: 'MockUserLastName2',
+  created: DateTime.utc(2021),
+);
+
+final mockUser2 = User(
+  id: 'finalId',
+  firstName: 'finalFN',
+  lastName: 'finalLN',
+  created: DateTime.utc(2022),
 );
 
 late UserCubit _successCubit;
@@ -58,7 +76,7 @@ void main() {
   setUp(() {
     _successCubit = UserCubit(
       customerId: _successId,
-      loadUserByCustomerIdUseCase: _loadUserByCustomerIdUseCase,
+      loadUserByCustomerIdUseCase: _loadUsersByCustomerIdUseCase,
       requestLockUseCase: _requestLockUseCase,
       requestUnlockUseCase: _requestUnlockUseCase,
       requestActivateUseCase: _requestActivateUseCase,
@@ -67,11 +85,12 @@ void main() {
       requestPINResetUseCase: _requestPINResetUseCase,
       patchUserRolesUseCase: _patchUserRolesUseCase,
       patchUserBlockedChannelUseCase: _patchUserBlockedChannelUseCase,
+      deleteAgentUseCase: _deleteAgentUseCase,
     );
 
     _failCubit = UserCubit(
       customerId: _failureId,
-      loadUserByCustomerIdUseCase: _loadUserByCustomerIdUseCase,
+      loadUserByCustomerIdUseCase: _loadUsersByCustomerIdUseCase,
       requestLockUseCase: _requestLockUseCase,
       requestUnlockUseCase: _requestUnlockUseCase,
       requestActivateUseCase: _requestActivateUseCase,
@@ -80,30 +99,34 @@ void main() {
       requestPINResetUseCase: _requestPINResetUseCase,
       patchUserRolesUseCase: _patchUserRolesUseCase,
       patchUserBlockedChannelUseCase: _patchUserBlockedChannelUseCase,
+      deleteAgentUseCase: _deleteAgentUseCase,
     );
 
     /// getUser() success test case
     when(
-      () => _loadUserByCustomerIdUseCase(
+      () => _loadUsersByCustomerIdUseCase(
         customerID: _successId,
+        name: '',
       ),
     ).thenAnswer(
-      (_) async => mockUser,
+      (_) async => [mockUser, mockUser1],
     );
 
     when(
-      () => _loadUserByCustomerIdUseCase(
+      () => _loadUsersByCustomerIdUseCase(
         customerID: _successId,
         forceRefresh: true,
+        name: '',
       ),
     ).thenAnswer(
-      (_) async => mockUser,
+      (_) async => [mockUser, mockUser1],
     );
 
     /// getUser() failure test case
     when(
-      () => _loadUserByCustomerIdUseCase(
+      () => _loadUsersByCustomerIdUseCase(
         customerID: _failureId,
+        name: '',
       ),
     ).thenAnswer(
       (_) async => throw Exception('Some error'),
@@ -122,9 +145,9 @@ void main() {
   );
 
   blocTest<UserCubit, UserState>(
-    'Load user emits user on success',
+    'Load users emits user on success',
     build: () => _successCubit,
-    act: (c) => c.loadUser(),
+    act: (c) => c.load(),
     expect: () => [
       UserState(
         customerId: _successId,
@@ -132,14 +155,19 @@ void main() {
       ),
       UserState(
         customerId: _successId,
-        user: mockUser,
+        users: [mockUser, mockUser1],
+        listData: UserListData(
+          canLoadMore: false,
+          searchString: '',
+        ),
       ),
     ],
     verify: (c) {
       verify(
-        () => _loadUserByCustomerIdUseCase(
+        () => _loadUsersByCustomerIdUseCase(
           customerID: _successId,
           forceRefresh: false,
+          name: '',
         ),
       ).called(1);
     },
@@ -148,7 +176,7 @@ void main() {
   blocTest<UserCubit, UserState>(
     'Force load user emits user on success',
     build: () => _successCubit,
-    act: (c) => c.loadUser(forceRefresh: true),
+    act: (c) => c.load(forceRefresh: true),
     expect: () => [
       UserState(
         customerId: _successId,
@@ -156,23 +184,28 @@ void main() {
       ),
       UserState(
         customerId: _successId,
-        user: mockUser,
+        users: [mockUser, mockUser1],
+        listData: UserListData(
+          canLoadMore: false,
+          searchString: '',
+        ),
       ),
     ],
     verify: (c) {
       verify(
-        () => _loadUserByCustomerIdUseCase(
+        () => _loadUsersByCustomerIdUseCase(
           customerID: _successId,
           forceRefresh: true,
+          name: '',
         ),
       ).called(1);
     },
   );
 
   blocTest<UserCubit, UserState>(
-    'Load user emits error on failure',
+    'Load users emits error on failure',
     build: () => _failCubit,
-    act: (c) => c.loadUser(),
+    act: (c) => c.load(),
     errors: () => [
       isA<Exception>(),
     ],
@@ -188,9 +221,10 @@ void main() {
     ],
     verify: (c) {
       verify(
-        () => _loadUserByCustomerIdUseCase(
+        () => _loadUsersByCustomerIdUseCase(
           customerID: _failureId,
           forceRefresh: false,
+          name: '',
         ),
       ).called(1);
     },
@@ -219,7 +253,7 @@ void _lockTests() {
     build: () => _successCubit,
     seed: () => UserState(
       customerId: _successId,
-      user: mockUser,
+      users: [mockUser],
     ),
     act: (c) => c.requestLock(
       customerType: CustomerType.personal,
@@ -227,12 +261,12 @@ void _lockTests() {
     expect: () => [
       UserState(
         customerId: _successId,
-        user: mockUser,
+        users: [mockUser],
         actions: {UserBusyAction.lock},
       ),
       UserState(
         customerId: _successId,
-        user: mockUser,
+        users: [mockUser],
       ),
     ],
     verify: (c) {
@@ -290,7 +324,7 @@ void _unlockTests() {
     build: () => _successCubit,
     seed: () => UserState(
       customerId: _successId,
-      user: mockUser,
+      users: [mockUser],
     ),
     act: (c) => c.requestUnlock(
       customerType: CustomerType.personal,
@@ -298,12 +332,12 @@ void _unlockTests() {
     expect: () => [
       UserState(
         customerId: _successId,
-        user: mockUser,
+        users: [mockUser],
         actions: {UserBusyAction.unlock},
       ),
       UserState(
         customerId: _successId,
-        user: mockUser,
+        users: [mockUser],
       ),
     ],
     verify: (c) {
@@ -361,7 +395,7 @@ void _activateTests() {
     build: () => _successCubit,
     seed: () => UserState(
       customerId: _successId,
-      user: mockUser,
+      users: [mockUser],
     ),
     act: (c) => c.requestActivate(
       customerType: CustomerType.personal,
@@ -369,12 +403,12 @@ void _activateTests() {
     expect: () => [
       UserState(
         customerId: _successId,
-        user: mockUser,
+        users: [mockUser],
         actions: {UserBusyAction.activate},
       ),
       UserState(
         customerId: _successId,
-        user: mockUser,
+        users: [mockUser],
       ),
     ],
     verify: (c) {
@@ -432,7 +466,7 @@ void _deactivateTests() {
     build: () => _successCubit,
     seed: () => UserState(
       customerId: _successId,
-      user: mockUser,
+      users: [mockUser],
     ),
     act: (c) => c.requestDeactivate(
       customerType: CustomerType.personal,
@@ -440,12 +474,12 @@ void _deactivateTests() {
     expect: () => [
       UserState(
         customerId: _successId,
-        user: mockUser,
+        users: [mockUser],
         actions: {UserBusyAction.deactivate},
       ),
       UserState(
         customerId: _successId,
-        user: mockUser,
+        users: [mockUser],
       ),
     ],
     verify: (c) {
@@ -503,7 +537,7 @@ void _requestPasswordTests() {
     build: () => _successCubit,
     seed: () => UserState(
       customerId: _successId,
-      user: mockUser,
+      users: [mockUser],
     ),
     act: (c) => c.requestPasswordReset(
       customerType: CustomerType.personal,
@@ -511,12 +545,12 @@ void _requestPasswordTests() {
     expect: () => [
       UserState(
         customerId: _successId,
-        user: mockUser,
+        users: [mockUser],
         actions: {UserBusyAction.passwordReset},
       ),
       UserState(
         customerId: _successId,
-        user: mockUser,
+        users: [mockUser],
       ),
     ],
     verify: (c) {
@@ -574,7 +608,7 @@ void _requestPINTests() {
     build: () => _successCubit,
     seed: () => UserState(
       customerId: _successId,
-      user: mockUser,
+      users: [mockUser],
     ),
     act: (c) => c.requestPINReset(
       customerType: CustomerType.personal,
@@ -582,12 +616,12 @@ void _requestPINTests() {
     expect: () => [
       UserState(
         customerId: _successId,
-        user: mockUser,
+        users: [mockUser],
         actions: {UserBusyAction.pinReset},
       ),
       UserState(
         customerId: _successId,
-        user: mockUser,
+        users: [mockUser],
       ),
     ],
     verify: (c) {

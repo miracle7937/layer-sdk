@@ -8,6 +8,7 @@ abstract class GlobalSettingRepositoryInterface {
   /// specific settings.
   /// Invalid settings will be skipped.
   Future<List<GlobalSetting>> list({
+    String? module,
     List<String>? codes,
     bool forceRefresh = false,
   });

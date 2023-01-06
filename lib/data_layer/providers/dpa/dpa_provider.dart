@@ -97,7 +97,7 @@ class DPAProvider {
     bool forceRefresh = false,
   }) async {
     final response = await netClient.request(
-      '${netClient.netEndpoints.task}/$processInstanceId',
+      '${netClient.netEndpoints.userTask}/$processInstanceId',
       forceRefresh: forceRefresh,
     );
 

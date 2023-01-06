@@ -11,27 +11,21 @@ class ConfigInterceptor extends Interceptor {
   final Config config;
 
   ///The logged in user
-  User? _user;
+  User? user;
 
   final ConsoleEndpoints _consoleEndpoints = ConsoleEndpoints();
   final path_utils.Context _pathContext =
       path_utils.Context(style: path_utils.Style.url);
 
   ///Create a new [ConfigInterceptor]
-  ConfigInterceptor({
-    required this.config,
-  });
-
-  /// Sets the current user
-  // ignore: avoid_setters_without_getters
-  set user(User user) => _user = user;
+  ConfigInterceptor({required this.config});
 
   @override
   void onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    if (isApiRequest(options.path)) {
+    if (isMakerCheckerApi(options.path)) {
       final isMakerChecker =
           ['POST', 'PATCH', 'PUT', 'DELETE'].contains(options.method) &&
               isMakerCheckerApi(options.path);
@@ -40,21 +34,23 @@ class ConfigInterceptor extends Interceptor {
         final newData = [
           {
             'operation': getOperation(options.method),
-            'maker_id': _user?.username,
+            'maker_id': user?.username,
             'body': options.data
           }
         ];
 
-        final splittedUrlV1 = options.path.split('/v1');
+        final splitUrlV1 = options.uri.toString().split('/v1');
 
         if (options.path.contains(_consoleEndpoints.infobankingLink)) {
           newData[0]['url'] =
-              config.internalServices.infobanking + splittedUrlV1[1];
-        }
-
-        if (options.path.contains(_consoleEndpoints.user)) {
+              config.internalServices.infobanking + splitUrlV1[1];
+        } else if (options.path.contains(_consoleEndpoints.user) ||
+            options.path.contains(_consoleEndpoints.authEngineUser)) {
           newData[0]['url'] =
-              config.internalServices.authCustomer + splittedUrlV1[1];
+              config.internalServices.authCustomer + splitUrlV1[1];
+        } else if (options.path.contains(_consoleEndpoints.transferLimits)) {
+          newData[0]['url'] =
+              config.internalServices.txnbanking + splitUrlV1[1];
         }
 
         options.data = newData;
@@ -63,27 +59,26 @@ class ConfigInterceptor extends Interceptor {
           _consoleEndpoints.queueRequest,
         );
         options.method = 'POST';
+        options.queryParameters = {};
       }
     }
     handler.next(options);
   }
 
-  /// Returns if a given url is an API request
-  bool isApiRequest(String url) => [
-        _consoleEndpoints.infobankingLink,
-        _consoleEndpoints.user,
-      ].any(url.contains);
-
   /// Returns if a given url should be redirected to the maker/checker flow
   bool isMakerCheckerApi(String url) => [
         _consoleEndpoints.infobankingLink,
         _consoleEndpoints.user,
+        _consoleEndpoints.authEngineUser,
+        _consoleEndpoints.transferLimits,
+        _consoleEndpoints.acl,
       ].any(url.contains);
 
   /// Returns if a given url shouldn't be redirected to the maker/checker flow
   bool isWhiteListed(String url) => [
         _consoleEndpoints.officialBankStatement,
         _consoleEndpoints.accountCertificate,
+        _consoleEndpoints.internationalBeneficiary,
       ].any(url.contains);
 
   /// Returns the symbol of a given HTTP method

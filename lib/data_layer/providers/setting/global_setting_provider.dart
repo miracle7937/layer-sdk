@@ -16,12 +16,14 @@ class GlobalSettingProvider {
   /// Optional [codes] parameter can be supplied to only fetch
   /// specific settings.
   Future<List<GlobalSettingDTO>> list({
+    String? module,
     List<String>? codes,
     bool forceRefresh = false,
   }) async {
     final response = await netClient.request(
       netClient.netEndpoints.settings,
       queryParameters: {
+        if (module != null) 'module': module,
         if (codes?.isNotEmpty ?? false) 'codes': codes!.join(','),
       },
       forceRefresh: forceRefresh,

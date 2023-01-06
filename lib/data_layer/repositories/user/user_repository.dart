@@ -16,10 +16,12 @@ class UserRepository implements UserRepositoryInterface {
   @override
   Future<User> getUser({
     String? customerID,
+    String? username,
     bool forceRefresh = false,
   }) async {
     final userDTO = await _userProvider.getUser(
       customerID: customerID,
+      username: username,
       forceRefresh: forceRefresh,
     );
 
@@ -47,12 +49,13 @@ class UserRepository implements UserRepositoryInterface {
   Future<User> patchUserPreference({
     required UserPreference userPreference,
   }) async {
-    final userDTO = await _userProvider.patchUserPreference(
-      userPreference: userPreference,
+    final userDTO = await _userProvider.patchUserPreferences(
+      userPreferences: [userPreference],
     );
 
     return userDTO.toUser();
   }
+
   /// Patches an user preference with different data
   @override
   Future<User> patchUserPreferences({
@@ -238,6 +241,43 @@ class UserRepository implements UserRepositoryInterface {
         userId: userId,
         roles: roles,
       );
+
+  /// Fetches the [User]s for customer with [customerID],
+  /// optionally filtering them using [name].
+  ///
+  /// Use [limit] and [offset] to paginate.
+  ///
+  /// The order is given by [sortBy] (which defaults to
+  /// [UserSort.registered] and [descendingOrder], which defaults to `true`.
+  @override
+  Future<List<User>> getUsers({
+    required String customerID,
+    bool forceRefresh = false,
+    String? name,
+    UserSort sortBy = UserSort.registered,
+    bool descendingOrder = true,
+    int limit = 50,
+    int offset = 0,
+  }) async {
+    final usersDTO = await _userProvider.getUsers(
+      customerID: customerID,
+      forceRefresh: forceRefresh,
+      name: name,
+      sortBy: sortBy.toFieldName(),
+      descendingOrder: descendingOrder,
+      limit: limit,
+      offset: offset,
+    );
+
+    return usersDTO.map((userDTO) => userDTO.toUser()).toList();
+  }
+
+  @override
+  Future<bool> requestDeleteAgent({required User user}) {
+    return _userProvider.requestDeleteAgent(
+      user: user,
+    );
+  }
 
   /// Uploads the newly selected image
   @override

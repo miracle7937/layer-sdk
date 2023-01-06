@@ -24,6 +24,7 @@ extension TransferDTOMapping on TransferDTO {
         status: status?.toTransferStatus(),
         type: type?.toTransferType(),
         scheduledDate: scheduled,
+        bulkFilePath: bulkFilePath ?? '',
         processingType: processingType?.toTransferProcessingType(),
         secondFactorType: secondFactor?.toSecondFactorType(),
         evaluation: evaluation?.toTransferEvaluation(),

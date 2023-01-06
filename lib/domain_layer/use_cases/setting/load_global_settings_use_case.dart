@@ -16,6 +16,7 @@ class LoadGlobalSettingsUseCase {
   /// specific settings.
   /// Invalid settings will be skipped.
   Future<List<GlobalSetting>> call({
+    String? module,
     List<String>? codes,
     List<GlobalSetting<dynamic>>? currentSettings,
     bool forceRefresh = false,
@@ -26,6 +27,7 @@ class LoadGlobalSettingsUseCase {
     }
 
     return _repository.list(
+      module: module,
       codes: codes,
       forceRefresh: forceRefresh,
     );

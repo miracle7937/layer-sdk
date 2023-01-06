@@ -20,16 +20,19 @@ class AuthenticationRepository implements AuthenticationRepositoryInterface {
   /// Logs the user in.
   ///
   /// Returns a [User] or null if couldn't log in.
-  @override
   Future<User?> login({
     required String username,
     required String password,
+    String? deviceName,
+    String? deviceModel,
     String? notificationToken,
   }) async {
     final userDTO = await _provider.login(
-      username,
-      password,
-      notificationToken,
+      username: username,
+      password: password,
+      deviceName: deviceName,
+      deviceModel: deviceModel,
+      notificationToken: notificationToken,
     );
 
     if (userDTO == null) return null;

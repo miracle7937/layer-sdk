@@ -3,6 +3,18 @@ import 'package:equatable/equatable.dart';
 
 import '../../models.dart';
 
+/// The genders a customer can have.
+enum CustomerGender {
+  /// Female.
+  female,
+
+  /// Male.
+  male,
+
+  /// Unknown.
+  unknown,
+}
+
 /// The status a customer can have.
 enum CustomerStatus {
   /// Active.

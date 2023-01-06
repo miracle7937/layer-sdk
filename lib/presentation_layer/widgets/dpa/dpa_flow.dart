@@ -44,6 +44,13 @@ typedef DPACarouselScreenBuilder = Widget? Function(
   DPAProcess process,
 );
 
+/// Signature for [DPAFlow.customErrorPresenter].
+typedef DPAErrorPresenter = void Function({
+  required BuildContext context,
+  required String titleKey,
+  String? message,
+});
+
 /// A widget that starts a flow that has been created by a user console.
 ///
 /// By default this widget uses the design kit layer widgets but it exposes
@@ -200,6 +207,10 @@ class DPAFlow<T> extends StatefulWidget {
   /// Optional callback for creating custom Carousel Screens.
   final DPACarouselScreenBuilder? customCarouselScreemBuilder;
 
+  /// Optional callback that allows to override the default bottom sheet error
+  /// presenter.
+  final DPAErrorPresenter? customErrorPresenter;
+
   /// Creates a new [DPAFlow].
   const DPAFlow({
     Key? key,
@@ -223,6 +234,7 @@ class DPAFlow<T> extends StatefulWidget {
     ),
     this.customContentPadding,
     this.customCarouselScreemBuilder,
+    this.customErrorPresenter,
   }) : super(key: key);
 
   @override
@@ -393,8 +405,7 @@ class _DPAFlowState<T> extends State<DPAFlow<T>> {
   }
 
   /// Shows the transfer error bottom sheet.
-  Future<void> _showErrorBottomSheet(
-    BuildContext context, {
+  Future<void> _showErrorBottomSheet({
     required String titleKey,
     String? descriptionKey,
   }) async {
@@ -417,22 +428,37 @@ class _DPAFlowState<T> extends State<DPAFlow<T>> {
   void _showConnectivityError(
     BuildContext context, {
     required CubitConnectivityError<DPAProcessBusyAction> error,
-  }) =>
-      _showErrorBottomSheet(
-        context,
+  }) {
+    if (widget.customErrorPresenter != null) {
+      widget.customErrorPresenter!(
+        context: context,
         titleKey: 'connectivity_error',
       );
+    } else {
+      _showErrorBottomSheet(
+        titleKey: 'connectivity_error',
+      );
+    }
+  }
 
   /// Called when a new api error is emitted by the cubit.
   void _showAPIError(
     BuildContext context, {
     required CubitAPIError<DPAProcessBusyAction> error,
-  }) =>
+  }) {
+    if (widget.customErrorPresenter != null) {
+      widget.customErrorPresenter!(
+        context: context,
+        titleKey: error.code?.value ?? 'generic_error',
+        message: error.message,
+      );
+    } else {
       _showErrorBottomSheet(
-        context,
         titleKey: error.code?.value ?? 'generic_error',
         descriptionKey: error.message,
       );
+    }
+  }
 
   Widget? _getEffectiveCustomChild(BuildContext context) {
     if (widget.customChild != null) {

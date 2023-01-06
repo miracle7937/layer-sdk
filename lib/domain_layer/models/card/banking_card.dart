@@ -1,8 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
-import 'card_preferences.dart';
-import 'card_type.dart';
+import '../../models.dart';
 
 /// The [BankingCard] status
 enum CardStatus {

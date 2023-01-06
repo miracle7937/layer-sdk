@@ -44,11 +44,13 @@ class AuthenticationProvider {
   ///
   /// Also, set the token on the NetClient to the one from the user,
   /// or if there's no logged user, clears it.
-  Future<UserDTO?> login(
-    String username,
-    String password,
+  Future<UserDTO?> login({
+    required String username,
+    required String password,
+    String? deviceName,
+    String? deviceModel,
     String? notificationToken,
-  ) async {
+  }) async {
     final response = await netClient.request(
       netClient.netEndpoints.login,
       method: NetRequestMethods.post,
@@ -57,6 +59,8 @@ class AuthenticationProvider {
       data: {
         'username': username,
         'password': password,
+        if (deviceName != null) 'device_name': deviceName,
+        if (deviceModel != null) 'model': deviceModel,
         if (notificationToken != null) 'notification_token': notificationToken,
       },
     );

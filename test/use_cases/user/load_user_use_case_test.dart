@@ -7,31 +7,40 @@ import 'package:mocktail/mocktail.dart';
 
 class MockUserRepository extends Mock implements UserRepositoryInterface {}
 
+late String customerID;
+
 void main() {
   EquatableConfig.stringify = true;
 
   late MockUserRepository _repository;
-  late LoadUserByCustomerIdUseCase _loadUserByCustomerIdUseCase;
+  late LoadUsersByCustomerIdUseCase _loadUserByCustomerIdUseCase;
 
   final _mockedUser = User(id: 'id');
+  customerID = 'ayylmao';
 
   setUp(() {
     _repository = MockUserRepository();
-    _loadUserByCustomerIdUseCase = LoadUserByCustomerIdUseCase(
+    _loadUserByCustomerIdUseCase = LoadUsersByCustomerIdUseCase(
       repository: _repository,
     );
 
-    when(() => _loadUserByCustomerIdUseCase()).thenAnswer(
-      (_) async => _mockedUser,
+    when(
+      () => _loadUserByCustomerIdUseCase(
+        customerID: customerID,
+      ),
+    ).thenAnswer(
+      (_) async => [_mockedUser],
     );
   });
 
   test('Should return an User', () async {
-    final response = await _loadUserByCustomerIdUseCase();
+    final response = await _loadUserByCustomerIdUseCase(customerID: customerID);
 
-    expect(response, _mockedUser);
+    expect(response, [_mockedUser]);
 
-    verify(() => _repository.getUser()).called(1);
+    verify(
+      () => _repository.getUsers(customerID: customerID),
+    ).called(1);
 
     verifyNoMoreInteractions(_repository);
   });

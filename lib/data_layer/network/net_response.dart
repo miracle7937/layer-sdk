@@ -15,11 +15,11 @@ class NetResponse extends Equatable {
   final String? statusMessage;
 
   /// Creates a new NetResponse
-  const NetResponse({
+  NetResponse({
     this.data,
     this.statusCode,
     this.statusMessage,
-  }) : success = statusCode == 200 || statusCode == 201;
+  }) : success = statusCode?.toString().startsWith('2') ?? false;
 
   @override
   List<Object?> get props => [

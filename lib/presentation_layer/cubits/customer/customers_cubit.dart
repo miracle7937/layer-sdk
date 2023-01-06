@@ -9,8 +9,6 @@ import '../../cubits.dart';
 /// A cubit that keeps the list of customers.
 class CustomersCubit extends Cubit<CustomersState> {
   final LoadCustomerUseCase _getCustomerUseCase;
-  final UpdateCustomerGracePeriodUseCase _updateCustomerGracePeriodUseCase;
-  final UpdateCustomerEStatementUseCase _updateCustomerEStatmentUseCase;
 
   /// Maximum number of customers to load at a time.
   final int limit;
@@ -21,13 +19,16 @@ class CustomersCubit extends Cubit<CustomersState> {
   /// Creates a new cubit using the supplied [CustomerRepository].
   CustomersCubit({
     required LoadCustomerUseCase getCustomerUseCase,
-    required UpdateCustomerGracePeriodUseCase updateCustomerGracePeriodUseCase,
-    required UpdateCustomerEStatementUseCase updateCustomerEStatmentUseCase,
+    CustomerType customerType = CustomerType.personal,
     this.limit = 50,
   })  : _getCustomerUseCase = getCustomerUseCase,
-        _updateCustomerGracePeriodUseCase = updateCustomerGracePeriodUseCase,
-        _updateCustomerEStatmentUseCase = updateCustomerEStatmentUseCase,
-        super(CustomersState());
+        super(
+          CustomersState(
+            listData: CustomerListData(
+              customerType: customerType,
+            ),
+          ),
+        );
 
   @override
   Future<void> close() {
@@ -138,94 +139,6 @@ class CustomersCubit extends Cubit<CustomersState> {
           listData: state.listData.copyWith(
             customerType: previousType,
           ),
-          error: CustomersStateError.generic,
-        ),
-      );
-
-      rethrow;
-    }
-  }
-
-  /// Updates the customer KYC grace period based on the provided
-  /// parameters.
-  Future<void> updateCustomerGracePeriod({
-    required String customerId,
-    required KYCGracePeriodType type,
-    int? value,
-  }) async {
-    emit(
-      state.copyWith(
-        actions: {
-          CustomerBusyAction.updatingCustomerGracePeriod,
-        },
-        error: CustomersStateError.none,
-      ),
-    );
-
-    try {
-      final result = await _updateCustomerGracePeriodUseCase(
-        customerId: customerId,
-        type: type,
-        value: value,
-      );
-
-      emit(
-        state.copyWith(
-          actions: state.actions.difference({
-            CustomerBusyAction.updatingCustomerGracePeriod,
-          }),
-          error: result ? null : CustomersStateError.generic,
-        ),
-      );
-    } on Exception {
-      emit(
-        state.copyWith(
-          actions: state.actions.difference({
-            CustomerBusyAction.updatingCustomerGracePeriod,
-          }),
-          error: CustomersStateError.generic,
-        ),
-      );
-
-      rethrow;
-    }
-  }
-
-  /// Updates the customer KYC grace period based on the provided
-  /// parameters.
-  Future<void> updateCustomerEStatement({
-    required String customerId,
-    required bool value,
-  }) async {
-    emit(
-      state.copyWith(
-        actions: {
-          CustomerBusyAction.updatingCustomerEStatement,
-        },
-        error: CustomersStateError.none,
-      ),
-    );
-
-    try {
-      final result = await _updateCustomerEStatmentUseCase(
-        customerId: customerId,
-        value: value,
-      );
-
-      emit(
-        state.copyWith(
-          actions: state.actions.difference({
-            CustomerBusyAction.updatingCustomerEStatement,
-          }),
-          error: result ? null : CustomersStateError.generic,
-        ),
-      );
-    } on Exception {
-      emit(
-        state.copyWith(
-          actions: state.actions.difference({
-            CustomerBusyAction.updatingCustomerEStatement,
-          }),
           error: CustomersStateError.generic,
         ),
       );

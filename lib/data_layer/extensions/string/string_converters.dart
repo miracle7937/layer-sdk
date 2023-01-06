@@ -23,6 +23,10 @@ extension StringConverter on String {
 
   /// Parses the `String` that has a hexadecimal color value into an int value
   /// that can be used to generate a Color.
-  int? parseHexValueToInt() =>
-      isEmpty ? null : int.tryParse(replaceAll('#', ''), radix: 16);
+  int? parseHexValueToInt() => isEmpty
+      ? null
+      : int.tryParse(
+          startsWith('#') ? replaceAll('#', '') : padLeft(8, 'F'),
+          radix: 16,
+        );
 }

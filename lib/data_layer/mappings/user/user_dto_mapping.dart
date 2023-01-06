@@ -1,6 +1,7 @@
 import '../../../_migration/data_layer/src/mappings.dart';
 import '../../../domain_layer/models.dart';
 import '../../dtos.dart';
+import '../../helpers/json_parser.dart';
 import '../../mappings.dart';
 
 /// Extension that provides mappings for [UserDTO]
@@ -11,12 +12,15 @@ extension UserDTOMapping on UserDTO {
   }) =>
       User(
         id: id.toString(),
+        customerId: customerId,
+        agentCustomerId: agentCustomerId,
         username: username,
         imageURL: imageUrl,
         mobileNumber: mobileNumber,
         firstName: firstName,
         lastName: lastName,
         token: token,
+        email: email,
         status:
             code?.toUserStatus() ?? status?.toUserStatus() ?? UserStatus.active,
         preferences: userPreferences?.toPreference() ?? const Preferences(),
@@ -28,8 +32,14 @@ extension UserDTOMapping on UserDTO {
         permissions:
             permissions?.toUserPermissions() ?? const UserPermissions(),
         isUSSDActive: isUSSDActive ?? false,
+        created: created,
         verifyDevice: verifyDevice ?? false,
-        branch: branch,
+        branch: branch ?? managingBranch,
+        address: address1,
+        dob: JsonParser.parseStringDate(dob),
+        gender: gender?.toCustomerGender(),
+        maritalStatus: maritalStatus?.toCustomerMaritalStatus(),
+        motherName: motherName,
         accessPin: accessPin,
         enabledAlerts: enabledAlerts
                 ?.map(
@@ -84,6 +94,33 @@ extension on String {
 
       default:
         return null;
+    }
+  }
+}
+
+/// Extension that provides mappings for [UserSort]
+extension UserSortMapping on UserSort {
+  /// Maps into a [String].
+  String toFieldName() {
+    switch (this) {
+      case UserSort.id:
+        return 'a_user_id';
+      case UserSort.username:
+        return 'username';
+      case UserSort.agentCustomerId:
+        return 'agent_customer_id';
+      case UserSort.name:
+        return 'full_name';
+      case UserSort.email:
+        return 'email';
+      case UserSort.mobile:
+        return 'mobile_number';
+      case UserSort.status:
+        return 'status';
+      case UserSort.role:
+        return 'role_id';
+      case UserSort.registered:
+        return 'ts_created';
     }
   }
 }

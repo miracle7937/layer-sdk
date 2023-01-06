@@ -221,6 +221,31 @@ class CustomerProvider {
     return response.success;
   }
 
+  /// Forces a update of the user and customer associated to the
+  /// provided `customerId`.
+  ///
+  /// Returns whether or not the request was successfull.
+  Future<bool> forceCustomerUpdate({
+    required String customerId,
+  }) async {
+    final data = {
+      'parameters': {
+        'customer_id': customerId,
+      },
+      'script_name': 'force_update_user',
+      'task_name': 'Force Update User',
+      'max_attempts': 1,
+    };
+
+    final response = await netClient.request(
+      netClient.netEndpoints.task,
+      method: NetRequestMethods.post,
+      data: [data],
+    );
+
+    return response.success;
+  }
+
   /// Loads the limits of the customer.
   ///
   /// Returns `null` if the customer has no limits set.
