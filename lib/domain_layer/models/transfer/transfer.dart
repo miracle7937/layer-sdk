@@ -129,6 +129,9 @@ class Transfer extends Equatable {
   ///The future date when the transfer should happen
   final DateTime? scheduledDate;
 
+  ///The bulk file path of the transfer
+  final String bulkFilePath;
+
   /// The processing type.
   final TransferProcessingType? processingType;
 
@@ -174,6 +177,7 @@ class Transfer extends Equatable {
     this.status,
     this.type,
     this.scheduledDate,
+    this.bulkFilePath = '',
     this.processingType,
     this.secondFactorType,
     this.evaluation,
@@ -206,6 +210,7 @@ class Transfer extends Equatable {
         status,
         type,
         scheduledDate,
+        bulkFilePath,
         processingType,
         secondFactorType,
         evaluation,

@@ -141,7 +141,7 @@ class BillDTO {
       updated: JsonParser.parseDate(json['ts_updated']),
       billingFields: json['billing_fields'] != null
           ? ServiceFieldDTO.fromJsonList(
-              List.from(json['billing_fields']),
+              List<Map<String, dynamic>>.from(json['billing_fields']),
             )
           : [],
       additionalFields: json['additional_fields'],

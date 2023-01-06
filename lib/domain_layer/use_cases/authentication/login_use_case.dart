@@ -16,10 +16,14 @@ class LoginUseCase {
     required String username,
     required String password,
     String? notificationToken,
+    String? deviceName,
+    String? deviceModel,
   }) =>
       _repository.login(
-       username: username,
-       password: password,
-       notificationToken: notificationToken,
+        username: username,
+        password: password,
+        notificationToken: notificationToken,
+        deviceName: deviceName,
+        deviceModel: deviceModel,
       );
 }

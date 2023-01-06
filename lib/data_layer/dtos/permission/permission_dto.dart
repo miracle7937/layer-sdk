@@ -15,6 +15,12 @@ class PermissionDTO {
   /// The object id that this permissions is linked to.
   final String? moduleObjectId;
 
+  /// The description of this permission.
+  final String? description;
+
+  /// The role this permission belongs to.
+  final String? roleId;
+
   /// The value of this permission.
   final Object? value;
 
@@ -22,8 +28,10 @@ class PermissionDTO {
   PermissionDTO({
     this.id,
     this.moduleId,
+    this.roleId,
     this.moduleObjectId,
     this.value,
+    this.description,
   });
 
   /// Creates a [PermissionDTO] from a JSON
@@ -32,9 +40,11 @@ class PermissionDTO {
         moduleId: json['module_id'],
         moduleObjectId: json['object_id'],
         value: json['value'],
+        description: json['description'],
+        roleId: json['role_id'],
       );
 
   /// Creates a list of [PermissionDTO] from a JSON list
-  static List<PermissionDTO>? fromJsonList(List<Map<String, dynamic>>? json) =>
-      json?.map(PermissionDTO.fromJson).toList(growable: false);
+  static List<PermissionDTO> fromJsonList(List<Map<String, dynamic>> json) =>
+      json.map(PermissionDTO.fromJson).toList(growable: false);
 }

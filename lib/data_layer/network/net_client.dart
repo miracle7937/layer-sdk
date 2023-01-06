@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:collection/collection.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:logging/logging.dart';
@@ -103,6 +104,12 @@ class NetClient {
 
   /// The default language to ask the backend.
   String defaultLanguage;
+
+  /// Getter for [ConfigInterceptor] from [client]'s interceptors list.
+  ConfigInterceptor? get configInterceptor =>
+      client.interceptors.firstWhereOrNull(
+        (interceptor) => interceptor is ConfigInterceptor,
+      ) as ConfigInterceptor?;
 
   /// Creates a new [NetClient].
   ///

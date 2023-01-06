@@ -120,6 +120,28 @@ class CustomerRepository implements CustomerRepositoryInterface {
         value: value,
       );
 
+  /// Returns the customer associated with the provided `customerId`.
+  @override
+  Future<Customer> getCustomer({
+    required String customerId,
+    bool forceRefresh = false,
+  }) async {
+    final customerDTO = await _provider.customer(customerId: customerId);
+    return customerDTO.toCustomer(_customerCustomData);
+  }
+
+  /// Forces update of the user and customer associated to the
+  /// provided `customerId`.
+  ///
+  /// Returns whether or not the request was successfull.
+  @override
+  Future<bool> forceCustomerUpdate({
+    required String customerId,
+  }) =>
+      _provider.forceCustomerUpdate(
+        customerId: customerId,
+      );
+
   /// Loads the limits of the customer.
   ///
   /// Returns `null` if the customer has no limits set.

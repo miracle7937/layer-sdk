@@ -1,4 +1,4 @@
-import '../../../data_layer/network/net_request_canceller.dart';
+import '../../../data_layer/network.dart';
 import '../../models.dart';
 
 /// Abstract repository that handles customer data
@@ -57,6 +57,20 @@ abstract class CustomerRepositoryInterface {
   Future<bool> updateCustomerEStatement({
     required String customerId,
     required bool value,
+  });
+
+  /// Returns the customer associated with the provided `customerId`.
+  Future<Customer> getCustomer({
+    required String customerId,
+    bool forceRefresh = false,
+  });
+
+  /// Forces update of the user and customer associated to the
+  /// provided `customerId`.
+  ///
+  /// Returns whether or not the request was successfull.
+  Future<bool> forceCustomerUpdate({
+    required String customerId,
   });
 
   /// Loads the limits of the customer.

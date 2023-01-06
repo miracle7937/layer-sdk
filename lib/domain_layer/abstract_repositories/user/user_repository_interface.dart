@@ -5,6 +5,7 @@ abstract class UserRepositoryInterface {
   /// Fetches the [User] by `customerId`
   Future<User> getUser({
     String? customerID,
+    String? username,
     bool forceRefresh = false,
   });
 
@@ -79,6 +80,15 @@ abstract class UserRepositoryInterface {
     required CustomerType customerType,
   });
 
+  /// Request the deletion of an agent.
+  ///
+  /// Used exclusively by the console (DBO).
+  ///
+  /// This request then needs to be approved by another console user.
+  Future<bool> requestDeleteAgent({
+    required User user,
+  });
+
   /// Request the password reset for an user.
   ///
   /// Used exclusively by the console (DBO).
@@ -121,6 +131,23 @@ abstract class UserRepositoryInterface {
   Future<bool> patchUserRoles({
     required String userId,
     required List<String> roles,
+  });
+
+  /// Fetches the [User]s for customer with [customerID],
+  /// optionally filtering them using [name].
+  ///
+  /// Use [limit] and [offset] to paginate.
+  ///
+  /// The order is given by [sortBy] (which defaults to
+  /// [UserSort.registered] and [descendingOrder], which defaults to `true`.
+  Future<List<User>> getUsers({
+    required String customerID,
+    bool forceRefresh = false,
+    String? name,
+    UserSort sortBy = UserSort.registered,
+    bool descendingOrder = true,
+    int limit = 50,
+    int offset = 0,
   });
 
   /// Patches the newly selected image

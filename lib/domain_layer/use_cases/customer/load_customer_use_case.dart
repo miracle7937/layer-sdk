@@ -1,9 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
 
-import '../../../../data_layer/network.dart';
-import '../../../../domain_layer/models.dart';
-import '../../abstract_repositories.dart';
+import '../../../data_layer/network.dart';
+import '../../../features/customer.dart';
 
 /// Use case to load customers
 class LoadCustomerUseCase {

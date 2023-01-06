@@ -1,5 +1,5 @@
-import '../../../../data_layer/network.dart';
-import '../dtos.dart';
+import '../../../_migration/data_layer/src/dtos.dart';
+import '../../network.dart';
 
 /// A provider that handles API requests related to the registration.
 class RegistrationProvider {

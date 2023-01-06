@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
-import 'module_permission_definition.dart';
+import '../../models.dart';
 
 /// Holds the data of a permission module.
 class PermissionModule extends Equatable {

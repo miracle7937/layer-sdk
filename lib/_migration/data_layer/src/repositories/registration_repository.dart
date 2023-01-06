@@ -1,8 +1,8 @@
 import '../../../../data_layer/mappings.dart';
 import '../../../../data_layer/network.dart';
+import '../../../../data_layer/providers.dart';
 import '../../../../domain_layer/models.dart';
 import '../../models.dart';
-import '../../providers.dart';
 import '../dtos.dart';
 import '../mappings.dart';
 

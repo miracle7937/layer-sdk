@@ -11,6 +11,8 @@ abstract class AuthenticationRepositoryInterface {
     required String username,
     required String password,
     String? notificationToken,
+    String? deviceName,
+    String? deviceModel,
   });
 
   /// Logs out the user for the given `deviceId`.

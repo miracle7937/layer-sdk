@@ -1,7 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../data_layer/dtos.dart';
-
 /// Class that holds data of banking products
 class Product extends Equatable {
   /// Product Id
@@ -195,4 +193,25 @@ class Product extends Equatable {
       appointmentSlots: appointmentSlots ?? this.appointmentSlots,
     );
   }
+}
+
+/// Enum that indicates the type of a [Product]
+enum ProductType {
+  /// Currenct account
+  current,
+
+  /// Savings account
+  savings,
+
+  /// Term deposit
+  termDeposit,
+
+  /// Loan
+  loan,
+
+  /// Debit card
+  debitCard,
+
+  /// Credit card
+  creditCard,
 }

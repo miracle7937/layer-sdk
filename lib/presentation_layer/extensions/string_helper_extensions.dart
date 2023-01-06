@@ -44,6 +44,10 @@ extension StringHelperExtension on String {
   /// Cleans up a URL string.
   String cleanURL() =>
       replaceAll('http://', '').replaceAll('https://', '').trim();
+
+  /// Whether this string contains a match of [other] ignoring case.
+  bool containsIgnoreCase(String other) =>
+      toLowerCase().contains(other.toLowerCase());
 }
 
 /// Convenience extensions on the List<String> type

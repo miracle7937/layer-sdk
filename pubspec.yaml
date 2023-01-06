@@ -23,7 +23,7 @@ dependencies:
   design_kit_layer:
     git:
       url: git@gitlab.ubanquity.com:dart-packages/design-kit-layer.git
-      ref: 06f855b3777f03aa03c25b7f88e191afe33d0544
+      ref: 266972b04dfa0bd2833368a02fc2d55b84e9722d
 
   ocra_authentication:
     git:
@@ -83,6 +83,9 @@ dependencies:
   uni_links: ^0.5.1
   url_launcher: ^6.1.0
   validators: ^3.0.0
+  # TODO: added for agent's edit. To extract and store dial code in state of information step cubit.
+  # TODO: Probably should be discussed with BE to store dial code and phone number separately.
+  flutter_libphonenumber: ^1.2.4
   pin_code_fields: ^7.4.0
 
 dev_dependencies:

@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 
-import '../../../../../../data_layer/network.dart';
-import '../../../domain_layer/use_cases/setting/load_global_settings_use_case.dart';
-import 'global_setting_state.dart';
+import '../../../data_layer/network.dart';
+import '../../../domain_layer/use_cases.dart';
+import '../../cubits.dart';
 
 /// A cubit responsible for fetching the global console settings.
 class GlobalSettingCubit extends Cubit<GlobalSettingState> {
@@ -22,6 +22,7 @@ class GlobalSettingCubit extends Cubit<GlobalSettingState> {
   /// specific settings.
   // TODO: load only the settings that are missing from the state
   Future<void> load({
+    String? module,
     List<String>? codes,
     bool forceRefresh = false,
   }) async {
@@ -32,6 +33,7 @@ class GlobalSettingCubit extends Cubit<GlobalSettingState> {
 
     try {
       final settings = await _getGlobalSettingUseCase(
+        module: module,
         codes: codes,
         currentSettings: state.settings,
         forceRefresh: forceRefresh,

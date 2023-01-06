@@ -32,7 +32,7 @@ class PaymentProvider {
     );
 
     return PaymentDTO.fromJsonList(
-      List.from(response.data),
+      List<Map<String, dynamic>>.from(response.data),
     );
   }
 

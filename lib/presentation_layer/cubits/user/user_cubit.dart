@@ -6,7 +6,7 @@ import '../../cubits.dart';
 
 /// A cubit that manages the state of the [User]s.
 class UserCubit extends Cubit<UserState> {
-  final LoadUserByCustomerIdUseCase _loadUserByCustomerIdUseCase;
+  final LoadUsersByCustomerIdUseCase _loadUsersByCustomerIdUseCase;
   final RequestLockUseCase _requestLockUseCase;
   final RequestUnlockUseCase _requestUnlockUseCase;
   final RequestActivateUseCase _requestActivateUseCase;
@@ -14,12 +14,16 @@ class UserCubit extends Cubit<UserState> {
   final RequestPasswordResetUseCase _requestPasswordResetUseCase;
   final RequestPINResetUseCase _requestPINResetUseCase;
   final PatchUserRolesUseCase _patchUserRolesUseCase;
+  final DeleteAgentUseCase _deleteUseCase;
   final PatchUserBlockedChannelUseCase _patchUserBlockedChannelUseCase;
+
+  /// Maximum number of users to load at a time.
+  final int limit;
 
   /// Creates the [UserCubit].
   UserCubit({
     required String customerId,
-    required LoadUserByCustomerIdUseCase loadUserByCustomerIdUseCase,
+    required LoadUsersByCustomerIdUseCase loadUserByCustomerIdUseCase,
     required RequestLockUseCase requestLockUseCase,
     required RequestUnlockUseCase requestUnlockUseCase,
     required RequestActivateUseCase requestActivateUseCase,
@@ -27,8 +31,10 @@ class UserCubit extends Cubit<UserState> {
     required RequestPasswordResetUseCase requestPasswordResetUseCase,
     required RequestPINResetUseCase requestPINResetUseCase,
     required PatchUserRolesUseCase patchUserRolesUseCase,
+    required DeleteAgentUseCase deleteAgentUseCase,
     required PatchUserBlockedChannelUseCase patchUserBlockedChannelUseCase,
-  })  : _loadUserByCustomerIdUseCase = loadUserByCustomerIdUseCase,
+    this.limit = 50,
+  })  : _loadUsersByCustomerIdUseCase = loadUserByCustomerIdUseCase,
         _requestLockUseCase = requestLockUseCase,
         _requestUnlockUseCase = requestUnlockUseCase,
         _requestActivateUseCase = requestActivateUseCase,
@@ -36,6 +42,7 @@ class UserCubit extends Cubit<UserState> {
         _requestPasswordResetUseCase = requestPasswordResetUseCase,
         _requestPINResetUseCase = requestPINResetUseCase,
         _patchUserRolesUseCase = patchUserRolesUseCase,
+        _deleteUseCase = deleteAgentUseCase,
         _patchUserBlockedChannelUseCase = patchUserBlockedChannelUseCase,
         super(
           UserState(
@@ -43,33 +50,65 @@ class UserCubit extends Cubit<UserState> {
           ),
         );
 
-  /// Loads the [User] needed
-  Future<void> loadUser({
+  /// Loads the [User]s needed
+  Future<void> load({
+    String searchString = '',
+    UserSort sortBy = UserSort.registered,
+    bool descendingOrder = true,
+    bool loadMore = false,
     bool forceRefresh = false,
   }) async {
     emit(
       state.copyWith(
-        actions: state.actions.union({UserBusyAction.load}),
+        actions: state.actions.union({
+          loadMore ? UserBusyAction.loadMore : UserBusyAction.load,
+        }),
         error: UserStateError.none,
       ),
     );
 
+    final offset = loadMore ? state.listData.offset + limit : 0;
+
     try {
-      final user = await _loadUserByCustomerIdUseCase(
+      final users = await _loadUsersByCustomerIdUseCase(
         customerID: state.customerId,
+        name: searchString,
         forceRefresh: forceRefresh,
+        offset: offset,
+        limit: limit,
+        descendingOrder: descendingOrder,
       );
+
+      final list = offset > 0
+          ? [
+              ...state.users.take(offset).toList(),
+              ...users,
+            ]
+          : users;
 
       emit(
         state.copyWith(
-          actions: state.actions.difference({UserBusyAction.load}),
-          user: user,
+          users: list,
+          actions: state.actions.difference({
+            UserBusyAction.load,
+            UserBusyAction.loadMore,
+          }),
+          listData: state.listData.copyWith(
+            canLoadMore: users.length >= limit,
+            searchString: searchString,
+            offset: offset,
+            sortBy: sortBy,
+            descendingOrder: descendingOrder,
+          ),
         ),
       );
     } on Exception {
       emit(
         state.copyWith(
-          actions: state.actions.difference({UserBusyAction.load}),
+          actions: state.actions.difference({
+            UserBusyAction.load,
+            UserBusyAction.loadMore,
+          }),
           error: UserStateError.generic,
         ),
       );
@@ -343,6 +382,41 @@ class UserCubit extends Cubit<UserState> {
           actions: state.actions.difference({
             UserBusyAction.patchingUser,
           }),
+          error: UserStateError.generic,
+        ),
+      );
+
+      rethrow;
+    }
+  }
+
+  /// Request a Delete agent for this user.
+  ///
+  /// Used by the console (DBO) app only.
+  Future<void> delete() async {
+    emit(
+      state.copyWith(
+        actions: state.actions.union({UserBusyAction.delete}),
+        error: UserStateError.none,
+      ),
+    );
+
+    try {
+      if (state.user == null) throw Exception('No user loaded.');
+
+      await _deleteUseCase(
+        user: state.user!,
+      );
+
+      emit(
+        state.copyWith(
+          actions: state.actions.difference({UserBusyAction.delete}),
+        ),
+      );
+    } on Exception {
+      emit(
+        state.copyWith(
+          actions: state.actions.difference({UserBusyAction.delete}),
           error: UserStateError.generic,
         ),
       );

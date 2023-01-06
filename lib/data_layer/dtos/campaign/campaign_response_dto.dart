@@ -19,6 +19,8 @@ class CampaignResponseDTO {
   factory CampaignResponseDTO.fromJson(Map<String, dynamic> json) =>
       CampaignResponseDTO(
         totalCount: JsonParser.parseInt(json['count']),
-        campaigns: CustomerCampaignDTO.fromJsonList(json['campaigns']),
+        campaigns: CustomerCampaignDTO.fromJsonList(
+          List<Map<String, dynamic>>.from(json['campaigns']),
+        ),
       );
 }

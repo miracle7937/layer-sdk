@@ -27,7 +27,7 @@ class TransferProvider {
     if (limit != null) params['limit'] = limit;
     if (offset != null) params['offset'] = offset;
     if (recurring) params['recurring'] = recurring;
-    params['includeDetails'] = includeDetails;
+    params['include_details'] = includeDetails;
     params['transfer.customer_id'] = customerId;
 
     final response = await netClient.request(

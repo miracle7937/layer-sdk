@@ -20,12 +20,6 @@ enum CustomerBusyAction {
 
   /// Loading more customers.
   loadMore,
-
-  /// Updating a customer grace period.
-  updatingCustomerGracePeriod,
-
-  /// Updating the customer E-Statement setting.
-  updatingCustomerEStatement,
 }
 
 /// The state of the customers cubit

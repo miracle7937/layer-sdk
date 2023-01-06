@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 
 import '../../../../domain_layer/models.dart';
-import '../../../_migration/data_layer/src/helpers/dto_helpers.dart';
 import '../../../data_layer/repositories.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
@@ -66,7 +65,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         ),
       );
 
-      if (isNotEmpty(state.user?.imageURL)) {
+      if (state.user?.imageURL?.isNotEmpty ?? false) {
         await loadImage(imageURL: state.user!.imageURL!);
       }
 

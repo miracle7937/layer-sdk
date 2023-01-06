@@ -3,10 +3,13 @@ import 'net_endpoints.dart';
 /// A [NetEndpoints] specific for applications that access the console.
 class ConsoleEndpoints extends NetEndpoints {
   static const String _authEngine = 'auth-engine';
+  static const String _approvalEngine = 'approval-engine';
   static const String _automation = '/automation';
   static const String _consoleAAA = '/console-aaa';
   static const String _console = 'admin/console';
   static const String _customer = '/customer-aaa';
+  static const String _infobanking = '/infobanking';
+  static const String _workflowEngine = '/workflow-engine';
   static const String _developer = '/developer-aaa';
 
   /// The internal request URL used by some requests like change_status on the
@@ -79,6 +82,22 @@ class ConsoleEndpoints extends NetEndpoints {
   @override
   String get verifyDeviceLogin => '$_consoleAAA/v1/verify_device_login';
 
+  /// The user registration endpoint
+  String get authEngineUser => '$_authEngine/v1/user';
+
+  /// The Access Control Lists (ACL) endpoint.
+  String get acl => '$_infobanking/v1/acl';
+
+  /// The workflow-engine task endpoint.
+  @override
+  String get task => '$_workflowEngine/v1/task';
+
+  /// The customer permissions module.
+  String get customerPermissions => '$_customer/v1/permission';
+
   /// The developer user endpoint.
   String get developerUser => '$_developer/v1/user';
+
+  /// The corporate mandate endpoint.
+  String get corporateMandates => '$_approvalEngine/mandate';
 }

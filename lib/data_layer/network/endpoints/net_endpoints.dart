@@ -9,6 +9,7 @@ class NetEndpoints {
   static const String _xstudio = '/xstudio';
   static const String _automation = '/automation';
   static const String _payment = '/payment';
+  static const String _admin = '/admin/console';
   static const String _integration = '/integration';
   static const String _loyaltyEngine = '/loyalty-engine';
   static const String _engagement = '/engagement';
@@ -80,7 +81,7 @@ class NetEndpoints {
   String get tasksUnassigned => '$_automation/v1/unassigned_tasks';
 
   /// Tasks - Current task by process id.
-  String get task => '$_automation/v2/user_task/process_instance_id';
+  String get userTask => '$_automation/v2/user_task/process_instance_id';
 
   /// Tasks - Lists tasks of a user.
   String get tasksUser => '$_automation/v2/user_task';
@@ -123,6 +124,9 @@ class NetEndpoints {
 
   /// The endpoint to change the password
   String get changePassword => user;
+
+  /// The profile endpoint
+  String get profile => '$_admin/v1/profile';
 
   ///The transfer endpoint
   String get transfer => '$_txnBanking/v1/transfer';
@@ -198,6 +202,9 @@ class NetEndpoints {
 
   /// The registration endpoint
   String get register => '$_infoBanking/v2/register';
+
+  /// The corporate registration endpoint
+  String get registerCorporate => '$_infoBanking/v1/register_corporate';
 
   /// The registration endpoint
   String get finalizeRegistration => '$_infoBanking/v1/customer/register';
@@ -306,6 +313,16 @@ class NetEndpoints {
 
   /// Endpoint for getting customer checkbooks
   String get checkbooks => '$_infoBanking/v1/checkbook';
+
+  /// The transfer limits
+  String get transferLimits => '$_txnBanking/v1/limit';
+
+  /// The workflow-engine task endpoint.
+  String get task => '';
+
+  /// The international beneficiary
+  String get internationalBeneficiary =>
+      '$_txnBanking/v1/international_beneficiary';
 
   /// Endpoint for getting html/image/pdf rendered on server
   String get moreInfo => '$_renderingEngine/v1/render/more_info';

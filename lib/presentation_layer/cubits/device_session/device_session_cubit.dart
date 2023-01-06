@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+
 import '../../../data_layer/network.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
@@ -9,7 +10,7 @@ class DeviceSessionCubit extends Cubit<DeviceSessionState> {
   final LoadDeviceSessionsUseCase _loadSessionsUseCase;
   final TerminateDeviceSessionUseCase _terminateUseCase;
 
-  /// Creates a new cubit using the supplied [CustomerRepository] and
+  /// Creates a new cubit using the necessary use cases and
   /// customer id and type.
   DeviceSessionCubit({
     required LoadDeviceSessionsUseCase loadSessionsUseCase,

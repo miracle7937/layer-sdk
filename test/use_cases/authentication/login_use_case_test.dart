@@ -28,6 +28,8 @@ void main() {
       () => _repository.login(
         username: any(named: 'username'),
         password: any(named: 'password'),
+        deviceModel: any(named: 'deviceModel'),
+        deviceName: any(named: 'deviceName'),
       ),
     ).thenAnswer((_) async => _user);
   });

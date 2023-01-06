@@ -132,6 +132,13 @@ class CardDTO {
   /// Creates a list of [CardDTO] from a JSON list
   static List<CardDTO> fromJsonList(List<Map<String, dynamic>> json) =>
       json.map(CardDTO.fromJson).toList(growable: false);
+
+  /// Creates a JSON from select data for visibility
+  Map<String, dynamic> toVisibilityJson() => {
+        'card_id': cardId,
+        'masked_card_no': maskedCardNumber,
+        'display_name': nickname,
+      };
 }
 
 /// The [CardDTO] status

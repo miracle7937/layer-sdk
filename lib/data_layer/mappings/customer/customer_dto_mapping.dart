@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 
 import '../../../domain_layer/models.dart';
 import '../../dtos.dart';
-import '../../errors.dart';
+import '../../mappings.dart';
 
 /// Extension that provides mappings for [CustomerDTO].
 extension CustomerDTOMapping on CustomerDTO {
@@ -282,6 +282,20 @@ extension CustomerStringMapping on String {
     }
   }
 
+  /// Maps into a [CustomerGender].
+  CustomerGender toCustomerGender() {
+    switch (this) {
+      case 'f':
+        return CustomerGender.female;
+
+      case 'm':
+        return CustomerGender.male;
+
+      default:
+        return CustomerGender.unknown;
+    }
+  }
+
   /// Maps into a [EmploymentType].
   EmploymentType toEmploymentType() {
     switch (trim().toUpperCase()) {
@@ -309,6 +323,40 @@ extension CustomerStringMapping on String {
   }
 }
 
+/// Extension that provides mappings for [CustomerMaritalStatus].
+extension CustomerMaritalStatusMapping on CustomerMaritalStatus {
+  /// Maps into a [String].
+  String toJSONString() {
+    switch (this) {
+      case CustomerMaritalStatus.married:
+        return 'M';
+      case CustomerMaritalStatus.single:
+        return 'S';
+      case CustomerMaritalStatus.divorced:
+        return 'D';
+      case CustomerMaritalStatus.widowed:
+        return 'W';
+      case CustomerMaritalStatus.unknown:
+        return '';
+    }
+  }
+}
+
+/// Extension that provides mappings for [CustomerGender].
+extension CustomerGenderMapping on CustomerGender {
+  /// Maps into a [String].
+  String toJSONString() {
+    switch (this) {
+      case CustomerGender.female:
+        return 'f';
+      case CustomerGender.male:
+        return 'm';
+      case CustomerGender.unknown:
+        return '';
+    }
+  }
+}
+
 /// Extension that provides mappings for [CustomerType].
 extension CustomerTypeMapping on CustomerType {
   /// Maps into a [String].
@@ -326,36 +374,6 @@ extension CustomerTypeMapping on CustomerType {
       case CustomerType.unknown:
         return '';
     }
-  }
-}
-
-Map<CustomerType, String> _customerTypeMapping = {
-  CustomerType.personal: 'P',
-  CustomerType.corporate: 'C',
-  CustomerType.joint: 'J',
-};
-
-/// Extension that provides mappings for [CustomerType]
-extension CustomerTypeDTOMapping on CustomerType {
-  /// Maps into a [CustomerDTOType]
-  String toCustomerDTOType() {
-    final result = _customerTypeMapping[this];
-
-    if (result != null) return result;
-
-    throw MappingException(from: CustomerType, to: String);
-  }
-}
-
-/// Extension that provides customer mappings for String
-extension CustomerDTOStringMapping on String {
-  /// Maps into a [CustomerType]
-  CustomerType toCustomerType() {
-    for (final entry in _customerTypeMapping.entries) {
-      if (entry.value == this) return entry.key;
-    }
-
-    throw MappingException(from: String, to: CustomerType);
   }
 }
 

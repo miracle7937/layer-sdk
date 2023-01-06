@@ -3,6 +3,9 @@ class ConfigDTO {
   ///Used to show/hide the customers tab
   final bool? showCustomersTab;
 
+  /// Whether or not the E-Statement is available in this environment.
+  final bool? eStatementEnabled;
+
   /// The internal services' URLs
   final InternalServicesDTO? internalServices;
 
@@ -12,6 +15,7 @@ class ConfigDTO {
   /// Creates a new [ConfigDTO].
   ConfigDTO({
     this.showCustomersTab = false,
+    this.eStatementEnabled = false,
     this.internalServices,
     this.graphanaUrl,
   });
@@ -19,6 +23,7 @@ class ConfigDTO {
   /// Creates a [ConfigDTO] from a JSON
   factory ConfigDTO.fromJson(Map<String, dynamic> json) => ConfigDTO(
         showCustomersTab: json['SHOW_CUSTOMERS_TAB'],
+        eStatementEnabled: json['E_STATEMENT_FLAG_ENABLED'],
         internalServices: InternalServicesDTO.fromJson(json['API_INTERNAL']),
         graphanaUrl: json['UUID_URL'],
       );
