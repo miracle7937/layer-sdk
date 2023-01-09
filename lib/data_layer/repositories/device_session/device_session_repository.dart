@@ -19,7 +19,7 @@ class DeviceSessionRepository implements DeviceSessionRepositoryInterface {
       SessionType.android,
       SessionType.iOS
     ],
-    SessionStatus status = SessionStatus.active,
+    SessionStatus? status,
     SessionStatus? secondStatus,
     String? sortby,
     required String customerId,

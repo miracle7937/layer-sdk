@@ -34,7 +34,7 @@ class DeviceSessionCubit extends Cubit<DeviceSessionState> {
       SessionType.android,
       SessionType.iOS
     ],
-    SessionStatus status = SessionStatus.active,
+    SessionStatus? status,
     SessionStatus? secondStatus,
     String? sortby,
     bool? desc,
