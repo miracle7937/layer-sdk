@@ -28,8 +28,8 @@ class DeviceSessionProvider {
       forceRefresh: forceRefresh,
       queryParameters: {
         'customer_id': customerId,
-        if (deviceTypes != null && deviceTypes.isNotEmpty)
-          'device_types': deviceTypes.join(','),
+        if (deviceTypes?.isNotEmpty ?? false)
+          'device_types': deviceTypes!.join(','),
         if (status != null) 'status': status,
         if (secondStatus != null) 'status2': secondStatus,
         if (sortby != null) 'sortby': sortby,

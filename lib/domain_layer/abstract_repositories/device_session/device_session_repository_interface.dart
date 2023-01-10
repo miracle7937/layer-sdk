@@ -8,7 +8,7 @@ abstract class DeviceSessionRepositoryInterface {
       SessionType.android,
       SessionType.iOS
     ],
-    SessionStatus status = SessionStatus.active,
+    SessionStatus? status,
     SessionStatus? secondStatus,
     required String customerId,
     String? sortby,
