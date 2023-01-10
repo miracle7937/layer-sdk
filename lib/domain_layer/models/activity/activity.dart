@@ -258,6 +258,9 @@ enum ActivityActionType {
   /// Share transfer receipt.
   shareTransferReceipt,
 
+  /// Share top up receipt.
+  shareTopUpReceipt,
+
   /// Renewal
   renewal,
 
