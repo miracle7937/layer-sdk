@@ -23,7 +23,7 @@ dependencies:
   design_kit_layer:
     git:
       url: git@gitlab.ubanquity.com:dart-packages/design-kit-layer.git
-      ref: bc73a5106adba3ff43a1d96e4b958508a783843e
+      ref: f8c77a66d70e605398ba498a72d7c9b0d50a4aa1
 
   ocra_authentication:
     git:
@@ -59,12 +59,12 @@ dependencies:
   flutter_bloc: ^7.0.1
   flutter_jailbreak_detection: ^1.8.0
   flutter_keyboard_visibility: ^5.0.3
-  flutter_local_notifications: ^8.0.0
+  flutter_local_notifications: ^9.6.0
   flutter_localizations:
     sdk: flutter
   flutter_secure_storage: ^4.2.0
   flutter_svg: ^1.1.0
-  google_fonts: 2.2.0
+  google_fonts: 3.0.1
   image: ^3.1.3
   image_cropper: ^2.0.3
   image_picker: ^0.8.4+6
