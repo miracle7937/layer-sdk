@@ -97,7 +97,6 @@ class _FirebaseNotificationState extends State<FirebaseNotification> {
     final androidPlatformChannelSpecifics = AndroidNotificationDetails(
       'default_notification_channel_id',
       'default_notification_channel_id',
-      'default_notification_channel_id',
       importance: Importance.high,
       priority: Priority.max,
       ticker: 'ticker',
