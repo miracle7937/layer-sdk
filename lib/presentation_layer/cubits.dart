@@ -55,8 +55,6 @@ export 'cubits/branch/branch_cubit.dart';
 export 'cubits/branch/branch_states.dart';
 export 'cubits/branch_activation/branch_activation_cubit.dart';
 export 'cubits/branch_activation/branch_activation_state.dart';
-export 'cubits/branding/branding_cubit.dart';
-export 'cubits/branding/branding_states.dart';
 export 'cubits/card/card_cubit.dart';
 export 'cubits/card/card_dashboard_cubit.dart';
 export 'cubits/card/card_dashboard_state.dart';
