@@ -9,7 +9,6 @@ export 'mappings/account_transfaction/account_balance_dto_mapping.dart';
 export 'mappings/account_transfaction/account_transaction_dto_mapping.dart';
 export 'mappings/activity/activity_dto_mapping.dart';
 export 'mappings/agent/agent_acl_dto_mapping.dart';
-export 'mappings/audit/audit_dto_mapping.dart';
 export 'mappings/authentication/verify_pin_response_dto_mapping.dart';
 export 'mappings/bank/bank_dto_mapping.dart';
 export 'mappings/beneficiary/beneficiary_dto_mapping.dart';

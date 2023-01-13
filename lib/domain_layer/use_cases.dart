@@ -26,7 +26,6 @@ export 'use_cases/agent/register_corporate_agent_use_case.dart';
 export 'use_cases/agent/update_agent_account_visibility_use_case.dart';
 export 'use_cases/agent/update_agent_card_visibility_use_case.dart';
 export 'use_cases/alert/load_unread_alerts_count_use_case.dart';
-export 'use_cases/audit/load_customer_audits_use_case.dart';
 export 'use_cases/authentication/change_password_use_case.dart';
 export 'use_cases/authentication/login_use_case.dart';
 export 'use_cases/authentication/logout_use_case.dart';
