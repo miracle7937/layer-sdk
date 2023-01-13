@@ -7,7 +7,6 @@ export 'repositories/account_transaction/account_balance_repository.dart';
 export 'repositories/account_transaction/account_transaction_repository.dart';
 export 'repositories/acl/acl_repository.dart';
 export 'repositories/alert/alert_repository.dart';
-export 'repositories/audit/audit_repository.dart';
 export 'repositories/authentication/authentication_repository.dart';
 export 'repositories/bank/bank_repository.dart';
 export 'repositories/banking_product_transactions_repository.dart';

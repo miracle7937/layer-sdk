@@ -11,7 +11,6 @@ export 'models/account_transaction/account_balance.dart';
 export 'models/account_transaction/account_transaction.dart';
 export 'models/activity/activity.dart';
 export 'models/agent/agent_acl.dart';
-export 'models/audit/audit.dart';
 export 'models/authentication/message_response.dart';
 export 'models/authentication/verify_pin_response.dart';
 export 'models/bank/bank.dart';
