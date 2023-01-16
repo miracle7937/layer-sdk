@@ -3,9 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../domain_layer/use_cases.dart';
 import 'validator_state.dart';
 
+/// A cubit that manages the validations on the projects
 class ValidatorCubit extends Cubit<ValidatorState> {
   final ValidateTransactionPinUseCase _validateTransactionPinUseCase;
 
+  /// Creates a new [ValidatorCubit]
   ValidatorCubit({
     required ValidateTransactionPinUseCase validateTransactionPinUseCase,
   })  : _validateTransactionPinUseCase = validateTransactionPinUseCase,
@@ -13,7 +15,8 @@ class ValidatorCubit extends Cubit<ValidatorState> {
           ValidatorState(),
         );
 
-  void validate({
+  /// Validate the transaction pin by `txnPin`
+  Future<void> validate({
     required String txnPin,
     required String userId,
   }) async {
@@ -29,7 +32,7 @@ class ValidatorCubit extends Cubit<ValidatorState> {
     );
 
     try {
-      final response = await _validateTransactionPinUseCase(
+      await _validateTransactionPinUseCase(
         txnPin: txnPin,
         userId: userId,
       );
