@@ -392,4 +392,7 @@ class NetEndpoints {
 
   /// Meawallet TOTP.
   String get meawalletTOTP => '$_integration/v1/totp';
+
+  /// Endpoint for validate the transaction pin
+  String get validateTransactionPin => '$_customer/v1/txn_pin';
 }

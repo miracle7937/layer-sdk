@@ -41,4 +41,8 @@ abstract class StorageKeys {
 
   /// Whether if the [User] has completed the loyalty tutorial or not.
   static const completedLoyaltyTutorial = 'completedLoyaltyTutorial';
+
+  /// Whether if the [User] has reach for the first time
+  /// biometrics as second factor or not.
+  static const firstTimeReachBiometrics = 'firstTimeReachBiometrics';
 }

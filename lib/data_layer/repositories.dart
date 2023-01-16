@@ -68,3 +68,4 @@ export 'repositories/transactions_filters_repository.dart';
 export 'repositories/transfer/transfer_repository.dart';
 export 'repositories/upcoming_payment/upcoming_payment_repository.dart';
 export 'repositories/user/user_repository.dart';
+export 'repositories/validator/validator_repository.dart';

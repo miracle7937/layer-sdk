@@ -68,3 +68,4 @@ export 'providers/transactions_filters_provider.dart';
 export 'providers/transfer/transfer_provider.dart';
 export 'providers/upcoming_payment/upcoming_payment_provider.dart';
 export 'providers/user/user_provider.dart';
+export 'providers/validator/validator_provider.dart';
