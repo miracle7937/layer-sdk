@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:equatable/equatable.dart';
 
 /// Holds the data of a [Customer] limits.
@@ -144,7 +146,7 @@ class Limit extends Equatable {
   double get usagePercentage => (usage / limit).clamp(0.0, 1.0);
 
   /// Returns the remaining amount of this limit.
-  double get remainingAmount => limit - usage;
+  double get remainingAmount => max(limit - usage, 0.0);
 
   /// Creates a new [Limit] instance.
   const Limit({
