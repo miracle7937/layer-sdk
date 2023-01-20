@@ -177,7 +177,10 @@ enum CardProviderDTO {
   visa('Visa'),
 
   /// MasterCard.
-  mastercard('MasterCard'),
+  mastercard('Mastercard'),
+
+  /// Fail safe mastercard type
+  masterCard('MasterCard'),
 
   /// Unknown.
   unknown('unknown');
