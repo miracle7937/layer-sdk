@@ -24,6 +24,7 @@ extension CardDTOMapping on CardDTO {
         preferences: preferences?.toCardPreferences() ?? CardPreferences(),
         isVirtual: isVirtual ?? false,
         token: token,
+        provider: provider?.toProvider(),
       );
 }
 
@@ -89,6 +90,7 @@ extension ProviderDTOMapping on CardProviderDTO {
   BankingCardProviderType toProvider() {
     switch (this) {
       case CardProviderDTO.mastercard:
+      case CardProviderDTO.masterCard:
         return BankingCardProviderType.mastercard;
 
       case CardProviderDTO.visa:
@@ -96,7 +98,9 @@ extension ProviderDTOMapping on CardProviderDTO {
 
       default:
         throw MappingException(
-            from: CardProviderDTO, to: BankingCardProviderType);
+          from: CardProviderDTO,
+          to: BankingCardProviderType,
+        );
     }
   }
 }
