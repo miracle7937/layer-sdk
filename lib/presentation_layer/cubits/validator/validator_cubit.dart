@@ -28,6 +28,9 @@ class ValidatorCubit extends Cubit<ValidatorState> {
         errors: state.removeErrorForAction(
           ValidatorActions.validatingTransactionPin,
         ),
+        events: state.removeEvent(
+          ValidatorEvent.successEvent,
+        ),
       ),
     );
 
@@ -42,6 +45,7 @@ class ValidatorCubit extends Cubit<ValidatorState> {
           actions: state.removeAction(
             ValidatorActions.validatingTransactionPin,
           ),
+          events: state.addEvent(ValidatorEvent.successEvent),
         ),
       );
     } on Exception catch (e) {
