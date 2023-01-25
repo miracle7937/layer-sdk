@@ -174,13 +174,10 @@ class CardDTOStatus extends EnumDTO {
 /// The available providers for the card
 enum CardProviderDTO {
   /// Visa.
-  visa('Visa'),
+  visa('visa'),
 
   /// MasterCard.
-  mastercard('Mastercard'),
-
-  /// Fail safe mastercard type
-  masterCard('MasterCard'),
+  mastercard('mastercard'),
 
   /// Unknown.
   unknown('unknown');
@@ -193,7 +190,7 @@ enum CardProviderDTO {
 
   /// Creates a new [CardProviderDTO] from a passed string.
   factory CardProviderDTO.fromString(String provider) => values.singleWhere(
-        (value) => value.value == provider,
+        (value) => value.value == provider.toLowerCase(),
         orElse: () => unknown,
       );
 }
