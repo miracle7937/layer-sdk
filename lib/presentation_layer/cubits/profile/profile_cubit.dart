@@ -65,15 +65,15 @@ class ProfileCubit extends Cubit<ProfileState> {
         ),
       );
 
-      if (state.user?.imageURL?.isNotEmpty ?? false) {
-        await loadImage(imageURL: state.user!.imageURL!);
-      }
-
       emit(
         state.copyWith(
           actions: state.actions.difference({ProfileBusyAction.load}),
         ),
       );
+
+      if (state.user?.imageURL?.isNotEmpty ?? false) {
+        await loadImage(imageURL: state.user!.imageURL!);
+      }
     } on Exception {
       emit(
         state.copyWith(
@@ -81,8 +81,6 @@ class ProfileCubit extends Cubit<ProfileState> {
           error: ProfileErrorStatus.generic,
         ),
       );
-
-      rethrow;
     }
   }
 
@@ -113,11 +111,9 @@ class ProfileCubit extends Cubit<ProfileState> {
       emit(
         state.copyWith(
           actions: state.actions.difference({ProfileBusyAction.loadingImage}),
-          error: ProfileErrorStatus.generic,
+          error: ProfileErrorStatus.image,
         ),
       );
-
-      rethrow;
     }
   }
 
