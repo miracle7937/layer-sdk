@@ -15,6 +15,9 @@ enum ProfileErrorStatus {
 
   /// Network error
   network,
+
+  /// An exception occurred when loading the image
+  image,
 }
 
 /// Describe what the cubit may be busy performing.
