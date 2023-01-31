@@ -26,6 +26,12 @@ enum CubitErrorCode {
   /// Insufficient balance.
   insufficientBalance('insufficient_balance'),
 
+  /// The customer has exceeded the daily limit for the number of international
+  /// transfers.
+  customerDailyInternationalTransferLimitExceeded(
+    'customer_lim_int_daily_exceeded',
+  ),
+
   /// Incorrect OTP code.
   incorrectOTPCode('incorrect_value'),
 

@@ -184,10 +184,6 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
     );
 
     try {
-      if (state.transfer.saveToShortcut) {
-        await _createShortcut();
-      }
-
       final transferResult = await _submitTransferUseCase(
         transfer: state.transfer,
         editMode: state.editMode,
@@ -197,6 +193,10 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
         case TransferStatus.completed:
         case TransferStatus.pending:
         case TransferStatus.scheduled:
+          if (state.transfer.saveToShortcut) {
+            await _createShortcut();
+          }
+
           emit(
             state.copyWith(
               actions: state.actions.difference({
