@@ -476,22 +476,6 @@ class PayToMobileCubit extends Cubit<PayToMobileState> {
       ),
     );
 
-    if (state.payToMobile.saveToShortcut) {
-      await _createShortcut();
-
-      if (state.actionHasErrors(PayToMobileAction.shortcut)) {
-        emit(
-          state.copyWith(
-            actions: state.removeAction(
-              PayToMobileAction.submit,
-            ),
-          ),
-        );
-
-        return;
-      }
-    }
-
     try {
       final payToMobileResult = await _submitPayToMobileUseCase(
         newPayToMobile: state.payToMobile,
@@ -501,6 +485,10 @@ class PayToMobileCubit extends Cubit<PayToMobileState> {
         case PayToMobileStatus.completed:
         case PayToMobileStatus.pending:
         case PayToMobileStatus.bankPending:
+          if (state.payToMobile.saveToShortcut) {
+            await _createShortcut();
+          }
+
           emit(
             state.copyWith(
               actions: state.removeAction(
@@ -643,6 +631,10 @@ class PayToMobileCubit extends Cubit<PayToMobileState> {
         secondFactorType:
             otpCode != null ? SecondFactorType.otp : SecondFactorType.ocra,
       );
+
+      if (state.payToMobile.saveToShortcut) {
+        await _createShortcut();
+      }
 
       emit(
         state.copyWith(

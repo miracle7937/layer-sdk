@@ -901,22 +901,6 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
       ),
     );
 
-    if (state.transfer.saveToShortcut) {
-      await _createShortcut();
-
-      if (state.actionHasErrors(BeneficiaryTransferAction.shortcut)) {
-        emit(
-          state.copyWith(
-            actions: state.removeAction(
-              BeneficiaryTransferAction.submit,
-            ),
-          ),
-        );
-
-        return;
-      }
-    }
-
     try {
       final transferResult = await _submitTransferUseCase(
         transfer: state.transfer,
@@ -927,6 +911,10 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         case TransferStatus.completed:
         case TransferStatus.pending:
         case TransferStatus.scheduled:
+          if (state.transfer.saveToShortcut) {
+            await _createShortcut();
+          }
+
           emit(
             state.copyWith(
               actions: state.removeAction(
@@ -1069,6 +1057,10 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
         secondFactorType:
             otpCode != null ? SecondFactorType.otp : SecondFactorType.ocra,
       );
+
+      if (state.transfer.saveToShortcut) {
+        await _createShortcut();
+      }
 
       emit(
         state.copyWith(
