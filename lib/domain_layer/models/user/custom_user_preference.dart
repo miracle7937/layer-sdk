@@ -10,11 +10,6 @@ class CustomUserPreference extends UserPreference<Object> {
   }) : super(key, value);
 
   @override
-  Map<String, dynamic> toJson() => {
-        key: value,
-      };
-
-  @override
   List<Object?> get props => [
         key,
         value,

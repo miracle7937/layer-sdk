@@ -13,30 +13,6 @@ class TransferRepository implements TransferRepositoryInterface {
     required TransferProvider provider,
   }) : _provider = provider;
 
-  /// Lists the transfers from a customer.
-  ///
-  /// Use [limit] and [offset] to paginate.
-  @override
-  Future<List<Transfer>> list({
-    required String customerId,
-    int limit = 50,
-    int offset = 0,
-    bool includeDetails = true,
-    bool recurring = false,
-    bool forceRefresh = false,
-  }) async {
-    final transferDTOs = await _provider.list(
-      customerId: customerId,
-      limit: limit,
-      offset: offset,
-      includeDetails: includeDetails,
-      recurring: recurring,
-      forceRefresh: forceRefresh,
-    );
-
-    return transferDTOs.map((e) => e.toTransfer()).toList(growable: false);
-  }
-
   /// Lists the frequent transfers from [User].
   ///
   /// Use [limit] and [offset] to paginate.
@@ -52,8 +28,8 @@ class TransferRepository implements TransferRepositoryInterface {
       limit: limit,
       offset: offset,
       includeDetails: includeDetails,
-      status: status,
-      types: types,
+      status: status?.toTransferStatusDTO(),
+      types: types?.map((e) => e.toTransferTypeDTO()).toList(),
     );
 
     return frequentTransfersDTOs.map((e) => e.toTransfer()).toList();

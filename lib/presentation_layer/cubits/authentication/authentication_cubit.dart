@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../../../../data_layer/network.dart';
 import '../../../../../domain_layer/models.dart';
@@ -8,21 +9,52 @@ import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
 import '../../utils.dart';
 
-/// Maintains the states of authentication on the app
+/// Maintains the states of authentication on the app.
+///
+/// The use cases are protected instead of private to allow access from classes
+/// extending the cubit. They are not intended to be accessed from any UI code.
 class AuthenticationCubit extends Cubit<AuthenticationState> {
-  final LoginUseCase _loginUseCase;
-  final LogoutUseCase _logoutUseCase;
-  final RecoverPasswordUseCase _recoverPasswordUseCase;
-  final ResetPasswordUseCase _resetPasswordUseCase;
-  final ChangePasswordUseCase _changePasswordUseCase;
-  final VerifyAccessPinUseCase _verifyAccessPinUseCase;
-  final UpdateUserTokenUseCase _updateUserTokenUseCase;
-  final LoadCurrentCustomerUseCase _customerUseCase;
+  /// The use case containing login logic.
+  @protected
+  final LoginUseCase loginUseCase;
+
+  /// The use case containing logout logic.
+  @protected
+  final LogoutUseCase logoutUseCase;
+
+  /// The use case containing password recovery logic.
+  @protected
+  final RecoverPasswordUseCase recoverPasswordUseCase;
+
+  /// The use case containing password reset logic.
+  @protected
+  final ResetPasswordUseCase resetPasswordUseCase;
+
+  /// The use case containing password change logic.
+  @protected
+  final ChangePasswordUseCase changePasswordUseCase;
+
+  /// The use case containing access pin verification logic.
+  @protected
+  final VerifyAccessPinUseCase verifyAccessPinUseCase;
+
+  /// The use case containing user token update logic.
+  @protected
+  final UpdateUserTokenUseCase updateUserTokenUseCase;
+
+  /// The use case containing current customer loading logic.
+  @protected
+  final LoadCurrentCustomerUseCase customerUseCase;
+
+  /// The use case containing device model loading logic.
+  @protected
+  final GetDeviceModelUseCase getDeviceModelUseCase;
+
+  /// The use case containing user details loading logic.
+  @protected
+  final LoadUserDetailsFromTokenUseCase loadUserDetailsFromTokenUseCase;
+
   final bool _shouldGetCustomerObject;
-  final GetDeviceModelUseCase _getDeviceModelUseCase;
-  final LoadDeveloperUserDetailsFromTokenUseCase
-      _loadDeveloperUserDetailsFromTokenUseCase;
-  final LoadUserDetailsFromTokenUseCase _loadUserDetailsFromTokenUseCase;
 
   /// Flag param to handle if we have to show the auto lock screen or not
   ///
@@ -32,32 +64,18 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   /// Creates a new cubit with an empty [AuthenticationState] and calls
   /// load settings
   AuthenticationCubit({
-    required LoginUseCase loginUseCase,
-    required LogoutUseCase logoutUseCase,
-    required RecoverPasswordUseCase recoverPasswordUseCase,
-    required ResetPasswordUseCase resetPasswordUseCase,
-    required ChangePasswordUseCase changePasswordUseCase,
-    required VerifyAccessPinUseCase verifyAccessPinUseCase,
-    required UpdateUserTokenUseCase updateUserTokenUseCase,
-    required LoadCurrentCustomerUseCase customerUseCase,
-    required GetDeviceModelUseCase getDeviceModelUseCase,
+    required this.loginUseCase,
+    required this.logoutUseCase,
+    required this.recoverPasswordUseCase,
+    required this.resetPasswordUseCase,
+    required this.changePasswordUseCase,
+    required this.verifyAccessPinUseCase,
+    required this.updateUserTokenUseCase,
+    required this.customerUseCase,
+    required this.getDeviceModelUseCase,
     bool shouldGetCustomerObject = false,
-    required LoadDeveloperUserDetailsFromTokenUseCase
-        loadDeveloperUserDetailsFromTokenUseCase,
-    required LoadUserDetailsFromTokenUseCase loadUserDetailsFromTokenUseCase,
-  })  : _loginUseCase = loginUseCase,
-        _logoutUseCase = logoutUseCase,
-        _recoverPasswordUseCase = recoverPasswordUseCase,
-        _resetPasswordUseCase = resetPasswordUseCase,
-        _changePasswordUseCase = changePasswordUseCase,
-        _verifyAccessPinUseCase = verifyAccessPinUseCase,
-        _updateUserTokenUseCase = updateUserTokenUseCase,
-        _shouldGetCustomerObject = shouldGetCustomerObject,
-        _customerUseCase = customerUseCase,
-        _getDeviceModelUseCase = getDeviceModelUseCase,
-        _loadDeveloperUserDetailsFromTokenUseCase =
-            loadDeveloperUserDetailsFromTokenUseCase,
-        _loadUserDetailsFromTokenUseCase = loadUserDetailsFromTokenUseCase,
+    required this.loadUserDetailsFromTokenUseCase,
+  })  : _shouldGetCustomerObject = shouldGetCustomerObject,
         super(AuthenticationState());
 
   /// Method that disables the auto lock before running the passed future and
@@ -79,7 +97,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   ///
   /// Configures the [NetClient] token with the user token.
   void setLoggedUser(User user) {
-    _updateUserTokenUseCase(token: user.token);
+    updateUserTokenUseCase(token: user.token);
     if (_shouldGetCustomerObject) loadCustomerObject();
     emit(state.copyWith(user: user));
   }
@@ -93,7 +111,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     );
 
     try {
-      final user = await _loadUserDetailsFromTokenUseCase(
+      final user = await loadUserDetailsFromTokenUseCase(
         token: token,
       );
 
@@ -129,7 +147,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
 
       /// TODO: we should get the current device id instead of this being
       /// passed from the method or retrieved from the user in the state.
-      await _logoutUseCase(
+      await logoutUseCase(
         deviceId: deactivateDevice ? (state.user?.deviceId ?? deviceId) : null,
       );
 
@@ -162,7 +180,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     );
 
     try {
-      final customerInfo = await _customerUseCase();
+      final customerInfo = await customerUseCase();
 
       emit(
         state.copyWith(
@@ -220,7 +238,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
       final deviceName = await RequestHeadersHelper.getDeviceName();
       final deviceModel = await RequestHeadersHelper.getDeviceModel();
 
-      final user = await _loginUseCase(
+      final user = await loginUseCase(
         username: username,
         password: password,
         notificationToken: notificationToken,
@@ -280,7 +298,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     );
 
     try {
-      final returnedStatus = await _recoverPasswordUseCase(
+      final returnedStatus = await recoverPasswordUseCase(
         username: username,
       );
 
@@ -351,7 +369,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     );
 
     try {
-      final didResetPassword = await _resetPasswordUseCase(
+      final didResetPassword = await resetPasswordUseCase(
         username: username,
         oldPassword: oldPassword,
         newPassword: newPassword,
@@ -399,7 +417,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     );
 
     try {
-      final response = await _changePasswordUseCase(
+      final response = await changePasswordUseCase(
         user: user,
         oldPassword: oldPassword,
         newPassword: newPassword,
@@ -451,7 +469,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     );
 
     try {
-      final verifyPinResponse = await _verifyAccessPinUseCase(
+      final verifyPinResponse = await verifyAccessPinUseCase(
         pin: pin,
         userToken: 'Bearer $userToken',
         deviceInfo: deviceInfo ?? DeviceSession(),
@@ -538,7 +556,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   /// Method to be called after the user authenticates
   /// using biometrics successfully
   void unlock(User user) {
-    _updateUserTokenUseCase(token: user.token);
+    updateUserTokenUseCase(token: user.token);
     if (_shouldGetCustomerObject) loadCustomerObject();
 
     emit(
@@ -551,7 +569,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
 
   /// Get Device model
   Future<String> getModelName() {
-    return _getDeviceModelUseCase();
+    return getDeviceModelUseCase();
   }
 
   /// Sets the second factor status.
@@ -562,68 +580,13 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   void setSecondFactorStatus({
     bool validated = false,
   }) {
-    if (!validated) _updateUserTokenUseCase(token: null);
+    if (!validated) updateUserTokenUseCase(token: null);
 
     emit(
       state.copyWith(
         validated: validated,
       ),
     );
-  }
-
-  /// Authenticates the user with the provided `token` and `developerId` .
-  ///
-  /// Used by the DBO app only.
-  void authenticateDeveloper({
-    required String token,
-    required String developerId,
-  }) async {
-    assert(token.isNotEmpty);
-    assert(developerId.isNotEmpty);
-
-    try {
-      emit(
-        state.copyWith(
-          user: null,
-          errorStatus: AuthenticationErrorStatus.none,
-          authenticationAction: AuthenticationAction.none,
-          busy: true,
-          isLocked: false,
-        ),
-      );
-
-      final user = await _loadDeveloperUserDetailsFromTokenUseCase(
-        token: token,
-        developerId: developerId,
-      );
-
-      final errorStatus = user.status?.toAuthenticationError();
-
-      if (errorStatus == null) {
-        await _updateUserTokenUseCase(
-          token: token,
-        );
-      }
-
-      emit(
-        state.copyWith(
-          user: errorStatus != null ? null : user,
-          errorStatus: errorStatus ?? AuthenticationErrorStatus.none,
-          validated: true,
-          busy: false,
-        ),
-      );
-    } on Exception catch (e) {
-      emit(
-        state.copyWith(
-          busy: false,
-          errorStatus: e is NetException
-              ? AuthenticationErrorStatus.network
-              : AuthenticationErrorStatus.generic,
-          errorMessage: e is NetException ? e.message : null,
-        ),
-      );
-    }
   }
 }
 

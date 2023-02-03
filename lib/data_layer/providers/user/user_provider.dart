@@ -1,5 +1,3 @@
-import '../../../_migration/data_layer/src/mappings.dart';
-import '../../../domain_layer/models.dart';
 import '../../dtos.dart';
 import '../../errors.dart';
 import '../../network.dart';
@@ -40,41 +38,6 @@ class UserProvider {
     throw UserNotFoundException();
   }
 
-  /// Returns all users for customer with [customerID].
-  /// Returns a paginated list of sorted by [sortBy] customers .
-  ///
-  /// Optionally filters the results by name.
-  Future<List<UserDTO>> getUsers({
-    required String customerID,
-    bool forceRefresh = true,
-    String? name,
-    String? sortBy,
-    bool descendingOrder = true,
-    int limit = 50,
-    int offset = 0,
-  }) async {
-    final response = await netClient.request(
-      netClient.netEndpoints.user,
-      forceRefresh: forceRefresh,
-      queryParameters: {
-        'customer_id': customerID,
-        if (name?.isNotEmpty ?? false) 'q': name,
-        if (sortBy?.isNotEmpty ?? false) 'sortby': sortBy,
-        'desc': descendingOrder,
-        'limit': limit,
-        'offset': offset,
-      },
-      throwAllErrors: false,
-    );
-    if (response.data is List && response.data.length > 0) {
-      return UserDTO.fromJsonList(
-        List<Map<String, dynamic>>.from(response.data),
-      );
-    }
-
-    return [];
-  }
-
   /// Changes the password using the given data.
   Future<ChangeUserPasswordResponseDTO> changeUsersPassword(
     ChangeUserPasswordDTO data,
@@ -95,7 +58,7 @@ class UserProvider {
   ///
   /// Throws an exception if the user is not found.
   Future<UserDTO> patchUser({
-    required User user,
+    required UserDTO user,
   }) async {
     final response = await netClient.request(
       netClient.netEndpoints.user,
@@ -114,7 +77,7 @@ class UserProvider {
 
   /// Patches multiple user preferences with different data
   Future<UserDTO> patchUserPreferences({
-    required List<UserPreference> userPreferences,
+    required List<UserPreferenceDTO> userPreferences,
   }) async {
     var json = {};
     for (var prefence in userPreferences) {
@@ -160,91 +123,6 @@ class UserProvider {
     throw UserNotFoundException();
   }
 
-  /// Returns an user from a `token` and `developerId`.
-  ///
-  /// Throws an exception if the user is not found.
-  Future<UserDTO> getDeveloperUserFromToken({
-    required String token,
-    required String developerId,
-  }) async {
-    final query = {
-      'customer_id': developerId,
-    };
-
-    final response = await netClient.request(
-      (netClient.netEndpoints as ConsoleEndpoints).developerUser,
-      authorizationHeader: 'Bearer $token',
-      queryParameters: query,
-    );
-
-    if (response.data is List && response.data.length > 0) {
-      return UserDTO.fromJson(response.data[0]);
-    }
-
-    throw UserNotFoundException();
-  }
-
-  /// Used by the console (DBO) to request a change to a user.
-  ///
-  /// This can be a password reset request, a lock user request, etc.
-  ///
-  /// All these requests have to be approved by another user to take effect.
-  Future<UserDTO> requestChange({
-    required RequestChangeType requestType,
-    required String userId,
-    required String customerType,
-  }) async {
-    assert(
-      netClient.netEndpoints is ConsoleEndpoints,
-      'Request Change can only be used on the console app (DBO).',
-    );
-
-    // Pin reset still uses a different version 1 flow.
-    if (requestType == RequestChangeType.pinReset) {
-      return _requestPIN(
-        userId: userId,
-        customerType: customerType,
-      );
-    }
-
-    final consoleEndpoints = netClient.netEndpoints as ConsoleEndpoints;
-
-    final response = await netClient.request(
-      '${consoleEndpoints.requestChange(userId: userId)}'
-      '?customer_type=$customerType',
-      method: NetRequestMethods.patch,
-      data: {
-        'request_url': '${consoleEndpoints.internalRequestURL}'
-            '/${consoleEndpoints.authEngineCustomer(userId: userId)}'
-            '/${requestType.toCommand()}'
-            '?customer_type=$customerType',
-        'request_method': 'PATCH',
-      },
-    );
-
-    return UserDTO.fromJson(response.data);
-  }
-
-  Future<UserDTO> _requestPIN({
-    required String userId,
-    required String customerType,
-  }) async {
-    final consoleEndpoints = netClient.netEndpoints as ConsoleEndpoints;
-
-    final response = await netClient.request(
-      '${consoleEndpoints.resetUserPIN}/$userId?customer_type=$customerType',
-      method: NetRequestMethods.patch,
-      data: {
-        'request_url': '${consoleEndpoints.internalRequestURL}'
-            '/${consoleEndpoints.authEngineResetPIN(userId: userId)}'
-            '?customer_type=$customerType',
-        'request_method': 'POST',
-      },
-    );
-
-    return UserDTO.fromJson(response.data);
-  }
-
   /// Sets the access pin for a new user.
   Future<UserDTO> setAccessPin({
     required String pin,
@@ -281,75 +159,6 @@ class UserProvider {
     return UserDTO.fromJson(effectiveData);
   }
 
-  /// Requests to delete an agent.
-  ///
-  /// Returns whether or not the request was successfull.
-  Future<bool> requestDeleteAgent({
-    required User user,
-  }) async {
-    final userId = user.id;
-    final response = await netClient.request(
-      '${(netClient.netEndpoints as ConsoleEndpoints).authEngineUser}/$userId',
-      method: NetRequestMethods.delete,
-      data: [
-        user.toJson(),
-      ],
-      queryParameters: {
-        'corporate': true,
-        'customer_type': 'C',
-      },
-      forceRefresh: true,
-    );
-
-    return response.success;
-  }
-
-  /// Patches the list of blocked channels for the provided user id.
-  ///
-  /// Used only by the DBO app.
-  Future<bool> patchUserBlockedChannels({
-    required String userId,
-    required List<String> channels,
-  }) async {
-    final data = {
-      'blocked_channels': channels,
-      'a_user_id': int.parse(userId),
-    };
-
-    final response = await netClient.request(
-      netClient.netEndpoints.user,
-      data: [
-        data,
-      ],
-      method: NetRequestMethods.patch,
-    );
-
-    return response.success;
-  }
-
-  /// Patches the list of roles of a user
-  ///
-  /// Used only by the DBO app.
-  Future<bool> patchUserRoles({
-    required String userId,
-    required List<String> roles,
-  }) async {
-    final data = {
-      'role_id': roles,
-      'a_user_id': int.parse(userId),
-    };
-
-    final response = await netClient.request(
-      netClient.netEndpoints.user,
-      data: [
-        data,
-      ],
-      method: NetRequestMethods.patch,
-    );
-
-    return response.success;
-  }
-
   /// Uploads the newly selected image for the customer's profile
   Future patchCustomerImage({required String base64}) async {
     var data = {
@@ -365,54 +174,5 @@ class UserProvider {
     );
 
     return response.data;
-  }
-}
-
-/// The available request change types.
-enum RequestChangeType {
-  /// Lock user.
-  lock,
-
-  /// Unlock user.
-  unlock,
-
-  /// Activate user.
-  activate,
-
-  /// Deactivate user.
-  deactivate,
-
-  /// Reset user password.
-  passwordReset,
-
-  /// Reset user transfer PIN.
-  pinReset,
-
-  /// Delete user.
-  delete,
-}
-
-extension on RequestChangeType {
-  String toCommand() {
-    switch (this) {
-      case RequestChangeType.lock:
-        return 'suspend';
-
-      case RequestChangeType.activate:
-      case RequestChangeType.unlock: // It calls the same as activate for now.
-        return 'activate';
-
-      case RequestChangeType.deactivate:
-        return 'deactivate';
-
-      case RequestChangeType.passwordReset:
-        return 'password_reset';
-
-      case RequestChangeType.delete:
-        return 'delete';
-
-      default:
-        throw MappingException(from: RequestChangeType, to: String);
-    }
   }
 }

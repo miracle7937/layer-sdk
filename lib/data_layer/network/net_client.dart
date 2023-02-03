@@ -3,12 +3,10 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:collection/collection.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
-import 'package:path/path.dart' as path_utils;
 
 import '../environment.dart';
 import '../network.dart';
@@ -49,16 +47,6 @@ class NetClient {
   @protected
   final Dio client;
 
-  /// If each request should use be prefixed with the current environment URL.
-  ///
-  /// On normal apps, there's no need to set this to `true`, as the environment
-  /// will not change, but on apps like the DBO (Console), where the user
-  /// can select a different environment, it needs to be set to `true` to
-  /// use the current selected environment.
-  ///
-  /// Defaults to `false`.
-  final bool useUpdatedEnvironment;
-
   /// How the logging should be done.
   ///
   /// Defaults to not logging ([NetLogType.none]).
@@ -84,8 +72,6 @@ class NetClient {
 
   String? _currentToken;
 
-  final path_utils.Context? _pathContext;
-
   /// Set the token to use for request authentication.
   // ignore: avoid_setters_without_getters
   set token(String? token) => _currentToken = token;
@@ -105,12 +91,6 @@ class NetClient {
   /// The default language to ask the backend.
   String defaultLanguage;
 
-  /// Getter for [ConfigInterceptor] from [client]'s interceptors list.
-  ConfigInterceptor? get configInterceptor =>
-      client.interceptors.firstWhereOrNull(
-        (interceptor) => interceptor is ConfigInterceptor,
-      ) as ConfigInterceptor?;
-
   /// Creates a new [NetClient].
   ///
   /// The [defaultHeaders] can be provided to be included in every request.
@@ -118,7 +98,6 @@ class NetClient {
   /// The [onHttpClientCreate] callback can be used to configure the http client
   /// for ssl pinning.
   NetClient({
-    this.useUpdatedEnvironment = false,
     this.logType = NetLogType.none,
     this.jsonHandler = const NetJson(),
     this.backgroundJsonHandler = const NetJson(),
@@ -131,10 +110,7 @@ class NetClient {
             baseUrl: EnvironmentConfiguration.current.fullUrl,
             headers: defaultHeaders,
           ),
-        ),
-        _pathContext = useUpdatedEnvironment
-            ? path_utils.Context(style: path_utils.Style.url)
-            : null {
+        ) {
     if (logType != NetLogType.none) _addLogger(logType);
     if (onHttpClientCreate != null &&
         client.httpClientAdapter is DefaultHttpClientAdapter) {
@@ -251,9 +227,7 @@ class NetClient {
     NetProgressCallback? onSendProgress,
     NetProgressCallback? onReceiveProgress,
   }) async {
-    final effectivePath = useUpdatedEnvironment
-        ? _pathContext!.join(EnvironmentConfiguration.current.baseUrl, path)
-        : path;
+    final effectivePath = getEffectivePath(path);
 
     final encodedData = useBackgroundJsonHandler
         ? await backgroundJsonHandler.encode(data)
@@ -343,6 +317,12 @@ class NetClient {
       throw exception;
     }
   }
+
+  /// Returns the final effective path for a network request.
+  ///
+  /// Can be overridden in subclasses if needed.
+  @protected
+  String getEffectivePath(String path) => path;
 
   /// Generates a random string of [length] with alpha-numeric characters.
   String _generateRequestUUID(int length) {
@@ -442,9 +422,7 @@ class NetClient {
     NetProgressCallback? onSendProgress,
     NetProgressCallback? onReceiveProgress,
   }) async {
-    final effectivePath = useUpdatedEnvironment
-        ? _pathContext!.join(EnvironmentConfiguration.current.baseUrl, path)
-        : path;
+    final effectivePath = getEffectivePath(path);
 
     final effectiveLanguage =
         addLanguage ? (language ?? defaultLanguage) : null;

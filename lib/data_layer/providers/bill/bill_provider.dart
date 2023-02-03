@@ -11,29 +11,6 @@ class BillProvider {
     required this.netClient,
   });
 
-  /// Returns the bills for a customer.
-  Future<List<BillDTO>> list({
-    required String customerId,
-    int limit = 50,
-    int offset = 0,
-    bool forceRefresh = false,
-  }) async {
-    final response = await netClient.request(
-      netClient.netEndpoints.bill,
-      method: NetRequestMethods.get,
-      queryParameters: {
-        'customer_id': customerId,
-        'limit': limit,
-        'offset': offset,
-      },
-      forceRefresh: forceRefresh,
-    );
-
-    return BillDTO.fromJsonList(
-      List<Map<String, dynamic>>.from(response.data),
-    );
-  }
-
   /// Validates the provided bill
   Future<BillDTO> validateBill({
     required BillDTO bill,

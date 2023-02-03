@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import '../../../domain_layer/abstract_repositories.dart';
 import '../../../domain_layer/models.dart';
 import '../../mappings.dart';
@@ -5,39 +7,20 @@ import '../../providers.dart';
 
 /// Handles all the payments data
 class PaymentRepository implements PaymentsRepositoryInterface {
-  final PaymentProvider _provider;
+  /// Provider used for interacting with the API.
+  @protected
+  final PaymentProvider provider;
 
   /// Creates a new repository with the supplied [PaymentProvider]
   PaymentRepository(
-    PaymentProvider provider,
-  ) : _provider = provider;
-
-  /// Lists the payments of a customer using the provided `customerId`.
-  ///
-  /// Use the `limit` and `offset` params to paginate.
-  Future<List<Payment>> list({
-    required String customerId,
-    int limit = 50,
-    int offset = 0,
-    bool forceRefresh = false,
-    bool recurring = false,
-  }) async {
-    final paymentDTOs = await _provider.list(
-      customerId: customerId,
-      offset: offset,
-      limit: limit,
-      forceRefresh: forceRefresh,
-      recurring: recurring,
-    );
-
-    return paymentDTOs.map((e) => e.toPayment()).toList(growable: false);
-  }
+    this.provider,
+  );
 
   @override
   Future<Payment> postPayment({
     required Payment payment,
   }) async {
-    final paymentDTO = await _provider.postPayment(
+    final paymentDTO = await provider.postPayment(
       payment: payment.toPaymentDTO(),
     );
 
@@ -48,7 +31,7 @@ class PaymentRepository implements PaymentsRepositoryInterface {
   Future<Payment> patchPayment({
     required Payment payment,
   }) async {
-    final paymentDTO = await _provider.patchPayment(
+    final paymentDTO = await provider.patchPayment(
       payment: payment.toPaymentDTO(),
     );
 
@@ -61,7 +44,7 @@ class PaymentRepository implements PaymentsRepositoryInterface {
     required Payment payment,
     required bool editMode,
   }) async {
-    final paymentDTO = await _provider.sendOTPCode(
+    final paymentDTO = await provider.sendOTPCode(
       payment: payment.toPaymentDTO(),
       editMode: editMode,
     );
@@ -77,7 +60,7 @@ class PaymentRepository implements PaymentsRepositoryInterface {
     required SecondFactorType secondFactorType,
     required bool editMode,
   }) async {
-    final paymentDTO = await _provider.verifySecondFactor(
+    final paymentDTO = await provider.verifySecondFactor(
       payment: payment.toPaymentDTO(),
       value: value,
       secondFactorTypeDTO: secondFactorType.toSecondFactorTypeDTO(),
@@ -93,7 +76,7 @@ class PaymentRepository implements PaymentsRepositoryInterface {
     required Payment payment,
     required bool editMode,
   }) async {
-    final paymentDTO = await _provider.resendSecondFactor(
+    final paymentDTO = await provider.resendSecondFactor(
       payment: payment.toPaymentDTO(),
       editMode: editMode,
     );
@@ -107,7 +90,7 @@ class PaymentRepository implements PaymentsRepositoryInterface {
     String? otpValue,
     bool resendOTP = false,
   }) async {
-    final paymentDTO = await _provider.deletePaymentV2(
+    final paymentDTO = await provider.deletePaymentV2(
       id,
       otpValue: otpValue,
       resendOTP: resendOTP,

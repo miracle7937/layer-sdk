@@ -34,30 +34,4 @@ class UpcomingPaymentProvider {
       List<Map<String, dynamic>>.from(response.data['upcoming_payments']),
     );
   }
-
-  /// Returns the upcoming payments
-  ///
-  /// When indicating the customer ID, it returns
-  /// all the upcoming payments for this customer
-  Future<UpcomingPaymentGroupDTO> listAllUpcomingPayments({
-    required String customerID,
-    int? limit,
-    int? offset,
-    bool forceRefresh = false,
-  }) async {
-    final response = await netClient.request(
-      '${netClient.netEndpoints.upcomingPayment}/$customerID',
-      method: NetRequestMethods.get,
-      queryParameters: {
-        if (limit != null) 'limit': limit,
-        if (offset != null) 'offset': offset,
-        'include_details': true,
-        'get_upcoming_payments_for': 'next_no_days',
-        'next_no_days': 30,
-      },
-      forceRefresh: forceRefresh,
-    );
-
-    return UpcomingPaymentGroupDTO.fromJson(response.data);
-  }
 }

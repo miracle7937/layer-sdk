@@ -5,12 +5,13 @@ import '../../providers.dart';
 
 /// A repository that can be used to fetch [User].
 class UserRepository implements UserRepositoryInterface {
-  final UserProvider _userProvider;
+  /// The provider used for interacting with the API.
+  final UserProvider userProvider;
 
-  /// Creates a new repository with the supplied [ExperienceProvider].
+  /// Creates a new repository with the supplied [UserProvider].
   UserRepository({
-    required UserProvider userProvider,
-  }) : _userProvider = userProvider;
+    required this.userProvider,
+  });
 
   /// Fetches the [User] needed
   @override
@@ -19,7 +20,7 @@ class UserRepository implements UserRepositoryInterface {
     String? username,
     bool forceRefresh = false,
   }) async {
-    final userDTO = await _userProvider.getUser(
+    final userDTO = await userProvider.getUser(
       customerID: customerID,
       username: username,
       forceRefresh: forceRefresh,
@@ -37,8 +38,8 @@ class UserRepository implements UserRepositoryInterface {
   Future<User> patchUser({
     required User user,
   }) async {
-    final userDTO = await _userProvider.patchUser(
-      user: user,
+    final userDTO = await userProvider.patchUser(
+      user: user.toUserDTO(),
     );
 
     return userDTO.toUser();
@@ -49,8 +50,8 @@ class UserRepository implements UserRepositoryInterface {
   Future<User> patchUserPreference({
     required UserPreference userPreference,
   }) async {
-    final userDTO = await _userProvider.patchUserPreferences(
-      userPreferences: [userPreference],
+    final userDTO = await userProvider.patchUserPreferences(
+      userPreferences: [userPreference.toUserPreferenceDTO()],
     );
 
     return userDTO.toUser();
@@ -61,8 +62,9 @@ class UserRepository implements UserRepositoryInterface {
   Future<User> patchUserPreferences({
     required List<UserPreference> userPreferences,
   }) async {
-    final userDTO = await _userProvider.patchUserPreferences(
-      userPreferences: userPreferences,
+    final userDTO = await userProvider.patchUserPreferences(
+      userPreferences:
+          userPreferences.map((e) => e.toUserPreferenceDTO()).toList(),
     );
 
     return userDTO.toUser();
@@ -74,128 +76,12 @@ class UserRepository implements UserRepositoryInterface {
     required String token,
     bool forceRefresh = true,
   }) async {
-    final userDTO = await _userProvider.getUserFromToken(
+    final userDTO = await userProvider.getUserFromToken(
       token: token,
       forceRefresh: forceRefresh,
     );
 
     return userDTO.toUser();
-  }
-
-  /// Returns an user from a developer `token` and `developerId`.
-  @override
-  Future<User> getDeveloperUserFromToken({
-    required String token,
-    required String developerId,
-  }) async {
-    final userDTO = await _userProvider.getDeveloperUserFromToken(
-      token: token,
-      developerId: developerId,
-    );
-
-    return userDTO.toUser();
-  }
-
-  /// Request the lock of an user.
-  ///
-  /// Used exclusively by the console (DBO).
-  ///
-  /// This request then needs to be approved by another console user.
-  @override
-  Future<void> requestLock({
-    required String userId,
-    required CustomerType customerType,
-  }) {
-    return _userProvider.requestChange(
-      requestType: RequestChangeType.lock,
-      userId: userId,
-      customerType: customerType.toCustomerDTOType(),
-    );
-  }
-
-  /// Request the unlocking of an user.
-  ///
-  /// Used exclusively by the console (DBO).
-  ///
-  /// This request then needs to be approved by another console user.
-  @override
-  Future<void> requestUnlock({
-    required String userId,
-    required CustomerType customerType,
-  }) {
-    return _userProvider.requestChange(
-      requestType: RequestChangeType.unlock,
-      userId: userId,
-      customerType: customerType.toCustomerDTOType(),
-    );
-  }
-
-  /// Request the activation of an user.
-  ///
-  /// Used exclusively by the console (DBO).
-  ///
-  /// This request then needs to be approved by another console user.
-  @override
-  Future<void> requestActivate({
-    required String userId,
-    required CustomerType customerType,
-  }) {
-    return _userProvider.requestChange(
-      requestType: RequestChangeType.activate,
-      userId: userId,
-      customerType: customerType.toCustomerDTOType(),
-    );
-  }
-
-  /// Request the deactivation of an user.
-  ///
-  /// Used exclusively by the console (DBO).
-  ///
-  /// This request then needs to be approved by another console user.
-  @override
-  Future<void> requestDeactivate({
-    required String userId,
-    required CustomerType customerType,
-  }) {
-    return _userProvider.requestChange(
-      requestType: RequestChangeType.deactivate,
-      userId: userId,
-      customerType: customerType.toCustomerDTOType(),
-    );
-  }
-
-  /// Request the password reset for an user.
-  ///
-  /// Used exclusively by the console (DBO).
-  ///
-  /// This request then needs to be approved by another console user.
-  @override
-  Future<void> requestPasswordReset({
-    required String userId,
-    required CustomerType customerType,
-  }) {
-    return _userProvider.requestChange(
-      requestType: RequestChangeType.passwordReset,
-      userId: userId,
-      customerType: customerType.toCustomerDTOType(),
-    );
-  }
-
-  /// Request the PIN reset for an user.
-  ///
-  /// Used exclusively by the console (DBO).
-  ///
-  /// This request then needs to be approved by another console user.
-  @override
-  Future<void> requestPINReset({
-    required String userId,
-    required CustomerType customerType,
-  }) {
-    return _userProvider.requestChange(
-      requestType: RequestChangeType.pinReset,
-      userId: userId,
-      customerType: customerType.toCustomerDTOType(),
-    );
   }
 
   /// Sets the access pin for a new user.
@@ -206,7 +92,7 @@ class UserRepository implements UserRepositoryInterface {
     required String pin,
     required String token,
   }) async {
-    final userDTO = await _userProvider.setAccessPin(
+    final userDTO = await userProvider.setAccessPin(
       pin: pin,
       token: token,
     );
@@ -216,73 +102,10 @@ class UserRepository implements UserRepositoryInterface {
     );
   }
 
-  /// Patches the list of blocked channels for the provided user id.
-  ///
-  /// Used only by the DBO app.
-  @override
-  Future<bool> patchUserBlockedChannels({
-    required String userId,
-    required List<String> channels,
-  }) async =>
-      _userProvider.patchUserBlockedChannels(
-        userId: userId,
-        channels: channels,
-      );
-
-  /// Patches the list of roles of a user
-  ///
-  /// Used only by the DBO app.
-  @override
-  Future<bool> patchUserRoles({
-    required String userId,
-    required List<String> roles,
-  }) async =>
-      _userProvider.patchUserRoles(
-        userId: userId,
-        roles: roles,
-      );
-
-  /// Fetches the [User]s for customer with [customerID],
-  /// optionally filtering them using [name].
-  ///
-  /// Use [limit] and [offset] to paginate.
-  ///
-  /// The order is given by [sortBy] (which defaults to
-  /// [UserSort.registered] and [descendingOrder], which defaults to `true`.
-  @override
-  Future<List<User>> getUsers({
-    required String customerID,
-    bool forceRefresh = false,
-    String? name,
-    UserSort sortBy = UserSort.registered,
-    bool descendingOrder = true,
-    int limit = 50,
-    int offset = 0,
-  }) async {
-    final usersDTO = await _userProvider.getUsers(
-      customerID: customerID,
-      forceRefresh: forceRefresh,
-      name: name,
-      sortBy: sortBy.toFieldName(),
-      descendingOrder: descendingOrder,
-      limit: limit,
-      offset: offset,
-    );
-
-    return usersDTO.map((userDTO) => userDTO.toUser()).toList();
-  }
-
-  @override
-  Future<bool> requestDeleteAgent({required User user}) {
-    return _userProvider.requestDeleteAgent(
-      user: user,
-    );
-  }
-
   /// Uploads the newly selected image
   @override
   Future patchImage({required String base64}) =>
-      _userProvider.patchCustomerImage(
+      userProvider.patchCustomerImage(
         base64: base64,
       );
 }

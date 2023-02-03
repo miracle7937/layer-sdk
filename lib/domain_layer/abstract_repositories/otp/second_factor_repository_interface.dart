@@ -19,25 +19,4 @@ abstract class SecondFactorRepositoryInterface {
     required int otpId,
     String? token,
   });
-
-  /// Requests a new 2FA authentication id for a console user.
-  ///
-  /// The `deviceID` parameter represents the current device the console user
-  /// is trying to login with.
-  Future<int?> verifyConsoleUserDeviceLogin({
-    required int deviceId,
-    String method = 'OTP',
-  });
-
-  /// Verifies the OTP with the provided `value` and `otpId`.
-  ///
-  /// The `deviceID` parameter represents the current device the console user
-  /// is trying to login with.
-  ///
-  /// Returns whether or not the OTP value is correct.
-  Future<bool> verifyConsoleUserOTP({
-    required int otpId,
-    required int deviceId,
-    required String value,
-  });
 }
