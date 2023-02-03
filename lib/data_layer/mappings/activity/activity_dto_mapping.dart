@@ -249,6 +249,226 @@ extension ActivityTypeDTOMapping on ActivityTypeDTO {
   }
 }
 
+/// Extension that provides mappings for [ActivityTag]
+extension ActivityTagDTOMapping on ActivityTag {
+  /// Maps into [ActivityTagDTO].
+  ActivityTagDTO toActivityTagDTO() {
+    switch (this) {
+      case ActivityTag.unknown:
+        return ActivityTagDTO.unknown;
+
+      case ActivityTag.profile:
+        return ActivityTagDTO.profile;
+
+      case ActivityTag.productsAndServices:
+        return ActivityTagDTO.productsAndServices;
+    }
+  }
+}
+
+/// Extension that provides mappings for [ActivityType]
+extension ActivityTypeMapping on ActivityType {
+  /// Maps into a [ActivityType]
+  ActivityTypeDTO toTypeDTO() {
+    switch (this) {
+      case ActivityType.appointmentReminder:
+        return ActivityTypeDTO.appointmentReminder;
+
+      case ActivityType.bankRemittance:
+        return ActivityTypeDTO.bankRemittance;
+
+      case ActivityType.benefitGw:
+        return ActivityTypeDTO.benefitGw;
+
+      case ActivityType.benefitPay:
+        return ActivityTypeDTO.benefitPay;
+
+      case ActivityType.bulkRegister:
+        return ActivityTypeDTO.bulkRegister;
+
+      case ActivityType.bulkTransfer:
+        return ActivityTypeDTO.bulkTransfer;
+
+      case ActivityType.c2CTransfer:
+        return ActivityTypeDTO.c2cTransfer;
+
+      case ActivityType.campaign:
+        return ActivityTypeDTO.campaign;
+
+      case ActivityType.cardControl:
+        return ActivityTypeDTO.cardControl;
+
+      case ActivityType.cardTopUp:
+        return ActivityTypeDTO.cardTopup;
+
+      case ActivityType.cardExpiry:
+        return ActivityTypeDTO.cardExpiry;
+
+      case ActivityType.cardReminder:
+        return ActivityTypeDTO.cardReminder;
+
+      case ActivityType.cashRemittance:
+        return ActivityTypeDTO.cashRemittance;
+
+      case ActivityType.cashbackEarned:
+        return ActivityTypeDTO.cashbackEarned;
+
+      case ActivityType.cashbackExpiryReminder:
+        return ActivityTypeDTO.cashbackExpiryReminder;
+
+      case ActivityType.cashinPayment:
+        return ActivityTypeDTO.cashinPayment;
+
+      case ActivityType.cashinTransfer:
+        return ActivityTypeDTO.cashinTransfer;
+
+      case ActivityType.cashoutPayment:
+        return ActivityTypeDTO.cashoutPayment;
+
+      case ActivityType.cashoutTransfer:
+        return ActivityTypeDTO.cashoutTransfer;
+
+      case ActivityType.checkbook:
+        return ActivityTypeDTO.checkbook;
+
+      case ActivityType.claims:
+        return ActivityTypeDTO.claims;
+
+      case ActivityType.debitPayment:
+        return ActivityTypeDTO.debitPayment;
+
+      case ActivityType.discountOfferForMe:
+        return ActivityTypeDTO.discountOfferForMe;
+
+      case ActivityType.dpa:
+        return ActivityTypeDTO.dpa;
+
+      case ActivityType.fromMobileTransfer:
+        return ActivityTypeDTO.fromMobileTransfer;
+
+      case ActivityType.goal:
+        return ActivityTypeDTO.goal;
+
+      case ActivityType.goalTransactions:
+        return ActivityTypeDTO.goalTransactions;
+
+      case ActivityType.idExpiryReminder:
+        return ActivityTypeDTO.idExpiryReminder;
+
+      case ActivityType.inbox:
+        return ActivityTypeDTO.inbox;
+
+      case ActivityType.insufficientBalance:
+        return ActivityTypeDTO.insufficientBalance;
+
+      case ActivityType.internationalBeneficiary:
+        return ActivityTypeDTO.internationalBeneficiary;
+
+      case ActivityType.issuedCheck:
+        return ActivityTypeDTO.issuedCheck;
+
+      case ActivityType.loanPaymentExpired:
+        return ActivityTypeDTO.loanPaymentExpired;
+
+      case ActivityType.loanReminder:
+        return ActivityTypeDTO.loanReminder;
+
+      case ActivityType.lowBalance:
+        return ActivityTypeDTO.lowBalance;
+
+      case ActivityType.loyalty:
+        return ActivityTypeDTO.loyalty;
+
+      case ActivityType.merchantTransfer:
+        return ActivityTypeDTO.merchantTransfer;
+
+      case ActivityType.message:
+        return ActivityTypeDTO.message;
+
+      case ActivityType.offerForMe:
+        return ActivityTypeDTO.offerForMe;
+
+      case ActivityType.payment:
+        return ActivityTypeDTO.payment;
+
+      case ActivityType.pennyBankTransactions:
+        return ActivityTypeDTO.pennyBankTransactions;
+
+      case ActivityType.pullPayment:
+        return ActivityTypeDTO.pullPayment;
+
+      case ActivityType.receivedSendMoney:
+        return ActivityTypeDTO.receivedSendMoney;
+
+      case ActivityType.recurringPayment:
+        return ActivityTypeDTO.recurringPayment;
+
+      case ActivityType.recurringTopup:
+        return ActivityTypeDTO.recurringTopup;
+
+      case ActivityType.recurringTransfer:
+        return ActivityTypeDTO.recurringTransfer;
+
+      case ActivityType.request:
+        return ActivityTypeDTO.request;
+
+      case ActivityType.requestPayment:
+        return ActivityTypeDTO.requestPayment;
+
+      case ActivityType.safeToSpend:
+        return ActivityTypeDTO.safeToSpend;
+
+      case ActivityType.scheduledPayment:
+        return ActivityTypeDTO.scheduledPayment;
+
+      case ActivityType.scheduledTopup:
+        return ActivityTypeDTO.scheduledTopup;
+
+      case ActivityType.scheduledTransfer:
+        return ActivityTypeDTO.scheduledTransfer;
+
+      case ActivityType.sendMoney:
+        return ActivityTypeDTO.sendMoney;
+
+      case ActivityType.termDepositReminder:
+        return ActivityTypeDTO.termDepositReminder;
+
+      case ActivityType.topup:
+        return ActivityTypeDTO.topup;
+
+      case ActivityType.topupPayment:
+        return ActivityTypeDTO.topupPayment;
+
+      case ActivityType.transaction:
+        return ActivityTypeDTO.transaction;
+
+      case ActivityType.transfer:
+        return ActivityTypeDTO.transfer;
+
+      case ActivityType.unknown:
+        return ActivityTypeDTO.unknown;
+
+      case ActivityType.vault:
+        return ActivityTypeDTO.vault;
+
+      case ActivityType.wallet:
+        return ActivityTypeDTO.wallet;
+
+      case ActivityType.walletPayment:
+        return ActivityTypeDTO.walletPayment;
+
+      case ActivityType.walletRemittance:
+        return ActivityTypeDTO.walletRemittance;
+
+      case ActivityType.wpsTransfer:
+        return ActivityTypeDTO.wpsTransfer;
+
+      default:
+        throw MappingException(from: ActivityTypeDTO, to: ActivityType);
+    }
+  }
+}
+
 /// Extension that provides mappings for [ActivityActionTypeDTO]
 extension ActivityActionTypeDTOMapping on ActivityActionTypeDTO {
   /// Maps into a [ActivityActionType]
@@ -322,228 +542,6 @@ extension ActivityActionTypeDTOMapping on ActivityActionTypeDTO {
           from: ActivityActionTypeDTO,
           to: ActivityActionType,
         );
-    }
-  }
-}
-
-/// Extension that provides mappings for [ActivityType]
-extension ActivityTypeMapping on ActivityType {
-  /// Maps into String that represents the [ActivityType]
-  String get toJSONString {
-    switch (this) {
-      case ActivityType.appointmentReminder:
-        return 'appointment_reminder';
-
-      case ActivityType.bankRemittance:
-        return 'bank_remittance';
-
-      case ActivityType.benefitGw:
-        return 'benefit_gw';
-
-      case ActivityType.benefitPay:
-        return 'benefit_pay';
-
-      case ActivityType.bulkRegister:
-        return 'bulk_register';
-
-      case ActivityType.bulkTransfer:
-        return 'bulk_transfer';
-
-      case ActivityType.c2CTransfer:
-        return 'c2c_transfer';
-
-      case ActivityType.campaign:
-        return 'campaign';
-
-      case ActivityType.cardTopUp:
-        return 'stripe_topup';
-
-      case ActivityType.cardControl:
-        return 'card_control';
-
-      case ActivityType.cardExpiry:
-        return 'card_expiry';
-
-      case ActivityType.cardReminder:
-        return 'card_reminder';
-
-      case ActivityType.cashRemittance:
-        return 'cash_remittance';
-
-      case ActivityType.cashbackEarned:
-        return 'cashback_earned';
-
-      case ActivityType.cashbackExpiryReminder:
-        return 'cashback_expiry_reminder';
-
-      case ActivityType.cashinPayment:
-        return 'cashin_payment';
-
-      case ActivityType.cashinTransfer:
-        return 'cashin_transfer';
-
-      case ActivityType.cashoutPayment:
-        return 'cashout_transfer';
-
-      case ActivityType.cashoutTransfer:
-        return 'cashout_transfer';
-
-      case ActivityType.checkbook:
-        return 'checkbook';
-
-      case ActivityType.claims:
-        return 'claims';
-
-      case ActivityType.debitPayment:
-        return 'debit_payment';
-
-      case ActivityType.discountOfferForMe:
-        return 'discount_offer_for_me';
-
-      case ActivityType.dpa:
-        return 'dpa';
-
-      case ActivityType.fromMobileTransfer:
-        return 'from_mobile_transfer';
-
-      case ActivityType.goal:
-        return 'goal';
-
-      case ActivityType.goalTransactions:
-        return 'goal_txn';
-
-      case ActivityType.idExpiryReminder:
-        return 'id_expiry_reminder';
-
-      case ActivityType.inbox:
-        return 'inbox';
-
-      case ActivityType.insufficientBalance:
-        return 'insufficient_balance';
-
-      case ActivityType.internationalBeneficiary:
-        return 'international_beneficiary';
-
-      case ActivityType.issuedCheck:
-        return 'issued_check';
-
-      case ActivityType.loanPaymentExpired:
-        return 'loan_payment_expired';
-
-      case ActivityType.loanReminder:
-        return 'loan_reminder';
-
-      case ActivityType.lowBalance:
-        return 'low_balance';
-
-      case ActivityType.loyalty:
-        return 'loyalty';
-
-      case ActivityType.merchantTransfer:
-        return 'merchant_transfer';
-
-      case ActivityType.message:
-        return 'message';
-
-      case ActivityType.offerForMe:
-        return 'offer_for_me';
-
-      case ActivityType.payment:
-        return 'payment';
-
-      case ActivityType.pennyBankTransactions:
-        return 'penny_bank_txn';
-
-      case ActivityType.pullPayment:
-        return 'pull_payment';
-
-      case ActivityType.receivedSendMoney:
-        return 'received_send_money';
-
-      case ActivityType.recurringPayment:
-        return 'recurring_payment';
-
-      case ActivityType.recurringTopup:
-        return 'recurring_topup_payment';
-
-      case ActivityType.recurringTransfer:
-        return 'recurring_transfer';
-
-      case ActivityType.request:
-        return 'request';
-
-      case ActivityType.requestPayment:
-        return 'request_payment';
-
-      case ActivityType.safeToSpend:
-        return 'safe_to_spend';
-
-      case ActivityType.scheduledPayment:
-        return 'scheduled_payment';
-
-      case ActivityType.scheduledTopup:
-        return 'scheduled_topup_payment';
-
-      case ActivityType.scheduledTransfer:
-        return 'scheduled_transfer';
-
-      case ActivityType.sendMoney:
-        return 'send_money';
-
-      case ActivityType.termDepositReminder:
-        return 'term_deposit_reminder';
-
-      case ActivityType.topup:
-        return 'topup';
-
-      case ActivityType.topupPayment:
-        return 'topup_payment';
-
-      case ActivityType.transaction:
-        return 'transaction';
-
-      case ActivityType.transfer:
-        return 'transfer';
-
-      case ActivityType.unknown:
-        return 'unknown';
-
-      case ActivityType.vault:
-        return 'vault';
-
-      case ActivityType.wallet:
-        return 'wallet';
-
-      case ActivityType.walletPayment:
-        return 'wallet_transaction';
-
-      case ActivityType.walletRemittance:
-        return 'wallet_remittance';
-
-      case ActivityType.wpsTransfer:
-        return 'wps_transfer';
-
-      default:
-        return '';
-    }
-  }
-}
-
-/// Extension that provides mappings for [ActivityTag]
-extension ActivityTagsMapping on ActivityTag {
-  /// Maps into String that represents the [ActivityTag]
-  String get toJSONString {
-    switch (this) {
-      case ActivityTag.unknown:
-        return 'unknown';
-
-      case ActivityTag.profile:
-        return 'profile';
-
-      case ActivityTag.productsAndServices:
-        return 'products_services';
-      default:
-        return '';
     }
   }
 }

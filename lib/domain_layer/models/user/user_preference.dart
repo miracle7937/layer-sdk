@@ -11,7 +11,4 @@ abstract class UserPreference<T extends Object> extends Equatable {
 
   ///Creates a new [UserPreference]
   UserPreference(this.key, this.value);
-
-  ///Method for parsing this into a json format
-  Map<String, dynamic> toJson();
 }

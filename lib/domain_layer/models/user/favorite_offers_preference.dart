@@ -8,11 +8,6 @@ class FavoriteOffersPreference extends UserPreference<List<int>> {
   }) : super('favorite_offers', value);
 
   @override
-  Map<String, dynamic> toJson() => {
-        'favorite_offers': value,
-      };
-
-  @override
   List<Object?> get props => [
         value,
       ];

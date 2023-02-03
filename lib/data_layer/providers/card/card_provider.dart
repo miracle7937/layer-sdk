@@ -32,30 +32,4 @@ class CardProvider {
       List<Map<String, dynamic>>.from(response.data),
     );
   }
-
-  /// Returns all completed transactions of the supplied customer card
-  Future<List<CardTransactionDTO>> listCustomerCardTransactions({
-    required String cardId,
-    String? customerId,
-    int limit = 50,
-    int offset = 0,
-    bool forceRefresh = false,
-  }) async {
-    final response = await netClient.request(
-      netClient.netEndpoints.transaction,
-      method: NetRequestMethods.get,
-      queryParameters: {
-        'customer_id': customerId,
-        'card_id': cardId,
-        'status': 'C',
-        'limit': limit,
-        'offset': offset,
-      },
-      forceRefresh: forceRefresh,
-    );
-
-    return CardTransactionDTO.fromJsonList(
-      List<Map<String, dynamic>>.from(response.data),
-    );
-  }
 }

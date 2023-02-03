@@ -8,13 +8,4 @@ abstract class CardRepositoryInterface {
     bool includeDetails = true,
     bool forceRefresh = false,
   });
-
-  /// Returns all completed transactions of the supplied customer card
-  Future<List<CardTransaction>> listCustomerCardTransactions({
-    required String cardId,
-    String? customerId,
-    int limit = 50,
-    int offset = 0,
-    bool forceRefresh = false,
-  });
 }

@@ -22,16 +22,6 @@ class NetEndpoints {
   /// The access PIN endpoint
   String get checkAccessPin => '$_customer/v1/check_access_pin';
 
-  /// The general permission module endpoint.
-  ///
-  /// The console (DBO) has a different endpoint for its own users, but it also
-  /// does need access to the console permission modules, so we have both
-  /// defined here -- but this one is only implemented on the [ConsoleEndpoints]
-  String get permissionModule => throw UnsupportedError(
-        'Permission modules are only available on the DBO app. For bank apps,'
-        'please use the "customerPermissionModule" endpoint.',
-      );
-
   /// The devices endpoint
   String get customerDevice => '$_customer/v1/device';
 

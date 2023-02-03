@@ -1,8 +1,6 @@
 /// Data Layer - Network
 library network;
 
-export 'network/config_interceptor.dart';
-export 'network/endpoints/console_endpoints.dart';
 export 'network/endpoints/net_endpoints.dart';
 export 'network/net_client.dart';
 export 'network/net_exceptions.dart';

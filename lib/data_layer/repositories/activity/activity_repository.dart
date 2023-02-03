@@ -65,10 +65,10 @@ class ActivityRepository implements ActivityRepositoryInterface {
       searchAlerts: searchAlerts,
       searchUserTasks: searchUserTasks,
       itemIsNull: itemIsNull,
-      type: type,
-      types: types,
-      transferTypes: transferTypes,
-      activityTags: activityTags,
+      type: type?.toTypeDTO(),
+      types: types?.map((e) => e.toTypeDTO()).toList(),
+      transferTypes: transferTypes?.map((e) => e.toTransferTypeDTO()).toList(),
+      activityTags: activityTags?.map((e) => e.toActivityTagDTO()).toList(),
       forceRefresh: forceRefresh,
     );
 

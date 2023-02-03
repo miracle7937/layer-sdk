@@ -1,6 +1,4 @@
-import '../../../domain_layer/models.dart';
 import '../../dtos.dart';
-import '../../mappings.dart';
 import '../../network.dart';
 
 /// Provides data related to Activities
@@ -34,10 +32,10 @@ class ActivityProvider {
     bool searchAlerts = true,
     bool searchUserTasks = true,
     bool? itemIsNull = false,
-    ActivityType? type,
-    List<ActivityType>? types,
-    List<TransferType>? transferTypes,
-    List<ActivityTag>? activityTags,
+    ActivityTypeDTO? type,
+    List<ActivityTypeDTO>? types,
+    List<TransferTypeDTO>? transferTypes,
+    List<ActivityTagDTO>? activityTags,
     bool forceRefresh = false,
   }) async {
     final params = <String, dynamic>{
@@ -68,9 +66,9 @@ class ActivityProvider {
     }
 
     if (types != null && types.isNotEmpty) {
-      params['type'] = types.map((t) => t.toJSONString).join(',');
+      params['type'] = types.map((t) => t.value).join(',');
     } else if (type != null) {
-      params['type'] = type.toJSONString;
+      params['type'] = type.value;
     }
 
     if (alertID != null) {
@@ -94,7 +92,7 @@ class ActivityProvider {
     }
 
     if (transferTypes != null && transferTypes.isNotEmpty) {
-      params['item.trf_type'] = transferTypes.map((t) => t.name).join(',');
+      params['item.trf_type'] = transferTypes.map((t) => t.value).join(',');
     }
 
     if (transferId != null) {
@@ -114,7 +112,7 @@ class ActivityProvider {
     }
 
     if (activityTags?.isNotEmpty ?? false) {
-      final tags = activityTags!.map((tag) => tag.toJSONString).join(',');
+      final tags = activityTags!.map((tag) => tag.value).join(',');
       params['tag'] = tags;
     }
 

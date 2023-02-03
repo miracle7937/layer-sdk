@@ -15,6 +15,8 @@ class AccountProvider {
 
   /// Returns a list of accounts.
   Future<List<AccountDTO>> list({
+    // the customerId field everywhere is added specifically for console,
+    // but should we remove it?
     String? customerId,
     bool includeDetails = true,
     bool forceRefresh = false,

@@ -392,14 +392,6 @@ class BankAppState extends State<BankApp> {
               ),
             ),
           ),
-          loadDeveloperUserDetailsFromTokenUseCase:
-              LoadDeveloperUserDetailsFromTokenUseCase(
-            repository: UserRepository(
-              userProvider: UserProvider(
-                netClient: widget.netClient,
-              ),
-            ),
-          ),
           loadUserDetailsFromTokenUseCase: LoadUserDetailsFromTokenUseCase(
             repository: UserRepository(
               userProvider: UserProvider(

@@ -13,7 +13,7 @@ extension UserJsonMapping on User {
   Map<String, dynamic> toJson() {
     final alert = enabledAlerts
         .map(
-          (enabledAlert) => enabledAlert.toJSONString,
+          (enabledAlert) => enabledAlert.toTypeDTO().value,
         )
         .toList();
     return {

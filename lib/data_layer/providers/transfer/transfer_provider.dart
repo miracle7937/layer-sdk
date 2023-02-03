@@ -1,6 +1,4 @@
-import '../../../domain_layer/models.dart';
 import '../../dtos.dart';
-import '../../mappings.dart';
 import '../../network.dart';
 
 /// Provides data about the Transfers
@@ -13,51 +11,22 @@ class TransferProvider {
     this.netClient,
   );
 
-  /// Returns a list of transfers.
-  Future<List<TransferDTO>> list({
-    required String customerId,
-    int? limit,
-    int? offset,
-    bool forceRefresh = false,
-    bool includeDetails = true,
-    bool recurring = false,
-  }) async {
-    final params = <String, dynamic>{};
-
-    if (limit != null) params['limit'] = limit;
-    if (offset != null) params['offset'] = offset;
-    if (recurring) params['recurring'] = recurring;
-    params['include_details'] = includeDetails;
-    params['transfer.customer_id'] = customerId;
-
-    final response = await netClient.request(
-      netClient.netEndpoints.transfer,
-      method: NetRequestMethods.get,
-      queryParameters: params,
-      forceRefresh: forceRefresh,
-    );
-
-    return TransferDTO.fromJsonList(
-      List<Map<String, dynamic>>.from(response.data),
-    );
-  }
-
   /// Returns a list of frequent transfers
   Future<List<TransferDTO>> loadFrequentTransfers({
     int? limit,
     int? offset,
     bool includeDetails = true,
-    TransferStatus? status,
-    List<TransferType>? types,
+    TransferStatusDTO? status,
+    List<TransferTypeDTO>? types,
   }) async {
     final params = <String, dynamic>{};
 
     params['include_details'] = includeDetails;
     if (limit != null) params['limit'] = limit;
     if (offset != null) params['offset'] = offset;
-    if (status != null) params['status'] = status.toJSONString;
+    if (status != null) params['status'] = status.value;
     if (types != null && types.isNotEmpty) {
-      params['trf_type'] = types.map((t) => t.toJSONString).join(',');
+      params['trf_type'] = types.map((t) => t.value).join(',');
     }
 
     final response = await netClient.request(

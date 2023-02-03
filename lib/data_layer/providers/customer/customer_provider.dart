@@ -1,10 +1,8 @@
 import 'package:collection/collection.dart';
 
 import '../../../../data_layer/network.dart';
-import '../../../domain_layer/models.dart';
 import '../../dtos.dart';
 import '../../environment.dart';
-import '../../mappings.dart';
 
 /// Provides data about the Customers
 class CustomerProvider {
@@ -175,75 +173,6 @@ class CustomerProvider {
         .whereNotNull()
         .map((e) => CustomerDTO.fromJson(e.data))
         .toList();
-  }
-
-  /// Updates the customer KYC grace period based on the provided
-  /// parameters.
-  ///
-  /// Used by the DBO app only.
-  Future<bool> updateCustomerGracePeriod({
-    required String customerId,
-    required KYCGracePeriodType type,
-    int? value,
-  }) async {
-    final data = {
-      'customer_id': customerId,
-      type.toJson(): value,
-    };
-
-    final response = await netClient.request(
-      netClient.netEndpoints.customer,
-      data: [data],
-      method: NetRequestMethods.patch,
-    );
-
-    return response.success;
-  }
-
-  /// Updates the customer E-Statement setting with the provided value.
-  ///
-  /// Used by the DBO app only.
-  Future<bool> updateCustomerEStatement({
-    required String customerId,
-    required bool value,
-  }) async {
-    final data = {
-      'customer_id': customerId,
-      'e_statement': value,
-    };
-
-    final response = await netClient.request(
-      netClient.netEndpoints.customer,
-      data: [data],
-      method: NetRequestMethods.patch,
-    );
-
-    return response.success;
-  }
-
-  /// Forces a update of the user and customer associated to the
-  /// provided `customerId`.
-  ///
-  /// Returns whether or not the request was successfull.
-  Future<bool> forceCustomerUpdate({
-    required String customerId,
-  }) async {
-    final data = {
-      'parameters': {
-        'customer_id': customerId,
-      },
-      'script_name': 'force_update_user',
-      'task_name': 'Force Update User',
-      'max_attempts': 1,
-    };
-
-    final response = await netClient.request(
-      netClient.netEndpoints.task,
-      method: NetRequestMethods.post,
-      data: [data],
-    );
-
-    return response.success;
   }
 
   /// Loads the limits of the customer.

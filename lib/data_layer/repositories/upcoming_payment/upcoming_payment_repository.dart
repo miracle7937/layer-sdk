@@ -32,22 +32,4 @@ class UpcomingPaymentRepository implements UpcomingPaymentRepositoryInterface {
         .map((e) => e.toUpcomingPayment())
         .toList(growable: false);
   }
-
-  /// Lists all the upcoming payments for this customer
-  @override
-  Future<UpcomingPaymentGroup> listAllUpcomingPayments({
-    required String customerID,
-    int? limit,
-    int? offset,
-    bool forceRefresh = false,
-  }) async {
-    final upcomingPaymentGroupDTO = await _provider.listAllUpcomingPayments(
-      customerID: customerID,
-      offset: offset,
-      limit: limit,
-      forceRefresh: forceRefresh,
-    );
-
-    return upcomingPaymentGroupDTO.toUpcomingPaymentGroup();
-  }
 }

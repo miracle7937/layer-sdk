@@ -34,26 +34,6 @@ extension TransferDTOMapping on TransferDTO {
         reason: reason,
         note: note,
       );
-
-  /// Maps into a [StandingOrder]
-  StandingOrder toStandingOrder() => StandingOrder(
-        id: id,
-        currency: currency,
-        amount: amount,
-        amountVisible: amountVisible,
-        fromAccount: fromAccount?.toAccount(),
-        fromCard: fromCard?.toBankingCard(),
-        toAccount: toAccount?.toAccount(),
-        toCard: toCard?.toBankingCard(),
-        fromMobile: fromMobile,
-        toMobile: toMobile,
-        toBeneficiary: toBeneficiary?.toBeneficiary(),
-        recurrence: recurrence?.toRecurrence() ?? Recurrence.none,
-        created: created,
-        status: status?.toStandingOrderStatus(),
-        type: type?.toStandingOrderType(),
-        scheduledDate: scheduled,
-      );
 }
 
 /// Extension that provides mappings for [Transfer]
@@ -153,89 +133,10 @@ extension TransferStatusDTOMapping on TransferStatusDTO {
         throw MappingException(from: TransferStatusDTO, to: TransferStatus);
     }
   }
-
-  /// Maps into a [StandingOrderStatus]
-  StandingOrderStatus toStandingOrderStatus() {
-    switch (this) {
-      case TransferStatusDTO.completed:
-        return StandingOrderStatus.completed;
-
-      case TransferStatusDTO.pending:
-        return StandingOrderStatus.pending;
-
-      case TransferStatusDTO.scheduled:
-        return StandingOrderStatus.scheduled;
-
-      case TransferStatusDTO.failed:
-        return StandingOrderStatus.failed;
-
-      case TransferStatusDTO.cancelled:
-        return StandingOrderStatus.cancelled;
-
-      case TransferStatusDTO.rejected:
-        return StandingOrderStatus.rejected;
-
-      case TransferStatusDTO.pendingExpired:
-        return StandingOrderStatus.pendingExpired;
-
-      case TransferStatusDTO.otp:
-        return StandingOrderStatus.otp;
-
-      case TransferStatusDTO.otpExpired:
-        return StandingOrderStatus.otpExpired;
-
-      case TransferStatusDTO.deleted:
-        return StandingOrderStatus.deleted;
-
-      default:
-        throw MappingException(
-          from: TransferStatusDTO,
-          to: StandingOrderStatus,
-        );
-    }
-  }
 }
 
 /// Extension that provides mappings for [TransferTypeDTO]
 extension TransferTypeDTOMapping on TransferTypeDTO {
-  /// Maps into a [StandingOrderType]
-  StandingOrderType toStandingOrderType() {
-    switch (this) {
-      case TransferTypeDTO.own:
-        return StandingOrderType.own;
-
-      case TransferTypeDTO.bank:
-        return StandingOrderType.bank;
-
-      case TransferTypeDTO.domestic:
-        return StandingOrderType.domestic;
-
-      case TransferTypeDTO.international:
-        return StandingOrderType.international;
-
-      case TransferTypeDTO.bulk:
-        return StandingOrderType.bulk;
-
-      case TransferTypeDTO.instant:
-        return StandingOrderType.instant;
-
-      case TransferTypeDTO.cashin:
-        return StandingOrderType.cashIn;
-
-      case TransferTypeDTO.cashout:
-        return StandingOrderType.cashOut;
-
-      case TransferTypeDTO.mobileToBeneficiary:
-        return StandingOrderType.mobileToBeneficiary;
-
-      case TransferTypeDTO.merchantTransfer:
-        return StandingOrderType.merchantTransfer;
-
-      default:
-        throw MappingException(from: TransferTypeDTO, to: StandingOrderType);
-    }
-  }
-
   /// Maps into a [TransferType]
   TransferType toTransferType() {
     switch (this) {
@@ -271,43 +172,6 @@ extension TransferTypeDTOMapping on TransferTypeDTO {
 
       default:
         throw MappingException(from: TransferTypeDTO, to: TransferType);
-    }
-  }
-}
-
-/// Extension that provides mappings for [TransferStatus]
-// TODO: Check other status strings
-extension TransferStatusExtension on TransferStatus {
-  /// Maps into String that represents the [TransferStatus]
-  String get toJSONString {
-    switch (this) {
-      case TransferStatus.completed:
-        return 'C';
-
-      default:
-        return '';
-    }
-  }
-}
-
-/// Extension that provides mappings for [TransferType]
-extension TransferTypeExtension on TransferType {
-  /// Maps into String that represents the [TransferType]
-  String get toJSONString {
-    switch (this) {
-      case TransferType.own:
-        return 'O';
-
-      case TransferType.domestic:
-        return 'D';
-
-      case TransferType.international:
-        return 'I';
-
-      case TransferType.bank:
-        return 'B';
-      default:
-        return '';
     }
   }
 }
