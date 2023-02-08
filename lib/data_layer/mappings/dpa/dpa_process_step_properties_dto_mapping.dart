@@ -90,6 +90,9 @@ extension DPAScreenTypeDTOMapping on DPAScreenTypeDTO {
       case DPAScreenTypeDTO.otp:
         return DPAScreenType.otp;
 
+      case DPAScreenTypeDTO.secondFactor:
+        return DPAScreenType.secondFactor;
+
       case DPAScreenTypeDTO.pin:
         return DPAScreenType.pin;
 

@@ -199,6 +199,9 @@ enum DPAScreenType {
   /// OTP
   otp,
 
+  /// Second factor
+  secondFactor,
+
   /// PIN
   pin,
 

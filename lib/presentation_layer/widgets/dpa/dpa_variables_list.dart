@@ -7,6 +7,7 @@ import 'package:logging/logging.dart';
 import '../../../domain_layer/models.dart';
 import '../../cubits.dart';
 import '../../widgets.dart';
+import 'date_picker/dpa_date_picker.dart';
 
 /// Signature for [DPAVariablesList.builder].
 ///
@@ -186,6 +187,12 @@ class DPAVariablesList extends StatelessWidget {
               ),
           variable: variable,
           readonly: variable.constraints.readonly,
+        );
+
+      case DPAVariableType.dateTime:
+        return DPADatePicker(
+          key: ValueKey(variable.id),
+          variable: variable,
         );
 
       default:

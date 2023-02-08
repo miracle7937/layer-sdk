@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:ui' as ui;
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -34,15 +37,37 @@ class NetworkImageContainer extends StatelessWidget {
     this.customToken,
   });
 
+  Future<ui.Image> _loadImage(String url) async {
+    final imageStream =
+        CachedNetworkImageProvider(url).resolve(ImageConfiguration());
+    final completer = Completer<ui.Image>();
+    imageStream.addListener(ImageStreamListener((ImageInfo image, bool _) {
+      completer.complete(image.image);
+    }));
+    return completer.future;
+  }
+
   @override
-  Widget build(BuildContext context) => CachedNetworkImage(
-        fit: fit,
-        imageUrl: imageURL,
-        httpHeaders: {
-          'Authorization': customToken ??
-              FlutterEnvironmentConfiguration.current.defaultToken,
-        },
-        placeholder: (context, url) => placeholder ?? Container(),
-        errorWidget: (context, url, error) => errorWidget ?? Container(),
-      );
+  Widget build(BuildContext context) => FutureBuilder<ui.Image>(
+      future: _loadImage(imageURL),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return SizedBox(
+            height: snapshot.requireData.height.toDouble(),
+            child: CachedNetworkImage(
+              fit: fit,
+              imageUrl: imageURL,
+              height: snapshot.requireData.height.toDouble(),
+              httpHeaders: {
+                'Authorization': customToken ??
+                    FlutterEnvironmentConfiguration.current.defaultToken,
+              },
+              placeholder: (context, url) => placeholder ?? Container(),
+              errorWidget: (context, url, error) => errorWidget ?? Container(),
+            ),
+          );
+        } else {
+          return Container();
+        }
+      });
 }

@@ -16,20 +16,22 @@ extension DPAProcessDTOMapping on DPAProcessDTO {
 
     final stepName = properties?.step;
 
+    final toDpaVariableList = variables?.toDPAVariableList(customData);
+
     return DPAProcess(
-      step: (dpaProps?.steps.indexOf(stepName) ?? -1) + 1,
-      stepCount: dpaProps?.steps.length ?? 0,
-      stepName: stepName ?? '',
-      finished: finished,
-      status: status?.toDPAStatus() ?? DPAStatus.active,
-      properties: dpaProps,
-      stepProperties: properties?.toDPAProcessStepProperties(customData),
-      task: task?.toDPATask(customData),
-      variables: variables?.toDPAVariableList(customData),
-      processName:
-          task?.processDefinitionName ?? currentProcess?.processName ?? '',
-      returnVariables: returnVariables,
-    );
+        step: (dpaProps?.steps.indexOf(stepName) ?? -1) + 1,
+        stepCount: dpaProps?.steps.length ?? 0,
+        stepName: stepName ?? '',
+        finished: finished,
+        status: status?.toDPAStatus() ?? DPAStatus.active,
+        properties: dpaProps,
+        stepProperties: properties?.toDPAProcessStepProperties(customData),
+        task: task?.toDPATask(customData),
+        variables: variables?.toDPAVariableList(customData),
+        processName:
+            task?.processDefinitionName ?? currentProcess?.processName ?? '',
+        returnVariables: returnVariables,
+        secondFactor: DPASecondFactor.fromVariables(toDpaVariableList ?? []));
   }
 }
 

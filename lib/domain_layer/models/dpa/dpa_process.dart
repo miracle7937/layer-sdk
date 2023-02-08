@@ -40,6 +40,8 @@ class DPAProcess extends Equatable {
   /// The variables returned when the process is finished.
   final UnmodifiableListView<Map<String, dynamic>> returnVariables;
 
+  final DPASecondFactor? secondFactor;
+
   /// If it's clear to proceed to the next step.
   bool get canProceed =>
       variables.firstWhereOrNull(
@@ -64,6 +66,7 @@ class DPAProcess extends Equatable {
     this.properties,
     this.stepProperties,
     this.task,
+    this.secondFactor,
     Iterable<DPAVariable>? variables,
     this.processName = '',
     Iterable<Map<String, dynamic>>? returnVariables,
