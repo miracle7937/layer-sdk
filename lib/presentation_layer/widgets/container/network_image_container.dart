@@ -37,7 +37,7 @@ class NetworkImageContainer extends StatelessWidget {
     this.customToken,
   });
 
-  Map<String, String> get headers => {
+  Map<String, String> get _headers => {
         'Authorization':
             customToken ?? FlutterEnvironmentConfiguration.current.defaultToken,
       };
@@ -45,7 +45,7 @@ class NetworkImageContainer extends StatelessWidget {
   Future<ui.Image> _loadImage(String url) async {
     final imageStream = CachedNetworkImageProvider(
       url,
-      headers: headers,
+      headers: _headers,
     ).resolve(ImageConfiguration());
     final completer = Completer<ui.Image>();
     imageStream.addListener(ImageStreamListener((image, _) {
@@ -65,7 +65,7 @@ class NetworkImageContainer extends StatelessWidget {
               fit: fit,
               imageUrl: imageURL,
               height: snapshot.requireData.height.toDouble(),
-              httpHeaders: headers,
+              httpHeaders: _headers,
               placeholder: (context, url) => placeholder ?? Container(),
               errorWidget: (context, url, error) => errorWidget ?? Container(),
             ),
