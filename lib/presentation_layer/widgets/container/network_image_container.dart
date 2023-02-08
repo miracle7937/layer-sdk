@@ -41,7 +41,7 @@ class NetworkImageContainer extends StatelessWidget {
     final imageStream =
         CachedNetworkImageProvider(url).resolve(ImageConfiguration());
     final completer = Completer<ui.Image>();
-    imageStream.addListener(ImageStreamListener((ImageInfo image, bool _) {
+    imageStream.addListener(ImageStreamListener((image, _) {
       completer.complete(image.image);
     }));
     return completer.future;

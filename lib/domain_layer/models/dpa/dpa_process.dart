@@ -40,6 +40,7 @@ class DPAProcess extends Equatable {
   /// The variables returned when the process is finished.
   final UnmodifiableListView<Map<String, dynamic>> returnVariables;
 
+  /// The second factor to be used in this process.
   final DPASecondFactor? secondFactor;
 
   /// If it's clear to proceed to the next step.
