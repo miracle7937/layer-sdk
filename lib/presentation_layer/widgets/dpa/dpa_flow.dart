@@ -157,8 +157,8 @@ class DPAFlow<T> extends StatefulWidget {
   /// Ignored if a [customChild] is provided.
   final Widget? customContinueButton;
 
-  /// A custom builder to be used to create the dpa screen.
-  final WidgetBuilder? customDPAScreen;
+  /// A custom builder to be used to create the second factor screen.
+  final WidgetBuilder? customSecondFactorScreen;
 
   /// An optional widget to be used in place of the screen. This should take
   /// care of all the variables lists and different page states, and its use is
@@ -219,7 +219,7 @@ class DPAFlow<T> extends StatefulWidget {
   const DPAFlow({
     Key? key,
     required this.onFinished,
-    this.customDPAScreen,
+    this.customSecondFactorScreen,
     this.customHeader,
     this.customVariableListBuilder,
     this.customContinueButton,
@@ -487,7 +487,7 @@ class _DPAFlowState<T> extends State<DPAFlow<T>> {
         process.stepProperties?.screenType == DPAScreenType.otp ||
             process.stepProperties?.screenType == DPAScreenType.secondFactor;
     if (isOTPScreen) {
-      return widget.customDPAScreen?.call(context) ??
+      return widget.customSecondFactorScreen?.call(context) ??
           DPAOTPScreen(
             isOnboarding: widget.isOnboarding,
             customDPAHeader: widget.customHeader,
