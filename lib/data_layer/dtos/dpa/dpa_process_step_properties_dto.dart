@@ -195,6 +195,9 @@ class DPAScreenTypeDTO extends EnumDTO {
   /// PIN
   static const pin = DPAScreenTypeDTO._internal('pin');
 
+  /// Second factor
+  static const secondFactor = DPAScreenTypeDTO._internal('2fa');
+
   /// Task for validating the email entered by the user.
   static const email = DPAScreenTypeDTO._internal('email');
 
@@ -211,6 +214,7 @@ class DPAScreenTypeDTO extends EnumDTO {
   /// The available values.
   static const List<DPAScreenTypeDTO> values = [
     otp,
+    secondFactor,
     pin,
     email,
     entitySearch,

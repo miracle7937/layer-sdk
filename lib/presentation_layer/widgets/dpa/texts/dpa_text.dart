@@ -199,6 +199,7 @@ class _DPATextState extends State<DPAText> {
           )
         : Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               if (label?.isNotEmpty ?? false) ...[
                 Row(

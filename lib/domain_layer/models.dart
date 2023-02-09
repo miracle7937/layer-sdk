@@ -50,6 +50,7 @@ export 'models/dpa/dpa_mapping_custom_data.dart';
 export 'models/dpa/dpa_process.dart';
 export 'models/dpa/dpa_process_definition.dart';
 export 'models/dpa/dpa_process_step_properties.dart';
+export 'models/dpa/dpa_second_factor.dart';
 export 'models/dpa/dpa_status.dart';
 export 'models/dpa/dpa_task.dart';
 export 'models/dpa/dpa_value.dart';
