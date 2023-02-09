@@ -51,3 +51,4 @@ export 'abstract_repositories/shortcut/shortcut_repository_interface.dart';
 export 'abstract_repositories/transfer/transfer_repository_interface.dart';
 export 'abstract_repositories/upcoming_payment/upcoming_payment_repository_interface.dart';
 export 'abstract_repositories/user/user_repository_interface.dart';
+export 'abstract_repositories/validator/validator_repository_interface.dart';

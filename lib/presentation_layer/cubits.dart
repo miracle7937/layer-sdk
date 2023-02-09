@@ -145,3 +145,5 @@ export 'cubits/upcoming_payment/upcoming_payment_cubit.dart';
 export 'cubits/upcoming_payment/upcoming_payment_state.dart';
 export 'cubits/user_preferences/user_preferences_cubit.dart';
 export 'cubits/user_preferences/user_preferences_state.dart';
+export 'cubits/validator/validator_cubit.dart';
+export 'cubits/validator/validator_state.dart';

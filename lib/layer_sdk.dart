@@ -31,6 +31,7 @@ export 'features/payments.dart';
 export 'features/transfer.dart';
 export 'features/upcoming_payment.dart';
 export 'features/user.dart';
+export 'features/validator.dart';
 export 'presentation_layer/app.dart';
 export 'presentation_layer/creators.dart';
 export 'presentation_layer/design.dart';
