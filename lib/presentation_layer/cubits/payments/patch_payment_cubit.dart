@@ -46,7 +46,7 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
               endDate: paymentToPatch.recurrenceEnd,
               executions: (paymentToPatch.recurrence != Recurrence.none &&
                       paymentToPatch.recurrence != Recurrence.once)
-                  ? const ScheduleDetails().calculateReccurenceExecutions(
+                  ? const ScheduleDetails().calculateRecurrenceExecutions(
                       paymentToPatch.recurrence,
                       paymentToPatch.recurrenceStart!,
                       paymentToPatch.recurrenceEnd!,
