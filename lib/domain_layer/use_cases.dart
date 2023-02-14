@@ -38,6 +38,7 @@ export 'use_cases/branch/load_branch_by_id_use_case.dart';
 export 'use_cases/branch/load_branches_use_case.dart';
 export 'use_cases/branch_activation/check_branch_activation_code_use_case.dart';
 export 'use_cases/branch_activation/verify_otp_for_branch_activation_use_case.dart';
+export 'use_cases/branding/load_branding_use_case.dart';
 export 'use_cases/campaign/campaign_action_use_case.dart';
 export 'use_cases/campaign/load_campaigns_use_case.dart';
 export 'use_cases/campaign/load_public_campaigns_use_case.dart';

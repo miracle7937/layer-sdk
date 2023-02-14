@@ -18,6 +18,7 @@ class ActivityCubit extends Cubit<ActivityState> {
   final DeleteAlertUseCase _deleteAlertUseCase;
   final MarkAllAlertsAsReadUseCase _markAllAlertsAsReadUseCase;
   final DeleteAllAlertsUseCase _deleteAllAlertsUseCase;
+  final CancelDPAProcessUseCase _cancelDPAProcessUseCase;
 
   /// Creates a new [ActivityCubit] instance
   ActivityCubit({
@@ -31,6 +32,7 @@ class ActivityCubit extends Cubit<ActivityState> {
     required DeleteAlertUseCase deleteAlertUseCase,
     required MarkAllAlertsAsReadUseCase markAllAlertsAsReadUseCase,
     required DeleteAllAlertsUseCase deleteAllAlertsUseCase,
+    required CancelDPAProcessUseCase cancelDPAProcessUseCase,
     int limit = 20,
   })  : _loadActivitiesUseCase = loadActivitiesUseCase,
         _deleteActivityUseCase = deleteActivityUseCase,
@@ -42,6 +44,7 @@ class ActivityCubit extends Cubit<ActivityState> {
         _deleteAlertUseCase = deleteAlertUseCase,
         _markAllAlertsAsReadUseCase = markAllAlertsAsReadUseCase,
         _deleteAllAlertsUseCase = deleteAllAlertsUseCase,
+        _cancelDPAProcessUseCase = cancelDPAProcessUseCase,
         super(ActivityState(
           pagination: Pagination(limit: limit),
         ));
@@ -131,6 +134,11 @@ class ActivityCubit extends Cubit<ActivityState> {
   Future<void> cancel(String id, {String? otpValue}) => _cancelActivityUseCase(
         id: id,
         otpValue: otpValue,
+      );
+
+  /// Cancels the DPAProcess instance associated with the provided `id`.
+  Future<void> cancelDPARequest(String id) => _cancelDPAProcessUseCase(
+        processInstanceId: id,
       );
 
   /// Cancel the scheduled transfer by `id`

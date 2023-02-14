@@ -14,9 +14,9 @@ class CancelDPAProcessUseCase {
   ///
   /// Returns `true` if succeeded.
   Future<bool> call({
-    required DPAProcess process,
+    required String processInstanceId,
   }) =>
       _repository.cancelProcess(
-        process: process,
+        processInstanceId: processInstanceId,
       );
 }

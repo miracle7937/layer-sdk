@@ -11,6 +11,7 @@ export 'providers/beneficiary/beneficiary_provider.dart';
 export 'providers/bill/bill_provider.dart';
 export 'providers/branch/branch_provider.dart';
 export 'providers/branch_activation/branch_activation_provider.dart';
+export 'providers/branding/branding_provider.dart';
 export 'providers/campaign/campaign_provider.dart';
 export 'providers/card/card_provider.dart';
 export 'providers/card_info/card_info_provider.dart';
