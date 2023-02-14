@@ -358,14 +358,11 @@ class DPARepository implements DPARepositoryInterface {
   /// Returns `true` if succeeded.
   @override
   Future<bool> cancelProcess({
-    required DPAProcess process,
-  }) {
-    _log.finest('Cancelling process with task id ${process.task?.id}');
-
-    return _provider.deleteProcess(
-      process: process.toDPAProcessDTO(),
-    );
-  }
+    required String processInstanceId,
+  }) =>
+      _provider.deleteProcess(
+        processInstanceId: processInstanceId,
+      );
 
   /// Upload an image (a document, or a user signature, for instance) for the
   /// DPA process variable.

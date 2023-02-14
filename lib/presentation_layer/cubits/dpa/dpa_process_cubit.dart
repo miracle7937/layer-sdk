@@ -412,6 +412,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
   /// Cancels the ongoing process.
   Future<void> cancelProcess() async {
     assert(state.runStatus == DPAProcessRunStatus.running);
+    assert(state.activeProcess.task?.processInstanceId != null);
 
     _log.info('Cancelling process with id ${state.activeProcess.task?.id}');
 
@@ -427,8 +428,10 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
     );
 
     try {
+      final processId = state.activeProcess.task!.processInstanceId!;
+
       final result = await _cancelDPAProcessUseCase(
-        process: state.activeProcess,
+        processInstanceId: processId,
       );
 
       // Only emit the new state if we get confirmation.

@@ -275,12 +275,8 @@ class DPAProvider {
   ///
   /// Returns `true` if succeeded.
   Future<bool> deleteProcess({
-    required DPAProcessDTO process,
+    required String processInstanceId,
   }) async {
-    final processInstanceId = process.task?.processInstanceId;
-
-    assert(processInstanceId != null);
-
     final response = await netClient.request(
       '${netClient.netEndpoints.dpaDelete}/$processInstanceId',
       method: NetRequestMethods.delete,

@@ -127,7 +127,7 @@ abstract class DPARepositoryInterface {
   ///
   /// Returns `true` if succeeded.
   Future<bool> cancelProcess({
-    required DPAProcess process,
+    required String processInstanceId,
   });
 
   /// Upload an image (a document, or a user signature, for instance) for the

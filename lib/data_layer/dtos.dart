@@ -18,6 +18,7 @@ export 'dtos/banking_product_transaction_dto.dart';
 export 'dtos/beneficiary/beneficiary_dto.dart';
 export 'dtos/branch/branch_dto.dart';
 export 'dtos/branch_activation/branch_activation_response_dto.dart';
+export 'dtos/branding/branding_dto.dart';
 export 'dtos/campaign/campaign_response_dto.dart';
 export 'dtos/campaign/customer_campaign_dto.dart';
 export 'dtos/card/card_category_dto.dart';

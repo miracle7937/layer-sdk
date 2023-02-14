@@ -7,8 +7,8 @@ class MockDPARepository extends Mock implements DPARepositoryInterface {}
 
 late MockDPARepository _repository;
 late CancelDPAProcessUseCase _cancelDpaProcessUseCase;
-late DPAProcess _trueProcess;
-late DPAProcess _falseProcess;
+late String _trueKey;
+late String _falseKey;
 
 void main() {
   EquatableConfig.stringify = true;
@@ -18,16 +18,12 @@ void main() {
     _cancelDpaProcessUseCase = CancelDPAProcessUseCase(
       repository: _repository,
     );
-    _trueProcess = DPAProcess(
-      processName: 'true',
-    );
-    _falseProcess = DPAProcess(
-      processName: 'false',
-    );
+    _trueKey = 'true';
+    _falseKey = 'false';
 
     when(
       () => _repository.cancelProcess(
-        process: _trueProcess,
+        processInstanceId: _trueKey,
       ),
     ).thenAnswer(
       (_) async => true,
@@ -35,7 +31,7 @@ void main() {
 
     when(
       () => _repository.cancelProcess(
-        process: _falseProcess,
+        processInstanceId: _falseKey,
       ),
     ).thenAnswer(
       (_) async => false,
@@ -44,28 +40,28 @@ void main() {
 
   test('Should return true', () async {
     final response = await _cancelDpaProcessUseCase(
-      process: _trueProcess,
+      processInstanceId: _trueKey,
     );
 
     expect(response, true);
 
     verify(
       () => _repository.cancelProcess(
-        process: _trueProcess,
+        processInstanceId: _trueKey,
       ),
     ).called(1);
   });
 
   test('Should return false', () async {
     final response = await _cancelDpaProcessUseCase(
-      process: _falseProcess,
+      processInstanceId: _falseKey,
     );
 
     expect(response, false);
 
     verify(
       () => _repository.cancelProcess(
-        process: _falseProcess,
+        processInstanceId: _falseKey,
       ),
     ).called(1);
   });

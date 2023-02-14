@@ -11,6 +11,7 @@ export 'repositories/beneficiary/beneficiary_repository.dart';
 export 'repositories/bill/bill_repository.dart';
 export 'repositories/branch/branch_repository.dart';
 export 'repositories/branch_activation/branch_activation_repository.dart';
+export 'repositories/branding/branding_repository.dart';
 export 'repositories/campaign/campaign_repository.dart';
 export 'repositories/card/card_repository.dart';
 export 'repositories/card_info/card_info_repository.dart';
