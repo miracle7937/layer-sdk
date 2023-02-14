@@ -37,9 +37,6 @@ class ScheduleDetails extends Equatable {
     DateTime? endDate,
     int? executions,
   }) {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-
     if (recurrence != null &&
         [Recurrence.none, Recurrence.once].contains(recurrence)) {
       /// Resets the dates and executions.
@@ -53,7 +50,7 @@ class ScheduleDetails extends Equatable {
 
     if (executions != null) {
       /// The executions changed, calculates the end date.
-      startDate ??= this.startDate ?? today;
+      startDate = _calculateStartDate(startDate);
 
       endDate = _calculateEndDate(
         recurrence ?? this.recurrence,
@@ -63,9 +60,9 @@ class ScheduleDetails extends Equatable {
     } else if (endDate != null) {
       /// The end date changed, calculates the executions and adjust the
       /// end date to the correct one.
-      startDate ??= this.startDate ?? today;
+      startDate = _calculateStartDate(startDate);
 
-      executions = calculateReccurenceExecutions(
+      executions = calculateRecurrenceExecutions(
         recurrence ?? this.recurrence,
         startDate,
         endDate,
@@ -82,7 +79,7 @@ class ScheduleDetails extends Equatable {
         this.executions != null) {
       /// The recurrence changed and the end date and executions were already
       /// set. Adjusts the end date.
-      startDate ??= this.startDate ?? today;
+      startDate = _calculateStartDate(startDate);
 
       endDate = _calculateEndDate(
         recurrence,
@@ -100,6 +97,24 @@ class ScheduleDetails extends Equatable {
     );
   }
 
+  DateTime _calculateStartDate(
+    DateTime? startDate,
+  ) {
+    final now = DateTime.now();
+    final tomorrow = DateTime(now.year, now.month, now.day + 1);
+
+    return startDate != null
+        ? startDate
+        : this.startDate ??
+            (recurrence == Recurrence.endOfEachMonth
+                ? DateTime(
+                    now.year,
+                    now.month + 1,
+                    1,
+                  ).subtract(const Duration(days: 1))
+                : tomorrow);
+  }
+
   /// Returns the end date calculated by the passed values.
   DateTime _calculateEndDate(
     Recurrence recurrence,
@@ -111,19 +126,19 @@ class ScheduleDetails extends Equatable {
         return DateTime(
           startDate.year,
           startDate.month,
-          startDate.day + executions,
+          startDate.day + executions - 1,
         );
 
       case Recurrence.monthly:
         return DateTime(
           startDate.year,
-          startDate.month + executions,
+          startDate.month + executions - 1,
           startDate.day,
         );
 
       case Recurrence.yearly:
         return DateTime(
-          startDate.year + executions,
+          startDate.year + executions - 1,
           startDate.month,
           startDate.day,
         );
@@ -132,27 +147,27 @@ class ScheduleDetails extends Equatable {
         return DateTime(
           startDate.year,
           startDate.month,
-          startDate.day + 7 * executions,
+          startDate.day + 7 * (executions - 1),
         );
 
       case Recurrence.biweekly:
         return DateTime(
           startDate.year,
           startDate.month,
-          startDate.day + 14 * executions,
+          startDate.day + 14 * (executions - 1),
         );
 
       case Recurrence.quarterly:
         return DateTime(
           startDate.year,
-          startDate.month + 3 * executions,
+          startDate.month + 3 * (executions - 1),
           startDate.day,
         );
 
       case Recurrence.bimonthly:
         return DateTime(
           startDate.year,
-          startDate.month + 2 * executions,
+          startDate.month + 2 * (executions - 1),
           startDate.day,
         );
 
@@ -161,7 +176,7 @@ class ScheduleDetails extends Equatable {
           startDate.year,
           startDate.month + executions,
           1,
-        );
+        ).subtract(const Duration(days: 1));
 
       default:
         throw Exception('unsupported recurrence on _calculateEndDate');
@@ -170,7 +185,7 @@ class ScheduleDetails extends Equatable {
 
   /// Calculates the amount of executions between the start and the end dates
   /// depending on the recurrence.
-  int calculateReccurenceExecutions(
+  int calculateRecurrenceExecutions(
     Recurrence recurrence,
     DateTime startDate,
     DateTime endDate,
@@ -180,15 +195,15 @@ class ScheduleDetails extends Equatable {
 
     switch (recurrence) {
       case Recurrence.daily:
-        executions = timeBetweenStartAndEndDates.inDays;
+        executions = timeBetweenStartAndEndDates.inDays + 1;
         break;
 
       case Recurrence.weekly:
-        executions = (timeBetweenStartAndEndDates.inDays / 7).floor();
+        executions = (timeBetweenStartAndEndDates.inDays / 7).floor() + 1;
         break;
 
       case Recurrence.biweekly:
-        executions = (timeBetweenStartAndEndDates.inDays / 14).floor();
+        executions = (timeBetweenStartAndEndDates.inDays / 14).floor() + 1;
         break;
 
       case Recurrence.monthly:
@@ -198,15 +213,15 @@ class ScheduleDetails extends Equatable {
       case Recurrence.endOfEachMonth:
         final firstExecutionDate = _calculateEndDate(
           recurrence,
-          1,
+          2,
           startDate,
         );
-        final firstExecutionTime =
-            startDate.difference(firstExecutionDate).abs();
+        var firstExecutionTime = startDate.difference(firstExecutionDate).abs();
 
         executions =
             (timeBetweenStartAndEndDates.inDays / firstExecutionTime.inDays)
-                .floor();
+                    .floor() +
+                1;
         break;
 
       default:
