@@ -1,8 +1,10 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:layer_sdk/_migration/flutter_layer/flutter_layer.dart';
+import 'package:layer_sdk/presentation_layer/cubits.dart';
+import 'package:layer_sdk/presentation_layer/utils.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class MockDevicePermissionsWrapper extends Mock
     implements DevicePermissionsWrapper {}

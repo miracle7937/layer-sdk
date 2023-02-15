@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../../domain_layer/models.dart';
-import '../../../../../presentation_layer/cubits.dart';
+import '../../../domain_layer/models.dart';
+import '../../cubits.dart';
 
 /// Provides permissions to the rest of the tree.
 class Permissions extends InheritedWidget {

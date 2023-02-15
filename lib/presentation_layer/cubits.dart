@@ -123,6 +123,8 @@ export 'cubits/payments/frequent_payments_cubit.dart';
 export 'cubits/payments/frequent_payments_state.dart';
 export 'cubits/payments/patch_payment_cubit.dart';
 export 'cubits/payments/patch_payment_state.dart';
+export 'cubits/permissions/device_permissions_cubit.dart';
+export 'cubits/permissions/device_permissions_state.dart';
 export 'cubits/product/product_cubit.dart';
 export 'cubits/product/product_state.dart';
 export 'cubits/profile/profile_cubit.dart';
