@@ -31,7 +31,8 @@ extension DPAVariableDTOMapping on DPAVariableDTO {
       submitType: submitType ?? 'string',
       value: type == DPAVariableType.dateTime
           ? DateTimeConverter.fromDTOString(value)
-          : type == DPAVariableType.dropdown
+          : (type == DPAVariableType.dropdown ||
+                  type == DPAVariableType.listButton)
               ? _toDropdownValue(
                   dtoValue: value,
                   availableValues: availableValues,
@@ -51,6 +52,7 @@ extension DPAVariableDTOMapping on DPAVariableDTO {
 
   /// Maps into a [DPAVariableType].
   DPAVariableType toDPAVariableType() {
+    print(type);
     switch (type) {
       case DPATypeDTO.string:
         if (property?.format == DPAFormatDTO.pin) {
@@ -96,8 +98,12 @@ extension DPAVariableDTOMapping on DPAVariableDTO {
           return DPAVariableType.radioButton;
         }
 
+        if (property?.propertyType == PropertyTypeDTO.listButton) {
+          return DPAVariableType.listButton;
+        }
+
         if ((property?.searchBar ?? false) ||
-            property?.propertyType == PropertyTypeDTO.listButton) {
+            property?.propertyType == PropertyTypeDTO.dropdown) {
           return DPAVariableType.dropdown;
         }
 
@@ -289,6 +295,7 @@ extension DPAVariableTypeMapping on DPAVariableType {
       case DPAVariableType.horizontalPicker:
       case DPAVariableType.radioButton:
       case DPAVariableType.checkboxList:
+      case DPAVariableType.listButton:
         return DPATypeDTO.enumType;
 
       case DPAVariableType.searchResults:
