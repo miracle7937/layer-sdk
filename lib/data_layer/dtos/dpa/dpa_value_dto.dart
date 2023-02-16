@@ -36,7 +36,7 @@ class DPAValueDTO {
 
   /// Creates a new [DPAValueDTO] from the given JSON.
   factory DPAValueDTO.fromJson(Map<String, dynamic> json) => DPAValueDTO(
-        id: json['id'],
+        id: json['id']?.toString(),
         name: json['name'],
         imageUrl: json["image"],
         icon: json["icon"],
