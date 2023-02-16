@@ -66,6 +66,9 @@ class DPAProcessStepProperties extends Equatable {
   /// if the process can be cancelled
   final bool allowCancel;
 
+  /// If the user can go back to a previous step.
+  final bool? isBackAllowed;
+
   /// Creates a new [DPAProcessStepProperties].
   const DPAProcessStepProperties({
     required this.format,
@@ -88,6 +91,7 @@ class DPAProcessStepProperties extends Equatable {
     this.skipButtonLabel,
     this.autoFinishIn,
     this.allowCancel = true,
+    this.isBackAllowed = true,
   });
 
   @override
@@ -112,6 +116,7 @@ class DPAProcessStepProperties extends Equatable {
         skipButtonLabel,
         autoFinishIn,
         allowCancel,
+        isBackAllowed
       ];
 
   /// Creates a new [DPAProcessStepProperties] using another as a base.
@@ -136,6 +141,7 @@ class DPAProcessStepProperties extends Equatable {
     String? skipButtonLabel,
     int? autoFinishIn,
     bool? allowCancel,
+    bool? isBackAllowed,
   }) =>
       DPAProcessStepProperties(
         format: format ?? this.format,
@@ -158,6 +164,7 @@ class DPAProcessStepProperties extends Equatable {
         skipButtonLabel: skipButtonLabel ?? this.skipButtonLabel,
         autoFinishIn: autoFinishIn ?? this.autoFinishIn,
         allowCancel: allowCancel ?? this.allowCancel,
+        isBackAllowed: isBackAllowed ?? this.isBackAllowed,
       );
 }
 
