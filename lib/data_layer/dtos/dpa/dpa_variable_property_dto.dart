@@ -309,6 +309,7 @@ class PropertyTypeDTO extends EnumDTO {
   /// Simple text
   static const textView = PropertyTypeDTO._('textview');
 
+  /// Dropdown
   static const dropdown = PropertyTypeDTO._('dropdown');
 
   /// List of buttons
