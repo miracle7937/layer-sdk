@@ -37,6 +37,9 @@ class DPAPopUpHeader extends StatelessWidget {
   /// Defaults to [CrossAxisAlignment.center].
   final CrossAxisAlignment titleAlignment;
 
+  /// Custom task description widget
+  final Widget Function(DPAProcess process)? customTaskDescription;
+
   /// Creates a new [DPAPopUpHeader].
   const DPAPopUpHeader({
     Key? key,
@@ -45,6 +48,7 @@ class DPAPopUpHeader extends StatelessWidget {
     this.customCancelButton,
     this.showBackButton = true,
     this.showCancelButton = false,
+    this.customTaskDescription,
     this.horizontalAlignment = CrossAxisAlignment.center,
     this.titleAlignment = CrossAxisAlignment.center,
   }) : super(key: key);
@@ -88,7 +92,7 @@ class DPAPopUpHeader extends StatelessWidget {
           process: popup,
           padding: const EdgeInsets.only(bottom: 10.0),
         ),
-        DPATaskDescription(process: popup),
+        customTaskDescription?.call(popup) ?? DPATaskDescription(process: popup)
       ],
     );
   }

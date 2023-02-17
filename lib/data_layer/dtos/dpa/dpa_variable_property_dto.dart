@@ -333,6 +333,9 @@ class PropertyTypeDTO extends EnumDTO {
   /// Country picker
   static const countryPicker = PropertyTypeDTO._('countryPicker');
 
+  /// Switch
+  static const switchType = PropertyTypeDTO._('switch');
+
   /// Returns all the values available.
   static const List<PropertyTypeDTO> values = [
     swipe,
@@ -347,6 +350,7 @@ class PropertyTypeDTO extends EnumDTO {
     searchResults,
     countryPicker,
     dropdown,
+    switchType
   ];
 
   const PropertyTypeDTO._(String value) : super.internal(value);

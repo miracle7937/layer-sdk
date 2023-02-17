@@ -215,6 +215,12 @@ class DPAFlow<T> extends StatefulWidget {
   /// presenter.
   final DPAErrorPresenter? customErrorPresenter;
 
+  /// Custom task description widget;
+  final Widget Function(DPAProcess process)? customTaskDescription;
+
+  /// Custom effective continue button widget;
+  final Widget? Function(DPAProcess process)? customEffectiveContinueButton;
+
   /// Creates a new [DPAFlow].
   const DPAFlow({
     Key? key,
@@ -240,6 +246,8 @@ class DPAFlow<T> extends StatefulWidget {
     this.customContentPadding,
     this.customCarouselScreemBuilder,
     this.customErrorPresenter,
+    this.customTaskDescription,
+    this.customEffectiveContinueButton,
   }) : super(key: key);
 
   @override
@@ -270,15 +278,17 @@ class _DPAFlowState<T> extends State<DPAFlow<T>> {
 
     final hasJumioConfig = process.stepProperties?.jumioConfig != null;
 
-    final effectiveContinueButton = (process.variables.length == 1 &&
-                process.variables.first.property.searchBar) ||
-            hasJumioConfig
-        ? null
-        : widget.customContinueButton ??
-            DPAContinueButton(
-              process: process,
-              enabled: !hasPopup && areVariablesValidated,
-            );
+    final effectiveContinueButton = widget.customEffectiveContinueButton != null
+        ? (widget.customEffectiveContinueButton!(process))
+        : ((process.variables.length == 1 &&
+                    process.variables.first.property.searchBar) ||
+                hasJumioConfig
+            ? null
+            : widget.customContinueButton ??
+                DPAContinueButton(
+                  process: process,
+                  enabled: !hasPopup && areVariablesValidated,
+                ));
 
     final effectiveHeader = (process.stepProperties?.hideAppBar ?? false)
         ? null
@@ -334,10 +344,11 @@ class _DPAFlowState<T> extends State<DPAFlow<T>> {
                           child: Column(
                             children: [
                               if (widget.showTaskDescription)
-                                DPATaskDescription(
-                                  process: process,
-                                  showTitle: effectiveHeader == null,
-                                ),
+                                widget.customTaskDescription?.call(process) ??
+                                    DPATaskDescription(
+                                      process: process,
+                                      showTitle: effectiveHeader == null,
+                                    ),
                               Padding(
                                 padding: widget.customContentPadding ??
                                     const EdgeInsets.symmetric(

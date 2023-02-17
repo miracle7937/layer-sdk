@@ -101,6 +101,10 @@ extension DPAVariableDTOMapping on DPAVariableDTO {
           return DPAVariableType.listButton;
         }
 
+        if (property?.propertyType == PropertyTypeDTO.switchType) {
+          return DPAVariableType.checkboxList;
+        }
+
         if ((property?.searchBar ?? false) ||
             property?.propertyType == PropertyTypeDTO.dropdown) {
           return DPAVariableType.dropdown;
