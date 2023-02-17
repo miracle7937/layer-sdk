@@ -52,7 +52,6 @@ extension DPAVariableDTOMapping on DPAVariableDTO {
 
   /// Maps into a [DPAVariableType].
   DPAVariableType toDPAVariableType() {
-    print(type);
     switch (type) {
       case DPATypeDTO.string:
         if (property?.format == DPAFormatDTO.pin) {
