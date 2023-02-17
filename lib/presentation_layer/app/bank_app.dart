@@ -202,6 +202,21 @@ class BankAppState extends State<BankApp> {
             ),
           ),
         ),
+        CreatorProvider<AccessPinValidationCreator>(
+          create: (_) => AccessPinValidationCreator(
+            loadGlobalSettingsUseCase: LoadGlobalSettingsUseCase(
+              repository: GlobalSettingRepository(
+                provider: GlobalSettingProvider(
+                  netClient: widget.netClient,
+                ),
+              ),
+            ),
+            validateAccessPinRepetitiveCharactersUseCase:
+                ValidateAccessPinRepetitiveCharactersUseCase(),
+            validateAccessPinSequentialDigitsUseCase:
+                ValidateAccessPinSequentialDigitsUseCase(),
+          ),
+        ),
         CreatorProvider<StorageCreator>(
           create: (_) => StorageCreator(
             loadLoggedInUsersUseCase: LoadLoggedInUsersUseCase(

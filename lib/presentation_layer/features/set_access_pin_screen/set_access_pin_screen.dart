@@ -23,6 +23,14 @@ class SetAccessPinScreen extends SetAccessPinBaseWidget {
   /// The title for the repeat pin screen.
   final String repeatPinTitle;
 
+  /// The error to be displayed when the pin violates the maximum repetitive
+  /// characters rule.
+  final String maximumRepetitiveCharactersError;
+
+  /// The error to be displayed when the pin violates the maximum sequential
+  /// digits rule.
+  final String maximumSequentialDigitsError;
+
   ///The function if succes set pin process
   final ValueChanged<User> onSuccess;
 
@@ -38,6 +46,8 @@ class SetAccessPinScreen extends SetAccessPinBaseWidget {
     required this.onSuccess,
     required this.setPinTitle,
     required this.repeatPinTitle,
+    required this.maximumRepetitiveCharactersError,
+    required this.maximumSequentialDigitsError,
     this.extraChild,
   });
 
@@ -49,20 +59,32 @@ class SetAccessPinScreen extends SetAccessPinBaseWidget {
     PreferredSizeWidget? repeatPinAppBar,
     required String setPinTitle,
     required String repeatPinTitle,
+    required String maximumRepetitiveCharactersError,
+    required String maximumSequentialDigitsError,
     required ValueChanged<User?> onSuccess,
     Widget? extraChild,
   }) =>
       MaterialPageRoute(
-        builder: (context) => BlocProvider<SetPinScreenCubit>(
-          create: (context) => context.read<SetPinScreenCreator>().create(
-                userToken: userToken,
-              ),
+        builder: (context) => MultiBlocProvider(
+          providers: [
+            BlocProvider<SetPinScreenCubit>(
+              create: (context) => context
+                  .read<SetPinScreenCreator>()
+                  .create(userToken: userToken),
+            ),
+            BlocProvider<AccessPinValidationCubit>(
+              create: (context) =>
+                  context.read<AccessPinValidationCreator>().create(),
+            ),
+          ],
           child: SetAccessPinScreen(
             pinLength: pinLength,
             setPinAppBar: setPinAppBar,
             repeatPinAppBar: repeatPinAppBar,
             setPinTitle: setPinTitle,
             repeatPinTitle: repeatPinTitle,
+            maximumRepetitiveCharactersError: maximumRepetitiveCharactersError,
+            maximumSequentialDigitsError: maximumSequentialDigitsError,
             onSuccess: onSuccess,
             extraChild: extraChild,
           ),
@@ -75,6 +97,12 @@ class SetAccessPinScreen extends SetAccessPinBaseWidget {
 
 class _SetAccessPinScreenState
     extends SetAccessPinBaseWidgetState<SetAccessPinScreen> {
+  void initState() {
+    super.initState();
+    final validationCubit = context.read<AccessPinValidationCubit>();
+    validationCubit.load();
+  }
+
   @override
   Widget build(BuildContext context) {
     final layerDesign = DesignSystem.of(context);
@@ -82,30 +110,68 @@ class _SetAccessPinScreenState
     return LayerScaffold(
       backgroundColor: layerDesign.surfaceOctonary1,
       appBar: widget.setPinAppBar,
-      body: Column(
-        children: [
-          Expanded(
-              child: PinPadView(
-            pinLenght: widget.pinLength,
-            pin: currentPin,
-            title: widget.setPinTitle,
-            disabled: disabled,
-            warning: warning,
-            onChanged: (pin) {
-              currentPin = pin;
-              if (pin.length == widget.pinLength) {
-                _navigateToRepeatPinScreen();
-              }
-            },
-          )),
-          if (widget.extraChild != null) widget.extraChild!,
-        ],
-      ),
+      body: CubitActionBuilder<AccessPinValidationCubit,
+              AccessPinValidationAction>(
+          actions: {
+            AccessPinValidationAction.loadSettings,
+          },
+          builder: (context, actions) {
+            final busy = actions.isNotEmpty;
+            return busy
+                ? Center(child: DKLoader())
+                : Column(
+                    children: [
+                      Expanded(
+                        child: CubitErrorBuilder<AccessPinValidationCubit>(
+                            builder: (context, errors) {
+                          final errorMessage = errors.any((error) =>
+                                  error is CubitValidationError &&
+                                  error.validationErrorCode ==
+                                      AccessPinValidationError
+                                          .maximumRepetitiveCharacters)
+                              ? widget.maximumRepetitiveCharactersError
+                              : errors.any((error) =>
+                                      error is CubitValidationError &&
+                                      error.validationErrorCode ==
+                                          AccessPinValidationError
+                                              .maximumSequentialDigits)
+                                  ? widget.maximumSequentialDigitsError
+                                  : null;
+
+                          return PinPadView(
+                            pinLenght: widget.pinLength,
+                            pin: currentPin,
+                            title: widget.setPinTitle,
+                            disabled: disabled,
+                            warning: errorMessage ?? warning,
+                            onChanged: (pin) {
+                              context
+                                  .read<AccessPinValidationCubit>()
+                                  .clearValidationErrors();
+                              currentPin = pin;
+                              if (pin.length == widget.pinLength) {
+                                _navigateToRepeatPinScreen();
+                              }
+                            },
+                          );
+                        }),
+                      ),
+                      if (widget.extraChild != null) widget.extraChild!,
+                    ],
+                  );
+          }),
     );
   }
 
   /// Navigates to the repeat pin screen.
   Future<void> _navigateToRepeatPinScreen() async {
+    final validationCubit = context.read<AccessPinValidationCubit>();
+    validationCubit.validate(pin: currentPin);
+    if (!validationCubit.state.valid) {
+      currentPin = '';
+      return;
+    }
+
     disabled = true;
 
     final setPinScreenCubit = context.read<SetPinScreenCubit>();

@@ -172,5 +172,7 @@ export 'use_cases/user/patch_user_image_use_case.dart';
 export 'use_cases/user/set_access_pin_for_user_use_case.dart';
 export 'use_cases/user/set_custom_user_prefs_use_case.dart';
 export 'use_cases/user/set_low_balance_alert_use_case.dart';
+export 'use_cases/user/validate_access_pin_repetitive_characters_use_case.dart';
+export 'use_cases/user/validate_access_pin_sequential_digits_use_case.dart';
 export 'use_cases/validation/validate_email_use_case.dart';
 export 'use_cases/validator/validate_transaction_pin_use_case.dart';
