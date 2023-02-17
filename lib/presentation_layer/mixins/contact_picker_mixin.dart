@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../../_migration/flutter_layer/src/cubits/permissions/device_permissions_cubit.dart';
+import '../cubits.dart';
 import '../widgets/contact_phone_field/contact_picker_screen.dart';
 
 /// Mixin for picking contacts.

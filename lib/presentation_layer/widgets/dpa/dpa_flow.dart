@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../layer_sdk.dart';
 import '../../cubits/base_cubit/base_state.dart';
+import '../../cubits/set_pin_screen/access_pin_validation_cubit.dart';
 
 /// Signature for [DPAFlow.onFinished].
 typedef DPAFinishedCallback<T> = void Function(
@@ -220,6 +221,14 @@ class DPAFlow<T> extends StatefulWidget {
 
   /// Custom effective continue button widget;
   final Widget? Function(DPAProcess process)? customEffectiveContinueButton;
+  // TODO: it feels dumb having these here, consider a better solution
+  /// The error to be displayed when the pin violates the maximum repetitive
+  /// characters rule.
+  final String maximumRepetitiveCharactersError;
+
+  /// The error to be displayed when the pin violates the maximum sequential
+  /// digits rule.
+  final String maximumSequentialDigitsError;
 
   /// Creates a new [DPAFlow].
   const DPAFlow({
@@ -248,6 +257,8 @@ class DPAFlow<T> extends StatefulWidget {
     this.customErrorPresenter,
     this.customTaskDescription,
     this.customEffectiveContinueButton,
+    required this.maximumRepetitiveCharactersError,
+    required this.maximumSequentialDigitsError,
   }) : super(key: key);
 
   @override
@@ -520,19 +531,26 @@ class _DPAFlowState<T> extends State<DPAFlow<T>> {
         : widget.customHeader ?? DPAHeader(process: process);
 
     if (pinVariable != null) {
-      return DPASetAccessPin(
-        header: effectiveHeader,
-        dpaVariable: pinVariable.copyWith(
-          label: process.task?.description,
+      return BlocProvider<AccessPinValidationCubit>(
+        create: (context) =>
+            context.read<AccessPinValidationCreator>().create(),
+        child: DPASetAccessPin(
+          header: effectiveHeader,
+          maximumRepetitiveCharactersError:
+              widget.maximumRepetitiveCharactersError,
+          maximumSequentialDigitsError: widget.maximumSequentialDigitsError,
+          dpaVariable: pinVariable.copyWith(
+            label: process.task?.description,
+          ),
+          onAccessPinSet: (pin) {
+            final cubit = context.read<DPAProcessCubit>();
+            cubit.updateValue(
+              variable: pinVariable,
+              newValue: pin,
+            );
+            cubit.stepOrFinish();
+          },
         ),
-        onAccessPinSet: (pin) {
-          final cubit = context.read<DPAProcessCubit>();
-          cubit.updateValue(
-            variable: pinVariable,
-            newValue: pin,
-          );
-          cubit.stepOrFinish();
-        },
       );
     }
 
