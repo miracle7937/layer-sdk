@@ -37,6 +37,9 @@ enum DPAVariableType {
   /// List of checkboxes
   checkboxList,
 
+  /// toggleList
+  toggleList,
+
   /// An horizontal list of options
   horizontalPicker,
 

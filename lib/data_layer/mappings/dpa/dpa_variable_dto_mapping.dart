@@ -89,10 +89,6 @@ extension DPAVariableDTOMapping on DPAVariableDTO {
         return DPAVariableType.dateTime;
 
       case DPATypeDTO.enumType:
-        if (property?.propertyType == PropertyTypeDTO.horizontalList) {
-          return DPAVariableType.horizontalPicker;
-        }
-
         if (property?.propertyType == PropertyTypeDTO.radioButton) {
           return DPAVariableType.radioButton;
         }
@@ -102,19 +98,7 @@ extension DPAVariableDTOMapping on DPAVariableDTO {
         }
 
         if (property?.propertyType == PropertyTypeDTO.switchType) {
-          return DPAVariableType.checkboxList;
-        }
-
-        if ((property?.searchBar ?? false) ||
-            property?.propertyType == PropertyTypeDTO.dropdown) {
-          return DPAVariableType.dropdown;
-        }
-
-        /// In case we don't have a lot of values to select from...
-        if ((values?.length ?? 0) <= 2) {
-          return property?.multipleValues ?? false
-              ? DPAVariableType.checkboxList
-              : DPAVariableType.radioButton;
+          return DPAVariableType.toggleList;
         }
 
         return DPAVariableType.dropdown;
