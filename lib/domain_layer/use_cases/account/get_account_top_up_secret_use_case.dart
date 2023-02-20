@@ -15,10 +15,12 @@ class GetAccountTopUpSecretUseCase {
     required String accountId,
     required String currency,
     required double amount,
+    String reference = '',
   }) =>
       _repository.getAccountTopUpSecret(
         accountId: accountId,
         currency: currency,
         amount: amount,
+        reference: reference,
       );
 }

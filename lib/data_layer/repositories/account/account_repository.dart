@@ -37,11 +37,13 @@ class AccountRepository implements AccountRepositoryInterface {
     required String accountId,
     required String currency,
     required double amount,
+    String reference = '',
   }) async {
     final dto = await _provider.getAccountTopUpSecret(
       accountId: accountId,
       currency: currency,
       amount: amount,
+      reference: reference,
     );
 
     return dto.toAccountTopUpRequest();

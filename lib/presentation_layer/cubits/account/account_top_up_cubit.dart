@@ -12,12 +12,14 @@ class AccountTopUpCubit extends Cubit<AccountTopUpState> {
   AccountTopUpCubit({
     Account? account,
     double amount = 0.0,
+    String reference = '',
     required GetAccountTopUpSecretUseCase accountTopUpSecretUseCase,
   })  : _accountTopUpSecretUseCase = accountTopUpSecretUseCase,
         super(
           AccountTopUpState(
             account: account,
             amount: amount,
+            reference: reference,
           ),
         );
 
@@ -41,6 +43,14 @@ class AccountTopUpCubit extends Cubit<AccountTopUpState> {
         ),
       );
 
+  /// Sets the reference of the top up.
+  void setReference({
+    required String reference,
+  }) =>
+      emit(
+        state.copyWith(reference: reference),
+      );
+
   /// Requests a new Stripe SDK secret key with the previously set parameters.
   Future<void> requestSecret() async {
     assert(state.account?.id != null && state.account?.currency != null);
@@ -59,6 +69,7 @@ class AccountTopUpCubit extends Cubit<AccountTopUpState> {
         accountId: state.account!.id!,
         amount: state.amount,
         currency: state.account!.currency!,
+        reference: state.reference,
       );
 
       emit(

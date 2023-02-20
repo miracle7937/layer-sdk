@@ -127,6 +127,7 @@ class AccountProvider {
     required String accountId,
     required String currency,
     required double amount,
+    String reference = '',
   }) async {
     final response = await netClient.request(
       netClient.netEndpoints.topUp,
@@ -135,6 +136,7 @@ class AccountProvider {
         'amount': amount,
         'account_id': accountId,
         'currency': currency,
+        if (reference.isNotEmpty) 'reference': reference,
       },
     );
 
