@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:layer_sdk/layer_sdk.dart';
+import '../../../../layer_sdk.dart';
 
 /// A simple label for the DPA widgets.
-class AkornDPALabel extends StatelessWidget {
+class DPALabel extends StatelessWidget {
   /// The DPA variable to show the label for.
   final DPAVariable variable;
 
   /// A custom padding to use.
   final EdgeInsets padding;
 
-  /// Creates a new [AkornDPALabel].
-  const AkornDPALabel({
+  /// Creates a new [DPALabel].
+  const DPALabel({
     Key? key,
     required this.variable,
     this.padding = const EdgeInsets.all(4),

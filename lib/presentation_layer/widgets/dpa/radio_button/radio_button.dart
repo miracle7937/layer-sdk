@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:layer_sdk/layer_sdk.dart';
+import '../../../../layer_sdk.dart';
 
 // TODO: Replace this widget with the design kit version of it.
 
