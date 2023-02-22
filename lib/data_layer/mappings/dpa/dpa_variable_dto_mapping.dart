@@ -89,6 +89,10 @@ extension DPAVariableDTOMapping on DPAVariableDTO {
         return DPAVariableType.dateTime;
 
       case DPATypeDTO.enumType:
+        if (property?.propertyType == PropertyTypeDTO.horizontalList) {
+          return DPAVariableType.horizontalPicker;
+        }
+
         if (property?.propertyType == PropertyTypeDTO.radioButton) {
           return DPAVariableType.radioButton;
         }

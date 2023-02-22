@@ -217,10 +217,10 @@ class DPAFlow<T> extends StatefulWidget {
   final DPAErrorPresenter? customErrorPresenter;
 
   /// Custom task description widget;
-  final Widget Function(DPAProcess process)? customTaskDescription;
+  final DPAVariableListBuilder? customTaskDescription;
 
   /// Custom effective continue button widget;
-  final Widget? Function(DPAProcess process)? customEffectiveContinueButton;
+  final DPAVariableListBuilder? customEffectiveContinueButton;
   // TODO: it feels dumb having these here, consider a better solution
   /// The error to be displayed when the pin violates the maximum repetitive
   /// characters rule.
@@ -290,7 +290,7 @@ class _DPAFlowState<T> extends State<DPAFlow<T>> {
     final hasJumioConfig = process.stepProperties?.jumioConfig != null;
 
     final effectiveContinueButton = widget.customEffectiveContinueButton != null
-        ? (widget.customEffectiveContinueButton!(process))
+        ? (widget.customEffectiveContinueButton!(context, process))
         : ((process.variables.length == 1 &&
                     process.variables.first.property.searchBar) ||
                 hasJumioConfig
@@ -355,7 +355,8 @@ class _DPAFlowState<T> extends State<DPAFlow<T>> {
                           child: Column(
                             children: [
                               if (widget.showTaskDescription)
-                                widget.customTaskDescription?.call(process) ??
+                                widget.customTaskDescription
+                                        ?.call(context, process) ??
                                     DPATaskDescription(
                                       process: process,
                                       showTitle: effectiveHeader == null,

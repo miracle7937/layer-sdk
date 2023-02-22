@@ -38,7 +38,7 @@ class DPAPopUpHeader extends StatelessWidget {
   final CrossAxisAlignment titleAlignment;
 
   /// Custom task description widget
-  final Widget Function(DPAProcess process)? customTaskDescription;
+  final DPAVariableListBuilder? customTaskDescription;
 
   /// Creates a new [DPAPopUpHeader].
   const DPAPopUpHeader({
@@ -92,7 +92,8 @@ class DPAPopUpHeader extends StatelessWidget {
           process: popup,
           padding: const EdgeInsets.only(bottom: 10.0),
         ),
-        customTaskDescription?.call(popup) ?? DPATaskDescription(process: popup)
+        customTaskDescription?.call(context, popup) ??
+            DPATaskDescription(process: popup)
       ],
     );
   }
