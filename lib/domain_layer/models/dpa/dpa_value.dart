@@ -25,6 +25,9 @@ class DPAValue extends Equatable {
   /// The available fields for this value.
   final Iterable<DPAValueField> fields;
 
+  /// If the variable is preselcted.
+  final bool? isPreselected;
+
   /// Creates a new [DPAValue].
   DPAValue({
     required this.id,
@@ -34,6 +37,7 @@ class DPAValue extends Equatable {
     this.subName,
     this.description,
     this.fields = const [],
+    this.isPreselected,
   });
 
   @override
@@ -45,6 +49,7 @@ class DPAValue extends Equatable {
         subName,
         description,
         fields,
+        isPreselected,
       ];
 
   /// Creates a new [DPAValue] using another as a base.
@@ -56,6 +61,7 @@ class DPAValue extends Equatable {
     String? subName,
     String? description,
     Iterable<DPAValueField>? fields,
+    bool? isPreselected,
   }) =>
       DPAValue(
         id: id ?? this.id,
@@ -65,5 +71,6 @@ class DPAValue extends Equatable {
         subName: subName ?? this.subName,
         description: description ?? this.description,
         fields: fields ?? this.fields,
+        isPreselected: isPreselected ?? this.isPreselected,
       );
 }

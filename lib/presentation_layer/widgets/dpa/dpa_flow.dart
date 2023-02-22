@@ -216,6 +216,11 @@ class DPAFlow<T> extends StatefulWidget {
   /// presenter.
   final DPAErrorPresenter? customErrorPresenter;
 
+  /// Custom task description widget;
+  final DPAVariableListBuilder? customTaskDescription;
+
+  /// Custom effective continue button widget;
+  final DPAVariableListBuilder? customEffectiveContinueButton;
   // TODO: it feels dumb having these here, consider a better solution
   /// The error to be displayed when the pin violates the maximum repetitive
   /// characters rule.
@@ -250,6 +255,8 @@ class DPAFlow<T> extends StatefulWidget {
     this.customContentPadding,
     this.customCarouselScreemBuilder,
     this.customErrorPresenter,
+    this.customTaskDescription,
+    this.customEffectiveContinueButton,
     required this.maximumRepetitiveCharactersError,
     required this.maximumSequentialDigitsError,
   }) : super(key: key);
@@ -282,15 +289,17 @@ class _DPAFlowState<T> extends State<DPAFlow<T>> {
 
     final hasJumioConfig = process.stepProperties?.jumioConfig != null;
 
-    final effectiveContinueButton = (process.variables.length == 1 &&
-                process.variables.first.property.searchBar) ||
-            hasJumioConfig
-        ? null
-        : widget.customContinueButton ??
-            DPAContinueButton(
-              process: process,
-              enabled: !hasPopup && areVariablesValidated,
-            );
+    final effectiveContinueButton = widget.customEffectiveContinueButton != null
+        ? (widget.customEffectiveContinueButton!(context, process))
+        : ((process.variables.length == 1 &&
+                    process.variables.first.property.searchBar) ||
+                hasJumioConfig
+            ? null
+            : widget.customContinueButton ??
+                DPAContinueButton(
+                  process: process,
+                  enabled: !hasPopup && areVariablesValidated,
+                ));
 
     final effectiveHeader = (process.stepProperties?.hideAppBar ?? false)
         ? null
@@ -346,10 +355,12 @@ class _DPAFlowState<T> extends State<DPAFlow<T>> {
                           child: Column(
                             children: [
                               if (widget.showTaskDescription)
-                                DPATaskDescription(
-                                  process: process,
-                                  showTitle: effectiveHeader == null,
-                                ),
+                                widget.customTaskDescription
+                                        ?.call(context, process) ??
+                                    DPATaskDescription(
+                                      process: process,
+                                      showTitle: effectiveHeader == null,
+                                    ),
                               Padding(
                                 padding: widget.customContentPadding ??
                                     const EdgeInsets.symmetric(

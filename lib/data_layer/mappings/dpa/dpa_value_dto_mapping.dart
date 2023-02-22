@@ -9,6 +9,7 @@ extension DPAValueDTOMapping on DPAValueDTO {
   DPAValue toDPAValue(DPAMappingCustomData customData) => DPAValue(
         id: id!,
         name: name!,
+        isPreselected: preselected,
         icon: toCompleteIconUrl(customData),
         imageUrl: imageUrl,
         subName: subName,

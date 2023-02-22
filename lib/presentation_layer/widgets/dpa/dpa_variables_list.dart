@@ -8,6 +8,7 @@ import '../../../domain_layer/models.dart';
 import '../../cubits.dart';
 import '../../widgets.dart';
 import 'date_picker/dpa_date_picker.dart';
+import 'radio_button/dpa_radio_button.dart';
 
 /// Signature for [DPAVariablesList.builder].
 ///
@@ -156,9 +157,13 @@ class DPAVariablesList extends StatelessWidget {
           scrollPadding: const EdgeInsets.only(bottom: 62.0),
         );
 
-      case DPAVariableType.dropdown:
       case DPAVariableType.radioButton:
-      case DPAVariableType.horizontalPicker:
+        return DPARadioButton(
+          key: ValueKey(variable.id),
+          variable: variable,
+          readonly: variable.constraints.readonly,
+        );
+      case DPAVariableType.dropdown:
         final isMultipicker = variable.property.multipleValues;
         final hasSearchBar = variable.property.searchBar;
 

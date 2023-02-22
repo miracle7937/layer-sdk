@@ -23,6 +23,9 @@ class DPAValueDTO {
   /// The possible fields for this value
   final List<DPAValueFieldDTO>? fields;
 
+  /// If the variable is preselected.
+  final bool? preselected;
+
   /// Creates a new [DPAValueDTO].
   DPAValueDTO({
     this.id,
@@ -32,6 +35,7 @@ class DPAValueDTO {
     this.subName,
     this.description,
     this.fields,
+    this.preselected,
   });
 
   /// Creates a new [DPAValueDTO] from the given JSON.
@@ -46,6 +50,7 @@ class DPAValueDTO {
             ? null
             : DPAValueFieldDTO.fromJsonList(
                 List<Map<String, dynamic>>.from(json["fields"])),
+        preselected: json["preselected"],
       );
 
   /// Creates a list of [DPAValueDTO]s from the given list of JSONs.
@@ -59,7 +64,8 @@ class DPAValueDTO {
         "image": imageUrl,
         "icon": icon,
         "subName": subName,
-        "description": description
+        "description": description,
+        "preselected": preselected?.toString(),
       };
 
   /// Creates a list of JSONs from the given list [DPAValueDTO]s.
@@ -74,5 +80,7 @@ class DPAValueDTO {
       '${imageUrl != null ? ' imageUrl: $imageUrl' : ''}'
       '${subName != null ? ' subName: $subName' : ''}'
       '${description != null ? ' description: $description' : ''}'
+      '${fields != null ? ' fields: $fields' : ''}'
+      '${preselected != null ? ' preselected: $preselected' : ''}'
       '}';
 }

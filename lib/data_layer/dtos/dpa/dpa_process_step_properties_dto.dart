@@ -110,7 +110,7 @@ class DPAProcessStepPropertiesDTO {
         hasButtons: true,
         buttonLabel: json['button_next'] ?? json['button'],
         cancelButtonLabel: json['button_cancel'],
-        isBackAllowed: json['back_allowed'] ?? false,
+        isBackAllowed: json['back_allowed'] ?? true,
         showSaveButton: json['save_button'] ?? false,
         type: json['type'] != null
             ? DPAPropertyTypeDTO.fromRaw(json['type'])
