@@ -291,6 +291,7 @@ extension DPAVariableTypeMapping on DPAVariableType {
       case DPAVariableType.radioButton:
       case DPAVariableType.checkboxList:
       case DPAVariableType.listButton:
+      case DPAVariableType.toggleList:
         return DPATypeDTO.enumType;
 
       case DPAVariableType.searchResults:
