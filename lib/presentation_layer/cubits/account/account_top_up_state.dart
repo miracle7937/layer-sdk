@@ -44,6 +44,9 @@ class AccountTopUpState extends Equatable {
   /// The amount that will be topped up.
   final double amount;
 
+  /// The reference of the top up.
+  final String reference;
+
   /// The current action being performed.
   final AccountTopUpActions action;
 
@@ -70,6 +73,7 @@ class AccountTopUpState extends Equatable {
     this.amount = 0.0,
     this.secret,
     this.topUpId,
+    this.reference = '',
     Iterable<int>? imageReceiptBytes,
     Iterable<int>? pdfReceiptBytes,
   })  : imageReceipt = imageReceiptBytes != null
@@ -83,6 +87,7 @@ class AccountTopUpState extends Equatable {
   AccountTopUpState copyWith({
     Account? account,
     double? amount,
+    String? reference,
     AccountTopUpActions? action,
     AccountTopUpErrors? error,
     bool clearSecret = false,
@@ -94,6 +99,7 @@ class AccountTopUpState extends Equatable {
     return AccountTopUpState(
       account: account ?? this.account,
       amount: amount ?? this.amount,
+      reference: reference ?? this.reference,
       action: action ?? this.action,
       error: error ?? this.error,
       secret: clearSecret ? null : secret ?? this.secret,
@@ -113,5 +119,6 @@ class AccountTopUpState extends Equatable {
         imageReceipt,
         pdfReceipt,
         topUpId,
+        reference,
       ];
 }

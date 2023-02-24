@@ -16,5 +16,6 @@ abstract class AccountRepositoryInterface {
     required String accountId,
     required String currency,
     required double amount,
+    String reference = '',
   });
 }
