@@ -46,6 +46,9 @@ class DPAVariableDTO {
   /// More information about this variable value.
   final String? valueInfo;
 
+  /// If the variable is preselected.
+  final bool? preselected;
+
   /// Creates a new [DPAVariableDTO].
   DPAVariableDTO({
     this.id,
@@ -60,6 +63,7 @@ class DPAVariableDTO {
     dynamic value,
     this.values,
     this.valueInfo,
+    this.preselected,
   })  : value = type == DPATypeDTO.long &&
                 property?.propertyType == PropertyTypeDTO.longSlider &&
                 constraints?.max != null
@@ -81,6 +85,8 @@ class DPAVariableDTO {
       '${property != null ? ' property: $property' : ''}'
       '${constraints != null ? ' constraints: $constraints' : ''}'
       '${values != null ? ' values: $values' : ''}'
+      '${valueInfo != null ? ' valueInfo: $valueInfo' : ''}'
+      '${preselected != null ? ' preselected: $preselected' : ''}'
       '}';
 
   /// Creates a new [DPAVariableDTO] from the given JSON.
@@ -104,6 +110,7 @@ class DPAVariableDTO {
             : DPAValueDTO.fromJsonList(
                 List<Map<String, dynamic>>.from(json['values'])),
         valueInfo: json['valueInfo'] is String ? json['valueInfo'] : null,
+        preselected: json['preselected'],
       );
 
   /// Returns an ordered list of [DPAVariableDTO] based on the given list of

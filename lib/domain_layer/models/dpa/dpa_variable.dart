@@ -28,11 +28,17 @@ enum DPAVariableType {
   /// Dropdown with options to pick
   dropdown,
 
+  /// List of buttons
+  listButton,
+
   /// Radio button of options
   radioButton,
 
   /// List of checkboxes
   checkboxList,
+
+  /// List of toggles
+  toggleList,
 
   /// An horizontal list of options
   horizontalPicker,
