@@ -4,7 +4,6 @@ import 'package:logging/logging.dart';
 
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
-
 import '../../cubits.dart';
 import '../../utils.dart';
 
@@ -147,18 +146,17 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
   /// the beneficiary. Would be better to have only one method that handles the
   /// changes.
   /// Handles event of first name changes.
-  void onFirstNameChange(String text) => _emitBeneficiary(
-        state.beneficiary?.copyWith(
-          firstName: text,
-        ),
-      );
-
-  /// Handles event of last name changes.
-  void onLastNameChange(String text) => _emitBeneficiary(
-        state.beneficiary?.copyWith(
-          lastName: text,
-        ),
-      );
+  void onNameChange(String text) {
+    final names = text.split(' ');
+    final firstName = names.isNotEmpty ? names.first : '';
+    final lastName = names.length > 1 ? names.skip(1).join(' ') : '';
+    _emitBeneficiary(
+      state.beneficiary?.copyWith(
+        firstName: firstName,
+        lastName: lastName,
+      ),
+    );
+  }
 
   /// Handles event of nickname changes.
   void onNicknameChange(String text) => _emitBeneficiary(
@@ -246,6 +244,15 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
         state.copyWith(
           beneficiary: state.beneficiary?.copyWith(
             bank: bank,
+          ),
+        ),
+      );
+
+  /// Handles the bank change.
+  void onRecipientTypeChanged(BeneficiaryRecipientType type) => emit(
+        state.copyWith(
+          beneficiary: state.beneficiary?.copyWith(
+            recipientType: type,
           ),
         ),
       );

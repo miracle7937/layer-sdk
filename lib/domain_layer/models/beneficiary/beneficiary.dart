@@ -23,6 +23,15 @@ enum BeneficiaryStatus {
   system,
 }
 
+/// The beneneficiay recipient type.
+enum BeneficiaryRecipientType {
+  /// The beneficiary is a business company.
+  business,
+
+  /// The beneficiary is a person.
+  person,
+}
+
 /// The beneficiary data used by the application
 class Beneficiary extends Equatable {
   /// The beneficiary id
@@ -64,6 +73,9 @@ class Beneficiary extends Equatable {
   /// The beneficiary's type.
   final TransferType? type;
 
+  /// The recipient type.
+  final BeneficiaryRecipientType? recipientType;
+
   /// The address, line 1.
   final String? address1;
 
@@ -103,6 +115,7 @@ class Beneficiary extends Equatable {
     this.currency,
     this.status,
     this.type,
+    this.recipientType,
     this.address1,
     this.address2,
     this.address3,
@@ -132,6 +145,7 @@ class Beneficiary extends Equatable {
         currency,
         status,
         type,
+        recipientType,
         address1,
         address2,
         address3,
@@ -161,6 +175,7 @@ class Beneficiary extends Equatable {
     String? currency,
     BeneficiaryStatus? status,
     TransferType? type,
+    BeneficiaryRecipientType? recipientType,
     String? address1,
     String? address2,
     String? address3,
@@ -183,6 +198,7 @@ class Beneficiary extends Equatable {
         currency: currency ?? this.currency,
         status: status ?? this.status,
         type: type ?? this.type,
+        recipientType: recipientType ?? this.recipientType,
         address1: address1 ?? this.address1,
         address2: address2 ?? this.address2,
         address3: address3 ?? this.address3,

@@ -10,7 +10,8 @@ extension CountryDTOMapping on CountryDTO {
         createdDate: tsCreated?.toDateTimeFromMilliseconds(),
         updatedDate: tsUpdated?.toDateTimeFromMilliseconds(),
         isIBAN: isIBAN,
-        routingCodeLabel: routingCodeLabel,
+        routingCodeLabel:
+            (routingCodeLabel ?? '').isNotEmpty ? routingCodeLabel : null,
         countryName: countryName,
         banking: banking,
         currency: currency,

@@ -114,7 +114,8 @@ enum BeneficiaryTransferValidationErrorCode {
 
 /// The state for the [BeneficiaryTransferCubit].
 class BeneficiaryTransferState extends BaseState<BeneficiaryTransferAction,
-    BeneficiaryTransferEvent, BeneficiaryTransferValidationErrorCode> {
+    BeneficiaryTransferEvent,
+    BeneficiaryTransferValidationErrorCode> {
   /// The transfer object.
   final BeneficiaryTransfer transfer;
 
@@ -174,7 +175,8 @@ class BeneficiaryTransferState extends BaseState<BeneficiaryTransferAction,
     this.transferResult,
     this.bankQuery,
     required this.editMode,
-  })  : beneficiarySettings = UnmodifiableListView(beneficiarySettings),
+  })
+      : beneficiarySettings = UnmodifiableListView(beneficiarySettings),
         countries = UnmodifiableListView(countries),
         currencies = UnmodifiableListView(currencies),
         accounts = UnmodifiableListView(accounts),
@@ -222,7 +224,8 @@ class BeneficiaryTransferState extends BaseState<BeneficiaryTransferAction,
       );
 
   @override
-  List<Object?> get props => [
+  List<Object?> get props =>
+      [
         transfer,
         errors,
         actions,

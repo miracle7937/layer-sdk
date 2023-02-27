@@ -51,6 +51,9 @@ class BeneficiaryDTO {
   /// The beneficiary's country code.
   String? rcptCountryCode;
 
+  /// The beneficiary recipient type.
+  BeneficiaryRecipientTypeDTO? recipientType;
+
   /// The beneficiary's bank address.
   String? bankAddress1;
 
@@ -101,6 +104,7 @@ class BeneficiaryDTO {
     this.rcptAddress2,
     this.rcptAddress3,
     this.rcptCountryCode,
+    this.recipientType,
     this.bankAddress1,
     this.bankAddress2,
     this.bankCountryCode,
@@ -130,6 +134,7 @@ class BeneficiaryDTO {
         rcptAddress2: json['rcpt_address_2'],
         rcptAddress3: json['rcpt_address_3'],
         rcptCountryCode: json['rcpt_country_code'],
+        recipientType: json['rcpt_type'],
         bankAddress1: json['bank_address_1'],
         bankAddress2: json['bank_address_2'],
         bankCountryCode: json['bank_country_code'],
@@ -161,11 +166,13 @@ class BeneficiaryDTO {
         if (rcptAddress2 != null) 'rcpt_address_2': rcptAddress2,
         if (rcptAddress3 != null) 'rcpt_address_3': rcptAddress3,
         if (rcptCountryCode != null) 'rcpt_country_code': rcptCountryCode,
+        if (recipientType != null) 'rcpt_type': recipientType!.value,
         if (bankAddress1 != null) 'bank_address_1': bankAddress1,
         if (bankAddress2 != null) 'bank_address_2': bankAddress2,
-        if (bankCountryCode != null) 'bank_country_code': bankCountryCode,
+        if (bankCountryCode != null && bankCountryCode!.isNotEmpty)
+          'bank_country_code': bankCountryCode,
         if (isNotEmpty(bankName)) 'bank_name': bankName,
-        if (bankSwift != null) 'bank_swift': bankSwift,
+        if (bankSwift != null && bankSwift!.isNotEmpty) 'bank_swift': bankSwift,
         if (description != null) 'description': description,
         if (routingCode != null) 'routing_code': routingCode,
         if (bankImageUrl != null) 'bank_image_url': bankImageUrl,
@@ -173,6 +180,21 @@ class BeneficiaryDTO {
         'visible': isNotEmpty(nickname),
         if (otpId != null) 'otp_id': otpId,
       };
+}
+
+/// The beneficiary recipient type.
+enum BeneficiaryRecipientTypeDTO {
+  /// The beneficiary is a business company.
+  business('B'),
+
+  /// The beneficiary is a person.
+  person('P');
+
+  /// The DTO value.
+  final String value;
+
+  /// Creates new [BeneficiaryRecipientTypeDTO].
+  const BeneficiaryRecipientTypeDTO(this.value);
 }
 
 /// The beneficiary status

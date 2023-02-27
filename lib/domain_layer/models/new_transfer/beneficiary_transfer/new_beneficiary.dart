@@ -28,6 +28,11 @@ class NewBeneficiary extends Equatable {
   /// The bank.
   final Bank? bank;
 
+  /// The transfer type to be used when transferring to this beneficiary.
+  ///
+  /// [bank.transferType] will be used by default if not provided.
+  final TransferType? transferType;
+
   /// The first name.
   final String? firstName;
 
@@ -46,6 +51,9 @@ class NewBeneficiary extends Equatable {
   /// The third address field.
   final String? address3;
 
+  /// The recipient type.
+  final BeneficiaryRecipientType? type;
+
   /// Creates a new [NewBeneficiary].
   const NewBeneficiary({
     this.shouldSave = false,
@@ -55,12 +63,14 @@ class NewBeneficiary extends Equatable {
     this.routingCodeIsRequired = false,
     this.routingCode,
     this.bank,
+    this.transferType,
     this.firstName,
     this.lastName,
     this.currency,
     this.address1,
     this.address2,
     this.address3,
+    this.type,
   });
 
   /// Creates a copy with the passed parameters.
@@ -72,12 +82,14 @@ class NewBeneficiary extends Equatable {
     bool? routingCodeIsRequired,
     String? routingCode,
     Bank? bank,
+    TransferType? transferType,
     String? firstName,
     String? lastName,
     Currency? currency,
     String? address1,
     String? address2,
     String? address3,
+    BeneficiaryRecipientType? type,
   }) =>
       NewBeneficiary(
         shouldSave: shouldSave ?? this.shouldSave,
@@ -91,12 +103,14 @@ class NewBeneficiary extends Equatable {
         bank: country != null && country != this.country
             ? null
             : bank ?? this.bank,
+        transferType: transferType ?? this.transferType,
         firstName: firstName ?? this.firstName,
         lastName: lastName ?? this.lastName,
         currency: currency ?? this.currency,
         address1: address1 ?? this.address1,
         address2: address2 ?? this.address2,
         address3: address3 ?? this.address3,
+        type: type ?? this.type,
       );
 
   /// Whether if the new beneficiary can be submitted or not.
@@ -105,10 +119,10 @@ class NewBeneficiary extends Equatable {
       country != null &&
       ibanOrAccountNO != null &&
       (!routingCodeIsRequired || routingCode != null) &&
-      bank != null &&
+      (bank != null || transferType != null) &&
       firstName != null &&
-      lastName != null &&
-      currency != null;
+      currency != null &&
+      type != null;
 
   @override
   List<Object?> get props => [
@@ -119,11 +133,13 @@ class NewBeneficiary extends Equatable {
         routingCodeIsRequired,
         routingCode,
         bank,
+        transferType,
         firstName,
         lastName,
         currency,
         address1,
         address2,
         address3,
+        type,
       ];
 }
