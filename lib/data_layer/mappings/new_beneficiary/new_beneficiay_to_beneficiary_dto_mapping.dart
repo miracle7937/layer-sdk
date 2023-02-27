@@ -12,7 +12,8 @@ extension NewBeneficiaryToBeneficiaryDTOExtension on NewBeneficiary {
         currency: currency?.code,
         accountNumber: ibanOrAccountNO,
         routingCode: routingCode,
-        type: bank?.transferType?.toTransferTypeDTO(),
+        type: transferType?.toTransferTypeDTO() ??
+            bank?.transferType?.toTransferTypeDTO(),
         rcptCountryCode: country?.countryCode,
         bankName: bank?.name,
         bankSwift: bank?.bic,
@@ -23,5 +24,6 @@ extension NewBeneficiaryToBeneficiaryDTOExtension on NewBeneficiary {
         rcptAddress1: address1?.isNotEmpty ?? false ? address1 : null,
         rcptAddress2: address2?.isNotEmpty ?? false ? address2 : null,
         rcptAddress3: address3?.isNotEmpty ?? false ? address3 : null,
+        recipientType: type?.toRecipientTypeDTO(),
       );
 }

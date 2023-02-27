@@ -90,25 +90,21 @@ class AddBeneficiaryState extends BaseState<AddBeneficiaryAction,
   /// The beneficiary settings.
   final UnmodifiableListView<GlobalSetting> beneficiarySettings;
 
-  /// Depending on selected currency we force user to enter:
-  /// - for `GBP` - account and sorting code
-  /// - for `EUR` - iban
-  bool get accountRequired =>
-      (selectedCurrency?.code?.toLowerCase() ?? '') == 'gbp';
+  /// Depending on selected country we display either an input for iban or
+  /// account number and sort code.
+  bool get accountRequired => !(selectedCountry?.isIBAN ?? false);
 
   /// TODO: cubit_issue | Not very descriptive. Could we change this to
   /// `canSubmit`for example?
   /// Adding of new beneficiary is allowed when all required fields are filled.
   bool get addAvailable =>
       (beneficiary?.firstName.isNotEmpty ?? false) &&
-      (beneficiary?.lastName.isNotEmpty ?? false) &&
       (beneficiary?.nickname.isNotEmpty ?? false) &&
-      (beneficiary?.currency?.isNotEmpty != null) &&
       (accountRequired &&
               (beneficiary?.accountNumber?.isNotEmpty != null) &&
               (beneficiary?.routingCode?.isNotEmpty != null) ||
           !accountRequired && (beneficiary?.iban?.isNotEmpty != null)) &&
-      (beneficiary?.bank != null);
+      beneficiary?.recipientType != null;
 
   /// The bank query for filtering the banks.
   final String? bankQuery;

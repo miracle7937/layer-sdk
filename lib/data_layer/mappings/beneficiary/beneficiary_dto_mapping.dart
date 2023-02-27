@@ -16,6 +16,7 @@ extension BeneficiaryDTOMapping on BeneficiaryDTO {
         iban: accountNumber,
         status: status?.toBeneficiaryStatus(),
         type: type?.toTransferType(),
+        recipientType: recipientType?.toRecipientType(),
         lastName: lastName ?? '',
         bankName: bankName ?? '',
         bankCountryCode: bankCountryCode,
@@ -23,7 +24,7 @@ extension BeneficiaryDTOMapping on BeneficiaryDTO {
         address1: rcptAddress1,
         address2: rcptAddress2,
         address3: rcptAddress3,
-        rcptCountryCode:rcptCountryCode ?? '',
+        rcptCountryCode: rcptCountryCode ?? '',
         bank: Bank(
           name: bankName,
           bic: bankSwift,
@@ -64,6 +65,20 @@ extension BeneficiaryDTOStatusMapping on BeneficiaryDTOStatus {
           from: BeneficiaryDTOStatus,
           to: BeneficiaryStatus,
         );
+    }
+  }
+}
+
+/// Extension that provides mappings for [BeneficiaryRecipientTypeDTO]
+extension on BeneficiaryRecipientTypeDTO {
+  /// Maps into a [BeneficiaryRecipientType]
+  BeneficiaryRecipientType toRecipientType() {
+    switch (this) {
+      case BeneficiaryRecipientTypeDTO.business:
+        return BeneficiaryRecipientType.business;
+
+      case BeneficiaryRecipientTypeDTO.person:
+        return BeneficiaryRecipientType.person;
     }
   }
 }

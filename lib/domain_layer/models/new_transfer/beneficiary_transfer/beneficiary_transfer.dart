@@ -51,8 +51,6 @@ class BeneficiaryTransfer extends NewSchedulableTransfer {
       source?.account != null &&
       amount != null &&
       amount! > 0 &&
-      currency != null &&
-      currency?.code != null &&
       ((beneficiaryType == DestinationBeneficiaryType.currentBeneficiary &&
               destination?.beneficiary != null) ||
           (beneficiaryType == DestinationBeneficiaryType.newBeneficiary &&

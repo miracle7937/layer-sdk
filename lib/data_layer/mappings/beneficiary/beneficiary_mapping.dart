@@ -16,6 +16,7 @@ extension BeneficiaryMapping on Beneficiary {
         rcptAddress1: address1,
         rcptAddress2: address2,
         rcptAddress3: address3,
+        recipientType: recipientType?.toRecipientTypeDTO(),
         bankSwift: bank?.bic ?? '',
         bankName: bank?.name ?? '',
         bankCountryCode: bank?.countryCode ?? '',
@@ -24,4 +25,18 @@ extension BeneficiaryMapping on Beneficiary {
         otpId: otpId,
         type: type?.toTransferTypeDTO(),
       );
+}
+
+/// Extension that provides mappings for [BeneficiaryRecipientType]
+extension BeneficiaryRecipientTypeMapping on BeneficiaryRecipientType {
+  /// Maps into a [BeneficiaryRecipientTypeDTO]
+  BeneficiaryRecipientTypeDTO toRecipientTypeDTO() {
+    switch (this) {
+      case BeneficiaryRecipientType.business:
+        return BeneficiaryRecipientTypeDTO.business;
+
+      case BeneficiaryRecipientType.person:
+        return BeneficiaryRecipientTypeDTO.person;
+    }
+  }
 }
