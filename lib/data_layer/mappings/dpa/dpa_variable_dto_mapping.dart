@@ -74,7 +74,8 @@ extension DPAVariableDTOMapping on DPAVariableDTO {
           return DPAVariableType.swipe;
         }
 
-        if (property?.keyboard?.value == KeyboardDTO.numeric.value) {
+        if (property?.keyboard?.value == KeyboardDTO.numeric.value &&
+            property?.dialCodes == null) {
           return DPAVariableType.number;
         }
 
