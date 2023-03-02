@@ -201,6 +201,16 @@ class DPAVariablesList extends StatelessWidget {
           variable: variable,
         );
 
+      case DPAVariableType.listButton:
+        return DPASearchList(
+          key: ValueKey(variable.id),
+          variable: variable,
+          filter: (item, query) =>
+              item.id.toLowerCase().contains(query.toLowerCase()) ||
+              item.name.toLowerCase().contains(query.toLowerCase()),
+          customEmptySearchBuilder: customEmptySearchBuilder,
+        );
+
       default:
         Logger('DPAVariablesList').severe(
           'Could not create widget for ${variable.type}',
