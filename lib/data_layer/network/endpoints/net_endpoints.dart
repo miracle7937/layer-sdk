@@ -276,7 +276,7 @@ class NetEndpoints {
   /// Base endpoint for Integration
   String get integration => '$_integration/v1';
 
-  /// Enpoint for getting appointments
+  /// Endpoint for getting appointments
   String get appointments => '$integration/branch/appointment';
 
   /// Verifies if the activation code was already introduced into the console
@@ -286,10 +286,10 @@ class NetEndpoints {
   /// Sets the access pin for a new user.
   String get accessPin => '$_customer/v1/access_pin';
 
-  /// Enpoint for getting Products
+  /// Endpoint for getting Products
   String get products => '$_infoBanking/v1/product';
 
-  /// Enpoint for getting customer roles
+  /// Endpoint for getting customer roles
   String get customerRoles => '$_customer/v1/role';
 
   /// Endpoint for verifying the device on login
