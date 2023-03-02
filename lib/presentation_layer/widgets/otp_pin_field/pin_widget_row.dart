@@ -54,7 +54,6 @@ class _PinWidgetRowState extends State<PinWidgetRow>
   late final FocusNode secondNode;
   late final FocusNode thirdNode;
   late final FocusNode fourthNode;
-  FocusNode? _currentNode;
 
   @override
   void initState() {
@@ -68,8 +67,6 @@ class _PinWidgetRowState extends State<PinWidgetRow>
     secondNode = FocusNode();
     thirdNode = FocusNode();
     fourthNode = FocusNode();
-
-    _currentNode = firstNode;
 
     firstNode.requestFocus();
   }
@@ -211,92 +208,86 @@ class _PinWidgetRowState extends State<PinWidgetRow>
               );
               Overlay.of(context)!.insert(_entry!);
             },
-            child: GestureDetector(
-              onTap: () => _currentNode?.requestFocus(),
-              child: Container(
-                width: double.maxFinite,
-                key: _pastKey,
-                child: AbsorbPointer(
-                  absorbing: true,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: _PinWidget(
-                          controller: firstPin,
-                          onFill: () => _onPinUpdated(
-                            next: secondNode,
-                            self: firstNode,
-                          ),
-                          onDelete: (clearPrevious) {
-                            if (firstPin.text.isNotEmpty) {
-                              _onDelete(
-                                controller: firstPin,
-                                clearPrevious: clearPrevious,
-                              );
-                            }
-                          },
-                          node: firstNode,
-                          onSubmitted: (_) => _clearCurrentEntry(),
-                        ),
+            child: Container(
+              width: double.maxFinite,
+              key: _pastKey,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: _PinWidget(
+                      controller: firstPin,
+                      onFill: () => _onPinUpdated(
+                        next: secondNode,
+                        self: firstNode,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: _PinWidget(
-                          controller: secondPin,
-                          onFill: () => _onPinUpdated(
-                            next: thirdNode,
-                            self: secondNode,
-                          ),
-                          onDelete: (clearPrevious) => _onDelete(
-                            controller: secondPin,
-                            previousController: firstPin,
-                            previousNode: firstNode,
+                      onDelete: (clearPrevious) {
+                        if (firstPin.text.isNotEmpty) {
+                          _onDelete(
+                            controller: firstPin,
                             clearPrevious: clearPrevious,
-                          ),
-                          node: secondNode,
-                          onSubmitted: (_) => _clearCurrentEntry(),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: _PinWidget(
-                          controller: thirdPin,
-                          onFill: () => _onPinUpdated(
-                            next: fourthNode,
-                            self: thirdNode,
-                          ),
-                          onDelete: (clearPrevious) => _onDelete(
-                            controller: thirdPin,
-                            previousController: secondPin,
-                            previousNode: secondNode,
-                            clearPrevious: clearPrevious,
-                          ),
-                          node: thirdNode,
-                          onSubmitted: (_) => _clearCurrentEntry(),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: _PinWidget(
-                          controller: fourthPin,
-                          node: fourthNode,
-                          onFill: () => _onPinUpdated(
-                            self: fourthNode,
-                          ),
-                          onDelete: (clearPrevious) => _onDelete(
-                            controller: fourthPin,
-                            previousController: thirdPin,
-                            previousNode: thirdNode,
-                            clearPrevious: clearPrevious,
-                          ),
-                          onSubmitted: (_) => _clearCurrentEntry(),
-                        ),
-                      ),
-                    ],
+                          );
+                        }
+                      },
+                      node: firstNode,
+                      onSubmitted: (_) => _clearCurrentEntry(),
+                    ),
                   ),
-                ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: _PinWidget(
+                      controller: secondPin,
+                      onFill: () => _onPinUpdated(
+                        next: thirdNode,
+                        self: secondNode,
+                      ),
+                      onDelete: (clearPrevious) => _onDelete(
+                        controller: secondPin,
+                        previousController: firstPin,
+                        previousNode: firstNode,
+                        clearPrevious: clearPrevious,
+                      ),
+                      node: secondNode,
+                      onSubmitted: (_) => _clearCurrentEntry(),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: _PinWidget(
+                      controller: thirdPin,
+                      onFill: () => _onPinUpdated(
+                        next: fourthNode,
+                        self: thirdNode,
+                      ),
+                      onDelete: (clearPrevious) => _onDelete(
+                        controller: thirdPin,
+                        previousController: secondPin,
+                        previousNode: secondNode,
+                        clearPrevious: clearPrevious,
+                      ),
+                      node: thirdNode,
+                      onSubmitted: (_) => _clearCurrentEntry(),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: _PinWidget(
+                      controller: fourthPin,
+                      node: fourthNode,
+                      onFill: () => _onPinUpdated(
+                        self: fourthNode,
+                      ),
+                      onDelete: (clearPrevious) => _onDelete(
+                        controller: fourthPin,
+                        previousController: thirdPin,
+                        previousNode: thirdNode,
+                        clearPrevious: clearPrevious,
+                      ),
+                      onSubmitted: (_) => _clearCurrentEntry(),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -314,7 +305,6 @@ class _PinWidgetRowState extends State<PinWidgetRow>
       fourthPin.text,
     ].join().replaceAll(emptyChar, '');
 
-    _currentNode = next;
     next?.requestFocus();
 
     // TODO: Remove this magic number.
@@ -334,7 +324,6 @@ class _PinWidgetRowState extends State<PinWidgetRow>
       previousController?.text = emptyChar;
     }
     controller.text = emptyChar;
-    _currentNode = previousNode;
 
     previousNode?.requestFocus();
   }
@@ -351,7 +340,6 @@ class _PinWidgetRowState extends State<PinWidgetRow>
       pin.text = emptyChar;
     }
 
-    _currentNode = firstNode;
   }
 }
 

@@ -137,6 +137,7 @@ class DPAVariablesList extends StatelessWidget {
         );
 
       case DPAVariableType.text:
+      case DPAVariableType.number:
         if (variable.property.dialCodes.isNotEmpty) {
           return DPAPhoneText(
             key: ValueKey(variable.id),

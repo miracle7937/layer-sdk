@@ -134,7 +134,7 @@ class BeneficiaryDTO {
         rcptAddress2: json['rcpt_address_2'],
         rcptAddress3: json['rcpt_address_3'],
         rcptCountryCode: json['rcpt_country_code'],
-        recipientType: json['rcpt_type'],
+        recipientType: BeneficiaryRecipientTypeDTO.fromRaw(json['rcpt_type']),
         bankAddress1: json['bank_address_1'],
         bankAddress2: json['bank_address_2'],
         bankCountryCode: json['bank_country_code'],
@@ -195,6 +195,12 @@ enum BeneficiaryRecipientTypeDTO {
 
   /// Creates new [BeneficiaryRecipientTypeDTO].
   const BeneficiaryRecipientTypeDTO(this.value);
+
+  /// Creates a [BeneficiaryRecipientTypeDTO] from a [String]
+  static BeneficiaryRecipientTypeDTO? fromRaw(String? raw) =>
+      values.firstWhereOrNull(
+        (val) => val.value == raw,
+      );
 }
 
 /// The beneficiary status
