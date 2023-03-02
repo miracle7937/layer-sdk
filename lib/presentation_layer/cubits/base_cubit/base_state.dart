@@ -54,7 +54,7 @@ enum CubitErrorCode {
   ///
   /// If you get this, it means that you are getting an error code from the
   /// API that you are not handling here.
-  unknown('unknown');
+  unknown('unknown_error');
 
   /// The string value for the [CubitErrorCode].
   final String value;
