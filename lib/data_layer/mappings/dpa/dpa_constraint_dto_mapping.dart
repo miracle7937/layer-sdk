@@ -13,8 +13,8 @@ extension DPAConstraintDTOMapping on DPAConstraintDTO {
         maxLength: maxLength != null ? int.tryParse(maxLength!) : null,
         minValue: min != null ? num.tryParse(min!) : null,
         maxValue: max != null ? num.tryParse(max!) : null,
-        minDateTime: JsonParser.parseDate(min),
-        maxDateTime: JsonParser.parseDate(max),
+        minDateTime: JsonParser.parseStringDate(min),
+        maxDateTime: JsonParser.parseStringDate(max),
         regExp: property?.propertiesRegExp ??
             (property?.allowedCharacters != null
                 ? RegExp('[${property!.allowedCharacters}]')

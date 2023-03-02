@@ -13,16 +13,8 @@ class JsonParser {
 
   /// Parses a value into a [DateTime].
   static DateTime? parseDate(dynamic value) {
-    try {
-      if (value == null) return null;
-      if (value is int) {
-        return DateTime.fromMillisecondsSinceEpoch(value);
-      }
-      return DateTime.parse(value);
-      // ignore: avoid_catches_without_on_clauses
-    } catch (e) {
-      return null;
-    }
+    if (value == null || value is! int) return null;
+    return DateTime.fromMillisecondsSinceEpoch(value);
   }
 
   /// Parses a [String] into a [DateTime].
