@@ -69,9 +69,8 @@ class DPAVariableDTO {
                 constraints?.max != null
             ? int.tryParse(constraints?.max ?? '')
             : value,
-        submitType = (type == DPATypeDTO.enumType || type == DPATypeDTO.long)
-            ? DPATypeDTO.string.value
-            : type?.value;
+        submitType =
+            type == DPATypeDTO.enumType ? DPATypeDTO.string.value : type?.value;
 
   @override
   String toString() => 'DPAVariableDTO{'
