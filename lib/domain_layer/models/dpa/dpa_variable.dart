@@ -263,7 +263,9 @@ class DPAVariable extends Equatable {
       DPAVariableType.numberSlider,
     ];
 
-    if (numberTypes.contains(v.type)) {
+    if (numberTypes.contains(v.type) ||
+        (v.property.keyboard == DPAVariableKeyboard.numeric &&
+            v.property.dialCodes.isEmpty)) {
       final numValue = v.value is num ? v.value : num.tryParse(v.value);
 
       if (numValue != null) {

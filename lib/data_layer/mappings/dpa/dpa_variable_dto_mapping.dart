@@ -74,10 +74,6 @@ extension DPAVariableDTOMapping on DPAVariableDTO {
           return DPAVariableType.swipe;
         }
 
-        if (property?.keyboard?.value == KeyboardDTO.numeric.value) {
-          return DPAVariableType.number;
-        }
-
         return DPAVariableType.text;
 
       case DPATypeDTO.long:
