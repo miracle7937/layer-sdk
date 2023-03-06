@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:design_kit_layer/design_kit_layer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sms_autofill/sms_autofill.dart';
 
 import '../../mixins.dart';
 
@@ -34,7 +35,7 @@ class PinWidgetRow extends StatefulWidget {
 }
 
 class _PinWidgetRowState extends State<PinWidgetRow>
-    with FullScreenLoaderMixin {
+    with FullScreenLoaderMixin, CodeAutoFill {
   final _pastKey = GlobalKey();
   OverlayEntry? _entry;
 
@@ -69,6 +70,9 @@ class _PinWidgetRowState extends State<PinWidgetRow>
     fourthNode = FocusNode();
 
     firstNode.requestFocus();
+
+    /// Add a listener to get the app signature;
+    listenForCode();
   }
 
   @override
@@ -96,7 +100,22 @@ class _PinWidgetRowState extends State<PinWidgetRow>
     thirdNode.dispose();
     fourthNode.dispose();
     _clearCurrentEntry();
+
+    /// Unregister the listener from [SmsAutoFill]
+    SmsAutoFill().unregisterListener();
     super.dispose();
+  }
+
+  @override
+  void codeUpdated() {
+    if (code != null && code?.length == 4) {
+      /// Sets the value into each pin field and call the onPinSet
+      firstPin.text = code![0];
+      secondPin.text = code![1];
+      thirdPin.text = code![2];
+      fourthPin.text = code![3];
+      widget.onPinSet(code!);
+    }
   }
 
   void _clearCurrentEntry() {
