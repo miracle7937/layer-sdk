@@ -17,13 +17,13 @@ extension UserJsonMapping on User {
         )
         .toList();
     return {
+      // DO NOT SAVE THE ACCESS PIN WITH THE USER OBJECT
       'id': id,
       'username': username,
       'mobile_number': mobileNumber,
       'first_name': firstName,
       'last_name': lastName,
       'status': status?.toString(),
-      'accessPin': accessPin,
       'pref': {
         'favorite_offers': favoriteOffers,
         'alert': alert.isEmpty ? null : alert,

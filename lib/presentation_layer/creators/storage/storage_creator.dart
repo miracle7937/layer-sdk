@@ -12,6 +12,8 @@ class StorageCreator implements CubitCreator {
   final SaveAuthenticationSettingUseCase _saveAuthenticationSettingUseCase;
   final LoadOcraSecretKeyUseCase _loadOcraSecretKeyUseCase;
   final SaveOcraSecretKeyUseCase _saveOcraSecretKeyUseCase;
+  final LoadAccessPinUseCase _loadAccessPinUseCase;
+  final SaveAccessPinUseCase _saveAccessPinUseCase;
   final SetBrightnessUseCase _setBrightnessUseCase;
   final LoadBrightnessUseCase _loadBrightnessUseCase;
   final ToggleBiometricsUseCase _toggleBiometricsUseCase;
@@ -31,6 +33,8 @@ class StorageCreator implements CubitCreator {
     required SaveAuthenticationSettingUseCase saveAuthenticationSettingUseCase,
     required LoadOcraSecretKeyUseCase loadOcraSecretKeyUseCase,
     required SaveOcraSecretKeyUseCase saveOcraSecretKeyUseCase,
+    required LoadAccessPinUseCase loadAccessPinUseCase,
+    required SaveAccessPinUseCase saveAccessPinUseCase,
     required SetBrightnessUseCase setBrightnessUseCase,
     required LoadBrightnessUseCase loadBrightnessUseCase,
     required ToggleBiometricsUseCase toggleBiometricsUseCase,
@@ -46,6 +50,8 @@ class StorageCreator implements CubitCreator {
         _saveAuthenticationSettingUseCase = saveAuthenticationSettingUseCase,
         _loadOcraSecretKeyUseCase = loadOcraSecretKeyUseCase,
         _saveOcraSecretKeyUseCase = saveOcraSecretKeyUseCase,
+        _loadAccessPinUseCase = loadAccessPinUseCase,
+        _saveAccessPinUseCase = saveAccessPinUseCase,
         _setBrightnessUseCase = setBrightnessUseCase,
         _loadBrightnessUseCase = loadBrightnessUseCase,
         _toggleBiometricsUseCase = toggleBiometricsUseCase,
@@ -64,6 +70,8 @@ class StorageCreator implements CubitCreator {
         saveAuthenticationSettingUseCase: _saveAuthenticationSettingUseCase,
         loadOcraSecretKeyUseCase: _loadOcraSecretKeyUseCase,
         saveOcraSecretKeyUseCase: _saveOcraSecretKeyUseCase,
+        loadAccessPinUseCase: _loadAccessPinUseCase,
+        saveAccessPinUseCase: _saveAccessPinUseCase,
         setBrightnessUseCase: _setBrightnessUseCase,
         loadBrightnessUseCase: _loadBrightnessUseCase,
         toggleBiometricsUseCase: _toggleBiometricsUseCase,

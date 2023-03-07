@@ -20,14 +20,14 @@ abstract class SetAccessPinBaseWidgetState<W extends SetAccessPinBaseWidget>
   String _currentPin = '';
 
   /// The getter for the current pin.
-  String get currentPin => _currentPin;
+  String get accessPin => _currentPin;
 
   /// The setter for the current pin.
-  set currentPin(String pin) {
+  set accessPin(String pin) {
     if (pin.length <= widget.pinLength) {
       setState(() => _currentPin = pin);
     }
-    if (currentPin.isNotEmpty && warning != null) {
+    if (accessPin.isNotEmpty && warning != null) {
       warning = null;
     }
   }

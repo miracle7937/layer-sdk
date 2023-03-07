@@ -45,4 +45,7 @@ abstract class StorageKeys {
   /// Whether if the [User] has reach for the first time
   /// biometrics as second factor or not.
   static const firstTimeReachBiometrics = 'firstTimeReachBiometrics';
+
+  /// The user access pin used for biometrics.
+  static const accessPin = 'accessPin';
 }

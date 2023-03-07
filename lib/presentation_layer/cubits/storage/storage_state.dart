@@ -11,6 +11,9 @@ class StorageState extends Equatable {
   /// The currently logged in user
   final User? currentUser;
 
+  /// The user access pin.
+  final String accessPin;
+
   /// List containing all the logged in users.
   final UnmodifiableListView<User> loggedInUsers;
 
@@ -31,6 +34,7 @@ class StorageState extends Equatable {
   StorageState({
     this.busy = false,
     this.currentUser,
+    this.accessPin = '',
     Iterable<User> loggedInUsers = const [],
     this.authenticationSettings = const AuthenticationSettings(),
     this.applicationSettings = const ApplicationSettings(),
@@ -42,6 +46,7 @@ class StorageState extends Equatable {
   StorageState copyWith({
     bool? busy,
     User? currentUser,
+    String? accessPin,
     Iterable<User>? loggedInUsers,
     bool clearCurrentUser = false,
     AuthenticationSettings? authenticationSettings,
@@ -52,6 +57,7 @@ class StorageState extends Equatable {
       StorageState(
         busy: busy ?? this.busy,
         currentUser: clearCurrentUser ? null : currentUser ?? this.currentUser,
+        accessPin: accessPin ?? this.accessPin,
         loggedInUsers: loggedInUsers ?? this.loggedInUsers,
         authenticationSettings:
             authenticationSettings ?? this.authenticationSettings,
@@ -65,6 +71,7 @@ class StorageState extends Equatable {
   List<Object?> get props => [
         busy,
         currentUser,
+        accessPin,
         loggedInUsers,
         authenticationSettings,
         applicationSettings,

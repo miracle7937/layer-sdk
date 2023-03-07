@@ -56,17 +56,16 @@ mixin PersistUserMixin {
   /// If the [ocraSecret] parameter is indicated, the user will authenticate
   /// using the ocra flow.
   ///
-  /// Use the [useBiometrics] parameter for indicating if the user enabled
-  /// the biometrics or not.
+  /// Provide the [accessPin] parameter for saving if the user has enabled the
+  /// biometrics authentication. If the user opted out of biometrics do not
+  /// provide the pin, as we should not be saving it.
   Future<void> persistsUser(
     BuildContext context, {
     required User user,
-    required String accessPin,
     required String ocraSecret,
-    bool useBiometrics = false,
+    String accessPin = '',
   }) async {
-    assert(accessPin.isNotEmpty, 'The access pin cannot be empty');
-    assert(ocraSecret.isNotEmpty, 'The ocra secet cannot be empty');
+    assert(ocraSecret.isNotEmpty, 'The ocra secret cannot be empty');
 
     final storageCubit = context.read<StorageCreator>().create();
 
@@ -82,16 +81,16 @@ mixin PersistUserMixin {
     } else {
       await storageCubit.saveOcraSecretKey(ocraSecret);
 
-      storageCubit.toggleBiometric(isBiometricsActive: useBiometrics);
+      if (accessPin.isNotEmpty) {
+        storageCubit.toggleBiometric(isBiometricsActive: true);
+        await storageCubit.saveAccessPin(accessPin);
+        await storageCubit.saveAuthenticationSettings(
+          useBiometrics: true,
+        );
+      }
 
       await storageCubit.saveUser(
-        user: user.copyWith(
-          accessPin: accessPin,
-        ),
-      );
-
-      await storageCubit.saveAuthenticationSettings(
-        useBiometrics: useBiometrics,
+        user: user,
       );
 
       BankApp.restart(context);

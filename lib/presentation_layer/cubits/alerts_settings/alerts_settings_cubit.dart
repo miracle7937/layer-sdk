@@ -22,7 +22,7 @@ class AlertsSettingsCubit extends Cubit<AlertsSettingsState> {
   void onSettingsChanged(List<ActivityType> enabledAlerts) {
     emit(
       state.copyWith(
-        newUser: state.newUser?.copyWith(
+        newUser: state.newUser.copyWith(
           enabledAlerts: enabledAlerts,
         ),
       ),
@@ -44,14 +44,16 @@ class AlertsSettingsCubit extends Cubit<AlertsSettingsState> {
 
     try {
       final userResult = await _changeAlertsSettingsUseCase(
-        alertsTypes: state.newUser!.enabledAlerts,
+        alertsTypes: state.newUser.enabledAlerts,
       );
       emit(
         state.copyWith(
           actions: state.removeAction(
             AlertsSettingsAction.saveSettings,
           ),
-          newUser: userResult,
+          newUser: state.newUser.copyWith(
+            userPreferences: userResult.preferences,
+          ),
           events: state.addEvent(
             AlertsSettingsEvent.showResultView,
           ),
