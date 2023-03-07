@@ -140,7 +140,7 @@ class _SetAccessPinScreenState
 
                           return PinPadView(
                             pinLenght: widget.pinLength,
-                            pin: currentPin,
+                            pin: accessPin,
                             title: widget.setPinTitle,
                             disabled: disabled,
                             warning: errorMessage ?? warning,
@@ -148,7 +148,7 @@ class _SetAccessPinScreenState
                               context
                                   .read<AccessPinValidationCubit>()
                                   .clearValidationErrors();
-                              currentPin = pin;
+                              accessPin = pin;
                               if (pin.length == widget.pinLength) {
                                 _navigateToRepeatPinScreen();
                               }
@@ -166,9 +166,9 @@ class _SetAccessPinScreenState
   /// Navigates to the repeat pin screen.
   Future<void> _navigateToRepeatPinScreen() async {
     final validationCubit = context.read<AccessPinValidationCubit>();
-    validationCubit.validate(pin: currentPin);
+    validationCubit.validate(pin: accessPin);
     if (!validationCubit.state.valid) {
-      currentPin = '';
+      accessPin = '';
       return;
     }
 
@@ -184,7 +184,7 @@ class _SetAccessPinScreenState
           child: Builder(
             builder: (context) => _RepeatAccessPinScreen(
               pinLength: widget.pinLength,
-              pin: currentPin,
+              pin: accessPin,
               appBar: widget.repeatPinAppBar,
               title: widget.repeatPinTitle,
               onSuccess: widget.onSuccess,
@@ -199,7 +199,7 @@ class _SetAccessPinScreenState
 
     if (user == null) {
       disabled = false;
-      currentPin = '';
+      accessPin = '';
     } else {
       Navigator.pop(context, user);
     }
@@ -261,15 +261,15 @@ class __RepeatAccessPinScreenState
                   Expanded(
                     child: PinPadView(
                       pinLenght: widget.pinLength,
-                      pin: currentPin,
+                      pin: accessPin,
                       title: widget.title,
                       disabled: !state.busy && disabled,
                       warning: state.errorMessage ?? warning,
                       onChanged: (pin) async {
-                        currentPin = pin;
+                        accessPin = pin;
                         if (pin.length == widget.pinLength) {
                           if (pin != widget.pin) {
-                            currentPin = '';
+                            accessPin = '';
                             warning = Translation.of(context).translate(
                               'pin_code_error_password_not_match',
                             );

@@ -186,7 +186,7 @@ class _LockScreenState extends SetAccessPinBaseWidgetState<_LockScreen> {
               previous.error != current.error &&
               current.error != OcraAuthenticationError.none,
           listener: (context, state) {
-            currentPin = '';
+            accessPin = '';
           },
         ),
       ],
@@ -201,7 +201,7 @@ class _LockScreenState extends SetAccessPinBaseWidgetState<_LockScreen> {
                   child: PinPadView(
                     scramblePin: widget.scramblePin,
                     pinLenght: widget.pinLength,
-                    pin: currentPin,
+                    pin: accessPin,
                     title: widget.title,
                     disabled: disabled,
                     warning: error.localize(
@@ -209,14 +209,14 @@ class _LockScreenState extends SetAccessPinBaseWidgetState<_LockScreen> {
                       state.remainingAttempts,
                     ),
                     onChanged: (pin) async {
-                      currentPin = pin;
+                      accessPin = pin;
                       if (pin.length == widget.pinLength) {
                         final authenticationCubit =
                             context.read<AuthenticationCubit>();
                         await context
                             .read<OcraAuthenticationCubit>()
                             .generateToken(
-                              password: currentPin,
+                              password: accessPin,
                             );
                         final session = await _getDeviceSession();
                         await authenticationCubit.verifyAccessPin(
@@ -269,20 +269,25 @@ class _LockScreenState extends SetAccessPinBaseWidgetState<_LockScreen> {
   /// successfully.
   Future<void> _onBiometrics() async {
     final storageCubit = context.read<StorageCreator>().create();
-    await storageCubit.loadLastLoggedUser();
+    await storageCubit.loadAccessPin();
 
-    currentPin = storageCubit.state.currentUser?.accessPin ?? '';
+    accessPin = storageCubit.state.accessPin;
 
-    await context.read<OcraAuthenticationCubit>().generateToken(
-          password: storageCubit.state.currentUser?.accessPin,
-        );
-    final session = await _getDeviceSession();
-    final authenticationCubit = context.read<AuthenticationCubit>();
-    await authenticationCubit.verifyAccessPin(
-      currentPin,
-      deviceInfo: session,
-      notificationToken: widget.notifcationToken,
-      userToken: context.read<OcraAuthenticationCubit>().state.token,
+    final ocraCubit = context.read<OcraAuthenticationCubit>();
+    await ocraCubit.generateToken(
+      password: accessPin,
     );
+
+    if (ocraCubit.state.error == OcraAuthenticationError.none &&
+        ocraCubit.state.token != null) {
+      final session = await _getDeviceSession();
+      final authenticationCubit = context.read<AuthenticationCubit>();
+      await authenticationCubit.verifyAccessPin(
+        accessPin,
+        deviceInfo: session,
+        notificationToken: widget.notifcationToken,
+        userToken: context.read<OcraAuthenticationCubit>().state.token,
+      );
+    }
   }
 }

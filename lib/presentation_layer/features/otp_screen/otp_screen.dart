@@ -296,11 +296,12 @@ class _OTPScreenState extends State<_OTPScreen> with FullScreenLoaderMixin {
       await Future.wait([
         storageCubit.loadLastLoggedUser(),
         storageCubit.loadOcraSecretKey(),
+        storageCubit.loadAccessPin(),
       ]);
 
       final deviceId = storageCubit.state.currentUser!.deviceId!;
       final ocraSecret = storageCubit.state.ocraSecretKey!;
-      final accessPin = storageCubit.state.currentUser!.accessPin!;
+      final accessPin = storageCubit.state.accessPin;
 
       final ocraAuthenticationCubit =
           context.read<OcraAuthenticationCreator>().create(

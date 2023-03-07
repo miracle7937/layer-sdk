@@ -15,6 +15,8 @@ class StorageCubit extends Cubit<StorageState> {
   final SaveAuthenticationSettingUseCase _saveAuthenticationSettingUseCase;
   final LoadOcraSecretKeyUseCase _loadOcraSecretKeyUseCase;
   final SaveOcraSecretKeyUseCase _saveOcraSecretKeyUseCase;
+  final LoadAccessPinUseCase _loadAccessPinUseCase;
+  final SaveAccessPinUseCase _saveAccessPinUseCase;
   final SetBrightnessUseCase _setBrightnessUseCase;
   final LoadBrightnessUseCase _loadBrightnessUseCase;
   final ToggleBiometricsUseCase _toggleBiometricsUseCase;
@@ -34,6 +36,8 @@ class StorageCubit extends Cubit<StorageState> {
     required SaveAuthenticationSettingUseCase saveAuthenticationSettingUseCase,
     required LoadOcraSecretKeyUseCase loadOcraSecretKeyUseCase,
     required SaveOcraSecretKeyUseCase saveOcraSecretKeyUseCase,
+    required LoadAccessPinUseCase loadAccessPinUseCase,
+    required SaveAccessPinUseCase saveAccessPinUseCase,
     required SetBrightnessUseCase setBrightnessUseCase,
     required LoadBrightnessUseCase loadBrightnessUseCase,
     required ToggleBiometricsUseCase toggleBiometricsUseCase,
@@ -49,6 +53,8 @@ class StorageCubit extends Cubit<StorageState> {
         _saveAuthenticationSettingUseCase = saveAuthenticationSettingUseCase,
         _loadOcraSecretKeyUseCase = loadOcraSecretKeyUseCase,
         _saveOcraSecretKeyUseCase = saveOcraSecretKeyUseCase,
+        _loadAccessPinUseCase = loadAccessPinUseCase,
+        _saveAccessPinUseCase = saveAccessPinUseCase,
         _setBrightnessUseCase = setBrightnessUseCase,
         _loadBrightnessUseCase = loadBrightnessUseCase,
         _toggleBiometricsUseCase = toggleBiometricsUseCase,
@@ -432,5 +438,81 @@ class StorageCubit extends Cubit<StorageState> {
 
       rethrow;
     }
+  }
+
+  /// Saves the user access for biometrics authentication.
+  Future<void> saveAccessPin(String pin) async {
+    emit(
+      state.copyWith(
+        busy: true,
+      ),
+    );
+
+    try {
+      final result = await _saveAccessPinUseCase(value: pin);
+
+      emit(
+        state.copyWith(
+          busy: false,
+          accessPin: result ? pin : null,
+        ),
+      );
+    } on Exception {
+      emit(
+        state.copyWith(
+          busy: false,
+        ),
+      );
+
+      rethrow;
+    }
+  }
+
+  /// Loads the secret key for OCRA mutual authentication flow.
+  Future<void> loadAccessPin() async {
+    emit(
+      state.copyWith(
+        busy: true,
+      ),
+    );
+
+    try {
+      var pin = await _loadAccessPinUseCase();
+
+      if (pin == null) {
+        pin = await _migratePinFromUser();
+      }
+
+      emit(
+        state.copyWith(
+          busy: false,
+          accessPin: pin,
+        ),
+      );
+    } on Exception {
+      emit(
+        state.copyWith(
+          busy: false,
+        ),
+      );
+
+      rethrow;
+    }
+  }
+
+  /// Saves the access pin separately from the user object and returns it.
+  ///
+  /// Should be called as part of the data migration to store the access pin
+  /// separately for users that used biometrics authentication before with pin
+  /// being stored inside the user object.
+  // TODO: this should be removed after Akorn users are migrated.
+  Future<String?> _migratePinFromUser() async {
+    final user = state.currentUser ?? await _lastLoggedUserUseCase();
+
+    if (user?.accessPin?.isNotEmpty ?? false) {
+      _saveAccessPinUseCase(value: user!.accessPin!);
+    }
+
+    return user?.accessPin;
   }
 }

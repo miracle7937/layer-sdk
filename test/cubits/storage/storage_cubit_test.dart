@@ -25,6 +25,8 @@ class MockLoadLastLoggedUserUseCase extends Mock
 class MockLoadOcraSecretKeyUseCase extends Mock
     implements LoadOcraSecretKeyUseCase {}
 
+class MockLoadAccessPinUseCase extends Mock implements LoadAccessPinUseCase {}
+
 class MockRemoveUserUseCase extends Mock implements RemoveUserUseCase {}
 
 class MockSaveAuthenticationSettingUseCase extends Mock
@@ -32,6 +34,8 @@ class MockSaveAuthenticationSettingUseCase extends Mock
 
 class MockSaveOcraSecretKeyUseCase extends Mock
     implements SaveOcraSecretKeyUseCase {}
+
+class MockSaveAccessPinUseCase extends Mock implements SaveAccessPinUseCase {}
 
 class MockSaveUserUseCase extends Mock implements SaveUserUseCase {}
 
@@ -52,10 +56,12 @@ final _loadBrightnessUseCase = MockLoadBrightnessUseCase();
 final _loadLoggedInUsersUseCase = MockLoadLoggedInUsersUseCase();
 final _loadLastLoggedUserUseCase = MockLoadLastLoggedUserUseCase();
 final _loadOcraSecretKeyUseCase = MockLoadOcraSecretKeyUseCase();
+final _loadAccessPinUseCase = MockLoadAccessPinUseCase();
 final _removeUserUseCase = MockRemoveUserUseCase();
 final _saveAuthenticationSettingUseCase =
     MockSaveAuthenticationSettingUseCase();
 final _saveOcraSecretKeyUseCase = MockSaveOcraSecretKeyUseCase();
+final _saveAccessPinUseCase = MockSaveAccessPinUseCase();
 final _saveUserUseCase = MockSaveUserUseCase();
 final _setBrightnessUseCase = MockSetBrightnessUseCase();
 final _toggleBiometricsUseCase = MockToggleBiometricsUseCase();
@@ -110,9 +116,11 @@ StorageCubit createStorageCubit() => StorageCubit(
       loadAuthenticationSettingsUseCase: _loadAuthenticationSettingsUseCase,
       loadBrightnessUseCase: _loadBrightnessUseCase,
       loadOcraSecretKeyUseCase: _loadOcraSecretKeyUseCase,
+      loadAccessPinUseCase: _loadAccessPinUseCase,
       removeUserUseCase: _removeUserUseCase,
       saveAuthenticationSettingUseCase: _saveAuthenticationSettingUseCase,
       saveOcraSecretKeyUseCase: _saveOcraSecretKeyUseCase,
+      saveAccessPinUseCase: _saveAccessPinUseCase,
       saveUserUseCase: _saveUserUseCase,
       setBrightnessUseCase: _setBrightnessUseCase,
       toggleBiometricsUseCase: _toggleBiometricsUseCase,
@@ -137,6 +145,7 @@ void main() {
   group('Biometrics', _biometricsTests);
   group('Application Settings', _applicationSettingsTests);
   group('OCRA key', _ocraKeyTests);
+  group('Access pin', _accessPinTests);
   group('Loyalty tutorial completion', _loyaltyCompletionTests);
 }
 
@@ -311,9 +320,11 @@ void _saveDataTests() {
       loadAuthenticationSettingsUseCase: _loadAuthenticationSettingsUseCase,
       loadBrightnessUseCase: _loadBrightnessUseCase,
       loadOcraSecretKeyUseCase: _loadOcraSecretKeyUseCase,
+      loadAccessPinUseCase: _loadAccessPinUseCase,
       removeUserUseCase: _removeUserUseCase,
       saveAuthenticationSettingUseCase: _saveAuthenticationSettingUseCase,
       saveOcraSecretKeyUseCase: _saveOcraSecretKeyUseCase,
+      saveAccessPinUseCase: _saveAccessPinUseCase,
       saveUserUseCase: _saveUserUseCase,
       setBrightnessUseCase: _setBrightnessUseCase,
       toggleBiometricsUseCase: _toggleBiometricsUseCase,
@@ -758,6 +769,91 @@ _ocraKeyTests() {
       verify(
         () => _saveOcraSecretKeyUseCase(
           value: failedOcraKey,
+        ),
+      ).called(1);
+    },
+  ); // should handle exceptions
+}
+
+_accessPinTests() {
+  final successfulAccessPin = 'successfulAccessPin';
+  final failedAccessPin = 'failedAccessPin';
+
+  setUp(() {
+    when(
+      _loadAccessPinUseCase,
+    ).thenAnswer((_) async => successfulAccessPin);
+
+    when(
+      () => _saveAccessPinUseCase(
+        value: successfulAccessPin,
+      ),
+    ).thenAnswer((_) async => true);
+
+    when(
+      () => _saveAccessPinUseCase(
+        value: failedAccessPin,
+      ),
+    ).thenThrow(Exception());
+  });
+
+  blocTest<StorageCubit, StorageState>(
+    'should load access pin',
+    build: createStorageCubit,
+    act: (c) => c.loadAccessPin(),
+    expect: () => [
+      StorageState(
+        busy: true,
+      ),
+      StorageState(
+        accessPin: successfulAccessPin,
+      ),
+    ],
+    verify: (c) {
+      verify(
+        _loadAccessPinUseCase,
+      ).called(1);
+    },
+  ); // should load ocra key
+
+  blocTest<StorageCubit, StorageState>(
+    'should save access pin',
+    build: createStorageCubit,
+    act: (c) => c.saveAccessPin(successfulAccessPin),
+    expect: () => [
+      StorageState(
+        busy: true,
+      ),
+      StorageState(
+        accessPin: successfulAccessPin,
+      ),
+    ],
+    verify: (c) {
+      verify(
+        () => _saveAccessPinUseCase(
+          value: successfulAccessPin,
+        ),
+      ).called(1);
+    },
+  ); // should save ocra key
+
+  blocTest<StorageCubit, StorageState>(
+    'should handle exceptions when saving access pin',
+    build: createStorageCubit,
+    act: (c) => c.saveAccessPin(failedAccessPin),
+    expect: () => [
+      StorageState(
+        busy: true,
+      ),
+      StorageState(),
+    ],
+    errors: () => [
+      isA<Exception>(),
+    ],
+    verify: (c) {
+      verify(
+        () => _saveAccessPinUseCase(
+          value: failedAccessPin,
         ),
       ).called(1);
     },

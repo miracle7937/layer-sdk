@@ -54,7 +54,7 @@ class _DPASetAccessPinState
   void didUpdateWidget(covariant DPASetAccessPin oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.dpaVariable != widget.dpaVariable) {
-      currentPin = '';
+      accessPin = '';
     }
   }
 
@@ -92,7 +92,7 @@ class _DPASetAccessPinState
                       return PinPadView(
                         pinLenght:
                             widget.dpaVariable.constraints.maxLength ?? 6,
-                        pin: currentPin,
+                        pin: accessPin,
                         title: widget.dpaVariable.label ?? '',
                         disabled: disabled,
                         warning: errorMessage ?? warning,
@@ -100,12 +100,12 @@ class _DPASetAccessPinState
                           final validationCubit =
                               context.read<AccessPinValidationCubit>();
                           validationCubit.clearValidationErrors();
-                          currentPin = pin;
+                          accessPin = pin;
 
                           if (pin.length == widget.pinLength) {
-                            validationCubit.validate(pin: currentPin);
+                            validationCubit.validate(pin: accessPin);
                             if (!validationCubit.state.valid) {
-                              currentPin = '';
+                              accessPin = '';
                               return;
                             }
                             widget.onAccessPinSet(pin);

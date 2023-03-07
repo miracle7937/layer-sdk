@@ -19,15 +19,15 @@ enum AlertsSettingsEvent {
 class AlertsSettingsState
     extends BaseState<AlertsSettingsAction, AlertsSettingsEvent, void> {
   /// Old user.
-  final User? oldUser;
+  final User oldUser;
 
   /// New user.
-  final User? newUser;
+  final User newUser;
 
   /// If settings were changed.
   bool get settingsChanged => ListEquality().equals(
-        oldUser?.enabledAlerts,
-        newUser?.enabledAlerts,
+        oldUser.enabledAlerts,
+        newUser.enabledAlerts,
       );
 
   /// Creates a new [AlertsSettingsState].
@@ -35,8 +35,8 @@ class AlertsSettingsState
     super.actions = const <AlertsSettingsAction>{},
     super.errors = const <CubitError>{},
     super.events = const <AlertsSettingsEvent>{},
-    this.oldUser,
-    this.newUser,
+    required this.oldUser,
+    required this.newUser,
   });
 
   @override

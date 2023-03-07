@@ -244,6 +244,12 @@ class BankAppState extends State<BankApp> {
             saveOcraSecretKeyUseCase: SaveOcraSecretKeyUseCase(
               secureStorage: widget.secureStorage,
             ),
+            loadAccessPinUseCase: LoadAccessPinUseCase(
+              secureStorage: widget.secureStorage,
+            ),
+            saveAccessPinUseCase: SaveAccessPinUseCase(
+              secureStorage: widget.secureStorage,
+            ),
             setBrightnessUseCase: SetBrightnessUseCase(
               secureStorage: widget.secureStorage,
             ),
