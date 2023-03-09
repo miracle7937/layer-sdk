@@ -4,6 +4,8 @@ import 'package:collection/collection.dart';
 import 'package:design_kit_layer/design_kit_layer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:sms_autofill/sms_autofill.dart';
 
 import '../../../../data_layer/environment.dart';
 import '../../../../features/dpa.dart';
@@ -29,12 +31,16 @@ class DPAOTPScreen extends StatelessWidget {
   /// Defaults to `120` seconds.
   final int resendInterval;
 
+  /// The OTP length.
+  final int otpLength;
+
   /// Creates a new [_DPAOTPScreen] instace.
   const DPAOTPScreen({
     Key? key,
     this.customDPAHeader,
     this.resendInterval = 120,
     this.isOnboarding = false,
+    this.otpLength = 4,
   }) : super(key: key);
 
   @override
@@ -44,6 +50,7 @@ class DPAOTPScreen extends StatelessWidget {
           customDPAHeader: customDPAHeader,
           isOnboarding: isOnboarding,
           resendInterval: resendInterval,
+          otpLength: otpLength,
         ),
       );
 }
@@ -62,12 +69,16 @@ class _DPAOTPScreen extends StatefulWidget {
   /// Defaults to `120` seconds.
   final int resendInterval;
 
+  /// The OTP length.
+  final int otpLength;
+
   /// Creates a new [_DPAOTPScreen] instace.
   const _DPAOTPScreen({
     Key? key,
     this.customDPAHeader,
     this.resendInterval = 120,
     this.isOnboarding = false,
+    this.otpLength = 4,
   }) : super(key: key);
 
   @override
@@ -75,7 +86,7 @@ class _DPAOTPScreen extends StatefulWidget {
 }
 
 class _DPAOTPScreenState extends State<_DPAOTPScreen>
-    with FullScreenLoaderMixin {
+    with FullScreenLoaderMixin, CodeAutoFill {
   final _otpController = TextEditingController();
 
   late int _remainingTime;
@@ -88,18 +99,24 @@ class _DPAOTPScreenState extends State<_DPAOTPScreen>
   late bool hasOCRA;
 
   bool _showBiometricsButton = false;
+
   bool get showBiometricsButton => _showBiometricsButton;
+
   set showBiometricsButton(bool showBiometricsButton) => mounted
       ? setState(() => _showBiometricsButton = showBiometricsButton)
       : null;
 
   late bool _showOTPCodeInput;
+
   bool get showOTPCodeInput => _showOTPCodeInput;
+
   set showOTPCodeInput(bool showOTPCodeInput) =>
       mounted ? setState(() => _showOTPCodeInput = showOTPCodeInput) : null;
 
   bool _shouldClearCode = false;
+
   bool get shouldClearCode => _shouldClearCode;
+
   set shouldClearCode(bool shouldClearCode) =>
       mounted ? setState(() => _shouldClearCode = shouldClearCode) : null;
 
@@ -147,6 +164,9 @@ class _DPAOTPScreenState extends State<_DPAOTPScreen>
       });
     }
 
+    /// Add a listener to get the app signature;
+    listenForCode();
+
     super.initState();
   }
 
@@ -155,7 +175,17 @@ class _DPAOTPScreenState extends State<_DPAOTPScreen>
     _otpController.dispose();
     if (_timer?.isActive ?? false) _timer?.cancel();
 
+    /// Unregister the listener from [SmsAutoFill]
+    SmsAutoFill().unregisterListener();
+
     super.dispose();
+  }
+
+  @override
+  void codeUpdated() {
+    if (code != null && code!.length == widget.otpLength) {
+      _otpController.text = code!;
+    }
   }
 
   /// Preforms a biometrics authentication. If successful, it generates an
@@ -310,15 +340,11 @@ class _DPAOTPScreenState extends State<_DPAOTPScreen>
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 12.0),
-                                    child: PinWidgetRow(
-                                      onPinSet: (otpCode) =>
-                                          _onSecondFactorIntroduced(
-                                        otpCode: otpCode,
-                                      ),
-                                      shouldClearCode: shouldClearCode,
+                                    padding: const EdgeInsets.only(
+                                      top: 24.0,
+                                      bottom: 12,
                                     ),
+                                    child: _pinCodeTextField(design: design),
                                   ),
                                   DKButton(
                                     title: resendEnabled
@@ -403,6 +429,55 @@ class _DPAOTPScreenState extends State<_DPAOTPScreen>
           ),
           if (isSteppingForward) DPAFullscreenLoader(),
         ],
+      ),
+    );
+  }
+
+  Widget _pinCodeTextField({
+    required LayerDesign design,
+  }) {
+    return PinCodeTextField(
+      length: widget.otpLength,
+      appContext: context,
+      onChanged: (code) {
+        if (code.length == widget.otpLength) {
+          _onSecondFactorIntroduced(
+            otpCode: code,
+          );
+        }
+      },
+      boxShadows: [
+        BoxShadow(
+          color: design.basePrimaryBlack.withOpacity(0.03),
+          offset: Offset(0, 1),
+          blurRadius: 2,
+        ),
+      ],
+      textStyle: design.bodyXXL(),
+      controller: _otpController,
+      backgroundColor: Colors.transparent,
+      enableActiveFill: true,
+      animationType: AnimationType.fade,
+      mainAxisAlignment: MainAxisAlignment.center,
+      keyboardType: TextInputType.number,
+      autoDisposeControllers: false,
+      enablePinAutofill: true,
+      pinTheme: PinTheme(
+        fieldWidth: widget.otpLength <= 6 ? 52 : 38,
+        fieldHeight: widget.otpLength <= 6 ? 52 : 38,
+        borderRadius: BorderRadius.circular(12),
+        borderWidth: 1,
+        disabledColor: design.surfaceNonary3,
+        activeColor: design.surfaceNonary3,
+        activeFillColor: design.surfaceNonary3,
+        fieldOuterPadding: const EdgeInsets.symmetric(
+          horizontal: 8,
+        ),
+        inactiveColor: design.surfaceNonary3,
+        selectedColor: design.brandPrimary,
+        inactiveFillColor: design.surfaceNonary3,
+        selectedFillColor: design.surfaceNonary3,
+        shape: PinCodeFieldShape.box,
       ),
     );
   }
