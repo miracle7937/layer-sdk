@@ -63,6 +63,11 @@ class OTPScreen extends StatelessWidget {
   /// Default is `false`.
   final bool showBiometrics;
 
+  /// Whether or not the widget should be focused by default.
+  ///
+  /// Defaults to `true`.
+  final bool shouldAutoFocus;
+
   /// The callback called when the OCRA client response is generated.
   final ValueSetter<String>? onOCRAClientResponse;
 
@@ -89,6 +94,7 @@ class OTPScreen extends StatelessWidget {
     this.onOCRAClientResponse,
     this.onSendOTPCode,
     this.otpLength = 4,
+    this.shouldAutoFocus = true,
   })  : assert(
           !showBiometrics || onOCRAClientResponse != null,
           'Biometrics should show but the OCRA client response '
@@ -114,6 +120,7 @@ class OTPScreen extends StatelessWidget {
           onOCRAClientResponse: onOCRAClientResponse,
           onSendOTPCode: onSendOTPCode,
           otpLength: otpLength,
+          shouldAutoFocus: shouldAutoFocus,
         ),
       );
 }
@@ -181,6 +188,11 @@ class _OTPScreen extends StatefulWidget {
   /// The OTP length.
   final int otpLength;
 
+  /// Whether or not the widget should be focused by default.
+  ///
+  /// Defaults to `true`.
+  final bool shouldAutoFocus;
+
   /// Creates a new [_OTPScreen].
   const _OTPScreen({
     Key? key,
@@ -198,6 +210,7 @@ class _OTPScreen extends StatefulWidget {
     this.onOCRAClientResponse,
     this.onSendOTPCode,
     this.otpLength = 4,
+    this.shouldAutoFocus = true,
   })  : assert(
           !showBiometrics || onOCRAClientResponse != null,
           'Biometrics should show but the OCRA client response '
@@ -567,6 +580,7 @@ class _OTPScreenState extends State<_OTPScreen>
       textStyle: design.bodyXXL(),
       backgroundColor: Colors.transparent,
       enableActiveFill: true,
+      autoFocus: widget.shouldAutoFocus,
       animationType: AnimationType.fade,
       mainAxisAlignment: MainAxisAlignment.center,
       keyboardType: TextInputType.number,
