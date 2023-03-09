@@ -34,6 +34,11 @@ class DPAOTPScreen extends StatelessWidget {
   /// The OTP length.
   final int otpLength;
 
+  /// Whether or not the widget should be focused by default.
+  ///
+  /// Defaults to `true`.
+  final bool shouldAutoFocus;
+
   /// Creates a new [_DPAOTPScreen] instace.
   const DPAOTPScreen({
     Key? key,
@@ -41,6 +46,7 @@ class DPAOTPScreen extends StatelessWidget {
     this.resendInterval = 120,
     this.isOnboarding = false,
     this.otpLength = 4,
+    this.shouldAutoFocus = true,
   }) : super(key: key);
 
   @override
@@ -51,6 +57,7 @@ class DPAOTPScreen extends StatelessWidget {
           isOnboarding: isOnboarding,
           resendInterval: resendInterval,
           otpLength: otpLength,
+          shouldAutoFocus: shouldAutoFocus,
         ),
       );
 }
@@ -72,6 +79,11 @@ class _DPAOTPScreen extends StatefulWidget {
   /// The OTP length.
   final int otpLength;
 
+  /// Whether or not the widget should be focused by default.
+  ///
+  /// Defaults to `true`.
+  final bool shouldAutoFocus;
+
   /// Creates a new [_DPAOTPScreen] instace.
   const _DPAOTPScreen({
     Key? key,
@@ -79,6 +91,7 @@ class _DPAOTPScreen extends StatefulWidget {
     this.resendInterval = 120,
     this.isOnboarding = false,
     this.otpLength = 4,
+    this.shouldAutoFocus = true,
   }) : super(key: key);
 
   @override
@@ -457,6 +470,7 @@ class _DPAOTPScreenState extends State<_DPAOTPScreen>
       controller: _otpController,
       backgroundColor: Colors.transparent,
       enableActiveFill: true,
+      autoFocus: widget.shouldAutoFocus,
       animationType: AnimationType.fade,
       mainAxisAlignment: MainAxisAlignment.center,
       keyboardType: TextInputType.number,
