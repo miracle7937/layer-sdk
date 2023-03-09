@@ -90,6 +90,8 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
             'benef_acc_num_allowed_characters',
             'benef_acc_num_minimum_characters',
             'benef_acc_num_maximum_characters',
+            'benef_allowed_characters',
+            'benef_maximum_characters',
           ],
         ),
         _loadCustomerUseCase(),
@@ -107,6 +109,16 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
       final selectedCurrency = currencies.firstWhereOrNull(
         (e) => e.code == customerCountry?.currency,
       );
+
+      final String? maxCharacters = beneficiarySettings
+          .singleWhereOrNull(
+              (element) => element.code == 'benef_maximum_characters')
+          ?.value;
+
+      final String? allowedCharacters = beneficiarySettings
+          .singleWhereOrNull(
+              (element) => element.code == 'benef_allowed_characters')
+          ?.value;
 
       /// TODO: cubit_issue | Why is the action being used here like this.
       /// The action is just for letting the user know what action is being
@@ -127,6 +139,8 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
           selectedCurrency: selectedCurrency,
           availableCurrencies: currencies,
           beneficiarySettings: beneficiarySettings,
+          allowedCharacters: allowedCharacters,
+          maxCharactersAllowed: int.tryParse(maxCharacters ?? ''),
         ),
       );
     } on Exception catch (e) {

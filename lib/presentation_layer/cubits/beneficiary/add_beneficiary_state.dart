@@ -94,6 +94,12 @@ class AddBeneficiaryState extends BaseState<AddBeneficiaryAction,
   /// account number and sort code.
   bool get accountRequired => !(selectedCountry?.isIBAN ?? false);
 
+  /// Max amount of characters allowed in the benef name
+  final int? maxCharactersAllowed;
+
+  /// The characters that can be put into the benef name
+  final String? allowedCharacters;
+
   /// TODO: cubit_issue | Not very descriptive. Could we change this to
   /// `canSubmit`for example?
   /// Adding of new beneficiary is allowed when all required fields are filled.
@@ -127,6 +133,8 @@ class AddBeneficiaryState extends BaseState<AddBeneficiaryAction,
     this.bankQuery,
     List<int> pdfBytes = const [],
     List<int> imageBytes = const [],
+    this.maxCharactersAllowed,
+    this.allowedCharacters,
   })  : countries = UnmodifiableListView(countries),
         availableCurrencies = UnmodifiableListView(availableCurrencies),
         banks = UnmodifiableListView(banks),
@@ -148,6 +156,8 @@ class AddBeneficiaryState extends BaseState<AddBeneficiaryAction,
     Country? selectedCountry,
     Iterable<GlobalSetting>? beneficiarySettings,
     String? bankQuery,
+    String? allowedCharacters,
+    int? maxCharactersAllowed,
   }) =>
       AddBeneficiaryState(
         actions: actions ?? super.actions,
@@ -164,6 +174,8 @@ class AddBeneficiaryState extends BaseState<AddBeneficiaryAction,
         selectedCountry: selectedCountry ?? this.selectedCountry,
         beneficiarySettings: beneficiarySettings ?? this.beneficiarySettings,
         bankQuery: bankQuery ?? this.bankQuery,
+        allowedCharacters: allowedCharacters ?? this.allowedCharacters,
+        maxCharactersAllowed: maxCharactersAllowed ?? this.maxCharactersAllowed,
       );
 
   @override
