@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:sms_autofill/sms_autofill.dart';
 
 import '../../../layer_sdk.dart';
 import '../../cubits.dart';
@@ -67,6 +69,9 @@ class OTPScreen extends StatelessWidget {
   /// The callback called when the send OTP code gets pressed.
   final Future<bool> Function()? onSendOTPCode;
 
+  /// The OTP length.
+  final int otpLength;
+
   /// Creates a new [OTPScreen].
   const OTPScreen({
     Key? key,
@@ -83,6 +88,7 @@ class OTPScreen extends StatelessWidget {
     this.showBiometrics = false,
     this.onOCRAClientResponse,
     this.onSendOTPCode,
+    this.otpLength = 4,
   })  : assert(
           !showBiometrics || onOCRAClientResponse != null,
           'Biometrics should show but the OCRA client response '
@@ -107,6 +113,7 @@ class OTPScreen extends StatelessWidget {
           showBiometrics: showBiometrics,
           onOCRAClientResponse: onOCRAClientResponse,
           onSendOTPCode: onSendOTPCode,
+          otpLength: otpLength,
         ),
       );
 }
@@ -171,6 +178,9 @@ class _OTPScreen extends StatefulWidget {
   /// The callback called when the send OTP code gets pressed.
   final Future<bool> Function()? onSendOTPCode;
 
+  /// The OTP length.
+  final int otpLength;
+
   /// Creates a new [_OTPScreen].
   const _OTPScreen({
     Key? key,
@@ -187,6 +197,7 @@ class _OTPScreen extends StatefulWidget {
     this.showBiometrics = false,
     this.onOCRAClientResponse,
     this.onSendOTPCode,
+    this.otpLength = 4,
   })  : assert(
           !showBiometrics || onOCRAClientResponse != null,
           'Biometrics should show but the OCRA client response '
@@ -198,44 +209,61 @@ class _OTPScreen extends StatefulWidget {
   State<_OTPScreen> createState() => _OTPScreenState();
 }
 
-class _OTPScreenState extends State<_OTPScreen> with FullScreenLoaderMixin {
+class _OTPScreenState extends State<_OTPScreen>
+    with FullScreenLoaderMixin, CodeAutoFill {
   late int _remainingTime;
   Timer? _timer;
+
+  final _otpController = TextEditingController();
 
   bool get resendEnabled => _remainingTime <= 0;
 
   late bool _isVerifying;
+
   bool get isVerifying => _isVerifying;
+
   set isVerifying(bool isVerifying) =>
       setState(() => _isVerifying = isVerifying);
 
   String? _verificationError;
+
   String? get verificationError => _verificationError;
+
   set verificationError(String? verificationError) =>
       setState(() => _verificationError = verificationError);
 
   late bool _isResending;
+
   bool get isResending => _isResending;
+
   set isResending(bool isResending) =>
       setState(() => _isResending = isResending);
 
   late bool _shouldClearCode;
+
   bool get shouldClearCode => _shouldClearCode;
+
   set shouldClearCode(bool shouldClearCode) =>
       setState(() => _shouldClearCode = shouldClearCode);
 
   bool _showBiometricsButton = false;
+
   bool get showBiometricsButton => _showBiometricsButton;
+
   set showBiometricsButton(bool showBiometricsButton) =>
       setState(() => _showBiometricsButton = showBiometricsButton);
 
   bool _isSendingOTPCode = false;
+
   bool get isSendingOTPCode => _isSendingOTPCode;
+
   set isSendingOTPCode(bool isSendingOTPCode) =>
       setState(() => _isSendingOTPCode = isSendingOTPCode);
 
   late bool _showOTPCodeInput;
+
   bool get showOTPCodeInput => _showOTPCodeInput;
+
   set showOTPCodeInput(bool showOTPCodeInput) =>
       setState(() => _showOTPCodeInput = showOTPCodeInput);
 
@@ -277,6 +305,9 @@ class _OTPScreenState extends State<_OTPScreen> with FullScreenLoaderMixin {
         }
       });
     }
+
+    /// Add a listener to get the app signature;
+    listenForCode();
   }
 
   /// Preforms a biometrics authentication. If successful, it generates an
@@ -346,9 +377,21 @@ class _OTPScreenState extends State<_OTPScreen> with FullScreenLoaderMixin {
 
   @override
   void dispose() {
+    _otpController.dispose();
+
     if (_timer?.isActive ?? false) _timer?.cancel();
 
+    /// Unregister the listener from [SmsAutoFill]
+    SmsAutoFill().unregisterListener();
+
     super.dispose();
+  }
+
+  @override
+  void codeUpdated() {
+    if (code != null && code!.length == widget.otpLength) {
+      _otpController.text = code!;
+    }
   }
 
   @override
@@ -408,11 +451,7 @@ class _OTPScreenState extends State<_OTPScreen> with FullScreenLoaderMixin {
                     child: child,
                   ),
                   child: showOTPCodeInput
-                      ? PinWidgetRow(
-                          onPinSet: widget.onOTPCode,
-                          hasError: verificationError != null,
-                          shouldClearCode: shouldClearCode,
-                        )
+                      ? _pinCodeTextField(design: design)
                       : Center(
                           child: DKButton(
                             title: translation.translate('send'),
@@ -502,6 +541,53 @@ class _OTPScreenState extends State<_OTPScreen> with FullScreenLoaderMixin {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _pinCodeTextField({
+    required LayerDesign design,
+  }) {
+    return PinCodeTextField(
+      length: widget.otpLength,
+      appContext: context,
+      onChanged: (code) {
+        if (code.length == widget.otpLength) {
+          widget.onOTPCode(code);
+        }
+      },
+      controller: _otpController,
+      boxShadows: [
+        BoxShadow(
+          color: design.basePrimaryBlack.withOpacity(0.03),
+          offset: Offset(0, 1),
+          blurRadius: 2,
+        ),
+      ],
+      textStyle: design.bodyXXL(),
+      backgroundColor: Colors.transparent,
+      enableActiveFill: true,
+      animationType: AnimationType.fade,
+      mainAxisAlignment: MainAxisAlignment.center,
+      keyboardType: TextInputType.number,
+      autoDisposeControllers: false,
+      enablePinAutofill: true,
+      pinTheme: PinTheme(
+        fieldWidth: widget.otpLength <= 6 ? 52 : 38,
+        fieldHeight: widget.otpLength <= 6 ? 52 : 38,
+        borderRadius: BorderRadius.circular(12),
+        borderWidth: 1,
+        disabledColor: design.surfaceNonary3,
+        activeColor: design.surfaceNonary3,
+        activeFillColor: design.surfaceNonary3,
+        fieldOuterPadding: const EdgeInsets.symmetric(
+          horizontal: 8,
+        ),
+        inactiveColor: design.surfaceNonary3,
+        selectedColor: design.brandPrimary,
+        inactiveFillColor: design.surfaceNonary3,
+        selectedFillColor: design.surfaceNonary3,
+        shape: PinCodeFieldShape.box,
       ),
     );
   }

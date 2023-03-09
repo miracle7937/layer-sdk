@@ -15,7 +15,6 @@ export '../data_layer/repositories/loyalty/loyalty_points_expiration/loyalty_poi
 export '../data_layer/repositories/loyalty/loyalty_points_rate/loyalty_points_rate_repository.dart';
 export '../data_layer/repositories/loyalty/loyalty_points_transaction/loyalty_points_transaction_repository.dart';
 export '../data_layer/repositories/loyalty/offers/offer_repository.dart';
-export '../data_layer/repositories/loyalty/offers/offer_repository.dart';
 export '../domain_layer/abstract_repositories/loyalty/cashback_history/cashback_history_repository_interface.dart';
 export '../domain_layer/abstract_repositories/loyalty/loyalty_points/loyalty_points_repository_interface.dart';
 export '../domain_layer/abstract_repositories/loyalty/loyalty_points_exchange/loyalty_points_exchange_repository_interface.dart';
