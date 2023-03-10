@@ -5,6 +5,9 @@ import '../../cubits.dart';
 
 /// All possible actions.
 enum EditBeneficiaryAction {
+  /// Loading initial data.
+  initializing,
+
   /// Adding new beneficiary action.
   save,
 
@@ -54,6 +57,12 @@ class EditBeneficiaryState
   bool get hasAccount =>
       (oldBeneficiary.currency?.toLowerCase() ?? '') == 'gbp';
 
+  /// The characters that can be put into the name/nickname of the benef
+  final String? allowedCharacters;
+
+  /// Max amount of characters allowed into the benef name/nickname
+  final int? maxCharactersAllowed;
+
   /// Saving of new beneficiary is allowed,
   /// when all required fields are filled and some fields have changes.
   bool get saveAvailable =>
@@ -72,6 +81,8 @@ class EditBeneficiaryState
     required this.beneficiary,
     this.beneficiaryResult,
     Iterable<Country> countries = const <Country>[],
+    this.allowedCharacters,
+    this.maxCharactersAllowed,
   }) : countries = UnmodifiableListView(countries);
 
   /// Creates a new state based on this one.
@@ -82,6 +93,8 @@ class EditBeneficiaryState
     Beneficiary? beneficiary,
     Beneficiary? beneficiaryResult,
     Iterable<Country>? countries,
+    String? allowedCharacters,
+    int? maxCharactersAllowed,
   }) =>
       EditBeneficiaryState(
         actions: actions ?? super.actions,
@@ -91,6 +104,8 @@ class EditBeneficiaryState
         beneficiary: beneficiary ?? this.beneficiary,
         beneficiaryResult: beneficiaryResult ?? this.beneficiaryResult,
         countries: countries ?? this.countries,
+        allowedCharacters: allowedCharacters ?? this.allowedCharacters,
+        maxCharactersAllowed: maxCharactersAllowed ?? this.maxCharactersAllowed,
       );
 
   @override
@@ -102,5 +117,7 @@ class EditBeneficiaryState
         beneficiary,
         beneficiaryResult,
         countries,
+        allowedCharacters,
+        maxCharactersAllowed,
       ];
 }
