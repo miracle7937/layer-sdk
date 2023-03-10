@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
 
 import '../../../domain_layer/models.dart';
@@ -18,6 +19,7 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
       _verifyBeneficiarySecondFactorUseCase;
   final ResendBeneficiarySecondFactorUseCase
       _resendBeneficiarySecondFactorUseCase;
+  final LoadGlobalSettingsUseCase _loadGlobalSettingsUseCase;
 
   /// Creates a new [EditBeneficiaryCubit].
   EditBeneficiaryCubit({
@@ -28,12 +30,14 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
         verifyBeneficiarySecondFactorUseCase,
     required ResendBeneficiarySecondFactorUseCase
         resendBeneficiarySecondFactorUseCase,
+    required LoadGlobalSettingsUseCase loadGlobalSettingsUseCase,
   })  : _editBeneficiaryUseCase = editBeneficiariesUseCase,
         _sendOTPCodeForBeneficiaryUseCase = sendOTPCodeForBeneficiaryUseCase,
         _verifyBeneficiarySecondFactorUseCase =
             verifyBeneficiarySecondFactorUseCase,
         _resendBeneficiarySecondFactorUseCase =
             resendBeneficiarySecondFactorUseCase,
+        _loadGlobalSettingsUseCase = loadGlobalSettingsUseCase,
         super(
           EditBeneficiaryState(
             oldBeneficiary: editingBeneficiary,
@@ -74,6 +78,53 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
           beneficiary: beneficiary,
         ),
       );
+
+  /// Method used mostly to load configurations related to editing a benef
+  Future<void> load() async {
+    emit(
+      state.copyWith(
+        actions: state.addAction(EditBeneficiaryAction.initializing),
+        errors: state.removeErrorForAction(EditBeneficiaryAction.initializing),
+      ),
+    );
+
+    try {
+      final editBenefSettings = await _loadGlobalSettingsUseCase(
+        codes: [
+          'benef_allowed_characters',
+          'benef_maximum_characters',
+        ],
+      );      
+
+      final String? maxCharacters = editBenefSettings
+          .singleWhereOrNull(
+              (element) => element.code == 'benef_maximum_characters')
+          ?.value;
+
+      final String? allowedCharacters = editBenefSettings
+          .singleWhereOrNull(
+              (element) => element.code == 'benef_allowed_characters')
+          ?.value;
+
+      emit(
+        state.copyWith(
+          actions: state.removeAction(EditBeneficiaryAction.initializing),
+          maxCharactersAllowed: int.tryParse(maxCharacters ?? ''),
+          allowedCharacters: allowedCharacters,          
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          actions: state.removeAction(EditBeneficiaryAction.initializing),
+          errors: state.addErrorFromException(
+            action: EditBeneficiaryAction.initializing,
+            exception: e,
+          ),
+        ),
+      );
+    }
+  }
 
   /// Handles the editing of beneficiary.
   void onEdit() async {
