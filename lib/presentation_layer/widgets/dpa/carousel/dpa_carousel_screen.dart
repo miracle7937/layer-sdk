@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../data_layer/environment.dart';
 import '../../../../features/dpa.dart';
+import '../../../extensions.dart';
 import '../../../resources.dart';
 import '../../../widgets.dart';
 
@@ -20,6 +21,10 @@ class DPACarouselScreen extends StatelessWidget {
     final design = DesignSystem.of(context);
 
     final state = context.watch<DPAProcessCubit>().state;
+
+    final alignment =
+        state.process.stepProperties?.textAlignment.toTextAlign() ??
+            TextAlign.center;
 
     final content = state.process.variables
         .map(
@@ -48,7 +53,7 @@ class DPACarouselScreen extends StatelessWidget {
                 const SizedBox(height: 24.0),
                 Text(
                   variable.value?.replaceAll('\\n', '\n'),
-                  textAlign: TextAlign.center,
+                  textAlign: alignment,
                   style: design.bodyM(),
                 ),
               ],

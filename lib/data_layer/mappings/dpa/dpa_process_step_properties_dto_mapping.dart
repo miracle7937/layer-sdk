@@ -35,6 +35,7 @@ extension DPAProcessStepPropertiesDTOMapping on DPAProcessStepPropertiesDTO {
         autoFinishIn: autoFinishIn,
         allowCancel: allowCancel ?? true,
         isBackAllowed: isBackAllowed ?? true,
+        textAlignment: textAlignment?.toTextAlignment() ?? TextAlignment.center,
       );
 
   /// Checks if this [DPAProcessStepPropertiesDTO] has a valid URL and appends
@@ -153,6 +154,20 @@ extension DPAScreenBlockDTOMapping on DPAScreenBlockDTO {
           to: DPAScreenBlock,
           value: this,
         );
+    }
+  }
+}
+
+/// Extension that provides mappings for [TextAlignmentDTO]
+extension TextAlignmentDTOMapping on TextAlignmentDTO {
+  /// Maps into a [TextAlignment]
+  TextAlignment toTextAlignment() {
+    switch (this) {
+      case TextAlignmentDTO.left:
+        return TextAlignment.left;
+
+      case TextAlignmentDTO.center:
+        return TextAlignment.center;
     }
   }
 }

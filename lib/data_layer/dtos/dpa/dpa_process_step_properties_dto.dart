@@ -73,6 +73,9 @@ class DPAProcessStepPropertiesDTO {
   /// If the current process can be cancelled
   final bool? allowCancel;
 
+  /// The text alignment.
+  final TextAlignmentDTO? textAlignment;
+
   /// Creates a new [DPAProcessStepPropertiesDTO].
   DPAProcessStepPropertiesDTO({
     this.image,
@@ -98,6 +101,7 @@ class DPAProcessStepPropertiesDTO {
     this.skipButtonLabel,
     this.autoFinishIn,
     this.allowCancel,
+    this.textAlignment,
   });
 
   /// Creates a new [DPAProcessStepPropertiesDTO] from a JSON.
@@ -134,6 +138,9 @@ class DPAProcessStepPropertiesDTO {
         skipButtonLabel: json['skip_label'],
         autoFinishIn: int.tryParse(
           (json['finish_in'] ?? '').toString(),
+        ),
+        textAlignment: TextAlignmentDTO.fromJson(
+          json['text_alignment'] ?? '',
         ),
       );
 }
@@ -290,4 +297,28 @@ class DPAScreenBlockDTO extends EnumDTO {
 
   @override
   String toString() => 'DPAScreenBlockDTO{$value}';
+}
+
+/// Enum that defines the text alignment of a DPA variable
+enum TextAlignmentDTO {
+  /// The text should be aligned to the left.
+  left('left'),
+
+  /// The text should be centered.
+  center('center');
+
+  /// The DTO value of this [TextAlignmentDTO].
+  final String value;
+
+  /// Default constructor
+  const TextAlignmentDTO(this.value);
+
+  /// Gets the enum instance associated with the provided `value`.
+  ///
+  /// Defaults to `center`
+  factory TextAlignmentDTO.fromJson(String value) =>
+      TextAlignmentDTO.values.firstWhereOrNull(
+        (element) => element.value == value,
+      ) ??
+      TextAlignmentDTO.center;
 }
