@@ -69,6 +69,9 @@ class DPAProcessStepProperties extends Equatable {
   /// If the user can go back to a previous step.
   final bool? isBackAllowed;
 
+  /// Defines how the text should be aligned.
+  final TextAlignment textAlignment;
+
   /// Creates a new [DPAProcessStepProperties].
   const DPAProcessStepProperties({
     required this.format,
@@ -92,6 +95,7 @@ class DPAProcessStepProperties extends Equatable {
     this.autoFinishIn,
     this.allowCancel = true,
     this.isBackAllowed = true,
+    this.textAlignment = TextAlignment.center,
   });
 
   @override
@@ -257,4 +261,13 @@ enum DPAScreenBlock {
 
   /// Email screen should be blocked.
   email,
+}
+
+/// Enum that defines the text alignment of a DPA variable
+enum TextAlignment {
+  /// The text should be centered.
+  center,
+
+  /// The text should be aligned to the left.
+  left,
 }

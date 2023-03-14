@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../data_layer/environment.dart';
 import '../../../../features/dpa.dart';
+import '../../../extensions.dart';
 import '../../../widgets.dart';
 
 /// Widget that displays the current process image and description by checking
@@ -36,6 +37,9 @@ class DPATaskDescription extends StatelessWidget {
     final alignment = process.stepProperties?.alignment ??
         DPAScreenAlignment.imageDescription;
 
+    final textAlignment =
+        process.stepProperties?.textAlignment.toTextAlign() ?? TextAlign.center;
+
     final description = taskDescription?.isEmpty ?? true
         ? SizedBox.shrink()
         : Padding(
@@ -46,9 +50,7 @@ class DPATaskDescription extends StatelessWidget {
             child: _DPATaskTitleDescriptionWidget(
               title: showTitle ? process.task?.name : null,
               description: taskDescription!,
-              align: alignment != DPAScreenAlignment.imageDescription
-                  ? TextAlign.left
-                  : TextAlign.center,
+              align: textAlignment,
             ),
           );
 
