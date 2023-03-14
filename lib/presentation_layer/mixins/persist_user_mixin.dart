@@ -22,16 +22,12 @@ mixin PersistUserMixin {
   }) async {
     final biometricsCubit = context.read<BiometricsCreator>().create();
 
-    await biometricsCubit.initialize();
-
-    if (!(biometricsCubit.state.canUseBiometrics ?? false)) {
-      return false;
-    }
-
     return await Navigator.push<bool>(
           context,
-          MaterialPageRoute(
-            builder: (context) => BlocProvider<BiometricsCubit>.value(
+          PageRouteBuilder(
+            transitionDuration: Duration.zero,
+            pageBuilder: (context, _, __) =>
+                BlocProvider<BiometricsCubit>.value(
               value: biometricsCubit,
               child: Builder(
                 builder: (context) => EnableBiometricsScreen(
