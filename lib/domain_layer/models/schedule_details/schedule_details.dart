@@ -101,13 +101,13 @@ class ScheduleDetails extends Equatable {
     DateTime? startDate,
   ) {
     final now = DateTime.now();
-    final tomorrow = DateTime(now.year, now.month, now.day + 1);
+    final tomorrow = DateTime.utc(now.year, now.month, now.day + 1);
 
     return startDate != null
         ? startDate
         : this.startDate ??
             (recurrence == Recurrence.endOfEachMonth
-                ? DateTime(
+                ? DateTime.utc(
                     now.year,
                     now.month + 1,
                     1,
@@ -123,56 +123,56 @@ class ScheduleDetails extends Equatable {
   ) {
     switch (recurrence) {
       case Recurrence.daily:
-        return DateTime(
+        return DateTime.utc(
           startDate.year,
           startDate.month,
           startDate.day + executions - 1,
         );
 
       case Recurrence.monthly:
-        return DateTime(
+        return DateTime.utc(
           startDate.year,
           startDate.month + executions - 1,
           startDate.day,
         );
 
       case Recurrence.yearly:
-        return DateTime(
+        return DateTime.utc(
           startDate.year + executions - 1,
           startDate.month,
           startDate.day,
         );
 
       case Recurrence.weekly:
-        return DateTime(
+        return DateTime.utc(
           startDate.year,
           startDate.month,
           startDate.day + 7 * (executions - 1),
         );
 
       case Recurrence.biweekly:
-        return DateTime(
+        return DateTime.utc(
           startDate.year,
           startDate.month,
           startDate.day + 14 * (executions - 1),
         );
 
       case Recurrence.quarterly:
-        return DateTime(
+        return DateTime.utc(
           startDate.year,
           startDate.month + 3 * (executions - 1),
           startDate.day,
         );
 
       case Recurrence.bimonthly:
-        return DateTime(
+        return DateTime.utc(
           startDate.year,
           startDate.month + 2 * (executions - 1),
           startDate.day,
         );
 
       case Recurrence.endOfEachMonth:
-        return DateTime(
+        return DateTime.utc(
           startDate.year,
           startDate.month + executions,
           1,
