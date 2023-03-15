@@ -1,4 +1,4 @@
-import '../../../_migration/data_layer/src/dtos.dart';
+import '../../dtos.dart';
 import '../../network.dart';
 
 /// A provider that handles API requests related to the registration.

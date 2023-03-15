@@ -77,6 +77,15 @@ class CustomerRepository implements CustomerRepositoryInterface {
     return dto.toCustomerLimit();
   }
 
+  /// Loads the customer's image
+  @override
+  Future<dynamic> loadCustomerImage({
+    required String imageURL,
+  }) =>
+      provider.loadCustomerImage(
+        imageURL: imageURL,
+      );
+
   DPAMappingCustomData get _customerCustomData => DPAMappingCustomData(
         token: provider.netClient.currentToken() ?? '',
         fileBaseURL: provider.customerDocumentsURLPrefix,

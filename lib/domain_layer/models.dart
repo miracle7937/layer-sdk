@@ -134,6 +134,7 @@ export 'models/product/product.dart';
 export 'models/profile/profile.dart';
 export 'models/receipt/receipt.dart';
 export 'models/recurrence/recurrence.dart';
+export 'models/registration/registration_response.dart';
 export 'models/resolution/resolution.dart';
 export 'models/role/role.dart';
 export 'models/schedule_details/schedule_details.dart';

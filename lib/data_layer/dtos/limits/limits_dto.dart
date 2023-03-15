@@ -1,4 +1,4 @@
-import '../../../_migration/data_layer/src/helpers/json_parser.dart';
+import '../../helpers.dart';
 
 /// Holds the data of the limits information.
 class LimitsDTO {

@@ -1,12 +1,19 @@
 library utils;
 
 export 'utils/activation_code_utils.dart';
+export 'utils/amount_formatter.dart';
+export 'utils/background_net_json.dart';
 export 'utils/codec_utils.dart';
 export 'utils/country_with_phone_code_wrapper.dart';
+export 'utils/cubit_concentrated_error_observer.dart';
 export 'utils/device_permissions_wrapper.dart';
+export 'utils/error_concentrator.dart';
 export 'utils/file_utils.dart';
 export 'utils/interceptors/fl_interceptor.dart';
+export 'utils/interceptors/user_inactive_interceptor.dart';
 export 'utils/logger/file_logger.dart';
+export 'utils/no_storage.dart';
+export 'utils/ocra_challenge_generator.dart';
 export 'utils/pagination.dart';
 export 'utils/preferences_storage.dart';
 export 'utils/request_headers_helper.dart';

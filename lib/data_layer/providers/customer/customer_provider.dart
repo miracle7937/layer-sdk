@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:dio/dio.dart';
 
 import '../../../../data_layer/network.dart';
 import '../../dtos.dart';
@@ -194,6 +195,21 @@ class CustomerProvider {
     }
 
     return null;
+  }
+
+  /// Loads the customer's image
+  Future<dynamic> loadCustomerImage({
+    required String imageURL,
+  }) async {
+    final effectiveUrl = netClient.netEndpoints.infobankingLink + imageURL;
+
+    final response = await netClient.request(
+      effectiveUrl,
+      decodeResponse: false,
+      responseType: ResponseType.bytes,
+    );
+
+    return response.data;
   }
 
   /// Returns the prefix URL to access files on the server.

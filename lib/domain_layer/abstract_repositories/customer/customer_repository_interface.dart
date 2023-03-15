@@ -30,4 +30,9 @@ abstract class CustomerRepositoryInterface {
   ///
   /// Returns `null` if the customer has no limits set.
   Future<CustomerLimit?> getCustomerLimits();
+
+  /// Loads the customer's image
+  Future<dynamic> loadCustomerImage({
+    required String imageURL,
+  });
 }

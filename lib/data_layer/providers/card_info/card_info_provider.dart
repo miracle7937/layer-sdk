@@ -4,8 +4,8 @@ import 'dart:convert';
 import 'package:pointycastle/pointycastle.dart';
 
 import '../../../../data_layer/network.dart';
-import '../../../_migration/data_layer/encryption.dart';
 import '../../dtos.dart';
+import '../../encryption.dart';
 
 /// Provides the card info for cards.
 class CardInfoProvider {

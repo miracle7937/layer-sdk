@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import '../../environment.dart';
+import '../../../data_layer/environment.dart';
 
 ///A container that shows an image using the [CachedNetworkImage] plugin
 ///

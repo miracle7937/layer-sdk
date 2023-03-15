@@ -1,6 +1,6 @@
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../_migration/data_layer/src/helpers/dto_helpers.dart';
+import '../../../data_layer/helpers.dart';
 
 /// The use case responsible for opening the urls
 class OpenLinkUseCase {
