@@ -168,6 +168,9 @@ class Account extends Equatable {
   /// iban of the account
   final String? iban;
 
+  /// The date when the account was created.
+  final DateTime? creationDate;
+
   /// Creates a new immutable [Account]
   const Account({
     this.id,
@@ -206,6 +209,7 @@ class Account extends Equatable {
     this.canStopIssuedCheck = true,
     this.canConfirmIssuedCheck = true,
     this.iban,
+    this.creationDate,
   });
 
   @override
@@ -244,6 +248,7 @@ class Account extends Equatable {
         canRequestCertificateOfAccount,
         canRequestCertificateOfDeposit,
         iban,
+        creationDate,
       ];
 
   /// Returns the available account number.
