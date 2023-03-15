@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:collection/collection.dart';
 
 import '../../../../domain_layer/models.dart';
-import '../../../_migration/data_layer/src/helpers/dto_helpers.dart';
+import '../../../data_layer/helpers.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
 

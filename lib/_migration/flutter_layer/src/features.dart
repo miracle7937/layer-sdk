@@ -1,7 +1,0 @@
-library features;
-
-export 'features/deep_links/deep_link_handler.dart';
-export 'features/notifications/firebase_notification.dart';
-export 'features/tutorial/target/tutorial_step.dart';
-export 'features/tutorial/target/tutorial_step_item.dart';
-export 'features/tutorial/tutorial.dart';

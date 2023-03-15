@@ -1,9 +1,8 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:layer_sdk/_migration/flutter_layer/flutter_layer.dart';
-import 'package:layer_sdk/_migration/flutter_layer/src/cubits/root_check/check_super_wrapper.dart';
 import 'package:layer_sdk/data_layer/repositories/setting/global_setting_repository.dart';
 import 'package:layer_sdk/domain_layer/models/setting/global_setting.dart';
+import 'package:layer_sdk/presentation_layer/cubits.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockGlobalSettingRepository extends Mock

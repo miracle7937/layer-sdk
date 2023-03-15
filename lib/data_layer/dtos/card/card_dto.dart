@@ -1,8 +1,7 @@
 import 'package:collection/collection.dart';
 
-import '../../../_migration/data_layer/src/helpers.dart';
-import '../preference/card_preferences_dto.dart';
-import 'card_type_dto.dart';
+import '../../dtos.dart';
+import '../../helpers.dart';
 
 /// Represents the customers card
 /// as provided by the infobanking service
@@ -102,14 +101,14 @@ class CardDTO {
           : CardProviderDTO.fromString(map['extra']['provider']),
       cardHolderName: map['holder_name'],
       branchName: map['extra'] != null
-          ? jsonLookup(map, ['extra', 'branch_name'])
+          ? JsonParser.jsonLookup(map, ['extra', 'branch_name'])
           : null,
       monthlyPayment: map['monthly_payment'],
       dailyLimit: map['extra'] != null
-          ? jsonLookup(map, ['extra', 'daily_limit'])
+          ? JsonParser.jsonLookup(map, ['extra', 'daily_limit'])
           : null,
       blockedAmount: map['extra'] != null
-          ? jsonLookup(map, ['extra', 'blocked_amount'])
+          ? JsonParser.jsonLookup(map, ['extra', 'blocked_amount'])
           : null,
       creditLimit: map['credit_limit'],
       remainingLimit: map['remaining_limit'],
@@ -124,7 +123,7 @@ class CardDTO {
       preferences: CardPreferencesDTO.fromJson(map),
       isVirtual: map['virtual'] ?? false,
       token: map['extra'] != null
-          ? jsonLookup(map, ['extra', 'card_token'])
+          ? JsonParser.jsonLookup(map, ['extra', 'card_token'])
           : null,
     );
   }

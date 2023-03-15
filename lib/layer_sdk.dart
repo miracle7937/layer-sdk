@@ -3,11 +3,10 @@ library layer_sdk;
 export 'package:auto_size_text/auto_size_text.dart';
 export 'package:contacts_service/contacts_service.dart';
 export 'package:design_kit_layer/design_kit_layer.dart';
+export 'package:firebase_core/firebase_core.dart';
+export 'package:firebase_messaging/firebase_messaging.dart';
+export 'package:permission_handler/permission_handler.dart';
 
-/// Old layers
-export '_migration/business_layer/business_layer.dart';
-export '_migration/data_layer/data_layer.dart';
-export '_migration/flutter_layer/flutter_layer.dart';
 export 'data_layer/interfaces.dart';
 export 'features/accounts.dart';
 export 'features/activity.dart';
@@ -35,7 +34,6 @@ export 'features/validator.dart';
 export 'presentation_layer/app.dart';
 export 'presentation_layer/creators.dart';
 export 'presentation_layer/design.dart';
-export 'presentation_layer/environment.dart';
 export 'presentation_layer/errors.dart';
 export 'presentation_layer/extensions.dart';
 export 'presentation_layer/features.dart';

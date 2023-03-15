@@ -24,6 +24,7 @@ export 'providers/device_session/device_session_provider.dart';
 export 'providers/dpa/dpa_provider.dart';
 export 'providers/experience/experience_provider.dart';
 export 'providers/experience_preferences/experience_preferences_provider.dart';
+export 'providers/file_provider.dart';
 export 'providers/financial/financial_data_provider.dart';
 export 'providers/financial/income_expense_provider.dart';
 export 'providers/inbox/inbox_provider.dart';
