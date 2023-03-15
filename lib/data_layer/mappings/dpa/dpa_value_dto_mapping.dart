@@ -31,7 +31,12 @@ extension DPAValueDTOMapping on DPAValueDTO {
     }
 
     final baseUrl = customData.fileBaseURL;
-    final completeUrl = '$baseUrl/$icon';
+    var completeUrl = '';
+    if (baseUrl.endsWith('/') || icon!.startsWith('/')) {
+      completeUrl = '$baseUrl$icon';
+    } else {
+      completeUrl = '$baseUrl/$icon';
+    }
 
     if (isURL(completeUrl)) {
       return completeUrl;
