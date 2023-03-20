@@ -97,7 +97,7 @@ class DPAVariableDTO {
       DPAVariableDTO(
         id: json['Id'],
         key: key,
-        label: json['label'] as String,
+        label: json['label'],
         type: DPATypeDTO.fromRaw(json['type']),
         submitType: json['type'],
         order: json['order'],
