@@ -18,7 +18,10 @@ class OpenLinkUseCase {
       final urlUri = Uri.tryParse(url);
 
       if (isNotEmpty(link) && linkUri != null && await canLaunchUrl(linkUri)) {
-        await launchUrl(linkUri);
+        await launchUrl(
+          linkUri,
+          mode: mode,
+        );
         return;
       } else if (isNotEmpty(url) &&
           urlUri != null &&
