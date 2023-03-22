@@ -8,7 +8,11 @@ class OpenLinkUseCase {
   OpenLinkUseCase();
 
   /// Opens the provided link
-  void openLink({required String link, required String url}) async {
+  void openLink({
+    required String link,
+    required String url,
+    LaunchMode mode = LaunchMode.platformDefault,
+  }) async {
     try {
       final linkUri = Uri.tryParse(link);
       final urlUri = Uri.tryParse(url);
@@ -19,7 +23,10 @@ class OpenLinkUseCase {
       } else if (isNotEmpty(url) &&
           urlUri != null &&
           await canLaunchUrl(urlUri)) {
-        await launchUrl(urlUri);
+        await launchUrl(
+          urlUri,
+          mode: mode,
+        );
         return;
       }
     } on Exception catch (e) {
