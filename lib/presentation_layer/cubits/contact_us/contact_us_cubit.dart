@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:collection/collection.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../domain_layer/models.dart';
 import '../../../data_layer/helpers.dart';
@@ -287,6 +288,7 @@ class ContactUsCubit extends Cubit<ContactUsState> {
           onTap: () => _openLinkUseCase.openLink(
             link: "https://wa.me/$subTitle",
             url: "https://wa.me/$subTitle",
+            mode: LaunchMode.externalApplication,
           ),
         ),
       );
