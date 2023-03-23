@@ -218,6 +218,7 @@ class _DPAOTPScreenState extends State<_DPAOTPScreen>
       await Future.wait([
         storageCubit.loadLastLoggedUser(),
         storageCubit.loadOcraSecretKey(),
+        storageCubit.loadAccessPin(),
       ]);
 
       final deviceId = storageCubit.state.currentUser!.deviceId!;
