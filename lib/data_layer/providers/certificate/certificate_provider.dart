@@ -20,6 +20,7 @@ class CertificateProvider {
   Future<List<int>> requestCertificateOfDeposit({
     required String customerId,
     required String accountId,
+    FileType type = FileType.image,
   }) async {
     final response = await netClient.request(
       netClient.netEndpoints.accountCertificate,
@@ -30,7 +31,7 @@ class CertificateProvider {
         'customer_id': customerId,
       },
       data: {
-        "format": "image",
+        'format': type.toFormat(),
         "form_id": "certificate_deposit",
         "send_by": "response",
         "account_id": accountId,
@@ -47,6 +48,7 @@ class CertificateProvider {
   Future<List<int>> requestAccountCertificate({
     required String customerId,
     required String accountId,
+    FileType type = FileType.image,
   }) async {
     final response = await netClient.request(
       netClient.netEndpoints.accountCertificate,
@@ -57,7 +59,7 @@ class CertificateProvider {
       decodeResponse: false,
       responseType: ResponseType.bytes,
       data: {
-        "format": "image",
+        'format': type.toFormat(),
         "form_id": "account_certificate",
         "send_by": "response",
         "account_id": accountId,

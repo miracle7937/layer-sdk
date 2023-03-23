@@ -8,6 +8,7 @@ abstract class CertificateRepositoryInterface {
   Future<List<int>> requestCertificateOfDeposit({
     required String customerId,
     required String accountId,
+    FileType type = FileType.image,
   });
 
   /// Request a new `Account certificate`
@@ -16,6 +17,7 @@ abstract class CertificateRepositoryInterface {
   Future<List<int>> requestAccountCertificate({
     required String customerId,
     required String accountId,
+    FileType type = FileType.image,
   });
 
   /// Request a new `Bank statement`

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:open_file/open_file.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:validators/validators.dart';
@@ -104,7 +104,7 @@ class LinkCubit extends Cubit<LinkState> {
     var type = isPDF ? 'application/pdf' : null;
 
     if (fromCache && (await file.exists())) {
-      OpenFile.open(
+      OpenFilex.open(
         path,
         uti: uti,
         type: type,
@@ -155,7 +155,7 @@ class LinkCubit extends Cubit<LinkState> {
         ),
       );
 
-      OpenFile.open(
+      OpenFilex.open(
         file.path,
         uti: uti,
         type: type,
@@ -209,7 +209,7 @@ class LinkCubit extends Cubit<LinkState> {
     var type = isPDF ? 'application/pdf' : 'image/jpeg';
 
     if (fromCache && (await file.exists())) {
-      OpenFile.open(
+      OpenFilex.open(
         path,
         uti: uti,
         type: type,
@@ -262,7 +262,7 @@ class LinkCubit extends Cubit<LinkState> {
         ),
       );
 
-      OpenFile.open(
+      OpenFilex.open(
         file.path,
         uti: uti,
         type: type,
