@@ -5,4 +5,7 @@ enum FileType {
 
   /// Image file
   image,
+
+  /// Excel file
+  excel,
 }

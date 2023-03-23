@@ -1,4 +1,5 @@
 import '../../abstract_repositories.dart';
+import '../../models/file_type.dart';
 
 /// Use case to request the account certificate
 class RequestAccountCertificateUseCase {
@@ -15,9 +16,11 @@ class RequestAccountCertificateUseCase {
   Future<List<int>> call({
     required String customerId,
     required String accountId,
+    FileType type = FileType.image,
   }) =>
       _repository.requestAccountCertificate(
         customerId: customerId,
         accountId: accountId,
+        type: type,
       );
 }

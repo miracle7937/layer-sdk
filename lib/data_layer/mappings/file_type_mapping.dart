@@ -10,6 +10,9 @@ extension FileTypeMapping on FileType {
 
       case FileType.image:
         return 'image';
+
+      case FileType.excel:
+        return 'xlsx';
     }
   }
 }

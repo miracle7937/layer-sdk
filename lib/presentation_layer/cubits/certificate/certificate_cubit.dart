@@ -51,7 +51,9 @@ class CertificateCubit extends Cubit<CertificateStates> {
 
   /// Requests a new certificate of deposit
   /// Emits the file list of bytes when done
-  Future<void> requestCertificateOfDeposit() async {
+  Future<void> requestCertificateOfDeposit({
+    FileType type = FileType.image,
+  }) async {
     if (state.account?.id == null || state.customer?.id == null) {
       throw ArgumentError('Account and customer ids are required');
     }
@@ -67,6 +69,7 @@ class CertificateCubit extends Cubit<CertificateStates> {
       final bytes = await _requestCertificateOfDepositUseCase(
         accountId: state.account!.id!,
         customerId: state.customer!.id,
+        type: type,
       );
 
       emit(
@@ -88,7 +91,9 @@ class CertificateCubit extends Cubit<CertificateStates> {
 
   /// Requests a new account certificate
   /// Emits the file list of bytes when done
-  Future<void> requestAccountCertificate() async {
+  Future<void> requestAccountCertificate({
+    FileType type = FileType.image,
+  }) async {
     if (state.account?.id == null || state.customer?.id == null) {
       throw ArgumentError('Account and customer ids are required');
     }
@@ -104,6 +109,7 @@ class CertificateCubit extends Cubit<CertificateStates> {
       final bytes = await _requestAccountCertificateUseCase(
         accountId: state.account!.id!,
         customerId: state.customer!.id,
+        type: type,
       );
 
       emit(
@@ -125,7 +131,9 @@ class CertificateCubit extends Cubit<CertificateStates> {
 
   /// Requests a new bank statement
   /// Emits the file list of bytes when done
-  Future<void> requestBankStatement() async {
+  Future<void> requestBankStatement({
+    FileType type = FileType.image,
+  }) async {
     if (state.account?.id == null ||
         state.customer?.id == null ||
         state.startDate == null ||
@@ -134,7 +142,11 @@ class CertificateCubit extends Cubit<CertificateStates> {
     }
 
     emit(
-      state.copyWith(busy: true, action: CertificateStatesActions.none),
+      state.copyWith(
+        busy: true,
+        action: CertificateStatesActions.none,
+        fileType: type,
+      ),
     );
 
     try {
@@ -143,6 +155,7 @@ class CertificateCubit extends Cubit<CertificateStates> {
         customerId: state.customer!.id,
         fromDate: state.startDate!,
         toDate: state.endDate!,
+        type: state.fileType,
       );
       emit(
         state.copyWith(

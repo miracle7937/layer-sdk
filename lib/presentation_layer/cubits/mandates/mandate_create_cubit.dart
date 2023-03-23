@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:open_file/open_file.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../../data_layer/network.dart';
@@ -96,7 +96,7 @@ class MandateCreateCubit extends Cubit<MandateCreateState> {
     final file = File(path);
     await file.writeAsBytes(bytes);
 
-    OpenFile.open(
+    OpenFilex.open(
       file.path,
       uti: isImage ? 'public.jpeg' : 'com.adobe.pdf',
       type: isImage ? 'image/jpeg' : 'application/pdf',

@@ -42,6 +42,9 @@ class CertificateStates extends Equatable {
   /// The end date range of the desired certificate
   final DateTime? endDate;
 
+  /// The selected file extension/type to be downloaded
+  final FileType fileType;
+
   /// Creates a new [CertificateStates] instance
   CertificateStates({
     this.action = CertificateStatesActions.none,
@@ -51,6 +54,7 @@ class CertificateStates extends Equatable {
     Iterable<int>? certificateBytes,
     this.startDate,
     this.endDate,
+    this.fileType = FileType.image,
   }) : certificateBytes = certificateBytes == null
             ? null
             : UnmodifiableListView(certificateBytes);
@@ -64,6 +68,7 @@ class CertificateStates extends Equatable {
         busy,
         startDate,
         endDate,
+        fileType,
       ];
 
   /// Creates a new instance from the current data
@@ -75,6 +80,7 @@ class CertificateStates extends Equatable {
     Iterable<int>? certificateBytes,
     DateTime? startDate,
     DateTime? endDate,
+    FileType? fileType,
   }) {
     return CertificateStates(
       action: action ?? this.action,
@@ -84,6 +90,7 @@ class CertificateStates extends Equatable {
       certificateBytes: certificateBytes ?? this.certificateBytes,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
+      fileType: fileType ?? this.fileType,
     );
   }
 }
