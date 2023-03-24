@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
-import 'package:open_file/open_file.dart';
+import 'package:open_filex/open_filex.dart';
 
 import '../../../../domain_layer/models.dart';
 import '../../../cubits.dart';
@@ -301,7 +301,7 @@ class _DPAFileUploadState extends State<DPAFileUpload> with FilePickerMixin {
     );
 
     if (!kIsWeb) {
-      OpenFile.open(path);
+      OpenFilex.open(path);
     }
   }
 }

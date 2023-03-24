@@ -225,7 +225,7 @@ class _PinWidgetRowState extends State<PinWidgetRow>
                   ),
                 ),
               );
-              Overlay.of(context)!.insert(_entry!);
+              Overlay.of(context)?.insert(_entry!);
             },
             child: Container(
               width: double.maxFinite,
@@ -358,7 +358,6 @@ class _PinWidgetRowState extends State<PinWidgetRow>
     for (final pin in pins) {
       pin.text = emptyChar;
     }
-
   }
 }
 

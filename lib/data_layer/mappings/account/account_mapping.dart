@@ -35,6 +35,7 @@ extension AccountMapping on Account {
         branchId: branchId,
         extraBranchId: extraBranchId,
         preferences: preferences.toAccountPreferencesDTO(),
+        created: creationDate,
       );
 }
 

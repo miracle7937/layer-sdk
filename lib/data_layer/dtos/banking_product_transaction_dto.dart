@@ -1,4 +1,4 @@
-import '../../_migration/data_layer/src/helpers/json_parser.dart';
+import '../helpers.dart';
 
 /// Represents a customer's BankingProduct transaction
 /// as provided by the infobanking service

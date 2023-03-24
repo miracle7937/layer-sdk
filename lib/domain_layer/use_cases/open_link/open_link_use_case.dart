@@ -1,6 +1,6 @@
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../_migration/data_layer/src/helpers/dto_helpers.dart';
+import '../../../data_layer/helpers.dart';
 
 /// The use case responsible for opening the urls
 class OpenLinkUseCase {
@@ -8,18 +8,28 @@ class OpenLinkUseCase {
   OpenLinkUseCase();
 
   /// Opens the provided link
-  void openLink({required String link, required String url}) async {
+  void openLink({
+    required String link,
+    required String url,
+    LaunchMode mode = LaunchMode.platformDefault,
+  }) async {
     try {
       final linkUri = Uri.tryParse(link);
       final urlUri = Uri.tryParse(url);
 
       if (isNotEmpty(link) && linkUri != null && await canLaunchUrl(linkUri)) {
-        await launchUrl(linkUri);
+        await launchUrl(
+          linkUri,
+          mode: mode,
+        );
         return;
       } else if (isNotEmpty(url) &&
           urlUri != null &&
           await canLaunchUrl(urlUri)) {
-        await launchUrl(urlUri);
+        await launchUrl(
+          urlUri,
+          mode: mode,
+        );
         return;
       }
     } on Exception catch (e) {

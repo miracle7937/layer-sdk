@@ -1,5 +1,5 @@
-import '../../../_migration/data_layer/src/mappings.dart';
 import '../../../data_layer/interfaces.dart';
+import '../../../data_layer/mappings.dart';
 import '../../../presentation_layer/resources.dart';
 import '../../models.dart';
 

@@ -1,5 +1,5 @@
-import '../../../_migration/data_layer/src/errors/mapping_error.dart';
-import '../../../_migration/data_layer/src/helpers.dart';
+import '../../errors.dart';
+import '../../helpers.dart';
 
 /// Represents a customer's account incomes and expenses
 class IncomeExpenseDTO {

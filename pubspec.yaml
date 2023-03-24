@@ -18,12 +18,12 @@ dependencies:
   carrier_info:
     git:
       url: git@gitlab.ubanquity.com:flutter-apps/carrier-info.git
-      ref: 433beda7e4b7c0249c9877fe09c9bbc4058fee27
+      ref: ee7a6dce0f8a9d034e4a682b260f7f947be09003
 
   design_kit_layer:
     git:
       url: git@gitlab.ubanquity.com:dart-packages/design-kit-layer.git
-      ref: 015b7c27c0686c11e10ac052f4f256f8417661eb
+      ref: 2718ff7be9b6492f90da7e37858a2abab2d06de6
 
   ocra_authentication:
     git:
@@ -49,7 +49,7 @@ dependencies:
   device_info: ^2.0.2
   dio: ^4.0.4
   equatable: ^2.0.2
-  file_picker: 4.2.6
+  file_picker: 5.2.6
   firebase_analytics: ^9.3.3
   firebase_core: ^1.21.1
   firebase_messaging: ^13.0.1
@@ -73,7 +73,7 @@ dependencies:
   location: ^4.2.2
   logging: ^1.0.1
   mime: ^1.0.0
-  open_file: ^3.2.1
+  open_filex: ^4.3.2
   open_mail_app: ^0.2.0
   package_info: ^2.0.2
   path_provider: ^2.0.5

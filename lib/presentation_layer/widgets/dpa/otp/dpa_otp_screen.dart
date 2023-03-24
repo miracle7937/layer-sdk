@@ -218,11 +218,14 @@ class _DPAOTPScreenState extends State<_DPAOTPScreen>
       await Future.wait([
         storageCubit.loadLastLoggedUser(),
         storageCubit.loadOcraSecretKey(),
+        storageCubit.loadAccessPin(),
       ]);
 
       final deviceId = storageCubit.state.currentUser!.deviceId!;
       final ocraSecret = storageCubit.state.ocraSecretKey!;
-      final accessPin = storageCubit.state.currentUser!.accessPin!;
+      final accessPin = storageCubit.state.accessPin.isNotEmpty
+          ? storageCubit.state.accessPin
+          : storageCubit.state.currentUser?.accessPin ?? '';
 
       final ocraAuthenticationCubit =
           context.read<OcraAuthenticationCreator>().create(

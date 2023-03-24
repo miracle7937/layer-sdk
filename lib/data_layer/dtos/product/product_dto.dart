@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 
-import '../../../_migration/data_layer/src/helpers.dart';
+import '../../helpers.dart';
 
 /// Class that holds data return from Product endpoint
 class ProductDTO {

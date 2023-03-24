@@ -1,7 +1,7 @@
 library branch_activation;
 
 /// TODO: replace with the user repository and otp repository when available.
-export '../_migration/data_layer/repositories.dart';
+
 export '../data_layer/providers/branch_activation/branch_activation_provider.dart';
 export '../data_layer/repositories/branch_activation/branch_activation_repository.dart';
 export '../domain_layer/abstract_repositories/branch_activation/branch_activation_repository_interface.dart';

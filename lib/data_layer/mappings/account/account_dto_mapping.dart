@@ -44,6 +44,7 @@ extension AccountDTOMapping on AccountDTO {
         canStopIssuedCheck: canStopIssuedCheck,
         canConfirmIssuedCheck: canConfirmIssuedCheck,
         iban: iban,
+        creationDate: created,
       );
 }
 

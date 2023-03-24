@@ -94,7 +94,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     );
 
     try {
-      var imageResponse = await _loadCustomerImageUseCase.loadCustomerImage(
+      var imageResponse = await _loadCustomerImageUseCase.call(
         imageURL: imageURL,
       );
 

@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../layer_sdk.dart';
-import '../../cubits/base_cubit/base_state.dart';
-import '../../cubits/set_pin_screen/access_pin_validation_cubit.dart';
+import '../../cubits.dart';
 
 /// Signature for [DPAFlow.onFinished].
 typedef DPAFinishedCallback<T> = void Function(

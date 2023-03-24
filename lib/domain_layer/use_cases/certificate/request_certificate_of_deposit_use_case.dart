@@ -1,4 +1,5 @@
 import '../../abstract_repositories.dart';
+import '../../models/file_type.dart';
 
 /// Use case to request a certificate of deposit
 class RequestCertificateOfDepositUseCase {
@@ -15,9 +16,11 @@ class RequestCertificateOfDepositUseCase {
   Future<List<int>> call({
     required String customerId,
     required String accountId,
+    FileType type = FileType.image,
   }) =>
       _repository.requestCertificateOfDeposit(
         customerId: customerId,
         accountId: accountId,
+        type: type,
       );
 }

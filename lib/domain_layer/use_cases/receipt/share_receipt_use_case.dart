@@ -1,4 +1,4 @@
-import 'package:open_file/open_file.dart';
+import 'package:open_filex/open_filex.dart';
 
 import '../../../layer_sdk.dart';
 
@@ -28,7 +28,7 @@ class ShareReceiptUseCase {
         bytes: bytes,
       );
     }
-    OpenFile.open(
+    OpenFilex.open(
       path,
     );
   }

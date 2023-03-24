@@ -18,10 +18,12 @@ class CertificateRepository implements CertificateRepositoryInterface {
   Future<List<int>> requestCertificateOfDeposit({
     required String customerId,
     required String accountId,
+    FileType type = FileType.image,
   }) {
     return _provider.requestCertificateOfDeposit(
       accountId: accountId,
       customerId: customerId,
+      type: type,
     );
   }
 
@@ -31,10 +33,12 @@ class CertificateRepository implements CertificateRepositoryInterface {
   Future<List<int>> requestAccountCertificate({
     required String customerId,
     required String accountId,
+    FileType type = FileType.image,
   }) {
     return _provider.requestAccountCertificate(
       accountId: accountId,
       customerId: customerId,
+      type: type,
     );
   }
 

@@ -1,5 +1,5 @@
-import '../../../_migration/data_layer/src/helpers/dto_helpers.dart';
 import '../../dtos.dart';
+import '../../helpers.dart';
 import '../../network.dart';
 
 /// Provider that handles API requests for [ProductDTO]

@@ -6,8 +6,6 @@ import 'package:location/location.dart' as loc;
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../../_migration/flutter_layer/src/cubits.dart';
-import '../../_migration/flutter_layer/src/widgets/text_fields/auto_padding_keyboard_view.dart';
 import '../../data_layer/environment.dart';
 import '../../data_layer/interfaces.dart';
 import '../../data_layer/network.dart';

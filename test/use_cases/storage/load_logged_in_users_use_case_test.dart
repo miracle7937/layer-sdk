@@ -1,10 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:layer_sdk/_migration/data_layer/src/mappings.dart';
 import 'package:layer_sdk/data_layer/interfaces.dart';
+import 'package:layer_sdk/data_layer/mappings.dart';
 import 'package:layer_sdk/domain_layer/use_cases.dart';
 import 'package:layer_sdk/features/user.dart';
 import 'package:layer_sdk/presentation_layer/resources.dart';
-
 import 'package:mocktail/mocktail.dart';
 
 class MockGenericStorage extends Mock implements GenericStorage {}
