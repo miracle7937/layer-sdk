@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:bloc/bloc.dart';
 
@@ -98,8 +99,11 @@ class ProfileCubit extends Cubit<ProfileState> {
         imageURL: imageURL,
       );
 
-      final image =
-          imageResponse is Map ? base64Decode(imageResponse["image"]) : null;
+      final image = imageResponse is Map
+          ? base64Decode(imageResponse["image"])
+          : imageResponse is Uint8List
+              ? imageResponse
+              : null;
 
       emit(
         state.copyWith(
