@@ -22,7 +22,7 @@ extension ActivityDTOMapping on ActivityDTO {
   dynamic _itemDTOToModel(DPAMappingCustomData customData) {
     switch (type) {
       case ActivityTypeDTO.dpa:
-        return (item as DPATaskDTO).toDPATask(customData);
+        return item != null ? (item as DPATaskDTO).toDPATask(customData) : null;
 
       case ActivityTypeDTO.transfer:
       case ActivityTypeDTO.scheduledTransfer:

@@ -75,7 +75,7 @@ class _FirebaseNotificationState extends State<FirebaseNotification> {
 
   void _load() async {
     await _initFirebase();
-    _initLocalNotifications();
+    await _initLocalNotifications();
   }
 
   Future<void> _initFirebase() async {
@@ -118,7 +118,7 @@ class _FirebaseNotificationState extends State<FirebaseNotification> {
     );
   }
 
-  void _initLocalNotifications() {
+  Future<void> _initLocalNotifications() async {
     final androidInitializationSettings =
         AndroidInitializationSettings('@mipmap/ic_notification');
 
@@ -128,10 +128,25 @@ class _FirebaseNotificationState extends State<FirebaseNotification> {
       iOS: iOSInitializationSettings,
     );
 
-    flutterLocalNotificationsPlugin.initialize(
+    await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
       onSelectNotification: onSelectNotification,
     );
+
+    await _checkNotifications();
+  }
+
+  Future<void> _checkNotifications() async {
+    final result =
+        await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+
+    if (!(result?.didNotificationLaunchApp ?? false)) return;
+
+    final payload = result?.payload;
+    if (payload == null) return;
+
+    final decoded = jsonDecode(payload);
+    _handleNotification(decoded);
   }
 
   void _handleNotification(Map<String, dynamic> message) async {
