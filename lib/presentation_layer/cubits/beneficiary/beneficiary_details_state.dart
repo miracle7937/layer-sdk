@@ -17,6 +17,10 @@ enum BeneficiaryDetailsError {
 
   /// A generic error occurred.
   generic,
+
+  /// Error thrown when trying to delete a beneficiary that has a
+  /// ongoing standing order.
+  beneficiaryHasStandingOrder,
 }
 
 /// The state of the [BeneficiaryDetailsCubit].

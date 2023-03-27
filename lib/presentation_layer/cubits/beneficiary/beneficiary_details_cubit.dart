@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../data_layer/network.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
 
@@ -42,13 +43,21 @@ class BeneficiaryDetailsCubit extends Cubit<BeneficiaryDetailsState> {
           BeneficiaryDetailsAction.delete,
         }),
       ));
-    } on Exception {
-      emit(state.copyWith(
-        actions: state.actions.difference({
-          BeneficiaryDetailsAction.delete,
-        }),
-        error: BeneficiaryDetailsError.generic,
-      ));
+    } on Exception catch (e) {
+      final standingOrder = e is NetException
+          ? e.code == CubitErrorCode.beneficiaryHasStandingOrder.value
+          : false;
+
+      emit(
+        state.copyWith(
+          actions: state.actions.difference({
+            BeneficiaryDetailsAction.delete,
+          }),
+          error: standingOrder
+              ? BeneficiaryDetailsError.beneficiaryHasStandingOrder
+              : BeneficiaryDetailsError.generic,
+        ),
+      );
     }
   }
 }

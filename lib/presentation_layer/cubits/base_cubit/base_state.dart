@@ -50,6 +50,10 @@ enum CubitErrorCode {
   /// Bad request. (400 status code)
   badRequest('BAD_REQUEST'),
 
+  /// Error code received when trying to delete a beneficiary that has a
+  /// ongoing standing order.
+  beneficiaryHasStandingOrder('standing_order_benef_deletion'),
+
   /// Unknown error code.
   ///
   /// If you get this, it means that you are getting an error code from the
