@@ -30,6 +30,16 @@ class DPAText extends StatefulWidget {
   /// {@macro flutter.widgets.editableText.scrollPadding}
   final EdgeInsets scrollPadding;
 
+  /// The description of the text field
+  ///
+  /// In case of null no description will be displayed
+  final String? description;
+
+  /// Whether the widget keelps the warning size
+  ///
+  /// Defaults to `true`
+  final bool keepWarningSize;
+
   /// Creates a new [DPAText]
   const DPAText({
     Key? key,
@@ -38,6 +48,8 @@ class DPAText extends StatefulWidget {
     this.forPopup = false,
     this.padding = EdgeInsets.zero,
     this.scrollPadding = const EdgeInsets.all(20.0),
+    this.description,
+    this.keepWarningSize = true,
   }) : super(key: key);
 
   @override
@@ -153,13 +165,14 @@ class _DPATextState extends State<DPAText> {
                       : DKTextFieldSize.large,
                   warning:
                       widget.variable.translateValidationError(translation),
-                  keepWarningSize: true,
+                  keepWarningSize: widget.keepWarningSize,
                   inputFormatters: widget.variable.toTextInputFormatters(),
                   onChanged: (v) => context.read<DPAProcessCubit>().updateValue(
                         variable: widget.variable,
                         newValue: v,
                       ),
                   scrollPadding: widget.scrollPadding,
+                  description: widget.description,
                 ),
     );
   }
