@@ -1,3 +1,4 @@
+import 'package:design_kit_layer/design_kit_layer.dart';
 import 'package:flutter/foundation.dart';
 
 /// Convenience extensions on the String type
@@ -62,4 +63,22 @@ extension StringListHelperExtension on List<String?> {
         // it by using a dash for separator.
         separator ?? (kIsWeb ? ' - ' : ' ∙ '),
       );
+}
+
+/// Extension that tries to map a country or currency code into DK SVG Resource
+extension StringFlagExtension on String {
+  /// Gets the currency or country SVG asset path of this string
+  ///
+  /// Returns `null` if the string is neither a currency or country code.
+  String? get currencyOrCountryFlag {
+    final currencyFlag = DKFlags.currencyFlag(currency: toUpperCase());
+    final currencySplit = currencyFlag.split('/').last;
+    if (currencySplit != '.svg') return currencyFlag;
+
+    final countryFlag = DKFlags.countryFlag(countryCode: toUpperCase());
+    final countrySplit = countryFlag.split('/').last;
+    if (countrySplit != '.svg') return countryFlag;
+
+    return null;
+  }
 }
