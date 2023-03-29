@@ -179,7 +179,8 @@ class _DPATextState extends State<DPAText> {
         color: labelColorRaw, textStyle: fontTextStyle);
     final labelTextProperties = widget.variable.property.labelTextProperties;
     final value = widget.variable.value;
-    final currency = widget.variable.property.currencyFlagCode;
+    final flagPath =
+        (widget.variable.property.currencyFlagCode ?? '').currencyOrCountryFlag;
     final valueTextProperties = widget.variable.property.valueTextProperties;
 
     return (labelTextProperties?.textStyle == DPAVariableTextStyle.titleXXL &&
@@ -240,11 +241,11 @@ class _DPATextState extends State<DPAText> {
                 ),
                 const SizedBox(height: 2.0),
               ],
-              if (value?.isNotEmpty ?? false || (currency?.isNotEmpty ?? false))
+              if (value?.isNotEmpty ?? false || (flagPath?.isNotEmpty ?? false))
                 Row(children: [
-                  if (currency?.isNotEmpty ?? false) ...[
+                  if (flagPath?.isNotEmpty ?? false) ...[
                     SvgPicture.asset(
-                      DKFlags.currencyFlag(currency: currency ?? ''),
+                      flagPath!,
                       width: 24,
                       height: 18,
                     ),
