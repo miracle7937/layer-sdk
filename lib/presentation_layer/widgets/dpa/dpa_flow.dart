@@ -282,6 +282,10 @@ class _DPAFlowState<T> extends State<DPAFlow<T>> {
       (cubit) => cubit.state.areVariablesValidated,
     );
 
+    final actions = context.select<DPAProcessCubit, Set<DPAProcessBusyAction>>(
+      (c) => c.state.actions,
+    );
+
     final translation = Translation.of(context);
     final cubit = context.read<DPAProcessCubit>();
     final isDelayTask = process.stepProperties?.delay != null;
@@ -397,7 +401,7 @@ class _DPAFlowState<T> extends State<DPAFlow<T>> {
                                 height: 12.0,
                               ),
                               DPACancelButton(
-                                builder: (context, busy, onTap) => DKButton(
+                                builder: (context, _, __) => DKButton(
                                   size: DKButtonSize.large,
                                   title:
                                       process.stepProperties?.skipButtonLabel ??
@@ -412,7 +416,9 @@ class _DPAFlowState<T> extends State<DPAFlow<T>> {
                                       )
                                     ],
                                   ),
-                                  status: busy
+                                  status: actions.contains(
+                                    DPAProcessBusyAction.skipping,
+                                  )
                                       ? DKButtonStatus.loading
                                       : DKButtonStatus.idle,
                                   type: DKButtonType.baseSecondary,
