@@ -6,6 +6,7 @@ export 'utils/background_net_json.dart';
 export 'utils/codec_utils.dart';
 export 'utils/country_with_phone_code_wrapper.dart';
 export 'utils/cubit_concentrated_error_observer.dart';
+export 'utils/cubit_logger.dart';
 export 'utils/device_permissions_wrapper.dart';
 export 'utils/error_concentrator.dart';
 export 'utils/file_utils.dart';
