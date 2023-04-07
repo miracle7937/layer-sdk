@@ -79,6 +79,12 @@ extension DPAVariableUIExtension on DPAVariable {
       );
     }
 
+    if (key.contains('email')) {
+      formatters.add(
+        FilteringTextInputFormatter.deny(RegExp(r' ')),
+      );
+    }
+
     return formatters;
   }
 }
