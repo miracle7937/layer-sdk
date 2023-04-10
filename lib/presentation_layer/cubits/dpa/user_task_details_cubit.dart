@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 
 /// A cubit that manages the user's access level
 class UserTaskDetailsCubit extends Cubit<UserTaskDetailsState> {
@@ -42,7 +43,8 @@ class UserTaskDetailsCubit extends Cubit<UserTaskDetailsState> {
               .removeAction(UserTaskDetailsAction.checkingForUserTaskDetails),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state

@@ -4,6 +4,7 @@ import 'package:logging/logging.dart';
 import '../../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 
 /// A cubit that handles the state for the actions that the user
 /// can perform on the transaction details for a [PayToMobile] item.
@@ -83,7 +84,8 @@ class PayToMobileTransactionCubit extends Cubit<PayToMobileTransactionState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -154,7 +156,8 @@ class PayToMobileTransactionCubit extends Cubit<PayToMobileTransactionState> {
             );
         }
       }
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -205,7 +208,8 @@ class PayToMobileTransactionCubit extends Cubit<PayToMobileTransactionState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -264,7 +268,8 @@ class PayToMobileTransactionCubit extends Cubit<PayToMobileTransactionState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -316,7 +321,8 @@ class PayToMobileTransactionCubit extends Cubit<PayToMobileTransactionState> {
           deletePayToMobileResult: deletePayToMobileResult,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -369,7 +375,8 @@ class PayToMobileTransactionCubit extends Cubit<PayToMobileTransactionState> {
           deletePayToMobileResult: deletePayToMobileResult,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(

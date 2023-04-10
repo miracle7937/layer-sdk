@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import '../../../data_layer/network/net_exceptions.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 import '../../utils.dart';
 
 /// A cubit that keeps a list of frequently made payments.
@@ -60,7 +61,8 @@ class FrequentPaymentsCubit extends Cubit<FrequentPaymentsState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,

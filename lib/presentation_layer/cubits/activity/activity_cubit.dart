@@ -4,6 +4,7 @@ import '../../../data_layer/network.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 import '../../utils.dart';
 
 /// A cubit that handles the [User] activities
@@ -110,7 +111,8 @@ class ActivityCubit extends Cubit<ActivityState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           errorStatus: e is NetException
@@ -184,7 +186,8 @@ class ActivityCubit extends Cubit<ActivityState> {
       );
 
       return result;
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           errorStatus: e is NetException

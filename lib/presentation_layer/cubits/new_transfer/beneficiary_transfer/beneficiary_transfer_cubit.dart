@@ -6,6 +6,7 @@ import '../../../../domain_layer/models.dart';
 import '../../../../domain_layer/use_cases.dart';
 import '../../../../domain_layer/use_cases/payments/generate_device_uid_use_case.dart';
 import '../../../cubits.dart';
+import '../../../extensions.dart';
 import '../../../utils.dart';
 
 /// A Cubit that handles the state for the beneficiary transfer flow.
@@ -125,7 +126,8 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
             beneficiarySettings: beneficiarySettings,
           ),
         );
-      } on Exception catch (e) {
+      } on Exception catch (e, st) {
+        logException(e, st);
         emit(
           state.copyWith(
             actions: state
@@ -172,7 +174,8 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
             accounts: accounts,
           ),
         );
-      } on Exception catch (e) {
+      } on Exception catch (e, st) {
+        logException(e, st);
         emit(
           state.copyWith(
             actions: state.removeAction(
@@ -214,7 +217,8 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
             currencies: currencies,
           ),
         );
-      } on Exception catch (e) {
+      } on Exception catch (e, st) {
+        logException(e, st);
         emit(
           state.copyWith(
             actions: state.removeAction(
@@ -256,7 +260,8 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
             countries: countries,
           ),
         );
-      } on Exception catch (e) {
+      } on Exception catch (e, st) {
+        logException(e, st);
         emit(
           state.copyWith(
             actions: state.removeAction(
@@ -298,7 +303,8 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
             beneficiaries: beneficiaries,
           ),
         );
-      } on Exception catch (e) {
+      } on Exception catch (e, st) {
+        logException(e, st);
         emit(
           state.copyWith(
             actions: state.removeAction(
@@ -344,7 +350,8 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
             reasons: reasons,
           ),
         );
-      } on Exception catch (e) {
+      } on Exception catch (e, st) {
+        logException(e, st);
         emit(
           state.copyWith(
             actions: state.removeAction(
@@ -409,7 +416,8 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -681,7 +689,8 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
           evaluation: evaluation,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -964,7 +973,8 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
             'Unhandled transfer status -> ${transferResult.status}',
           );
       }
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -1014,7 +1024,8 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -1078,7 +1089,8 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -1128,7 +1140,8 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
           transferResult: transferResult,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -1177,7 +1190,8 @@ class BeneficiaryTransferCubit extends Cubit<BeneficiaryTransferState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(

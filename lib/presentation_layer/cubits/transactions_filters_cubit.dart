@@ -1,5 +1,7 @@
 import 'package:bloc/bloc.dart';
+
 import '../../domain_layer/use_cases/transactions_filters_use_case.dart';
+import '../extensions.dart';
 import 'transactions_filters_state.dart';
 
 /// Cubit responsible for retrieving the list of
@@ -56,7 +58,8 @@ class TransactionFiltersCubit extends Cubit<TransactionFiltersState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(

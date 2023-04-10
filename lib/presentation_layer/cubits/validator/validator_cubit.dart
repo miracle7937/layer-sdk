@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../domain_layer/use_cases.dart';
+import '../../extensions.dart';
 import 'validator_state.dart';
 
 /// A cubit that manages the validations on the projects
@@ -48,7 +49,8 @@ class ValidatorCubit extends Cubit<ValidatorState> {
           events: state.addEvent(ValidatorEvent.successEvent),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(state.copyWith(
         actions: state.removeAction(ValidatorActions.validatingTransactionPin),
         errors: state.addErrorFromException(

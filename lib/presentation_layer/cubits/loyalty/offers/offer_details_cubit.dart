@@ -1,7 +1,9 @@
 import 'package:bloc/bloc.dart';
+
 import '../../../../data_layer/network.dart';
 import '../../../../domain_layer/use_cases.dart';
 import '../../../cubits.dart';
+import '../../../extensions.dart';
 
 ///A cubit that holds a single offer data.
 class OfferDetailsCubit extends Cubit<OfferDetailsState> {
@@ -51,7 +53,8 @@ class OfferDetailsCubit extends Cubit<OfferDetailsState> {
           offer: offer,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,

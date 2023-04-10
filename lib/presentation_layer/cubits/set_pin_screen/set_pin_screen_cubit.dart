@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../data_layer/network.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 
 /// Cubit for the set pin screen. Handles the states of creating
 /// a pin for the passed user token.
@@ -44,7 +45,8 @@ class SetPinScreenCubit extends Cubit<SetPinScreenState> {
           user: user,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,

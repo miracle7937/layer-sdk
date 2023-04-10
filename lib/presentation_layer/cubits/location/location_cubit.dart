@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location/location.dart';
 
 import '../../cubits.dart';
+import '../../extensions.dart';
 
 /// Cubit that manages the last returned location from the device
 class LocationCubit extends Cubit<LocationState> {
@@ -92,7 +93,8 @@ class LocationCubit extends Cubit<LocationState> {
           location: location,
         ),
       );
-    } on TimeoutException catch (_) {
+    } on TimeoutException catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,

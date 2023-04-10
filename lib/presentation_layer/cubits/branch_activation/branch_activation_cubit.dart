@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../data_layer/network.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 import '../../utils.dart';
 
 /// A cubit that handles requesting device permissions.
@@ -107,7 +108,8 @@ class BranchActivationCubit extends Cubit<BranchActivationState> {
 
           _shouldPoll = false;
         }
-      } on Exception catch (e) {
+      } on Exception catch (e, st) {
+      logException(e, st);
         var shouldThrow = true;
         if (e is NetException) {
           shouldThrow = e.statusCode != 404;
@@ -163,7 +165,8 @@ class BranchActivationCubit extends Cubit<BranchActivationState> {
 
         getUserDetails();
       }
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           error: e is NetException
@@ -211,7 +214,8 @@ class BranchActivationCubit extends Cubit<BranchActivationState> {
           action: BranchActivationAction.none,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,
@@ -257,7 +261,8 @@ class BranchActivationCubit extends Cubit<BranchActivationState> {
           user: user,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,
@@ -306,7 +311,8 @@ class BranchActivationCubit extends Cubit<BranchActivationState> {
           user: user,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,

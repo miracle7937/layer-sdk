@@ -7,6 +7,7 @@ import '../../../../domain_layer/models.dart';
 import '../../../data_layer/repositories.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 
 /// A cubit that for the customers profile
 class ProfileCubit extends Cubit<ProfileState> {
@@ -75,7 +76,8 @@ class ProfileCubit extends Cubit<ProfileState> {
       if (state.user?.imageURL?.isNotEmpty ?? false) {
         await loadImage(imageURL: state.user!.imageURL!);
       }
-    } on Exception {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.actions.difference({ProfileBusyAction.load}),
@@ -111,7 +113,8 @@ class ProfileCubit extends Cubit<ProfileState> {
           image: image,
         ),
       );
-    } on Exception {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.actions.difference({ProfileBusyAction.loadingImage}),
@@ -141,7 +144,8 @@ class ProfileCubit extends Cubit<ProfileState> {
                 state.actions.difference({ProfileBusyAction.uploadingImage}),
           ),
         );
-      } on Exception {
+      } on Exception catch (e, st) {
+        logException(e, st);
         emit(
           state.copyWith(
             actions:

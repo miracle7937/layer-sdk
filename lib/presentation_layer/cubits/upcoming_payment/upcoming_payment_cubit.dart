@@ -5,6 +5,7 @@ import '../../../../presentation_layer/utils.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 
 /// A cubit that keeps upcoming payments
 class UpcomingPaymentCubit extends Cubit<UpcomingPaymentState> {
@@ -57,7 +58,8 @@ class UpcomingPaymentCubit extends Cubit<UpcomingPaymentState> {
           busy: false,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,

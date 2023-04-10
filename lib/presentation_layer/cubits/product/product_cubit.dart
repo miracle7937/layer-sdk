@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import '../../../../../data_layer/network.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
+import '../../extensions.dart';
 import '../../utils.dart';
 import 'product_state.dart';
 
@@ -82,7 +83,8 @@ class ProductCubit<Equatable> extends Cubit<ProductState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,

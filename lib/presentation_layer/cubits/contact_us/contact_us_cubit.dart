@@ -6,6 +6,7 @@ import '../../../../domain_layer/models.dart';
 import '../../../data_layer/helpers.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 
 /// A cubit that for the contact us
 class ContactUsCubit extends Cubit<ContactUsState> {
@@ -83,7 +84,8 @@ class ContactUsCubit extends Cubit<ContactUsState> {
       );
 
       _setupContactUsItems();
-    } on Exception {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.actions.difference({ContactUsBusyAction.load}),

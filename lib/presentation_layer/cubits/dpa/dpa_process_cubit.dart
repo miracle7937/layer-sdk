@@ -591,7 +591,8 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
               .toSet(),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           processingFiles: state.processingFiles
@@ -694,7 +695,8 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
               .toSet(),
         ),
       );
-    } on NetException catch (e) {
+    } on NetException catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           processingFiles: state.processingFiles
@@ -747,7 +749,8 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
           clearProcessingFiles: true,
         ),
       );
-    } on NetException catch (e) {
+    } on NetException catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -797,7 +800,8 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
           clearProcessingFiles: true,
         ),
       );
-    } on NetException catch (e) {
+    } on NetException catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -847,7 +851,8 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
           clearProcessingFiles: true,
         ),
       );
-    } on NetException catch (e) {
+    } on NetException catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -897,7 +902,8 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
           clearProcessingFiles: true,
         ),
       );
-    } on NetException catch (e) {
+    } on NetException catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(

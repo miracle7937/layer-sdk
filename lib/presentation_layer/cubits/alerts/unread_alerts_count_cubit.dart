@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import '../../../../../data_layer/network.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 
 ///A cubit that holds the unread alerts count
 class UnreadAlertsCountCubit extends Cubit<UnreadAlertsCountState> {
@@ -32,7 +33,8 @@ class UnreadAlertsCountCubit extends Cubit<UnreadAlertsCountState> {
       );
 
       notify(count);
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,

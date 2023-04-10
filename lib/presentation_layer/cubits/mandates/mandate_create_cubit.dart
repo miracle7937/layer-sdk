@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import '../../../data_layer/network.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
+import '../../extensions.dart';
 import 'mandate_create_state.dart';
 
 /// Cubit for handling the creation of Debit Mandates
@@ -63,7 +64,8 @@ class MandateCreateCubit extends Cubit<MandateCreateState> {
           mandatePDFFile: mandateFile,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,

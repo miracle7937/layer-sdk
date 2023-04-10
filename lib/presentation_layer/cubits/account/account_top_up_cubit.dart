@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../../features/accounts.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 
 /// Cubit that handles the Account top up flow.
 class AccountTopUpCubit extends Cubit<AccountTopUpState> {
@@ -79,7 +80,8 @@ class AccountTopUpCubit extends Cubit<AccountTopUpState> {
           topUpId: request.id,
         ),
       );
-    } on Exception {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           action: AccountTopUpActions.none,

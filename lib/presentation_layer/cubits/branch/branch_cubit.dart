@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 
 import '../../../domain_layer/use_cases.dart';
+import '../../extensions.dart';
 import 'branch_states.dart';
 
 /// Cubit responsible for the branches' data.
@@ -39,7 +40,8 @@ class BranchCubit extends Cubit<BranchState> {
           }),
         ),
       );
-    } on Exception {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.actions.difference({

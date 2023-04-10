@@ -86,7 +86,8 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
               .toList(growable: false),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -188,7 +189,8 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
             'Unhandled payment status -> ${returnedPayment.status}',
           );
       }
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -241,7 +243,8 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -303,7 +306,8 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -353,7 +357,8 @@ class PatchPaymentCubit extends Cubit<PatchPaymentState> {
           returnedPayment: returnedPayment,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(

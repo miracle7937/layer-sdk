@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../data_layer/interfaces.dart';
 import '../../../../../presentation_layer/resources.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 
 /// A cubit that manages [Locale] selected by the user.
 class LocalizationCubit extends Cubit<LocalizationState> {
@@ -43,7 +44,8 @@ class LocalizationCubit extends Cubit<LocalizationState> {
           busy: false,
         ),
       );
-    } on Exception {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,
@@ -76,7 +78,8 @@ class LocalizationCubit extends Cubit<LocalizationState> {
           busy: false,
         ),
       );
-    } on Exception {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,
