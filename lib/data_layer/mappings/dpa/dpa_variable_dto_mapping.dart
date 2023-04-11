@@ -74,6 +74,10 @@ extension DPAVariableDTOMapping on DPAVariableDTO {
           return DPAVariableType.swipe;
         }
 
+        if (property?.propertyType == PropertyTypeDTO.textArea) {
+          return DPAVariableType.textArea;
+        }
+
         return DPAVariableType.text;
 
       case DPATypeDTO.long:
