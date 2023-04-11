@@ -6,6 +6,7 @@ import '../../../../domain_layer/models.dart';
 import '../../../../domain_layer/use_cases.dart';
 import '../../../../domain_layer/use_cases/payments/generate_device_uid_use_case.dart';
 import '../../../cubits.dart';
+import '../../../extensions.dart';
 
 /// The cubit managing the own transfer flow.
 class OwnTransferCubit extends Cubit<OwnTransferState> {
@@ -101,7 +102,8 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
           OwnTransferAction.accounts,
         }),
       ));
-    } on Exception {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(state.copyWith(
         actions: state.actions.difference({
           OwnTransferAction.accounts,
@@ -228,7 +230,8 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
           );
           break;
       }
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.actions.difference(
@@ -272,7 +275,8 @@ class OwnTransferCubit extends Cubit<OwnTransferState> {
           }),
         ),
       );
-    } on Exception {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(state.copyWith(
         actions: state.actions.difference({
           OwnTransferAction.shortcut,

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../data_layer/network.dart';
 import '../../../../domain_layer/models.dart';
 import '../../../../domain_layer/use_cases.dart';
+import '../../../extensions.dart';
 import 'inbox_create_state.dart';
 
 /// Cubit for handling the InboxConversationScreen
@@ -76,7 +77,8 @@ class InboxCreateCubit extends Cubit<InboxCreateState> {
           selectedCategory: categories.first,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,
@@ -134,7 +136,8 @@ class InboxCreateCubit extends Cubit<InboxCreateState> {
                 ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,

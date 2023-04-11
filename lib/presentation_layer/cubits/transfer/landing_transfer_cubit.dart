@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../domain_layer/use_cases.dart';
 import '../../../layer_sdk.dart';
 
@@ -44,7 +45,8 @@ class LandingTransferCubit extends Cubit<LandingTransferState> {
           actions: state.removeAction(LandingTransferAction.loading),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
             actions: state.removeAction(LandingTransferAction.loading),

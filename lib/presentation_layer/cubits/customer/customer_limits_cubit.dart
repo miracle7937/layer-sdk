@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../data_layer/network.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 
 /// A cubit that loads the [CustomerLimit]s of a [Customer].
 class CustomerLimitsCubit extends Cubit<CustomerLimitsState> {
@@ -35,7 +36,8 @@ class CustomerLimitsCubit extends Cubit<CustomerLimitsState> {
           limit: limit,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           error: e is NetException

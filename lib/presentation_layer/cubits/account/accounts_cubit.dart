@@ -1,6 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../../domain_layer/models.dart';
 import '../../../../domain_layer/use_cases.dart';
+import '../../extensions.dart';
 import 'accounts_state.dart';
 
 /// A Cubit that handles the state for the accounts list flow.
@@ -55,7 +57,8 @@ class AccountsCubit extends Cubit<AccountsState> {
           financialData: data,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(AccountsAction.financialData),
@@ -98,7 +101,8 @@ class AccountsCubit extends Cubit<AccountsState> {
           accounts: accounts,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(

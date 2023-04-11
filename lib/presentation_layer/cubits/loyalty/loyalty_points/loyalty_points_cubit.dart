@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import '../../../../data_layer/network.dart';
 import '../../../../domain_layer/use_cases.dart';
 import '../../../cubits.dart';
+import '../../../extensions.dart';
 
 /// Cubit responsible for [LoyaltyPoints] data.
 class LoyaltyPointsCubit extends Cubit<LoyaltyPointsState> {
@@ -58,7 +59,8 @@ class LoyaltyPointsCubit extends Cubit<LoyaltyPointsState> {
                 ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,

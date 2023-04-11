@@ -1,5 +1,7 @@
 import 'package:bloc/bloc.dart';
+
 import '../../../domain_layer/use_cases/account_transaction/get_customer_account_balance_use_case.dart';
+import '../../extensions.dart';
 import 'account_balance_state.dart';
 
 /// Cubit responsible for retrieving the list of customer [AccountTransaction]
@@ -82,7 +84,8 @@ class AccountBalanceCubit extends Cubit<AccountBalanceState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(

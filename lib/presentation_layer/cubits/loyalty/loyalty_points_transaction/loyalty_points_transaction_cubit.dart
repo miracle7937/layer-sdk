@@ -1,9 +1,7 @@
 import 'package:bloc/bloc.dart';
 
 import '../../../../data_layer/network.dart';
-import '../../../../domain_layer/models.dart';
-import '../../../../domain_layer/use_cases.dart';
-import '../../../cubits.dart';
+import '../../../../layer_sdk.dart';
 
 /// Cubit responsible for retrieving [LoyaltyPointsTransfer].
 class LoyaltyPointsTransactionCubit
@@ -72,7 +70,8 @@ class LoyaltyPointsTransactionCubit
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           errorStatus: e is NetException

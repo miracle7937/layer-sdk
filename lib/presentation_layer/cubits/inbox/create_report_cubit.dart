@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../data_layer/network.dart';
 import '../../../../domain_layer/use_cases/inbox/create_inbox_report_use_case.dart';
+import '../../extensions.dart';
 import 'create_report_state.dart';
 
 /// Create report cubit
@@ -36,7 +37,8 @@ class CreateReportCubit extends Cubit<CreateReportState> {
           createdReport: report,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           action: CreateReportAction.none,

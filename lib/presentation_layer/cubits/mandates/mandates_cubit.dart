@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../data_layer/network.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases/mandates/load_mandates_use_case.dart';
+import '../../extensions.dart';
 import '../../utils.dart';
 import 'mandates_state.dart';
 
@@ -67,7 +68,8 @@ class MandatesCubit extends Cubit<MandatesState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,

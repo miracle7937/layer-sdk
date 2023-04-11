@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 
 import '../../../data_layer/network.dart';
 import '../../../features/currency.dart';
+import '../../extensions.dart';
 
 /// A cubit that keeps currencies
 class CurrencyCubit extends Cubit<CurrencyState> {
@@ -59,7 +60,8 @@ class CurrencyCubit extends Cubit<CurrencyState> {
           busy: false,
         ),
       );
-    } on NetException {
+    } on NetException catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,

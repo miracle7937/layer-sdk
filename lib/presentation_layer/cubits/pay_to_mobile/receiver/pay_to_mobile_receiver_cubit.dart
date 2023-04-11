@@ -6,6 +6,7 @@ import '../../../../domain_layer/models/beneficiary/beneficiary.dart';
 import '../../../../domain_layer/use_cases/bank/get_bank_by_bic_use_case.dart';
 import '../../../../features/accounts.dart';
 import '../../../../features/pay_to_mobile_receiver.dart';
+import '../../../extensions.dart';
 
 /// Cubit that handles the receiving of PayToMobile/Cardless payments
 class PayToMobileReceiverCubit extends Cubit<PayToMobileReceiverState> {
@@ -71,7 +72,8 @@ class PayToMobileReceiverCubit extends Cubit<PayToMobileReceiverState> {
           accounts: accounts,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(PayToMobileReceiverActions.loadingData),
@@ -131,7 +133,8 @@ class PayToMobileReceiverCubit extends Cubit<PayToMobileReceiverState> {
           errors: {},
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(PayToMobileReceiverActions.submit),

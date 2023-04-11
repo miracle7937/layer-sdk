@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 
 import '../../../../../../data_layer/network.dart';
 import '../../../domain_layer/use_cases.dart';
+import '../../extensions.dart';
 import 'beneficiaries_states.dart';
 
 /// A cubit that keeps the list of beneficiaries.
@@ -67,7 +68,8 @@ class BeneficiariesCubit extends Cubit<BeneficiariesState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,

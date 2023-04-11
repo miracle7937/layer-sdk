@@ -11,6 +11,7 @@ import '../../../domain_layer/use_cases/payments/load_services_use_case.dart';
 import '../../../domain_layer/use_cases/payments/post_payment_use_case.dart';
 import '../../../domain_layer/use_cases/payments/validate_bill_use_case.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 import 'pay_bill_state.dart';
 
 /// A cubit for paying customer bills.
@@ -131,7 +132,8 @@ class PayBillCubit extends Cubit<PayBillState> {
           setBiller(biller.id);
         }
       }
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -176,7 +178,8 @@ class PayBillCubit extends Cubit<PayBillState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -280,7 +283,8 @@ class PayBillCubit extends Cubit<PayBillState> {
             'Unhandled payment status -> ${returnedPayment.status}',
           );
       }
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -330,7 +334,8 @@ class PayBillCubit extends Cubit<PayBillState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -392,7 +397,8 @@ class PayBillCubit extends Cubit<PayBillState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -442,7 +448,8 @@ class PayBillCubit extends Cubit<PayBillState> {
           returnedPayment: returnedPayment,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -469,7 +476,8 @@ class PayBillCubit extends Cubit<PayBillState> {
           payload: state.payment,
         ),
       );
-    } on Exception catch (_) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       // TODO: handle shortcut error without affecting the payment
     }
   }
@@ -542,7 +550,8 @@ class PayBillCubit extends Cubit<PayBillState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(

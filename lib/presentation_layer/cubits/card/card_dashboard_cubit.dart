@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import '../../../domain_layer/models/card/banking_card.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 
 /// Cubit responsible for retrieving the list of customer [Card]
 class CardDashboardCubit extends Cubit<CardDashboardState> {
@@ -60,7 +61,8 @@ class CardDashboardCubit extends Cubit<CardDashboardState> {
           actions: state.removeAction(CardDashboardAction.loadCards),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(CardDashboardAction.loadCards),
@@ -93,7 +95,8 @@ class CardDashboardCubit extends Cubit<CardDashboardState> {
           actions: state.removeAction(CardDashboardAction.loadFinancialData),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(CardDashboardAction.loadFinancialData),

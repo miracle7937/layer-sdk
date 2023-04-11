@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../data_layer/network/net_exceptions.dart';
 import '../../../../domain_layer/use_cases.dart';
+import '../../extensions.dart';
 import 'delete_inbox_report_state.dart';
 
 /// Delete report cubit
@@ -36,7 +37,8 @@ class DeleteInboxReportCubit extends Cubit<DeleteInboxReportState> {
             action: DeleteInboxReportAction.none,
             error: DeleteReportErrorStatus.none),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           action: DeleteInboxReportAction.none,

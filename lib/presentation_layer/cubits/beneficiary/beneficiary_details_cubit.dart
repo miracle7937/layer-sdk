@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../data_layer/network.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 
 /// TODO: cubit_issue | I think we should also have a method here for retrieving
 /// the beneficiary details. We are assuming that we have the beneficiary
@@ -43,7 +44,8 @@ class BeneficiaryDetailsCubit extends Cubit<BeneficiaryDetailsState> {
           BeneficiaryDetailsAction.delete,
         }),
       ));
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       final standingOrder = e is NetException
           ? e.code == CubitErrorCode.beneficiaryHasStandingOrder.value
           : false;

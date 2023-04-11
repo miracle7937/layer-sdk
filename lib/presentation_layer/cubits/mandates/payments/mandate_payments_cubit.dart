@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../data_layer/network.dart';
 import '../../../../domain_layer/use_cases.dart';
+import '../../../extensions.dart';
 import '../../../utils.dart';
 import 'mandate_payments_state.dart';
 
@@ -74,7 +75,8 @@ class MandatePaymentsCubit extends Cubit<MandatePaymentsState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           errorStatus: e is NetException

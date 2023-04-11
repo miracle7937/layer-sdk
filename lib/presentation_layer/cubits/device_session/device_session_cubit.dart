@@ -4,6 +4,7 @@ import '../../../data_layer/network.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 
 /// A cubit that keeps a list of device sessions.
 class DeviceSessionCubit extends Cubit<DeviceSessionState> {
@@ -64,7 +65,8 @@ class DeviceSessionCubit extends Cubit<DeviceSessionState> {
           busy: false,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,
@@ -126,7 +128,8 @@ class DeviceSessionCubit extends Cubit<DeviceSessionState> {
           sessions: sessions,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       // In case of an exception, set the status for error.
       emit(
         state.copyWith(

@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../data_layer/repositories.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 
 /// A cubit that checks whether the user device is rooted.
 class RootCheckCubit extends Cubit<RootCheckState> {
@@ -50,7 +51,8 @@ class RootCheckCubit extends Cubit<RootCheckState> {
           status: RootCheckStatus.nonRooted,
         ));
       }
-    } on Exception {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(state.copyWith(
         busy: false,
         status: RootCheckStatus.failed,
