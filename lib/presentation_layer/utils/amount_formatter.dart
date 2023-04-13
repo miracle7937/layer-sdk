@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:intl/number_symbols_data.dart' as number_symbols_data;
 
 import '../../../../domain_layer/models.dart';
 
@@ -18,6 +19,14 @@ class AmountFormatter {
     required int decimalPlaces,
     String? languageCode,
   }) {
+    /// This fixes an unhandled exception when the passed locale is not
+    /// supported by default by flutter.
+    if (languageCode != null) {
+      if (number_symbols_data.numberFormatSymbols[languageCode] == null) {
+        languageCode = 'en';
+      }
+    }
+
     final formatter = NumberFormat.decimalPattern(languageCode);
     formatter.minimumFractionDigits = decimalPlaces;
     formatter.maximumFractionDigits = decimalPlaces;
@@ -38,6 +47,14 @@ class AmountFormatter {
     String? locale,
     bool withSymbol = true,
   }) {
+    /// This fixes an unhandled exception when the passed locale is not
+    /// supported by default by flutter.
+    if (locale != null) {
+      if (number_symbols_data.numberFormatSymbols[locale] == null) {
+        locale = 'en';
+      }
+    }
+
     final formatter = NumberFormat.currency(
       locale: locale ?? defaultLocale,
       decimalDigits: decimals ?? currency?.decimals,

@@ -13,10 +13,15 @@ class AppLocalizationConfiguration {
   /// A custom algorithm to resolve the app locale.
   final LocaleResolutionCallback? localeResolutionCallback;
 
+  /// The list of [LocalizationsDelegate]s for the languages that flutter does
+  /// not support by default.
+  final List<LocalizationsDelegate> unsupportedLanguageLocalizaitonDelegates;
+
   /// Creates [AppLocalizationConfiguration].
   AppLocalizationConfiguration({
     required this.localizationDelegate,
     required this.supportedLocales,
     this.localeResolutionCallback,
+    this.unsupportedLanguageLocalizaitonDelegates = const [],
   });
 }
