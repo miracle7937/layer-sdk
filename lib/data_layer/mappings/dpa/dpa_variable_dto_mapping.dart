@@ -58,6 +58,10 @@ extension DPAVariableDTOMapping on DPAVariableDTO {
           return DPAVariableType.pin;
         }
 
+        if (property?.format == DPAFormatDTO.textArea) {
+          return DPAVariableType.textArea;
+        }
+
         if (property?.link != null) {
           return DPAVariableType.link;
         }
@@ -72,10 +76,6 @@ extension DPAVariableDTOMapping on DPAVariableDTO {
 
         if (property?.propertyType == PropertyTypeDTO.swipe) {
           return DPAVariableType.swipe;
-        }
-
-        if (property?.propertyType == PropertyTypeDTO.textArea) {
-          return DPAVariableType.textArea;
         }
 
         return DPAVariableType.text;
