@@ -5,6 +5,7 @@ import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
 import '../../errors.dart';
+import '../../extensions.dart';
 
 /// A cubit that provides the functionality to generate a new access token using
 /// the OCRA mutual authentication flow.
@@ -115,7 +116,8 @@ class OcraAuthenticationCubit extends Cubit<OcraAuthenticationState> {
               : OcraAuthenticationError.none,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,
@@ -181,7 +183,8 @@ class OcraAuthenticationCubit extends Cubit<OcraAuthenticationState> {
           clientResponse: serverChallengeResult,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(

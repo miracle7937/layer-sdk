@@ -5,6 +5,7 @@ import 'package:logging/logging.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 
 /// TODO: cubit_issue | I feel like this is a clone of the [AddBeneficiaryCubit]
 /// Whith some tweaks on the add beneficiary cubit, we could handle the editing
@@ -113,7 +114,8 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
           allowedCharacters: allowedCharacters,          
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(EditBeneficiaryAction.initializing),
@@ -183,7 +185,8 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
             'Unhandled beneficiary status -> ${beneficiaryResult.status}',
           );
       }
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(EditBeneficiaryAction.save),
@@ -234,7 +237,8 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -300,7 +304,8 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -356,7 +361,8 @@ class EditBeneficiaryCubit extends Cubit<EditBeneficiaryState> {
           beneficiaryResult: beneficiaryResult,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(

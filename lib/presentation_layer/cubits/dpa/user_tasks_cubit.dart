@@ -1,11 +1,11 @@
 import 'package:bloc/bloc.dart';
-
 import 'package:logging/logging.dart';
 
 import '../../../../../data_layer/network.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 
 /// A cubit that manages a list of tasks associated with the current user.
 class UserTasksCubit extends Cubit<UserTasksState> {
@@ -57,7 +57,8 @@ class UserTasksCubit extends Cubit<UserTasksState> {
           busy: false,
         ),
       );
-    } on Exception {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,
@@ -107,7 +108,8 @@ class UserTasksCubit extends Cubit<UserTasksState> {
           errorStatus: !success ? UserTasksErrorStatus.network : null,
         ),
       );
-    } on NetException {
+    } on NetException catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,

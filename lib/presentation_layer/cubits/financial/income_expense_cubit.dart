@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
+
 import '../../../data_layer/dtos/financial/income_expense_dto.dart';
 import '../../../domain_layer/use_cases/financial/get_incomes_expenses_use_case.dart';
+import '../../extensions.dart';
 import 'income_expense_states.dart';
 
 /// Cubit responsible for retrieving the incomes and expenses
@@ -58,7 +60,8 @@ class IncomeExpenseCubit extends Cubit<IncomeExpenseState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(

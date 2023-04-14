@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 
 /// A cubit that manages the state of the [Profile]s.
 class ProfileDetailsCubit extends Cubit<ProfileDetailsState> {
@@ -39,7 +40,8 @@ class ProfileDetailsCubit extends Cubit<ProfileDetailsState> {
           profile: profile,
         ),
       );
-    } on Exception {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,

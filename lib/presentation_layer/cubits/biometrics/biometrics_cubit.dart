@@ -5,6 +5,7 @@ import 'package:local_auth/local_auth.dart';
 import '../../../data_layer/network.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 
 /// Cubit that handles the biometrics.
 class BiometricsCubit extends Cubit<BiometricsState> {
@@ -43,7 +44,8 @@ class BiometricsCubit extends Cubit<BiometricsState> {
           canUseBiometrics: biometricsEnabledOnConsole && canCheckBiometrics,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,
@@ -86,7 +88,8 @@ class BiometricsCubit extends Cubit<BiometricsState> {
           authenticated: authenticated,
         ),
       );
-    } on PlatformException catch (_) {
+    } on PlatformException catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,

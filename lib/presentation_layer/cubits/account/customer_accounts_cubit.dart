@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 
 /// Cubit responsible for retrieving the list of customer [Account]
 class CustomerAccountsCubit extends Cubit<CustomerAccountsState> {
@@ -42,7 +43,8 @@ class CustomerAccountsCubit extends Cubit<CustomerAccountsState> {
           busy: false,
         ),
       );
-    } on Exception {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,

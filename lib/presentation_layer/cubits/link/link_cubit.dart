@@ -10,6 +10,7 @@ import 'package:validators/validators.dart';
 import '../../../data_layer/network.dart';
 import '../../../data_layer/repositories.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 
 /// A cubit that helps with opening files from links.
 class LinkCubit extends Cubit<LinkState> {
@@ -160,7 +161,8 @@ class LinkCubit extends Cubit<LinkState> {
         uti: uti,
         type: type,
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,
@@ -267,7 +269,8 @@ class LinkCubit extends Cubit<LinkState> {
         uti: uti,
         type: type,
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,

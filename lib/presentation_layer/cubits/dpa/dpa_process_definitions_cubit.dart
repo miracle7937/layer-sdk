@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
-
 import 'package:logging/logging.dart';
 
 import '../../../data_layer/network.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 
 /// A cubit that manages a list of DPA processes definitions available for
 /// this user.
@@ -52,7 +52,8 @@ class DPAProcessDefinitionsCubit extends Cubit<DPAProcessDefinitionsState> {
           busy: false,
         ),
       );
-    } on NetException {
+    } on NetException catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,

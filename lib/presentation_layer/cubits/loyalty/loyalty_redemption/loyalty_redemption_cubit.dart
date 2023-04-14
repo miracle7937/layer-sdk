@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../domain_layer/models.dart';
 import '../../../../domain_layer/use_cases.dart';
 import '../../../cubits.dart';
+import '../../../extensions.dart';
 
 /// A Cubit that handles the state for the loyalty redemption.
 class LoyaltyRedemptionCubit extends Cubit<LoyaltyRedemptionState> {
@@ -79,7 +80,8 @@ class LoyaltyRedemptionCubit extends Cubit<LoyaltyRedemptionState> {
             currencies: currencies,
           ),
         );
-      } on Exception catch (e) {
+      } on Exception catch (e, st) {
+        logException(e, st);
         emit(
           state.copyWith(
             actions: state.removeAction(
@@ -123,7 +125,8 @@ class LoyaltyRedemptionCubit extends Cubit<LoyaltyRedemptionState> {
             accounts: accounts,
           ),
         );
-      } on Exception catch (e) {
+      } on Exception catch (e, st) {
+        logException(e, st);
         emit(
           state.copyWith(
             actions: state.removeAction(
@@ -165,7 +168,8 @@ class LoyaltyRedemptionCubit extends Cubit<LoyaltyRedemptionState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -209,7 +213,8 @@ class LoyaltyRedemptionCubit extends Cubit<LoyaltyRedemptionState> {
                 ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -252,7 +257,8 @@ class LoyaltyRedemptionCubit extends Cubit<LoyaltyRedemptionState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -295,7 +301,8 @@ class LoyaltyRedemptionCubit extends Cubit<LoyaltyRedemptionState> {
               : baseCurrencySettings.first.value,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -339,7 +346,8 @@ class LoyaltyRedemptionCubit extends Cubit<LoyaltyRedemptionState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(

@@ -6,6 +6,7 @@ import '../../../../../data_layer/repositories.dart';
 import '../../../data_layer/strategies.dart';
 import '../../cubits.dart';
 import '../../errors.dart';
+import '../../extensions.dart';
 
 /// A cubit that encapsulates the logic related to the registration.
 ///
@@ -181,7 +182,8 @@ class RegistrationCubit extends Cubit<RegistrationState> {
           busy: false,
         ),
       );
-    } on NetException catch (e) {
+    } on NetException catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           stepError: RegistrationStateError.generic,

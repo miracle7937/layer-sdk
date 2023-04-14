@@ -7,6 +7,7 @@ import '../../../data_layer/providers.dart';
 import '../../../data_layer/repositories.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 import '../../utils.dart';
 
 /// Maintains the states of authentication on the app.
@@ -154,7 +155,8 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
       emit(
         AuthenticationState(),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,
@@ -188,7 +190,8 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
           customer: customerInfo,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,
@@ -265,7 +268,8 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
           busy: false,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,
@@ -334,7 +338,8 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
           busy: false,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,
@@ -386,7 +391,8 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
           busy: false,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,
@@ -436,7 +442,8 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
           busy: false,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,
@@ -485,7 +492,8 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
               : AuthenticationErrorStatus.wrongCredentials,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,

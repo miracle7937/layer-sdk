@@ -5,6 +5,7 @@ import 'package:logging/logging.dart';
 import '../../../../domain_layer/models.dart';
 import '../../../../domain_layer/use_cases.dart';
 import '../../../cubits.dart';
+import '../../../extensions.dart';
 
 /// A cubit that handles the state for a pay to mobile transfer flow.
 class PayToMobileCubit extends Cubit<PayToMobileState> {
@@ -110,7 +111,8 @@ class PayToMobileCubit extends Cubit<PayToMobileState> {
             accounts: accounts,
           ),
         );
-      } on Exception catch (e) {
+      } on Exception catch (e, st) {
+        logException(e, st);
         emit(
           state.copyWith(
             actions: state.removeAction(
@@ -152,7 +154,8 @@ class PayToMobileCubit extends Cubit<PayToMobileState> {
             currencies: currencies,
           ),
         );
-      } on Exception catch (e) {
+      } on Exception catch (e, st) {
+        logException(e, st);
         emit(
           state.copyWith(
             actions: state.removeAction(
@@ -194,7 +197,8 @@ class PayToMobileCubit extends Cubit<PayToMobileState> {
             countries: countries,
           ),
         );
-      } on Exception catch (e) {
+      } on Exception catch (e, st) {
+        logException(e, st);
         emit(
           state.copyWith(
             actions: state.removeAction(
@@ -538,7 +542,8 @@ class PayToMobileCubit extends Cubit<PayToMobileState> {
             'Unhandled pay to mobile status -> ${payToMobileResult.status}',
           );
       }
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -588,7 +593,8 @@ class PayToMobileCubit extends Cubit<PayToMobileState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -652,7 +658,8 @@ class PayToMobileCubit extends Cubit<PayToMobileState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -704,7 +711,8 @@ class PayToMobileCubit extends Cubit<PayToMobileState> {
           payToMobileResult: payToMobileResult,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -753,7 +761,8 @@ class PayToMobileCubit extends Cubit<PayToMobileState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(

@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import '../../../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 
 /// A cubit that handles loading and saving data in storage.
 class StorageCubit extends Cubit<StorageState> {
@@ -100,7 +101,8 @@ class StorageCubit extends Cubit<StorageState> {
           currentUser: user,
         ),
       );
-    } on Exception {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,
@@ -129,7 +131,8 @@ class StorageCubit extends Cubit<StorageState> {
           loyaltyTutorialCompleted: loyaltyTutorialCompleted,
         ),
       );
-    } on Exception {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,
@@ -156,7 +159,8 @@ class StorageCubit extends Cubit<StorageState> {
           currentUser: user,
         ),
       );
-    } on Exception {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,
@@ -181,7 +185,8 @@ class StorageCubit extends Cubit<StorageState> {
         busy: false,
         clearCurrentUser: state.currentUser?.id == id,
       ));
-    } on Exception {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,
@@ -205,7 +210,8 @@ class StorageCubit extends Cubit<StorageState> {
           busy: false,
         ),
       );
-    } on Exception {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,
@@ -244,7 +250,8 @@ class StorageCubit extends Cubit<StorageState> {
           busy: false,
         ),
       );
-    } on Exception {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,
@@ -276,7 +283,8 @@ class StorageCubit extends Cubit<StorageState> {
           ),
         ),
       );
-    } on Exception {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,
@@ -307,7 +315,8 @@ class StorageCubit extends Cubit<StorageState> {
           ),
         ),
       );
-    } on Exception {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,
@@ -340,7 +349,8 @@ class StorageCubit extends Cubit<StorageState> {
           ),
         ),
       );
-    } on Exception {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,
@@ -368,7 +378,8 @@ class StorageCubit extends Cubit<StorageState> {
           ocraSecretKey: result ? key : null,
         ),
       );
-    } on Exception {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,
@@ -396,7 +407,8 @@ class StorageCubit extends Cubit<StorageState> {
           ocraSecretKey: key,
         ),
       );
-    } on Exception {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,
@@ -429,7 +441,8 @@ class StorageCubit extends Cubit<StorageState> {
           loyaltyTutorialCompleted: success ? completed : null,
         ),
       );
-    } on Exception {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,
@@ -457,7 +470,8 @@ class StorageCubit extends Cubit<StorageState> {
           accessPin: result ? pin : null,
         ),
       );
-    } on Exception {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,
@@ -489,7 +503,8 @@ class StorageCubit extends Cubit<StorageState> {
           accessPin: pin,
         ),
       );
-    } on Exception {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,

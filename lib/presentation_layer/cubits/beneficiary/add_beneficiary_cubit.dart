@@ -5,6 +5,7 @@ import 'package:logging/logging.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 import '../../utils.dart';
 
 /// A cubit that handles adding a new beneficiary.
@@ -143,7 +144,8 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
           maxCharactersAllowed: int.tryParse(maxCharacters ?? ''),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(AddBeneficiaryAction.initialize),
@@ -314,7 +316,8 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(AddBeneficiaryAction.banks),
@@ -464,7 +467,8 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
             'Unhandled beneficiary status -> ${beneficiaryResult.status}',
           );
       }
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(AddBeneficiaryAction.add),
@@ -515,7 +519,8 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -580,7 +585,8 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -635,7 +641,8 @@ class AddBeneficiaryCubit extends Cubit<AddBeneficiaryState> {
           beneficiaryResult: beneficiaryResult,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(

@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 
 import '../../../domain_layer/use_cases.dart';
+import '../../extensions.dart';
 import 'branding_state.dart';
 
 /// Cubit responsible for the branding data.
@@ -41,7 +42,8 @@ class BrandingCubit extends Cubit<BrandingState> {
           action: BrandingStateActions.newBranding,
         ),
       );
-    } on Exception {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,

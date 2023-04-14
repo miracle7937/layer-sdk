@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../domain_layer/use_cases.dart';
+import '../../../extensions.dart';
 import '../../../utils.dart';
 import 'loyalty_landing_state.dart';
 
@@ -74,7 +75,8 @@ class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
           loyaltyPoints: loyaltyPoints.isNotEmpty ? loyaltyPoints.first : null,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(state.copyWith(
         actions: state.removeAction(LoyaltyLandingActions.loadAllLoyaltyPoints),
         errors: state.addErrorFromException(
@@ -109,7 +111,8 @@ class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
           loyaltyPointsRate: loyaltyPointsRate,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(state.copyWith(
         actions: state.removeAction(
           LoyaltyLandingActions.loadCurrentLoyaltyPoints,
@@ -151,7 +154,8 @@ class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
           loyaltyPointsExpiration: loyaltyPointsExpiration,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(state.copyWith(
         actions: state.removeAction(
           LoyaltyLandingActions.loadExpiredLoyaltyPoints,
@@ -240,7 +244,8 @@ class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(state.copyWith(
         actions: state.removeAction(LoyaltyLandingActions.loadOffers),
         errors: state.addErrorFromException(
@@ -275,7 +280,8 @@ class LoyaltyLandingCubit extends Cubit<LoyaltyLandingState> {
           categories: categories,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(state.copyWith(
         actions: state.removeAction(LoyaltyLandingActions.loadCategories),
         errors: state.addErrorFromException(

@@ -54,7 +54,7 @@ class _DPASetAccessPinState
   void didUpdateWidget(covariant DPASetAccessPin oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.dpaVariable != widget.dpaVariable) {
-      accessPin = '';
+      accessPin = widget.dpaVariable.value ?? '';
     }
   }
 

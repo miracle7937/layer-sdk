@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 
 import '../../../domain_layer/use_cases/card/load_customer_cards_use_case.dart';
+import '../../extensions.dart';
 import 'card_states.dart';
 
 /// Cubit responsible for retrieving the list of customer [Card]
@@ -41,7 +42,8 @@ class CardCubit extends Cubit<CardState> {
           busy: false,
         ),
       );
-    } on Exception {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,

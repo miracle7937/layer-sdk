@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import '../../../../../../data_layer/network.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 
 ///A cubit that holds the countries data
 class CountryCubit extends Cubit<CountryState> {
@@ -40,7 +41,8 @@ class CountryCubit extends Cubit<CountryState> {
           busy: false,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,

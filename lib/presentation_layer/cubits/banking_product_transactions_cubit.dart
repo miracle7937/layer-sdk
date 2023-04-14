@@ -1,8 +1,10 @@
 import 'package:async/async.dart';
 import 'package:bloc/bloc.dart';
+
 import '../../domain_layer/models/banking_product_transaction.dart';
 import '../../domain_layer/use_cases/banking_product_transactions_use_case.dart';
 import '../../domain_layer/use_cases/transaction_receipt_usecase.dart';
+import '../extensions.dart';
 import 'banking_product_transactions_state.dart';
 
 /// Cubit responsible for retrieving the list of
@@ -82,7 +84,8 @@ class BankingProductTransactionsCubit
           BankingProductTransactionsAction.receipt,
         ),
       ));
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(
@@ -190,7 +193,8 @@ class BankingProductTransactionsCubit
           ),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           actions: state.removeAction(

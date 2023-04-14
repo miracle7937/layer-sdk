@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import '../../../data_layer/network.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 
 /// A cubit responsible for fetching the global console settings.
 class GlobalSettingCubit extends Cubit<GlobalSettingState> {
@@ -50,7 +51,8 @@ class GlobalSettingCubit extends Cubit<GlobalSettingState> {
                 },
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,

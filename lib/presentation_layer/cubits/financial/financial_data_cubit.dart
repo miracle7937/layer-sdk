@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 
 /// Cubit responsible for retrieving the financial data for a customer
 class FinancialDataCubit extends Cubit<FinancialDataState> {
@@ -41,7 +42,8 @@ class FinancialDataCubit extends Cubit<FinancialDataState> {
           busy: false,
         ),
       );
-    } on Exception {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,

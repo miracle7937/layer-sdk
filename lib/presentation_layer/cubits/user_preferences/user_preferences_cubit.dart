@@ -4,6 +4,7 @@ import '../../../data_layer/network.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 
 ///A cubit that holds the user preferences from a [LoggedUser]
 class UserPreferencesCubit extends Cubit<UserPreferencesState> {
@@ -62,7 +63,8 @@ class UserPreferencesCubit extends Cubit<UserPreferencesState> {
           action: action,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,
@@ -114,7 +116,8 @@ class UserPreferencesCubit extends Cubit<UserPreferencesState> {
           actions: state.removeAction(action),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,
@@ -165,7 +168,8 @@ class UserPreferencesCubit extends Cubit<UserPreferencesState> {
           actions: state.removeAction(action),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,
@@ -212,7 +216,8 @@ class UserPreferencesCubit extends Cubit<UserPreferencesState> {
           actions: state.removeAction(action),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,

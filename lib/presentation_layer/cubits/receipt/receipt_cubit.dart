@@ -4,6 +4,7 @@ import '../../../../../../data_layer/network.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
+import '../../extensions.dart';
 
 /// A cubit that handles loading and sharing receipt.
 class ReceiptCubit extends Cubit<ReceiptState> {
@@ -75,7 +76,8 @@ class ReceiptCubit extends Cubit<ReceiptState> {
         imageBytes: isImage ? receipt : null,
         pdfBytes: isImage ? null : receipt,
       ));
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           action: ReceiptAction.none,

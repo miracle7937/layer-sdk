@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../data_layer/network.dart';
 import '../../../domain_layer/models/second_factor/second_factor_type.dart';
 import '../../../domain_layer/use_cases.dart';
+import '../../extensions.dart';
 import 'mandate_cancel_state.dart';
 
 /// Cubit used for canceling a Mandate
@@ -43,7 +44,8 @@ class MandateCancelCubit extends Cubit<MandateCancelState> {
 
       /// TODO: cubit_issue | This should be handled by the state.
       return result;
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           busy: false,

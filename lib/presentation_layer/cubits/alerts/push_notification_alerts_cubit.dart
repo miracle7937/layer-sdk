@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../domain_layer/use_cases.dart';
+import '../../extensions.dart';
 import 'push_notification_alerts_state.dart';
 
 ///A cubit that holds the result alert from push notification
@@ -43,7 +44,8 @@ class PushNotificationAlertsCubit extends Cubit<PushNotificationAlertsState> {
           alert: result,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(state.copyWith(
         actions: state.removeAction(PushNotificationAlertsActions.loadingAlert),
         errors: state.addErrorFromException(

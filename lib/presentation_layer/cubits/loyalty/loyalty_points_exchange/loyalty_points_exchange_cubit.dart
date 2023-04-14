@@ -1,10 +1,8 @@
 import 'package:bloc/bloc.dart';
 
 import '../../../../data_layer/network.dart';
-import '../../../../domain_layer/abstract_repositories.dart';
 import '../../../../domain_layer/models.dart';
-import '../../../../domain_layer/use_cases.dart';
-import '../../../cubits.dart';
+import '../../../../layer_sdk.dart';
 
 /// Cubit responsible for [LoyaltyPointsExchange]
 /// TODO: Change the accounts to use the new structure.
@@ -67,7 +65,8 @@ class LoyaltyPointsExchangeCubit extends Cubit<LoyaltyPointsExchangeState> {
           cards: cards,
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           errorStatus: e is NetException
@@ -140,7 +139,8 @@ class LoyaltyPointsExchangeCubit extends Cubit<LoyaltyPointsExchangeState> {
           status: result.toExchangeStatus(),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           processing: false,
@@ -182,7 +182,8 @@ class LoyaltyPointsExchangeCubit extends Cubit<LoyaltyPointsExchangeState> {
           status: result.toExchangeStatus(),
         ),
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      logException(e, st);
       emit(
         state.copyWith(
           processing: false,
