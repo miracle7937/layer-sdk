@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 
 import '../../helpers.dart';
+import 'dpa_variable_property_dto.dart';
 
 /// Holds the properties for a single DPA process.
 class DPAProcessStepPropertiesDTO {
@@ -76,12 +77,16 @@ class DPAProcessStepPropertiesDTO {
   /// The text alignment.
   final TextAlignmentDTO? textAlignment;
 
+  /// The format of the variable.
+  final DPAFormatDTO? format;
+
   /// Creates a new [DPAProcessStepPropertiesDTO].
   DPAProcessStepPropertiesDTO({
     this.image,
     this.feedback,
     this.step,
     this.type,
+    this.format,
     this.hasButtons,
     this.buttonLabel,
     this.cancelButtonLabel,
@@ -111,6 +116,9 @@ class DPAProcessStepPropertiesDTO {
         image: json['image'],
         feedback: json['feedback'],
         step: json['step'],
+        format: json['format'] != null
+            ? DPAFormatDTO.fromRaw(json['format'])
+            : null,
         hasButtons: true,
         buttonLabel: json['button_next'] ?? json['button'],
         cancelButtonLabel: json['button_cancel'],
