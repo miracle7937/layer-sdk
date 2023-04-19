@@ -13,6 +13,9 @@ enum DPAVariableType {
   /// A simple text.
   text,
 
+  /// A text with multiple lines.
+  textArea,
+
   /// A simple number.
   number,
 
