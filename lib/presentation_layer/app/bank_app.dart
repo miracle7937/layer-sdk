@@ -551,6 +551,8 @@ class BankAppState extends State<BankApp> {
                 GlobalMaterialLocalizations.delegate,
                 GlobalWidgetsLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate,
+                ...widget.appConfiguration.appLocalizationConfiguration
+                    .unsupportedLanguageLocalizaitonDelegates,
               ],
               localeResolutionCallback: widget.appConfiguration
                   .appLocalizationConfiguration.localeResolutionCallback,
