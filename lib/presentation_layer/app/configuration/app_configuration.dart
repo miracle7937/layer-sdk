@@ -2,9 +2,10 @@ import 'dart:collection';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../app.dart';
-import '../utils.dart';
-import '../widgets.dart';
+import '../../app.dart';
+import '../../utils.dart';
+import '../../widgets.dart';
+import 'authentication_method_configuration.dart';
 
 /// A class containing all the necessary
 /// parameters for [BankApp] configuration.
@@ -86,6 +87,12 @@ class AppConfiguration {
   /// Default is `true`.
   final bool shouldFilterExperiencePageContainersByUserPermissions;
 
+  /// The authentication method used by the application.
+  ///
+  /// The value specified here is used to determine the use case that will save
+  /// and load the credentials for usage with biometrics.
+  final AuthenticationMethodConfiguration authenticationMethod;
+
   /// Creates the [AppConfiguration] object.
   AppConfiguration({
     required this.appThemeConfiguration,
@@ -102,6 +109,7 @@ class AppConfiguration {
     Iterable<FLInterceptor>? interceptors,
     this.shouldFilterExperiencePageContainersByUserPermissions = true,
     this.autoHideKeyboard = true,
+    this.authenticationMethod = AuthenticationMethodConfiguration.accessPin,
   })  : creators = UnmodifiableListView(creators ?? []),
         listeners = UnmodifiableListView(listeners ?? []),
         interceptors = UnmodifiableListView(interceptors ?? []);

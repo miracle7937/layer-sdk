@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 
-import '../resources/app_theme.dart';
+import '../../resources/app_theme.dart';
 
 /// A class containing all the necessary parameters for theme configuration.
 class AppThemeConfiguration {

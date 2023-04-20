@@ -1,5 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:equatable/equatable.dart';
+import 'package:layer_sdk/domain_layer/errors.dart';
+import 'package:layer_sdk/domain_layer/use_cases.dart';
 import 'package:layer_sdk/features/ocra_authentication.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
@@ -19,6 +21,9 @@ class VerifyOcraResultUseCaseMock extends Mock
 class SolveOcraChallengeUseCaseMock extends Mock
     implements SolveOcraChallengeUseCase {}
 
+class GetOcraPasswordWithBiometricsUseCaseMock extends Mock
+    implements GetOcraPasswordWithBiometricsUseCase {}
+
 void main() {
   EquatableConfig.stringify = true;
 
@@ -31,6 +36,8 @@ void main() {
   late ClientOcraChallengeUseCaseMock clientOcraChallengeUseCaseMock;
   late VerifyOcraResultUseCaseMock verifyOcraResultUseCaseMock;
   late SolveOcraChallengeUseCaseMock solveOcraChallengeUseCaseMock;
+  late GetOcraPasswordWithBiometricsUseCaseMock
+      getOcraPasswordWithBiometricsUseCaseMock;
 
   final successfulClientChallenge = 'successfulClientChallenge';
   final wrongPinClientChallenge = 'wrongPinClientChallenge';
@@ -91,6 +98,8 @@ void main() {
         clientChallengeOcraUseCase: clientOcraChallengeUseCaseMock,
         verifyOcraResultUseCase: verifyOcraResultUseCaseMock,
         solveOcraChallengeUseCase: solveOcraChallengeUseCaseMock,
+        getOcraPasswordWithBiometricsUseCase:
+            getOcraPasswordWithBiometricsUseCaseMock,
       );
 
   setUp(() {
@@ -99,6 +108,8 @@ void main() {
     clientOcraChallengeUseCaseMock = ClientOcraChallengeUseCaseMock();
     verifyOcraResultUseCaseMock = VerifyOcraResultUseCaseMock();
     solveOcraChallengeUseCaseMock = SolveOcraChallengeUseCaseMock();
+    getOcraPasswordWithBiometricsUseCaseMock =
+        GetOcraPasswordWithBiometricsUseCaseMock();
 
     when(
       () => clientOcraChallengeUseCaseMock(
@@ -125,6 +136,7 @@ void main() {
       () => solveOcraChallengeUseCaseMock(
         question: successfulClientChallenge + serverChallenge,
         timestamp: any(named: 'timestamp'),
+        password: any(named: 'password'),
       ),
     ).thenReturn(serverResponse);
 
@@ -145,6 +157,7 @@ void main() {
       () => solveOcraChallengeUseCaseMock(
         question: serverChallenge + successfulClientChallenge,
         timestamp: any(named: 'timestamp'),
+        password: any(named: 'password'),
       ),
     ).thenReturn(clientResponse);
 
@@ -338,6 +351,186 @@ void main() {
       verify(
         () => verifyOcraResultUseCaseMock(result: wrongPinResult),
       ).called(1);
+    },
+  );
+
+  blocTest<OcraAuthenticationCubit, OcraAuthenticationState>(
+    'Should not get password with biometrics on generateToken',
+    build: _buildCubit,
+    act: (c) {
+      when(
+        () => generateOcraChallengeUseCaseMock(),
+      ).thenReturn(successfulClientChallenge);
+
+      return c.generateToken(
+        getPasswordWithBiometrics: false,
+      );
+    },
+    verify: (c) {
+      verifyZeroInteractions(getOcraPasswordWithBiometricsUseCaseMock);
+    },
+  );
+
+  blocTest<OcraAuthenticationCubit, OcraAuthenticationState>(
+    'Should not get password with biometrics on generateClientResponse',
+    build: _buildCubit,
+    act: (c) {
+      when(
+        () => generateOcraChallengeUseCaseMock(),
+      ).thenReturn(successfulClientChallenge);
+
+      return c.generateClientResponse(
+        getPasswordWithBiometrics: false,
+      );
+    },
+    verify: (c) {
+      verifyZeroInteractions(getOcraPasswordWithBiometricsUseCaseMock);
+    },
+  );
+
+  blocTest<OcraAuthenticationCubit, OcraAuthenticationState>(
+    'Should get password from biometrics with the correct prompt on '
+    'generateToken',
+    build: _buildCubit,
+    act: (c) {
+      when(
+        () => generateOcraChallengeUseCaseMock(),
+      ).thenReturn(successfulClientChallenge);
+      when(
+        () => getOcraPasswordWithBiometricsUseCaseMock(
+          promptTitle: any(named: 'promptTitle'),
+        ),
+      ).thenAnswer(
+        (_) async => 'password',
+      );
+
+      return c.generateToken(
+        getPasswordWithBiometrics: true,
+        biometricsPromptTitle: 'promptTitle',
+      );
+    },
+    expect: () => [
+      OcraAuthenticationState(busy: true),
+      OcraAuthenticationState(token: token),
+    ],
+    verify: (c) {
+      verify(
+        () => getOcraPasswordWithBiometricsUseCaseMock(
+          promptTitle: 'promptTitle',
+        ),
+      ).called(1);
+
+      verify(
+        () => solveOcraChallengeUseCaseMock(
+          password: 'password',
+          question: serverChallenge + successfulClientChallenge,
+          timestamp: any(named: 'timestamp'),
+        ),
+      ).called(1);
+    },
+  );
+
+  blocTest<OcraAuthenticationCubit, OcraAuthenticationState>(
+    'Should get password from biometrics with the correct prompt on '
+    'generateClientResponse',
+    build: _buildCubit,
+    act: (c) {
+      when(
+        () => generateOcraChallengeUseCaseMock(),
+      ).thenReturn(successfulClientChallenge);
+      when(
+        () => getOcraPasswordWithBiometricsUseCaseMock(
+          promptTitle: any(named: 'promptTitle'),
+        ),
+      ).thenAnswer(
+        (_) async => 'password',
+      );
+
+      return c.generateClientResponse(
+        getPasswordWithBiometrics: true,
+        biometricsPromptTitle: 'promptTitle',
+      );
+    },
+    expect: () => [
+      OcraAuthenticationState(
+        actions: {
+          OcraAuthenticationAction.gettingServerChallenge,
+        },
+      ),
+      OcraAuthenticationState(clientResponse: clientResponse),
+    ],
+    verify: (c) {
+      verify(
+        () => getOcraPasswordWithBiometricsUseCaseMock(
+          promptTitle: 'promptTitle',
+        ),
+      ).called(1);
+
+      verify(
+        () => solveOcraChallengeUseCaseMock(
+          password: 'password',
+          question: serverChallenge + successfulClientChallenge,
+          timestamp: any(named: 'timestamp'),
+        ),
+      ).called(1);
+    },
+  );
+
+  blocTest<OcraAuthenticationCubit, OcraAuthenticationState>(
+    'Should emit biometricsNotSupported error on generateToken',
+    build: _buildCubit,
+    act: (c) {
+      when(
+        () => getOcraPasswordWithBiometricsUseCaseMock(),
+      ).thenThrow(BiometricsNotAvailableException());
+
+      return c.generateToken(
+        getPasswordWithBiometrics: true,
+      );
+    },
+    expect: () => [
+      OcraAuthenticationState(busy: true),
+      OcraAuthenticationState(
+        error: OcraAuthenticationError.biometricsNotSupported,
+      ),
+    ],
+    verify: (c) {
+      verify(() => getOcraPasswordWithBiometricsUseCaseMock()).called(1);
+      verifyZeroInteractions(solveOcraChallengeUseCaseMock);
+      verifyZeroInteractions(generateOcraChallengeUseCaseMock);
+      verifyZeroInteractions(clientOcraChallengeUseCaseMock);
+      verifyZeroInteractions(verifyOcraResultUseCaseMock);
+    },
+  );
+
+  blocTest<OcraAuthenticationCubit, OcraAuthenticationState>(
+    'Should emit biometricsNotSupported error on generateClientResponse',
+    build: _buildCubit,
+    act: (c) {
+      when(
+        () => getOcraPasswordWithBiometricsUseCaseMock(),
+      ).thenThrow(BiometricsNotAvailableException());
+
+      return c.generateClientResponse(
+        getPasswordWithBiometrics: true,
+      );
+    },
+    expect: () => [
+      OcraAuthenticationState(
+        actions: {
+          OcraAuthenticationAction.gettingServerChallenge,
+        },
+      ),
+      OcraAuthenticationState(
+        error: OcraAuthenticationError.biometricsNotSupported,
+      ),
+    ],
+    verify: (c) {
+      verify(() => getOcraPasswordWithBiometricsUseCaseMock()).called(1);
+      verifyZeroInteractions(solveOcraChallengeUseCaseMock);
+      verifyZeroInteractions(generateOcraChallengeUseCaseMock);
+      verifyZeroInteractions(clientOcraChallengeUseCaseMock);
+      verifyZeroInteractions(verifyOcraResultUseCaseMock);
     },
   );
 }

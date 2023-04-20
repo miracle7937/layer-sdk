@@ -1,3 +1,4 @@
+import 'package:biometric_storage/biometric_storage.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,6 +17,7 @@ import '../app.dart';
 import '../creators.dart';
 import '../cubits.dart';
 import '../design.dart';
+import '../extensions/configuration/authentication_method_configuration_use_case_extension.dart';
 import '../utils.dart';
 import '../widgets.dart';
 
@@ -187,6 +189,10 @@ class BankAppState extends State<BankApp> {
                 ),
               ),
             ),
+            getOcraPasswordWithBiometricsUseCase:
+                widget.appConfiguration.authenticationMethod.getUseCase(
+              storage: BiometricStorage(),
+            ),
           ),
         ),
         CreatorProvider<SetPinScreenCreator>(
@@ -242,19 +248,13 @@ class BankAppState extends State<BankApp> {
             saveOcraSecretKeyUseCase: SaveOcraSecretKeyUseCase(
               secureStorage: widget.secureStorage,
             ),
-            loadAccessPinUseCase: LoadAccessPinUseCase(
-              secureStorage: widget.secureStorage,
-            ),
-            saveAccessPinUseCase: SaveAccessPinUseCase(
-              secureStorage: widget.secureStorage,
+            saveAccessPinUseCase: SaveAccessPinForBiometricsUseCase(
+              storage: BiometricStorage(),
             ),
             setBrightnessUseCase: SetBrightnessUseCase(
               secureStorage: widget.secureStorage,
             ),
             loadBrightnessUseCase: LoadBrightnessUseCase(
-              secureStorage: widget.secureStorage,
-            ),
-            toggleBiometricsUseCase: ToggleBiometricsUseCase(
               secureStorage: widget.secureStorage,
             ),
             loadLoyaltyTutorialCompletionUseCase:

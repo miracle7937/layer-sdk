@@ -59,8 +59,12 @@ class BiometricsCubit extends Cubit<BiometricsState> {
     }
   }
 
-  /// Performs a biometrics authentication.
-  Future<void> authenticate({
+  /// Performs an insecure biometrics authentication.
+  ///
+  /// Should not be used for actual authentication, since it does not involves
+  /// reading data from a biometrics secured storage and can be bypassed by an
+  /// attacker.
+  Future<void> authenticateInsecure({
     required String localizedReason,
     bool stickyAuth = false,
   }) async {

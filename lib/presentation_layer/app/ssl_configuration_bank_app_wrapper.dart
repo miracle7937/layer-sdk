@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'app_ssl_configuration.dart';
+import 'configuration/app_ssl_configuration.dart';
 
 /// Wrapper for [BankApp] to provide the needed for
 /// ssl configurations

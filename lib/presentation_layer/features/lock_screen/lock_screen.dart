@@ -133,16 +133,7 @@ class _LockScreenState extends SetAccessPinBaseWidgetState<_LockScreen> {
 
     if (widget.useBiometrics) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        final biometricsCubit = context.read<BiometricsCreator>().create();
-        await biometricsCubit.authenticate(
-          localizedReason: Translation.of(context).translate(
-            'biometric_dialog_description',
-          ),
-        );
-
-        if (biometricsCubit.state.authenticated ?? false) {
-          _onBiometrics();
-        }
+        _onBiometrics();
       });
     }
   }
@@ -200,7 +191,7 @@ class _LockScreenState extends SetAccessPinBaseWidgetState<_LockScreen> {
                 Expanded(
                   child: PinPadView(
                     scramblePin: widget.scramblePin,
-                    pinLenght: widget.pinLength,
+                    pinLength: widget.pinLength,
                     pin: accessPin,
                     title: widget.title,
                     disabled: disabled,
@@ -220,7 +211,10 @@ class _LockScreenState extends SetAccessPinBaseWidgetState<_LockScreen> {
                             );
                         final session = await _getDeviceSession();
                         await authenticationCubit.verifyAccessPin(
-                          pin,
+                          // The pin is not actually verified here - it's
+                          // verified during the OCRA flow. Here we are simply
+                          // updating the notification token and device info.
+                          '',
                           deviceInfo: session,
                           userToken: context
                               .read<OcraAuthenticationCubit>()
@@ -268,14 +262,13 @@ class _LockScreenState extends SetAccessPinBaseWidgetState<_LockScreen> {
   /// Method called when the user has completed the biometric authentication
   /// successfully.
   Future<void> _onBiometrics() async {
-    final storageCubit = context.read<StorageCreator>().create();
-    await storageCubit.loadAccessPin();
-
-    accessPin = storageCubit.state.accessPin;
-
     final ocraCubit = context.read<OcraAuthenticationCubit>();
     await ocraCubit.generateToken(
-      password: accessPin,
+      getPasswordWithBiometrics: true,
+      biometricsPromptTitle: Translation.translateOf(
+        context,
+        'biometric_dialog_description',
+      ),
     );
 
     if (ocraCubit.state.error == OcraAuthenticationError.none &&
@@ -283,7 +276,10 @@ class _LockScreenState extends SetAccessPinBaseWidgetState<_LockScreen> {
       final session = await _getDeviceSession();
       final authenticationCubit = context.read<AuthenticationCubit>();
       await authenticationCubit.verifyAccessPin(
-        accessPin,
+        // The pin is not actually verified here - it's verified during the OCRA
+        // flow. Here we are simply updating the notification token and device
+        // info.
+        '',
         deviceInfo: session,
         notificationToken: widget.notifcationToken,
         userToken: context.read<OcraAuthenticationCubit>().state.token,

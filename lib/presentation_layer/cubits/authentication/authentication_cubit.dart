@@ -462,6 +462,8 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   ///
   /// Emits a busy state while checking and a state with verification result
   /// in the `isPinVerified` field.
+  // TODO: consider renaming `verifyAccessPin` to `updateSessionInfo` and
+  // removing the `pin` parameter.
   Future<void> verifyAccessPin(
     String pin, {
     DeviceSession? deviceInfo,

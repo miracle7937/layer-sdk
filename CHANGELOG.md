@@ -1,3 +1,9 @@
+# 0.0.8
+
+\* BREAKING CHANGE \*
+- Biometrics authentication implementation was changed to be more secure. Instead of asking the system if the user authenticated successfully we are now asking for access pin from a biometrics protected storage.
+- `ToggleBiometricsUseCase` was removed, please use `SaveAuthenticationSettingUseCase` instead.
+
 #0.0.7
 
 \* BREAKING CHANGE \*

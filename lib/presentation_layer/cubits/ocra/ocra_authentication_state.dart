@@ -18,6 +18,10 @@ enum OcraAuthenticationError {
   /// The entered PIN is not correct.
   wrongPin,
 
+  /// The OCRA flow attempted to retrieve the password with biometrics, but it's
+  /// not supported on the device or the biometrics data is not configured.
+  biometricsNotSupported,
+
   /// No error was raised so far.
   none,
 }
@@ -83,6 +87,8 @@ class OcraAuthenticationState extends BaseState<OcraAuthenticationAction, void,
       error: error ?? this.error,
       remainingAttempts: remainingAttempts ?? this.remainingAttempts,
       clientResponse: clientResponse ?? this.clientResponse,
+      actions: actions ?? this.actions,
+      errors: errors ?? this.errors,
     );
   }
 

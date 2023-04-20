@@ -1,6 +1,7 @@
 library extensions;
 
 export './extensions/branding_flutter_extension.dart';
+export './extensions/configuration/authentication_method_configuration_use_case_extension.dart';
 export './extensions/cubit_logger_extension.dart';
 export './extensions/datetime_extensions.dart';
 export './extensions/dpa/dpa_screen_block_ui_extension.dart';

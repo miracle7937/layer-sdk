@@ -139,7 +139,7 @@ class _SetAccessPinScreenState
                                   : null;
 
                           return PinPadView(
-                            pinLenght: widget.pinLength,
+                            pinLength: widget.pinLength,
                             pin: accessPin,
                             title: widget.setPinTitle,
                             disabled: disabled,
@@ -260,7 +260,7 @@ class __RepeatAccessPinScreenState
                 children: [
                   Expanded(
                     child: PinPadView(
-                      pinLenght: widget.pinLength,
+                      pinLength: widget.pinLength,
                       pin: accessPin,
                       title: widget.title,
                       disabled: !state.busy && disabled,
