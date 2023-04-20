@@ -7,13 +7,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../creators.dart';
 import '../../cubits.dart';
 import '../../resources.dart';
-import '../../utils.dart';
 
 /// A view for inputing a pin with a pin pad.
 class PinPadView extends StatefulWidget {
   /// The pin length.
   /// Default is 6.
-  final int pinLenght;
+  final int pinLength;
 
   /// The current entered pin.
   final String pin;
@@ -36,7 +35,7 @@ class PinPadView extends StatefulWidget {
   /// pad.
   final bool showBiometrics;
 
-  /// Callback called when the user has entered the biometrics successfully.
+  /// Callback called when the user has pushed the biometrics button.
   /// Must be indicated if the [showBiometrics] is `true`.
   final VoidCallback? onBiometrics;
 
@@ -46,7 +45,7 @@ class PinPadView extends StatefulWidget {
   /// Creates a new [PinPadView].
   const PinPadView({
     Key? key,
-    this.pinLenght = 6,
+    this.pinLength = 6,
     required this.pin,
     required this.onChanged,
     this.warning,
@@ -75,15 +74,13 @@ class _PinPadViewState extends State<PinPadView> {
 
   /// The buttons that will appear on the pin pad.
   List<PinButton> pinButtons(BuildContext context) {
-    final translation = Translation.of(context);
-
     var pinWidgets = <PinButton>[];
 
     for (var index = 0; index < pinValues.length - 1; index++) {
       pinWidgets.add(PinButton(
         title: pinValues[index].toString(),
         onPressed: () => widget.onChanged('${widget.pin}${pinValues[index]}'),
-        enabled: widget.pin.length < widget.pinLenght,
+        enabled: widget.pin.length < widget.pinLength,
       ));
     }
 
@@ -91,17 +88,8 @@ class _PinPadViewState extends State<PinPadView> {
       ...pinWidgets,
       PinButton(
         svgPath: FLImages.biometrics,
-        onPressed: () async {
-          final biometricsCubit = context.read<BiometricsCubit>();
-          await biometricsCubit.authenticate(
-            localizedReason: translation.translate(
-              'biometric_dialog_description',
-            ),
-          );
-
-          if (biometricsCubit.state.authenticated ?? false) {
-            widget.onBiometrics!();
-          }
+        onPressed: () {
+          widget.onBiometrics!();
         },
         enabled: widget.showBiometrics,
         visible: widget.showBiometrics,
@@ -109,7 +97,7 @@ class _PinPadViewState extends State<PinPadView> {
       PinButton(
         title: pinValues[9].toString(),
         onPressed: () => widget.onChanged('${widget.pin}${pinValues[9]}'),
-        enabled: widget.pin.length < widget.pinLenght,
+        enabled: widget.pin.length < widget.pinLength,
       ),
       PinButton(
         svgPath: FLImages.backspace,
@@ -176,7 +164,7 @@ class _PinPadViewState extends State<PinPadView> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(
-              widget.pinLenght,
+              widget.pinLength,
               (index) => IgnorePointer(
                 ignoring: true,
                 child: Padding(

@@ -116,12 +116,13 @@ class _EnableBiometricsScreenState extends State<EnableBiometricsScreen> {
                           Spacer(),
                           DKButton(
                             title: translation.translate('enable'),
-                            onPressed: () =>
-                                context.read<BiometricsCubit>().authenticate(
-                                      localizedReason: translation.translate(
-                                        'biometric_dialog_description',
-                                      ),
-                                    ),
+                            onPressed: () => context
+                                .read<BiometricsCubit>()
+                                .authenticateInsecure(
+                                  localizedReason: translation.translate(
+                                    'biometric_dialog_description',
+                                  ),
+                                ),
                           ),
                           const SizedBox(height: 8.0),
                           DKButton(

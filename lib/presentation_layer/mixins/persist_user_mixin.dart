@@ -79,7 +79,7 @@ mixin PersistUserMixin {
 
       if (accessPin.isNotEmpty) {
         storageCubit.toggleBiometric(isBiometricsActive: true);
-        await storageCubit.saveAccessPin(accessPin);
+        await storageCubit.saveAccessPinForBiometrics(accessPin);
         await storageCubit.saveAuthenticationSettings(
           useBiometrics: true,
         );

@@ -1,6 +1,8 @@
+import 'package:biometric_storage/biometric_storage.dart';
 import 'package:bloc/bloc.dart';
 
 import '../../../data_layer/network.dart';
+import '../../../domain_layer/errors.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
 import '../../cubits.dart';
@@ -34,14 +36,16 @@ class OcraAuthenticationCubit extends Cubit<OcraAuthenticationState> {
   final ClientOcraChallengeUseCase _clientChallengeOcraUseCase;
   final SolveOcraChallengeUseCase _solveOcraChallengeUseCase;
   final VerifyOcraResultUseCase _verifyOcraResultUseCase;
+  final GetOcraPasswordWithBiometricsUseCase?
+      _getOcraPasswordWithBiometricsUseCase;
 
   /// The device identifier.
   final int _deviceId;
 
   /// Creates a new [OcraAuthenticationCubit].
   ///
-  /// The [ocraAuthentication] and [challengeGenerator] parameters are not
-  /// meant to be passed, they are just there for unit tests.
+  /// The [getOcraPasswordWithBiometricsUseCase] is optional, it should be
+  /// passed by applications that want to use biometrics with the OCRA flow.
   OcraAuthenticationCubit({
     required String secret,
     required int deviceId,
@@ -50,20 +54,32 @@ class OcraAuthenticationCubit extends Cubit<OcraAuthenticationState> {
     required VerifyOcraResultUseCase verifyOcraResultUseCase,
     required GenerateOcraChallengeUseCase generateOcraChallengeUseCase,
     required GenerateOcraTimestampUseCase generateOcraTimestampUseCase,
+    GetOcraPasswordWithBiometricsUseCase? getOcraPasswordWithBiometricsUseCase,
   })  : _deviceId = deviceId,
         _solveOcraChallengeUseCase = solveOcraChallengeUseCase,
         _clientChallengeOcraUseCase = clientChallengeOcraUseCase,
         _verifyOcraResultUseCase = verifyOcraResultUseCase,
         _generateOcraChallengeUseCase = generateOcraChallengeUseCase,
         _generateOcraTimestampUseCase = generateOcraTimestampUseCase,
+        _getOcraPasswordWithBiometricsUseCase =
+            getOcraPasswordWithBiometricsUseCase,
         super(OcraAuthenticationState());
 
   /// Generates a new access token using the OCRA mutual authentication flow.
   ///
   /// The [password] parameter is optional, it needs to be provided only if it's
   /// used in the flow on the server side.
+  ///
+  /// The [password] can be retrieved from the biometrics protected storage if
+  /// the [getPasswordWithBiometrics] flag is set to `true`. The flag has no
+  /// effect if the [_getOcraPasswordWithBiometricsUseCase] is `null`.
+  ///
+  /// The [biometricsPromptTitle] can be provided to localize the title
+  /// displayed in the native biometrics popup.
   Future<void> generateToken({
     String? password,
+    bool getPasswordWithBiometrics = false,
+    String biometricsPromptTitle = '',
     bool shouldRethrow = false,
   }) async {
     emit(
@@ -73,6 +89,13 @@ class OcraAuthenticationCubit extends Cubit<OcraAuthenticationState> {
     );
 
     try {
+      if (getPasswordWithBiometrics &&
+          _getOcraPasswordWithBiometricsUseCase != null) {
+        password = await _getOcraPasswordWithBiometricsUseCase!(
+          promptTitle: biometricsPromptTitle,
+        );
+      }
+
       final challenge = _generateOcraChallengeUseCase();
       final timestamp = _generateOcraTimestampUseCase();
       final response = await _clientChallengeOcraUseCase(
@@ -116,6 +139,27 @@ class OcraAuthenticationCubit extends Cubit<OcraAuthenticationState> {
               : OcraAuthenticationError.none,
         ),
       );
+    } on BiometricsNotAvailableException catch (e, st) {
+      logException(e, st);
+
+      emit(
+        state.copyWith(
+          busy: false,
+          error: OcraAuthenticationError.biometricsNotSupported,
+        ),
+      );
+    } on AuthException catch (e) {
+      emit(
+        state.copyWith(
+          busy: false,
+          error: [
+            AuthExceptionCode.canceled,
+            AuthExceptionCode.userCanceled,
+          ].contains(e.code)
+              ? OcraAuthenticationError.none
+              : OcraAuthenticationError.generic,
+        ),
+      );
     } on Exception catch (e, st) {
       logException(e, st);
       emit(
@@ -137,8 +181,14 @@ class OcraAuthenticationCubit extends Cubit<OcraAuthenticationState> {
 
   /// Generates a new client response to be send on
   /// 2fa request in case of biometrics
+  ///
+  /// The [password] can be retrieved from the biometrics protected storage if
+  /// the [getPasswordWithBiometrics] flag is set to `true`. The flag has no
+  /// effect if the [_getOcraPasswordWithBiometricsUseCase] is `null`.
   Future<void> generateClientResponse({
     String? password,
+    bool getPasswordWithBiometrics = false,
+    String biometricsPromptTitle = '',
     bool shouldRethrow = false,
   }) async {
     emit(
@@ -151,6 +201,13 @@ class OcraAuthenticationCubit extends Cubit<OcraAuthenticationState> {
     );
 
     try {
+      if (getPasswordWithBiometrics &&
+          _getOcraPasswordWithBiometricsUseCase != null) {
+        password = await _getOcraPasswordWithBiometricsUseCase!(
+          promptTitle: biometricsPromptTitle,
+        );
+      }
+
       final challenge = _generateOcraChallengeUseCase();
       final timestamp = _generateOcraTimestampUseCase();
       final response = await _clientChallengeOcraUseCase(
@@ -181,6 +238,29 @@ class OcraAuthenticationCubit extends Cubit<OcraAuthenticationState> {
             OcraAuthenticationAction.gettingServerChallenge,
           ),
           clientResponse: serverChallengeResult,
+        ),
+      );
+    } on BiometricsNotAvailableException catch (e, st) {
+      logException(e, st);
+
+      emit(
+        state.copyWith(
+          actions: state.removeAction(
+            OcraAuthenticationAction.gettingServerChallenge,
+          ),
+          error: OcraAuthenticationError.biometricsNotSupported,
+        ),
+      );
+    } on AuthException catch (e) {
+      emit(
+        state.copyWith(
+          busy: false,
+          error: [
+            AuthExceptionCode.canceled,
+            AuthExceptionCode.userCanceled,
+          ].contains(e.code)
+              ? OcraAuthenticationError.none
+              : OcraAuthenticationError.generic,
         ),
       );
     } on Exception catch (e, st) {

@@ -90,7 +90,7 @@ class _DPASetAccessPinState
                               : null;
 
                       return PinPadView(
-                        pinLenght:
+                        pinLength:
                             widget.dpaVariable.constraints.maxLength ?? 6,
                         pin: accessPin,
                         title: widget.dpaVariable.label ?? '',

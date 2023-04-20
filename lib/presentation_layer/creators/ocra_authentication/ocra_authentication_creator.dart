@@ -11,15 +11,21 @@ class OcraAuthenticationCreator extends CubitCreator {
   final String _ocraSuite;
   final ClientOcraChallengeUseCase _clientChallengeOcraUseCase;
   final VerifyOcraResultUseCase _verifyOcraResultUseCase;
+  final GetOcraPasswordWithBiometricsUseCase
+      _getOcraPasswordWithBiometricsUseCase;
 
   /// Creates a new [OcraAuthenticationCreator] instance.
   OcraAuthenticationCreator({
     required String ocraSuite,
     required ClientOcraChallengeUseCase clientChallengeOcraUseCase,
     required VerifyOcraResultUseCase verifyOcraResultUseCase,
+    required GetOcraPasswordWithBiometricsUseCase
+        getOcraPasswordWithBiometricsUseCase,
   })  : _ocraSuite = ocraSuite,
         _clientChallengeOcraUseCase = clientChallengeOcraUseCase,
-        _verifyOcraResultUseCase = verifyOcraResultUseCase;
+        _verifyOcraResultUseCase = verifyOcraResultUseCase,
+        _getOcraPasswordWithBiometricsUseCase =
+            getOcraPasswordWithBiometricsUseCase;
 
   /// Creates and returns an instance of the [OcraAuthenticationCubit].
   OcraAuthenticationCubit create({
@@ -44,5 +50,7 @@ class OcraAuthenticationCreator extends CubitCreator {
         generateOcraTimestampUseCase: GenerateOcraTimestampUseCase(
           ocraSuite: _ocraSuite,
         ),
+        getOcraPasswordWithBiometricsUseCase:
+            _getOcraPasswordWithBiometricsUseCase,
       );
 }

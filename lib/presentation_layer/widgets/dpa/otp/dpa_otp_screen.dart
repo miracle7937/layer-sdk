@@ -204,45 +204,35 @@ class _DPAOTPScreenState extends State<_DPAOTPScreen>
   /// Preforms a biometrics authentication. If successful, it generates an
   /// OCRA challenge.
   void _authenticateBiometrics() async {
-    final biometricsCubit = context.read<BiometricsCubit>();
+    final storageCubit = context.read<StorageCreator>().create();
 
-    await biometricsCubit.authenticate(
-      localizedReason: Translation.of(context).translate(
+    await Future.wait([
+      storageCubit.loadLastLoggedUser(),
+      storageCubit.loadOcraSecretKey(),
+    ]);
+
+    final deviceId = storageCubit.state.currentUser!.deviceId!;
+    final ocraSecret = storageCubit.state.ocraSecretKey!;
+
+    final ocraAuthenticationCubit =
+        context.read<OcraAuthenticationCreator>().create(
+              deviceId: deviceId,
+              ocraSecret: ocraSecret,
+            );
+
+    await ocraAuthenticationCubit.generateClientResponse(
+      getPasswordWithBiometrics: true,
+      biometricsPromptTitle: Translation.translateOf(
+        context,
         'biometric_dialog_description',
       ),
     );
 
-    if (biometricsCubit.state.authenticated ?? false) {
-      final storageCubit = context.read<StorageCreator>().create();
-
-      await Future.wait([
-        storageCubit.loadLastLoggedUser(),
-        storageCubit.loadOcraSecretKey(),
-        storageCubit.loadAccessPin(),
-      ]);
-
-      final deviceId = storageCubit.state.currentUser!.deviceId!;
-      final ocraSecret = storageCubit.state.ocraSecretKey!;
-      final accessPin = storageCubit.state.accessPin.isNotEmpty
-          ? storageCubit.state.accessPin
-          : storageCubit.state.currentUser?.accessPin ?? '';
-
-      final ocraAuthenticationCubit =
-          context.read<OcraAuthenticationCreator>().create(
-                deviceId: deviceId,
-                ocraSecret: ocraSecret,
-              );
-
-      await ocraAuthenticationCubit.generateClientResponse(
-        password: accessPin,
+    final ocraClientResponse = ocraAuthenticationCubit.state.clientResponse;
+    if (ocraClientResponse != null) {
+      _onSecondFactorIntroduced(
+        ocraClientResponse: ocraClientResponse,
       );
-
-      final ocraClientResponse = ocraAuthenticationCubit.state.clientResponse;
-      if (ocraClientResponse != null) {
-        _onSecondFactorIntroduced(
-          ocraClientResponse: ocraClientResponse,
-        );
-      }
     }
   }
 

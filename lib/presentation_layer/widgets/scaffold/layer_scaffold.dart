@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../app/app_configuration.dart';
+import '../../app/configuration/app_configuration.dart';
 
 /// Widget to be used instead of [Scaffold] in our screens.
 ///

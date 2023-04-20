@@ -25,6 +25,9 @@ extension OcraAuthenticationErrorUIExtension on OcraAuthenticationError {
           [remainingAttempts.toString()],
         );
 
+      case OcraAuthenticationError.biometricsNotSupported:
+        return translation.translate('biometrics_not_supported');
+
       case OcraAuthenticationError.none:
         return null;
     }
