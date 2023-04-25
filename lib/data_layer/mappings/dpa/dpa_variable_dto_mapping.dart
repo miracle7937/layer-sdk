@@ -275,6 +275,7 @@ extension DPAVariableTypeMapping on DPAVariableType {
       case DPAVariableType.link:
       case DPAVariableType.swipe:
       case DPAVariableType.pin:
+      case DPAVariableType.textArea:
         return DPATypeDTO.string;
 
       case DPAVariableType.number:
