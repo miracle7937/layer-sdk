@@ -12,13 +12,14 @@ extension CubitLogHelper on Cubit {
     /// to use to identify this in the logs.
     /// For now we'll keep it as `SystemStateError`
     final _log = Logger('SystemStateError');
-    final frame = StackFrame.fromStackTrace(st).first;
+    final frames = StackFrame.fromStackTrace(st);
+    final frame = frames.isNotEmpty ? frames.first : null;
     final exceptionString =
         e is NetException ? (e.message ?? '') : e.toString();
 
     _log.log(
       Level.SEVERE,
-      "${frame.className} - ${frame.method} exception: $exceptionString",
+      "${frame?.className} - ${frame?.method} exception: $exceptionString",
     );
   }
 }
