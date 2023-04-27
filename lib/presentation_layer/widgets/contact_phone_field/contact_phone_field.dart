@@ -45,6 +45,9 @@ class ContactPhoneField extends StatelessWidget with ContactPickerMixin {
   /// Called if permission is denied to verify if app settings should be opened.
   final ValueGetter<Future<bool>>? permissionDeniedCallback;
 
+  /// Empty widget to be shown when the country code item list is empty.
+  final Widget? emptySearchWidget;
+
   /// Creates a new [ContactPhoneField].
   ContactPhoneField({
     Key? key,
@@ -60,6 +63,7 @@ class ContactPhoneField extends StatelessWidget with ContactPickerMixin {
     this.searchFieldHint,
     required this.onContactPicked,
     this.permissionDeniedCallback,
+    this.emptySearchWidget,
   })  : countries = UnmodifiableSetView(countries),
         super(key: key);
 
@@ -75,6 +79,7 @@ class ContactPhoneField extends StatelessWidget with ContactPickerMixin {
         onChanged: onChanged,
         onCountryCodeChanged: onCountryCodeChanged,
         warning: warning,
+        emptySearchWidget: emptySearchWidget,
         suffixWidget: DKButton.icon(
           type: DKButtonType.brandPlain,
           iconPath: FLImages.contacts,
