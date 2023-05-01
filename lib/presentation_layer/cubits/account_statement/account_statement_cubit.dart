@@ -53,6 +53,13 @@ class AccountStatementCubit extends Cubit<AccountStatementState> {
   }
 
   /// Changing the period of statement.
+  ///
+  /// The end date is inclusive, meaning that a day will be added when
+  /// requesting the statement so the selected end date is included.
+  ///
+  /// For example: If `DateTime(2023, 05, 01)` is selected, the date sent will
+  /// be `DateTime(2023, 05, 02)` so the selected date is included in the
+  /// statement.
   void onChangePeriod(
     DateTime start,
     DateTime end,
@@ -87,7 +94,7 @@ class AccountStatementCubit extends Cubit<AccountStatementState> {
         accountId: _accountId,
         customerId: _customerId,
         fromDate: state.startDate!,
-        toDate: state.endDate!,
+        toDate: state.endDate!.add(Duration(days: 1)),
         type: FileType.pdf,
       );
 
