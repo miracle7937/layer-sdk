@@ -87,8 +87,10 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
       ),
     );
 
+    final isResuming = instanceId != null;
+
     try {
-      final process = instanceId != null
+      final process = isResuming
           ? await _resumeProcess(
               instanceId: instanceId,
             )
@@ -121,10 +123,12 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
           ),
         );
 
-        final shouldBlock = process.stepProperties?.block
-            .shouldBlock(process.stepProperties?.screenType);
+        final shouldBlock = process.stepProperties?.block.shouldBlock(
+              process.stepProperties?.screenType,
+            ) ??
+            false;
 
-        if (shouldBlock ?? false) {
+        if (shouldBlock && !isResuming) {
           stepOrFinish();
         }
 
