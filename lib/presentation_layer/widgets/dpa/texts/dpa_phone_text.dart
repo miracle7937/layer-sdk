@@ -1,6 +1,8 @@
+import 'package:collection/collection.dart';
 import 'package:design_kit_layer/design_kit_layer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_libphonenumber/flutter_libphonenumber.dart';
 
 import '../../../../domain_layer/models.dart';
 import '../../../cubits.dart';
@@ -36,6 +38,8 @@ class _DPAPhoneTextState extends State<DPAPhoneText> {
   TextEditingController? _controller;
 
   late String _selectedDialCode;
+
+  String? normalizationError;
 
   @override
   void initState() {
@@ -75,7 +79,8 @@ class _DPAPhoneTextState extends State<DPAPhoneText> {
         size: widget.variable.property.multiline
             ? DKTextFieldSize.multiline
             : DKTextFieldSize.large,
-        warning: widget.variable.translateValidationError(translation),
+        warning: normalizationError ??
+            widget.variable.translateValidationError(translation),
         onCountryCodeChanged: (value) {
           _selectedDialCode = value;
 
@@ -100,10 +105,46 @@ class _DPAPhoneTextState extends State<DPAPhoneText> {
               ),
             )
             .toSet(),
-        onChanged: (value) => context.read<DPAProcessCubit>().updateValue(
-              variable: widget.variable,
-              newValue: value.isEmpty ? '' : '$_selectedDialCode$value',
-            ),
+        onChanged: (value) async {
+          final country = CountryManager().countries.firstWhereOrNull(
+                (element) => element.phoneCode == _selectedDialCode,
+              );
+
+          if (country == null) return;
+
+          final result = await FlutterLibphonenumber().getFormattedParseResult(
+            value,
+            country,
+          );
+
+          /// Normalization failed
+          /// Remove the DPA variable value so the user is not able to proceed
+          /// to the next step of the DPA process
+          if (result == null) {
+            setState(() {
+              normalizationError = translation.translate('invalid_format');
+            });
+
+            context.read<DPAProcessCubit>().updateValue(
+                  variable: widget.variable,
+                  newValue: '',
+                );
+
+            return;
+          }
+
+          /// Normalization was successfull
+          /// Remove the custom validation error and update the value in the
+          /// DPA variable so the user is able to proceed to the next step.
+          setState(() {
+            normalizationError = null;
+          });
+
+          context.read<DPAProcessCubit>().updateValue(
+                variable: widget.variable,
+                newValue: result.e164.replaceAll('+', ''),
+              );
+        },
       ),
     );
   }
