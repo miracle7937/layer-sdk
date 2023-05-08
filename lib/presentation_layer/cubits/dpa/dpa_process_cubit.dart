@@ -128,7 +128,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
             ) ??
             false;
 
-        if (shouldBlock && !isResuming) {
+        if (shouldBlock) {
           stepOrFinish();
         }
 
