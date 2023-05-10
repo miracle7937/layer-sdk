@@ -174,4 +174,11 @@ abstract class DPARepositoryInterface {
   DPATask parseJSONIntoDPATask({
     required Map<String, dynamic> json,
   });
+
+  /// Parses a JSON into a [DPAProcessStepProperties].
+  ///
+  /// Returns the [DPAProcessStepProperties].
+  DPAProcessStepProperties parseJSONIntoStepProperties({
+    required Map<String, dynamic> json,
+  });
 }

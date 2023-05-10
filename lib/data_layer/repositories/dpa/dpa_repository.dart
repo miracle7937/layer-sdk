@@ -482,4 +482,13 @@ class DPARepository implements DPARepositoryInterface {
       _provider
           .parseJSONIntoDPATaskDTO(json: json)
           .toDPATask(_createCustomData);
+
+  /// Parses a JSON into a [DPAProcessStepProperties].
+  @override
+  DPAProcessStepProperties parseJSONIntoStepProperties({
+    required Map<String, dynamic> json,
+  }) =>
+      _provider
+          .parseJSONIntoStepProperties(json: json)
+          .toDPAProcessStepProperties(_createCustomData);
 }
