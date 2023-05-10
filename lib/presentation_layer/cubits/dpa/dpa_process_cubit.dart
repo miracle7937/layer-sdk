@@ -28,6 +28,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
   final DPASkipStepUseCase _skipStepUseCase;
   final ParseJSONIntoDPATaskToContinueDPAProcessUseCase
       _parseJSONIntoDPATaskToContinueDPAProcessUseCase;
+  final ParseJSONIntoStepPropertiesUseCase _parseJSONIntoStepPropertiesUseCase;
 
   /// Creates a new cubit using the necessary use cases.
   DPAProcessCubit({
@@ -47,6 +48,8 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
     required DPASkipStepUseCase skipStepUseCase,
     required ParseJSONIntoDPATaskToContinueDPAProcessUseCase
         parseJSONIntoDPATaskToContinueDPAProcessUseCase,
+    required ParseJSONIntoStepPropertiesUseCase
+        parseJSONIntoStepPropertiesUseCase,
   })  : _startDPAProcessUseCase = startDPAProcessUseCase,
         _resumeDPAProcessUsecase = resumeDPAProcessUsecase,
         _loadTaskByIdUseCase = loadTaskByIdUseCase,
@@ -63,6 +66,8 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
         _skipStepUseCase = skipStepUseCase,
         _parseJSONIntoDPATaskToContinueDPAProcessUseCase =
             parseJSONIntoDPATaskToContinueDPAProcessUseCase,
+        _parseJSONIntoStepPropertiesUseCase =
+            parseJSONIntoStepPropertiesUseCase,
         super(DPAProcessState());
 
   /// Starts a DPA process, either by starting a new one (if [instanceId] is
@@ -155,11 +160,13 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
   /// Continues a process with a new task
   Future<void> continueProcessWithTask({
     required DPATask task,
+    required DPAProcessStepProperties processProperties,
   }) async {
     final process = DPAProcess(
       task: task,
       processName: task.processDefinitionName,
       variables: task.variables,
+      stepProperties: processProperties,
     );
 
     emit(
@@ -304,7 +311,17 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
               json: taskVariable!['value'],
             );
 
-            continueProcessWithTask(task: task);
+            final processProperties =
+                taskVariable['value']['taskVariables']['properties'] ?? {};
+
+            final properties = _parseJSONIntoStepPropertiesUseCase(
+              json: processProperties,
+            );
+
+            continueProcessWithTask(
+              task: task,
+              processProperties: properties,
+            );
             return;
           }
         }

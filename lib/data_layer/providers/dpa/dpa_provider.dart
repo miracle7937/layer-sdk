@@ -396,4 +396,12 @@ class DPAProvider {
       DPATaskDTO.fromJson(
         json,
       );
+
+  /// Parses a JSON into a [DPAProcessStepPropertiesDTO].
+  DPAProcessStepPropertiesDTO parseJSONIntoStepProperties({
+    required Map<String, dynamic> json,
+  }) =>
+      DPAProcessStepPropertiesDTO.fromJson(
+        json,
+      );
 }
