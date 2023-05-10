@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../data_layer/environment.dart';
 import '../../../../layer_sdk.dart';
@@ -22,39 +23,44 @@ class DPAWaitingEmailScreen extends StatelessWidget {
     final label = process.task?.name;
     final description = process.task?.description;
 
+    final busy = context.watch<DPAProcessCubit>().state.actions.isNotEmpty;
+
     return Center(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16.0,
-          vertical: 32.0,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (image != null) ...[
-              NetworkImageContainer(
-                imageURL: image,
-                customToken: EnvironmentConfiguration.current.defaultToken,
+      child: busy
+          ? DKLoader()
+          : SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 32.0,
               ),
-              const SizedBox(height: 23.0),
-            ],
-            if (label != null)
-              Text(
-                label,
-                style: layerDesign.titleXL(),
-                textAlign: TextAlign.center,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (image != null) ...[
+                    NetworkImageContainer(
+                      imageURL: image,
+                      customToken:
+                          EnvironmentConfiguration.current.defaultToken,
+                    ),
+                    const SizedBox(height: 23.0),
+                  ],
+                  if (label != null)
+                    Text(
+                      label,
+                      style: layerDesign.titleXL(),
+                      textAlign: TextAlign.center,
+                    ),
+                  if (label != null && description != null)
+                    const SizedBox(height: 16.0),
+                  if (description != null)
+                    Text(
+                      description,
+                      style: layerDesign.bodyM(),
+                      textAlign: TextAlign.center,
+                    ),
+                ],
               ),
-            if (label != null && description != null)
-              const SizedBox(height: 16.0),
-            if (description != null)
-              Text(
-                description,
-                style: layerDesign.bodyM(),
-                textAlign: TextAlign.center,
-              ),
-          ],
-        ),
-      ),
+            ),
     );
   }
 }
