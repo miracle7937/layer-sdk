@@ -175,9 +175,9 @@ abstract class DPARepositoryInterface {
     required Map<String, dynamic> json,
   });
 
-  /// Parses a JSON into a [DPATask].
+  /// Parses a JSON into a [DPAProcessStepProperties].
   ///
-  /// Returns the [DPATask].
+  /// Returns the [DPAProcessStepProperties].
   DPAProcessStepProperties parseJSONIntoStepProperties({
     required Map<String, dynamic> json,
   });
