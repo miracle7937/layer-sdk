@@ -24,6 +24,7 @@ class FlutterEnvironmentConfiguration extends EnvironmentConfiguration {
     String pathPrefix = '',
     String? ocraSuite,
     String? stripePublishableKey,
+    bool hideSensitiveLogs = true,
   }) : super(
           experienceAppId: experienceAppId,
           baseUrl: baseUrl,
@@ -32,5 +33,6 @@ class FlutterEnvironmentConfiguration extends EnvironmentConfiguration {
           pathPrefix: pathPrefix,
           ocraSuite: ocraSuite,
           stripePublishableKey: stripePublishableKey,
+          hideSensitiveLogs: hideSensitiveLogs,
         );
 }

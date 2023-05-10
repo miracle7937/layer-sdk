@@ -10,6 +10,7 @@ export 'utils/device_permissions_wrapper.dart';
 export 'utils/error_concentrator.dart';
 export 'utils/file_utils.dart';
 export 'utils/interceptors/fl_interceptor.dart';
+export 'utils/interceptors/logger_interceptor.dart';
 export 'utils/interceptors/user_inactive_interceptor.dart';
 export 'utils/logger/file_logger.dart';
 export 'utils/no_storage.dart';

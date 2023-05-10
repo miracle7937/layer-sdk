@@ -49,6 +49,12 @@ abstract class EnvironmentConfiguration {
   /// The key used by the Stripe SDK.
   final String? stripePublishableKey;
 
+  /// Parameter that defines wheter or not sensitive data should be logged
+  /// Eg: Authorization headers, response body etc.
+  ///
+  /// Defaults to `true`.
+  final bool hideSensitiveLogs;
+
   /// Getter for retrieving the whole url
   String get fullUrl =>
       baseUrl + (port.isNotEmpty ? ':$port' : '') + pathPrefix;
@@ -65,5 +71,6 @@ abstract class EnvironmentConfiguration {
     this.pathPrefix = '',
     this.ocraSuite,
     this.stripePublishableKey,
+    this.hideSensitiveLogs = true,
   });
 }
