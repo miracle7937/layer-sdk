@@ -8,6 +8,7 @@ import 'package:dio/dio.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 
+import '../../presentation_layer/utils.dart';
 import '../environment.dart';
 import '../network.dart';
 
@@ -105,7 +106,7 @@ class NetClient {
     this.netEndpoints = const NetEndpoints(),
     this.defaultLanguage = 'en',
     HttpClient? Function(HttpClient)? onHttpClientCreate,
-  })  : client = Dio(
+  }) : client = Dio(
           BaseOptions(
             baseUrl: EnvironmentConfiguration.current.fullUrl,
             headers: defaultHeaders,
@@ -384,10 +385,8 @@ class NetClient {
 
   /// Adds the LogInterceptor, using the Logger to display the messages
   void _addLogger(NetLogType logType) => client.interceptors.add(
-        LogInterceptor(
+        LoggerInterceptor(
           logPrint: logType == NetLogType.full ? _wrapLog : _log.finest,
-          requestBody: true,
-          responseBody: true,
         ),
       );
 
