@@ -101,7 +101,7 @@ class NetClient {
   NetClient({
     this.logType = NetLogType.none,
     this.jsonHandler = const NetJson(),
-    this.backgroundJsonHandler = const NetJson(),
+    this.backgroundJsonHandler = const BackgroundNetJson(),
     Map<String, dynamic>? defaultHeaders,
     this.netEndpoints = const NetEndpoints(),
     this.defaultLanguage = 'en',
