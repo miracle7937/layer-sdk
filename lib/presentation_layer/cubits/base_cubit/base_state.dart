@@ -58,7 +58,10 @@ enum CubitErrorCode {
   ///
   /// If you get this, it means that you are getting an error code from the
   /// API that you are not handling here.
-  unknown('unknown_error');
+  unknown('unknown_error'),
+
+  /// Invalid txn pin
+  invalidTxnPin('invalid_txn_pin');
 
   /// The string value for the [CubitErrorCode].
   final String value;
