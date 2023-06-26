@@ -1,10 +1,13 @@
 import 'package:bloc/bloc.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
 
+import '../../../data_layer/environment.dart';
 import '../../../data_layer/network.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
+import '../../../domain_layer/use_cases/dpa/encrypt_dpa_variable_value_use_case.dart';
 import '../../cubits.dart';
 import '../../extensions.dart';
 
@@ -29,6 +32,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
   final ParseJSONIntoDPATaskToContinueDPAProcessUseCase
       _parseJSONIntoDPATaskToContinueDPAProcessUseCase;
   final ParseJSONIntoStepPropertiesUseCase _parseJSONIntoStepPropertiesUseCase;
+  EncryptDPAVariableValueUseCase? _encryptDPAVariableValueUseCase;
 
   /// Creates a new cubit using the necessary use cases.
   DPAProcessCubit({
@@ -261,6 +265,14 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
     }
   }
 
+  Future<String?> _getPublicKey() async {
+    final integrationPublicKey =
+        FlutterEnvironmentConfiguration.current.integrationPublicKey;
+    return integrationPublicKey == null
+        ? null
+        : await rootBundle.loadString(integrationPublicKey);
+  }
+
   /// Proceeds to next step, or finishes the process if at the last one.
   Future<void> stepOrFinish({
     List<DPAVariable>? extraVariables,
@@ -286,9 +298,18 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
       var process = state.activeProcess.validate();
 
       if (process.canProceed) {
+        if (_encryptDPAVariableValueUseCase == null) {
+          final publicKey = await _getPublicKey();
+          _encryptDPAVariableValueUseCase =
+              EncryptDPAVariableValueUseCase(publicKey);
+        }
         process = await _stepOrFinishProcessUseCase(
-          process: process,
-          extraVariables: extraVariables,
+          process: process.copyWith(
+            variables: _encryptDPAVariableValueUseCase!(process.variables),
+          ),
+          extraVariables: extraVariables != null
+              ? _encryptDPAVariableValueUseCase!(extraVariables)
+              : extraVariables,
         );
       }
 
