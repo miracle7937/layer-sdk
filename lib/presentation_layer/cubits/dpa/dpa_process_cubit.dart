@@ -1,9 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
 
-import '../../../data_layer/environment.dart';
 import '../../../data_layer/network.dart';
 import '../../../domain_layer/models.dart';
 import '../../../domain_layer/use_cases.dart';
@@ -32,7 +30,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
   final ParseJSONIntoDPATaskToContinueDPAProcessUseCase
       _parseJSONIntoDPATaskToContinueDPAProcessUseCase;
   final ParseJSONIntoStepPropertiesUseCase _parseJSONIntoStepPropertiesUseCase;
-  EncryptDPAVariableValueUseCase? _encryptDPAVariableValueUseCase;
+  final EncryptDPAVariableValueUseCase _encryptDPAVariableValueUseCase;
 
   /// Creates a new cubit using the necessary use cases.
   DPAProcessCubit({
@@ -54,6 +52,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
         parseJSONIntoDPATaskToContinueDPAProcessUseCase,
     required ParseJSONIntoStepPropertiesUseCase
         parseJSONIntoStepPropertiesUseCase,
+    required EncryptDPAVariableValueUseCase encryptDPAVariableValueUseCase,
   })  : _startDPAProcessUseCase = startDPAProcessUseCase,
         _resumeDPAProcessUsecase = resumeDPAProcessUsecase,
         _loadTaskByIdUseCase = loadTaskByIdUseCase,
@@ -72,6 +71,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
             parseJSONIntoDPATaskToContinueDPAProcessUseCase,
         _parseJSONIntoStepPropertiesUseCase =
             parseJSONIntoStepPropertiesUseCase,
+        _encryptDPAVariableValueUseCase = encryptDPAVariableValueUseCase,
         super(DPAProcessState());
 
   /// Starts a DPA process, either by starting a new one (if [instanceId] is
@@ -265,14 +265,6 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
     }
   }
 
-  Future<String?> _getPublicKey() async {
-    final integrationPublicKey =
-        FlutterEnvironmentConfiguration.current.integrationPublicKey;
-    return integrationPublicKey == null
-        ? null
-        : await rootBundle.loadString(integrationPublicKey);
-  }
-
   /// Proceeds to next step, or finishes the process if at the last one.
   Future<void> stepOrFinish({
     List<DPAVariable>? extraVariables,
@@ -298,17 +290,12 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
       var process = state.activeProcess.validate();
 
       if (process.canProceed) {
-        if (_encryptDPAVariableValueUseCase == null) {
-          final publicKey = await _getPublicKey();
-          _encryptDPAVariableValueUseCase =
-              EncryptDPAVariableValueUseCase(publicKey);
-        }
         process = await _stepOrFinishProcessUseCase(
           process: process.copyWith(
-            variables: _encryptDPAVariableValueUseCase!(process.variables),
+            variables: await _encryptDPAVariableValueUseCase(process.variables),
           ),
           extraVariables: extraVariables != null
-              ? _encryptDPAVariableValueUseCase!(extraVariables)
+              ? await _encryptDPAVariableValueUseCase(extraVariables)
               : extraVariables,
         );
       }

@@ -11,15 +11,47 @@ class EncryptDPAVariableValueUseCase {
   /// The encryption key used for encrypting the variables' values
   final String? encryptionKey;
 
+  /// The encryption key feature used to get the key and then use the key for
+  /// encrypting the variables' values
+  final Future<String?>? encryptionKeyFuture;
+
   /// Create a new [EncryptDPAVariableValueUseCase] instance
-  EncryptDPAVariableValueUseCase(this.encryptionKey);
+  EncryptDPAVariableValueUseCase({
+    this.encryptionKey,
+    this.encryptionKeyFuture,
+  }) : assert(encryptionKey != null || encryptionKeyFuture != null);
+
+  /// Save the loaded encryption key to avoid multiple futures calling
+  String? _savedEncryptionKey;
+
+  /// This function returns the encryption key based on what's passed to [this]
+  Future<String?> _getEncryptionKey() async {
+    if (encryptionKey != null) {
+      return encryptionKey!;
+    }
+
+    // return the saved key from the future is possible to avoid multiple loads
+    if (_savedEncryptionKey != null) {
+      return _savedEncryptionKey!;
+    }
+
+    // save the key from the future to avoid multiple fethcing
+    _savedEncryptionKey = await encryptionKeyFuture!;
+    return _savedEncryptionKey;
+  }
 
   /// Returns a the list of variables with the value encrypted for the variables
   /// that can/should be encrypted
-  List<DPAVariable> call(List<DPAVariable> variables) {
-    if(encryptionKey == null){
+  Future<List<DPAVariable>> call(List<DPAVariable> variables) async {
+    // get the encryption key - if available
+    final encryptionKey = await _getEncryptionKey();
+
+    if (encryptionKey == null) {
+      // If the encryption key is not available, just return the values as
+      // they are.
       return variables;
     }
+
     final newVariablesList = <DPAVariable>[];
     for (var variable in variables) {
       final shouldEncrypt =
@@ -41,7 +73,7 @@ class EncryptDPAVariableValueUseCase {
         final valueMap = <String, dynamic>{
           variableId: originalFixedValue,
         };
-        final encryptedValue = _encrypt(valueMap);
+        final encryptedValue = _encrypt(valueMap, encryptionKey);
         final updatedVariable = variable.copyWith(value: encryptedValue);
         newVariablesList.add(updatedVariable);
       } else {
@@ -61,7 +93,7 @@ class EncryptDPAVariableValueUseCase {
   }
 
   /// Returns the data encrypted using the [encryptionKey].
-  String _encrypt(Map<String, dynamic> dictionary) {
+  String _encrypt(Map<String, dynamic> dictionary, String encryptionKey) {
     final cipher = RSACipher();
     final rsaPublicKey = cipher.parsePublicKeyFromPem(encryptionKey);
     final credentials = json.encode(dictionary);
