@@ -73,6 +73,7 @@ export 'use_cases/dpa/dpa_resend_code_use_case.dart';
 export 'use_cases/dpa/dpa_skip_step_use_case.dart';
 export 'use_cases/dpa/dpa_step_back_use_case.dart';
 export 'use_cases/dpa/dpa_step_or_finish_process_use_case.dart';
+export 'use_cases/dpa/encrypt_dpa_variable_value_use_case.dart';
 export 'use_cases/dpa/finish_task_use_case.dart';
 export 'use_cases/dpa/list_process_definitions_use_case.dart';
 export 'use_cases/dpa/list_unassigned_tasks_use_case.dart';

@@ -11,7 +11,7 @@ class EncryptDPAVariableValueUseCase {
   /// The encryption key used for encrypting the variables' values
   final String? encryptionKey;
 
-  /// The encryption key feature used to get the key and then use the key for
+  /// The encryption key future used to get the key and then use the key for
   /// encrypting the variables' values
   final Future<String?>? encryptionKeyFuture;
 
