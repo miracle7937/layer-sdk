@@ -1,8 +1,6 @@
 import 'dart:convert';
 
 import '../../../data_layer/encryption/rsa_cipher.dart';
-import '../../../data_layer/extensions.dart';
-import '../../models/dpa/dpa_link_data.dart';
 import '../../models/dpa/dpa_variable.dart';
 
 /// A use case that accepts an encryptionKey and use it to encrypt the value
@@ -11,41 +9,19 @@ class EncryptDPAVariableValueUseCase {
   /// The encryption key used for encrypting the variables' values
   final String? encryptionKey;
 
-  /// The encryption key future used to get the key and then use the key for
-  /// encrypting the variables' values
-  final Future<String?>? encryptionKeyFuture;
+  /// The [RSACipher] encryption class used to encrypt the [DPAVariable]'s
+  /// value using the [encryptionKey]
+  final RSACipher cipher;
 
   /// Create a new [EncryptDPAVariableValueUseCase] instance
   EncryptDPAVariableValueUseCase({
-    this.encryptionKey,
-    this.encryptionKeyFuture,
-  }) : assert(encryptionKey != null || encryptionKeyFuture != null);
-
-  /// Save the loaded encryption key to avoid multiple futures calling
-  String? _savedEncryptionKey;
-
-  /// This function returns the encryption key based on what's passed to [this]
-  Future<String?> _getEncryptionKey() async {
-    if (encryptionKey != null) {
-      return encryptionKey!;
-    }
-
-    // return the saved key from the future is possible to avoid multiple loads
-    if (_savedEncryptionKey != null) {
-      return _savedEncryptionKey!;
-    }
-
-    // save the key from the future to avoid multiple fethcing
-    _savedEncryptionKey = await encryptionKeyFuture!;
-    return _savedEncryptionKey;
-  }
+    required this.encryptionKey,
+    required this.cipher,
+  });
 
   /// Returns a the list of variables with the value encrypted for the variables
   /// that can/should be encrypted
-  Future<List<DPAVariable>> call(List<DPAVariable> variables) async {
-    // get the encryption key - if available
-    final encryptionKey = await _getEncryptionKey();
-
+  List<DPAVariable> call(List<DPAVariable> variables) {
     if (encryptionKey == null) {
       // If the encryption key is not available, just return the values as
       // they are.
@@ -59,21 +35,11 @@ class EncryptDPAVariableValueUseCase {
               !variable.type.shouldUploadFile &&
               variable.property.encrypt;
       if (shouldEncrypt) {
-        final originalValue = variable.value;
-        final originalFixedValue = variable.type.shouldUploadFile
-            ? null
-            : originalValue is DateTime
-                ? originalValue.toDTOString(truncateHours: true)
-                : originalValue is List<String>
-                    ? _mapListValue(originalValue)
-                    : originalValue is DPALinkData
-                        ? originalValue.originalText
-                        : originalValue;
         final variableId = variable.key.isNotEmpty ? variable.key : variable.id;
         final valueMap = <String, dynamic>{
-          variableId: originalFixedValue,
+          variableId: variable.value,
         };
-        final encryptedValue = _encrypt(valueMap, encryptionKey);
+        final encryptedValue = _encrypt(valueMap);
         final updatedVariable = variable.copyWith(value: encryptedValue);
         newVariablesList.add(updatedVariable);
       } else {
@@ -83,18 +49,8 @@ class EncryptDPAVariableValueUseCase {
     return newVariablesList;
   }
 
-  /// fix the value of the variable when it is a list to be one concatenated
-  /// string.
-  String _mapListValue(List<String> list) {
-    return list.fold(
-      '',
-      (prev, value) => prev += (prev.isNotEmpty ? '|' : '') + value,
-    );
-  }
-
   /// Returns the data encrypted using the [encryptionKey].
-  String _encrypt(Map<String, dynamic> dictionary, String encryptionKey) {
-    final cipher = RSACipher();
+  String _encrypt(Map<String, dynamic> dictionary) {
     final rsaPublicKey = cipher.parsePublicKeyFromPem(encryptionKey);
     final credentials = json.encode(dictionary);
     final encrypted = cipher.encrypt(credentials, rsaPublicKey);

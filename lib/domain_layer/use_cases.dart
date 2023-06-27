@@ -80,6 +80,7 @@ export 'use_cases/dpa/list_unassigned_tasks_use_case.dart';
 export 'use_cases/dpa/list_user_tasks_use_case.dart';
 export 'use_cases/dpa/load_dpa_history_use_case.dart';
 export 'use_cases/dpa/load_task_by_id_use_case.dart';
+export 'use_cases/dpa/normalize_dpa_variable_value_use_case.dart';
 export 'use_cases/dpa/parse_dpa_task_json_to_continue_dpa_process_use_case.dart';
 export 'use_cases/dpa/parse_json_into_step_properties_use_case.dart';
 export 'use_cases/dpa/resume_dpa_process_use_case.dart';

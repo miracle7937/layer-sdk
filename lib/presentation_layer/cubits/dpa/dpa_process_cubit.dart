@@ -30,6 +30,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
       _parseJSONIntoDPATaskToContinueDPAProcessUseCase;
   final ParseJSONIntoStepPropertiesUseCase _parseJSONIntoStepPropertiesUseCase;
   final EncryptDPAVariableValueUseCase _encryptDPAVariableValueUseCase;
+  final NormalizeDPAVariableValueUseCase _normalizeDPAVariableValueUseCase;
 
   /// Creates a new cubit using the necessary use cases.
   DPAProcessCubit({
@@ -52,6 +53,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
     required ParseJSONIntoStepPropertiesUseCase
         parseJSONIntoStepPropertiesUseCase,
     required EncryptDPAVariableValueUseCase encryptDPAVariableValueUseCase,
+    required NormalizeDPAVariableValueUseCase normalizeDPAVariableValueUseCase,
   })  : _startDPAProcessUseCase = startDPAProcessUseCase,
         _resumeDPAProcessUsecase = resumeDPAProcessUsecase,
         _loadTaskByIdUseCase = loadTaskByIdUseCase,
@@ -71,6 +73,7 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
         _parseJSONIntoStepPropertiesUseCase =
             parseJSONIntoStepPropertiesUseCase,
         _encryptDPAVariableValueUseCase = encryptDPAVariableValueUseCase,
+        _normalizeDPAVariableValueUseCase = normalizeDPAVariableValueUseCase,
         super(DPAProcessState());
 
   /// Starts a DPA process, either by starting a new one (if [instanceId] is
@@ -264,6 +267,18 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
     }
   }
 
+  /// Prepare the variables to be used by the process
+  List<DPAVariable> _prepareVariables(List<DPAVariable> variables) {
+    // Normalize the variables
+    final normalizedVariables = _normalizeDPAVariableValueUseCase(variables);
+
+    // Encrypt variables' values
+    final preparedVariables = _encryptDPAVariableValueUseCase(
+      normalizedVariables,
+    );
+    return preparedVariables;
+  }
+
   /// Proceeds to next step, or finishes the process if at the last one.
   Future<void> stepOrFinish({
     List<DPAVariable>? extraVariables,
@@ -291,11 +306,13 @@ class DPAProcessCubit extends Cubit<DPAProcessState> {
       if (process.canProceed) {
         process = await _stepOrFinishProcessUseCase(
           process: process.copyWith(
-            variables: await _encryptDPAVariableValueUseCase(process.variables),
+            variables: _prepareVariables(process.variables),
           ),
           extraVariables: extraVariables != null
-              ? await _encryptDPAVariableValueUseCase(extraVariables)
-              : extraVariables,
+              ? _prepareVariables(
+                  extraVariables,
+                )
+              : null,
         );
       }
 
