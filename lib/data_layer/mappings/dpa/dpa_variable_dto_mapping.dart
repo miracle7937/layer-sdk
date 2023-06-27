@@ -197,14 +197,6 @@ extension DPAVariableMapping on DPAVariable {
         values: availableValues.toDPAValueDTOList(),
         property: property.toDPAVariablePropertyDTO(),
       );
-
-  // String _mapListValue() {
-  //   final list = value as List<String>;
-  //   return list.fold(
-  //     '',
-  //     (prev, value) => prev += (prev.isNotEmpty ? '|' : '') + value,
-  //   );
-  // }
 }
 
 /// Extension that provides mappings for lists of [DPAVariableDTO]
