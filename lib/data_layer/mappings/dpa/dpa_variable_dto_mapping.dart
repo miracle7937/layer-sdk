@@ -193,26 +193,10 @@ extension DPAVariableMapping on DPAVariable {
         order: order,
         type: type.toDPATypeDTO(),
         submitType: submitType,
-        value: (type.shouldUploadFile)
-            ? null
-            : value is DateTime
-                ? (value as DateTime).toDTOString(truncateHours: true)
-                : value is List
-                    ? _mapListValue()
-                    : value is DPALinkData
-                        ? (value as DPALinkData).originalText
-                        : value,
+        value: value,
         values: availableValues.toDPAValueDTOList(),
         property: property.toDPAVariablePropertyDTO(),
       );
-
-  String _mapListValue() {
-    final list = value as List<String>;
-    return list.fold(
-      '',
-      (prev, value) => prev += (prev.isNotEmpty ? '|' : '') + value,
-    );
-  }
 }
 
 /// Extension that provides mappings for lists of [DPAVariableDTO]
