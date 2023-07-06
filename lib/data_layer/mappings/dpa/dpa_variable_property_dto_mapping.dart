@@ -46,6 +46,7 @@ extension DPAVariablePropertyDTOMapping on DPAVariablePropertyDTO {
         labelColor: labelColor,
         iconUrl: iconUrl,
         labelFontStyle: labelFontStyle,
+        show: show,
       );
 }
 
