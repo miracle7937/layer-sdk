@@ -109,7 +109,7 @@ class DPAVariablePropertyDTO {
   /// Label font style
   final String? labelFontStyle;
 
-  /// Wheter we need to show or not the property
+  /// Whether we need to render the variable on the screen or not
   final bool? show;
 
   /// Creates a new [DPAVariablePropertyDTO].
