@@ -190,7 +190,7 @@ class BottomSheetHelper {
   /// Shows a confirmation bottomsheet with the provided params
   ///
   /// Returns true or false based on the user action.
-  static Future<bool> showConfirmation({
+  static Future<bool?> showConfirmation({
     required BuildContext context,
     required BottomSheetType type,
     String? titleKey,
@@ -266,7 +266,7 @@ class BottomSheetHelper {
       },
     );
 
-    return result ?? false;
+    return result;
   }
 }
 

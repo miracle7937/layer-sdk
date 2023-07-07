@@ -101,7 +101,7 @@ class DPACarouselScreen extends StatelessWidget {
       denyKey: 'cancel',
     );
 
-    if (result) {
+    if (result ?? false) {
       context.read<DPAProcessCubit>().cancelProcess();
     }
   }
