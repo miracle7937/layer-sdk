@@ -109,6 +109,9 @@ class DPAVariablePropertyDTO {
   /// Label font style
   final String? labelFontStyle;
 
+  /// Whether we need to render the variable on the screen or not
+  final bool? show;
+
   /// Creates a new [DPAVariablePropertyDTO].
   DPAVariablePropertyDTO({
     this.propertyType,
@@ -145,6 +148,7 @@ class DPAVariablePropertyDTO {
     this.labelColor,
     this.iconUrl,
     this.labelFontStyle,
+    this.show,
   });
 
   /// Creates a new [DPAVariablePropertyDTO] from the given JSON.
@@ -209,6 +213,7 @@ class DPAVariablePropertyDTO {
         labelColor: json['label_color'],
         iconUrl: json['icon_url'],
         labelFontStyle: json['label_font_style'],
+        show: json['show'] ?? true,
       );
 
   @override
@@ -251,7 +256,7 @@ class DPAVariablePropertyDTO {
       '${labelColor != null ? 'labelColor: $labelColor ' : ''}'
       '${iconUrl != null ? 'iconUrl: $iconUrl ' : ''}'
       '${labelFontStyle != null ? 'labelFontStyle: $labelFontStyle ' : ''}'
-      '}';
+      '${show != null ? 'show: $show ' : ''} }';
 }
 
 /// The type of keyboard to use when entering a variable

@@ -134,6 +134,9 @@ class DPAVariableProperty extends Equatable {
   /// Label font style
   final String? labelFontStyle;
 
+  /// Whether we need to render the variable on the screen or not
+  final bool? show;
+
   /// Creates a new [DPAVariableProperty].
   DPAVariableProperty({
     this.step,
@@ -167,6 +170,7 @@ class DPAVariableProperty extends Equatable {
     this.labelColor,
     this.iconUrl,
     this.labelFontStyle,
+    this.show = false,
   })  : allowedTypes = UnmodifiableSetView(allowedTypes?.toSet() ?? <String>{}),
         dialCodes = UnmodifiableListView(dialCodes ?? []);
 
@@ -202,6 +206,7 @@ class DPAVariableProperty extends Equatable {
         labelColor,
         iconUrl,
         labelFontStyle,
+        show,
       ];
 
   /// Creates a new [DPAVariableProperty] using another as a base.
@@ -237,6 +242,7 @@ class DPAVariableProperty extends Equatable {
     String? labelColor,
     String? iconUrl,
     String? labelFontStyle,
+    bool? show,
   }) =>
       DPAVariableProperty(
         step: step ?? this.step,
@@ -270,5 +276,6 @@ class DPAVariableProperty extends Equatable {
         labelColor: labelColor ?? this.labelColor,
         iconUrl: iconUrl ?? this.iconUrl,
         labelFontStyle: labelFontStyle ?? this.labelFontStyle,
+        show: show ?? this.show,
       );
 }
