@@ -30,6 +30,10 @@ extension DPAValueDTOMapping on DPAValueDTO {
       return icon;
     }
 
+    if (customData.propertyType == DPAVariablePropertyType.currencyPicker) {
+      return icon;
+    }
+
     final baseUrl = customData.fileBaseURL;
     var completeUrl = '';
     if (baseUrl.endsWith('/') || icon!.startsWith('/')) {

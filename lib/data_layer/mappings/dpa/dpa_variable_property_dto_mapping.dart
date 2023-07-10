@@ -117,6 +117,9 @@ extension PropertyTypeDTOMapping on PropertyTypeDTO {
       case PropertyTypeDTO.countryPicker:
         return DPAVariablePropertyType.countryPicker;
 
+      case PropertyTypeDTO.currencyPicker:
+        return DPAVariablePropertyType.currencyPicker;
+
       default:
         return null;
     }
