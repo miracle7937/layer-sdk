@@ -97,8 +97,10 @@ class _DPADropdownState extends State<DPADropdown> {
 
   bool get isCountryPicker =>
       widget.variable.property.type == DPAVariablePropertyType.countryPicker;
+
   bool get isCurrencyPicker =>
-      widget.variable.property.picker == DPAVariablePicker.currency;
+      widget.variable.property.picker == DPAVariablePicker.currency ||
+      widget.variable.property.type == DPAVariablePropertyType.currencyPicker;
 
   @override
   void initState() {

@@ -37,6 +37,9 @@ enum DPAVariablePropertyType {
 
   /// Country picker type.
   countryPicker,
+
+  /// Currency picker type
+  currencyPicker,
 }
 
 /// Additional properties for a DPA variable.
