@@ -57,8 +57,9 @@ class _DPASearchListState extends State<DPASearchList>
 
     final isCountryPicker =
         widget.variable.property.type == DPAVariablePropertyType.countryPicker;
-    final isCurrencyPicker =
-        widget.variable.property.picker == DPAVariablePicker.currency;
+    final isCurrencyPicker = widget.variable.property.picker ==
+            DPAVariablePicker.currency ||
+        widget.variable.property.type == DPAVariablePropertyType.currencyPicker;
 
     return Column(
       children: [

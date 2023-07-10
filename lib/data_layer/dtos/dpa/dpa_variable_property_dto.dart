@@ -335,6 +335,9 @@ class PropertyTypeDTO extends EnumDTO {
   /// Country picker
   static const countryPicker = PropertyTypeDTO._('countryPicker');
 
+  /// Currency picker
+  static const currencyPicker = PropertyTypeDTO._('currencyPicker');
+
   /// Switch
   static const switchType = PropertyTypeDTO._('switch');
 
@@ -351,6 +354,7 @@ class PropertyTypeDTO extends EnumDTO {
     signature,
     searchResults,
     countryPicker,
+    currencyPicker,
     switchType
   ];
 
