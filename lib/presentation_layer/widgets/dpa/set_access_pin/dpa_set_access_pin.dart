@@ -102,7 +102,11 @@ class _DPASetAccessPinState
                           validationCubit.clearValidationErrors();
                           accessPin = pin;
 
-                          if (pin.length == widget.pinLength) {
+                          final pinLength =
+                              widget.dpaVariable.constraints.maxLength ??
+                                  widget.pinLength;
+
+                          if (pin.length == pinLength) {
                             validationCubit.validate(pin: accessPin);
                             if (!validationCubit.state.valid) {
                               accessPin = '';

@@ -532,6 +532,7 @@ class _DPAFlowState<T> extends State<DPAFlow<T>> {
 
     final pinVariable = process.variables
         .singleWhereOrNull((variable) => variable.type == DPAVariableType.pin);
+
     final effectiveHeader = (process.stepProperties?.hideAppBar ?? false)
         ? null
         : widget.customHeader ?? DPAHeader(process: process);
