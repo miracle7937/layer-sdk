@@ -36,6 +36,8 @@ extension DPAProcessStepPropertiesDTOMapping on DPAProcessStepPropertiesDTO {
         allowCancel: allowCancel ?? true,
         isBackAllowed: isBackAllowed ?? true,
         textAlignment: textAlignment?.toTextAlignment() ?? TextAlignment.center,
+        cancelButtonAction: cancelButtonAction?.toCancelButtonAction() ??
+            CancelButtonAction.goBack,
       );
 
   /// Checks if this [DPAProcessStepPropertiesDTO] has a valid URL and appends
@@ -168,6 +170,20 @@ extension TextAlignmentDTOMapping on TextAlignmentDTO {
 
       case TextAlignmentDTO.center:
         return TextAlignment.center;
+    }
+  }
+}
+
+/// Extension that provides mappings for [CancelButtonActionDTO]
+extension CancelButtonActionDTOMapping on CancelButtonActionDTO {
+  /// Maps into a [TextAlignment]
+  CancelButtonAction toCancelButtonAction() {
+    switch (this) {
+      case CancelButtonActionDTO.cancel:
+        return CancelButtonAction.cancel;
+
+      case CancelButtonActionDTO.goBack:
+        return CancelButtonAction.goBack;
     }
   }
 }

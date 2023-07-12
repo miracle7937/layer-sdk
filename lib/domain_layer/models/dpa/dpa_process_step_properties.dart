@@ -72,6 +72,9 @@ class DPAProcessStepProperties extends Equatable {
   /// Defines how the text should be aligned.
   final TextAlignment textAlignment;
 
+  /// Defines the cancel button action on the popup
+  final CancelButtonAction cancelButtonAction;
+
   /// Creates a new [DPAProcessStepProperties].
   const DPAProcessStepProperties({
     required this.format,
@@ -96,6 +99,7 @@ class DPAProcessStepProperties extends Equatable {
     this.allowCancel = true,
     this.isBackAllowed = true,
     this.textAlignment = TextAlignment.center,
+    this.cancelButtonAction = CancelButtonAction.goBack,
   });
 
   @override
@@ -146,6 +150,8 @@ class DPAProcessStepProperties extends Equatable {
     int? autoFinishIn,
     bool? allowCancel,
     bool? isBackAllowed,
+    TextAlignment? textAlignment,
+    CancelButtonAction? cancelButtonAction,
   }) =>
       DPAProcessStepProperties(
         format: format ?? this.format,
@@ -169,6 +175,8 @@ class DPAProcessStepProperties extends Equatable {
         autoFinishIn: autoFinishIn ?? this.autoFinishIn,
         allowCancel: allowCancel ?? this.allowCancel,
         isBackAllowed: isBackAllowed ?? this.isBackAllowed,
+        textAlignment: textAlignment ?? this.textAlignment,
+        cancelButtonAction: cancelButtonAction ?? this.cancelButtonAction,
       );
 }
 
@@ -270,4 +278,13 @@ enum TextAlignment {
 
   /// The text should be aligned to the left.
   left,
+}
+
+/// Enum that defines the cancel button action of the dpa popup
+enum CancelButtonAction {
+  /// When clicked, the cancel icon should cancel the whole flow
+  cancel,
+
+  /// When clicked, the cancel icon should go back to the previous screen/task
+  goBack;
 }
