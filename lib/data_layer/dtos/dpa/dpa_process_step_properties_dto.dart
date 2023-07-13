@@ -80,6 +80,9 @@ class DPAProcessStepPropertiesDTO {
   /// The format of the variable.
   final DPAFormatDTO? format;
 
+  /// The cancel button action on the popup
+  final CancelButtonActionDTO? cancelButtonAction;
+
   /// Creates a new [DPAProcessStepPropertiesDTO].
   DPAProcessStepPropertiesDTO({
     this.image,
@@ -107,6 +110,7 @@ class DPAProcessStepPropertiesDTO {
     this.autoFinishIn,
     this.allowCancel,
     this.textAlignment,
+    this.cancelButtonAction,
   });
 
   /// Creates a new [DPAProcessStepPropertiesDTO] from a JSON.
@@ -149,6 +153,9 @@ class DPAProcessStepPropertiesDTO {
         ),
         textAlignment: TextAlignmentDTO.fromJson(
           json['text_alignment'] ?? '',
+        ),
+        cancelButtonAction: CancelButtonActionDTO.fromJson(
+          json['cancel_button_action'] ?? '',
         ),
       );
 }
@@ -329,4 +336,28 @@ enum TextAlignmentDTO {
         (element) => element.value == value,
       ) ??
       TextAlignmentDTO.center;
+}
+
+/// Enum that defines the cancel button action of the dpa popup
+enum CancelButtonActionDTO {
+  /// When clicked, the cancel icon should cancel the whole flow
+  cancel('cancel'),
+
+  /// When clicked, the cancel icon should go back to the previous screen/task
+  goBack('');
+
+  /// The DTO value of this [CancelButtonActionDTO].
+  final String value;
+
+  /// Default constructor
+  const CancelButtonActionDTO(this.value);
+
+  /// Gets the enum instance associated with the provided `value`.
+  ///
+  /// Defaults to `goBack`
+  factory CancelButtonActionDTO.fromJson(String value) =>
+      CancelButtonActionDTO.values.firstWhereOrNull(
+        (element) => element.value == value,
+      ) ??
+      CancelButtonActionDTO.goBack;
 }
