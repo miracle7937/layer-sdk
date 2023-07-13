@@ -213,7 +213,13 @@ class DPAVariablePropertyDTO {
         labelColor: json['label_color'],
         iconUrl: json['icon_url'],
         labelFontStyle: json['label_font_style'],
-        show: json['show'] ?? true,
+        // This is bad and I know it, but this is how our DPA/BE works :__:
+        // We only need to check on `show` when it is returned as boolean.
+        show: json['show'] != null
+            ? json['show'] is bool
+                ? json['show']
+                : true
+            : true,
       );
 
   @override
