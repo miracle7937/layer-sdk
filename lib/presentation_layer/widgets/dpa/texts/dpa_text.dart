@@ -40,6 +40,10 @@ class DPAText extends StatefulWidget {
   /// Defaults to `true`
   final bool keepWarningSize;
 
+  /// The configs for the obscure functionality.
+  /// This will have effects only when [isPassword] property is true.
+  final ObscureConfigs obscureConfigs;
+
   /// Creates a new [DPAText]
   const DPAText({
     Key? key,
@@ -50,6 +54,7 @@ class DPAText extends StatefulWidget {
     this.scrollPadding = const EdgeInsets.all(20.0),
     this.description,
     this.keepWarningSize = true,
+    this.obscureConfigs = const ObscureConfigs(),
   }) : super(key: key);
 
   @override
@@ -62,9 +67,17 @@ class _DPATextState extends State<DPAText> {
   bool get _characterSplit =>
       (widget.variable.property.characterSplit ?? false);
 
+  bool get _userControlsObscure =>
+      widget.variable.property.isPassword &&
+      widget.obscureConfigs.userControlsObscure;
+
+  late bool _textObscured;
+
   @override
   void initState() {
     super.initState();
+
+    _textObscured = widget.variable.property.isPassword;
 
     if (_characterSplit || !widget.variable.constraints.readonly) {
       _controller = TextEditingController(
@@ -157,7 +170,7 @@ class _DPATextState extends State<DPAText> {
                   status: DKTextFieldStatus.idle,
                   controller: _controller,
                   label: widget.variable.label,
-                  obscureText: widget.variable.property.isPassword,
+                  obscureText: _textObscured,
                   maxLength: widget.variable.constraints.maxLength,
                   keyboardType: widget.variable.toTextInputType(),
                   size: widget.variable.property.multiline
@@ -173,6 +186,14 @@ class _DPATextState extends State<DPAText> {
                       ),
                   scrollPadding: widget.scrollPadding,
                   description: widget.description,
+                  suffixIconPath: _userControlsObscure
+                      ? _textObscured
+                          ? widget.obscureConfigs.obscuredIconPath
+                          : widget.obscureConfigs.unObscuredIconPath
+                      : null,
+                  onSuffixIconPressed: _userControlsObscure
+                      ? () => setState(() => _textObscured = !_textObscured)
+                      : null,
                 ),
     );
   }
@@ -278,4 +299,31 @@ class _DPATextState extends State<DPAText> {
             ],
           );
   }
+}
+
+/// This class holds the configurations of the user manual obscure functionality
+class ObscureConfigs {
+  /// Whether the use can control showing/hiding (obscure/un-obscure) the
+  /// content of the [DPAText] when [isPassword] is true
+  ///
+  /// Defaults to `false`
+  final bool userControlsObscure;
+
+  /// The icon that shows when the password is obscured
+  final String? obscuredIconPath;
+
+  /// The icon that shows when the password is un-obscured
+  final String? unObscuredIconPath;
+
+  /// Create a new instance of [ObscureConfigs]
+  const ObscureConfigs({
+    this.userControlsObscure = false,
+    this.obscuredIconPath,
+    this.unObscuredIconPath,
+  }) : assert(
+          !userControlsObscure ||
+              (obscuredIconPath != null && unObscuredIconPath != null),
+          "When userControlsObscure is enabled, obscuredIconPath and"
+          "unObscuredIconPath cannot be null",
+        );
 }
