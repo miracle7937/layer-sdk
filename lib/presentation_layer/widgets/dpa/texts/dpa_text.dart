@@ -323,6 +323,7 @@ class ObscureConfigs {
   }) : assert(
           !userControlsObscure ||
               (obscuredIconPath != null && unObscuredIconPath != null),
-          "When userControlsObscure is enabled, obscuredIconPath and unObscuredIconPath cannot be null",
+          "When userControlsObscure is enabled, obscuredIconPath and"
+          "unObscuredIconPath cannot be null",
         );
 }
