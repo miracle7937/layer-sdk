@@ -20,10 +20,10 @@ dependencies:
       url: git@gitlab.ubanquity.com:flutter-apps/carrier-info.git
       ref: 433beda7e4b7c0249c9877fe09c9bbc4058fee27
 
-  design_kit_layer:
+  design_kit_layer:firebase_auth:
     git:
       url: git@gitlab.ubanquity.com:dart-packages/design-kit-layer.git
-      ref: 93af2b5d0a0644d3836bbfded727a52a1e95b9f6
+      ref: 41b2f88eb75ac08abc142da3e14543827949f6c6
 
   ocra_authentication:
     git:
