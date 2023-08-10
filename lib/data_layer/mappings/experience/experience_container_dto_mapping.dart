@@ -275,6 +275,9 @@ extension ExperienceContainerTypeMapping on String {
       case 'bank_information':
         return ExperienceContainerType.bankInformation;
 
+      case 'shortcuts':
+        return ExperienceContainerType.shortcuts;
+
       default:
         final _log = Logger('ExperienceContainerTypeMapping');
         _log.severe('Error parsing $this experience');

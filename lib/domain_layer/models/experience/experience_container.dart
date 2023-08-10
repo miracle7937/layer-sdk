@@ -237,4 +237,7 @@ enum ExperienceContainerType {
 
   /// The bankInformation type
   bankInformation,
+
+  /// The shortcuts type
+  shortcuts,
 }
